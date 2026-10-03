@@ -88,6 +88,76 @@ internal static class Native
     [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool SetHandleInformation(IntPtr hObject, uint dwMask, uint dwFlags);
 
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct SecurityAttributes
+    {
+        public int nLength;
+        public IntPtr lpSecurityDescriptor;
+        [MarshalAs(UnmanagedType.Bool)]
+        public bool bInheritHandle;
+    }
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool CreatePipe(out IntPtr hReadPipe, out IntPtr hWritePipe,
+        ref SecurityAttributes lpPipeAttributes, uint nSize);
+
+    [DllImport("kernel32.dll")]
+    public static extern uint GetProcessId(IntPtr hProcess);
+
+    // ToolHelp process enumeration for the supervisor sweep (no job handle is
+    // returned by the launch API, so descendants are found via parent PIDs).
+    public const uint TH32CS_SNAPPROCESS = 0x2;
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+    internal struct ProcessEntry32
+    {
+        public uint dwSize;
+        public uint cntUsage;
+        public uint th32ProcessID;
+        public UIntPtr th32DefaultHeapID;
+        public uint th32ModuleID;
+        public uint cntThreads;
+        public uint th32ParentProcessID;
+        public int pcPriClassBase;
+        public uint dwFlags;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+        public string szExeFile;
+    }
+
+    [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+    public static extern IntPtr CreateToolhelp32Snapshot(uint dwFlags, uint th32ProcessID);
+
+    // Explicit Unicode: matches the CharSet.Auto (UTF-16 on Windows) struct
+    // layout. The default ANSI import misreads names AND struct size.
+    [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool Process32First(IntPtr hSnapshot, ref ProcessEntry32 lppe);
+
+    [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool Process32Next(IntPtr hSnapshot, ref ProcessEntry32 lppe);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    public static extern IntPtr OpenProcess(uint dwDesiredAccess, bool bInheritHandle, uint dwProcessId);
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct FileTime
+    {
+        public uint dwLowDateTime;
+        public uint dwHighDateTime;
+    }
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool GetProcessTimes(IntPtr hProcess,
+        out FileTime lpCreationTime, out FileTime lpExitTime,
+        out FileTime lpKernelTime, out FileTime lpUserTime);
+
+    public const uint PROCESS_TERMINATE = 0x1;
+    public const uint PROCESS_QUERY_LIMITED_INFORMATION = 0x1000;
+    public const uint SYNCHRONIZE = 0x100000;
+
     // Removes the per-user AppContainer profile the engine created for a
     // disposable test identity. userenv.dll hosts the profile APIs.
     // Returns an HRESULT (0 = S_OK).

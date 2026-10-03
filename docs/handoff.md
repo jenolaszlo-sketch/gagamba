@@ -1,6 +1,6 @@
 # Gagamba handoff
 
-Updated 2026-10-03 for GW-1B slice 2 (denial/descendants/races/transport). Start the next session in `C:\Users\Laszlos\source\repos\Gagamba`.
+Updated 2026-10-03 for GW-1B slice 3 (pipes, supervisor, workloads, ADR). Start the next session in `C:\Users\Laszlos\source\repos\Gagamba`.
 
 ## User direction
 
@@ -14,7 +14,8 @@ Develop Gagamba alone as an independently useful .NET sandbox library. Windows, 
 - GP-1A committed as `208c2b1`, GP-1B as `c7003f8` (fixture Worker|Host|Harness|SelfTest incl. F3 lifecycle, `eng/fixture-selftest.ps1|.sh`, evidence summaries, raw JSON under ignored `artifacts/`). No backend provider, native helper, NuGet package, installed distro or CI workflow exists. No sandbox has been launched or qualified.
 - GW-1A implemented (`f973a73`): read-only `spikes/Gw1aProbe` + `eng/probe.ps1|.sh`, per-kind evidence manifests, verdict EXPORT-PRESENT-SCHEMA-UNPINNED. The launch API was resolved but never invoked; no provider claimed.
 - GW-1B slice 1 implemented (`195d16f`): pinned schema + `PIN.md`, verified spec compiler (`spikes/Gw1bLaunch`), first launches under disposable identities. Denial/descendants/races/workloads/ADR were open.
-- GW-1B slice 2 implemented on top (uncommitted working tree): denial with positive controls, descendant effects + inherited denial, cancel race — all proven; two blocking gaps characterized (engine does not stop descendants on root kill OR natural exit; STARTUPINFO redirection rejected in 3 configurations). Evidence summary `docs/evidence/windows-denial-tree-io-GW-1B.md`. Remaining: pipe-variant stdio, supervisor prototype, workloads, ADR.
+- GW-1B slice 2 implemented (`61edee2`): denial with positive controls, descendant effects + inherited denial, cancel race proven; tree-stop gap and file-stdio rejection characterized.
+- GW-1B slice 3 implemented on top (uncommitted working tree): pipes proven as transport, ToolHelp supervisor proven cross-boundary (found/killed, root survived), whoami maps the base image, dotnet exits 1 silently in all grant configs (compat question, not closure). Provider ADR 0001 written (experimental API + supervisor, prototyping scope). Evidence summary `docs/evidence/windows-pipes-supervisor-workloads-GW-1B.md`. Remaining: registryRead-capability dotnet variant, launcher-crash recovery, build/test workloads.
 - Current shell chat may still be rooted in Solo. Use the Gagamba path explicitly; Solo's planning staging files are not the source of truth. Prefer opening the next coding session directly in Gagamba so its workspace permissions match the work.
 
 ## Read in this order
@@ -39,19 +40,18 @@ Verified GP-1B 2026-10-03 (fixtures only, not enforcement): Release `eng/fixture
 
 ## Exact next task
 
-Continue **GW-1B slice 3**: anonymous-pipe stdio variant, supervisor sweep
-prototype (ToolHelp parent-PID walk with PID+start identity against a live
-sandbox tree), controlled offline workloads (`dotnet --no-restore`,
-Git inspection, shell with explicit grants), then the provider ADR
-(experimental API + Gagamba supervisor vs restricted-token fallback). Keep
-identities disposable and profiles deleted; never modify the host
-opportunistically.
+Continue **GW-1B slice 4**: `registryRead`-capability dotnet variant (plus env
+tuning if needed) to answer the runtime-compat question, then `dotnet build`
+/ `dotnet test --no-restore` with prepared dependencies and a Git-inspection
+fixture. Alongside: launcher-crash recovery design (supervisor loss with a
+live engine job) for the GQ-1 gate. Keep identities disposable and profiles
+deleted; never modify the host opportunistically.
 
 Before executing experiments that alter host ACLs/users/firewall or install a runtime, prepare the exact setup/cleanup implementation and inspect the task's authorization. No permission prompt is required merely to write code, read state or run safe fixtures. Keep privileged setup separate and attributable.
 
 ## Resume prompt
 
-> Continue standalone Gagamba in C:\Users\Laszlos\source\repos\Gagamba. Read AGENTS.md, docs/handoff.md, docs/work-queue.md, docs/security-model.md and docs/fixture-protocol.md first. GW-1B slices 1–2 complete: first launches, denial with controls, descendant effects, cancel race proven; two blocking gaps open (no descendant stop on root kill/exit; no STARTUPINFO redirection in 3 configs). Continue slice 3: pipe-variant stdio, supervisor sweep prototype, offline workloads, provider ADR. Keep public APIs provisional, all restrictions fail-closed, Windows local testing first, Linux/macOS in scope, and Hufu/Luban integration deferred. Do not mistake fixture self-tests, upstream examples or Docker's outer restrictions for Gagamba enforcement. Inspect the repository state and preserve the original proposal.
+> Continue standalone Gagamba in C:\Users\Laszlos\source\repos\Gagamba. Read AGENTS.md, docs/handoff.md, docs/work-queue.md, docs/security-model.md and docs/fixture-protocol.md first. GW-1B slices 1-3 complete: launches, denial with controls, descendant effects, cancel race, pipes, supervisor sweep proven; ADR 0001 selects API + supervisor (prototyping). Open: dotnet runtime compat (registryRead variant), launcher-crash recovery, build/test workloads. Keep public APIs provisional, all restrictions fail-closed, Windows local testing first, Linux/macOS in scope, and Hufu/Luban integration deferred. Do not mistake fixture self-tests, upstream examples or Docker's outer restrictions for Gagamba enforcement. Inspect the repository state and preserve the original proposal.
 
 ## Validation of this preparation
 
@@ -59,4 +59,4 @@ Documentation link resolution and original-proposal SHA-256 equality are checked
 
 Verifier regression checks passed on 2026-10-03: Windows PowerShell -File with default/explicit root, call-operator invocation, PowerShell 7 -File with default/explicit root, and missing/empty root rejection (seven cases). Default-root tests ran outside the repository. Documentation links and the original proposal hash still pass. These are preparation-tool checks only.
 
-No backend, package, or CI conformance tests apply yet because no provider exists. The user created the remote and it is connected locally. GW-1B slice-2 code is uncommitted on top of `195d16f`; commit it before slice-3 work so the source manifest pins exactly. CI activation, distro installation and package publication remain pending.
+No backend, package, or CI conformance tests apply yet because no provider exists. The user created the remote and it is connected locally. GW-1B slice-3 code is uncommitted on top of `61edee2`; commit it before slice-4 work so the source manifest pins exactly. CI activation, distro installation and package publication remain pending.

@@ -562,12 +562,217 @@ internal static class LaunchStaircase
                 : (false, $"{detail} captured='{captured[..Math.Min(60, captured.Length)]}' (transport unproven; file-effect pattern remains the supported oracle) profile={prof}", (string?)null);
         });
 
+        // ---- L3-PIPE-STDIO (anonymous-pipe transport proof) ----
+        // File-handle redirection was rejected in 3 configurations. Pipes are
+        // the canonical CreateProcess redirection mechanism; if the engine
+        // rejects these too, STARTUPINFO redirection is unsupported outright.
+        await RunCase(collector, "L3-PIPE-STDIO", async () =>
+        {
+            using var ws = FixtureWorkspace.Create("gw1b-pipe-" + runTag);
+            string idPipe = $"GagambaGW1B{runTag}q";
+            var spec = new SandboxSpecRequest("0.1.0", true, [ws.Root], []);
+            var (ok, detail, capturedOut, _) = await RunPipedAsync(idPipe, spec, null,
+                "/d /c echo hello-pipe", ws.Root, 0);
+            bool exact = ok && capturedOut.Trim() == "hello-pipe";
+            string prof = SweepProfile(idPipe);
+            bool wsOk = ws.DisposeAndReport() == "Confirmed" && !Directory.Exists(ws.Root);
+            cleanups.Add(("pipestdio", new(true, true, prof, wsOk)));
+            return exact
+                ? (true, $"{detail} pipe-captured-exact profile={prof}", (string?)null)
+                : (false, $"{detail} pipe-captured='{capturedOut[..Math.Min(60, capturedOut.Length)]}' profile={prof}", (string?)null);
+        });
+
+        // ---- L3-SUPERVISOR-SWEEP (ToolHelp tree kill; control + sandbox) ----
+        await RunCase(collector, "L3-SUPERVISOR-SWEEP", async () =>
+        {
+            using var ws = FixtureWorkspace.Create("gw1b-sup-" + runTag);
+            using var ctlWs = FixtureWorkspace.Create("gw1b-sup-ctl-" + runTag);
+            string[] sleeper =
+            [
+                "@echo off",
+                "echo started>\"%~1\\started.txt\"",
+                ":wait",
+                "if not exist \"%~1\\barrier.txt\" goto wait",
+                "echo late>\"%~1\\late.txt\"",
+                "exit 9",
+            ];
+            string[] root2 =
+            [
+                "@echo off",
+                "start /b \"\" cmd /d /c call \"%~dp0sleeper.bat\" \"%~1\"",
+                "echo root-alive>\"%~1\\rootstarted.txt\"",
+                ":wait",
+                "if not exist \"%~1\\rootbarrier.txt\" goto wait",
+                "exit 5",
+            ];
+            WriteBat(ws.Root, "sleeper.bat", sleeper);
+            WriteBat(ws.Root, "root2.bat", root2);
+            WriteBat(ctlWs.Root, "sleeper.bat", sleeper);
+            WriteBat(ctlWs.Root, "root2.bat", root2);
+            // Control: identical mechanism, unsandboxed tree.
+            DateTime ctlSince = DateTime.UtcNow;
+            var ctlProc = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = Path.Combine(Environment.SystemDirectory, "cmd.exe"),
+                Arguments = $"/d /c call \"{ctlWs.Root}\\root2.bat\" \"{ctlWs.Root}\"",
+                WorkingDirectory = ctlWs.Root,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+            });
+            if (ctlProc is null)
+                return AbandonLeg(cleanups, "supervisor", $"GagambaGW1B{runTag}v",
+                    "control start returned null", ws, ctlWs);
+            using (ctlProc)
+            {
+                string? ctlStarted = await PollFileAsync(Path.Combine(ctlWs.Root, "started.txt"), TimeSpan.FromSeconds(10));
+                if (ctlStarted is null)
+                {
+                    try { ctlProc.Kill(); } catch { }
+                    return AbandonLeg(cleanups, "supervisor", $"GagambaGW1B{runTag}v",
+                        "control tree never formed", ws, ctlWs);
+                }
+                var (ctlFound, ctlKilled, ctlNotes) = Supervisor.SweepDescendants(
+                    (uint)ctlProc.Id, ctlSince, TimeSpan.FromSeconds(5));
+                bool ctlRootAlive = !ctlProc.HasExited;
+                await File.WriteAllTextAsync(Path.Combine(ctlWs.Root, "barrier.txt"), "go");
+                await Task.Delay(2000);
+                bool ctlLateAbsent = !File.Exists(Path.Combine(ctlWs.Root, "late.txt"));
+                try { ctlProc.Kill(); } catch { }
+                if (ctlFound < 1 || ctlKilled < 1 || !ctlRootAlive || !ctlLateAbsent)
+                    return AbandonLeg(cleanups, "supervisor", $"GagambaGW1B{runTag}v",
+                        $"control sweep broken: found={ctlFound} killed={ctlKilled} rootAlive={ctlRootAlive} lateAbsent={ctlLateAbsent} [{string.Join(";", ctlNotes)}]",
+                        ws, ctlWs);
+            }
+            // Sandboxed leg: enumerate across the boundary, sweep, verify.
+            string idSup = $"GagambaGW1B{runTag}v";
+            DateTime sbSince = DateTime.UtcNow;
+            var (nlOk, nlDetail, hRoot, rootPid) = LaunchNoWait(idSup,
+                new SandboxSpecRequest("0.1.0", true, [ws.Root], []),
+                $"/d /c call \"{ws.Root}\\root2.bat\" \"{ws.Root}\"",
+                ws.Root);
+            if (!nlOk)
+            {
+                string prof0 = SweepProfile(idSup);
+                bool wsOk0 = new[] { ws, ctlWs }
+                    .All(w => w.DisposeAndReport() == "Confirmed" && !Directory.Exists(w.Root));
+                cleanups.Add(("supervisor", new(true, true, prof0, wsOk0)));
+                return (false, nlDetail + " (launch failed; no sweep verdict)", (string?)null);
+            }
+            try
+            {
+                string? sbStarted = await PollFileAsync(Path.Combine(ws.Root, "started.txt"), TimeSpan.FromSeconds(10));
+                if (sbStarted is null)
+                    return (false, "sandbox tree never formed; refusing sweep", (string?)null);
+                var (found, killed, notes) = Supervisor.SweepDescendants(rootPid, sbSince, TimeSpan.FromSeconds(5));
+                bool rootAlive = Native.WaitForSingleObject(hRoot, 0) == Native.WAIT_TIMEOUT;
+                await File.WriteAllTextAsync(Path.Combine(ws.Root, "barrier.txt"), "go");
+                await Task.Delay(3000);
+                bool lateAbsent = !File.Exists(Path.Combine(ws.Root, "late.txt"));
+                Native.TerminateProcess(hRoot, 99);
+                Native.WaitForSingleObject(hRoot, 5000);
+                bool rootDead = Native.GetExitCodeProcess(hRoot, out uint rc) && rc != Native.STILL_ACTIVE;
+                string prof = SweepProfile(idSup);
+                bool wsOk = new[] { ws, ctlWs }
+                    .All(w => w.DisposeAndReport() == "Confirmed" && !Directory.Exists(w.Root));
+                cleanups.Add(("supervisor", new(rootDead, true, prof, wsOk)));
+                bool ok = found >= 1 && killed >= 1 && rootAlive && lateAbsent && rootDead;
+                return ok
+                    ? (true, $"cross-boundary enumerate found={found} killed={killed}; root survived sweep then terminated; late-absent profile={prof} [{string.Join(";", notes)}]", (string?)null)
+                    : (false, $"found={found} killed={killed} rootAliveDuringSweep={rootAlive} lateAbsent={lateAbsent} rootDead={rootDead} [{string.Join(";", notes)}]", (string?)null);
+            }
+            finally
+            {
+                try { if (hRoot != IntPtr.Zero) Native.CloseHandle(hRoot); } catch { }
+            }
+        });
+
+        // ---- L3-WORKLOAD-DOTNET (runtime closure mapping) ----
+        // dotnet launches but exits 1 silently. Map the closure from below:
+        // whoami (system binary, no grants) tells whether the base image
+        // covers System32; dotnet variants then climb the grant ladder.
+        await RunCase(collector, "L3-WORKLOAD-DOTNET", async () =>
+        {
+            const string dotnetExe = @"C:\Program Files\dotnet\dotnet.exe";
+            string whoamiEarly = Path.Combine(Environment.SystemDirectory, "whoami.exe");
+            if (!File.Exists(dotnetExe) || !File.Exists(whoamiEarly))
+                return AbandonLeg(cleanups, "dotnet", $"GagambaGW1B{runTag}n",
+                    "dotnet or whoami missing at well-known paths", Array.Empty<FixtureWorkspace>());
+            var c = await ControlRunner.Run(dotnetExe, "--info", Path.GetTempPath(), 60_000);
+            if (!c.Exited || c.ExitCode != 0 || !c.Stdout.Contains("SDK"))
+                return AbandonLeg(cleanups, "dotnet", $"GagambaGW1B{runTag}n",
+                    $"control dotnet --info failed [{c.Detail}]", Array.Empty<FixtureWorkspace>());
+            using var ws = FixtureWorkspace.Create("gw1b-dotnet-" + runTag);
+            Environment.SetEnvironmentVariable("DOTNET_CLI_HOME", ws.Root);
+            Environment.SetEnvironmentVariable("DOTNET_NOLOGO", "1");
+            Environment.SetEnvironmentVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
+            Environment.SetEnvironmentVariable("DOTNET_SKIP_FIRST_TIME_EXPERIENCE", "1");
+            string dotnetDir = Path.GetDirectoryName(dotnetExe)!;
+            string system32 = Environment.SystemDirectory;
+            string whoamiExe = Path.Combine(system32, "whoami.exe");
+            string idDotnet = $"GagambaGW1B{runTag}n";
+            var attempts = new List<string>();
+            bool sdkListed = false;
+            // W1 maps the base image (whoami needs no grants but its image).
+            // W2-W4 then place dotnet against that map. whoami output is
+            // shape-checked only, never recorded (PII). Fresh identity per
+            // variant: reuse after failure risks 0xB7 contamination.
+            // V1: dotnet + full grants. V2: cmd + full grants (same shape).
+            // V3: cmd + dotnetDir only. V4: cmd + system32 only.
+            // V5: dotnet + narrowest passing ro set (when identified).
+            async Task<(bool Ran, string Detail)> TryVariant(string suffix, SandboxSpecRequest vSpec,
+                string exe, string vArgs, Func<string, bool> accept)
+            {
+                string vid = idDotnet + suffix;
+                var (ok, detail, vOut, vErr) = await RunPipedAsync(vid, vSpec, exe, vArgs, ws.Root, 0);
+                string prof = SweepProfile(vid);
+                bool ran = ok && accept(vOut);
+                string shape = exe == whoamiExe
+                    ? (vOut.Contains('\\') && vOut.Trim().Length < 160 ? "shape-ok" : $"shape-bad(len={vOut.Length})")
+                    : $"out={vOut.Length}B";
+                return (ran, $"{detail} {shape} errlen={vErr.Length} profile={prof}");
+            }
+            var w1 = await TryVariant("a",
+                new("0.1.0", true, [ws.Root], []), whoamiExe, string.Empty,
+                o => o.Contains('\\'));
+            attempts.Add($"W1 whoami-ws-only: ran={w1.Ran} {w1.Detail}");
+            var w2 = await TryVariant("b",
+                new("0.1.0", true, [ws.Root], []), dotnetExe, "--info",
+                o => o.Contains("SDK"));
+            attempts.Add($"W2 dotnet-ws-only: ran={w2.Ran} {w2.Detail}");
+            if (w2.Ran) { sdkListed = true; }
+            if (!sdkListed)
+            {
+                var w3 = await TryVariant("c",
+                    new("0.1.0", true, [ws.Root], [dotnetDir]), dotnetExe, "--info",
+                    o => o.Contains("SDK"));
+                attempts.Add($"W3 dotnet-ro-dotnetdir: ran={w3.Ran} {w3.Detail}");
+                if (w3.Ran) { sdkListed = true; }
+            }
+            if (!sdkListed)
+            {
+                var w4 = await TryVariant("d",
+                    new("0.1.0", true, [ws.Root], [dotnetDir, system32]), dotnetExe, "--info",
+                    o => o.Contains("SDK"));
+                attempts.Add($"W4 dotnet-full-closure: ran={w4.Ran} {w4.Detail}");
+                if (w4.Ran) { sdkListed = true; }
+            }
+            string prof = string.Join("+", new[] { "a", "b", "c", "d" }
+                .Select(s => SweepProfile(idDotnet + s)));
+            bool wsOk = ws.DisposeAndReport() == "Confirmed" && !Directory.Exists(ws.Root);
+            bool profOk = prof.Split('+').All(p =>
+                p.StartsWith("deleted(") || p.StartsWith("deleted-never-materialized("));
+            cleanups.Add(("dotnet", new(profOk, true, prof, wsOk)));
+            return sdkListed
+                ? (true, $"dotnet --info ran, SDK listed; {string.Join(" | ", attempts)} profile={prof}", (string?)null)
+                : (false, $"{string.Join(" | ", attempts)} profile={prof}", (string?)null);
+        });
+
         // ---- L1-CLEANUP (aggregate proof) ----
         await RunCase(collector, "L1-CLEANUP", () =>
         {
             var notes = cleanups.Select(c =>
                 $"{c.Leg}:reaped={c.Cleanup.ChildReaped}/profile={c.Cleanup.ProfileDisposition}/ws={c.Cleanup.WorkspaceDeleted}");
-            bool all = cleanups.Count == 9 && cleanups.All(c =>
+            bool all = cleanups.Count == 12 && cleanups.All(c =>
                 c.Cleanup.ChildReaped
                 && (c.Cleanup.ProfileDisposition.StartsWith("deleted(")
                     || c.Cleanup.ProfileDisposition.StartsWith("deleted-never-materialized("))
@@ -612,16 +817,17 @@ internal static class LaunchStaircase
         Func<IntPtr, Task>? onRunning = null,
         IntPtr hStdOut = default,
         IntPtr hStdErr = default,
-        IntPtr hStdIn = default)
+        IntPtr hStdIn = default,
+        string? exePath = null)
     {
         await Task.Yield();
         byte[] specBytes;
         try { specBytes = SpecBuilder.BuildVerified(spec); }
         catch (Exception ex) { return new(false, $"spec gate refused: {ex.Message}", true); }
 
-        string cmdExe = Path.Combine(Environment.SystemDirectory, "cmd.exe");
+        string exe = exePath ?? Path.Combine(Environment.SystemDirectory, "cmd.exe");
         var commandLine = new StringBuilder(32768);
-        commandLine.Append('"').Append(cmdExe).Append("\" ").Append(targetArgs);
+        commandLine.Append('"').Append(exe).Append("\" ").Append(targetArgs);
         var si = new StartupInfo { cb = Marshal.SizeOf<StartupInfo>() };
         if (hStdOut != IntPtr.Zero || hStdErr != IntPtr.Zero || hStdIn != IntPtr.Zero)
         {
@@ -638,7 +844,7 @@ internal static class LaunchStaircase
         try
         {
             apiResult = Native.Experimental_CreateProcessInSandbox(
-                cmdExe, commandLine, IntPtr.Zero, IntPtr.Zero, false,
+                exe, commandLine, IntPtr.Zero, IntPtr.Zero, false,
                 0, IntPtr.Zero, cwd, ref si, identity,
                 specBytes, (uint)specBytes.Length, out ProcessInformation pi);
             lastError = Marshal.GetLastWin32Error();
@@ -692,10 +898,112 @@ internal static class LaunchStaircase
         return new(true, verdict + $" exit={exitCode} job={inJob} ({sw.ElapsedMilliseconds}ms)", true);
     }
 
+    /// <summary>
+    /// Launch with anonymous-pipe stdout/stderr capture. The proven transport:
+    /// pipes are accepted where file handles were rejected.
+    /// </summary>
+    private static async Task<(bool Ok, string Detail, string Stdout, string Stderr)> RunPipedAsync(
+        string identity,
+        SandboxSpecRequest spec,
+        string? exePath,
+        string targetArgs,
+        string cwd,
+        uint? expectedExit)
+    {
+        var sa = new Native.SecurityAttributes
+        {
+            nLength = Marshal.SizeOf<Native.SecurityAttributes>(),
+            lpSecurityDescriptor = IntPtr.Zero,
+            bInheritHandle = true,
+        };
+        IntPtr hRead = IntPtr.Zero, hWrite = IntPtr.Zero;
+        IntPtr eRead = IntPtr.Zero, eWrite = IntPtr.Zero;
+        bool writesClosed = false, readTransferred = false, errTransferred = false;
+        try
+        {
+            if (!Native.CreatePipe(out hRead, out hWrite, ref sa, 65536)
+                || !Native.CreatePipe(out eRead, out eWrite, ref sa, 65536))
+                return (false, $"CreatePipe failed err={Marshal.GetLastWin32Error()}", string.Empty, string.Empty);
+            var r = await LaunchLeg(identity, spec, targetArgs, cwd, expectedExit, null,
+                exePath: exePath,
+                onRunning: h =>
+                {
+                    try { Native.CloseHandle(hWrite); } catch { }
+                    try { Native.CloseHandle(eWrite); } catch { }
+                    writesClosed = true;
+                    return Task.CompletedTask;
+                },
+                hStdOut: hWrite, hStdErr: eWrite);
+            string capturedOut = string.Empty, capturedErr = string.Empty;
+            if (r.Ok)
+            {
+                using var rs = new FileStream(
+                    new Microsoft.Win32.SafeHandles.SafeFileHandle(hRead, ownsHandle: true),
+                    FileAccess.Read);
+                readTransferred = true;
+                using var es = new FileStream(
+                    new Microsoft.Win32.SafeHandles.SafeFileHandle(eRead, ownsHandle: true),
+                    FileAccess.Read);
+                errTransferred = true;
+                capturedOut = await ReadBoundedAsync(rs, 1 << 20, TimeSpan.FromSeconds(10));
+                capturedErr = await ReadBoundedAsync(es, 1 << 20, TimeSpan.FromSeconds(10));
+            }
+            return (r.Ok, r.Detail, capturedOut, capturedErr);
+        }
+        finally
+        {
+            if (!writesClosed)
+            {
+                if (hWrite != IntPtr.Zero) { try { Native.CloseHandle(hWrite); } catch { } }
+                if (eWrite != IntPtr.Zero) { try { Native.CloseHandle(eWrite); } catch { } }
+            }
+            if (!readTransferred && hRead != IntPtr.Zero) { try { Native.CloseHandle(hRead); } catch { } }
+            if (!errTransferred && eRead != IntPtr.Zero) { try { Native.CloseHandle(eRead); } catch { } }
+        }
+    }
+
     private static void CloseBoth(IntPtr hProcess, IntPtr hThread)
     {
         try { if (hProcess != IntPtr.Zero) Native.CloseHandle(hProcess); } catch { }
         try { if (hThread != IntPtr.Zero) Native.CloseHandle(hThread); } catch { }
+    }
+
+    /// <summary>
+    /// Launch without waiting: returns the live process handle + PID for
+    /// supervisor tests. Caller owns the handle and must terminate + close it.
+    /// </summary>
+    private static (bool Ok, string Detail, IntPtr Handle, uint Pid) LaunchNoWait(
+        string identity,
+        SandboxSpecRequest spec,
+        string targetArgs,
+        string cwd)
+    {
+        byte[] specBytes;
+        try { specBytes = SpecBuilder.BuildVerified(spec); }
+        catch (Exception ex) { return (false, $"spec gate refused: {ex.Message}", IntPtr.Zero, 0); }
+
+        string cmdExe = Path.Combine(Environment.SystemDirectory, "cmd.exe");
+        var commandLine = new StringBuilder(32768);
+        commandLine.Append('"').Append(cmdExe).Append("\" ").Append(targetArgs);
+        var si = new StartupInfo { cb = Marshal.SizeOf<StartupInfo>() };
+        try
+        {
+            bool apiResult = Native.Experimental_CreateProcessInSandbox(
+                cmdExe, commandLine, IntPtr.Zero, IntPtr.Zero, false,
+                0, IntPtr.Zero, cwd, ref si, identity,
+                specBytes, (uint)specBytes.Length, out ProcessInformation pi);
+            int lastError = Marshal.GetLastWin32Error();
+            if (!apiResult)
+                return (false, $"api=False err=0x{lastError:X}({MapError(lastError)}) (no target ran)",
+                    IntPtr.Zero, 0);
+            try { Native.CloseHandle(pi.hThread); } catch { }
+            uint pid = Native.GetProcessId(pi.hProcess);
+            return (true, $"api=True pid={pid} spec={specBytes.Length}B", pi.hProcess, pid);
+        }
+        catch (Exception ex)
+        {
+            return (false, $"invocation fault: {ex.GetType().Name}: {ex.Message}", IntPtr.Zero, 0);
+        }
     }
 
     private static string SweepProfile(string identity)
@@ -774,10 +1082,28 @@ internal static class LaunchStaircase
         while (sw.Elapsed < budget)
         {
             try { return await File.ReadAllTextAsync(path); }
+            // NotFound: not written yet. IOException: transient lock (fresh file
+            // briefly held by AV/indexer or a concurrent writer) — keep polling.
             catch (FileNotFoundException) { await Task.Delay(150); }
             catch (DirectoryNotFoundException) { await Task.Delay(150); }
+            catch (IOException) { await Task.Delay(150); }
         }
         try { return await File.ReadAllTextAsync(path); } catch { return null; }
+    }
+
+    private static async Task<string> ReadBoundedAsync(Stream stream, int maxBytes, TimeSpan budget)
+    {
+        using var cts = new CancellationTokenSource(budget);
+        var data = new MemoryStream();
+        byte[] buffer = new byte[8192];
+        try
+        {
+            int n;
+            while (data.Length < maxBytes && (n = await stream.ReadAsync(buffer, cts.Token)) > 0)
+                data.Write(buffer, 0, Math.Min(n, maxBytes - (int)data.Length));
+        }
+        catch (OperationCanceledException) { /* deadline: return what we have */ }
+        return Encoding.ASCII.GetString(data.ToArray());
     }
 
     private static async Task RunCase(EvidenceCollector collector, string id,

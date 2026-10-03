@@ -6,10 +6,12 @@ using System.Text;
 
 namespace Gagamba.Spikes.Gw1bLaunch;
 
-internal sealed record DirectResult(bool Exited, int ExitCode, string Detail);
+internal sealed record DirectResult(bool Exited, int ExitCode, string Detail, string Stdout);
 
 internal static class ControlRunner
 {
+    public const int MaxStdoutChars = 65536;
+
     /// <summary>Runs a fixture command unsandboxed with bounded capture.</summary>
     public static async Task<DirectResult> Run(string exe, string args, string cwd, int timeoutMs = 30_000)
     {
@@ -25,7 +27,7 @@ internal static class ControlRunner
         };
         using var proc = Process.Start(psi);
         if (proc is null)
-            return new(false, -1, "control start returned null");
+            return new(false, -1, "control start returned null", string.Empty);
         var sw = Stopwatch.StartNew();
         string stdout, stderr;
         try
@@ -37,19 +39,26 @@ internal static class ControlRunner
             if (!exited)
             {
                 try { proc.Kill(entireProcessTree: true); } catch { }
-                return new(false, -1, "control timed out and was killed");
+                return new(false, -1, "control timed out and was killed", string.Empty);
             }
-            stdout = (await outTask).Trim();
-            stderr = (await errTask).Trim();
+            stdout = await outTask;
+            stderr = await errTask;
+            if (stdout.Length > MaxStdoutChars)
+                stdout = stdout[..MaxStdoutChars];
         }
         catch (Exception ex)
         {
-            return new(false, -1, $"control capture fault: {ex.GetType().Name}");
+            return new(false, -1, $"control capture fault: {ex.GetType().Name}", string.Empty);
         }
         sw.Stop();
+        string shortOut = stdout.Trim();
         var detail = new StringBuilder($"exit={proc.ExitCode} ({sw.ElapsedMilliseconds}ms)");
-        if (stdout.Length > 0) detail.Append($" out='{stdout[..Math.Min(80, stdout.Length)]}'");
-        if (stderr.Length > 0) detail.Append($" err='{stderr[..Math.Min(80, stderr.Length)]}'");
-        return new(true, proc.ExitCode, detail.ToString());
+        if (shortOut.Length > 0) detail.Append($" out='{shortOut[..Math.Min(80, shortOut.Length)]}'");
+        if (stderr.Length > 0)
+        {
+            string shortErr = stderr.Trim();
+            detail.Append($" err='{shortErr[..Math.Min(80, shortErr.Length)]}'");
+        }
+        return new(true, proc.ExitCode, detail.ToString(), stdout);
     }
 }
