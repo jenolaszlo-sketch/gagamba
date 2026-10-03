@@ -34,6 +34,23 @@ public static class ProbeManifest
     };
 }
 
+public static class LaunchManifest
+{
+    public const int Version = 1;
+
+    // Trusted mandatory IDs for GW-1B minimal-launch work: schema pin, verified
+    // spec build, launch staircase with I/O effect, and cleanup proof.
+    public static readonly IReadOnlyList<string> MandatoryIds = new[]
+    {
+        "L1-SCHEMA-PIN",
+        "L1-SPEC-BUILD",
+        "L1-BARE-LAUNCH",
+        "L1-APPCONTAINER-LAUNCH",
+        "L1-FS-GRANT-EFFECT",
+        "L1-CLEANUP",
+    };
+}
+
 public static class FixtureManifest
 {
     public const int Version = 2;
@@ -160,7 +177,10 @@ public sealed record EvidenceReport(
 
 public static class EvidenceValidator
 {
-    public static List<string> Validate(EvidenceReport report)
+    public static List<string> Validate(EvidenceReport report) =>
+        Validate(report, mandatoryOverride: null);
+
+    public static List<string> Validate(EvidenceReport report, IReadOnlyList<string>? mandatoryOverride)
     {
         var errors = new List<string>();
         if (report.SchemaVersion != 1)
@@ -221,13 +241,12 @@ public static class EvidenceValidator
                  && (report.Profile.RequestedHash is not null || report.Profile.PreparedHash is not null))
             errors.Add($"{report.EvidenceKind} must not invent requested/prepared hashes");
 
-        // Mandatory IDs are per evidence kind: fixture runs prove fixtures,
-        // probes answer availability. Informational probe legs (e.g. gated
-        // launch) may be NotRun without failing the aggregate.
-        IReadOnlyList<string> mandatory =
-            string.Equals(report.EvidenceKind, EvidenceKinds.CapabilityProbe, StringComparison.Ordinal)
+        // Mandatory IDs are per evidence kind (historical reports stay valid
+        // under the manifest they were built against; callers may override).
+        IReadOnlyList<string> mandatory = mandatoryOverride
+            ?? (string.Equals(report.EvidenceKind, EvidenceKinds.CapabilityProbe, StringComparison.Ordinal)
                 ? ProbeManifest.MandatoryIds
-                : FixtureManifest.MandatoryIds;
+                : FixtureManifest.MandatoryIds);
 
         if (report.Cases.Count == 0)
             errors.Add("cases must not be empty");
@@ -297,17 +316,20 @@ public sealed class EvidenceCollector
     private readonly string _repoRoot;
     private readonly List<string> _manifestExtraDirs;
     private readonly List<string> _manifestExtraFiles;
+    private readonly IReadOnlyList<string>? _mandatoryOverride;
 
     public EvidenceCollector(
         string repoRoot,
         string evidenceKind = EvidenceKinds.FixtureSelfTest,
         IEnumerable<string>? manifestExtraDirs = null,
-        IEnumerable<string>? manifestExtraFiles = null)
+        IEnumerable<string>? manifestExtraFiles = null,
+        IReadOnlyList<string>? mandatoryOverride = null)
     {
         _repoRoot = repoRoot;
         _evidenceKind = evidenceKind;
         _manifestExtraDirs = manifestExtraDirs is null ? [] : new List<string>(manifestExtraDirs);
         _manifestExtraFiles = manifestExtraFiles is null ? [] : new List<string>(manifestExtraFiles);
+        _mandatoryOverride = mandatoryOverride;
         _runId = $"{DateTime.UtcNow:yyyyMMdd-HHmmss}-{Guid.NewGuid():N}"[..24];
     }
 
@@ -337,10 +359,10 @@ public sealed class EvidenceCollector
         int failed = _cases.Count(c => c.Outcome == CaseOutcomes.Failed);
         int unsupported = _cases.Count(c => c.Outcome == CaseOutcomes.Unsupported);
         int notRun = _cases.Count(c => c.Outcome == CaseOutcomes.NotRun);
-        IReadOnlyList<string> mandatory =
-            string.Equals(_evidenceKind, EvidenceKinds.CapabilityProbe, StringComparison.Ordinal)
+        IReadOnlyList<string> mandatory = _mandatoryOverride
+            ?? (string.Equals(_evidenceKind, EvidenceKinds.CapabilityProbe, StringComparison.Ordinal)
                 ? ProbeManifest.MandatoryIds
-                : FixtureManifest.MandatoryIds;
+                : FixtureManifest.MandatoryIds);
         bool mandatoryComplete = mandatory.All(id =>
             _cases.Any(c => c.Id == id && c.Outcome == CaseOutcomes.Passed));
         string aggregate = (failed == 0 && mandatoryComplete && passed > 0 && cleanupStatus == "Confirmed")
@@ -398,6 +420,8 @@ public static class SourceCollector
             foreach (string f in Directory.GetFiles(full, "*.cs", SearchOption.AllDirectories))
                 files.Add(f);
             foreach (string f in Directory.GetFiles(full, "*.csproj", SearchOption.AllDirectories))
+                files.Add(f);
+            foreach (string f in Directory.GetFiles(full, "*.fbs", SearchOption.AllDirectories))
                 files.Add(f);
         }
         foreach (string pattern in extraFiles ?? [])
