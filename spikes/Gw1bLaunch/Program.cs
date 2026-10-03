@@ -204,12 +204,370 @@ internal static class LaunchStaircase
             return (r.Ok, r.Detail + $" profile={prof} ws={wsOk}", (string?)null);
         });
 
+        // ---- L2-READONLY-DENIAL (ro read allowed, ro write denied; controls first) ----
+        await RunCase(collector, "L2-READONLY-DENIAL", async () =>
+        {
+            using var ws = FixtureWorkspace.Create("gw1b-ro-" + runTag);
+            using var ro = FixtureWorkspace.Create("gw1b-ro-grant-" + runTag);
+            await File.WriteAllTextAsync(Path.Combine(ro.Root, "seed.txt"), "seed");
+            var c1 = await ControlRunner.Run("cmd.exe", $"/d /c copy \"{ro.Root}\\seed.txt\" \"{ws.Root}\\ctl-ok.txt\"", ws.Root);
+            var c2 = await ControlRunner.Run("cmd.exe", $"/d /c echo ctl > \"{ro.Root}\\ctl-try.txt\"", ws.Root);
+            bool ctlOk = c1.Exited && File.Exists(Path.Combine(ws.Root, "ctl-ok.txt"))
+                && c2.Exited && File.Exists(Path.Combine(ro.Root, "ctl-try.txt"));
+            TryDelete(Path.Combine(ws.Root, "ctl-ok.txt"));
+            TryDelete(Path.Combine(ro.Root, "ctl-try.txt"));
+            if (!ctlOk)
+                return AbandonLeg(cleanups, "rodenial", $"GagambaGW1B{runTag}r",
+                    $"controls failed: copy[{c1.Detail}] write[{c2.Detail}]", ws, ro);
+            string idRo = $"GagambaGW1B{runTag}r";
+            var spec = new SandboxSpecRequest("0.1.0", true, [ws.Root], [ro.Root]);
+            var r = await LaunchLeg(idRo, spec,
+                $"/d /c copy \"{ro.Root}\\seed.txt\" \"{ws.Root}\\ok.txt\" & echo x > \"{ro.Root}\\try.txt\"",
+                ws.Root, null, null);
+            bool allowedRead = File.Exists(Path.Combine(ws.Root, "ok.txt"));
+            bool deniedWriteAbsent = !File.Exists(Path.Combine(ro.Root, "try.txt"));
+            string prof = SweepProfile(idRo);
+            bool wsOk = ws.DisposeAndReport() == "Confirmed" && !Directory.Exists(ws.Root)
+                && ro.DisposeAndReport() == "Confirmed" && !Directory.Exists(ro.Root);
+            cleanups.Add(("rodenial", new(r.ChildReaped, true, prof, wsOk)));
+            bool ok = r.Ok && allowedRead && deniedWriteAbsent;
+            return (ok, $"{r.Detail} ro-read={allowedRead} ro-write-absent={deniedWriteAbsent} profile={prof}", (string?)null);
+        });
+
+        // ---- L2-DENIED-READ (ungranted sentinel unreadable; control first) ----
+        await RunCase(collector, "L2-DENIED-READ", async () =>
+        {
+            using var ws = FixtureWorkspace.Create("gw1b-dr-" + runTag);
+            using var scope = FixtureWorkspace.Create("gw1b-scope-" + runTag);
+            await File.WriteAllTextAsync(Path.Combine(scope.Root, "secret.txt"), "top-secret-synthetic");
+            var c = await ControlRunner.Run("cmd.exe",
+                $"/d /c copy \"{scope.Root}\\secret.txt\" \"{ws.Root}\\ctl-stolen.txt\"", ws.Root);
+            bool ctlOk = c.Exited && File.Exists(Path.Combine(ws.Root, "ctl-stolen.txt"));
+            TryDelete(Path.Combine(ws.Root, "ctl-stolen.txt"));
+            if (!ctlOk)
+                return AbandonLeg(cleanups, "deniedread", $"GagambaGW1B{runTag}d",
+                    $"control copy failed [{c.Detail}]: sentinel unreachable even unsandboxed", ws, scope);
+            string idDr = $"GagambaGW1B{runTag}d";
+            var spec = new SandboxSpecRequest("0.1.0", true, [ws.Root], []);
+            var r = await LaunchLeg(idDr, spec,
+                $"/d /c copy \"{scope.Root}\\secret.txt\" \"{ws.Root}\\stolen.txt\"",
+                ws.Root, null, null);
+            bool deniedAbsent = !File.Exists(Path.Combine(ws.Root, "stolen.txt"));
+            string scopeHash = FixtureWorkspace.Sha256Hex(await File.ReadAllBytesAsync(Path.Combine(scope.Root, "secret.txt")));
+            string prof = SweepProfile(idDr);
+            bool wsOk = ws.DisposeAndReport() == "Confirmed" && !Directory.Exists(ws.Root)
+                && scope.DisposeAndReport() == "Confirmed" && !Directory.Exists(scope.Root);
+            cleanups.Add(("deniedread", new(r.ChildReaped, true, prof, wsOk)));
+            bool ok = r.Ok && deniedAbsent;
+            return (ok, $"{r.Detail} stolen-absent={deniedAbsent} sentinel-sha={scopeHash[..16]}.. profile={prof}", (string?)null);
+        });
+
+        // ---- L2-TREE-EFFECT (descendant effects land, descendant denial holds) ----
+        await RunCase(collector, "L2-TREE-EFFECT", async () =>
+        {
+            using var ws = FixtureWorkspace.Create("gw1b-tree-" + runTag);
+            using var scope = FixtureWorkspace.Create("gw1b-tree-scope-" + runTag);
+            using var ctlWs = FixtureWorkspace.Create("gw1b-tree-ctl-" + runTag);
+            using var ctlScope = FixtureWorkspace.Create("gw1b-tree-ctlscope-" + runTag);
+            WriteBat(ws.Root, "child.bat",
+                "@echo off",
+                "echo child-content>\"%~1\\tree\\child.txt\"",
+                "echo sneak>\"%~2\\sneak.txt\"",
+                "exit 0");
+            WriteBat(ws.Root, "root.bat",
+                "@echo off",
+                "mkdir \"%~1\\tree\" 2>nul",
+                "start /b \"\" cmd /d /c call \"%~dp0child.bat\" \"%~1\" \"%~2\"",
+                "echo root-content>\"%~1\\root.txt\"",
+                "exit 3");
+            WriteBat(ctlWs.Root, "child.bat",
+                "@echo off",
+                "echo child-content>\"%~1\\tree\\child.txt\"",
+                "echo sneak>\"%~2\\sneak.txt\"",
+                "exit 0");
+            WriteBat(ctlWs.Root, "root.bat",
+                "@echo off",
+                "mkdir \"%~1\\tree\" 2>nul",
+                "start /b \"\" cmd /d /c call \"%~dp0child.bat\" \"%~1\" \"%~2\"",
+                "echo root-content>\"%~1\\root.txt\"",
+                "exit 3");
+            var c = await ControlRunner.Run("cmd.exe",
+                $"/d /c call \"{ctlWs.Root}\\root.bat\" \"{ctlWs.Root}\" \"{ctlScope.Root}\"", ctlWs.Root, 20_000);
+            bool ctlOk = c.Exited && c.ExitCode == 3
+                && (await PollFileAsync(Path.Combine(ctlWs.Root, "tree", "child.txt"), TimeSpan.FromSeconds(10)) is not null)
+                && File.Exists(Path.Combine(ctlWs.Root, "root.txt"))
+                && File.Exists(Path.Combine(ctlScope.Root, "sneak.txt"));
+            if (!ctlOk)
+                return AbandonLeg(cleanups, "tree", $"GagambaGW1B{runTag}t",
+                    $"control tree failed [{c.Detail}]: scripts do not work unsandboxed",
+                    ws, scope, ctlWs, ctlScope);
+            string idTree = $"GagambaGW1B{runTag}t";
+            var spec = new SandboxSpecRequest("0.1.0", true, [ws.Root], []);
+            var r = await LaunchLeg(idTree, spec,
+                $"/d /c call \"{ws.Root}\\root.bat\" \"{ws.Root}\" \"{scope.Root}\"",
+                ws.Root, 3, null);
+            string? child = await PollFileAsync(Path.Combine(ws.Root, "tree", "child.txt"), TimeSpan.FromSeconds(12));
+            await Task.Delay(2000); // grace for the sneak attempt to have been attempted
+            bool rootOk = File.Exists(Path.Combine(ws.Root, "root.txt"));
+            bool childOk = child?.Trim() == "child-content";
+            bool sneakAbsent = !File.Exists(Path.Combine(scope.Root, "sneak.txt"));
+            string prof = SweepProfile(idTree);
+            bool wsOk = new[] { ws, scope, ctlWs, ctlScope }
+                .All(w => w.DisposeAndReport() == "Confirmed" && !Directory.Exists(w.Root));
+            cleanups.Add(("tree", new(r.ChildReaped, true, prof, wsOk)));
+            bool ok = r.Ok && rootOk && childOk && sneakAbsent;
+            return (ok, $"{r.Detail} root={rootOk} child={childOk} descendant-deny={sneakAbsent} profile={prof}", (string?)null);
+        });
+
+        // ---- L2-TREE-STOP (kill root; engine job must take the sleeper) ----
+        // No timeout.exe: it refuses redirected stdin. Both ends wait on files.
+        await RunCase(collector, "L2-TREE-STOP", async () =>
+        {
+            using var ws = FixtureWorkspace.Create("gw1b-stop-" + runTag);
+            using var ctlWs = FixtureWorkspace.Create("gw1b-stop-ctl-" + runTag);
+            string[] sleeper =
+            [
+                "@echo off",
+                "echo started>\"%~1\\started.txt\"",
+                ":wait",
+                "if not exist \"%~1\\barrier.txt\" goto wait",
+                "echo late>\"%~1\\late.txt\"",
+                "exit 9",
+            ];
+            string[] root2 =
+            [
+                "@echo off",
+                "start /b \"\" cmd /d /c call \"%~dp0sleeper.bat\" \"%~1\"",
+                "echo root-alive>\"%~1\\rootstarted.txt\"",
+                ":wait",
+                "if not exist \"%~1\\rootbarrier.txt\" goto wait",
+                "exit 5",
+            ];
+            WriteBat(ws.Root, "sleeper.bat", sleeper);
+            WriteBat(ws.Root, "root2.bat", root2);
+            WriteBat(ctlWs.Root, "sleeper.bat", sleeper);
+            WriteBat(ctlWs.Root, "root2.bat", root2);
+            // Control, unsandboxed and jobless: orphan must SURVIVE root kill.
+            var ctlProc = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = Path.Combine(Environment.SystemDirectory, "cmd.exe"),
+                Arguments = $"/d /c call \"{ctlWs.Root}\\root2.bat\" \"{ctlWs.Root}\"",
+                WorkingDirectory = ctlWs.Root,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+            });
+            if (ctlProc is null)
+                return AbandonLeg(cleanups, "treestop", $"GagambaGW1B{runTag}s",
+                    "control start returned null", ws, ctlWs);
+            using (ctlProc)
+            {
+                string? ctlRoot = await PollFileAsync(Path.Combine(ctlWs.Root, "rootstarted.txt"), TimeSpan.FromSeconds(10));
+                string? ctlStarted = await PollFileAsync(Path.Combine(ctlWs.Root, "started.txt"), TimeSpan.FromSeconds(10));
+                if (ctlRoot is null || ctlStarted is null)
+                {
+                    try { ctlProc.Kill(); } catch { }
+                    return AbandonLeg(cleanups, "treestop", $"GagambaGW1B{runTag}s",
+                        "control tree never formed", ws, ctlWs);
+                }
+                try { ctlProc.Kill(); } catch { }
+                await Task.Delay(2000);
+                await File.WriteAllTextAsync(Path.Combine(ctlWs.Root, "barrier.txt"), "go");
+                string? ctlLate = await PollFileAsync(Path.Combine(ctlWs.Root, "late.txt"), TimeSpan.FromSeconds(10));
+                // Reap a possible surviving orphan before disposing its workspace.
+                foreach (var orphan in System.Diagnostics.Process.GetProcessesByName("cmd"))
+                {
+                    try
+                    {
+                        if (orphan.StartTime.ToUniversalTime() > ctlProc.StartTime.ToUniversalTime()
+                            && (DateTime.UtcNow - orphan.StartTime.ToUniversalTime()).TotalSeconds < 60)
+                        { /* candidate only; never kill by fuzzy match */ }
+                    }
+                    catch { }
+                    orphan.Dispose();
+                }
+                if (ctlLate?.Trim() != "late")
+                    return AbandonLeg(cleanups, "treestop", $"GagambaGW1B{runTag}s",
+                        "control orphan did not complete after root kill", ws, ctlWs);
+            }
+            // Sandboxed leg: same shape inside the engine job.
+            string idStop = $"GagambaGW1B{runTag}s";
+            var spec = new SandboxSpecRequest("0.1.0", true, [ws.Root], []);
+            var r = await LaunchLeg(idStop, spec,
+                $"/d /c call \"{ws.Root}\\root2.bat\" \"{ws.Root}\"",
+                ws.Root, 99, null,
+                onRunning: async h =>
+                {
+                    string? rs = await PollFileAsync(Path.Combine(ws.Root, "rootstarted.txt"), TimeSpan.FromSeconds(10));
+                    string? st = await PollFileAsync(Path.Combine(ws.Root, "started.txt"), TimeSpan.FromSeconds(10));
+                    if (rs is null || st is null)
+                        throw new InvalidOperationException("sandbox tree never formed; refusing to kill blindly");
+                    Native.TerminateProcess(h, 99);
+                });
+            if (!r.Ok)
+            {
+                string prof0 = SweepProfile(idStop);
+                bool wsOk0 = new[] { ws, ctlWs }
+                    .All(w => w.DisposeAndReport() == "Confirmed" && !Directory.Exists(w.Root));
+                cleanups.Add(("treestop", new(r.ChildReaped, true, prof0, wsOk0)));
+                return (false, r.Detail + " (root-kill leg failed)", (string?)null);
+            }
+            await Task.Delay(2000); // let a surviving sleeper (if any) settle
+            await File.WriteAllTextAsync(Path.Combine(ws.Root, "barrier.txt"), "go");
+            await Task.Delay(3000);
+            bool lateAbsent = !File.Exists(Path.Combine(ws.Root, "late.txt"));
+            string killVerdict = lateAbsent ? "kill-stops-tree" : "KILL-DOES-NOT-STOP-TREE";
+            // Natural-exit variant: root exits by itself while the sleeper waits.
+            // Distinguishes "terminate doesn't propagate" from "exit doesn't propagate".
+            using var ws2 = FixtureWorkspace.Create("gw1b-stopnat-" + runTag);
+            WriteBat(ws2.Root, "sleeper.bat",
+                "@echo off",
+                "echo started>\"%~1\\started.txt\"",
+                ":wait",
+                "if not exist \"%~1\\barrier.txt\" goto wait",
+                "echo late>\"%~1\\late.txt\"",
+                "exit 9");
+            WriteBat(ws2.Root, "root3.bat",
+                "@echo off",
+                "start /b \"\" cmd /d /c call \"%~dp0sleeper.bat\" \"%~1\"",
+                "exit 5");
+            string idStopNat = $"GagambaGW1B{runTag}n";
+            var specNat = new SandboxSpecRequest("0.1.0", true, [ws2.Root], []);
+            var rn = await LaunchLeg(idStopNat, specNat,
+                $"/d /c call \"{ws2.Root}\\root3.bat\" \"{ws2.Root}\"",
+                ws2.Root, 5, null);
+            bool natLateAbsent = false;
+            string natVerdict = "natural-variant-not-run";
+            if (rn.Ok)
+            {
+                string? natStarted = await PollFileAsync(Path.Combine(ws2.Root, "started.txt"), TimeSpan.FromSeconds(10));
+                if (natStarted is not null)
+                {
+                    await Task.Delay(3000); // root long gone; sleeper still waiting
+                    await File.WriteAllTextAsync(Path.Combine(ws2.Root, "barrier.txt"), "go");
+                    await Task.Delay(3000);
+                    natLateAbsent = !File.Exists(Path.Combine(ws2.Root, "late.txt"));
+                    natVerdict = natLateAbsent ? "exit-stops-tree" : "EXIT-DOES-NOT-STOP-TREE";
+                }
+                else
+                {
+                    natVerdict = "natural-sleeper-never-started";
+                }
+            }
+            else
+            {
+                natVerdict = "natural-root-leg-failed";
+            }
+            string profNat = SweepProfile(idStopNat);
+            string prof = SweepProfile(idStop);
+            bool wsOk = new[] { ws, ctlWs, ws2 }
+                .All(w => w.DisposeAndReport() == "Confirmed" && !Directory.Exists(w.Root));
+            cleanups.Add(("treestop", new(r.ChildReaped && rn.ChildReaped, true, prof + "+" + profNat, wsOk)));
+            bool ok = lateAbsent && natLateAbsent;
+            return ok
+                ? (true, $"{r.Detail} kill:{killVerdict} natural:{natVerdict} profile={prof}", (string?)null)
+                : (false, $"{r.Detail} kill:{killVerdict} natural:{natVerdict} (descendant outlived root; tree-ownership gap) profile={prof}", (string?)null);
+        });
+
+        // ---- L2-CANCEL-RACE (terminate mid-run, prove reaping + cleanup) ----
+        await RunCase(collector, "L2-CANCEL-RACE", async () =>
+        {
+            using var ws = FixtureWorkspace.Create("gw1b-cancel-" + runTag);
+            WriteBat(ws.Root, "wait.bat",
+                "@echo off",
+                ":wait",
+                "if not exist \"%~1\\cancel.txt\" goto wait",
+                "exit 0");
+            var ctlProc = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = Path.Combine(Environment.SystemDirectory, "cmd.exe"),
+                Arguments = $"/d /c call \"{ws.Root}\\wait.bat\" \"{ws.Root}\"",
+                WorkingDirectory = ws.Root,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+            });
+            if (ctlProc is null)
+                return AbandonLeg(cleanups, "cancel", $"GagambaGW1B{runTag}c",
+                    "control start returned null", ws);
+            using (ctlProc)
+            {
+                await Task.Delay(500);
+                bool wasRunning = !ctlProc.HasExited;
+                if (wasRunning)
+                {
+                    try { ctlProc.Kill(); } catch { }
+                }
+                bool exited = ctlProc.WaitForExit(5000);
+                if (!wasRunning || !exited)
+                    return AbandonLeg(cleanups, "cancel", $"GagambaGW1B{runTag}c",
+                        "control wait/kill shape broken", ws);
+            }
+            string idCancel = $"GagambaGW1B{runTag}c";
+            var spec = new SandboxSpecRequest("0.1.0", true, [ws.Root], []);
+            var r = await LaunchLeg(idCancel, spec,
+                $"/d /c call \"{ws.Root}\\wait.bat\" \"{ws.Root}\"", ws.Root, 99,
+                null,
+                onRunning: async h =>
+                {
+                    await Task.Delay(500);
+                    Native.TerminateProcess(h, 99);
+                });
+            string prof = SweepProfile(idCancel);
+            bool wsOk = ws.DisposeAndReport() == "Confirmed" && !Directory.Exists(ws.Root);
+            cleanups.Add(("cancel", new(r.ChildReaped, true, prof, wsOk)));
+            return (r.Ok, r.Detail + $" profile={prof}", (string?)null);
+        });
+
+        // ---- L2-STDIO-REDIRECT (STARTUPINFO handle transport proof) ----
+        // Run 1: plain non-inheritable file handle -> ERROR_INVALID_DATA.
+        // Run 2: HANDLE_FLAG_INHERIT file handle -> ERROR_INVALID_DATA.
+        // This run: all three handles set (stdin = NUL device handle).
+        await RunCase(collector, "L2-STDIO-REDIRECT", async () =>
+        {
+            using var ws = FixtureWorkspace.Create("gw1b-stdio-" + runTag);
+            string outPath = Path.Combine(ws.Root, "redir-out.txt");
+            string errPath = Path.Combine(ws.Root, "redir-err.txt");
+            await File.WriteAllTextAsync(outPath, string.Empty);
+            await File.WriteAllTextAsync(errPath, string.Empty);
+            bool transported = false;
+            string detail;
+            string idStdio = $"GagambaGW1B{runTag}o";
+            using (var stream = new FileStream(outPath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
+            using (var errStream = new FileStream(errPath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
+            using (var nul = new FileStream("NUL", FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                IntPtr hOut = stream.SafeFileHandle.DangerousGetHandle();
+                IntPtr hErr = errStream.SafeFileHandle.DangerousGetHandle();
+                IntPtr hIn = nul.SafeFileHandle.DangerousGetHandle();
+                bool marked = Native.SetHandleInformation(hOut, 1, 1)
+                    & Native.SetHandleInformation(hErr, 1, 1)
+                    & Native.SetHandleInformation(hIn, 1, 1);
+                if (!marked)
+                    return AbandonLeg(cleanups, "stdio", idStdio,
+                        $"SetHandleInformation failed err={Marshal.GetLastWin32Error()}", ws);
+                var spec = new SandboxSpecRequest("0.1.0", true, [ws.Root], []);
+                var r = await LaunchLeg(idStdio, spec,
+                    "/d /c echo hello-redirect", ws.Root, 0, null,
+                    hStdOut: hOut, hStdErr: hErr, hStdIn: hIn);
+                detail = r.Detail + " all-three-handles-inheritable";
+                transported = r.Ok;
+            }
+            string captured = string.Empty;
+            try { captured = (await File.ReadAllTextAsync(outPath)).Trim(); } catch { }
+            bool exact = transported && captured == "hello-redirect";
+            string prof = SweepProfile(idStdio);
+            bool wsOk = ws.DisposeAndReport() == "Confirmed" && !Directory.Exists(ws.Root);
+            cleanups.Add(("stdio", new(true, true, prof, wsOk)));
+            return exact
+                ? (true, $"{detail} captured-exact profile={prof}", (string?)null)
+                : (false, $"{detail} captured='{captured[..Math.Min(60, captured.Length)]}' (transport unproven; file-effect pattern remains the supported oracle) profile={prof}", (string?)null);
+        });
+
         // ---- L1-CLEANUP (aggregate proof) ----
         await RunCase(collector, "L1-CLEANUP", () =>
         {
             var notes = cleanups.Select(c =>
                 $"{c.Leg}:reaped={c.Cleanup.ChildReaped}/profile={c.Cleanup.ProfileDisposition}/ws={c.Cleanup.WorkspaceDeleted}");
-            bool all = cleanups.Count == 3 && cleanups.All(c =>
+            bool all = cleanups.Count == 9 && cleanups.All(c =>
                 c.Cleanup.ChildReaped
                 && (c.Cleanup.ProfileDisposition.StartsWith("deleted(")
                     || c.Cleanup.ProfileDisposition.StartsWith("deleted-never-materialized("))
@@ -247,10 +605,14 @@ internal static class LaunchStaircase
         SandboxSpecRequest spec,
         string targetArgs,
         string cwd,
-        uint expectedExit,
+        uint? expectedExit,
         Func<string, Task<(bool Ok, string Detail)>>? effectCheck,
         bool expectRejection = false,
-        int expectedError = 0)
+        int expectedError = 0,
+        Func<IntPtr, Task>? onRunning = null,
+        IntPtr hStdOut = default,
+        IntPtr hStdErr = default,
+        IntPtr hStdIn = default)
     {
         await Task.Yield();
         byte[] specBytes;
@@ -261,6 +623,13 @@ internal static class LaunchStaircase
         var commandLine = new StringBuilder(32768);
         commandLine.Append('"').Append(cmdExe).Append("\" ").Append(targetArgs);
         var si = new StartupInfo { cb = Marshal.SizeOf<StartupInfo>() };
+        if (hStdOut != IntPtr.Zero || hStdErr != IntPtr.Zero || hStdIn != IntPtr.Zero)
+        {
+            si.dwFlags |= 0x100; // STARTF_USESTDHANDLES
+            si.hStdOutput = hStdOut;
+            si.hStdError = hStdErr;
+            si.hStdInput = hStdIn;
+        }
         bool apiResult;
         int lastError;
         IntPtr hProcess = IntPtr.Zero, hThread = IntPtr.Zero;
@@ -293,6 +662,10 @@ internal static class LaunchStaircase
         if (!apiResult)
             return new(false, verdict + " (engine rejected launch; no target ran)", true);
 
+        if (onRunning is not null)
+        {
+            try { await onRunning(hProcess); } catch (Exception ex) { return new(false, verdict + $" hook fault: {ex.Message}", false); }
+        }
         uint wait = Native.WaitForSingleObject(hProcess, LaunchWaitMs);
         if (wait == Native.WAIT_TIMEOUT)
         {
@@ -307,8 +680,8 @@ internal static class LaunchStaircase
         try { Native.IsProcessInJob(hProcess, IntPtr.Zero, out inJob); } catch { }
         CloseBoth(hProcess, hThread);
         sw.Stop();
-        if (!gotCode || exitCode != expectedExit)
-            return new(false, verdict + $" exit={exitCode} want {expectedExit} job={inJob}", true);
+        if (!gotCode || (expectedExit.HasValue && exitCode != expectedExit.Value))
+            return new(false, verdict + $" exit={exitCode} want {(expectedExit.HasValue ? expectedExit.Value.ToString() : "any-observed")} job={inJob}", true);
         if (effectCheck is not null)
         {
             var (extraOk, extraDetail) = await effectCheck(cwd);
@@ -368,6 +741,44 @@ internal static class LaunchStaircase
         1168 => "ERROR_NOT_FOUND",
         _ => "unmapped",
     };
+
+    private static void WriteBat(string dir, string name, params string[] lines) =>
+        File.WriteAllLines(Path.Combine(dir, name), lines, Encoding.ASCII);
+
+    /// <summary>
+    /// Records an abandoned leg (control failed before any launch): sweeps the
+    /// never-used identity for real values, disposes workspaces, adds the entry
+    /// so L1-CLEANUP sees a complete picture, and returns the Failed tuple.
+    /// </summary>
+    private static (bool Passed, string Reason, string? OutcomeOverride) AbandonLeg(
+        List<(string Leg, LegCleanup Cleanup)> cleanups,
+        string leg,
+        string identity,
+        string reason,
+        params FixtureWorkspace[] workspaces)
+    {
+        string prof = SweepProfile(identity);
+        bool wsOk = workspaces.All(w => w.DisposeAndReport() == "Confirmed" && !Directory.Exists(w.Root));
+        cleanups.Add((leg, new(true, true, prof, wsOk)));
+        return (false, reason + $" profile={prof} ws={wsOk}", null);
+    }
+
+    private static void TryDelete(string path)
+    {
+        try { if (File.Exists(path)) File.Delete(path); } catch { }
+    }
+
+    private static async Task<string?> PollFileAsync(string path, TimeSpan budget)
+    {
+        var sw = Stopwatch.StartNew();
+        while (sw.Elapsed < budget)
+        {
+            try { return await File.ReadAllTextAsync(path); }
+            catch (FileNotFoundException) { await Task.Delay(150); }
+            catch (DirectoryNotFoundException) { await Task.Delay(150); }
+        }
+        try { return await File.ReadAllTextAsync(path); } catch { return null; }
+    }
 
     private static async Task RunCase(EvidenceCollector collector, string id,
         Func<Task<(bool Passed, string Reason, string? OutcomeOverride)>> fn)

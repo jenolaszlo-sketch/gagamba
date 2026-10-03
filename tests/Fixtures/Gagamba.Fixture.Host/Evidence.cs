@@ -36,10 +36,11 @@ public static class ProbeManifest
 
 public static class LaunchManifest
 {
-    public const int Version = 1;
+    public const int Version = 2;
 
-    // Trusted mandatory IDs for GW-1B minimal-launch work: schema pin, verified
-    // spec build, launch staircase with I/O effect, and cleanup proof.
+    // Trusted mandatory IDs for GW-1B launch work: slice 1 (schema pin,
+    // verified spec build, launch staircase with I/O effect, cleanup proof)
+    // plus slice 2 (denial with controls, tree effect/stop, races, transport).
     public static readonly IReadOnlyList<string> MandatoryIds = new[]
     {
         "L1-SCHEMA-PIN",
@@ -48,6 +49,12 @@ public static class LaunchManifest
         "L1-APPCONTAINER-LAUNCH",
         "L1-FS-GRANT-EFFECT",
         "L1-CLEANUP",
+        "L2-READONLY-DENIAL",
+        "L2-DENIED-READ",
+        "L2-TREE-EFFECT",
+        "L2-TREE-STOP",
+        "L2-CANCEL-RACE",
+        "L2-STDIO-REDIRECT",
     };
 }
 

@@ -81,6 +81,13 @@ internal static class Native
     public static extern bool IsProcessInJob(IntPtr hProcess, IntPtr hJob,
         [MarshalAs(UnmanagedType.Bool)] out bool result);
 
+    // Marks a handle inheritable. The engine duplicates STARTUPINFO std handles
+    // into the sandbox;/plain non-inheritable handles were rejected, so the
+    // transport leg sets HANDLE_FLAG_INHERIT (0x1) explicitly.
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool SetHandleInformation(IntPtr hObject, uint dwMask, uint dwFlags);
+
     // Removes the per-user AppContainer profile the engine created for a
     // disposable test identity. userenv.dll hosts the profile APIs.
     // Returns an HRESULT (0 = S_OK).
