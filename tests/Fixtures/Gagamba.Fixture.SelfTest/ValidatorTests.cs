@@ -147,3 +147,40 @@ public sealed class EvidenceValidatorTests
         finally { try { Directory.Delete(ws.Root, true); } catch { } }
     }
 }
+
+public sealed class TreeRunnerTests
+{
+    [Fact]
+    public void Sweep_Ignores_Reused_Pid_With_Wrong_Start_Time()
+    {
+        // Our own live process with a fabricated old start time must NOT be
+        // reported: PID reuse without creation-identity match is never ours.
+        using var ws = FixtureWorkspace.Create("tree-" + Guid.NewGuid().ToString("N"));
+        try
+        {
+            int me = Environment.ProcessId;
+            Directory.CreateDirectory(Path.Combine(ws.Root, "nodes"));
+            var fake = new System.Text.Json.Nodes.JsonObject
+            {
+                ["pid"] = me,
+                ["claimedPpid"] = -1,
+                ["depth"] = 0,
+                ["orphan"] = false,
+                ["runId"] = "unit",
+                ["workerId"] = "w-unit",
+                ["startedUtc"] = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc).ToString("O"),
+            };
+            File.WriteAllText(Path.Combine(ws.Root, "nodes", $"{me}.json"), fake.ToJsonString());
+            Assert.Empty(TreeRunner.CheckSurvivors(ws.Root));
+        }
+        finally { ws.DisposeAndReport(); try { Directory.Delete(ws.Root, true); } catch { } }
+    }
+
+    [Fact]
+    public void Manifest_V2_Covers_F3_Lifecycle()
+    {
+        Assert.Equal(2, FixtureManifest.Version);
+        foreach (string id in new[] { "F3-CHILD-GRANDCHILD", "F3-EARLY-EXIT", "F3-BARRIER", "F3-ORPHAN-STOP" })
+            Assert.Contains(id, FixtureManifest.MandatoryIds);
+    }
+}

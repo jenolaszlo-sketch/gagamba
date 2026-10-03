@@ -8,9 +8,9 @@ Updated 2026-10-03. Status definitions: Complete = stated artifact exists; Ready
 | PREP-2 | Complete | Local WSL/Docker inventory and three-platform test environment plan |
 | GP-0 | Complete — design baseline only | [offline-process-v1](security-model.md) defines permissions, assumptions and lifetime; empirical qualification remains open |
 | GP-1A | Complete 2026-10-03 | F1/F2 host/worker, protocol validation, positive controls, watchdog and evidence validator implemented; Release `eng/fixture-selftest.ps1` 16/16 harness + 13/13 unit Passed, cleanup Confirmed — see [GP-1A evidence](evidence/fixture-selftest-GP-1A.md). Proves fixtures only, not backend enforcement |
-| GP-1B | Ready — next | Add deterministic child/grandchild, early exit, barrier and ownership checks; pass worker self-tests |
-| GW-1A | Ready (availability/minimal-launch only) | Probe local Windows export/schema, minimal launch and captured I/O; no production-provider claim; containment/lifetime qualification still held on GP-1B |
-| GW-1B | Held on GP-1B and GW-1A | Real denial, descendants, launch/cancel/crash and controlled workload evidence; provider ADR |
+| GP-1B | Complete 2026-10-03 | Deterministic child/grandchild, early exit, barrier and orphan-stop with ownership records and survivor sweep; Release 20/20 harness + 15/15 unit Passed — see [GP-1B evidence](evidence/fixture-selftest-GP-1B.md). Unsandboxed host stop only; kernel-backed ownership arrives with backends |
+| GW-1A | Ready — next | Probe local Windows export/schema, minimal launch and captured I/O; no production-provider claim |
+| GW-1B | Held on GW-1A | Real denial, descendants, launch/cancel/crash and controlled workload evidence; provider ADR |
 | GL-1A | Held on first local Windows probe and separate WSL distro | Prepare Ubuntu WSL2, namespace/seccomp inventory and equivalent minimal Linux probe |
 | GM-1A | Held on GP-1A and workflow/runner setup | Remote exists; manual bounded macOS capability probe, ARM64 first and Intel separately |
 | CI-1 | Held on GP-1A | Remote exists; add real build/unit workflow when code is available, no placeholder success jobs |

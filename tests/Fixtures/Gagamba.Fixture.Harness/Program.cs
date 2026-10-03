@@ -283,6 +283,155 @@ internal static class Harness
                 (r, w, s) => FixtureProtocol.BuildContinue("wrong-run-id", w, s,
                     "exit", new JsonObject { ["code"] = 0 })));
 
+        // ---- F3-CHILD-GRANDCHILD (deterministic 3-node tree, effects, no survivors) ----
+        await RunCase(collector, "F3-CHILD-GRANDCHILD", async () =>
+        {
+            using var ws = FixtureWorkspace.Create(runId + "-f3tree");
+            System.Diagnostics.Process? root = null;
+            try
+            {
+                root = TreeRunner.Launch(workerPath,
+                    $"spawn-tree --workspace \"{ws.Root}\" --run-id {runId} --worker-id w-tree --depth 2");
+                bool exited = root.WaitForExit(60_000);
+                if (!exited) return (false, "root join timed out", "Passed");
+                if (root.ExitCode != 0) return (false, $"root exit={root.ExitCode}", "Passed");
+                var nodes = await TreeRunner.WaitForNodesAsync(ws.Root, 3, TimeSpan.FromSeconds(10));
+                if (nodes.Count != 3) return (false, $"nodes={nodes.Count} want 3", "Passed");
+                var byDepth = nodes.ToDictionary(n => n.Depth);
+                if (!byDepth.ContainsKey(2) || !byDepth.ContainsKey(1) || !byDepth.ContainsKey(0))
+                    return (false, "depths != {2,1,0}", "Passed");
+                if (nodes.Any(n => n.RunId != runId)) return (false, "runId mismatch in nodes", "Passed");
+                if (byDepth[1].ClaimedPpid != byDepth[2].Pid) return (false, "child ppid != root pid", "Passed");
+                if (byDepth[0].ClaimedPpid != byDepth[1].Pid) return (false, "grandchild ppid != child pid", "Passed");
+                if (byDepth[2].Pid != root.Id) return (false, $"root node pid != launcher pid", "Passed");
+                string leaf = await File.ReadAllTextAsync(ws.Resolve($"leaf-{byDepth[0].Pid}.txt"));
+                if (leaf != $"leaf:{runId}:{byDepth[0].Pid}") return (false, "leaf effect mismatch", "Passed");
+                var survivors = await TreeRunner.StopTreeAsync(root, ws.Root);
+                if (survivors.Count > 0) return (false, $"survivors: {string.Join(",", survivors.Select(s => s.Pid))}", "Passed");
+                return (true, $"depths 2/1/0 chained, leaf ok, exit 0, no survivors", "Passed");
+            }
+            finally
+            {
+                if (root is not null)
+                {
+                    try { await TreeRunner.StopTreeAsync(root, ws.Root, TimeSpan.FromSeconds(3)); } catch { }
+                    root.Dispose();
+                }
+                TrackDispose(ws);
+            }
+        });
+
+        // ---- F3-EARLY-EXIT (root dies first, child effect lands, stop leaves none) ----
+        await RunCase(collector, "F3-EARLY-EXIT", async () =>
+        {
+            using var ws = FixtureWorkspace.Create(runId + "-f3exit");
+            System.Diagnostics.Process? root = null;
+            try
+            {
+                root = TreeRunner.Launch(workerPath,
+                    $"early-exit --workspace \"{ws.Root}\" --run-id {runId} --worker-id w-early --child-delay-ms 1500 --marker child-effect.txt --content effect-{runId}");
+                bool exited = root.WaitForExit(10_000);
+                if (!exited) return (false, "root did not exit promptly", "Passed");
+                if (root.ExitCode != 0) return (false, $"root exit={root.ExitCode}", "Passed");
+                // Child effect must land after root death: poll the marker.
+                string? marker = null;
+                var sw = System.Diagnostics.Stopwatch.StartNew();
+                while (sw.Elapsed < TimeSpan.FromSeconds(10))
+                {
+                    try { marker = await File.ReadAllTextAsync(ws.Resolve("child-effect.txt")); break; }
+                    catch (FileNotFoundException) { await Task.Delay(100); }
+                }
+                if (marker != $"effect-{runId}") return (false, "child effect missing after root exit", "Passed");
+                var survivors = await TreeRunner.StopTreeAsync(root, ws.Root);
+                if (survivors.Count > 0) return (false, "survivors after stop", "Passed");
+                return (true, "root exit 0 first, child marker landed, stop clean", "Passed");
+            }
+            finally
+            {
+                if (root is not null)
+                {
+                    try { await TreeRunner.StopTreeAsync(root, ws.Root, TimeSpan.FromSeconds(3)); } catch { }
+                    root.Dispose();
+                }
+                TrackDispose(ws);
+            }
+        });
+
+        // ---- F3-BARRIER (signal releases; cancel-during-wait kills, no survivors) ----
+        await RunCase(collector, "F3-BARRIER", async () =>
+        {
+            using var ws = FixtureWorkspace.Create(runId + "-f3bar");
+            System.Diagnostics.Process? waiter = null;
+            System.Diagnostics.Process? waiter2 = null;
+            try
+            {
+                waiter = TreeRunner.Launch(workerPath,
+                    $"barrier-wait --workspace \"{ws.Root}\" --barrier go.txt --timeout-ms 15000");
+                await Task.Delay(1000);
+                if (waiter.HasExited) return (false, "waiter exited before signal", "Passed");
+                await File.WriteAllTextAsync(ws.Resolve("go.txt"), "go");
+                bool released = waiter.WaitForExit(8000);
+                if (!released) return (false, "signal did not release waiter", "Passed");
+                if (waiter.ExitCode != 0) return (false, $"waiter exit={waiter.ExitCode} want 0", "Passed");
+
+                waiter2 = TreeRunner.Launch(workerPath,
+                    $"barrier-wait --workspace \"{ws.Root}\" --barrier never.txt --timeout-ms 15000");
+                await Task.Delay(2000);
+                if (waiter2.HasExited) return (false, "second waiter exited without signal", "Passed");
+                var survivors = await TreeRunner.StopTreeAsync(waiter2, ws.Root);
+                if (survivors.Count > 0) return (false, "cancel left survivors", "Passed");
+                return (true, "signal leg exit 0; cancel leg killed, no survivors", "Passed");
+            }
+            finally
+            {
+                foreach (var p in new[] { waiter, waiter2 })
+                {
+                    if (p is not null)
+                    {
+                        try { await TreeRunner.StopTreeAsync(p, ws.Root, TimeSpan.FromSeconds(3)); } catch { }
+                        p.Dispose();
+                    }
+                }
+                TrackDispose(ws);
+            }
+        });
+
+        // ---- F3-ORPHAN-STOP (reparented sleeper killed via node records, marker never lands) ----
+        await RunCase(collector, "F3-ORPHAN-STOP", async () =>
+        {
+            using var ws = FixtureWorkspace.Create(runId + "-f3orph");
+            System.Diagnostics.Process? root = null;
+            try
+            {
+                root = TreeRunner.Launch(workerPath,
+                    $"early-exit --workspace \"{ws.Root}\" --run-id {runId} --worker-id w-orph --child-delay-ms 30000 --marker orphan-effect.txt --content late-{runId}");
+                bool exited = root.WaitForExit(10_000);
+                if (!exited || root.ExitCode != 0) return (false, "root did not exit cleanly", "Passed");
+                var nodes = await TreeRunner.WaitForNodesAsync(ws.Root, 1, TimeSpan.FromSeconds(10));
+                var orphan = nodes.FirstOrDefault(n => n.Orphan);
+                if (orphan is null) return (false, "orphan node record missing", "Passed");
+                var pre = TreeRunner.CheckSurvivors(ws.Root);
+                if (!pre.Any(s => s.Pid == orphan.Pid))
+                    return (false, "orphan not alive after root death (test setup broken)", "Passed");
+                var survivors = await TreeRunner.StopTreeAsync(root, ws.Root);
+                if (survivors.Count > 0) return (false, $"orphan survived stop: {survivors[0].Pid}", "Passed");
+                bool markerLanded;
+                try { await File.ReadAllTextAsync(ws.Resolve("orphan-effect.txt")); markerLanded = true; }
+                catch (FileNotFoundException) { markerLanded = false; }
+                if (markerLanded) return (false, "orphan outran the stop (30 s delay elapsed?)", "Passed");
+                return (true, $"orphan {orphan.Pid} outlived root, killed via record, effect suppressed", "Passed");
+            }
+            finally
+            {
+                if (root is not null)
+                {
+                    try { await TreeRunner.StopTreeAsync(root, ws.Root, TimeSpan.FromSeconds(3)); } catch { }
+                    root.Dispose();
+                }
+                TrackDispose(ws);
+            }
+        });
+
         // ---- EVIDENCE-VALID (validator over provisional report, no empty pass) ----
         await RunCase(collector, "EVIDENCE-VALID", async () =>
         {

@@ -13,9 +13,10 @@ namespace Gagamba.Fixture.Host;
 
 public static class FixtureManifest
 {
-    public const int Version = 1;
+    public const int Version = 2;
 
-    // Trusted mandatory IDs for GP-1A (F1/F2 + protocol + evidence). Not worker input.
+    // Trusted mandatory IDs for GP-1B (GP-1A F1/F2 + protocol + F3 lifecycle).
+    // Not worker input. v2 appends F3; GP-1A reports are superseded, not revalidated.
     public static readonly IReadOnlyList<string> MandatoryIds = new[]
     {
         "F1-READ-SENTINEL",
@@ -34,6 +35,10 @@ public static class FixtureManifest
         "P-REJECT-OVERSIZE",
         "P-REJECT-MISMATCH-IDENTITY",
         "EVIDENCE-VALID",
+        "F3-CHILD-GRANDCHILD",
+        "F3-EARLY-EXIT",
+        "F3-BARRIER",
+        "F3-ORPHAN-STOP",
     };
 }
 

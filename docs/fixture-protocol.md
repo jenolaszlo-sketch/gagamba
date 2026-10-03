@@ -1,6 +1,6 @@
 # GP-1 fixture and evidence contract
 
-Status: GP-1A implemented 2026-10-03 (F1/F2 + protocol + evidence v1 under `tests/Fixtures/`, entrypoint `eng/fixture-selftest.ps1`). F3+ remains pending. This is private test tooling, not a public Gagamba API.
+Status: GP-1A + GP-1B implemented 2026-10-03 (F1/F2/F3 + protocol + evidence v1 under `tests/Fixtures/`, entrypoint `eng/fixture-selftest.ps1`). F4/F5 grow with the backend spikes. This is private test tooling, not a public Gagamba API.
 
 ## First implementation slice
 
@@ -55,6 +55,6 @@ Use relative artifact references confined to the run directory. Exclude secrets 
 
 ## GP-1 completion
 
-F1/F2 plus reliable protocol validation, independent watchdog, exact source/evidence identity and passing controls complete GP-1A. F3 and the corresponding self-tests complete GP-1B. GW-1 may start after GP-1A for availability and minimal launch; GW-1 containment/lifetime qualification requires GP-1B. F4/F5 grow with the backend spikes and are mandatory before declaring a provider conformant.
+F1/F2 plus reliable protocol validation, independent watchdog, exact source/evidence identity and passing controls complete GP-1A. F3 and the corresponding self-tests complete GP-1B (done 2026-10-03: manifest v2, 20/20 harness + 15/15 unit). GW-1 may start after GP-1A for availability and minimal launch; GW-1 containment/lifetime qualification requires GP-1B (now unblocked). F4/F5 grow with the backend spikes and are mandatory before declaring a provider conformant.
 
 No worker, launcher, tests or reports are implemented by this document. Do not manufacture sample Passed reports as handoff evidence.

@@ -1,4 +1,4 @@
-// GP-1A fixture worker. Private test tooling only, not a public Gagamba API.
+// GP-1B fixture worker. Private test tooling only, not a public Gagamba API.
 // Enumerated operations only. No arbitrary shell-command field.
 using System.Security.Cryptography;
 using System.Text;
@@ -20,7 +20,7 @@ internal static class Program
     {
         if (args.Length == 0)
         {
-            Console.Error.WriteLine("usage: Worker <protocol|raw-stdout|raw-stderr|echo-stdin|hang|exit-code> ...");
+            Console.Error.WriteLine("usage: Worker <protocol|raw-stdout|raw-stderr|echo-stdin|hang|exit-code|spawn-tree|early-exit|delayed-marker|barrier-wait> ...");
             return 2;
         }
 
@@ -34,6 +34,10 @@ internal static class Program
                 "echo-stdin" => RunEchoStdin(args[1..]),
                 "hang" => RunHang(),
                 "exit-code" => RunExitCode(args[1..]),
+                "spawn-tree" => RunSpawnTree(args[1..]),
+                "early-exit" => RunEarlyExit(args[1..]),
+                "delayed-marker" => RunDelayedMarker(args[1..]),
+                "barrier-wait" => RunBarrierWait(args[1..]),
                 _ => Fail($"unknown mode '{args[0]}'"),
             };
         }
@@ -390,5 +394,187 @@ internal static class Program
             if (args[i] == name)
                 return args[i + 1];
         return null;
+    }
+
+    // ---------- F3 tree / barrier modes (GP-1B) ----------
+
+    private static int RunSpawnTree(string[] args)
+    {
+        string? workspace = GetStringArg(args, "--workspace");
+        string? runId = GetStringArg(args, "--run-id");
+        string? workerId = GetStringArg(args, "--worker-id");
+        long depth = GetLongArg(args, "--depth", -1);
+        long parentPid = GetLongArg(args, "--parent-pid", -1);
+        if (workspace is null || runId is null || workerId is null)
+            return Fail("spawn-tree requires --workspace, --run-id, --worker-id");
+        if (depth is < 0 or > 2)
+            return Fail("--depth must be 0..2");
+        if (!Directory.Exists(workspace))
+            return Fail("workspace must exist");
+        string workspaceFull = Path.GetFullPath(workspace);
+
+        int myPid = Environment.ProcessId;
+        DateTime startedUtc;
+        try { startedUtc = System.Diagnostics.Process.GetCurrentProcess().StartTime.ToUniversalTime(); }
+        catch { startedUtc = DateTime.UtcNow; }
+        WriteNodeRecord(workspaceFull, myPid, (int)parentPid, (int)depth, runId, workerId, startedUtc, orphan: false);
+
+        if (depth == 0)
+        {
+            string leafRel = $"leaf-{myPid}.txt";
+            if (!TryResolveWithin(workspaceFull, leafRel, out string? full, out _))
+                return Fail("leaf outside workspace");
+            File.WriteAllText(full!, $"leaf:{runId}:{myPid}");
+            return 0;
+        }
+
+        // Spawn one child; wait bounded, propagate its exit code.
+        string self = Environment.ProcessPath ?? throw new InvalidOperationException("no current exe path");
+        string childArgs = $"spawn-tree --workspace \"{workspaceFull}\" --run-id {runId} --worker-id {workerId}-c{depth} --depth {depth - 1} --parent-pid {myPid}";
+        var (fileName, arguments) = self.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)
+            ? ("dotnet", $"\"{self}\" {childArgs}")
+            : ($"\"{self}\"", childArgs);
+        var psi = new System.Diagnostics.ProcessStartInfo
+        {
+            FileName = fileName,
+            Arguments = arguments,
+            UseShellExecute = false,
+            CreateNoWindow = true,
+        };
+        using var child = System.Diagnostics.Process.Start(psi);
+        if (child is null)
+        {
+            Console.Error.WriteLine("worker: child start returned null");
+            return 5;
+        }
+        if (!child.WaitForExit(60_000))
+        {
+            Console.Error.WriteLine("worker: child join timed out");
+            try { child.Kill(entireProcessTree: true); } catch { }
+            return 5;
+        }
+        return child.ExitCode;
+    }
+
+    private static int RunEarlyExit(string[] args)
+    {
+        string? workspace = GetStringArg(args, "--workspace");
+        string? runId = GetStringArg(args, "--run-id");
+        string? workerId = GetStringArg(args, "--worker-id");
+        long delayMs = GetLongArg(args, "--child-delay-ms", -1);
+        string? marker = GetStringArg(args, "--marker");
+        string? content = GetStringArg(args, "--content") ?? "orphan-effect";
+        if (workspace is null || runId is null || workerId is null || marker is null)
+            return Fail("early-exit requires --workspace, --run-id, --worker-id, --marker");
+        if (delayMs is < 0 or > 30_000)
+            return Fail("--child-delay-ms must be 0..30000");
+        if (!Directory.Exists(workspace))
+            return Fail("workspace must exist");
+        string workspaceFull = Path.GetFullPath(workspace);
+        if (!TryResolveWithin(workspaceFull, marker, out _, out _))
+            return Fail("marker outside workspace");
+
+        int myPid = Environment.ProcessId;
+        string self = Environment.ProcessPath ?? throw new InvalidOperationException("no current exe path");
+        string childArgs = $"delayed-marker --workspace \"{workspaceFull}\" --run-id {runId} --worker-id {workerId}-orphan --delay-ms {delayMs} --marker \"{marker}\" --content \"{content}\" --parent-pid {myPid}";
+        var (fileName, arguments) = self.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)
+            ? ("dotnet", $"\"{self}\" {childArgs}")
+            : ($"\"{self}\"", childArgs);
+        var psi = new System.Diagnostics.ProcessStartInfo
+        {
+            FileName = fileName,
+            Arguments = arguments,
+            UseShellExecute = false,
+            CreateNoWindow = true,
+        };
+        using var child = System.Diagnostics.Process.Start(psi);
+        if (child is null)
+        {
+            Console.Error.WriteLine("worker: orphan start returned null");
+            return 5;
+        }
+        // Root exits immediately without waiting: the orphan outlives it.
+        Console.WriteLine($"root-exited child={child.Id}");
+        Console.Out.Flush();
+        return 0;
+    }
+
+    private static int RunDelayedMarker(string[] args)
+    {
+        string? workspace = GetStringArg(args, "--workspace");
+        string? runId = GetStringArg(args, "--run-id");
+        string? workerId = GetStringArg(args, "--worker-id");
+        long delayMs = GetLongArg(args, "--delay-ms", -1);
+        string? marker = GetStringArg(args, "--marker");
+        string? content = GetStringArg(args, "--content") ?? "orphan-effect";
+        long parentPid = GetLongArg(args, "--parent-pid", -1);
+        if (workspace is null || runId is null || workerId is null || marker is null)
+            return Fail("delayed-marker requires --workspace, --run-id, --worker-id, --marker");
+        if (delayMs is < 0 or > 60_000)
+            return Fail("--delay-ms must be 0..60000");
+        if (!Directory.Exists(workspace))
+            return Fail("workspace must exist");
+        string workspaceFull = Path.GetFullPath(workspace);
+        if (!TryResolveWithin(workspaceFull, marker, out string? full, out _))
+            return Fail("marker outside workspace");
+
+        int myPid = Environment.ProcessId;
+        DateTime startedUtc;
+        try { startedUtc = System.Diagnostics.Process.GetCurrentProcess().StartTime.ToUniversalTime(); }
+        catch { startedUtc = DateTime.UtcNow; }
+        WriteNodeRecord(workspaceFull, myPid, (int)parentPid, -1, runId, workerId, startedUtc, orphan: true);
+
+        Thread.Sleep(TimeSpan.FromMilliseconds(delayMs));
+        byte[] bytes = Encoding.UTF8.GetBytes(content);
+        if (bytes.Length > MaxWriteBytes) return Fail("marker content too large");
+        Directory.CreateDirectory(Path.GetDirectoryName(full!)!);
+        File.WriteAllBytes(full!, bytes);
+        return 0;
+    }
+
+    private static int RunBarrierWait(string[] args)
+    {
+        string? workspace = GetStringArg(args, "--workspace");
+        string? barrier = GetStringArg(args, "--barrier");
+        long timeoutMs = GetLongArg(args, "--timeout-ms", -1);
+        if (workspace is null || barrier is null)
+            return Fail("barrier-wait requires --workspace, --barrier");
+        if (timeoutMs is < 500 or > 60_000)
+            return Fail("--timeout-ms must be 500..60000");
+        if (!Directory.Exists(workspace))
+            return Fail("workspace must exist");
+        string workspaceFull = Path.GetFullPath(workspace);
+        if (!TryResolveWithin(workspaceFull, barrier, out string? full, out _))
+            return Fail("barrier outside workspace");
+
+        var sw = System.Diagnostics.Stopwatch.StartNew();
+        while (sw.ElapsedMilliseconds < timeoutMs)
+        {
+            if (File.Exists(full!))
+                return 0;
+            Thread.Sleep(50);
+        }
+        Console.Error.WriteLine("worker: barrier timeout");
+        return 4;
+    }
+
+    private static void WriteNodeRecord(string workspaceFull, int pid, int claimedPpid, int depth,
+        string runId, string workerId, DateTime startedUtc, bool orphan)
+    {
+        var node = new JsonObject
+        {
+            ["pid"] = pid,
+            ["claimedPpid"] = claimedPpid,
+            ["depth"] = depth,
+            ["orphan"] = orphan,
+            ["runId"] = runId,
+            ["workerId"] = workerId,
+            ["startedUtc"] = startedUtc.ToString("O"),
+        };
+        string rel = $"nodes/{pid}.json";
+        if (!TryResolveWithin(workspaceFull, rel, out string? full, out _))
+            throw new InvalidOperationException("node path outside workspace");
+        Directory.CreateDirectory(Path.GetDirectoryName(full!)!);
+        File.WriteAllText(full!, node.ToJsonString());
     }
 }
