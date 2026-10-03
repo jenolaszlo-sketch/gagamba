@@ -1,6 +1,6 @@
 # Gagamba handoff
 
-Updated 2026-10-03 for GP-1B completion. Start the next session in `C:\Users\Laszlos\source\repos\Gagamba`.
+Updated 2026-10-03 for GW-1A completion. Start the next session in `C:\Users\Laszlos\source\repos\Gagamba`.
 
 ## User direction
 
@@ -11,8 +11,8 @@ Develop Gagamba alone as an independently useful .NET sandbox library. Windows, 
 - Local Git repository is connected to `https://github.com/jenolaszlo-sketch/gagamba.git` as `origin`. Preparation baseline `7bdb28f690a4b7988876ec463b3e77254dc075fe` was committed and pushed on main, preserving initial license commit `fcc2fdc`. Local and remote main were verified to match before the verifier-entrypoint fix. The older staged-only report is superseded. Use git log, git status and git ls-remote origin refs/heads/main for the current checkpoint, since follow-up fixes advance it.
 - Original proposal is preserved byte-for-byte under `docs/proposals/2026-10-03-original-proposal.md`; it is historical input, not the current implementation queue.
 - Preparation delivered the security baseline, private fixture/evidence protocol, activity queue, implementation/testing plans and repository guidance.
-- GP-1A committed as `208c2b1` (fixture Worker|Host|Harness|SelfTest, `eng/fixture-selftest.ps1|.sh`, `docs/evidence/fixture-selftest-GP-1A.md`, raw JSON under ignored `artifacts/`). No backend provider, native helper, NuGet package, installed distro or CI workflow exists. No sandbox has been launched or qualified.
-- GP-1B implemented on top (uncommitted working tree): worker `spawn-tree|early-exit|delayed-marker|barrier-wait`, host `TreeRunner` (node records with PID+start identity, stop, survivor sweep), manifest v2 (20 IDs), evidence summary `docs/evidence/fixture-selftest-GP-1B.md`. Still no backend provider or qualification.
+- GP-1A committed as `208c2b1`, GP-1B as `c7003f8` (fixture Worker|Host|Harness|SelfTest incl. F3 lifecycle, `eng/fixture-selftest.ps1|.sh`, evidence summaries, raw JSON under ignored `artifacts/`). No backend provider, native helper, NuGet package, installed distro or CI workflow exists. No sandbox has been launched or qualified.
+- GW-1A implemented on top (uncommitted working tree): read-only `spikes/Gw1aProbe` + `eng/probe.ps1|.sh`, per-kind evidence manifests, verdict EXPORT-PRESENT-SCHEMA-UNPINNED, evidence summary `docs/evidence/windows-availability-GW-1A.md`. The launch API was resolved but never invoked; no provider is claimed.
 - Current shell chat may still be rooted in Solo. Use the Gagamba path explicitly; Solo's planning staging files are not the source of truth. Prefer opening the next coding session directly in Gagamba so its workspace permissions match the work.
 
 ## Read in this order
@@ -37,13 +37,13 @@ Verified GP-1B 2026-10-03 (fixtures only, not enforcement): Release `eng/fixture
 
 ## Exact next task
 
-Run **GW-1A next**: probe the local Windows `Experimental_CreateProcessInSandbox` export, acquire a verified matching schema, and attempt minimal launch with captured I/O — availability evidence only, no provider claim. GP-1B lifecycle fixtures are available for reuse once a backend exists. Do not install host-wide ACL/user/firewall changes without an explicit setup/cleanup plan; keep privileged setup separate and attributable.
+Run **GW-1B next**: pin the SandboxSpec schema (MXC `BaseContainerSpecification.fbs` commit + license + `flatc --conform` + review, or the OS compile/free helpers with verified signatures), build a spec compiler for a disposable-identity offline profile, and attempt minimal launch with captured I/O. Then real denial, descendant, launch/cancel/crash and controlled workload evidence plus the provider ADR. Keep all host-affecting setup (identities, ACLs, firewall) in an explicit setup/cleanup plan; never modify the host opportunistically.
 
 Before executing experiments that alter host ACLs/users/firewall or install a runtime, prepare the exact setup/cleanup implementation and inspect the task's authorization. No permission prompt is required merely to write code, read state or run safe fixtures. Keep privileged setup separate and attributable.
 
 ## Resume prompt
 
-> Continue standalone Gagamba in C:\Users\Laszlos\source\repos\Gagamba. Read AGENTS.md, docs/handoff.md, docs/work-queue.md, docs/security-model.md and docs/fixture-protocol.md first. GP-1A/GP-1B are complete with passing Release fixture self-tests (20/20 harness + 15/15 unit, cleanup Confirmed; fixtures only, no backend qualified). Run GW-1A next: Windows sandbox-export/schema probe and minimal-launch availability evidence. Keep public APIs provisional, all restrictions fail-closed, Windows local testing first, Linux/macOS in scope, and Hufu/Luban integration deferred. Do not mistake fixture self-tests, upstream examples or Docker's outer restrictions for Gagamba enforcement. Inspect the repository state and preserve the original proposal.
+> Continue standalone Gagamba in C:\Users\Laszlos\source\repos\Gagamba. Read AGENTS.md, docs/handoff.md, docs/work-queue.md, docs/security-model.md and docs/fixture-protocol.md first. GP-1A/GP-1B complete (20/20 harness + 15/15 unit) and GW-1A availability is EXPORT-PRESENT-SCHEMA-UNPINNED (all exports resolve on 25H2, launch never invoked, no provider claimed). Run GW-1B next: pin schema, build spec compiler, minimal launch + denial/descendant/race/workload evidence and provider ADR. Keep public APIs provisional, all restrictions fail-closed, Windows local testing first, Linux/macOS in scope, and Hufu/Luban integration deferred. Do not mistake fixture self-tests, upstream examples or Docker's outer restrictions for Gagamba enforcement. Inspect the repository state and preserve the original proposal.
 
 ## Validation of this preparation
 
@@ -51,4 +51,4 @@ Documentation link resolution and original-proposal SHA-256 equality are checked
 
 Verifier regression checks passed on 2026-10-03: Windows PowerShell -File with default/explicit root, call-operator invocation, PowerShell 7 -File with default/explicit root, and missing/empty root rejection (seven cases). Default-root tests ran outside the repository. Documentation links and the original proposal hash still pass. These are preparation-tool checks only.
 
-No backend, package, or CI conformance tests apply yet because no provider exists. The user created the remote and it is connected locally. GP-1B code is uncommitted on top of `208c2b1`; commit it before backend spikes so the source manifest (commit + dirty flag + SHA-256) pins exactly. CI activation, distro installation and package publication remain pending.
+No backend, package, or CI conformance tests apply yet because no provider exists. The user created the remote and it is connected locally. GW-1A code is uncommitted on top of `c7003f8`; commit it before GW-1B invocation work so the source manifest pins exactly. CI activation, distro installation and package publication remain pending.

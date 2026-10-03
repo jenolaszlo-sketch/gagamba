@@ -11,6 +11,29 @@ using System.Text.Json.Serialization;
 
 namespace Gagamba.Fixture.Host;
 
+public static class ProbeManifest
+{
+    public const int Version = 1;
+
+    // Trusted mandatory IDs for GW-1A availability probing. Launch itself is
+    // informational: NotRun-when-gated never fails the availability aggregate.
+    public static readonly IReadOnlyList<string> MandatoryIds = new[]
+    {
+        "W1-OS-INVENTORY",
+        "W1-MODULE-LOCATION",
+        "W1-EXPORT-LOOKUP",
+        "W1-EXPORT-TABLE",
+        "W1-JOB-MEMBERSHIP",
+        "W1-HEADER-SURVEY",
+        "W1-SCHEMA-SOURCE",
+    };
+
+    public static readonly IReadOnlyList<string> InformationalIds = new[]
+    {
+        "W1-MINIMAL-LAUNCH",
+    };
+}
+
 public static class FixtureManifest
 {
     public const int Version = 2;
@@ -182,18 +205,29 @@ public static class EvidenceValidator
                     errors.Add("environment field missing (use explicit unavailable explanation)");
         }
 
-        // Backend: FixtureSelfTest must be null (no fake production provider).
-        if (string.Equals(report.EvidenceKind, EvidenceKinds.FixtureSelfTest, StringComparison.Ordinal))
+        // Backend: self-test and probe runs test no provider, so neither may
+        // name one (no fake production provider).
+        if (string.Equals(report.EvidenceKind, EvidenceKinds.FixtureSelfTest, StringComparison.Ordinal)
+            || string.Equals(report.EvidenceKind, EvidenceKinds.CapabilityProbe, StringComparison.Ordinal))
         {
             if (report.Backend is not null && (report.Backend.Provider is not null || report.Backend.HelperVersion is not null))
-                errors.Add("FixtureSelfTest backend must be null");
+                errors.Add($"{report.EvidenceKind} backend must be null");
         }
 
         if (report.Profile is null || report.Profile.Name != "offline-process-v1")
             errors.Add("profile.name must be offline-process-v1");
-        else if (string.Equals(report.EvidenceKind, EvidenceKinds.FixtureSelfTest, StringComparison.Ordinal)
+        else if ((string.Equals(report.EvidenceKind, EvidenceKinds.FixtureSelfTest, StringComparison.Ordinal)
+                  || string.Equals(report.EvidenceKind, EvidenceKinds.CapabilityProbe, StringComparison.Ordinal))
                  && (report.Profile.RequestedHash is not null || report.Profile.PreparedHash is not null))
-            errors.Add("FixtureSelfTest must not invent requested/prepared hashes");
+            errors.Add($"{report.EvidenceKind} must not invent requested/prepared hashes");
+
+        // Mandatory IDs are per evidence kind: fixture runs prove fixtures,
+        // probes answer availability. Informational probe legs (e.g. gated
+        // launch) may be NotRun without failing the aggregate.
+        IReadOnlyList<string> mandatory =
+            string.Equals(report.EvidenceKind, EvidenceKinds.CapabilityProbe, StringComparison.Ordinal)
+                ? ProbeManifest.MandatoryIds
+                : FixtureManifest.MandatoryIds;
 
         if (report.Cases.Count == 0)
             errors.Add("cases must not be empty");
@@ -213,9 +247,9 @@ public static class EvidenceValidator
             if (c.EvidenceRef is not null && (c.EvidenceRef.Contains("..") || Path.IsPathRooted(c.EvidenceRef)))
                 errors.Add($"evidenceRef must be run-relative for '{c.Id}'");
         }
-        foreach (string mandatory in FixtureManifest.MandatoryIds)
-            if (!ids.Contains(mandatory))
-                errors.Add($"missing mandatory case '{mandatory}'");
+        foreach (string mandatoryId in mandatory)
+            if (!ids.Contains(mandatoryId))
+                errors.Add($"missing mandatory case '{mandatoryId}'");
 
         if (report.Cleanup is null) errors.Add("cleanup missing");
         else if (report.Cleanup.Status is not ("Confirmed" or "Failed" or "Unknown"))
@@ -226,7 +260,7 @@ public static class EvidenceValidator
         int failed = report.Cases.Count(c => c.Outcome == CaseOutcomes.Failed);
         int unsupported = report.Cases.Count(c => c.Outcome == CaseOutcomes.Unsupported);
         int notRun = report.Cases.Count(c => c.Outcome == CaseOutcomes.NotRun);
-        bool mandatoryComplete = FixtureManifest.MandatoryIds.All(id =>
+        bool mandatoryComplete = mandatory.All(id =>
             report.Cases.Any(c => c.Id == id && c.Outcome == CaseOutcomes.Passed));
         string aggregate = (failed == 0 && mandatoryComplete && passed > 0
                             && string.Equals(report.Cleanup?.Status, "Confirmed", StringComparison.Ordinal))
@@ -261,11 +295,19 @@ public sealed class EvidenceCollector
     private readonly DateTime _startedUtc = DateTime.UtcNow;
     private readonly List<CaseRecord> _cases = new();
     private readonly string _repoRoot;
+    private readonly List<string> _manifestExtraDirs;
+    private readonly List<string> _manifestExtraFiles;
 
-    public EvidenceCollector(string repoRoot, string evidenceKind = EvidenceKinds.FixtureSelfTest)
+    public EvidenceCollector(
+        string repoRoot,
+        string evidenceKind = EvidenceKinds.FixtureSelfTest,
+        IEnumerable<string>? manifestExtraDirs = null,
+        IEnumerable<string>? manifestExtraFiles = null)
     {
         _repoRoot = repoRoot;
         _evidenceKind = evidenceKind;
+        _manifestExtraDirs = manifestExtraDirs is null ? [] : new List<string>(manifestExtraDirs);
+        _manifestExtraFiles = manifestExtraFiles is null ? [] : new List<string>(manifestExtraFiles);
         _runId = $"{DateTime.UtcNow:yyyyMMdd-HHmmss}-{Guid.NewGuid():N}"[..24];
     }
 
@@ -284,9 +326,9 @@ public sealed class EvidenceCollector
     public EvidenceReport Finish(string cleanupStatus, string disposition, string diagnostics)
     {
         DateTime ended = DateTime.UtcNow;
-        var source = SourceCollector.Collect(_repoRoot);
+        var source = SourceCollector.Collect(_repoRoot, _manifestExtraDirs, _manifestExtraFiles);
         var env = EnvironmentCollector.Collect();
-        // Backend null for FixtureSelfTest. Profile hashes null (no policy prep yet).
+        // Backend null for FixtureSelfTest/CapabilityProbe. Profile hashes null (no policy prep yet).
         var profile = new ProfileInfo("offline-process-v1", null, null);
         BackendInfo? backend = null;
         var cleanup = new CleanupInfo(cleanupStatus, Bounded(disposition, 500), Bounded(diagnostics, 1000));
@@ -295,7 +337,11 @@ public sealed class EvidenceCollector
         int failed = _cases.Count(c => c.Outcome == CaseOutcomes.Failed);
         int unsupported = _cases.Count(c => c.Outcome == CaseOutcomes.Unsupported);
         int notRun = _cases.Count(c => c.Outcome == CaseOutcomes.NotRun);
-        bool mandatoryComplete = FixtureManifest.MandatoryIds.All(id =>
+        IReadOnlyList<string> mandatory =
+            string.Equals(_evidenceKind, EvidenceKinds.CapabilityProbe, StringComparison.Ordinal)
+                ? ProbeManifest.MandatoryIds
+                : FixtureManifest.MandatoryIds;
+        bool mandatoryComplete = mandatory.All(id =>
             _cases.Any(c => c.Id == id && c.Outcome == CaseOutcomes.Passed));
         string aggregate = (failed == 0 && mandatoryComplete && passed > 0 && cleanupStatus == "Confirmed")
             ? CaseOutcomes.Passed : CaseOutcomes.Failed;
@@ -312,7 +358,12 @@ public sealed class EvidenceCollector
 
 public static class SourceCollector
 {
-    public static SourceInfo Collect(string repoRoot)
+    /// <param name="extraDirs">Repo-relative dirs hashed recursively (*.cs, *.csproj).</param>
+    /// <param name="extraFiles">Repo-relative exact files (may contain '*' wildcards for the file name).</param>
+    public static SourceInfo Collect(
+        string repoRoot,
+        IEnumerable<string>? extraDirs = null,
+        IEnumerable<string>? extraFiles = null)
     {
         string? commit = TryGit(repoRoot, "rev-parse HEAD")?.Trim();
         if (commit is not null && !System.Text.RegularExpressions.Regex.IsMatch(commit, "^[0-9a-f]{40}$"))
@@ -339,6 +390,25 @@ public static class SourceCollector
         string contract = Path.Combine(repoRoot, "docs", "fixture-protocol.md");
         if (File.Exists(contract))
             files.Add(contract);
+        foreach (string dir in extraDirs ?? [])
+        {
+            string full = Path.Combine(repoRoot, dir.Replace('/', Path.DirectorySeparatorChar));
+            if (!Directory.Exists(full))
+                continue;
+            foreach (string f in Directory.GetFiles(full, "*.cs", SearchOption.AllDirectories))
+                files.Add(f);
+            foreach (string f in Directory.GetFiles(full, "*.csproj", SearchOption.AllDirectories))
+                files.Add(f);
+        }
+        foreach (string pattern in extraFiles ?? [])
+        {
+            string normalized = pattern.Replace('/', Path.DirectorySeparatorChar);
+            string? dir = Path.GetDirectoryName(Path.Combine(repoRoot, normalized));
+            if (dir is null || !Directory.Exists(dir))
+                continue;
+            foreach (string f in Directory.GetFiles(dir, Path.GetFileName(normalized), SearchOption.TopDirectoryOnly))
+                files.Add(f);
+        }
 
         var manifest = new List<ManifestEntry>();
         foreach (string f in files)

@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Gagamba.Spikes.Gw1aProbe</RootNamespace>
+    <AssemblyName>Gw1aProbe</AssemblyName>
+    <!-- Private GW-1A feasibility spike. Read-only availability probe: inventory,
+         module/export resolution, header/schema survey. Contains no launch-API
+         P/Invoke by construction: the sandboxed-launch API is never invoked. -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\tests\Fixtures\Gagamba.Fixture.Host\Gagamba.Fixture.Host.csproj" />
+  </ItemGroup>
+
+</Project>

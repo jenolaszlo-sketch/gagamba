@@ -1,6 +1,6 @@
 # GP-1B lifecycle evidence (compact reviewed summary)
 
-Date: 2026-10-03. Raw report: `artifacts/fixture-selftest-20261003-155219-4ecc112c.json`
+Date: 2026-10-03. Raw report: `artifacts/fixture-selftest-20261003-155847-f635d6e3.json`
 (ignored raw dir; this file is the retained summary). Fixture behavior only;
 no sandbox backend is qualified. Supersedes the GP-1A summary for case counts
 (manifest v2 = v1 16 + 4 F3).
