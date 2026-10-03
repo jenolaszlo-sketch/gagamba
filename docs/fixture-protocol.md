@@ -1,6 +1,6 @@
 # GP-1 fixture and evidence contract
 
-Status: prepared implementation brief, 2026-10-03. No fixture executable or evidence collector exists yet. This is private test tooling, not a public Gagamba API.
+Status: GP-1A implemented 2026-10-03 (F1/F2 + protocol + evidence v1 under `tests/Fixtures/`, entrypoint `eng/fixture-selftest.ps1`). F3+ remains pending. This is private test tooling, not a public Gagamba API.
 
 ## First implementation slice
 

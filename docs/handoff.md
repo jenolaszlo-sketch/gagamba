@@ -1,6 +1,6 @@
 # Gagamba handoff
 
-Prepared 2026-10-03. Start the next session in `C:\Users\Laszlos\source\repos\Gagamba`.
+Updated 2026-10-03 for GP-1A completion. Start the next session in `C:\Users\Laszlos\source\repos\Gagamba`.
 
 ## User direction
 
@@ -11,7 +11,7 @@ Develop Gagamba alone as an independently useful .NET sandbox library. Windows, 
 - Local Git repository is connected to `https://github.com/jenolaszlo-sketch/gagamba.git` as `origin`. Preparation baseline `7bdb28f690a4b7988876ec463b3e77254dc075fe` was committed and pushed on main, preserving initial license commit `fcc2fdc`. Local and remote main were verified to match before the verifier-entrypoint fix. The older staged-only report is superseded. Use git log, git status and git ls-remote origin refs/heads/main for the current checkpoint, since follow-up fixes advance it.
 - Original proposal is preserved byte-for-byte under `docs/proposals/2026-10-03-original-proposal.md`; it is historical input, not the current implementation queue.
 - Preparation delivered the security baseline, private fixture/evidence protocol, activity queue, implementation/testing plans and repository guidance.
-- No runtime source, native helper, worker, .NET project, NuGet package, installed distro or CI workflow exists. No sandbox has been launched or qualified.
+- GP-1A implemented (uncommitted working tree on top of `8eee0fd`): `tests/Fixtures/Gagamba.Fixture.Worker|Host|Harness|SelfTest`, `eng/fixture-selftest.ps1|.sh`, evidence summary `docs/evidence/fixture-selftest-GP-1A.md`, raw JSON under ignored `artifacts/`. No backend provider, native helper, NuGet package, installed distro or CI workflow exists. No sandbox has been launched or qualified.
 - Current shell chat may still be rooted in Solo. Use the Gagamba path explicitly; Solo's planning staging files are not the source of truth. Prefer opening the next coding session directly in Gagamba so its workspace permissions match the work.
 
 ## Read in this order
@@ -32,22 +32,17 @@ WSL default version is 2; its only listed distribution was running `docker-deskt
 
 Unverified: Windows export/schema and sandbox launch, Linux namespaces and seccomp, macOS runner execution, reliable termination on every backend, actual read/network denial, and developer-workload compatibility. Upstream documentation and upstream CI configuration are research sources, not our test evidence.
 
+Verified GP-1A 2026-10-03 (fixtures only, not enforcement): Release `eng/fixture-selftest.ps1` — 13/13 unit + 16/16 harness Passed, aggregate Passed, cleanup Confirmed. Run `20261003-154524-5ec79312` on Windows 10.0.26200 win-x64 NTFS, standard-user, .NET 10.0.12, source commit `8eee0fd` dirty with SHA-256 manifest. Bounds shown: 16 KiB protocol, 64 KiB stdin, 1 MiB output caps, 3 s hang kill, workspace escape rejected. See `docs/evidence/fixture-selftest-GP-1A.md`.
+
 ## Exact next task
 
-Implement **GP-1A only as the first coherent coding slice**:
-
-1. Inspect repository status and root guidance, preserve existing docs, and use .NET 10 for the test tooling.
-2. Create the minimal fixture host/worker and `eng` entrypoint described in fixture-protocol.md. Avoid empty public package projects.
-3. Implement bounded read/write/exit/stdin/stdout/stderr operations, explicit Ready/Continue sequencing, malformed-input rejection, time limits, synthetic sentinels, independent cleanup and positive controls.
-4. Implement the versioned report collector/validator and a FixtureSelfTest evidence record from actual runs. Enforce required IDs and no empty passing reports.
-5. Run local Release self-tests, record exact source identity including dirty-tree input hashes where there is no commit, and update GP-1A status with concrete evidence.
-6. Continue with GP-1B or GW-1A as appropriate. Windows availability/minimal-launch probes can follow GP-1A; actual process-tree claims require GP-1B and backend tests.
+Implement **GP-1B next** (F3: deterministic child/grandchild, early root exit, barrier and ownership checks plus worker self-tests). **GW-1A availability/minimal-launch probing** (Windows export/schema, minimal launch, captured I/O) may proceed in parallel; its containment/lifetime qualification requires GP-1B. Do not claim any provider, package, or cross-platform conformance yet.
 
 Before executing experiments that alter host ACLs/users/firewall or install a runtime, prepare the exact setup/cleanup implementation and inspect the task's authorization. No permission prompt is required merely to write code, read state or run safe fixtures. Keep privileged setup separate and attributable.
 
 ## Resume prompt
 
-> Continue standalone Gagamba in C:\Users\Laszlos\source\repos\Gagamba. Read AGENTS.md, docs/handoff.md, docs/work-queue.md, docs/security-model.md and docs/fixture-protocol.md first. Preparation is complete through the GP-0 design baseline; no backend, worker or CI is implemented or qualified. Start GP-1A: a minimal .NET 10 controlled fixture host/worker, bounded I/O, reliable positive controls, watchdog/cleanup and strict versioned evidence validation. Use synthetic disposable fixtures and record actual Release self-test evidence. Then update the queue and handoff. Keep public APIs provisional, all restrictions fail-closed, Windows local testing first, Linux/macOS in scope, and Hufu/Luban integration deferred. Do not mistake fixture self-tests, upstream examples or Docker's outer restrictions for Gagamba enforcement. Inspect the repository state and preserve the original proposal.
+> Continue standalone Gagamba in C:\Users\Laszlos\source\repos\Gagamba. Read AGENTS.md, docs/handoff.md, docs/work-queue.md, docs/security-model.md and docs/fixture-protocol.md first. GP-1A is complete with passing Release fixture self-tests (16/16 harness + 13/13 unit, cleanup Confirmed; fixtures only, no backend qualified). Implement GP-1B next: deterministic child/grandchild fixtures, early-exit/barrier/ownership checks and self-tests. GW-1A availability probing may proceed in parallel but claims no provider. Keep public APIs provisional, all restrictions fail-closed, Windows local testing first, Linux/macOS in scope, and Hufu/Luban integration deferred. Do not mistake fixture self-tests, upstream examples or Docker's outer restrictions for Gagamba enforcement. Inspect the repository state and preserve the original proposal.
 
 ## Validation of this preparation
 
@@ -55,4 +50,4 @@ Documentation link resolution and original-proposal SHA-256 equality are checked
 
 Verifier regression checks passed on 2026-10-03: Windows PowerShell -File with default/explicit root, call-operator invocation, PowerShell 7 -File with default/explicit root, and missing/empty root rejection (seven cases). Default-root tests ran outside the repository. Documentation links and the original proposal hash still pass. These are preparation-tool checks only.
 
-No build or runtime tests apply yet because no implementation exists. The user created the remote and it is connected locally. CI activation, distro installation and package publication remain pending.
+No backend, package, or CI conformance tests apply yet because no provider exists. The user created the remote and it is connected locally. GP-1A code is uncommitted; commit it before backend spikes so the source manifest (commit + dirty flag + SHA-256) pins exactly. CI activation, distro installation and package publication remain pending.

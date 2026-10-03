@@ -7,9 +7,9 @@ Updated 2026-10-03. Status definitions: Complete = stated artifact exists; Ready
 | PREP-1 | Complete | Standalone repo, original proposal preserved, feasibility/design and implementation/testing plans |
 | PREP-2 | Complete | Local WSL/Docker inventory and three-platform test environment plan |
 | GP-0 | Complete — design baseline only | [offline-process-v1](security-model.md) defines permissions, assumptions and lifetime; empirical qualification remains open |
-| GP-1A | Ready — next | Implement F1/F2 host/worker, protocol validation, positive controls, watchdog and evidence validator from [fixture contract](fixture-protocol.md) |
-| GP-1B | Held on GP-1A | Add deterministic child/grandchild, early exit, barrier and ownership checks; pass worker self-tests |
-| GW-1A | Held on GP-1A | Probe local Windows export/schema, minimal launch and captured I/O; no production-provider claim |
+| GP-1A | Complete 2026-10-03 | F1/F2 host/worker, protocol validation, positive controls, watchdog and evidence validator implemented; Release `eng/fixture-selftest.ps1` 16/16 harness + 13/13 unit Passed, cleanup Confirmed — see [GP-1A evidence](evidence/fixture-selftest-GP-1A.md). Proves fixtures only, not backend enforcement |
+| GP-1B | Ready — next | Add deterministic child/grandchild, early exit, barrier and ownership checks; pass worker self-tests |
+| GW-1A | Ready (availability/minimal-launch only) | Probe local Windows export/schema, minimal launch and captured I/O; no production-provider claim; containment/lifetime qualification still held on GP-1B |
 | GW-1B | Held on GP-1B and GW-1A | Real denial, descendants, launch/cancel/crash and controlled workload evidence; provider ADR |
 | GL-1A | Held on first local Windows probe and separate WSL distro | Prepare Ubuntu WSL2, namespace/seccomp inventory and equivalent minimal Linux probe |
 | GM-1A | Held on GP-1A and workflow/runner setup | Remote exists; manual bounded macOS capability probe, ARM64 first and Intel separately |
