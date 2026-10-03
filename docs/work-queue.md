@@ -38,3 +38,12 @@ The GP-1A/B and GW-1A/B slices refine the broader milestones in the [implementat
 5. Availability of repeatable Windows 11 CI; Windows Server compilation does not qualify the client API.
 
 Record evidence and status changes here as work progresses. Do not rerun completed inventory solely to rediscover the same environment; refresh it when provisioning or observed state changes.
+
+## Pre-coding gap disposition
+
+- Commit/push prerequisite is satisfied by preparation baseline `7bdb28f` on local and remote main. A clean `git status` has no staged `A` entries; inspect the exact checkout if another session still reports the initial commit.
+- The verifier supports Windows PowerShell `-File` by computing its default root in the body. README documents process-scoped execution-policy options. Explicit empty roots reject rather than selecting another repository.
+- No `tests/Fixtures/`, solution, `eng/verify.ps1`, `eng/probe.ps1`, `eng/conformance.ps1` or `.github/workflows/` is expected yet. Create each with working behavior at its milestone. No empty `src/Gagamba.*` projects.
+- The five feasibility gates above remain open and do not block GP-1A fixture self-tests. They block their respective backend and release claims.
+- Before GL-1A execution, install and initialize a separate Ubuntu WSL2 distribution, confirm version 2 and Linux filesystem placement, and record setup evidence. Docker's internal distribution is not the development environment. This installation has not occurred.
+- Before GM-1A launcher/conformance work, manually run a bounded macOS runner availability probe and retain its image/architecture/tool report. That probe is the initial part of the macOS research gate, not proof of sandbox enforcement. No macOS workflow or probe run exists yet.

@@ -36,4 +36,23 @@ The original proposal is historical input. Its integration roadmap and illustrat
 
 Implement GP-1A: the controlled fixture host/worker, positive controls, bounded I/O, watchdog and evidence validator. Then begin the local Windows mechanism probe. See the [test environment plan](docs/test-environments.md) for WSL2, Docker, and macOS CI. Do not create empty production packages solely to match the original directory diagram.
 
-This repository contains planning/preparation documents and a read-only verification script. It is connected to [GitHub](https://github.com/jenolaszlo-sketch/gagamba); the initial license is preserved. No sandbox code, packages, workflows or host security changes exist yet. Run `./eng/verify-preparation.ps1` to check preparation artifacts.
+This repository contains planning/preparation documents and a read-only verification script. It is connected to [GitHub](https://github.com/jenolaszlo-sketch/gagamba); the initial license is preserved. No sandbox code, packages, workflows or host security changes exist yet. The missing solution, fixture projects, runtime packages and workflows are expected at this checkpoint; GP-1A creates working test tooling, not empty production scaffolding.
+
+## Verify preparation on Windows
+
+From the repository root, use a fresh Windows PowerShell process:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\eng\verify-preparation.ps1
+```
+
+For PowerShell 7, substitute `pwsh` for `powershell.exe`. From another working directory, provide the script's full path; its repository root is resolved from the script location. An explicit `-RepositoryRoot` override is also supported.
+
+Alternatively, in an existing PowerShell session:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+& .\eng\verify-preparation.ps1
+```
+
+These options apply only to the invoked process/session, without changing CurrentUser or LocalMachine policy. Managed policy can take precedence; do not change machine policy to run this check. The verifier reads files only and does not establish sandbox or CI qualification.

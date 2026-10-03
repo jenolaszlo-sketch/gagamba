@@ -1,7 +1,15 @@
 [CmdletBinding()]
-param([string]$RepositoryRoot = (Split-Path -Parent $PSScriptRoot))
+param([string]$RepositoryRoot)
 
 $ErrorActionPreference = 'Stop'
+# Windows PowerShell -File can evaluate parameter defaults before PSScriptRoot is set.
+# Resolve the default in the script body, independently of the caller's directory.
+if (-not $PSBoundParameters.ContainsKey('RepositoryRoot')) {
+    $RepositoryRoot = Split-Path -Parent $PSScriptRoot
+}
+if ([string]::IsNullOrWhiteSpace($RepositoryRoot)) {
+    throw 'RepositoryRoot must be a non-empty path.'
+}
 $prepRoot = (Resolve-Path -LiteralPath $RepositoryRoot).Path
 $prepRequired = @(
     'AGENTS.md', 'README.md', 'LICENSE',

@@ -8,7 +8,7 @@ Develop Gagamba alone as an independently useful .NET sandbox library. Windows, 
 
 ## Repository checkpoint
 
-- Local Git repository is connected to `https://github.com/jenolaszlo-sketch/gagamba.git` as `origin`. Remote `main` starts at `fcc2fdc6860482308b2eea34d39e91d169d90cda` (Initial commit, LICENSE only). Local `main` adopts that history and preserves the license. This handoff accompanies the preparation commit on main; use git log, git status and origin/main to identify the exact current checkpoint before making changes.
+- Local Git repository is connected to `https://github.com/jenolaszlo-sketch/gagamba.git` as `origin`. Preparation baseline `7bdb28f690a4b7988876ec463b3e77254dc075fe` was committed and pushed on main, preserving initial license commit `fcc2fdc`. Local and remote main were verified to match before the verifier-entrypoint fix. The older staged-only report is superseded. Use git log, git status and git ls-remote origin refs/heads/main for the current checkpoint, since follow-up fixes advance it.
 - Original proposal is preserved byte-for-byte under `docs/proposals/2026-10-03-original-proposal.md`; it is historical input, not the current implementation queue.
 - Preparation delivered the security baseline, private fixture/evidence protocol, activity queue, implementation/testing plans and repository guidance.
 - No runtime source, native helper, worker, .NET project, NuGet package, installed distro or CI workflow exists. No sandbox has been launched or qualified.
@@ -51,6 +51,8 @@ Before executing experiments that alter host ACLs/users/firewall or install a ru
 
 ## Validation of this preparation
 
-Documentation link resolution and original-proposal SHA-256 equality are checked by `eng/verify-preparation.ps1`. The script is read-only and can be rerun without backend setup. It checks required prep artifacts and basic gate consistency; it does not validate sandbox behavior or prove the design secure.
+Documentation link resolution and original-proposal SHA-256 equality are checked by `eng/verify-preparation.ps1`. The script is read-only and can be rerun without backend setup. Use `powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\eng\verify-preparation.ps1` from the repository root; see the [README invocation options](../README.md). Root resolution occurs in the script body for Windows PowerShell -File compatibility. It checks required prep artifacts and basic gate consistency; it does not validate sandbox behavior or prove the design secure.
+
+Verifier regression checks passed on 2026-10-03: Windows PowerShell -File with default/explicit root, call-operator invocation, PowerShell 7 -File with default/explicit root, and missing/empty root rejection (seven cases). Default-root tests ran outside the repository. Documentation links and the original proposal hash still pass. These are preparation-tool checks only.
 
 No build or runtime tests apply yet because no implementation exists. The user created the remote and it is connected locally. CI activation, distro installation and package publication remain pending.
