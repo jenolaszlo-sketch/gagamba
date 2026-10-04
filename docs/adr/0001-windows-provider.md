@@ -1,9 +1,10 @@
 # ADR 0001: Windows provider — experimental API plus Gagamba supervisor
 
 Status: accepted for continued prototyping (NOT production qualification).
-Date: 2026-10-03. Evidence: `docs/evidence/windows-minimal-launch-GW-1B.md`,
+Date: 2026-10-03; workload-visibility limitation added 2026-10-04. Evidence: `docs/evidence/windows-minimal-launch-GW-1B.md`,
 `docs/evidence/windows-denial-tree-io-GW-1B.md`,
-`docs/evidence/windows-pipes-supervisor-workloads-GW-1B.md`.
+`docs/evidence/windows-pipes-supervisor-workloads-GW-1B.md`,
+`docs/evidence/windows-slice4-GW-1B.md`.
 
 ## Context
 
@@ -36,10 +37,18 @@ Gaps that shape the design:
   (both variants measured). Tree ownership must live in Gagamba.
 - `dotnet --info` launches but exits 1 silently in every grant configuration
   (ws-only through full closure), while `whoami.exe` runs fine with no
-  grants at all — so System32 is implicitly covered and the dotnet failure
-  is runtime compatibility (registry/capability/Low-IL friction), not path
-  closure. The `registryRead` capability variant was tried (slice 4) and did
-  not change the outcome; the dotnet failure remains unresolved.
+  grants at all. Resolved by GW-1B-L6 (see Workload limitation below): the
+  CLI installer probe queries an outside PID; the runtime itself is healthy
+  and staged self-contained closures exit 0. The `registryRead` capability
+  variant was tried (slice 4) and did not change the outcome; that was
+  expected in hindsight — the failure was never registry access.
+- Some host directory trees cannot be granted at all: `C:\Program Files\Git`
+  (and its subdirectories, and `C:\Program Files` itself) returns
+  `ERROR_INVALID_DATA` deterministically, while `dotnet`, `Common Files`,
+  `Windows`, and copies of Git's contents under `C:\temp` are accepted. The
+  provider must validate grant roots at preparation and reject/fallback rather
+  than assume a directory is bindable. Staging bypasses this; the remaining
+  git gate is ancestor list-access during cwd resolution (see below).
 - Some host directory trees cannot be granted at all: `C:\Program Files\Git`
   (and its subdirectories, and `C:\Program Files` itself) returns
   `ERROR_INVALID_DATA` deterministically, while `dotnet`, `Common Files`,
@@ -50,6 +59,39 @@ Gaps that shape the design:
   `%TEMP%` are rejected while the same shape under `C:\temp` is accepted
   (foreign ACEs on the `%TEMP%` tree are suspected). Preparation should
   validate the actual grant set and surface a typed rejection.
+
+## Workload limitation: the sandbox hides host objects (git + dotnet, same rule)
+
+Both workload failures resolve to one principle, binding until disproven:
+**inside the sandbox, host objects outside the grants are invisible, and
+programs that resolve them die.** The binaries run; their environment
+probes fail. Never re-investigate these as path-closure or capability
+issues — check visibility first.
+
+- Git (GW-1B-L5): every command except `--version` resolves the cwd by
+  walking ancestors. `C:\` and `C:\Users\Laszlos` deny list-directory under
+  AppContainer (ProcMon `CreateFile → ACCESS DENIED`), msys `getcwd()`
+  returns `EACCES`, git dies with `fatal: Unable to read current working
+  directory: Permission denied`, exit `128`. Nine black-box discriminators
+  (empty repos, `--git-dir` forms, temp/`HOME`/config/ownership variants,
+  tracing) all failed identically before the capture named it.
+- dotnet CLI (GW-1B-L6): the runtime starts, but `InstallerBase` queries an
+  outside PID in its static constructor. Only `[System Process]` + self are
+  visible (`GetProcesses`/ToolHelp count = 2 vs ~405); `GetProcessById`
+  on the parent throws `ArgumentException: Process with an Id ... is not
+  running`, exit 1. A staged self-contained probe exits 0 with all
+  self-introspection green — same sandbox, same grants.
+
+Design consequences of the rule:
+
+- Stage dependency closures into grantable roots; never grant installs.
+- Prefer self-contained managed closures over CLI hosts for sandboxed work.
+- Workloads must not resolve host objects: no ancestor walks above the
+  grants, no outside-PID queries, no host-path/profile lookups. Treat any
+  "not found"-shaped death of an otherwise-launchable binary as a
+  visibility failure first.
+- Open: narrow ancestor list-grants (incl. drive root) for git; avoiding
+  the CLI host probe for framework-dependent launch.
 
 ## Decision
 
@@ -84,4 +126,5 @@ missing mechanisms reject before target dispatch.
 - Public APIs stay provisional until GL-1A/GM-1A evidence exists.
 - In-job hosts (like current CI shells) need nesting review per run.
 - Conformance must re-prove: descendant stop, pipe transport, profile
-  residue, and the dotnet-compat answer on every claimed OS build.
+  residue, and the workload-visibility answers (CLI-host vs self-contained,
+  ancestor grants) on every claimed OS build.
