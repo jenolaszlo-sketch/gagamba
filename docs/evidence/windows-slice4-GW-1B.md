@@ -96,3 +96,40 @@ correctly `Failed`; the red legs are findings, not harness faults.
   `Evidence.TryGit` drains both pipes under a timeout.
 - `eng/probe.sh` and `eng/fixture-selftest.sh` now fail closed on a non-Passed
   aggregate / wrong evidence kind, without a `python3` dependency.
+
+## Git silent-128 resolved: ancestor list-access + harness drain gap
+
+An elevated ProcMon capture of the staged-Git workload leg (captured by the
+user, exported offline, analyzed from the CSV) closed the silent-`128`
+mystery; a rerun with fixed pipe draining confirmed the mechanism:
+
+- Every git command except `--version` resolves the cwd by walking ancestors.
+  Under AppContainer, opening `C:\` (and `C:\Users\Laszlos`) as a directory
+  returns `ACCESS DENIED` (`CreateFile`, `Read Data/List Directory`).
+- msys reports `EACCES` from `getcwd()` and git dies before any repo/config
+  work: `fatal: Unable to read current working directory: Permission denied`
+  (67 bytes on the pipe), exit `128`. This explains why `config --list`,
+  empty repos, `GIT_CONFIG_NOSYSTEM`, `HOME` redirection and
+  `safe.directory=*` all failed identically, and why `GIT_TRACE` stayed
+  silent (death precedes trace init). `--version` never touches the cwd.
+- The message never reached evidence because `RunPipedAsync` skipped draining
+  both pipes whenever the exit code mismatched the expectation. Fixed to
+  always drain when a child ran (only API/spec rejections skip); the rerun
+  leg reports the fatal for both `rev-parse` and `status`. Bisect scaffolding
+  (config/empty-repo/strace probes, env overrides) was removed from the leg
+  after serving its purpose.
+- Adjacent: msys `strace` starts (`--version` exits 0) but dies with
+  `0xC0000005` writing zero bytes the moment it traces any in-sandbox target;
+  in-sandbox debug/spawn primitives are unusable, so black-box tracing ends
+  here. Event logs (`Application` WER, `AppModel-Runtime/Admin`) show only
+  normal container lifecycle; no crash records.
+- Provider consequence: Git workloads need either list-access grants on the
+  full ancestor chain of the cwd (including the drive root, currently
+  untested) or a cwd confined under a fully grantable subtree. Open as
+  GW-1B-L5; the staged-closure pattern (copy under `C:\temp`) itself is
+  proven: the staged `git --version` exits 0 in-sandbox.
+- Side effect of the drain fix: the dotnet leg now reports its first real
+  error instead of `err=''`: `System.TypeInitializationException` in
+  `Microsoft.DotNet.Cli.Installer.Windows.InstallerBase` caused by
+  `Process.GetProcessById` failing ("Process with an Id ... is not
+  running"). New L3 lead, not yet investigated.

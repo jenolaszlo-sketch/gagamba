@@ -893,7 +893,11 @@ internal static class LaunchStaircase
                 string shape = exe == whoamiExe
                     ? (vOut.Contains('\\') && vOut.Trim().Length < 160 ? "shape-ok" : $"shape-bad(len={vOut.Length})")
                     : $"out={vOut.Length}B";
-                return (ran, $"{detail} {shape} errlen={vErr.Length} profile={prof}");
+                // First 300 chars of stderr (single line) so host/runtime
+                // diagnostics are visible in the evidence, not just lengths.
+                string errHead = vErr.Replace("\r", " ").Replace("\n", " ").Trim();
+                if (errHead.Length > 300) errHead = errHead[..300] + "...";
+                return (ran, $"{detail} {shape} errlen={vErr.Length} err='{errHead}' profile={prof}");
             }
             using var roA = FixtureWorkspace.Create("gw1b-roA-" + runTag);
             using var roB = FixtureWorkspace.Create("gw1b-roB-" + runTag);
@@ -1034,64 +1038,124 @@ internal static class LaunchStaircase
         });
 
         // ---- L4-WORKLOAD-GIT (canary + repo inspection with explicit grants) ----
+        // The installed tree (C:\Program Files\Git and every subdir probed) is
+        // rejected as a grant with ERROR_INVALID_DATA, deterministically, while
+        // dotnet/Common Files/Windows and copies under C:\temp bind fine. So
+        // the workload stages a runnable Git closure into a clean root first
+        // (provider pattern: stage dependency closures, don't grant installs).
         await RunCase(collector, "L4-WORKLOAD-GIT", async () =>
         {
-            string gitExe = @"C:\Program Files\Git\bin\git.exe";
-            if (!File.Exists(gitExe))
-            {
-                gitExe = @"C:\Program Files\Git\cmd\git.exe";
-                if (!File.Exists(gitExe))
-                    return AbandonLeg(cleanups, "git", $"GagambaGW1B{runTag}g",
-                        "git not at well-known paths", Array.Empty<FixtureWorkspace>());
-            }
-            string gitDir = Path.GetDirectoryName(Path.GetDirectoryName(gitExe)!)!;
-            Environment.SetEnvironmentVariable("GIT_OPTIONAL_LOCKS", "0");
-            using var ctlGitWs = FixtureWorkspace.Create("gw1b-gitctl-" + runTag);
-            string ctlCopy = Path.Combine(ctlGitWs.Root, "repo");
-            CopyDirExcluding(repoRoot, ctlCopy, new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-                { "bin", "obj", "artifacts", ".vs", ".idea", "TestResults" });
-            var c1 = await ControlRunner.Run(gitExe, "--version", ctlGitWs.Root, 30_000);
-            var c2 = await ControlRunner.Run(gitExe, $"-C \"{ctlCopy}\" status --porcelain", ctlGitWs.Root, 60_000);
-            bool ctlGitOk = ctlGitWs.DisposeAndReport() == "Confirmed" && !Directory.Exists(ctlGitWs.Root);
-            if (!c1.Exited || !c1.Stdout.Contains("git version") || !c2.Exited || c2.ExitCode != 0 || !ctlGitOk)
+            const string sysGit = @"C:\Program Files\Git\bin\git.exe";
+            if (!File.Exists(sysGit))
                 return AbandonLeg(cleanups, "git", $"GagambaGW1B{runTag}g",
-                    $"controls failed: version[{c1.Detail}] status[{c2.Detail}] ctlWs={ctlGitOk}");
-            // One retry on a fresh workspace: a transient first-failure can
-            // poison its grant path for later attempts (measured stickiness).
-            string gitDetail = "no attempt";
-            bool gitOk = false;
-            var gitProfs = new List<string>();
-            bool gitWsOk = true;
-            for (int attempt = 1; attempt <= 2 && !gitOk; attempt++)
+                    "system git not at well-known path", Array.Empty<FixtureWorkspace>());
+            Environment.SetEnvironmentVariable("GIT_OPTIONAL_LOCKS", "0");
+            // Clean staging root: a drive-root "temp" dir (created if needed),
+            // which carries none of the foreign ACEs found on %TEMP%.
+            string? cleanRoot = TryCleanStageRoot();
+            if (cleanRoot is null)
+                return AbandonLeg(cleanups, "git", $"GagambaGW1B{runTag}g",
+                    "no clean staging root available", Array.Empty<FixtureWorkspace>());
+            string stageRoot = Path.Combine(cleanRoot, "gw1b-gitport-" + runTag);
+            var swStage = Stopwatch.StartNew();
+            CopyDirExcluding(Path.GetDirectoryName(Path.GetDirectoryName(sysGit)!)!, stageRoot,
+                new HashSet<string>(StringComparer.OrdinalIgnoreCase));
+            swStage.Stop();
+            string stagedGit = Path.Combine(stageRoot, "bin", "git.exe");
+            bool stagedOk = true;
+            try
             {
-                using var aws = FixtureWorkspace.Create($"gw1b-git{attempt}-" + runTag);
-                string repoCopy = Path.Combine(aws.Root, "repo");
-                CopyDirExcluding(repoRoot, repoCopy, new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                if (!File.Exists(stagedGit))
+                    stagedOk = false;
+                using var ctlGitWs = FixtureWorkspace.Create("gw1b-gitctl-" + runTag);
+                string ctlCopy = Path.Combine(ctlGitWs.Root, "repo");
+                CopyDirExcluding(repoRoot, ctlCopy, new HashSet<string>(StringComparer.OrdinalIgnoreCase)
                     { "bin", "obj", "artifacts", ".vs", ".idea", "TestResults" });
-                string aidGit = $"GagambaGW1B{runTag}g{attempt}";
-                // repoCopy lives under aws.Root, so it is already covered by the
-                // single rw grant. Granting it again as ro would add a second
-                // same-kind ro grant (an engine-fragile shape under %TEMP%).
-                var gspec = new SandboxSpecRequest("0.1.0", true, [aws.Root], [gitDir]);
-                var (okVer, dVer, oVer, _) = await RunPipedAsync(aidGit + "a", gspec, gitExe, "--version", aws.Root, 0);
+                var c1 = stagedOk
+                    ? await ControlRunner.Run(stagedGit, "--version", ctlGitWs.Root, 30_000)
+                    : new DirectResult(false, -1, "staged git missing", string.Empty);
+                var c2 = stagedOk && c1.Exited && c1.ExitCode == 0
+                    ? await ControlRunner.Run(stagedGit, $"-C \"{ctlCopy}\" status --porcelain", ctlGitWs.Root, 60_000)
+                    : new DirectResult(false, -1, "skipped", string.Empty);
+                bool ctlGitOk = ctlGitWs.DisposeAndReport() == "Confirmed" && !Directory.Exists(ctlGitWs.Root);
+                if (!c1.Exited || !c1.Stdout.Contains("git version") || !c2.Exited || c2.ExitCode != 0 || !ctlGitOk)
+                    return AbandonLeg(cleanups, "git", $"GagambaGW1B{runTag}g",
+                        $"staged controls failed: version[{c1.Detail}] status[{c2.Detail}] ctlWs={ctlGitOk} (stage {swStage.Elapsed.TotalSeconds:F0}s)");
+                // Attempts on fresh workspaces (transient INVALID_DATA recovers
+                // on fresh identity+workspace; never fall back to unconfined).
+                string gitDetail = "no attempt";
+                bool gitOk = false;
+                var gitProfs = new List<string>();
+                bool gitWsOk = true;
+                for (int attempt = 1; attempt <= 2 && !gitOk; attempt++)
+                {
+                    using var aws = FixtureWorkspace.Create($"gw1b-git{attempt}-" + runTag);
+                    string repoCopy = Path.Combine(aws.Root, "repo");
+                    CopyDirExcluding(repoRoot, repoCopy, new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                        { "bin", "obj", "artifacts", ".vs", ".idea", "TestResults" });
+                    string aidGit = $"GagambaGW1B{runTag}g{attempt}";
+                    // repoCopy lives under aws.Root (covered by the single rw
+                    // grant); the staged closure is the single ro grant.
+                    var gspec = new SandboxSpecRequest("0.1.0", true, [aws.Root], [stageRoot]);
+                var (okVer, dVer, oVer, _) = await RunPipedAsync(aidGit + "a", gspec, stagedGit, "--version", aws.Root, 0);
                 bool versionOk = okVer && oVer.Contains("git version");
-                var (okStatus, dStatus, oStatus, _) = await RunPipedAsync(aidGit + "b", gspec, gitExe,
-                    $"-C \"{repoCopy}\" status --porcelain", aws.Root, 0);
+                // `git status` may need a writable temp dir; the inherited
+                // host %TEMP% is outside grants, so point TMP/TEMP at a
+                // workspace subdir for this launch only, then restore.
+                string tmpDir = Path.Combine(aws.Root, "tmp");
+                Directory.CreateDirectory(tmpDir);
+                string? oldTmp = Environment.GetEnvironmentVariable("TMP");
+                string? oldTemp = Environment.GetEnvironmentVariable("TEMP");
+                Environment.SetEnvironmentVariable("TMP", tmpDir);
+                Environment.SetEnvironmentVariable("TEMP", tmpDir);
+                bool okStatus;
+                string dStatus, oStatus, eStatus;
+                try
+                {
+                // Workload: rev-parse HEAD (needs .git/HEAD+refs), then
+                // status --porcelain (worktree scan). Both resolve the cwd
+                // by walking ancestors, which fails under AppContainer when
+                // a parent dir (e.g. C:\) denies list access -- see the
+                // evidence doc. RunPipedAsync always drains the pipes now,
+                // so the childs fatal stays in evidence.
+                (okStatus, dStatus, oStatus, eStatus) = await RunPipedAsync(aidGit + "b", gspec, stagedGit,
+                    "rev-parse HEAD", repoCopy, 0);
+                string revErr = eStatus.Replace("\r", " ").Replace("\n", " ").Trim();
+                if (revErr.Length > 200) revErr = revErr[..200] + "...";
+                var (okSt, dSt, oSt, eSt) = await RunPipedAsync(aidGit + "c", gspec, stagedGit,
+                    "status --porcelain", repoCopy, 0);
+                string stErr = eSt.Replace("\r", " ").Replace("\n", " ").Trim();
+                if (stErr.Length > 200) stErr = stErr[..200] + "...";
+                gitDetail = $"try{attempt}: version[{dVer}] revparse[{dStatus}] out='{oStatus.Trim()}' err='{revErr}' status[{dSt}] out='{oSt.Trim()[..Math.Min(80, oSt.Trim().Length)]}' err='{stErr}'";
+                okStatus = okSt;
+                oStatus = oSt;
+                eStatus = eSt;
+                }
+                finally
+                {
+                    Environment.SetEnvironmentVariable("TMP", oldTmp);
+                    Environment.SetEnvironmentVariable("TEMP", oldTemp);
+                }
                 bool statusOk = okStatus && oStatus.Trim().Length < 4096;
-                gitDetail = $"try{attempt}: version[{dVer}] status[{dStatus}] out='{oStatus[..Math.Min(120, oStatus.Length)]}'";
                 gitOk = versionOk && statusOk;
-                string aprof = SweepProfile(aidGit + "a") + "+" + SweepProfile(aidGit + "b");
+                string aprof = SweepProfile(aidGit + "a") + "+" + SweepProfile(aidGit + "b") + "+" + SweepProfile(aidGit + "c");
                 bool awsOk = aws.DisposeAndReport() == "Confirmed" && !Directory.Exists(aws.Root);
                 if (!awsOk) gitWsOk = false;
                 gitProfs.Add(aprof);
             }
-            string gitProfAll = string.Join("+", gitProfs);
-            bool gitProfOk = gitProfs.All(p => p.Split('+').All(q =>
-                q.StartsWith("deleted(") || q.StartsWith("deleted-never-materialized(")));
-            cleanups.Add(("gitwork", new(gitProfOk, true, gitProfAll, gitWsOk)));
-            return gitOk
-                ? (true, $"git --version + status --porcelain in sandbox (grants rw=[ws], ro=[gitDir]); {gitDetail} profile={gitProfAll}", (string?)null)
-                : (false, $"{gitDetail} profile={gitProfAll}", (string?)null);
+                string gitProfAll = string.Join("+", gitProfs);
+                bool gitProfOk = gitProfs.All(p => p.Split('+').All(q =>
+                    q.StartsWith("deleted(") || q.StartsWith("deleted-never-materialized(")));
+                cleanups.Add(("gitwork", new(gitProfOk, true, gitProfAll, gitWsOk)));
+                return gitOk
+                    ? (true, $"staged git --version + status --porcelain in sandbox (grants rw=[ws], ro=[staged]); {gitDetail} profile={gitProfAll}", (string?)null)
+                    : (false, $"{gitDetail} profile={gitProfAll}", (string?)null);
+            }
+            finally
+            {
+                // Staging is test-owned: always remove it.
+                try { if (Directory.Exists(stageRoot)) Directory.Delete(stageRoot, recursive: true); } catch { }
+            }
         });
 
         // ---- L4-WORKLOAD-BUILD (offline compile; gated on runtime) ----
@@ -1363,7 +1427,13 @@ internal static class LaunchStaircase
                 hStdOut: hWrite, hStdErr: eWrite,
                 waitMs: waitMs);
             string capturedOut = string.Empty, capturedErr = string.Empty;
-            if (r.Ok)
+            // Drain whenever a child ran, even on exit-code mismatch:
+            // the failing childs final writes are the diagnosis (skipping
+            // the drain on !Ok once hid a 67-byte fatal from evidence).
+            // Only API/spec rejections (no target ran) have nothing to read.
+            bool childRan = !r.Detail.Contains("no target ran")
+                && !r.Detail.Contains("spec gate refused");
+            if (childRan)
             {
                 using var rs = new FileStream(
                     new Microsoft.Win32.SafeHandles.SafeFileHandle(hRead, ownsHandle: true),
@@ -1508,8 +1578,26 @@ internal static class LaunchStaircase
         _ => "unmapped",
     };
 
-    private static void CopyDirExcluding(string source, string target, HashSet<string> excludeDirs)
+    /// <summary>
+    /// Returns a drive-root "temp" staging directory (created if needed) for
+    /// dependency closures that must live outside %TEMP% (whose foreign ACEs
+    /// break multi-grant engine binding), or null when unavailable.
+    /// </summary>
+    private static string? TryCleanStageRoot()
     {
+        try
+        {
+            string? driveRoot = Path.GetPathRoot(Path.GetTempPath());
+            if (string.IsNullOrEmpty(driveRoot))
+                return null;
+            string stage = Path.Combine(driveRoot, "temp");
+            Directory.CreateDirectory(stage);
+            return Directory.Exists(stage) ? stage : null;
+        }
+        catch { return null; }
+    }
+
+    private static void CopyDirExcluding(string source, string target, HashSet<string> excludeDirs)    {
         Directory.CreateDirectory(target);
         foreach (string dir in Directory.GetDirectories(source))
         {

@@ -1,6 +1,6 @@
 # Gagamba handoff
 
-Updated 2026-10-04 for GW-1B slice 4 (encoder, crash recovery, stability, workloads) plus a review pass. Start the next session in `C:\Users\Laszlos\source\repos\Gagamba`.
+Updated 2026-10-04 for GW-1B slice 4 (encoder, crash recovery, stability, workloads) plus a review pass, then the GW-1B-L5 git-getcwd resolution (ProcMon evidence, harness pipe-drain fix). Start the next session in `C:\Users\Laszlos\source\repos\Gagamba`.
 
 ## User direction
 
@@ -16,7 +16,8 @@ Develop Gagamba alone as an independently useful .NET sandbox library. Windows, 
 - GW-1B slice 1 implemented (`195d16f`): pinned schema + `PIN.md`, verified spec compiler (`spikes/Gw1bLaunch`), first launches under disposable identities. Denial/descendants/races/workloads/ADR were open.
 - GW-1B slice 2 implemented (`61edee2`): denial with positive controls, descendant effects + inherited denial, cancel race proven; tree-stop gap and file-stdio rejection characterized.
 - GW-1B slice 3 implemented (`4b4ce8f`): pipes proven as transport, ToolHelp supervisor proven cross-boundary, whoami maps the base image, dotnet exits 1 silently in all grant configs. Provider ADR 0001 written.
-- GW-1B slice 4 implemented on top (uncommitted working tree): byte-exact spec encoder vs flatc (vendored vectors), crash-recovery by recorded PID, launch-stability/retry, grant-shape and Git-tree findings, and a review fix pass (crash-leg ordering, supervisor cost/PID-reuse, fixture bugs, eng-script false-green). 14/19 legs green; 4 open gates. Evidence `docs/evidence/windows-slice4-GW-1B.md`.
+- GW-1B slice 4 implemented and reviewed: byte-exact spec encoder vs flatc (vendored vectors), crash-recovery by recorded PID, launch-stability/retry, grant-shape and Git-tree findings, and a review fix pass (crash-leg ordering, supervisor cost/PID-reuse, fixture bugs, eng-script false-green). 14/19 legs green; 4 open gates. Evidence `docs/evidence/windows-slice4-GW-1B.md`.
+- GW-1B-L5 git resolution: the staged-closure pattern is proven (staged `git --version` exits 0 in-sandbox) but every other git command dies `128` with `fatal: Unable to read current working directory: Permission denied` — ancestor dirs (`C:\`, profile) deny list access under AppContainer, confirmed by an elevated ProcMon capture. Fixed the harness pipe-drain gap (`RunPipedAsync` now drains when a child ran) that had hidden the fatal; trimmed the leg's bisect scaffolding.
 - Current shell chat may still be rooted in Solo. Use the Gagamba path explicitly; Solo's planning staging files are not the source of truth. Prefer opening the next coding session directly in Gagamba so its workspace permissions match the work.
 
 ## Read in this order
@@ -35,27 +36,27 @@ Observed earlier on this machine: .NET SDK 10.0.401, Windows registry build 2620
 
 WSL default version is 2; its only listed distribution was running `docker-desktop`. Docker Desktop 4.75.0 and engine 29.5.2 reported Linux amd64 kernel 6.6.114.1-microsoft-standard-WSL2. There is no separately listed Ubuntu distribution. Read-only inventory initially failed under the assistant wrapper, then succeeded with an approved external read; this was not a broken Docker/WSL installation.
 
-Unverified: Linux namespaces and seccomp, macOS runner execution, actual read/network denial, and developer-workload compatibility (the Windows `dotnet` runtime and Git install are specifically blocked; see below).
+Unverified: Linux namespaces and seccomp, macOS runner execution, actual read/network denial, and developer-workload compatibility (the Windows `dotnet` runtime is specifically blocked; Git works only past a new ancestor list-access gate, see below).
 
-Verified GW-1A/GW-1B 2026-10-04 (Windows host, spike-only; no provider qualified): `eng/probe.ps1` 7/7 mandatory (`windows-probe-20261004-040252-0c70af09.json`); `eng/launch-spike.ps1` 14/19 mandatory with 4 open engine gates and 1 gated NotRun (`windows-launch-20261004-040446-4d715686.json`); `eng/fixture-selftest.ps1` 20/20 harness + unit Passed (`fixture-selftest-20261004-040228-5f9560f3.json`). Open Windows gates: engine never stops descendants on root exit/kill; STARTUPINFO file-handle transport rejected (pipes work); `dotnet` launches but exits 1 silently in every config; the `C:\Program Files\Git` tree is rejected as a grant. See `docs/evidence/windows-slice4-GW-1B.md`.
+Verified GW-1A/GW-1B 2026-10-04 (Windows host, spike-only; no provider qualified): `eng/probe.ps1` 7/7 mandatory (`windows-probe-20261004-040252-0c70af09.json`); `eng/launch-spike.ps1` 14/19 mandatory with 4 open engine gates and 1 gated NotRun (`windows-launch-20261004-040446-4d715686.json`); `eng/fixture-selftest.ps1` 20/20 harness + unit Passed (`fixture-selftest-20261004-040228-5f9560f3.json`). Open Windows gates: engine never stops descendants on root exit/kill; STARTUPINFO file-handle transport rejected (pipes work); `dotnet` launches but exits 1 silently in every config; staged Git runs but every command past `--version` dies on ancestor list-access (`C:\`, profile) during cwd resolution. See `docs/evidence/windows-slice4-GW-1B.md`.
 
 ## Exact next task
 
-Continue **GW-1B (engine findings)**: (1) probe whether a copied Git runtime
-placed in a grantable root can run the Git workload, and record the
-`C:\Program Files\Git` grant rejection; (2) investigate the `dotnet` exit-1
-(capability/registry/integrity) or explicitly contract it out of the first
-profile; (3) confirm the multi-grant-under-`%TEMP%` rule and document it as a
-preparation-time rejection; (4) design launcher-crash recovery beyond the
-supervisor (GQ-1 gate). Then GL-1A (separate Ubuntu WSL2) and GM-1A (macOS
-probe). Keep identities disposable and profiles deleted; never modify the host
-opportunistically.
+Continue **GW-1B (engine findings)**: (1) test ancestor-chain list grants vs
+cwd confinement under a grantable subtree for the Git workload (GW-1B-L5),
+and record whether the drive root can be granted narrowly; (2) investigate
+the `dotnet` exit-1 (capability/registry/integrity) or explicitly contract
+it out of the first profile; (3) confirm the multi-grant-under-`%TEMP%` rule
+and document it as a preparation-time rejection; (4) design launcher-crash
+recovery beyond the supervisor (GQ-1 gate). Then GL-1A (separate Ubuntu WSL2)
+and GM-1A (macOS probe). Keep identities disposable and profiles deleted;
+never modify the host opportunistically.
 
 Before executing experiments that alter host ACLs/users/firewall or install a runtime, prepare the exact setup/cleanup implementation and inspect the task's authorization. No permission prompt is required merely to write code, read state or run safe fixtures. Keep privileged setup separate and attributable.
 
 ## Resume prompt
 
-> Continue standalone Gagamba in C:\Users\Laszlos\source\repos\Gagamba. Read AGENTS.md, docs/handoff.md, docs/work-queue.md, docs/security-model.md and docs/fixture-protocol.md first. GW-1B slice 4 is complete: byte-exact spec encoder, crash-recovery by recorded PID, launch stability, denial/tree/cancel/pipes/supervisor all proven; ADR 0001 selects the experimental API + supervisor (prototyping). Four Windows gates remain red: descendant stop on root exit, file-handle stdio, dotnet runtime, and Git install grants. Keep public APIs provisional, all restrictions fail-closed, Windows local testing first, Linux/macOS in scope, and Hufu/Luban integration deferred. Do not mistake fixture self-tests, upstream examples or Docker's outer restrictions for Gagamba enforcement. Inspect the repository state and preserve the original proposal.
+> Continue standalone Gagamba in C:\Users\Laszlos\source\repos\Gagamba. Read AGENTS.md, docs/handoff.md, docs/work-queue.md, docs/security-model.md and docs/fixture-protocol.md first. GW-1B slice 4 is complete and reviewed; GW-1B-L5 resolved the git silent-128 (ancestor list-access gate, staged closures proven, harness drain fixed). Four Windows gates remain red: descendant stop on root exit, file-handle stdio, dotnet runtime, and Git ancestor grants. Keep public APIs provisional, all restrictions fail-closed, Windows local testing first, Linux/macOS in scope, and Hufu/Luban integration deferred. Do not mistake fixture self-tests, upstream examples or Docker's outer restrictions for Gagamba enforcement. Inspect the repository state and preserve the original proposal.
 
 ## Validation of this preparation
 
