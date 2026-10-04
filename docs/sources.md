@@ -25,7 +25,7 @@ Additional current platform/CI references and local inventory are recorded in [t
 
 ## Not established
 
-- Experimental Windows API availability or successful sandbox creation on this host.
+- ~~Experimental Windows API availability or successful sandbox creation on this host.~~ Resolved by [GW-1A](evidence/windows-availability-GW-1A.md) and [GW-1B](evidence/windows-slice4-GW-1B.md): exports resolve and launches succeed on this host, with open gates (tree stop, file-handle I/O, dotnet runtime, Git grants).
 - Any Windows/Linux escape resistance, workload compatibility, performance or cleanup guarantee.
 - Minimum supported Linux kernel/distribution or a qualified Linux test environment.
 - Package API stability, production readiness, or complete enforcement of arbitrary contextual authorization policies.

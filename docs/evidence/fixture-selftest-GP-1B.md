@@ -17,7 +17,7 @@ no sandbox backend is qualified. Supersedes the GP-1A summary for case counts
 - Ownership: `nodes/<pid>.json` records (pid + StartTime creation identity);
   sweep matches start times within 3 s so reused PIDs are never killed as ours
   (unit-pinned). Stop = tree-kill root + record sweep within 5 s budget.
-- Source: commit `208c2b1` (GP-1A) dirty with GP-1B working tree, SHA-256 manifest
+- Source: commit `c7003f8` (GP-1B) dirty with the GP-1B working tree, SHA-256 manifest
   over `tests/Fixtures/**/*.cs|csproj`, `eng/fixture-selftest.*`, `docs/fixture-protocol.md`.
 - Environment: Windows 10.0.26200 win-x64 NTFS, host-direct, standard-user, .NET 10.0.12.
 - Limitation: unsandboxed host kill + record sweep only. Kernel-backed owned-unit

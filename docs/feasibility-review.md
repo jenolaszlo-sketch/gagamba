@@ -1,6 +1,6 @@
 # Feasibility review
 
-Reviewed 2026-10-03. Assessment of the supplied proposal, current primary documentation, and the related local projects. No backend execution tests have been run.
+Reviewed 2026-10-03. Assessment of the supplied proposal, current primary documentation, and the related local projects. Updated 2026-10-04: Windows feasibility spikes (GW-1A, GW-1B) have since run; see the [work queue](work-queue.md) and [evidence](evidence/windows-slice4-GW-1B.md). Linux and macOS backends remain unexecuted.
 
 ## Verdict
 

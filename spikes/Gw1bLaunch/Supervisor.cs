@@ -7,14 +7,14 @@ using System.Runtime.InteropServices;
 
 namespace Gagamba.Spikes.Gw1bLaunch;
 
-internal sealed record TreeMember(uint Pid, uint Ppid, string Exe, DateTime CreatedUtc);
+internal sealed record TreeMember(uint Pid, uint Ppid, string Exe);
 
 internal static class Supervisor
 {
     /// <summary>All descendants of rootPid (any depth), excluding PID 0/4 and self.</summary>
     public static List<TreeMember> DescendantsOf(uint rootPid)
     {
-        var all = Snapshot();
+        var all = SnapshotProcesses();
         var children = new Dictionary<uint, List<TreeMember>>();
         foreach (var m in all)
         {
@@ -23,9 +23,10 @@ internal static class Supervisor
             list.Add(m);
         }
         var found = new List<TreeMember>();
+        var seen = new HashSet<uint>();
         var queue = new Queue<uint>();
         queue.Enqueue(rootPid);
-        int self = Environment.ProcessId;
+        uint self = (uint)Environment.ProcessId;
         while (queue.Count > 0)
         {
             uint parent = queue.Dequeue();
@@ -33,7 +34,7 @@ internal static class Supervisor
                 continue;
             foreach (var k in kids)
             {
-                if (k.Pid is 0 or 4 || k.Pid == (uint)self || found.Any(f => f.Pid == k.Pid))
+                if (k.Pid is 0 or 4 || k.Pid == self || !seen.Add(k.Pid))
                     continue;
                 found.Add(k);
                 queue.Enqueue(k.Pid);
@@ -43,8 +44,10 @@ internal static class Supervisor
     }
 
     /// <summary>
-    /// Terminates descendants created at/after <paramref name="sinceUtc"/>
-    /// (minus tolerance). Returns (found, killed, notes).
+    /// Terminates cmd.exe descendants created at/after <paramref name="sinceUtc"/>
+    /// (minus a small tolerance). Creation time is read from the same handle
+    /// used to terminate, so it is never trusted from the snapshot. Returns
+    /// (found, killed, notes).
     /// </summary>
     public static (int Found, int Killed, List<string> Notes) SweepDescendants(
         uint rootPid, DateTime sinceUtc, TimeSpan stopBudget)
@@ -59,11 +62,6 @@ internal static class Supervisor
             if (!string.Equals(m.Exe, "cmd.exe", StringComparison.OrdinalIgnoreCase))
             {
                 notes.Add($"skip {m.Pid} ({m.Exe}): not cmd.exe");
-                continue;
-            }
-            if (m.CreatedUtc < sinceUtc - TimeSpan.FromSeconds(5))
-            {
-                notes.Add($"skip {m.Pid} ({m.Exe}): predates launch window");
                 continue;
             }
             IntPtr h = Native.OpenProcess(
@@ -82,27 +80,26 @@ internal static class Supervisor
                     continue;
                 }
                 DateTime created = DateTime.FromFileTimeUtc((long)(((ulong)c.dwHighDateTime << 32) | c.dwLowDateTime));
-                if (Math.Abs((created - m.CreatedUtc).TotalSeconds) > 30)
+                if (created < sinceUtc - TimeSpan.FromSeconds(5))
                 {
-                    notes.Add($"skip {m.Pid}: snapshot/handle disagree (reuse?)");
+                    notes.Add($"skip {m.Pid} ({m.Exe}): predates launch window");
                     continue;
                 }
                 if (!Native.TerminateProcess(h, 99))
                 {
-                    notes.Add($"kill {m.Pid} ({m.Exe} @{m.CreatedUtc:O}) term-api=False err={Marshal.GetLastWin32Error()}");
+                    notes.Add($"kill {m.Pid} ({m.Exe}) term-api=False err={Marshal.GetLastWin32Error()}");
                     continue;
                 }
                 uint wait = Native.WaitForSingleObject(h, (uint)stopBudget.TotalMilliseconds);
-                int waitErr = wait == 0xFFFFFFFF ? Marshal.GetLastWin32Error() : 0;
                 bool gotCode = Native.GetExitCodeProcess(h, out uint code);
                 if (wait == Native.WAIT_OBJECT_0 && gotCode && code != Native.STILL_ACTIVE)
                 {
                     killed++;
-                    notes.Add($"killed {m.Pid} ({m.Exe} @{m.CreatedUtc:O}) exit={code}");
+                    notes.Add($"killed {m.Pid} ({m.Exe}) exit={code}");
                 }
                 else
                 {
-                    notes.Add($"kill {m.Pid} ({m.Exe} @{m.CreatedUtc:O}) unconfirmed term=True wait=0x{wait:X}(err={waitErr}) gotCode={gotCode}");
+                    notes.Add($"kill {m.Pid} ({m.Exe}) unconfirmed wait=0x{wait:X} gotCode={gotCode}");
                 }
             }
             finally
@@ -113,7 +110,39 @@ internal static class Supervisor
         return (found.Count, killed, notes);
     }
 
-    private static List<TreeMember> Snapshot()
+    /// <summary>
+    /// Debug dump: cmd.exe rows (pid/ppid/age), always including focusPid if
+    /// present. Ages are resolved for the printed rows only.
+    /// </summary>
+    public static string DescribeCmdTable(uint focusPid)
+    {
+        try
+        {
+            var rows = SnapshotProcesses()
+                .Where(m => m.Exe.Equals("cmd.exe", StringComparison.OrdinalIgnoreCase))
+                .ToList();
+            // Keep the focus process visible even when the table is truncated.
+            rows = rows.OrderBy(m => m.Pid).ToList();
+            var show = rows.Where(m => m.Pid != focusPid).OrderBy(m => m.Pid).Take(11).ToList();
+            var focus = rows.FirstOrDefault(m => m.Pid == focusPid);
+            if (focus is not null)
+                show.Insert(0, focus);
+            var now = DateTime.UtcNow;
+            return string.Join(",", show.Select(m =>
+            {
+                DateTime created = TryCreation(m.Pid);
+                string age = created == DateTime.MinValue ? "?" : $"{(now - created).TotalSeconds:F0}s";
+                return $"{m.Pid}/{m.Ppid}/{age}{(m.Pid == focusPid ? "*" : "")}";
+            }));
+        }
+        catch (Exception ex)
+        {
+            return $"snapshot-fault:{ex.GetType().Name}";
+        }
+    }
+
+    /// <summary>Cheap snapshot: pid/ppid/exe only, one toolhelp handle total.</summary>
+    private static List<TreeMember> SnapshotProcesses()
     {
         IntPtr snap = Native.CreateToolhelp32Snapshot(Native.TH32CS_SNAPPROCESS, 0);
         if (snap == new IntPtr(-1))
@@ -126,47 +155,30 @@ internal static class Supervisor
                 return members;
             do
             {
-                // Creation time needs a handle; snapshot first, resolve lazily.
-                // Store DateTime.MinValue here; SweepDescendants re-reads via handle.
-                members.Add(new(entry.th32ProcessID, entry.th32ParentProcessID,
-                    entry.szExeFile, DateTime.MinValue));
+                members.Add(new(entry.th32ProcessID, entry.th32ParentProcessID, entry.szExeFile));
             } while (Native.Process32Next(snap, ref entry));
-            // Resolve creation times for candidates only (cheap: open + query).
-            var resolved = new List<TreeMember>();
-            foreach (var m in members)
-            {
-                if (m.Pid is 0 or 4)
-                {
-                    resolved.Add(m);
-                    continue;
-                }
-                IntPtr h = Native.OpenProcess(Native.PROCESS_QUERY_LIMITED_INFORMATION, false, m.Pid);
-                if (h == IntPtr.Zero)
-                {
-                    resolved.Add(m); // dead or denied; sweep treats as gone
-                    continue;
-                }
-                try
-                {
-                    if (Native.GetProcessTimes(h, out var c, out _, out _, out _))
-                        resolved.Add(m with
-                        {
-                            CreatedUtc = DateTime.FromFileTimeUtc(
-                                (long)(((ulong)c.dwHighDateTime << 32) | c.dwLowDateTime)),
-                        });
-                    else
-                        resolved.Add(m);
-                }
-                finally
-                {
-                    try { Native.CloseHandle(h); } catch { }
-                }
-            }
-            return resolved;
+            return members;
         }
         finally
         {
             try { Native.CloseHandle(snap); } catch { }
+        }
+    }
+
+    private static DateTime TryCreation(uint pid)
+    {
+        IntPtr h = Native.OpenProcess(Native.PROCESS_QUERY_LIMITED_INFORMATION, false, pid);
+        if (h == IntPtr.Zero)
+            return DateTime.MinValue;
+        try
+        {
+            return Native.GetProcessTimes(h, out var c, out _, out _, out _)
+                ? DateTime.FromFileTimeUtc((long)(((ulong)c.dwHighDateTime << 32) | c.dwLowDateTime))
+                : DateTime.MinValue;
+        }
+        finally
+        {
+            try { Native.CloseHandle(h); } catch { }
         }
     }
 }

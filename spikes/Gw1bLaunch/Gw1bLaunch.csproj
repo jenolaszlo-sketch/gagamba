@@ -16,4 +16,11 @@
     <ProjectReference Include="..\..\tests\Fixtures\Gagamba.Fixture.Host\Gagamba.Fixture.Host.csproj" />
   </ItemGroup>
 
+  <!-- Workload fixture sources: copied into sandboxes by the spike, never
+       compiled into it (top-level statements would hijack the entry point). -->
+  <ItemGroup>
+    <Compile Remove="fixtures/**/*.cs" />
+    <None Include="fixtures/**/*" />
+  </ItemGroup>
+
 </Project>

@@ -13,7 +13,7 @@ public sealed class FixtureWorkspace : IDisposable
     public string OutputDir => Path.Combine(Root, "output");
     public string ScopeDir => Path.Combine(Root, "scope");
 
-    private bool _disposed;
+    private string? _cleanupResult;
 
     private FixtureWorkspace(string root) => Root = root;
 
@@ -71,22 +71,26 @@ public sealed class FixtureWorkspace : IDisposable
         return full;
     }
 
-    /// <summary>Independent cleanup: only deletes roots we created (marker present).</summary>
+    /// <summary>
+    /// Independent cleanup: only deletes roots we created (marker present).
+    /// Idempotent but never upgrades: a repeated call returns the same
+    /// measured result, so a failed delete cannot later look clean.
+    /// </summary>
     public string DisposeAndReport()
     {
-        if (_disposed) return "Confirmed";
-        _disposed = true;
+        if (_cleanupResult is not null)
+            return _cleanupResult;
         try
         {
             string marker = Path.Combine(Root, MarkerFileName);
             if (!File.Exists(marker))
-                return "Unknown";
+                return _cleanupResult = "Unknown";
             Directory.Delete(Root, recursive: true);
-            return Directory.Exists(Root) ? "Failed" : "Confirmed";
+            return _cleanupResult = Directory.Exists(Root) ? "Failed" : "Confirmed";
         }
         catch
         {
-            return Directory.Exists(Root) ? "Failed" : "Confirmed";
+            return _cleanupResult = Directory.Exists(Root) ? "Failed" : "Confirmed";
         }
     }
 

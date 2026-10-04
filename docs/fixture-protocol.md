@@ -1,6 +1,6 @@
 # GP-1 fixture and evidence contract
 
-Status: GP-1A + GP-1B implemented 2026-10-03 (F1/F2/F3 + protocol + evidence v1 under `tests/Fixtures/`, entrypoint `eng/fixture-selftest.ps1`). F4/F5 grow with the backend spikes. This is private test tooling, not a public Gagamba API.
+Status: GP-1A + GP-1B implemented 2026-10-03 (F1/F2/F3 + protocol + evidence v1 under `tests/Fixtures/`, entrypoint `eng/fixture-selftest.ps1`; fixture manifest `FixtureManifest` v2 = 20 mandatory IDs). F4/F5 grow with the backend spikes. The GW-1B launch spike reuses the evidence collector with a distinct `LaunchManifest` v5 = 19 mandatory IDs; evidence is `CapabilityProbe`, not `FixtureSelfTest`. This is private test tooling, not a public Gagamba API.
 
 ## First implementation slice
 

@@ -2,7 +2,7 @@
 
 Standalone .NET execution sandbox library — architecture and feasibility work.
 
-Status: preparation complete through the GP-0 design baseline, 2026-10-03. No sandbox implementation or qualified security boundary exists yet. Start with the [handoff](docs/handoff.md) and [current queue](docs/work-queue.md).
+Status: research/prototyping, updated 2026-10-04. The GP-0 design baseline, GP-1A/GP-1B fixtures, GW-1A availability probe and GW-1B Windows launch slices 1–4 are implemented as **spikes and test tooling**. No production provider, package, workflow or qualified security boundary exists yet; several GW-1B legs are deliberately red pending engine findings. Start with the [handoff](docs/handoff.md) and [current queue](docs/work-queue.md).
 
 Gagamba accepts an explicit execution policy and uses a supported backend to confine a process and its descendants. It is independently useful and has no Penghou, Hufu, Luban, workflow, authorization-engine, or agent dependency.
 
@@ -19,7 +19,7 @@ Standalone scope, three-platform scope and local-first testing are user-selected
 
 ## Implementation and qualification
 
-The [implementation plan](docs/implementation-plan.md) is the canonical work queue, from policy definition and local Windows probes through Linux/macOS backends and package qualification. The [testing and CI plan](docs/testing-and-ci.md) defines conformance cases, runner coverage, required checks and release gates. The [security model](docs/security-model.md) completes GP-0 as a design baseline. The [fixture contract](docs/fixture-protocol.md) prepares GP-1A; runtime implementation and enforcement evidence remain pending.
+The [implementation plan](docs/implementation-plan.md) is the canonical work queue, from policy definition and local Windows probes through Linux/macOS backends and package qualification. The [testing and CI plan](docs/testing-and-ci.md) defines conformance cases, runner coverage, required checks and release gates. The [security model](docs/security-model.md) is the offline-process-v1 design baseline. The [fixture contract](docs/fixture-protocol.md) defines the private test tooling. The Windows provider direction and its open findings are recorded in [ADR 0001](docs/adr/0001-windows-provider.md) and the [evidence summaries](docs/evidence/).
 
 ## Reading order
 
@@ -34,9 +34,9 @@ The original proposal is historical input. Its integration roadmap and illustrat
 
 ## Next work
 
-Implement GP-1A: the controlled fixture host/worker, positive controls, bounded I/O, watchdog and evidence validator. Then begin the local Windows mechanism probe. See the [test environment plan](docs/test-environments.md) for WSL2, Docker, and macOS CI. Do not create empty production packages solely to match the original directory diagram.
+GP-1A/GP-1B fixture self-tests and the GW-1A probe are green. GW-1B is mid-slice: denial, descendants, cancel races, pipes and supervisor sweep are demonstrated, but four legs remain red pending engine findings — descendant stop on root exit, STARTUPINFO/file-handle transport, `dotnet` runtime compatibility, and granting the Git installation tree. See the [current queue](docs/work-queue.md), the [slice-4 evidence](docs/evidence/windows-slice4-GW-1B.md) and [ADR 0001](docs/adr/0001-windows-provider.md). Next: resolve or narrow those findings, then proceed to GL-1A (separate Ubuntu WSL2) and GM-1A (macOS probe). See the [test environment plan](docs/test-environments.md).
 
-This repository contains planning/preparation documents and a read-only verification script. It is connected to [GitHub](https://github.com/jenolaszlo-sketch/gagamba); the initial license is preserved. No sandbox code, packages, workflows or host security changes exist yet. The missing solution, fixture projects, runtime packages and workflows are expected at this checkpoint; GP-1A creates working test tooling, not empty production scaffolding.
+This repository contains planning documents, private test tooling (`tests/Fixtures/`), feasibility spikes (`spikes/`), local entrypoints (`eng/`) and a read-only verification script. It is connected to [GitHub](https://github.com/jenolaszlo-sketch/gagamba); the initial license is preserved. No packages, CI workflows or host security changes exist yet.
 
 ## Verify preparation on Windows
 
@@ -56,3 +56,17 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ```
 
 These options apply only to the invoked process/session, without changing CurrentUser or LocalMachine policy. Managed policy can take precedence; do not change machine policy to run this check. The verifier reads files only and does not establish sandbox or CI qualification.
+
+## Local entrypoints
+
+All build Release output and write a versioned JSON evidence report under ignored `artifacts/`; each exits non-zero unless its aggregate is `Passed`. Windows PowerShell examples (add `-Configuration Debug` to change config):
+
+| Entrypoint | Purpose |
+| --- | --- |
+| `eng/verify-preparation.ps1` | Read-only check of preparation artifacts, doc links and the preserved proposal hash |
+| `eng/fixture-selftest.ps1` | Build + unit-test + run the GP-1A/B fixture harness (self-test only; no sandbox) |
+| `eng/probe.ps1` | GW-1A Windows availability probe (export/schema inventory; does not launch) |
+| `eng/launch-spike.ps1` | GW-1B launch staircase (experimental Windows API; disposable identities, deleted afterwards) |
+
+Bash equivalents (`eng/*.sh`) mirror these on Linux/macOS. `eng/launch-spike.sh` intentionally refuses off-Windows. `eng/probe.sh` runs cross-platform (Windows-only legs report `Unsupported`).
+

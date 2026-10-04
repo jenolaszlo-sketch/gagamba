@@ -121,8 +121,9 @@ public static class FixtureRunner
             StandardOutputEncoding = Encoding.UTF8,
             StandardErrorEncoding = Encoding.UTF8,
         };
-        // Explicit minimal environment: do not inherit secrets beyond OS needs.
-        // Keep Path/SystemRoot for loader; tests never depend on other host vars.
+        // Fixture workers run unsandboxed and inherit the host environment;
+        // that is acceptable for host-side test tooling. Target environment
+        // control is a backend/provider concern, not this runner's.
         Process? proc;
         try { proc = Process.Start(psi); }
         catch (Exception ex) { return new(RawOutcome.SpawnFailed, null, [], [], false, false, sw.ElapsedMilliseconds, ex.GetType().Name); }
@@ -188,11 +189,25 @@ public static class FixtureRunner
             // Independent watchdog: deadline + overflow both trigger stop.
             using var deadlineCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
             deadlineCts.CancelAfter(limit);
+            bool exitedNormally;
             try
             {
                 await proc.WaitForExitAsync(deadlineCts.Token);
+                exitedNormally = true;
             }
             catch (OperationCanceledException) when (!ct.IsCancellationRequested)
+            {
+                exitedNormally = false; // deadline hit
+            }
+            catch (OperationCanceledException)
+            {
+                // Caller cancelled: never leak the child.
+                TryKillTree(proc);
+                await WaitForExitBudget(proc, DefaultStopBudget);
+                throw;
+            }
+
+            if (!exitedNormally)
             {
                 // Deadline hit: stop with its own cleanup budget.
                 TryKillTree(proc);
@@ -204,20 +219,12 @@ public static class FixtureRunner
                 return new(RawOutcome.Timeout, proc.ExitCode, stdout.ToArray(), stderr.ToArray(), stdoutOver, stderrOver, sw.ElapsedMilliseconds);
             }
 
-            // Overflow observed while process still running: stop and report OutputLimit.
-            if (stdoutOver || stderrOver)
-            {
-                TryKillTree(proc);
-                bool exited = await WaitForExitBudget(proc, DefaultStopBudget);
-                await Task.WhenAll(stdoutDone.Task, stderrDone.Task).WaitAsync(TimeSpan.FromSeconds(2));
-                sw.Stop();
-                if (!exited)
-                    return new(RawOutcome.Timeout, null, Truncate(stdout, stdoutCap), Truncate(stderr, stderrCap), true, true, sw.ElapsedMilliseconds, "termination-unconfirmed-after-overflow");
-                return new(RawOutcome.OutputLimit, proc.ExitCode, Truncate(stdout, stdoutCap), Truncate(stderr, stderrCap), true, stderrOver, sw.ElapsedMilliseconds);
-            }
-
+            // Normal exit: drain fully before classifying so a worker that
+            // overflowed right before exiting is not misreported as Exited.
             await Task.WhenAll(stdoutDone.Task, stderrDone.Task).WaitAsync(TimeSpan.FromSeconds(5));
             sw.Stop();
+            if (stdoutOver || stderrOver)
+                return new(RawOutcome.OutputLimit, proc.ExitCode, Truncate(stdout, stdoutCap), Truncate(stderr, stderrCap), true, stderrOver, sw.ElapsedMilliseconds);
             return new(RawOutcome.Exited, proc.ExitCode, stdout.ToArray(), stderr.ToArray(), false, false, sw.ElapsedMilliseconds);
         }
     }
@@ -336,8 +343,9 @@ public static class FixtureRunner
 
     private static async Task<bool> WaitForExitBudget(Process proc, TimeSpan budget)
     {
-        try { await proc.WaitForExitAsync(new CancellationTokenSource(budget).Token); return true; }
-        catch (OperationCanceledException) { return !proc.HasExited ? false : true; }
+        using var cts = new CancellationTokenSource(budget);
+        try { await proc.WaitForExitAsync(cts.Token); return true; }
+        catch (OperationCanceledException) { return proc.HasExited; }
     }
 
     private static byte[] Truncate(MemoryStream ms, long cap)

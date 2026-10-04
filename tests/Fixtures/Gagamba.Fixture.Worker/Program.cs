@@ -429,11 +429,8 @@ internal static class Program
         }
 
         // Spawn one child; wait bounded, propagate its exit code.
-        string self = Environment.ProcessPath ?? throw new InvalidOperationException("no current exe path");
-        string childArgs = $"spawn-tree --workspace \"{workspaceFull}\" --run-id {runId} --worker-id {workerId}-c{depth} --depth {depth - 1} --parent-pid {myPid}";
-        var (fileName, arguments) = self.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)
-            ? ("dotnet", $"\"{self}\" {childArgs}")
-            : ($"\"{self}\"", childArgs);
+        var (fileName, arguments) = SelfLaunch(
+            $"spawn-tree --workspace \"{workspaceFull}\" --run-id \"{runId}\" --worker-id \"{workerId}-c{depth}\" --depth {depth - 1} --parent-pid {myPid}");
         var psi = new System.Diagnostics.ProcessStartInfo
         {
             FileName = fileName,
@@ -475,11 +472,8 @@ internal static class Program
             return Fail("marker outside workspace");
 
         int myPid = Environment.ProcessId;
-        string self = Environment.ProcessPath ?? throw new InvalidOperationException("no current exe path");
-        string childArgs = $"delayed-marker --workspace \"{workspaceFull}\" --run-id {runId} --worker-id {workerId}-orphan --delay-ms {delayMs} --marker \"{marker}\" --content \"{content}\" --parent-pid {myPid}";
-        var (fileName, arguments) = self.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)
-            ? ("dotnet", $"\"{self}\" {childArgs}")
-            : ($"\"{self}\"", childArgs);
+        var (fileName, arguments) = SelfLaunch(
+            $"delayed-marker --workspace \"{workspaceFull}\" --run-id \"{runId}\" --worker-id \"{workerId}-orphan\" --delay-ms {delayMs} --marker \"{marker}\" --content \"{content}\" --parent-pid {myPid}");
         var psi = new System.Diagnostics.ProcessStartInfo
         {
             FileName = fileName,
@@ -575,6 +569,27 @@ internal static class Program
         if (!TryResolveWithin(workspaceFull, rel, out string? full, out _))
             throw new InvalidOperationException("node path outside workspace");
         Directory.CreateDirectory(Path.GetDirectoryName(full!)!);
-        File.WriteAllText(full!, node.ToJsonString());
+        // Atomic publish (write temp + rename) so the host never reads a
+        // half-written node record while polling.
+        string tmp = full! + ".tmp";
+        File.WriteAllText(tmp, node.ToJsonString());
+        File.Move(tmp, full!, overwrite: true);
+    }
+
+    /// <summary>
+    /// Resolves how to relaunch this worker for descendant fixtures. Uses the
+    /// managed entry assembly (works for both apphost .exe and `dotnet x.dll`,
+    /// on every OS) rather than Environment.ProcessPath, which is dotnet.exe
+    /// under `dotnet x.dll`.
+    /// </summary>
+    private static (string FileName, string Arguments) SelfLaunch(string childArgs)
+    {
+        string? entry = System.Reflection.Assembly.GetEntryAssembly()?.Location
+            ?? Environment.ProcessPath;
+        if (string.IsNullOrEmpty(entry))
+            throw new InvalidOperationException("cannot resolve worker entry path");
+        return entry.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)
+            ? ("dotnet", $"\"{entry}\" {childArgs}")
+            : ($"\"{entry}\"", childArgs);
     }
 }

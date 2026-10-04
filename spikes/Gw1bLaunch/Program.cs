@@ -34,11 +34,92 @@ internal static class LaunchStaircase
     private const uint LaunchWaitMs = 60_000;
     private const uint StopBudgetMs = 5_000;
 
+    internal static string OnlyFilter = "";
+
     internal static async Task<int> Main(string[] args)
     {
-        // Diagnostic: validate the profile P/Invoke chain on a known disposable
-        // profile (create -> derive -> delete -> derive). Cross-platform safe
-        // to parse; executes only on Windows.
+        // Diagnostic: build a verified spec for arbitrary grants and write the
+        // bytes to a file (round-trip gate applies). Pairs with verify-file.
+        // Usage: encode --rw <p> [--rw <p>...] [--ro <p>...] [--caps <c>] [--app false] --out <file>
+        if (args.Length >= 2 && args[0] == "encode")
+        {
+            try
+            {
+                var rw = new List<string>();
+                var ro = new List<string>();
+                string caps = "";
+                bool app = true;
+                string? outFile = null;
+                for (int i = 1; i < args.Length; i++)
+                {
+                    switch (args[i])
+                    {
+                        case "--rw" when i + 1 < args.Length: rw.Add(args[++i]); break;
+                        case "--ro" when i + 1 < args.Length: ro.Add(args[++i]); break;
+                        case "--caps" when i + 1 < args.Length: caps = args[++i]; break;
+                        case "--app" when i + 1 < args.Length: app = args[++i] != "false"; break;
+                        case "--out" when i + 1 < args.Length: outFile = args[++i]; break;
+                        default: throw new InvalidOperationException($"unknown encode arg '{args[i]}'");
+                    }
+                }
+                if (outFile is null) throw new InvalidOperationException("--out required");
+                byte[] built = SpecBuilder.BuildVerified(new("0.1.0", app, rw, ro, caps));
+                await File.WriteAllBytesAsync(outFile, built);
+                Console.WriteLine($"encode: OK {built.Length}B -> {outFile}");
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"encode: REJECTED {ex.GetType().Name}: {ex.Message}");
+                return 1;
+            }
+        }
+        // Diagnostic: launch a wait-loop tree and sample liveness/visibility
+        // every 500 ms for 20 s (root alive? visible? exit code? sleeper?),
+        // then clean up. Diagnoses mid-run disappearances.
+        if (args.Length >= 2 && args[0] == "watch-tree")
+        {
+            if (!OperatingSystem.IsWindows()) { Console.Error.WriteLine("watch-tree: Windows-only."); return 2; }
+            string watchWs = Arg(args, "--ws") ?? "";
+            string watchId = Arg(args, "--id") ?? "";
+            if (watchWs.Length == 0 || watchId.Length == 0 || !Directory.Exists(watchWs)) return 2;
+            var (wOk, wDetail, whRoot, wPid) = LaunchNoWait(watchId,
+                new SandboxSpecRequest("0.1.0", true, [watchWs], []),
+                $"/d /c call \"{watchWs}\\root2.bat\" \"{watchWs}\"",
+                watchWs);
+            Console.WriteLine($"watch: launched ok={wOk} pid={wPid} {wDetail}");
+            if (!wOk) return 1;
+            try
+            {
+                for (int i = 0; i < 40; i++)
+                {
+                    await Task.Delay(500);
+                    uint w = Native.WaitForSingleObject(whRoot, 0);
+                    string alive = w == Native.WAIT_TIMEOUT ? "alive"
+                        : Native.GetExitCodeProcess(whRoot, out uint rc) ? $"exit={rc}" : "query-fail";
+                    string snap = Supervisor.DescribeCmdTable(wPid);
+                    Console.WriteLine($"watch: t={i * 0.5:F1}s root={alive} snap=[{snap}]");
+                }
+            }
+            finally
+            {
+                var (f, k, _) = Supervisor.SweepDescendants(wPid, DateTime.UtcNow - TimeSpan.FromMinutes(1), TimeSpan.FromSeconds(5));
+                IntPtr hr2 = Native.OpenProcess(
+                    Native.PROCESS_TERMINATE | Native.PROCESS_QUERY_LIMITED_INFORMATION | Native.SYNCHRONIZE, false, wPid);
+                if (hr2 != IntPtr.Zero)
+                {
+                    try
+                    {
+                        Native.TerminateProcess(hr2, 99);
+                        Native.WaitForSingleObject(hr2, 5000);
+                    }
+                    finally { try { Native.CloseHandle(hr2); } catch { } }
+                }
+                try { if (whRoot != IntPtr.Zero) Native.CloseHandle(whRoot); } catch { }
+                Console.WriteLine($"watch: cleanup sweep found={f} killed={k}");
+            }
+            return 0;
+        }
         if (args.Length >= 2 && args[0] == "profile-probe")
         {
             if (!OperatingSystem.IsWindows())
@@ -71,6 +152,7 @@ internal static class LaunchStaircase
                 byte[] buf = await File.ReadAllBytesAsync(args[1]);
                 SandboxSpecRequest decoded = SpecBuilder.Verify(buf);
                 Console.WriteLine($"verify-file: OK version={decoded.Version} app={decoded.AppContainer} " +
+                                  $"caps='{decoded.Capabilities}' " +
                                   $"rw=[{string.Join(",", decoded.FsReadWrite)}] ro=[{string.Join(",", decoded.FsReadOnly)}]");
                 return 0;
             }
@@ -80,6 +162,63 @@ internal static class LaunchStaircase
                 return 1;
             }
         }
+        // Launcher-death simulator for L4-CRASH-RECOVERY: launches a barrier
+        // tree inside the sandbox, reports the root PID, then dies immediately
+        // with NO cleanup (no sweep, no profile delete, no workspace delete).
+        // The parent leg performs the recovery and proves it.
+        // Reporting channel is a FILE (--report), never stdout: the holder may
+        // run with any stdio shape (including fully redirected), and a pipe
+        // report would conflate caller-stdio issues with launch results.
+        if (args.Length >= 2 && args[0] == "crash-holder")
+        {
+            if (!OperatingSystem.IsWindows())
+            {
+                Console.Error.WriteLine("crash-holder: Windows-only.");
+                return 2;
+            }
+            string holderWs = Arg(args, "--ws") ?? "";
+            string holderId = Arg(args, "--id") ?? "";
+            string holderReport = Arg(args, "--report") ?? "";
+            if (holderWs.Length == 0 || holderId.Length == 0 || !Directory.Exists(holderWs))
+            {
+                Console.Error.WriteLine("crash-holder: requires --ws <dir> --id <identity> [--report <file>]");
+                return 2;
+            }
+            // Diagnostic override: launch with externally built spec bytes
+            // (e.g. official flatc output), verified first. Isolates encoder
+            // bugs from engine path rules.
+            string specFile = Arg(args, "--spec-file") ?? "";
+            byte[]? overrideSpec = null;
+            if (specFile.Length > 0)
+            {
+                try
+                {
+                    overrideSpec = SpecBuilder.Verify(await File.ReadAllBytesAsync(specFile)) is not null
+                        ? await File.ReadAllBytesAsync(specFile)
+                        : null;
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine($"crash-holder: spec file rejected: {ex.Message}");
+                    return 2;
+                }
+            }
+            var (nlOk, nlDetail, hRoot, rootPid) = LaunchNoWait(holderId,
+                new SandboxSpecRequest("0.1.0", true, [holderWs], []),
+                $"/d /c call \"{holderWs}\\root2.bat\" \"{holderWs}\"",
+                holderWs,
+                overrideSpec);
+            string line = $"HOLDER rootPid={rootPid} ok={nlOk} {nlDetail}";
+            Console.WriteLine(line);
+            Console.Out.Flush();
+            if (holderReport.Length > 0)
+            {
+                try { await File.WriteAllTextAsync(holderReport, line + "\n"); } catch { }
+            }
+            if (hRoot != IntPtr.Zero) { try { Native.CloseHandle(hRoot); } catch { } }
+            Environment.Exit(9);
+            return 9;
+        }
         if (!OperatingSystem.IsWindows())
         {
             Console.Error.WriteLine("gw1b-launch: Windows-only spike (processmodel.dll). No evidence emitted.");
@@ -88,6 +227,7 @@ internal static class LaunchStaircase
         string repoRoot = Arg(args, "--repo-root") ?? FindRepoRoot();
         string outDir = Arg(args, "--out") ?? Path.Combine(repoRoot, "artifacts");
         Directory.CreateDirectory(outDir);
+        OnlyFilter = Arg(args, "--only") ?? "";
 
         var collector = new EvidenceCollector(
             repoRoot,
@@ -124,16 +264,31 @@ internal static class LaunchStaircase
         });
 
         // ---- L1-SPEC-BUILD (compiler + verifier gates, no API call) ----
+        // Byte-exact pins against official flatc 25.12.19 output for the same
+        // inputs (flatc used as a temp-dir oracle only, never vendored).
         await RunCase(collector, "L1-SPEC-BUILD", () =>
         {
             var bare = new SandboxSpecRequest("0.1.0", false, [], []);
             var app = new SandboxSpecRequest("0.1.0", true, [], []);
             var grants = new SandboxSpecRequest("0.1.0", true, [@"C:\tmp\ws"], []);
+            var caps = new SandboxSpecRequest("0.1.0", true, [], [@"C:\Windows"], "registryRead");
+            var ro2 = new SandboxSpecRequest("0.1.0", true, [], [@"C:\temp\a", @"C:\temp\b"]);
             byte[] bBare = SpecBuilder.BuildVerified(bare);
             byte[] bApp = SpecBuilder.BuildVerified(app);
             byte[] bGrants = SpecBuilder.BuildVerified(grants);
-            if (bBare.Length is 0 or > 1024 || bApp.Length is 0 or > 1024 || bGrants.Length > SpecBuilder.MaxBufferBytes)
-                return Task.FromResult((false, "spec size out of sane bounds", (string?)null));
+            byte[] bCaps = SpecBuilder.BuildVerified(caps);
+            byte[] bRo2 = SpecBuilder.BuildVerified(ro2);
+            // Byte-exact pins against official flatc 25.12.19 output for every
+            // supported shape (bare/app/grants/ro2/caps). flatc is used only as
+            // a temp-dir oracle; its outputs are vendored as test vectors.
+            string testdata = Path.Combine(repoRoot, "spikes", "Gw1bLaunch", "testdata");
+            bool exact = File.ReadAllBytes(Path.Combine(testdata, "flatc-app.bin")).SequenceEqual(bApp)
+                && File.ReadAllBytes(Path.Combine(testdata, "flatc-bare.bin")).SequenceEqual(bBare)
+                && File.ReadAllBytes(Path.Combine(testdata, "flatc-grants-fixed.bin")).SequenceEqual(bGrants)
+                && File.ReadAllBytes(Path.Combine(testdata, "flatc-ro2.bin")).SequenceEqual(bRo2)
+                && File.ReadAllBytes(Path.Combine(testdata, "flatc-caps.bin")).SequenceEqual(bCaps);
+            if (!exact)
+                return Task.FromResult((false, "encoder diverged from flatc test vectors", (string?)null));
             bool negVersion;
             try { SpecBuilder.Build(new("9.9.9", false, [], [])); negVersion = false; }
             catch (ArgumentException) { negVersion = true; }
@@ -144,9 +299,8 @@ internal static class LaunchStaircase
             catch (InvalidOperationException) { negVerify = true; }
             if (!negVersion || !negVerify)
                 return Task.FromResult((false, "negative gates did not reject", (string?)null));
-            string hex = Convert.ToHexString(bApp[..Math.Min(32, bApp.Length)]);
             return Task.FromResult((true,
-                $"round-trip ok: bare={bBare.Length}B app={bApp.Length}B grants={bGrants.Length}B head={hex}; negatives rejected",
+                $"round-trip + flatc byte-exact (bare/app/grants/ro2/caps): bare={bBare.Length}B app={bApp.Length}B grants={bGrants.Length}B caps={bCaps.Length}B; negatives rejected",
                 (string?)null));
         });
 
@@ -687,9 +841,13 @@ internal static class LaunchStaircase
         });
 
         // ---- L3-WORKLOAD-DOTNET (runtime closure mapping) ----
-        // dotnet launches but exits 1 silently. Map the closure from below:
-        // whoami (system binary, no grants) tells whether the base image
-        // covers System32; dotnet variants then climb the grant ladder.
+        // dotnet launches but exits 1 silently. Map what CAN run: whoami (system
+        // binary, no grants) tells whether the base image covers System32;
+        // dotnet variants then climb the grant/capability ladder.
+        // Shared with L4-WORKLOAD-BUILD: the winning closure, if any.
+        List<string> dotnetRo = [];
+        string dotnetCaps = "";
+        bool dotnetWorks = false;
         await RunCase(collector, "L3-WORKLOAD-DOTNET", async () =>
         {
             const string dotnetExe = @"C:\Program Files\dotnet\dotnet.exe";
@@ -701,8 +859,7 @@ internal static class LaunchStaircase
             if (!c.Exited || c.ExitCode != 0 || !c.Stdout.Contains("SDK"))
                 return AbandonLeg(cleanups, "dotnet", $"GagambaGW1B{runTag}n",
                     $"control dotnet --info failed [{c.Detail}]", Array.Empty<FixtureWorkspace>());
-            using var ws = FixtureWorkspace.Create("gw1b-dotnet-" + runTag);
-            Environment.SetEnvironmentVariable("DOTNET_CLI_HOME", ws.Root);
+            using var wsDotnetCtl = FixtureWorkspace.Create("gw1b-dotnetctl-" + runTag);
             Environment.SetEnvironmentVariable("DOTNET_NOLOGO", "1");
             Environment.SetEnvironmentVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
             Environment.SetEnvironmentVariable("DOTNET_SKIP_FIRST_TIME_EXPERIENCE", "1");
@@ -712,59 +869,327 @@ internal static class LaunchStaircase
             string idDotnet = $"GagambaGW1B{runTag}n";
             var attempts = new List<string>();
             bool sdkListed = false;
-            // W1 maps the base image (whoami needs no grants but its image).
-            // W2-W4 then place dotnet against that map. whoami output is
-            // shape-checked only, never recorded (PII). Fresh identity per
-            // variant: reuse after failure risks 0xB7 contamination.
-            // V1: dotnet + full grants. V2: cmd + full grants (same shape).
-            // V3: cmd + dotnetDir only. V4: cmd + system32 only.
-            // V5: dotnet + narrowest passing ro set (when identified).
-            async Task<(bool Ran, string Detail)> TryVariant(string suffix, SandboxSpecRequest vSpec,
+            List<string> winningRo = [];
+            string winningCaps = "";
+            var variantCleanups = new List<string>();
+            bool variantWsOk = true;
+            // S0 first: TWO read-only temp grants with cmd. If multi-ro itself
+            // is rejected, every multi-grant result below is confounded.
+            // Every variant below gets a FRESH workspace: a failed attempt can
+            // poison its grant path for later attempts (measured stickiness).
+            async Task<(bool Ran, string Detail)> TryVariant(string tag,
+                Func<string, SandboxSpecRequest> specOf,
                 string exe, string vArgs, Func<string, bool> accept)
             {
-                string vid = idDotnet + suffix;
-                var (ok, detail, vOut, vErr) = await RunPipedAsync(vid, vSpec, exe, vArgs, ws.Root, 0);
+                using var vws = FixtureWorkspace.Create($"gw1b-dn-{tag}-" + runTag);
+                Environment.SetEnvironmentVariable("DOTNET_CLI_HOME", vws.Root);
+                string vid = idDotnet + tag;
+                var (ok, detail, vOut, vErr) = await RunPipedAsync(vid, specOf(vws.Root), exe, vArgs, vws.Root, 0);
                 string prof = SweepProfile(vid);
+                bool wsOk = vws.DisposeAndReport() == "Confirmed" && !Directory.Exists(vws.Root);
+                variantCleanups.Add($"{tag}:{prof}/ws={wsOk}");
+                if (!wsOk) variantWsOk = false;
                 bool ran = ok && accept(vOut);
                 string shape = exe == whoamiExe
                     ? (vOut.Contains('\\') && vOut.Trim().Length < 160 ? "shape-ok" : $"shape-bad(len={vOut.Length})")
                     : $"out={vOut.Length}B";
                 return (ran, $"{detail} {shape} errlen={vErr.Length} profile={prof}");
             }
+            using var roA = FixtureWorkspace.Create("gw1b-roA-" + runTag);
+            using var roB = FixtureWorkspace.Create("gw1b-roB-" + runTag);
+            var s0 = await TryVariant("s0",
+                wsRoot => new("0.1.0", true, [wsRoot], [roA.Root, roB.Root]),
+                Path.Combine(Environment.SystemDirectory, "cmd.exe"), "/d /c echo count-ok",
+                o => o.Trim() == "count-ok");
+            attempts.Add($"S0 cmd-ro2-temp: ran={s0.Ran} {s0.Detail}");
+            // S0b separates "at most one ro grant" from "at most two grants
+            // total": TWO read-write temp grants, zero ro.
+            var s0b = await TryVariant("t0",
+                wsRoot => new("0.1.0", true, [wsRoot, roA.Root], []),
+                Path.Combine(Environment.SystemDirectory, "cmd.exe"), "/d /c echo count-ok",
+                o => o.Trim() == "count-ok");
+            attempts.Add($"S0b cmd-rw2-temp: ran={s0b.Ran} {s0b.Detail}");
             var w1 = await TryVariant("a",
-                new("0.1.0", true, [ws.Root], []), whoamiExe, string.Empty,
+                wsRoot => new("0.1.0", true, [wsRoot], []), whoamiExe, string.Empty,
                 o => o.Contains('\\'));
             attempts.Add($"W1 whoami-ws-only: ran={w1.Ran} {w1.Detail}");
             var w2 = await TryVariant("b",
-                new("0.1.0", true, [ws.Root], []), dotnetExe, "--info",
+                wsRoot => new("0.1.0", true, [wsRoot], []), dotnetExe, "--info",
                 o => o.Contains("SDK"));
             attempts.Add($"W2 dotnet-ws-only: ran={w2.Ran} {w2.Detail}");
             if (w2.Ran) { sdkListed = true; }
             if (!sdkListed)
             {
                 var w3 = await TryVariant("c",
-                    new("0.1.0", true, [ws.Root], [dotnetDir]), dotnetExe, "--info",
+                    wsRoot => new("0.1.0", true, [wsRoot], [dotnetDir]), dotnetExe, "--info",
                     o => o.Contains("SDK"));
                 attempts.Add($"W3 dotnet-ro-dotnetdir: ran={w3.Ran} {w3.Detail}");
-                if (w3.Ran) { sdkListed = true; }
+                if (w3.Ran) { sdkListed = true; winningRo = [dotnetDir]; }
             }
             if (!sdkListed)
             {
                 var w4 = await TryVariant("d",
-                    new("0.1.0", true, [ws.Root], [dotnetDir, system32]), dotnetExe, "--info",
+                    wsRoot => new("0.1.0", true, [wsRoot], [dotnetDir, system32]), dotnetExe, "--info",
                     o => o.Contains("SDK"));
                 attempts.Add($"W4 dotnet-full-closure: ran={w4.Ran} {w4.Detail}");
-                if (w4.Ran) { sdkListed = true; }
+                if (w4.Ran) { sdkListed = true; winningRo = [dotnetDir, system32]; }
             }
-            string prof = string.Join("+", new[] { "a", "b", "c", "d" }
-                .Select(s => SweepProfile(idDotnet + s)));
-            bool wsOk = ws.DisposeAndReport() == "Confirmed" && !Directory.Exists(ws.Root);
-            bool profOk = prof.Split('+').All(p =>
-                p.StartsWith("deleted(") || p.StartsWith("deleted-never-materialized("));
-            cleanups.Add(("dotnet", new(profOk, true, prof, wsOk)));
+            if (!sdkListed)
+            {
+                var w5 = await TryVariant("e",
+                    wsRoot => new("0.1.0", true, [wsRoot], [dotnetDir], "registryRead"), dotnetExe, "--info",
+                    o => o.Contains("SDK"));
+                attempts.Add($"W5 dotnet-registryRead: ran={w5.Ran} {w5.Detail}");
+                if (w5.Ran) { sdkListed = true; winningRo = [dotnetDir]; winningCaps = "registryRead"; }
+            }
+            if (!sdkListed)
+            {
+                var w6 = await TryVariant("f",
+                    wsRoot => new("0.1.0", true, [wsRoot], [dotnetDir, system32], "registryRead"), dotnetExe, "--info",
+                    o => o.Contains("SDK"));
+                attempts.Add($"W6 dotnet-full-registryRead: ran={w6.Ran} {w6.Detail}");
+                if (w6.Ran) { sdkListed = true; winningRo = [dotnetDir, system32]; winningCaps = "registryRead"; }
+            }
+            bool roOk = roA.DisposeAndReport() == "Confirmed" && !Directory.Exists(roA.Root)
+                && roB.DisposeAndReport() == "Confirmed" && !Directory.Exists(roB.Root);
+            bool ctlOk = wsDotnetCtl.DisposeAndReport() == "Confirmed" && !Directory.Exists(wsDotnetCtl.Root);
+            string profAll = string.Join("+", variantCleanups);
+            bool profOk = variantCleanups.All(e =>
+                e.Contains(":deleted(") || e.Contains(":deleted-never-materialized("));
+            // Disposition must start with a canonical token so the aggregate
+            // cleanup check can classify it; the per-variant detail follows.
+            string dotnetDisp = profOk
+                ? $"deleted(all-dotnet-variants: {profAll})"
+                : $"deleted-UNCERTAIN({profAll})";
+            cleanups.Add(("dotnet", new(profOk, true, dotnetDisp, variantWsOk && roOk && ctlOk)));
+            if (sdkListed) { dotnetRo = new(winningRo); dotnetCaps = winningCaps; dotnetWorks = true; }
             return sdkListed
-                ? (true, $"dotnet --info ran, SDK listed; {string.Join(" | ", attempts)} profile={prof}", (string?)null)
-                : (false, $"{string.Join(" | ", attempts)} profile={prof}", (string?)null);
+                ? (true, $"dotnet --info ran, SDK listed; {string.Join(" | ", attempts)} profile={profAll}", (string?)null)
+                : (false, $"{string.Join(" | ", attempts)} profile={profAll}", (string?)null);
+        });
+
+        // ---- L4-CRASH-RECOVERY (launcher gone; recovery by recorded PID) ----
+        // Proves recovery AFTER the launcher is gone. The launcher closes every
+        // handle at release (no wait/terminate/query retained): recovery uses
+        // only the recorded PID, exactly like a dead launcher would. Order
+        // matters: the sleeper must be verified ALIVE before any sweep, and the
+        // barrier is never opened, so a survivor would leave no trace unless
+        // explicitly killed. (Engine auto-cleanup was already disproven; this
+        // leg needs no holder process — see the evidence doc for why.)
+        await RunCase(collector, "L4-CRASH-RECOVERY", async () =>
+        {
+            using var ws = FixtureWorkspace.Create("gw1b-rcv-" + runTag);
+            WriteBat(ws.Root, "sleeper.bat",
+                "@echo off",
+                "echo started>\"%~1\\started.txt\"",
+                ":wait",
+                "if not exist \"%~1\\barrier.txt\" goto wait",
+                "echo late>\"%~1\\late.txt\"",
+                "exit 9");
+            WriteBat(ws.Root, "root2.bat",
+                "@echo off",
+                "start /b \"\" cmd /d /c call \"%~dp0sleeper.bat\" \"%~1\"",
+                "echo root-alive>\"%~1\\rootstarted.txt\"",
+                ":wait",
+                "if not exist \"%~1\\rootbarrier.txt\" goto wait",
+                "exit 5");
+            string idCrash = $"GagambaGW1B{runTag}k";
+            DateTime since = DateTime.UtcNow;
+            // Settle delay: the bats were written milliseconds ago; a concurrent
+            // AV/indexer scan lock during engine setup is a suspect for a rare
+            // vanilla-shape INVALID_DATA (legs with a control phase never hit it).
+            await Task.Delay(3000);
+            var (nlOk, nlDetail, hRoot, rootPid) = LaunchNoWait(idCrash,
+                new SandboxSpecRequest("0.1.0", true, [ws.Root], []),
+                $"/d /c call \"{ws.Root}\\root2.bat\" \"{ws.Root}\"",
+                ws.Root);
+            if (!nlOk)
+            {
+                try { if (hRoot != IntPtr.Zero) Native.CloseHandle(hRoot); } catch { }
+                return AbandonLeg(cleanups, "crash", idCrash, $"launch failed [{nlDetail}]", ws);
+            }
+            // Launcher death: relinquish every handle immediately.
+            try { if (hRoot != IntPtr.Zero) Native.CloseHandle(hRoot); } catch { }
+            hRoot = IntPtr.Zero;
+            string? started = await PollFileAsync(Path.Combine(ws.Root, "started.txt"), TimeSpan.FromSeconds(10));
+            if (started is null)
+                return AbandonLeg(cleanups, "crash", idCrash,
+                    "sleeper never started; nothing to recover", ws);
+            // No barrier is opened here: the sleeper must still be alive, which
+            // is the proof that the engine left the tree running after the
+            // launcher vanished. Then sweep purely by recorded PID.
+            await Task.Delay(2000);
+            bool sleeperAlive = Supervisor.DescendantsOf(rootPid)
+                .Any(m => m.Exe.Equals("cmd.exe", StringComparison.OrdinalIgnoreCase));
+            var (found, killed, notes) = Supervisor.SweepDescendants(rootPid, since, TimeSpan.FromSeconds(5));
+            bool rootDead = KillByPid(rootPid);
+            bool lateAbsent = !File.Exists(Path.Combine(ws.Root, "late.txt"));
+            string prof = SweepProfile(idCrash);
+            bool wsOk = ws.DisposeAndReport() == "Confirmed" && !Directory.Exists(ws.Root);
+            cleanups.Add(("crash", new(rootDead, true, prof, wsOk)));
+            bool ok = sleeperAlive && found >= 1 && killed >= 1 && rootDead && lateAbsent;
+            return ok
+                ? (true, $"launcher gone; sleeper alive before sweep={sleeperAlive}; sweep found={found} killed={killed} root dead; never-barrier late-absent={lateAbsent} profile={prof} [{string.Join(";", notes)}]", (string?)null)
+                : (false, $"sleeperAlive={sleeperAlive} found={found} killed={killed} rootDead={rootDead} lateAbsent={lateAbsent} profile={prof} [{string.Join(";", notes)}]", (string?)null);
+        });
+
+        // ---- L4-WORKLOAD-GIT (canary + repo inspection with explicit grants) ----
+        await RunCase(collector, "L4-WORKLOAD-GIT", async () =>
+        {
+            string gitExe = @"C:\Program Files\Git\bin\git.exe";
+            if (!File.Exists(gitExe))
+            {
+                gitExe = @"C:\Program Files\Git\cmd\git.exe";
+                if (!File.Exists(gitExe))
+                    return AbandonLeg(cleanups, "git", $"GagambaGW1B{runTag}g",
+                        "git not at well-known paths", Array.Empty<FixtureWorkspace>());
+            }
+            string gitDir = Path.GetDirectoryName(Path.GetDirectoryName(gitExe)!)!;
+            Environment.SetEnvironmentVariable("GIT_OPTIONAL_LOCKS", "0");
+            using var ctlGitWs = FixtureWorkspace.Create("gw1b-gitctl-" + runTag);
+            string ctlCopy = Path.Combine(ctlGitWs.Root, "repo");
+            CopyDirExcluding(repoRoot, ctlCopy, new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                { "bin", "obj", "artifacts", ".vs", ".idea", "TestResults" });
+            var c1 = await ControlRunner.Run(gitExe, "--version", ctlGitWs.Root, 30_000);
+            var c2 = await ControlRunner.Run(gitExe, $"-C \"{ctlCopy}\" status --porcelain", ctlGitWs.Root, 60_000);
+            bool ctlGitOk = ctlGitWs.DisposeAndReport() == "Confirmed" && !Directory.Exists(ctlGitWs.Root);
+            if (!c1.Exited || !c1.Stdout.Contains("git version") || !c2.Exited || c2.ExitCode != 0 || !ctlGitOk)
+                return AbandonLeg(cleanups, "git", $"GagambaGW1B{runTag}g",
+                    $"controls failed: version[{c1.Detail}] status[{c2.Detail}] ctlWs={ctlGitOk}");
+            // One retry on a fresh workspace: a transient first-failure can
+            // poison its grant path for later attempts (measured stickiness).
+            string gitDetail = "no attempt";
+            bool gitOk = false;
+            var gitProfs = new List<string>();
+            bool gitWsOk = true;
+            for (int attempt = 1; attempt <= 2 && !gitOk; attempt++)
+            {
+                using var aws = FixtureWorkspace.Create($"gw1b-git{attempt}-" + runTag);
+                string repoCopy = Path.Combine(aws.Root, "repo");
+                CopyDirExcluding(repoRoot, repoCopy, new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                    { "bin", "obj", "artifacts", ".vs", ".idea", "TestResults" });
+                string aidGit = $"GagambaGW1B{runTag}g{attempt}";
+                // repoCopy lives under aws.Root, so it is already covered by the
+                // single rw grant. Granting it again as ro would add a second
+                // same-kind ro grant (an engine-fragile shape under %TEMP%).
+                var gspec = new SandboxSpecRequest("0.1.0", true, [aws.Root], [gitDir]);
+                var (okVer, dVer, oVer, _) = await RunPipedAsync(aidGit + "a", gspec, gitExe, "--version", aws.Root, 0);
+                bool versionOk = okVer && oVer.Contains("git version");
+                var (okStatus, dStatus, oStatus, _) = await RunPipedAsync(aidGit + "b", gspec, gitExe,
+                    $"-C \"{repoCopy}\" status --porcelain", aws.Root, 0);
+                bool statusOk = okStatus && oStatus.Trim().Length < 4096;
+                gitDetail = $"try{attempt}: version[{dVer}] status[{dStatus}] out='{oStatus[..Math.Min(120, oStatus.Length)]}'";
+                gitOk = versionOk && statusOk;
+                string aprof = SweepProfile(aidGit + "a") + "+" + SweepProfile(aidGit + "b");
+                bool awsOk = aws.DisposeAndReport() == "Confirmed" && !Directory.Exists(aws.Root);
+                if (!awsOk) gitWsOk = false;
+                gitProfs.Add(aprof);
+            }
+            string gitProfAll = string.Join("+", gitProfs);
+            bool gitProfOk = gitProfs.All(p => p.Split('+').All(q =>
+                q.StartsWith("deleted(") || q.StartsWith("deleted-never-materialized(")));
+            cleanups.Add(("gitwork", new(gitProfOk, true, gitProfAll, gitWsOk)));
+            return gitOk
+                ? (true, $"git --version + status --porcelain in sandbox (grants rw=[ws], ro=[gitDir]); {gitDetail} profile={gitProfAll}", (string?)null)
+                : (false, $"{gitDetail} profile={gitProfAll}", (string?)null);
+        });
+
+        // ---- L4-WORKLOAD-BUILD (offline compile; gated on runtime) ----
+        if (!dotnetWorks)
+        {
+            collector.Add("L4-WORKLOAD-BUILD", "NotRun",
+                "dotnet runtime gate open (see L3-WORKLOAD-DOTNET); build needs a working runtime", 0);
+            cleanups.Add(("build", new(true, true, "deleted-never-materialized(no-launch)", true)));
+        }
+        else
+        {
+            await RunCase(collector, "L4-WORKLOAD-BUILD", async () =>
+            {
+                using var ws = FixtureWorkspace.Create("gw1b-build-" + runTag);
+                CopyDirExcluding(
+                    Path.Combine(repoRoot, "spikes", "Gw1bLaunch", "fixtures", "mini"),
+                    Path.Combine(ws.Root, "mini"),
+                    new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "bin", "obj" });
+                Environment.SetEnvironmentVariable("DOTNET_CLI_HOME", ws.Root);
+                string proj = Path.Combine(ws.Root, "mini", "mini.csproj");
+                // Preparation (unsandboxed, network allowed): restore first.
+                var rc = await ControlRunner.Run(
+                    @"C:\Program Files\dotnet\dotnet.exe", $"restore \"{proj}\"", ws.Root, 120_000);
+                if (!rc.Exited || rc.ExitCode != 0)
+                    return AbandonLeg(cleanups, "build", $"GagambaGW1B{runTag}e",
+                        $"control restore failed [{rc.Detail}]", ws);
+                string idBuild = $"GagambaGW1B{runTag}e";
+                string dotnetExe2 = @"C:\Program Files\dotnet\dotnet.exe";
+                string sdkDir = Directory.GetDirectories(
+                    Path.Combine(Path.GetDirectoryName(dotnetExe2)!, "sdk"))
+                    .OrderDescending().First();
+                var spec = new SandboxSpecRequest("0.1.0", true, [ws.Root],
+                    [Path.GetDirectoryName(dotnetExe2)!, sdkDir], dotnetCaps);
+                var (ok, detail, vOut, _) = await RunPipedAsync(idBuild, spec, dotnetExe2,
+                    $"build \"{proj}\" --no-restore -o \"{ws.Root}\\out\" -v minimal", ws.Root, 0,
+                    waitMs: 120_000);
+                bool emitted = File.Exists(Path.Combine(ws.Root, "out", "mini.dll"));
+                string prof = SweepProfile(idBuild);
+                bool wsOk = ws.DisposeAndReport() == "Confirmed" && !Directory.Exists(ws.Root);
+                cleanups.Add(("build", new(true, true, prof, wsOk)));
+                bool pass = ok && emitted;
+                return pass
+                    ? (true, $"{detail} emitted mini.dll profile={prof}", (string?)null)
+                    : (false, $"{detail} emitted={emitted} out='{vOut[..Math.Min(200, vOut.Length)]}' profile={prof}", (string?)null);
+            });
+        }
+        // ---- L4-RETRY-PROOF (transient rejection recovers on fresh inputs) ----
+        // The engine intermittently returns ERROR_INVALID_DATA for otherwise
+        // valid single-grant temp launches (observed under rapid repetition; a
+        // fresh identity + fresh workspace recovers). A provider must detect
+        // and retry the transient, never fall back to unconfined execution.
+        // This leg launches the same shape several times, retrying once with
+        // fresh identity+workspace on that error, and requires all to succeed.
+        await RunCase(collector, "L4-RETRY-PROOF", async () =>
+        {
+            const int rounds = 4;
+            var log = new List<string>();
+            bool stable = true;
+            bool sawTransient = false;
+            bool profilesClean = true;
+            bool workspacesClean = true;
+            for (int i = 0; i < rounds; i++)
+            {
+                bool ok = false;
+                for (int attempt = 1; attempt <= 2 && !ok; attempt++)
+                {
+                    using var ws = FixtureWorkspace.Create($"gw1b-stab{i}-{attempt}-" + runTag);
+                    string id = $"GagambaGW1B{runTag}z{i}{attempt}";
+                    var r = await LaunchLeg(id,
+                        new SandboxSpecRequest("0.1.0", true, [ws.Root], []),
+                        "/d /c echo stab-ok > stab.txt", ws.Root, 0,
+                        cwd => Task.FromResult<(bool, string)>(File.Exists(Path.Combine(cwd, "stab.txt"))
+                            ? (true, "stab marker present") : (false, "stab marker absent")));
+                    ok = r.Ok;
+                    string prof = SweepProfile(id);
+                    if (!(prof.StartsWith("deleted(") || prof.StartsWith("deleted-never-materialized(")))
+                        profilesClean = false;
+                    if (!(ws.DisposeAndReport() == "Confirmed" && !Directory.Exists(ws.Root)))
+                        workspacesClean = false;
+                    if (!ok)
+                    {
+                        bool transient = r.Detail.Contains("err=0xD");
+                        if (transient) sawTransient = true;
+                        log.Add($"round{i} attempt{attempt}: {r.Detail}");
+                        if (!transient) break; // deterministic failure: stop retrying
+                    }
+                    else
+                    {
+                        log.Add($"round{i} attempt{attempt}: ok");
+                    }
+                }
+                if (!ok) stable = false;
+            }
+            cleanups.Add(("stability", new(profilesClean, true,
+                profilesClean ? "deleted(all stability identities)" : "deleted-UNCERTAIN", workspacesClean)));
+            return stable
+                ? (true, $"launch stability {rounds}/{rounds}, transient-INVALID_DATA seen={sawTransient}; fresh-identity retry recovers", (string?)null)
+                : (false, string.Join(" | ", log), (string?)null);
         });
 
         // ---- L1-CLEANUP (aggregate proof) ----
@@ -772,7 +1197,7 @@ internal static class LaunchStaircase
         {
             var notes = cleanups.Select(c =>
                 $"{c.Leg}:reaped={c.Cleanup.ChildReaped}/profile={c.Cleanup.ProfileDisposition}/ws={c.Cleanup.WorkspaceDeleted}");
-            bool all = cleanups.Count == 12 && cleanups.All(c =>
+            bool all = cleanups.Count == 16 && cleanups.All(c =>
                 c.Cleanup.ChildReaped
                 && (c.Cleanup.ProfileDisposition.StartsWith("deleted(")
                     || c.Cleanup.ProfileDisposition.StartsWith("deleted-never-materialized("))
@@ -818,7 +1243,8 @@ internal static class LaunchStaircase
         IntPtr hStdOut = default,
         IntPtr hStdErr = default,
         IntPtr hStdIn = default,
-        string? exePath = null)
+        string? exePath = null,
+        uint waitMs = 60_000)
     {
         await Task.Yield();
         byte[] specBytes;
@@ -872,7 +1298,7 @@ internal static class LaunchStaircase
         {
             try { await onRunning(hProcess); } catch (Exception ex) { return new(false, verdict + $" hook fault: {ex.Message}", false); }
         }
-        uint wait = Native.WaitForSingleObject(hProcess, LaunchWaitMs);
+        uint wait = Native.WaitForSingleObject(hProcess, waitMs);
         if (wait == Native.WAIT_TIMEOUT)
         {
             Native.TerminateProcess(hProcess, 99);
@@ -908,7 +1334,8 @@ internal static class LaunchStaircase
         string? exePath,
         string targetArgs,
         string cwd,
-        uint? expectedExit)
+        uint? expectedExit,
+        uint waitMs = 60_000)
     {
         var sa = new Native.SecurityAttributes
         {
@@ -933,7 +1360,8 @@ internal static class LaunchStaircase
                     writesClosed = true;
                     return Task.CompletedTask;
                 },
-                hStdOut: hWrite, hStdErr: eWrite);
+                hStdOut: hWrite, hStdErr: eWrite,
+                waitMs: waitMs);
             string capturedOut = string.Empty, capturedErr = string.Empty;
             if (r.Ok)
             {
@@ -969,6 +1397,30 @@ internal static class LaunchStaircase
     }
 
     /// <summary>
+    /// Terminates a process by recorded PID alone (no retained handle) and
+    /// confirms death. A PID that is already gone counts as dead.
+    /// </summary>
+    private static bool KillByPid(uint pid)
+    {
+        IntPtr h = Native.OpenProcess(
+            Native.PROCESS_TERMINATE | Native.PROCESS_QUERY_LIMITED_INFORMATION | Native.SYNCHRONIZE,
+            false, pid);
+        if (h == IntPtr.Zero)
+            return true; // already gone
+        try
+        {
+            if (!Native.TerminateProcess(h, 99))
+                return false;
+            return Native.WaitForSingleObject(h, 5000) == Native.WAIT_OBJECT_0
+                && Native.GetExitCodeProcess(h, out uint rc) && rc != Native.STILL_ACTIVE;
+        }
+        finally
+        {
+            try { Native.CloseHandle(h); } catch { }
+        }
+    }
+
+    /// <summary>
     /// Launch without waiting: returns the live process handle + PID for
     /// supervisor tests. Caller owns the handle and must terminate + close it.
     /// </summary>
@@ -976,10 +1428,16 @@ internal static class LaunchStaircase
         string identity,
         SandboxSpecRequest spec,
         string targetArgs,
-        string cwd)
+        string cwd,
+        byte[]? overrideSpec = null)
     {
         byte[] specBytes;
-        try { specBytes = SpecBuilder.BuildVerified(spec); }
+        try
+        {
+            specBytes = overrideSpec ?? SpecBuilder.BuildVerified(spec);
+            if (overrideSpec is not null)
+                SpecBuilder.Verify(specBytes); // independent gate, even for external bytes
+        }
         catch (Exception ex) { return (false, $"spec gate refused: {ex.Message}", IntPtr.Zero, 0); }
 
         string cmdExe = Path.Combine(Environment.SystemDirectory, "cmd.exe");
@@ -1050,6 +1508,24 @@ internal static class LaunchStaircase
         _ => "unmapped",
     };
 
+    private static void CopyDirExcluding(string source, string target, HashSet<string> excludeDirs)
+    {
+        Directory.CreateDirectory(target);
+        foreach (string dir in Directory.GetDirectories(source))
+        {
+            if (excludeDirs.Contains(Path.GetFileName(dir)))
+                continue;
+            CopyDirExcluding(dir, Path.Combine(target, Path.GetFileName(dir)), excludeDirs);
+        }
+        foreach (string file in Directory.GetFiles(source))
+        {
+            string dest = Path.Combine(target, Path.GetFileName(file));
+            File.Copy(file, dest, overwrite: true);
+            // Clear read-only (e.g. .git objects) so workspace delete succeeds.
+            try { File.SetAttributes(dest, FileAttributes.Normal); } catch { }
+        }
+    }
+
     private static void WriteBat(string dir, string name, params string[] lines) =>
         File.WriteAllLines(Path.Combine(dir, name), lines, Encoding.ASCII);
 
@@ -1109,6 +1585,15 @@ internal static class LaunchStaircase
     private static async Task RunCase(EvidenceCollector collector, string id,
         Func<Task<(bool Passed, string Reason, string? OutcomeOverride)>> fn)
     {
+        // --only <substr>... : run a subset of legs (isolation experiments).
+        // Non-selected legs are recorded as NotRun; the aggregate then
+        // reflects only the selection (documented in the reason).
+        if (OnlyFilter is { Length: > 0 } && !id.Contains(OnlyFilter, StringComparison.OrdinalIgnoreCase))
+        {
+            collector.Add(id, "NotRun", $"skipped by --only {OnlyFilter}", 0);
+            Console.WriteLine($"gw1b-launch: [SKIP] {id} (--only {OnlyFilter})");
+            return;
+        }
         var sw = Stopwatch.StartNew();
         try
         {

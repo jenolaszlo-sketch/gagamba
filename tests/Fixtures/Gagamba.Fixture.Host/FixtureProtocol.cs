@@ -42,21 +42,21 @@ public static class FixtureProtocol
 
         if (node is not JsonObject obj)
             return new(false, "invalid-envelope", null);
-        if (obj["protocolVersion"]?.GetValue<int>() != ProtocolVersion)
+        // Type-safe reads: a parseable line with wrong field types must be a
+        // clean rejection, never an exception.
+        if (!TryInt(obj["protocolVersion"], out int protocolVersion) || protocolVersion != ProtocolVersion)
             return new(false, "unknown-version", null);
-        if (!string.Equals(obj["runId"]?.GetValue<string>(), expectedRunId, StringComparison.Ordinal))
+        if (!TryStr(obj["runId"], out string? runId) || !string.Equals(runId, expectedRunId, StringComparison.Ordinal))
             return new(false, "mismatched-identity", null);
-        if (!string.Equals(obj["workerId"]?.GetValue<string>(), expectedWorkerId, StringComparison.Ordinal))
+        if (!TryStr(obj["workerId"], out string? workerId) || !string.Equals(workerId, expectedWorkerId, StringComparison.Ordinal))
             return new(false, "mismatched-identity", null);
-        if (obj["sequence"]?.GetValue<int>() != expectedSequence)
+        if (!TryInt(obj["sequence"], out int sequence) || sequence != expectedSequence)
         {
-            // Distinguish duplicate vs out-of-order when caller provides context is
-            // done by tests via reason prefix; validator reports bad-sequence.
+            // bad-sequence covers duplicate and out-of-order alike.
             return new(false, "bad-sequence", null);
         }
 
-        string? kind = obj["kind"]?.GetValue<string>();
-        if (string.IsNullOrEmpty(kind))
+        if (!TryStr(obj["kind"], out string? kind) || string.IsNullOrEmpty(kind))
             return new(false, "missing-kind", null);
         if (!WorkerKinds.Contains(kind))
             return new(false, $"unknown-kind:{kind}", null);
@@ -64,6 +64,18 @@ public static class FixtureProtocol
             return new(false, "missing-payload", null);
 
         return new(true, null, obj);
+    }
+
+    private static bool TryInt(JsonNode? node, out int value)
+    {
+        value = 0;
+        return node is JsonValue json && json.TryGetValue(out value);
+    }
+
+    private static bool TryStr(JsonNode? node, out string? value)
+    {
+        value = null;
+        return node is JsonValue json && json.TryGetValue(out value);
     }
 
     public static string BuildContinue(string runId, string workerId, int sequence, string op, JsonObject? opParams)

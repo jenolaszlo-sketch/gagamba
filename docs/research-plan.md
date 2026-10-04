@@ -1,6 +1,6 @@
 # Research and qualification plan
 
-Status: planned, no sandbox spikes executed. Windows, Linux, and macOS are target platforms. Local environment inventory completed; start sandbox testing on local Windows. See [test environments](test-environments.md). Updated 2026-10-03.
+Status: Windows spikes (GW-1A, GW-1B slices 1–4) executed 2026-10-04; Linux and macOS spikes not started. Windows, Linux, and macOS are target platforms. Local environment inventory completed; Windows launch evidence exists, Linux/macOS remain open. See [work queue](work-queue.md) and [evidence](evidence/windows-slice4-GW-1B.md). Updated 2026-10-04.
 
 The [implementation plan](implementation-plan.md) now defines the canonical delivery order and maps these research gates to implementation work. See [testing and CI](testing-and-ci.md) for automation and evidence acceptance.
 
@@ -28,7 +28,7 @@ Conformance success is necessary evidence, not a proof of absence of vulnerabili
 5. Test `dotnet build --no-restore`, `dotnet test --no-restore`, Git inspection, PowerShell and `cmd.exe` against small disposable fixtures. Disable persistent build servers and user startup/config hooks where possible; add required runtime reads explicitly.
 6. Decide whether the experimental API suffices. If not, assess a restricted-token/dedicated-user implementation and its installation, elevation, ACL rollback, firewall ownership, concurrency, and servicing costs. Assess existing runtimes as alternatives using the same tests.
 
-Initial local inventory observed .NET SDK 10.0.401, registry build 26200.9457 / display version 25H2, and `processmodel.dll` file version 10.0.26100.9444. The registry product label reported Windows 10 despite the newer build; qualify the actual OS with a proper probe. No export resolution, API launch, or sandbox availability was verified. These observations do not pass W1.
+Initial local inventory observed .NET SDK 10.0.401, registry build 26200.9457 / display version 25H2, and `processmodel.dll` file version 10.0.26100.9444. The registry product label reported Windows 10 despite the newer build; qualify the actual OS with a proper probe. GW-1A (2026-10-03) later confirmed all three `Experimental_*` exports resolve and the schema sources; GW-1B (2026-10-04) launches, denies and captures I/O, with tree-stop, file-handle I/O, dotnet runtime and Git grants still open. See [evidence](evidence/windows-slice4-GW-1B.md).
 
 ## Linux experiments
 

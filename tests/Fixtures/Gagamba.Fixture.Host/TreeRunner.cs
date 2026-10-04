@@ -16,7 +16,7 @@ public sealed record NodeRecord(
     string WorkerId,
     DateTime StartedUtc);
 
-public sealed record SurvivorInfo(int Pid, string Detail);
+public sealed record SurvivorInfo(int Pid, DateTime StartedUtc, string Detail);
 
 public static class TreeRunner
 {
@@ -51,15 +51,25 @@ public static class TreeRunner
         string workspaceRoot, int expectedCount, TimeSpan deadline, CancellationToken ct = default)
     {
         var sw = Stopwatch.StartNew();
+        List<NodeRecord> last = [];
         while (sw.Elapsed < deadline)
         {
             ct.ThrowIfCancellationRequested();
-            var nodes = ReadNodes(workspaceRoot);
-            if (nodes.Count >= expectedCount)
-                return nodes;
+            try
+            {
+                last = ReadNodes(workspaceRoot);
+                if (last.Count >= expectedCount)
+                    return last;
+            }
+            catch (Exception ex) when (ex is IOException or System.Text.Json.JsonException
+                                       or InvalidOperationException)
+            {
+                // A node file may be mid-write by the worker; keep polling.
+            }
             await Task.Delay(100, ct);
         }
-        return ReadNodes(workspaceRoot);
+        try { return ReadNodes(workspaceRoot); }
+        catch { return last; }
     }
 
     public static Process Launch(string workerPath, string workerArgs)
@@ -101,13 +111,13 @@ public static class TreeRunner
         while (alive.Count > 0 && sw.Elapsed < limit)
         {
             foreach (var s in alive)
-                TryKillPid(s.Pid);
+                TryKillPid(s.Pid, s.StartedUtc);
             await Task.Delay(200);
             alive = CheckSurvivors(workspaceRoot);
         }
         // Final escalation: one more direct pass, then report.
         foreach (var s in alive)
-            TryKillPid(s.Pid);
+            TryKillPid(s.Pid, s.StartedUtc);
         await Task.Delay(300);
         return CheckSurvivors(workspaceRoot);
     }
@@ -133,19 +143,30 @@ public static class TreeRunner
                 catch { continue; } // exited/denied meanwhile: not provably ours
                 if (Math.Abs((actualStart - node.StartedUtc).TotalSeconds) > 3)
                     continue; // PID reused by another process: explicitly not ours
-                alive.Add(new(node.Pid, $"workerId={node.WorkerId} depth={node.Depth} orphan={node.Orphan}"));
+                alive.Add(new(node.Pid, node.StartedUtc,
+                    $"workerId={node.WorkerId} depth={node.Depth} orphan={node.Orphan}"));
             }
         }
         return alive;
     }
 
-    private static void TryKillPid(int pid)
+    /// <summary>
+    /// Kills a PID only when its live start time still matches the recorded
+    /// identity. Guards against PID reuse between CheckSurvivors and the kill.
+    /// </summary>
+    private static void TryKillPid(int pid, DateTime expectedStartUtc)
     {
         try
         {
             using var proc = Process.GetProcessById(pid);
-            if (!proc.HasExited)
-                proc.Kill();
+            if (proc.HasExited)
+                return;
+            DateTime actual;
+            try { actual = proc.StartTime.ToUniversalTime(); }
+            catch { return; } // exiting/denied: leave it to CheckSurvivors
+            if (Math.Abs((actual - expectedStartUtc).TotalSeconds) > 3)
+                return; // PID reused: never kill a process that is not ours
+            proc.Kill();
         }
         catch { /* dead, reused, or denied: CheckSurvivors is authoritative */ }
     }

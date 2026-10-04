@@ -21,7 +21,7 @@ Read-only `wsl --status`, `wsl --list --verbose`, and `docker version` checks su
 - No separate Ubuntu or other user Linux distribution was listed.
 - Docker Desktop: 4.75.0; Docker client/server: 29.5.2; Linux engine architecture: amd64.
 - Engine kernel: `6.6.114.1-microsoft-standard-WSL2`.
-- Prior Windows inventory: build 26200.9457, .NET SDK 10.0.401, `processmodel.dll` 10.0.26100.9444. The sandbox export and launch have not yet been tested.
+- Prior Windows inventory: build 26200.9457, .NET SDK 10.0.401, `processmodel.dll` 10.0.26100.9444. The export and launch were later tested (GW-1A/GW-1B, see [evidence](evidence/windows-slice4-GW-1B.md)); several engine gates remain open.
 
 Do not develop inside Docker's internal WSL distribution. Recommend installing a separate Ubuntu WSL2 distribution when Linux setup begins. No distribution, image, package, or host security configuration was installed or changed by this planning update.
 
@@ -46,7 +46,7 @@ Keep probe jobs bounded and use synthetic sentinels with no repository secrets. 
 ## Acceptance boundaries
 
 - Inventory is complete only for this Windows host's WSL/Docker setup.
-- Windows sandbox launch, Linux namespace creation, and macOS CI execution remain untested.
+- Windows sandbox launch has been tested (GW-1B); Linux namespace creation and macOS CI execution remain untested.
 - Unit tests can run on broad CI images; security conformance must run where the selected backend really exists.
 - A Windows Server runner result does not establish availability of the experimental Windows 11 API.
 - No three-platform support claim until each required backend profile passes independently.

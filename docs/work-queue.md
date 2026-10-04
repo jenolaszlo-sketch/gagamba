@@ -1,6 +1,6 @@
 # Current work queue
 
-Updated 2026-10-03. Status definitions: Complete = stated artifact exists; Ready = dependencies sufficient to start; Held = named prerequisite missing; Pending = later delivery. Complete design work never implies completed security qualification.
+Updated 2026-10-04. Status definitions: Complete = stated artifact exists; Ready = dependencies sufficient to start; Held = named prerequisite missing; Pending = later delivery. Complete design work never implies completed security qualification.
 
 | ID | Status | Next action / exit evidence |
 | --- | --- | --- |
@@ -13,7 +13,8 @@ Updated 2026-10-03. Status definitions: Complete = stated artifact exists; Ready
 | GW-1B-L1 | Complete 2026-10-03 | Schema pinned (mxc v0.8.0), verified spec compiler, first launches: bare shape rejected fail-closed, appcontainer exit 7 + job, rw-grant marker effect, profile lifecycle proven — see [GW-1B launch evidence](evidence/windows-minimal-launch-GW-1B.md) |
 | GW-1B-L2 | Complete 2026-10-03 — evidence with 2 blocking gaps | Denial (ro + ungranted) with positive controls, descendant effects + inherited denial, cancel race: all proven. Tree-stop gap (kill AND natural exit leave survivors) and stdio-redirect rejection characterized — see [GW-1B slice-2 evidence](evidence/windows-denial-tree-io-GW-1B.md) |
 | GW-1B-L3 | Complete 2026-10-03 — evidence with open gates | Pipes proven (exact capture), ToolHelp supervisor proven cross-boundary (found/killed, root survived), whoami maps base image; dotnet exits 1 silently in all grant configs (compat, not closure) — see [GW-1B slice-3 evidence](evidence/windows-pipes-supervisor-workloads-GW-1B.md) and [provider ADR](adr/0001-windows-provider.md) |
-| GW-1B | Ready — next | registryRead-capability dotnet variant, launcher-crash recovery design, dotnet build/test workloads |
+| GW-1B-L4 | Complete 2026-10-04 — 14/19 legs green, 4 gates open + 1 NotRun | Encoder byte-exact vs flatc; crash-recovery by recorded PID and launch-stability/retry proven; grant-shape and Git-tree grant findings recorded; remaining red: tree-stop, file-handle stdio, dotnet runtime, Git install grant — see [GW-1B slice-4 evidence](evidence/windows-slice4-GW-1B.md) |
+| GW-1B | In progress — engine findings | Resolve/narrow: descendant stop on root exit, STARTUPINFO/file-handle transport, dotnet runtime compatibility, Git install grant; then dotnet build/test workloads |
 | GL-1A | Held on separate WSL distro (Windows probe done) | Prepare Ubuntu WSL2, namespace/seccomp inventory and equivalent minimal Linux probe |
 | GM-1A | Held on workflow/runner setup (GP-1A done) | Remote exists; manual bounded macOS capability probe, ARM64 first and Intel separately |
 | CI-1 | Ready (code exists) | Remote exists; add real build/unit workflow for fixtures + probe, no placeholder success jobs |
@@ -46,7 +47,7 @@ Record evidence and status changes here as work progresses. Do not rerun complet
 
 - Commit/push prerequisite is satisfied by preparation baseline `7bdb28f` on local and remote main. A clean `git status` has no staged `A` entries; inspect the exact checkout if another session still reports the initial commit.
 - The verifier supports Windows PowerShell `-File` by computing its default root in the body. README documents process-scoped execution-policy options. Explicit empty roots reject rather than selecting another repository.
-- No `tests/Fixtures/`, solution, `eng/verify.ps1`, `eng/probe.ps1`, `eng/conformance.ps1` or `.github/workflows/` is expected yet. Create each with working behavior at its milestone. No empty `src/Gagamba.*` projects.
-- The five feasibility gates above remain open and do not block GP-1A fixture self-tests. They block their respective backend and release claims.
+- `tests/Fixtures/` (fixture host/worker/harness/self-test), `spikes/Gw1aProbe`, `spikes/Gw1bLaunch`, `eng/probe.ps1|.sh`, `eng/launch-spike.ps1|.sh` and `eng/fixture-selftest.ps1|.sh` now exist with working behavior. No solution file, `.github/workflows/`, or `src/Gagamba.*` projects exist yet; create each with working behavior at its milestone, never as empty scaffolding.
+- The five feasibility gates above remain open and do not block fixture self-tests. Gate 1 (Windows API/schema/IO/lifetime) now has partial evidence: availability, schema pin, launch, denial, pipes and supervisor sweep pass; descendant stop, file-handle transport, dotnet compat and Git-tree grants remain open. The gates still block their respective backend and release claims.
 - Before GL-1A execution, install and initialize a separate Ubuntu WSL2 distribution, confirm version 2 and Linux filesystem placement, and record setup evidence. Docker's internal distribution is not the development environment. This installation has not occurred.
 - Before GM-1A launcher/conformance work, manually run a bounded macOS runner availability probe and retain its image/architecture/tool report. That probe is the initial part of the macOS research gate, not proof of sandbox enforcement. No macOS workflow or probe run exists yet.

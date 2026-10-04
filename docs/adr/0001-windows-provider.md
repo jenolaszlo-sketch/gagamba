@@ -38,7 +38,18 @@ Gaps that shape the design:
   (ws-only through full closure), while `whoami.exe` runs fine with no
   grants at all — so System32 is implicitly covered and the dotnet failure
   is runtime compatibility (registry/capability/Low-IL friction), not path
-  closure. Unresolved: `registryRead` capability variant, env tuning.
+  closure. The `registryRead` capability variant was tried (slice 4) and did
+  not change the outcome; the dotnet failure remains unresolved.
+- Some host directory trees cannot be granted at all: `C:\Program Files\Git`
+  (and its subdirectories, and `C:\Program Files` itself) returns
+  `ERROR_INVALID_DATA` deterministically, while `dotnet`, `Common Files`,
+  `Windows`, and copies of Git's contents under `C:\temp` are accepted. The
+  provider must validate grant roots at preparation and reject/fallback rather
+  than assume a directory is bindable.
+- Process-wide grant-shape fragility: two grants of the same kind under
+  `%TEMP%` are rejected while the same shape under `C:\temp` is accepted
+  (foreign ACEs on the `%TEMP%` tree are suspected). Preparation should
+  validate the actual grant set and surface a typed rejection.
 
 ## Decision
 

@@ -13,7 +13,8 @@ internal static class ControlRunner
     public const int MaxStdoutChars = 65536;
 
     /// <summary>Runs a fixture command unsandboxed with bounded capture.</summary>
-    public static async Task<DirectResult> Run(string exe, string args, string cwd, int timeoutMs = 30_000)
+    public static async Task<DirectResult> Run(string exe, string args, string cwd, int timeoutMs = 30_000,
+        bool createNoWindow = true)
     {
         var psi = new ProcessStartInfo
         {
@@ -23,7 +24,7 @@ internal static class ControlRunner
             RedirectStandardOutput = true,
             RedirectStandardError = true,
             UseShellExecute = false,
-            CreateNoWindow = true,
+            CreateNoWindow = createNoWindow,
         };
         using var proc = Process.Start(psi);
         if (proc is null)
