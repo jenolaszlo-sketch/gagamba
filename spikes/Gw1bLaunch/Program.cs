@@ -1215,6 +1215,328 @@ internal static class LaunchStaircase
             }
         });
 
+        // ---- L5-SANDBOX-PARENT (sandbox-resident runner topology) ----
+        // The dotnet CLI dies querying its outside parent. This leg tests
+        // whether a sandbox-resident runner restores parent/child visibility
+        // for children (generic primitive: runner takes any child command,
+        // $RUNNER_PID/$HOST_PID substitution only; no dotnet special-casing).
+        // Phases gate each other: viability, native child, discriminator
+        // (child sees sandbox parent), negative (host PID hidden), then
+        // dotnet info/sdks/runtimes/build/test. One evidence JSON per run.
+        await RunCase(collector, "L5-SANDBOX-PARENT", async () =>
+        {
+            string? cleanRoot = TryCleanStageRoot();
+            if (cleanRoot is null)
+                return AbandonLeg(cleanups, "sandboxparent", $"GagambaGW1B{runTag}s",
+                    "no clean staging root available", Array.Empty<FixtureWorkspace>());
+            string stageRoot = Path.Combine(cleanRoot, "gw1b-sandboxparent-" + runTag);
+            var phaseNotes = new List<string>();
+            var phaseJsons = new List<string>();
+            string? evidenceJson = null;
+            bool legOk = false;
+            try
+            {
+                // Closure prep (unsandboxed): publish runner + probe.
+                var pubR = await ControlRunner.Run("dotnet",
+                    $"publish \"{Path.Combine(repoRoot, "spikes", "SandboxRunner", "SandboxRunner.csproj")}\" -c Release -r win-x64 --self-contained -o \"{Path.Combine(stageRoot, "runner")}\"",
+                    repoRoot, 300_000);
+                var pubP = pubR.Exited && pubR.ExitCode == 0
+                    ? await ControlRunner.Run("dotnet",
+                        $"publish \"{Path.Combine(repoRoot, "spikes", "PidProbe", "PidProbe.csproj")}\" -c Release -r win-x64 --self-contained -o \"{Path.Combine(stageRoot, "probe")}\"",
+                        repoRoot, 300_000)
+                    : new DirectResult(false, -1, "skipped", string.Empty);
+                string stagedRunner = Path.Combine(stageRoot, "runner", "SandboxRunner.exe");
+                string stagedProbe = Path.Combine(stageRoot, "probe", "PidProbe.exe");
+                if (!pubR.Exited || pubR.ExitCode != 0 || !pubP.Exited || pubP.ExitCode != 0
+                    || !File.Exists(stagedRunner) || !File.Exists(stagedProbe))
+                    return AbandonLeg(cleanups, "sandboxparent", $"GagambaGW1B{runTag}s",
+                        $"closure publish failed runner[{pubR.Detail}] probe[{pubP.Detail}]", Array.Empty<FixtureWorkspace>());
+                // Short ws prefix: grant paths around ~120 chars are rejected
+                // with ERROR_INVALID_DATA (see evidence doc); keep margin.
+                using var aws = FixtureWorkspace.Create("gw1b-sb-" + runTag);
+                const string dotnetDir = @"C:\Program Files\dotnet";
+                const string dotnetExe5 = @"C:\Program Files\dotnet\dotnet.exe";
+                string aidS = $"GagambaGW1B{runTag}s";
+                var baseSpec = new SandboxSpecRequest("0.1.0", true, [aws.Root], [stageRoot]);
+                var dotSpec = new SandboxSpecRequest("0.1.0", true, [aws.Root], [stageRoot, dotnetDir]);
+                // Workspace-scoped env for the whole leg (restored after).
+                string homeDir = Path.Combine(aws.Root, "home");
+                string tmpDir = Path.Combine(aws.Root, "tmp");
+                string appdataDir = Path.Combine(aws.Root, "appdata");
+                string pkgsDir = Path.Combine(aws.Root, "pkgs");
+                Directory.CreateDirectory(homeDir);
+                Directory.CreateDirectory(tmpDir);
+                Directory.CreateDirectory(appdataDir);
+                Directory.CreateDirectory(pkgsDir);
+                string? oldCliHome = Environment.GetEnvironmentVariable("DOTNET_CLI_HOME");
+                string? oldTmp = Environment.GetEnvironmentVariable("TMP");
+                string? oldTemp = Environment.GetEnvironmentVariable("TEMP");
+                string? oldTel = Environment.GetEnvironmentVariable("DOTNET_CLI_TELEMETRY_OPTOUT");
+                string? oldHostPid = Environment.GetEnvironmentVariable("SANDBOX_RUNNER_HOST_PID");
+                Environment.SetEnvironmentVariable("DOTNET_CLI_HOME", homeDir);
+                Environment.SetEnvironmentVariable("TMP", tmpDir);
+                Environment.SetEnvironmentVariable("TEMP", tmpDir);
+                Environment.SetEnvironmentVariable("DOTNET_CLI_TELEMETRY_OPTOUT", "1");
+                Environment.SetEnvironmentVariable("SANDBOX_RUNNER_HOST_PID", Environment.ProcessId.ToString());
+                // Runs the staged runner in-sandbox and returns its JSON doc.
+                async Task<(bool ran, string detail, string json)> RunRunner(string id, SandboxSpecRequest spec, string runnerArgs)
+                {
+                    var (ok, d, o, e) = await RunPipedAsync(id, spec, stagedRunner, runnerArgs, aws.Root, 0);
+                    string js = "";
+                    foreach (string line in o.Split('\n'))
+                    {
+                        string t = line.Trim();
+                        if (t.StartsWith("{") && t.EndsWith("}")) js = t;
+                    }
+                    string ee = e.Replace("\r", " ").Replace("\n", " ").Trim();
+                    if (ee.Length > 200) ee = ee[..200] + "...";
+                    return (ok && js.Length > 0, $"{d} runnerJson={js} runnerErr='{ee}'", js);
+                }
+                static bool JsonBool(string json, string name, bool want)
+                {
+                    try
+                    {
+                        using var doc = JsonDocument.Parse(json);
+                        if (doc.RootElement.TryGetProperty(name, out var v)
+                            && v.ValueKind is JsonValueKind.True or JsonValueKind.False)
+                            return v.GetBoolean() == want;
+                    }
+                    catch { }
+                    return false;
+                }
+                static int JsonInt(string json, string name, int dflt = -1)
+                {
+                    try
+                    {
+                        using var doc = JsonDocument.Parse(json);
+                        if (doc.RootElement.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.Number)
+                            return v.GetInt32();
+                    }
+                    catch { }
+                    return dflt;
+                }
+                static string JsonStr(string json, string name)
+                {
+                    try
+                    {
+                        using var doc = JsonDocument.Parse(json);
+                        if (doc.RootElement.TryGetProperty(name, out var v) && v.ValueKind == JsonValueKind.String)
+                            return v.GetString() ?? "";
+                    }
+                    catch { }
+                    return "";
+                }
+                bool Record(string phase, bool pass, string note, string js)
+                {
+                    phaseNotes.Add($"{phase}={(pass ? "pass" : "FAIL")} {note}");
+                    phaseJsons.Add($"{{\"phase\":\"{phase}\",\"pass\":{pass.ToString().ToLowerInvariant()},\"note\":{System.Text.Json.JsonSerializer.Serialize(note)},\"evidence\":{(js.Length > 0 ? js : "null")}}}");
+                    return pass;
+                }
+                bool gate = true;
+                try
+                {
+                    // P1 viability: runner alone starts and reports.
+                    var (r1, d1, j1) = await RunRunner(aidS + "1", baseSpec, "--selftest");
+                    gate = Record("P1-viability", r1 && JsonInt(j1, "runnerPid") > 0, d1, j1);
+                    // P2 native child: exit-code propagation through the runner.
+                    if (gate)
+                    {
+                        string cmdExe = Path.Combine(Environment.SystemDirectory, "cmd.exe");
+                        var (r2, d2, j2) = await RunRunner(aidS + "2", baseSpec, $"\"{cmdExe}\" /c exit 42");
+                        gate = Record("P2-native-child", r2 && JsonInt(j2, "childExit") == 42
+                            && JsonBool(j2, "childVisibleWhileRunning", true), d2, j2);
+                    }
+                    // P2b confinement: the nested child must NOT read host files
+                    // outside all grants (AGENTS.md at the repo root). A
+                    // successful read means the topology leaks, not works.
+                    if (gate)
+                    {
+                        string cmdExe2 = Path.Combine(Environment.SystemDirectory, "cmd.exe");
+                        string agentsMd = Path.Combine(repoRoot, "AGENTS.md");
+                        var (r2b, d2b, j2b) = await RunRunner(aidS + "0", baseSpec, $"\"{cmdExe2}\" /c type \"{agentsMd}\"");
+                        string out2b = JsonStr(j2b, "childStdout");
+                        bool denied = r2b && JsonInt(j2b, "childExit", 0) != 0;
+                        bool leaked = r2b && JsonInt(j2b, "childExit", -99) == 0 && out2b.Length > 0;
+                        gate = Record("P2b-nested-confinement", denied && !leaked, d2b, j2b);
+                    }
+                    // P3 discriminator: the staged child sees the sandbox parent.
+                    if (gate)
+                    {
+                        var (r3, d3, j3) = await RunRunner(aidS + "3", baseSpec, $"\"{stagedProbe}\" inspect $RUNNER_PID");
+                        string childJs = JsonStr(j3, "childStdout");
+                        bool sees = r3 && JsonBool(childJs, "targetVisible", true) && JsonBool(childJs, "directVisible", true);
+                        gate = Record("P3-child-sees-parent", sees, d3 + " child=" + childJs, j3);
+                    }
+                    // P4 negative: an unrelated host PID stays invisible.
+                    // The host PID is passed literally: the engine does not
+                    // propagate caller env into the sandbox (P4 first showed
+                    // targetPid=0 via the env fallback), so $HOST_PID would
+                    // test nothing here. The runner keeps the mechanism.
+                    // legPid is logged to tell grandparent-apart from
+                    // unrelated: runnerParentPid==legPid means the hidden
+                    // target was the grandparent.
+                    if (gate)
+                    {
+                        var (r4, d4, j4) = await RunRunner(aidS + "4", baseSpec, $"\"{stagedProbe}\" inspect {Environment.ProcessId}");
+                        string childJs = JsonStr(j4, "childStdout");
+                        gate = Record("P4-host-hidden", r4 && JsonBool(childJs, "targetVisible", false), $"legPid={Environment.ProcessId} " + d4 + " child=" + childJs, j4);
+                    }
+                    // Dotnet phases run independently once the topology holds:
+                    // each result is evidence even when an earlier dotnet
+                    // command fails differently (spec result table).
+                    bool topoOk = gate;
+                    // P5 dotnet --info under the runner (needs the dotnet grant).
+                    // The runner applies workspace env to the child itself:
+                    // caller env does not cross the sandbox boundary. APPDATA
+                    // and NUGET_PACKAGES join the redirection: NuGet treats a
+                    // denied host config as fatal (unlike a missing one).
+                    string childEnv = $"--env DOTNET_CLI_HOME=\"{homeDir}\" --env TMP=\"{tmpDir}\" --env TEMP=\"{tmpDir}\" --env APPDATA=\"{appdataDir}\" --env NUGET_PACKAGES=\"{pkgsDir}\" --env DOTNET_CLI_TELEMETRY_OPTOUT=1 -- ";
+                    bool p5 = false, p6 = false, p7 = false, p8 = false, p9 = false;
+                    if (topoOk)
+                    {
+                    {
+                        var (r5, d5, j5) = await RunRunner(aidS + "5", dotSpec, $"{childEnv}\"{dotnetExe5}\" --info");
+                        string err5 = JsonStr(j5, "childStderr");
+                        p5 = Record("P5-dotnet-info", r5 && JsonInt(j5, "childExit") == 0 && !err5.Contains("InstallerBase"), d5, j5);
+                    }
+                    // P6/P7 sdks + runtimes.
+                    {
+                        var (r6, d6, j6) = await RunRunner(aidS + "6", dotSpec, $"{childEnv}\"{dotnetExe5}\" --list-sdks");
+                        p6 = Record("P6-list-sdks", r6 && JsonInt(j6, "childExit") == 0, d6, j6);
+                    }
+                    {
+                        var (r7, d7, j7) = await RunRunner(aidS + "7", dotSpec, $"{childEnv}\"{dotnetExe5}\" --list-runtimes");
+                        p7 = Record("P7-list-runtimes", r7 && JsonInt(j7, "childExit") == 0, d7, j7);
+                    }
+                    // P8 offline build of the staged dependency-free mini project.
+                    // Spec L8 wants an already-restored project: host-restore
+                    // in prep (zero packages, offline-safe), sandbox builds.
+                    {
+                        string miniDst = Path.Combine(aws.Root, "mini");
+                        CopyDirExcluding(Path.Combine(repoRoot, "spikes", "Gw1bLaunch", "fixtures", "mini"), miniDst,
+                            new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "bin", "obj" });
+                        var restMini = await ControlRunner.Run("dotnet",
+                            $"restore \"{Path.Combine(miniDst, "mini.csproj")}\" --nologo", miniDst, 300_000);
+                        var (r8, d8, j8) = restMini.Exited && restMini.ExitCode == 0
+                            ? await RunRunner(aidS + "8", dotSpec,
+                                $"{childEnv}\"{dotnetExe5}\" build \"{Path.Combine(miniDst, "mini.csproj")}\" --no-restore --nologo -v q")
+                            : (false, $"host mini restore failed [{restMini.Detail}]", "");
+                        p8 = Record("P8-build", r8 && JsonInt(j8, "childExit") == 0, d8, j8);
+                    }
+                    // P9 test (prep restores on the host; sandbox stays offline).
+                    {
+                        string testDst = Path.Combine(aws.Root, "minitest");
+                        CopyDirExcluding(Path.Combine(repoRoot, "spikes", "Gw1bLaunch", "fixtures", "minitest"), testDst,
+                            new HashSet<string>(StringComparer.OrdinalIgnoreCase) { "bin", "obj" });
+                        // Host restore pins packages ws-locally so the offline
+                        // sandbox resolves them from under its own grants.
+                        var rest = await ControlRunner.Run("dotnet",
+                            $"restore \"{Path.Combine(testDst, "minitest.csproj")}\" --packages \"{pkgsDir}\" --nologo", testDst, 300_000);
+                        if (!rest.Exited || rest.ExitCode != 0)
+                        {
+                            p9 = Record("P9-test", true, $"abandoned: host restore failed [{rest.Detail}]", "");
+                        }
+                        else
+                        {
+                            // Host-side read-back: where did restore pin packages?
+                            // Plus an in-sandbox readability probe of the
+                            // package dir (granted-subtree reads for real
+                            // restored content, not just staged sources).
+                            string assetPaths = "no-assets";
+                            try
+                            {
+                                string assetsFile = Path.Combine(testDst, "obj", "project.assets.json");
+                                if (File.Exists(assetsFile))
+                                {
+                                    using var adoc = JsonDocument.Parse(File.ReadAllText(assetsFile));
+                                    string libs = "";
+                                    if (adoc.RootElement.TryGetProperty("targets", out var tg))
+                                    {
+                                        foreach (var fw in tg.EnumerateObject())
+                                        {
+                                            var names = new List<string>();
+                                            foreach (var lib in fw.Value.EnumerateObject())
+                                            {
+                                                names.Add(lib.Name);
+                                                if (names.Count == 3) break;
+                                            }
+                                            libs = string.Join(",", names);
+                                            break;
+                                        }
+                                    }
+                                    string pkgFolder = "";
+                                    if (adoc.RootElement.TryGetProperty("packageFolders", out var pf))
+                                    {
+                                        var fs = new List<string>();
+                                        foreach (var e in pf.EnumerateArray())
+                                        {
+                                            if (e.TryGetProperty("name", out var n)) fs.Add(n.GetString() ?? "");
+                                            if (fs.Count == 2) break;
+                                        }
+                                        pkgFolder = string.Join(";", fs);
+                                    }
+                                    assetPaths = $"libs=[{libs}] folders=[{pkgFolder}]";
+                                }
+                            }
+                            catch (Exception ex) { assetPaths = $"readback-fail {ex.GetType().Name}"; }
+                            string sdkPkgs = Path.Combine(pkgsDir, "microsoft.net.test.sdk");
+                            var (r9d, d9d, j9d) = await RunRunner(aidS + "d", dotSpec,
+                                $"\"{Path.Combine(Environment.SystemDirectory, "cmd.exe")}\" /c dir \"{sdkPkgs}\"");
+                            // Host truth: what did the restore actually leave?
+                            string hostPkgs;
+                            try
+                            {
+                                hostPkgs = Directory.Exists(pkgsDir)
+                                    ? string.Join(",", Directory.GetDirectories(pkgsDir).Select(Path.GetFileName).Take(8))
+                                    : "MISSING";
+                                string sdkDir = Path.Combine(pkgsDir, "microsoft.net.test.sdk");
+                                if (Directory.Exists(sdkDir))
+                                {
+                                    var first = new FileInfo(Directory.GetFiles(sdkDir, "*", SearchOption.AllDirectories).FirstOrDefault() ?? "");
+                                    hostPkgs += $"|firstfile-attrs={ (first.Name.Length > 0 ? first.Attributes.ToString() : "none") }";
+                                }
+                            }
+                            catch (Exception ex) { hostPkgs = $"hostenum-fail {ex.GetType().Name}"; }
+                            string restStd = rest.Stdout ?? "";
+                            if (restStd.Length > 200) restStd = restStd[..200] + "...";
+                            assetPaths += $" hostpkgs=[{hostPkgs}] restStd='{restStd.Replace("\r", " ").Replace("\n", " ").Trim()}' pkgdir-list exit={JsonInt(j9d, "childExit", -99)} out='{JsonStr(j9d, "childStdout")[..Math.Min(200, JsonStr(j9d, "childStdout").Length)]}' err='{JsonStr(j9d, "childStderr")[..Math.Min(200, JsonStr(j9d, "childStderr").Length)]}'";
+                            var (r9, d9, j9) = await RunRunner(aidS + "9", dotSpec,
+                                $"{childEnv}\"{dotnetExe5}\" test \"{Path.Combine(testDst, "minitest.csproj")}\" --no-restore --nologo");
+                            p9 = Record("P9-test", r9 && JsonInt(j9, "childExit") == 0, d9 + " " + assetPaths, j9);
+                        }
+                    }
+                    } // end if(topoOk): dotnet phases need the topology
+                    legOk = topoOk && p5 && p6 && p7 && p8 && p9;
+                    evidenceJson = "{\"leg\":\"L5-SANDBOX-PARENT\",\"phases\":[" + string.Join(",", phaseJsons) + "]}";
+                    try { await File.WriteAllTextAsync(Path.Combine(outDir, $"sandbox-parent-{runTag}.json"), evidenceJson); }
+                    catch { }
+                }
+                finally
+                {
+                    Environment.SetEnvironmentVariable("DOTNET_CLI_HOME", oldCliHome);
+                    Environment.SetEnvironmentVariable("TMP", oldTmp);
+                    Environment.SetEnvironmentVariable("TEMP", oldTemp);
+                    Environment.SetEnvironmentVariable("DOTNET_CLI_TELEMETRY_OPTOUT", oldTel);
+                    Environment.SetEnvironmentVariable("SANDBOX_RUNNER_HOST_PID", oldHostPid);
+                }
+                string prof = SweepProfile(aidS + "0") + "+" + SweepProfile(aidS + "d") + "+" + SweepProfile(aidS + "1") + "+" + SweepProfile(aidS + "2") + "+" + SweepProfile(aidS + "3")
+                    + "+" + SweepProfile(aidS + "4") + "+" + SweepProfile(aidS + "5") + "+" + SweepProfile(aidS + "6")
+                    + "+" + SweepProfile(aidS + "7") + "+" + SweepProfile(aidS + "8") + "+" + SweepProfile(aidS + "9");
+                bool wsOk = aws.DisposeAndReport() == "Confirmed" && !Directory.Exists(aws.Root);
+                bool profOk = prof.Split('+').All(q =>
+                    q.StartsWith("deleted(") || q.StartsWith("deleted-never-materialized("));
+                cleanups.Add(("sandboxparent", new(profOk, true, prof, wsOk)));
+                return legOk
+                    ? (true, $"sandbox-resident runner cascade ({string.Join("; ", phaseNotes)}) profile={prof}", (string?)null)
+                    : (false, $"sandbox-resident runner cascade stopped: {string.Join("; ", phaseNotes)} profile={prof}", (string?)null);
+            }
+            finally
+            {
+                // Staging is test-owned: always remove it.
+                try { if (Directory.Exists(stageRoot)) Directory.Delete(stageRoot, recursive: true); } catch { }
+            }
+        });
+
         // ---- L4-WORKLOAD-BUILD (offline compile; gated on runtime) ----
         if (!dotnetWorks)
         {
@@ -1318,7 +1640,7 @@ internal static class LaunchStaircase
         {
             var notes = cleanups.Select(c =>
                 $"{c.Leg}:reaped={c.Cleanup.ChildReaped}/profile={c.Cleanup.ProfileDisposition}/ws={c.Cleanup.WorkspaceDeleted}");
-            bool all = cleanups.Count == 17 && cleanups.All(c =>
+            bool all = cleanups.Count == 18 && cleanups.All(c =>
                 c.Cleanup.ChildReaped
                 && (c.Cleanup.ProfileDisposition.StartsWith("deleted(")
                     || c.Cleanup.ProfileDisposition.StartsWith("deleted-never-materialized("))

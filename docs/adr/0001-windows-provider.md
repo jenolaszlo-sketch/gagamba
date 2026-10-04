@@ -128,3 +128,8 @@ missing mechanisms reject before target dispatch.
 - Conformance must re-prove: descendant stop, pipe transport, profile
   residue, and the workload-visibility answers (CLI-host vs self-contained,
   ancestor grants) on every claimed OS build.
+- Execution model (GW-1B-L7): host → sandbox → resident runner → tool →
+  descendants. The sandbox is the unit of isolation; nested processes form
+  a mutually-visible domain (parent/child/self) while outside PIDs stay
+  sealed. The runner is generic (exe + args + env); caller env does not
+  cross the boundary, so the runner applies child env itself.

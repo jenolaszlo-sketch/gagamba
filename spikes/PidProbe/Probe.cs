@@ -7,6 +7,58 @@ using System.Runtime.InteropServices;
 
 static string Head(Exception ex) => ex.Message.Split('\n')[0].Trim();
 
+static uint FindParentPid(uint pid)
+{
+    const uint TH32CS_SNAPPROCESS = 0x00000002;
+    IntPtr snap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    if (snap == (IntPtr)(-1)) return 0;
+    try
+    {
+        var pe = new PROCESSENTRY32 { dwSize = (uint)Marshal.SizeOf<PROCESSENTRY32>() };
+        if (Process32First(snap, ref pe))
+        {
+            do { if (pe.th32ProcessID == pid) return pe.th32ParentProcessID; }
+            while (Process32Next(snap, ref pe));
+        }
+    }
+    finally { CloseHandle(snap); }
+    return 0;
+}
+
+static string JsonEscape(string s) => s.Replace("\\", "\\\\").Replace("\"", "\\\"");
+
+// inspect <pid>: machine-readable single-target visibility check.
+// Always exits 0 with a JSON line; "targetVisible:false" is data, not failure.
+if (args.Length == 2 && args[0] == "inspect" && int.TryParse(args[1], out int targetPid))
+{
+    int selfPid = Environment.ProcessId;
+    uint ppid = 0;
+    int visible = -1;
+    bool targetVisible = false;
+    bool directVisible = false;
+    string? targetName = null;
+    string? error = null;
+    try
+    {
+        ppid = FindParentPid((uint)selfPid);
+        try { using var direct = Process.GetProcessById(targetPid); directVisible = true; targetName = direct.ProcessName; }
+        catch { /* direct query failed; fall back to enumeration */ }
+        var all = Process.GetProcesses();
+        visible = all.Length;
+        foreach (var p in all)
+        {
+            try { if (p.Id == targetPid) { targetVisible = true; targetName ??= p.ProcessName; } }
+            catch { /* per-process query may fail; keep scanning */ }
+            finally { p.Dispose(); }
+        }
+    }
+    catch (Exception ex) { error = $"{ex.GetType().Name}: {Head(ex)}"; }
+    string errJson = error is null ? "null" : $"\"{JsonEscape(error)}\"";
+    string nameJson = targetName is null ? "null" : $"\"{JsonEscape(targetName)}\"";
+    Console.WriteLine($"{{\"selfPid\":{selfPid},\"parentPid\":{ppid},\"targetPid\":{targetPid},\"visibleProcessCount\":{visible},\"targetVisible\":{targetVisible.ToString().ToLowerInvariant()},\"directVisible\":{directVisible.ToString().ToLowerInvariant()},\"targetProcessName\":{nameJson},\"error\":{errJson}}}");
+    return 0;
+}
+
 [DllImport("kernel32.dll", SetLastError = true)]
 static extern IntPtr CreateToolhelp32Snapshot(uint dwFlags, uint th32ProcessID);
 [DllImport("kernel32.dll", SetLastError = true)]

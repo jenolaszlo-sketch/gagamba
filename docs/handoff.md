@@ -1,6 +1,6 @@
 # Gagamba handoff
 
-Updated 2026-10-04 for GW-1B slice 4 (encoder, crash recovery, stability, workloads) plus a review pass, then GW-1B-L5 (git-getcwd resolution, harness pipe-drain fix) and GW-1B-L6 (dotnet exit-1 mechanism: parent-PID query, self-contained closures proven). Start the next session in `C:\Users\Laszlos\source\repos\Gagamba`.
+Updated 2026-10-04 for GW-1B slice 4 (encoder, crash recovery, stability, workloads) plus a review pass, then GW-1B-L5 (git-getcwd resolution, harness pipe-drain fix), GW-1B-L6 (dotnet exit-1 mechanism) and GW-1B-L7 (resident-runner topology verdict per experiment spec). Start the next session in `C:\Users\Laszlos\source\repos\Gagamba`.
 
 ## User direction
 
@@ -19,6 +19,7 @@ Develop Gagamba alone as an independently useful .NET sandbox library. Windows, 
 - GW-1B slice 4 implemented and reviewed: byte-exact spec encoder vs flatc (vendored vectors), crash-recovery by recorded PID, launch-stability/retry, grant-shape and Git-tree findings, and a review fix pass (crash-leg ordering, supervisor cost/PID-reuse, fixture bugs, eng-script false-green). 14/19 legs green; 4 open gates. Evidence `docs/evidence/windows-slice4-GW-1B.md`.
 - GW-1B-L5 git resolution: the staged-closure pattern is proven (staged `git --version` exits 0 in-sandbox) but every other git command dies `128` with `fatal: Unable to read current working directory: Permission denied` — ancestor dirs (`C:\`, profile) deny list access under AppContainer, confirmed by an elevated ProcMon capture. Fixed the harness pipe-drain gap (`RunPipedAsync` now drains when a child ran) that had hidden the fatal; trimmed the leg's bisect scaffolding.
 - GW-1B-L6 dotnet resolution: a new `L3-WORKLOAD-PIDPROBE` leg (manifest v6 = 20 IDs) stages a self-contained probe that exits 0 in-sandbox. Self-introspection works, but only `[System Process]` + self are visible; `GetProcessById(parent)` throws the verbatim dotnet `ArgumentException`. The CLI installer probe kills it, not the runtime — provider direction is self-contained managed closures.
+- GW-1B-L7 runner topology (per spec): `L5-SANDBOX-PARENT` (manifest v7 = 21 IDs) proves nested creation, same-domain visibility, nested confinement, `--list-sdks`/`--list-runtimes` and offline `build` under a generic resident runner. `dotnet --info` fails later on SCM probing; `dotnet test` on restored-package readability (open). Model adopted: sandbox → resident runner → tool tree.
 - Current shell chat may still be rooted in Solo. Use the Gagamba path explicitly; Solo's planning staging files are not the source of truth. Prefer opening the next coding session directly in Gagamba so its workspace permissions match the work.
 
 ## Read in this order
@@ -45,10 +46,10 @@ Verified GW-1A/GW-1B 2026-10-04 (Windows host, spike-only; no provider qualified
 
 Continue **GW-1B (engine findings)**: (1) test ancestor-chain list grants vs
 cwd confinement under a grantable subtree for the Git workload (GW-1B-L5),
-and record whether the drive root can be granted narrowly; (2) contract the
-first managed profile to self-contained closures (dotnet CLI stays red by
-mechanism) and probe framework-dependent launch without the CLI host;
-(3) confirm the multi-grant-under-`%TEMP%` rule and document it as a
+and record whether the drive root can be granted narrowly; (2) run the
+framework-dependent `mini` in-sandbox (compile proven in L7-P8) and chase
+the restored-package readability block for `test` (whoami token dump,
+file-vs-list split); (3) confirm the multi-grant-under-`%TEMP%` rule and document it as a
 preparation-time rejection; (4) design launcher-crash recovery beyond the
 supervisor (GQ-1 gate). Then GL-1A (separate Ubuntu WSL2) and GM-1A (macOS
 probe). Keep identities disposable and profiles deleted; never modify the
