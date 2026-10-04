@@ -133,3 +133,23 @@ mystery; a rerun with fixed pipe draining confirmed the mechanism:
   `Microsoft.DotNet.Cli.Installer.Windows.InstallerBase` caused by
   `Process.GetProcessById` failing ("Process with an Id ... is not
   running"). New L3 lead, not yet investigated.
+
+## Dotnet exit-1 mechanism: parent-PID query (L3-WORKLOAD-PIDPROBE)
+
+A new mandatory leg (`L3-WORKLOAD-PIDPROBE`, manifest v6 = 20 IDs) stages a
+self-contained probe (`spikes/PidProbe`) and asks which BCL introspection
+works in-sandbox:
+
+- Managed code runs: the staged probe exits 0 in-sandbox (grants rw=[ws],
+  ro=[staged]); runtime startup needs nothing beyond the staged closure.
+- `GetCurrentProcess`, `GetProcessById(self)` and `MainModule` all succeed.
+- The visible process set is exactly two: `[System Process]` and self
+  (`GetProcesses`/ToolHelp count=2 vs ~405 unsandboxed).
+- The parent (medium-IL runner outside) is invisible:
+  `GetProcessById(parent)` throws `ArgumentException: Process with an Id of
+  41272 is not running` — verbatim the dotnet failure shape.
+- Mechanism: the dotnet CLI installer probe queries an outside PID at
+  startup and dies in its static constructor; the runtime itself is healthy.
+- Provider consequence: prefer self-contained managed closures over the CLI
+  host for sandboxed workloads; the `dotnet` CLI stays red. Open follow-up:
+  framework-dependent launch without the CLI host probe.

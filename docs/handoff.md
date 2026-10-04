@@ -1,6 +1,6 @@
 # Gagamba handoff
 
-Updated 2026-10-04 for GW-1B slice 4 (encoder, crash recovery, stability, workloads) plus a review pass, then the GW-1B-L5 git-getcwd resolution (ProcMon evidence, harness pipe-drain fix). Start the next session in `C:\Users\Laszlos\source\repos\Gagamba`.
+Updated 2026-10-04 for GW-1B slice 4 (encoder, crash recovery, stability, workloads) plus a review pass, then GW-1B-L5 (git-getcwd resolution, harness pipe-drain fix) and GW-1B-L6 (dotnet exit-1 mechanism: parent-PID query, self-contained closures proven). Start the next session in `C:\Users\Laszlos\source\repos\Gagamba`.
 
 ## User direction
 
@@ -18,6 +18,7 @@ Develop Gagamba alone as an independently useful .NET sandbox library. Windows, 
 - GW-1B slice 3 implemented (`4b4ce8f`): pipes proven as transport, ToolHelp supervisor proven cross-boundary, whoami maps the base image, dotnet exits 1 silently in all grant configs. Provider ADR 0001 written.
 - GW-1B slice 4 implemented and reviewed: byte-exact spec encoder vs flatc (vendored vectors), crash-recovery by recorded PID, launch-stability/retry, grant-shape and Git-tree findings, and a review fix pass (crash-leg ordering, supervisor cost/PID-reuse, fixture bugs, eng-script false-green). 14/19 legs green; 4 open gates. Evidence `docs/evidence/windows-slice4-GW-1B.md`.
 - GW-1B-L5 git resolution: the staged-closure pattern is proven (staged `git --version` exits 0 in-sandbox) but every other git command dies `128` with `fatal: Unable to read current working directory: Permission denied` — ancestor dirs (`C:\`, profile) deny list access under AppContainer, confirmed by an elevated ProcMon capture. Fixed the harness pipe-drain gap (`RunPipedAsync` now drains when a child ran) that had hidden the fatal; trimmed the leg's bisect scaffolding.
+- GW-1B-L6 dotnet resolution: a new `L3-WORKLOAD-PIDPROBE` leg (manifest v6 = 20 IDs) stages a self-contained probe that exits 0 in-sandbox. Self-introspection works, but only `[System Process]` + self are visible; `GetProcessById(parent)` throws the verbatim dotnet `ArgumentException`. The CLI installer probe kills it, not the runtime — provider direction is self-contained managed closures.
 - Current shell chat may still be rooted in Solo. Use the Gagamba path explicitly; Solo's planning staging files are not the source of truth. Prefer opening the next coding session directly in Gagamba so its workspace permissions match the work.
 
 ## Read in this order
@@ -38,25 +39,26 @@ WSL default version is 2; its only listed distribution was running `docker-deskt
 
 Unverified: Linux namespaces and seccomp, macOS runner execution, actual read/network denial, and developer-workload compatibility (the Windows `dotnet` runtime is specifically blocked; Git works only past a new ancestor list-access gate, see below).
 
-Verified GW-1A/GW-1B 2026-10-04 (Windows host, spike-only; no provider qualified): `eng/probe.ps1` 7/7 mandatory (`windows-probe-20261004-040252-0c70af09.json`); `eng/launch-spike.ps1` 14/19 mandatory with 4 open engine gates and 1 gated NotRun (`windows-launch-20261004-040446-4d715686.json`); `eng/fixture-selftest.ps1` 20/20 harness + unit Passed (`fixture-selftest-20261004-040228-5f9560f3.json`). Open Windows gates: engine never stops descendants on root exit/kill; STARTUPINFO file-handle transport rejected (pipes work); `dotnet` launches but exits 1 silently in every config; staged Git runs but every command past `--version` dies on ancestor list-access (`C:\`, profile) during cwd resolution. See `docs/evidence/windows-slice4-GW-1B.md`.
+Verified GW-1A/GW-1B 2026-10-04 (Windows host, spike-only; no provider qualified): `eng/probe.ps1` 7/7 mandatory (`windows-probe-20261004-040252-0c70af09.json`); `eng/launch-spike.ps1` 14/19 mandatory with 4 open engine gates and 1 gated NotRun (`windows-launch-20261004-040446-4d715686.json`); `eng/fixture-selftest.ps1` 20/20 harness + unit Passed (`fixture-selftest-20261004-040228-5f9560f3.json`). Open Windows gates: engine never stops descendants on root exit/kill; STARTUPINFO file-handle transport rejected (pipes work); `dotnet` CLI exits 1 on its installer parent-PID probe (self-contained managed closures proven green); staged Git runs but every command past `--version` dies on ancestor list-access (`C:\`, profile) during cwd resolution. See `docs/evidence/windows-slice4-GW-1B.md`.
 
 ## Exact next task
 
 Continue **GW-1B (engine findings)**: (1) test ancestor-chain list grants vs
 cwd confinement under a grantable subtree for the Git workload (GW-1B-L5),
-and record whether the drive root can be granted narrowly; (2) investigate
-the `dotnet` exit-1 (capability/registry/integrity) or explicitly contract
-it out of the first profile; (3) confirm the multi-grant-under-`%TEMP%` rule
-and document it as a preparation-time rejection; (4) design launcher-crash
-recovery beyond the supervisor (GQ-1 gate). Then GL-1A (separate Ubuntu WSL2)
-and GM-1A (macOS probe). Keep identities disposable and profiles deleted;
-never modify the host opportunistically.
+and record whether the drive root can be granted narrowly; (2) contract the
+first managed profile to self-contained closures (dotnet CLI stays red by
+mechanism) and probe framework-dependent launch without the CLI host;
+(3) confirm the multi-grant-under-`%TEMP%` rule and document it as a
+preparation-time rejection; (4) design launcher-crash recovery beyond the
+supervisor (GQ-1 gate). Then GL-1A (separate Ubuntu WSL2) and GM-1A (macOS
+probe). Keep identities disposable and profiles deleted; never modify the
+host opportunistically.
 
 Before executing experiments that alter host ACLs/users/firewall or install a runtime, prepare the exact setup/cleanup implementation and inspect the task's authorization. No permission prompt is required merely to write code, read state or run safe fixtures. Keep privileged setup separate and attributable.
 
 ## Resume prompt
 
-> Continue standalone Gagamba in C:\Users\Laszlos\source\repos\Gagamba. Read AGENTS.md, docs/handoff.md, docs/work-queue.md, docs/security-model.md and docs/fixture-protocol.md first. GW-1B slice 4 is complete and reviewed; GW-1B-L5 resolved the git silent-128 (ancestor list-access gate, staged closures proven, harness drain fixed). Four Windows gates remain red: descendant stop on root exit, file-handle stdio, dotnet runtime, and Git ancestor grants. Keep public APIs provisional, all restrictions fail-closed, Windows local testing first, Linux/macOS in scope, and Hufu/Luban integration deferred. Do not mistake fixture self-tests, upstream examples or Docker's outer restrictions for Gagamba enforcement. Inspect the repository state and preserve the original proposal.
+> Continue standalone Gagamba in C:\Users\Laszlos\source\repos\Gagamba. Read AGENTS.md, docs/handoff.md, docs/work-queue.md, docs/security-model.md and docs/fixture-protocol.md first. GW-1B slice 4 is complete and reviewed; GW-1B-L5 resolved the git silent-128 (ancestor list-access gate, staged closures proven, harness drain fixed); GW-1B-L6 resolved the dotnet exit-1 (parent-PID query in the CLI installer probe, self-contained closures green). Remaining Windows gates: descendant stop on root exit, file-handle stdio, dotnet CLI host, and Git ancestor grants. Keep public APIs provisional, all restrictions fail-closed, Windows local testing first, Linux/macOS in scope, and Hufu/Luban integration deferred. Do not mistake fixture self-tests, upstream examples or Docker's outer restrictions for Gagamba enforcement. Inspect the repository state and preserve the original proposal.
 
 ## Validation of this preparation
 

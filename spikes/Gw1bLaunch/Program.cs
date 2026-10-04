@@ -1158,6 +1158,63 @@ internal static class LaunchStaircase
             }
         });
 
+        // ---- L3-WORKLOAD-PIDPROBE (managed self-introspection under sandbox) ----
+        // The dotnet CLI dies in InstallerBase via GetProcessById; this leg
+        // asks whether ANY managed process-introspection works in-sandbox,
+        // using a staged self-contained probe (no runtime grant needed).
+        await RunCase(collector, "L3-WORKLOAD-PIDPROBE", async () =>
+        {
+            string? cleanRoot = TryCleanStageRoot();
+            if (cleanRoot is null)
+                return AbandonLeg(cleanups, "pidprobe", $"GagambaGW1B{runTag}p",
+                    "no clean staging root available", Array.Empty<FixtureWorkspace>());
+            string stageRoot = Path.Combine(cleanRoot, "gw1b-pidprobe-" + runTag);
+            try
+            {
+                // Closure prep is unsandboxed (same trust as the git leg).
+                var pub = await ControlRunner.Run("dotnet",
+                    $"publish \"{Path.Combine(repoRoot, "spikes", "PidProbe", "PidProbe.csproj")}\" -c Release -r win-x64 --self-contained -o \"{stageRoot}\"",
+                    repoRoot, 300_000);
+                if (!pub.Exited || pub.ExitCode != 0 || !File.Exists(Path.Combine(stageRoot, "PidProbe.exe")))
+                    return AbandonLeg(cleanups, "pidprobe", $"GagambaGW1B{runTag}p",
+                        $"probe publish failed [{pub.Detail}]", Array.Empty<FixtureWorkspace>());
+                string pidDetail = "no attempt";
+                bool pidOk = false;
+                var pidProfs = new List<string>();
+                bool pidWsOk = true;
+                for (int attempt = 1; attempt <= 2 && !pidOk; attempt++)
+                {
+                    using var aws = FixtureWorkspace.Create($"gw1b-pid{attempt}-" + runTag);
+                    string aidPid = $"GagambaGW1B{runTag}p{attempt}";
+                    var pspec = new SandboxSpecRequest("0.1.0", true, [aws.Root], [stageRoot]);
+                    var (okP, dP, oP, eP) = await RunPipedAsync(aidPid, pspec,
+                        Path.Combine(stageRoot, "PidProbe.exe"), "", aws.Root, 0);
+                    string errHead = eP.Replace("\r", " ").Replace("\n", " ").Trim();
+                    if (errHead.Length > 300) errHead = errHead[..300] + "...";
+                    string outHead = oP.Trim();
+                    if (outHead.Length > 600) outHead = outHead[..600] + "...";
+                    pidDetail = $"try{attempt}: probe[{dP}] out='{outHead}' err='{errHead}'";
+                    pidOk = okP && oP.Contains("pidprobe done");
+                    string aprof = SweepProfile(aidPid);
+                    bool awsOk = aws.DisposeAndReport() == "Confirmed" && !Directory.Exists(aws.Root);
+                    if (!awsOk) pidWsOk = false;
+                    pidProfs.Add(aprof);
+                }
+                string pidProfAll = string.Join("+", pidProfs);
+                bool pidProfOk = pidProfs.All(p => p.Split('+').All(q =>
+                    q.StartsWith("deleted(") || q.StartsWith("deleted-never-materialized(")));
+                cleanups.Add(("pidprobe", new(pidProfOk, true, pidProfAll, pidWsOk)));
+                return pidOk
+                    ? (true, $"staged self-contained PidProbe introspection in sandbox (grants rw=[ws], ro=[staged]); {pidDetail} profile={pidProfAll}", (string?)null)
+                    : (false, $"{pidDetail} profile={pidProfAll}", (string?)null);
+            }
+            finally
+            {
+                // Staging is test-owned: always remove it.
+                try { if (Directory.Exists(stageRoot)) Directory.Delete(stageRoot, recursive: true); } catch { }
+            }
+        });
+
         // ---- L4-WORKLOAD-BUILD (offline compile; gated on runtime) ----
         if (!dotnetWorks)
         {
@@ -1261,7 +1318,7 @@ internal static class LaunchStaircase
         {
             var notes = cleanups.Select(c =>
                 $"{c.Leg}:reaped={c.Cleanup.ChildReaped}/profile={c.Cleanup.ProfileDisposition}/ws={c.Cleanup.WorkspaceDeleted}");
-            bool all = cleanups.Count == 16 && cleanups.All(c =>
+            bool all = cleanups.Count == 17 && cleanups.All(c =>
                 c.Cleanup.ChildReaped
                 && (c.Cleanup.ProfileDisposition.StartsWith("deleted(")
                     || c.Cleanup.ProfileDisposition.StartsWith("deleted-never-materialized("))
