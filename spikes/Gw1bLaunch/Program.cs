@@ -1480,8 +1480,83 @@ internal static class LaunchStaircase
                             }
                             catch (Exception ex) { assetPaths = $"readback-fail {ex.GetType().Name}"; }
                             string sdkPkgs = Path.Combine(pkgsDir, "microsoft.net.test.sdk");
-                            var (r9d, d9d, j9d) = await RunRunner(aidS + "d", dotSpec,
-                                $"\"{Path.Combine(Environment.SystemDirectory, "cmd.exe")}\" /c dir \"{sdkPkgs}\"");
+                            // L9 progression: find the first layer where package
+                            // visibility changes. A/B runner reads directly,
+                            // C child reads, D-H copy-vs-restore matrix
+                            // (sandbox-created vs host-created directories).
+                            string pkgVerDir = sdkPkgs;
+                            try
+                            {
+                                string firstVer = Directory.GetDirectories(sdkPkgs).OrderBy(x => x).FirstOrDefault() ?? "";
+                                if (firstVer.Length > 0) pkgVerDir = firstVer;
+                            }
+                            catch { }
+                            string metaFile = Path.Combine(pkgVerDir, ".nupkg.metadata");
+                            bool pA = false, pB = false, pC = false;
+                            {
+                                var (rA, dA, jA) = await RunRunner(aidS + "A", baseSpec, $"--read-file \"{metaFile}\"");
+                                pA = Record("P9A-runner-read", rA && JsonInt(jA, "size", -1) > 0, dA, jA);
+                            }
+                            {
+                                var (rB, dB, jB) = await RunRunner(aidS + "B", baseSpec, $"--list-dir \"{pkgVerDir}\"");
+                                pB = Record("P9B-runner-list", rB && JsonInt(jB, "countCapped", -1) > 0, dB, jB);
+                            }
+                            {
+                                string cmdC = Path.Combine(Environment.SystemDirectory, "cmd.exe");
+                                var (rC, dC, jC) = await RunRunner(aidS + "C", baseSpec, $"\"{cmdC}\" /c type \"{metaFile}\"");
+                                string cout = JsonStr(jC, "childStdout");
+                                pC = Record("P9C-child-read", rC && JsonInt(jC, "childExit", -99) == 0 && cout.Length > 0, dC, jC);
+                            }
+                            // Matrix dirs: sbowned created IN-sandbox, hostdir2
+                            // on the host; both receive the same restored bytes.
+                            string sbOwned = Path.Combine(aws.Root, "sbowned");
+                            string hostDir2 = Path.Combine(aws.Root, "hostdir2");
+                            bool pD = false, pE = false, pF = false, pG = false, pH = false;
+                            {
+                                var (rD, dD, jD) = await RunRunner(aidS + "D", baseSpec, $"--mkdir \"{sbOwned}\"");
+                                pD = Record("P9D-sb-mkdir", rD && JsonStr(jD, "error").Length == 0 && Directory.Exists(sbOwned), dD, jD);
+                            }
+                            CopyDirExcluding(pkgVerDir, Path.Combine(sbOwned, "pkg"), new HashSet<string>(StringComparer.OrdinalIgnoreCase));
+                            CopyDirExcluding(pkgVerDir, Path.Combine(hostDir2, "pkg"), new HashSet<string>(StringComparer.OrdinalIgnoreCase));
+                            string sbMeta = Path.Combine(sbOwned, "pkg", ".nupkg.metadata");
+                            string h2Meta = Path.Combine(hostDir2, "pkg", ".nupkg.metadata");
+                            {
+                                var (rE, dE, jE) = await RunRunner(aidS + "E", baseSpec, $"--read-file \"{sbMeta}\"");
+                                pE = Record("P9E-read-sbowned-copy", rE && JsonInt(jE, "size", -1) > 0, dE, jE);
+                            }
+                            {
+                                var (rF, dF, jF) = await RunRunner(aidS + "F", baseSpec, $"--read-file \"{h2Meta}\"");
+                                pF = Record("P9F-read-hostdir2-copy", rF && JsonInt(jF, "size", -1) > 0, dF, jF);
+                            }
+                            {
+                                var (rG, dG, jG) = await RunRunner(aidS + "G", baseSpec, $"--list-dir \"{Path.Combine(sbOwned, "pkg")}\"");
+                                pG = Record("P9G-list-sbowned", rG && JsonInt(jG, "countCapped", -1) > 0, dG, jG);
+                            }
+                            {
+                                var (rH, dH, jH) = await RunRunner(aidS + "H", baseSpec, $"--list-dir \"{Path.Combine(hostDir2, "pkg")}\"");
+                                pH = Record("P9H-list-hostdir2", rH && JsonInt(jH, "countCapped", -1) > 0, dH, jH);
+                            }
+                            // P9b-redux: cmd.exe dir of the package dir in the
+                            // SAME run as the passing runner-list (P9B). An
+                            // old cmd-dir probe denied this repeatedly while
+                            // runner-list passed; rerun side by side to tell
+                            // instance-flakiness from per-image split.
+                            {
+                                string cmdDD = Path.Combine(Environment.SystemDirectory, "cmd.exe");
+                                var (rDD, dDD, jDD) = await RunRunner(aidS + "DD", baseSpec, $"\"{cmdDD}\" /c dir \"{pkgVerDir}\"");
+                                string ddOut = JsonStr(jDD, "childStdout");
+                                string ddErr = JsonStr(jDD, "childStderr");
+                                Record("P9B-cmd-dir", rDD && ddOut.Contains(".nupkg.metadata"), dDD + $" ddErr='{ddErr}'", jDD);
+                                // Control: cmd dir of the KNOWN-GOOD mini dir.
+                                // If this also denies, cmd/dir is broken in
+                                // sandbox generally (volume probe on C:\,
+                                // same as the git getcwd finding), and the
+                                // package dir was never special.
+                                var (rDQ, dDQ, jDQ) = await RunRunner(aidS + "DQ", baseSpec, $"\"{cmdDD}\" /c dir \"{Path.Combine(aws.Root, "mini")}\"");
+                                string dqOut = JsonStr(jDQ, "childStdout");
+                                string dqErr = JsonStr(jDQ, "childStderr");
+                                Record("P9B-cmd-dir-control", rDQ && dqOut.Contains("mini.csproj"), dDQ + $" dqErr='{dqErr}'", jDQ);
+                            }
                             // Host truth: what did the restore actually leave?
                             string hostPkgs;
                             try
@@ -1499,10 +1574,360 @@ internal static class LaunchStaircase
                             catch (Exception ex) { hostPkgs = $"hostenum-fail {ex.GetType().Name}"; }
                             string restStd = rest.Stdout ?? "";
                             if (restStd.Length > 200) restStd = restStd[..200] + "...";
-                            assetPaths += $" hostpkgs=[{hostPkgs}] restStd='{restStd.Replace("\r", " ").Replace("\n", " ").Trim()}' pkgdir-list exit={JsonInt(j9d, "childExit", -99)} out='{JsonStr(j9d, "childStdout")[..Math.Min(200, JsonStr(j9d, "childStdout").Length)]}' err='{JsonStr(j9d, "childStderr")[..Math.Min(200, JsonStr(j9d, "childStderr").Length)]}'";
+                            assetPaths += $" hostpkgs=[{hostPkgs}] restStd='{restStd.Replace("\r", " ").Replace("\n", " ").Trim()}'";
+                            // P8b: does PLAIN BUILD of minitest work
+                            // in-sandbox? build-pass + test-fail =
+                            // test-targets/testhost issue; build-fail =
+                            // compile-resolution issue (step 4, not 5).
+                            // A binary log settles whether CSC received the
+                            // package refs (strings-scan, host side).
+                            // No-server variant first: rules out host
+                            // VBCSCompiler/MSBuild-node reuse poisoning.
+                            var (r8n, d8n, j8n) = await RunRunner(aidS + "V", dotSpec,
+                                $"{childEnv}\"{dotnetExe5}\" build \"{Path.Combine(testDst, "minitest.csproj")}\" --no-restore --nologo -v q /p:UseSharedCompilation=false /nodeReuse:false");
+                            Record("P8N-minitest-build-noserver", r8n && JsonInt(j8n, "childExit") == 0, d8n, j8n);
+                            var (r8b, d8b, j8b) = await RunRunner(aidS + "T", dotSpec,
+                                $"{childEnv}\"{dotnetExe5}\" build \"{Path.Combine(testDst, "minitest.csproj")}\" --no-restore --nologo -v q -bl:\"{Path.Combine(testDst, "msbuild.binlog")}\"");
+                            string blNote = "no-binlog";
+                            try
+                            {
+                                // Preserve restore outputs for host-side autopsy.
+                                string afSrc = Path.Combine(testDst, "obj", "project.assets.json");
+                                if (File.Exists(afSrc))
+                                    File.Copy(afSrc, Path.Combine(outDir, $"sandbox-parent-assets-{runTag}.json"), true);
+                                string blPath = Path.Combine(testDst, "msbuild.binlog");
+                                if (File.Exists(blPath))
+                                {
+                                    try { File.Copy(blPath, Path.Combine(outDir, $"sandbox-parent-msbuild-{runTag}.binlog"), true); } catch { }
+                                    byte[] blb = File.ReadAllBytes(blPath);
+                                    string latin = Encoding.Latin1.GetString(blb);
+                                    int tf = System.Text.RegularExpressions.Regex.Matches(latin, "TestFramework", System.Text.RegularExpressions.RegexOptions.IgnoreCase).Count;
+                                    int csc = System.Text.RegularExpressions.Regex.Matches(latin, @"\bcsc(\.exe|\.dll)?\b", System.Text.RegularExpressions.RegexOptions.IgnoreCase).Count;
+                                    int rar = System.Text.RegularExpressions.Regex.Matches(latin, "ResolveAssemblyReference", System.Text.RegularExpressions.RegexOptions.IgnoreCase).Count;
+                                    blNote = $"binlog={blb.Length}B TestFrameworkx{tf} cscx{csc} rarx{rar}";
+                                }
+                            }
+                            catch (Exception ex) { blNote = $"binlog-fail {ex.GetType().Name}"; }
+                            Record("P8B-minitest-build", r8b && JsonInt(j8b, "childExit") == 0, d8b + " " + blNote, j8b);
+                            // P8Q: read MSBuild's CSC response file from the
+                            // engine profile Temp (identity-derived path, so
+                            // grant it explicitly). Shows CSC's exact argv.
+                            string rspTmpFor(string suffix) => Path.Combine(
+                                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                                "Packages",
+                                ("GagambaGW1B" + runTag + "s" + suffix).ToLowerInvariant(),
+                                "AC", "Temp");
+                            {
+                                string tmpT = rspTmpFor("T");
+                                var tmpSpec = new SandboxSpecRequest("0.1.0", true, [aws.Root, tmpT], [stageRoot]);
+                                var (rQ1, dQ1, jQ1) = await RunRunner(aidS + "Q", tmpSpec, $"--list-dir \"{tmpT}\"");
+                                string rspName = "";
+                                try
+                                {
+                                    using var docQ = JsonDocument.Parse(jQ1);
+                                    // names array is capped; take first .rsp
+                                    foreach (var n in docQ.RootElement.GetProperty("names").EnumerateArray())
+                                    {
+                                        string s = n.GetString() ?? "";
+                                        if (s.EndsWith(".rsp", StringComparison.OrdinalIgnoreCase)) { rspName = s; break; }
+                                    }
+                                }
+                                catch { }
+                                string rspContent = "";
+                                if (rspName.Length > 0)
+                                {
+                                    // cmd type returns CONTENT (capped 4KB by runner JSON).
+                                    var (rQ3, dQ3, jQ3) = await RunRunner(aidS + "Y", tmpSpec, $"\"{Path.Combine(Environment.SystemDirectory, "cmd.exe")}\" /c type \"{Path.Combine(tmpT, rspName)}\"");
+                                    rspContent = JsonStr(jQ3, "childStdout");
+                                    if (rspContent.Length > 1500) rspContent = rspContent[..1500] + "...";
+                                }
+                                Record("P8Q-csc-rsp", rspContent.Contains("/reference"), dQ1 + " rsp=" + rspName + " content='" + rspContent.Replace("\r", " ").Replace("\n", " ") + "'", jQ1);
+                                // P8Q2: is the engine profile Temp writable?
+                                // Compiler response files live here; an
+                                // unwritable TMP breaks CSC argv silently.
+                                var (rQ4, dQ4, jQ4) = await RunRunner(aidS + "X", tmpSpec, $"\"{Path.Combine(Environment.SystemDirectory, "cmd.exe")}\" /c echo probedata> \"%TMP%\\sbprobe.txt\" & type \"%TMP%\\sbprobe.txt\"");
+                                string q4out = JsonStr(jQ4, "childStdout");
+                                Record("P8Q-tmp-writable", rQ4 && JsonInt(jQ4, "childExit") == 0 && q4out.Contains("probedata"), dQ4, jQ4);
+                            }
+                            // P8c: does the evaluation SEE package refs?
+                            // MSBuild -getItem prints them without compiling
+                            // (via MSBuild.exe directly: dotnet-msbuild
+                            // rejects the query switch).
+                            var (r8c, d8c, j8c) = await RunRunner(aidS + "R", dotSpec,
+                                $"\"{Path.Combine(dotnetDir, "sdk", "10.0.401", "MSBuild.exe")}\" \"{Path.Combine(testDst, "minitest.csproj")}\" -nologo -getItem:Reference");
+                            string refs = JsonStr(j8c, "childStdout");
+                            Record("P8C-reference-items", r8c && refs.Contains("TestFramework"), d8c + $" refsLen={refs.Length}", j8c);
+                            // P8d: invoke CSC directly, bypassing MSBuild. If
+                            // direct CSC compiles, the break is MSBuild-side
+                            // handoff; if it also CS0246s, CSC-side reads.
+                            string cscRef = "";
+                            try
+                            {
+                                cscRef = Directory.GetFiles(pkgsDir, "Microsoft.VisualStudio.TestPlatform.TestFramework.dll", SearchOption.AllDirectories).OrderBy(x => x).FirstOrDefault() ?? "";
+                            }
+                            catch { }
+                            string cscOut = Path.Combine(aws.Root, "csc-out");
+                            Directory.CreateDirectory(cscOut);
+                            bool p8dpass = false;
+                            if (cscRef.Length > 0)
+                            {
+                                var (r8d, d8d, j8d) = await RunRunner(aidS + "S", dotSpec,
+                                    $"{childEnv}\"{dotnetExe5}\" \"{Path.Combine(dotnetDir, "sdk", "10.0.401", "Roslyn", "bincore", "csc.dll")}\" /nologo /t:library /out:\"{Path.Combine(cscOut, "T.dll")}\" /r:\"{cscRef}\" \"{Path.Combine(testDst, "UnitTest1.cs")}\"");
+                                p8dpass = Record("P8D-direct-csc", r8d && JsonInt(j8d, "childExit") == 0, d8d, j8d);
+                            }
+                            else Record("P8D-direct-csc", false, "no TestFramework dll found on host", "");
+                            // P8e content-integrity + mapping: stream vs mmap
+                            // reads of a package DLL and a framework DLL,
+                            // hashed host-side and in-sandbox. A mismatch or
+                            // mmap-only failure names the read layer CSC hits.
+                            static string HostSha4k(string p)
+                            {
+                                try
+                                {
+                                    using var sha = System.Security.Cryptography.SHA256.Create();
+                                    using var fs = new FileStream(p, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                                    byte[] buf = new byte[65536];
+                                    int n;
+                                    long total = 0;
+                                    const long cap = 32L * 1024 * 1024;
+                                    while (total < cap && (n = fs.Read(buf, 0, (int)Math.Min(buf.Length, cap - total))) > 0)
+                                    {
+                                        sha.TransformBlock(buf, 0, n, null, 0);
+                                        total += n;
+                                    }
+                                    sha.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+                                    return Convert.ToHexString(sha.Hash ?? Array.Empty<byte>()).ToLowerInvariant();
+                                }
+                                catch { return ""; }
+                            }
+                            string pkgDll = "";
+                            try
+                            {
+                                string tfRoot = Path.Combine(pkgsDir, "mstest.testframework");
+                                if (Directory.Exists(tfRoot))
+                                    pkgDll = Directory.GetFiles(tfRoot, "Microsoft.VisualStudio.TestPlatform.TestFramework.dll", SearchOption.AllDirectories).OrderBy(x => x).FirstOrDefault() ?? "";
+                            }
+                            catch { }
+                            string fwDll = "";
+                            try
+                            {
+                                fwDll = Directory.GetFiles(Path.Combine(dotnetDir, "shared", "Microsoft.NETCore.App"), "System.Runtime.dll", SearchOption.AllDirectories).OrderBy(x => x).FirstOrDefault() ?? "";
+                            }
+                            catch { }
+                            string pkgSha = pkgDll.Length > 0 ? HostSha4k(pkgDll) : "";
+                            string fwSha = fwDll.Length > 0 ? HostSha4k(fwDll) : "";
+                            string net8Dll = "";
+                            try
+                            {
+                                string tfRoot8 = Path.Combine(pkgsDir, "mstest.testframework");
+                                if (Directory.Exists(tfRoot8))
+                                {
+                                    var cands = Directory.GetFiles(tfRoot8, "Microsoft.VisualStudio.TestPlatform.TestFramework.dll", SearchOption.AllDirectories).OrderBy(x => x).ToArray();
+                                    net8Dll = cands.FirstOrDefault(x => x.Contains("net8.0")) ?? cands.FirstOrDefault() ?? "";
+                                }
+                            }
+                            catch { }
+                            string net8Sha = net8Dll.Length > 0 ? HostSha4k(net8Dll) : "";
+                            // P8D2: bare csc with EXPLICIT framework ref
+                            // (packs, proven) + package ref. If this compiles,
+                            // MSBuild's invocation is the break; if CS0246,
+                            // CSC-side handling of package refs is the break.
+                            string fwRef = "";
+                            try
+                            {
+                                fwRef = Directory.GetFiles(Path.Combine(dotnetDir, "packs", "Microsoft.NETCore.App.Ref"), "System.Runtime.dll", SearchOption.AllDirectories).OrderBy(x => x).FirstOrDefault() ?? "";
+                            }
+                            catch { }
+                            if (net8Dll.Length > 0 && fwRef.Length > 0)
+                            {
+                                var (r8d2, d8d2, j8d2) = await RunRunner(aidS + "W", dotSpec,
+                                    $"{childEnv}\"{dotnetExe5}\" \"{Path.Combine(dotnetDir, "sdk", "10.0.401", "Roslyn", "bincore", "csc.dll")}\" /nologo /t:library /nostdlib /out:\"{Path.Combine(cscOut, "T2.dll")}\" /r:\"{fwRef}\" /r:\"{net8Dll}\" \"{Path.Combine(testDst, "UnitTest1.cs")}\"");
+                                Record("P8D2-csc-explicit-refs", r8d2 && JsonInt(j8d2, "childExit") == 0, d8d2, j8d2);
+                            }
+                            else Record("P8D2-csc-explicit-refs", false, "missing ref paths", "");
+                            // P8D3: same DLL bytes, different homes. Staged
+                            // copy (ro grant, C:\temp tree) vs mini-bin copy
+                            // (rw grant, host-copied like working sources).
+                            // Isolates location/grant vs file content.
+                            string tfStageDir = Path.Combine(stageRoot, "tf");
+                            Directory.CreateDirectory(tfStageDir);
+                            string tfStage = Path.Combine(tfStageDir, "tf.dll");
+                            string tfMiniDir = "";
+                            try
+                            {
+                                string mb = Path.Combine(aws.Root, "mini", "bin");
+                                if (Directory.Exists(mb))
+                                    tfMiniDir = Directory.GetDirectories(mb, "net10.0", SearchOption.AllDirectories).OrderBy(x => x).FirstOrDefault() ?? "";
+                            }
+                            catch { }
+                            if (net8Dll.Length > 0 && tfMiniDir.Length > 0)
+                            {
+                                File.Copy(net8Dll, tfStage, true);
+                                string tfMini = Path.Combine(tfMiniDir, "tf.dll");
+                                File.Copy(net8Dll, tfMini, true);
+                                var (rU, dU, jU) = await RunRunner(aidS + "U", dotSpec,
+                                    $"{childEnv}\"{dotnetExe5}\" \"{Path.Combine(dotnetDir, "sdk", "10.0.401", "Roslyn", "bincore", "csc.dll")}\" /nologo /t:library /nostdlib /out:\"{Path.Combine(cscOut, "U.dll")}\" /r:\"{fwRef}\" /r:\"{tfStage}\" \"{Path.Combine(testDst, "UnitTest1.cs")}\"");
+                                Record("P8D3-csc-staged-copy", rU && JsonInt(jU, "childExit") == 0, dU, jU);
+                                var (rI, dI, jI) = await RunRunner(aidS + "I", dotSpec,
+                                    $"{childEnv}\"{dotnetExe5}\" \"{Path.Combine(dotnetDir, "sdk", "10.0.401", "Roslyn", "bincore", "csc.dll")}\" /nologo /t:library /nostdlib /out:\"{Path.Combine(cscOut, "I.dll")}\" /r:\"{fwRef}\" /r:\"{tfMini}\" \"{Path.Combine(testDst, "UnitTest1.cs")}\"");
+                                Record("P8D3-csc-minibin-copy", rI && JsonInt(jI, "childExit") == 0, dI, jI);
+                            }
+                            else Record("P8D3-csc-staged-copy", false, "missing copy dirs", "");
+                            // P8D4: can CSC use ANY in-sandbox /r:, even a
+                            // fresh-built one? Compile a tiny source against
+                            // the P8-built mini.dll (named type MiniLib).
+                            string miniDll4 = "";
+                            try
+                            {
+                                string miniBin4 = Path.Combine(aws.Root, "mini", "bin");
+                                if (Directory.Exists(miniBin4))
+                                    miniDll4 = Directory.GetFiles(miniBin4, "mini.dll", SearchOption.AllDirectories).OrderBy(x => x).FirstOrDefault() ?? "";
+                            }
+                            catch { }
+                            if (miniDll4.Length > 0 && fwRef.Length > 0)
+                            {
+                                string useSrc = Path.Combine(aws.Root, "usemini.cs");
+                                File.WriteAllText(useSrc, "public static class UseMini { public static int Get() => MiniLib.Answer(); }\n");
+                                var (r8d4, d8d4, j8d4) = await RunRunner(aidS + "N2", dotSpec,
+                                    $"{childEnv}\"{dotnetExe5}\" \"{Path.Combine(dotnetDir, "sdk", "10.0.401", "Roslyn", "bincore", "csc.dll")}\" /nologo /t:library /nostdlib /out:\"{Path.Combine(cscOut, "U2.dll")}\" /r:\"{fwRef}\" /r:\"{miniDll4}\" \"{useSrc}\"");
+                                Record("P8D4-csc-minibin-ref", r8d4 && JsonInt(j8d4, "childExit") == 0, d8d4, j8d4);
+                            }
+                            else Record("P8D4-csc-minibin-ref", false, "missing dll paths", "");
+                            // P8D5: same bytes, sandbox-written. In-sandbox
+                            // cmd copies the package DLL, then CSC refs the
+                            // COPY. Copy-works + original-fails = provenance
+                            // (who wrote it); copy-fails = content.
+                            if (net8Dll.Length > 0 && fwRef.Length > 0)
+                            {
+                                string tfCopy = Path.Combine(aws.Root, "tfcopy.dll");
+                                var (rCp, dCp, jCp) = await RunRunner(aidS + "Y2", baseSpec,
+                                    $"\"{Path.Combine(Environment.SystemDirectory, "cmd.exe")}\" /c copy /y \"{net8Dll}\" \"{tfCopy}\"");
+                                bool copied = rCp && JsonInt(jCp, "childExit") == 0 && File.Exists(tfCopy);
+                                if (copied)
+                                {
+                                    var (r8d5, d8d5, j8d5) = await RunRunner(aidS + "Z2", dotSpec,
+                                        $"{childEnv}\"{dotnetExe5}\" \"{Path.Combine(dotnetDir, "sdk", "10.0.401", "Roslyn", "bincore", "csc.dll")}\" /nologo /t:library /nostdlib /out:\"{Path.Combine(cscOut, "U5.dll")}\" /r:\"{fwRef}\" /r:\"{tfCopy}\" \"{Path.Combine(testDst, "UnitTest1.cs")}\"");
+                                    Record("P8D5-csc-sandbox-copy", r8d5 && JsonInt(j8d5, "childExit") == 0, d8d5 + " copy=[" + dCp + "]", j8d5);
+                                }
+                                else Record("P8D5-csc-sandbox-copy", false, "sandbox copy failed [" + dCp + "]", jCp);
+                            }
+                            else Record("P8D5-csc-sandbox-copy", false, "missing dll paths", "");
+                            // P8E-load: can sandboxed processes LOAD (not just
+                            // read) assemblies? runner loads staged closure
+                            // DLLs fine; test ws-built and ws-restored DLLs.
+                            string miniDll = "";
+                            try
+                            {
+                                string miniBin = Path.Combine(aws.Root, "mini", "bin");
+                                if (Directory.Exists(miniBin))
+                                    miniDll = Directory.GetFiles(miniBin, "mini.dll", SearchOption.AllDirectories).OrderBy(x => x).FirstOrDefault() ?? "";
+                            }
+                            catch { }
+                            // P8E-load: can managed code CONSUME (LoadFrom +
+                            // GetTypes) the DLLs, in .NET 8 context? The
+                            // powershell attempt was confounded by the
+                            // Framework CLR; the runner itself is the probe.
+                            if (net8Dll.Length > 0 && miniDll.Length > 0 && fwDll.Length > 0)
+                            {
+                                var (rLf, dLf, jLf) = await RunRunner(aidS + "L", baseSpec, $"--load-test \"{fwDll}\"");
+                                Record("P8E-load-fw", rLf, dLf, jLf);
+                                var (rLm, dLm, jLm) = await RunRunner(aidS + "Q2", baseSpec, $"--load-test \"{miniDll}\"");
+                                Record("P8E-load-mini", rLm, dLm, jLm);
+                                var (rLp, dLp, jLp) = await RunRunner(aidS + "Z", baseSpec, $"--load-test \"{net8Dll}\"");
+                                Record("P8E-load-pkg", rLp, dLp, jLp);
+                            }
+                            else Record("P8E-load", false, "missing dll paths", "");
+                            {
+                                var (rJ, dJ, jJ) = await RunRunner(aidS + "J", baseSpec, $"--read-file \"{net8Dll}\"");
+                                Record("P8E-net8-stream", rJ && JsonStr(jJ, "sha256") == net8Sha && net8Sha.Length > 0, dJ + $" hostsha={net8Sha}", jJ);
+                            }
+                            {
+                                var (rK, dK, jK) = await RunRunner(aidS + "K", baseSpec, $"--mmap-read \"{net8Dll}\"");
+                                Record("P8E-net8-mmap", rK && JsonStr(jK, "sha256") == net8Sha && net8Sha.Length > 0, dK + $" hostsha={net8Sha}", jK);
+                            }
+                            {
+                                var (rM, dM, jM) = await RunRunner(aidS + "M", baseSpec, $"--read-file \"{pkgDll}\"");
+                                Record("P8E-pkg-stream", rM && JsonStr(jM, "sha256") == pkgSha && pkgSha.Length > 0, dM + $" hostsha={pkgSha}", jM);
+                            }
+                            {
+                                var (rN, dN, jN) = await RunRunner(aidS + "N", baseSpec, $"--mmap-read \"{pkgDll}\"");
+                                Record("P8E-pkg-mmap", rN && JsonStr(jN, "sha256") == pkgSha && pkgSha.Length > 0, dN + $" hostsha={pkgSha}", jN);
+                            }
+                            {
+                                var (rO, dO, jO) = await RunRunner(aidS + "O", dotSpec, $"--read-file \"{fwDll}\"");
+                                Record("P8E-fw-stream", rO && JsonStr(jO, "sha256") == fwSha && fwSha.Length > 0, dO + $" hostsha={fwSha}", jO);
+                            }
+                            {
+                                var (rP, dP, jP) = await RunRunner(aidS + "P", dotSpec, $"--mmap-read \"{fwDll}\"");
+                                Record("P8E-fw-mmap", rP && JsonStr(jP, "sha256") == fwSha && fwSha.Length > 0, dP + $" hostsha={fwSha}", jP);
+                            }
+                            // P9a: discovery only (lighter IPC than execution).
+                            var (r9a, d9a, j9a) = await RunRunner(aidS + "DL", dotSpec,
+                                $"{childEnv}\"{dotnetExe5}\" test \"{Path.Combine(testDst, "minitest.csproj")}\" --no-restore --nologo --list-tests");
+                            Record("P9A-list-tests", r9a && JsonInt(j9a, "childExit") == 0, d9a, j9a);
+                            // P9: full run. Output goes to a ws file too, so a
+                            // hang still leaves the hang point for host-side
+                            // read-back after the (bounded) wait.
+                            string testOut = Path.Combine(aws.Root, "test-out.txt");
+                            DateTime sinceP9 = DateTime.UtcNow;
                             var (r9, d9, j9) = await RunRunner(aidS + "9", dotSpec,
-                                $"{childEnv}\"{dotnetExe5}\" test \"{Path.Combine(testDst, "minitest.csproj")}\" --no-restore --nologo");
-                            p9 = Record("P9-test", r9 && JsonInt(j9, "childExit") == 0, d9 + " " + assetPaths, j9);
+                                $"{childEnv}\"{Path.Combine(Environment.SystemDirectory, "cmd.exe")}\" /c \"{dotnetExe5}\" test \"{Path.Combine(testDst, "minitest.csproj")}\" --no-restore --nologo --diag \"{Path.Combine(aws.Root, "vstest.diag.log")}\" > \"{testOut}\" 2>&1");
+                            // Orphan sweep FIRST (timeout orphans hold the ws
+                            // files open): kill dotnet-family processes born
+                            // in the P9 window. The leg itself predates it.
+                            int orphansKilled = 0;
+                            var orphanNames = new List<string>();
+                            var orphanHandles = new List<System.Diagnostics.Process>();
+                            try
+                            {
+                                var targets = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                                    { "dotnet", "testhost", "vstest.console", "msbuild" };
+                                foreach (var proc in System.Diagnostics.Process.GetProcesses())
+                                {
+                                    try
+                                    {
+                                        if (targets.Contains(proc.ProcessName)
+                                            && proc.StartTime.ToUniversalTime() >= sinceP9.AddSeconds(-5))
+                                        {
+                                            try { orphanNames.Add(proc.ProcessName + ":" + proc.Id); proc.Kill(); orphansKilled++; orphanHandles.Add(proc); continue; } catch { }
+                                        }
+                                    }
+                                    catch { }
+                                    finally { if (!orphanHandles.Contains(proc)) proc.Dispose(); }
+                                }
+                            }
+                            catch { }
+                            foreach (var h in orphanHandles)
+                            {
+                                try { h.WaitForExit(3000); } catch { }
+                                try { h.Dispose(); } catch { }
+                            }
+                            string testTail = "";
+                            try
+                            {
+                                if (File.Exists(testOut))
+                                {
+                                    string all = File.ReadAllText(testOut);
+                                    testTail = all.Length > 1000 ? all[..1000] + "..." : all;
+                                }
+                                else testTail = "no-out-file";
+                            }
+                            catch (Exception ex) { testTail = $"outread-fail {ex.GetType().Name}"; }
+                            string diagTail = "";
+                            try
+                            {
+                                string diag = Path.Combine(aws.Root, "vstest.diag.log");
+                                if (File.Exists(diag))
+                                {
+                                    try { File.Copy(diag, Path.Combine(outDir, $"sandbox-parent-vstest-{runTag}.log"), true); } catch { }
+                                    var lines = File.ReadAllLines(diag);
+                                    diagTail = string.Join(" | ", lines.Skip(Math.Max(0, lines.Length - 10)));
+                                    if (diagTail.Length > 900) diagTail = diagTail[..900] + "...";
+                                }
+                                else diagTail = "no-diag";
+                            }
+                            catch (Exception ex) { diagTail = $"diagread-fail {ex.GetType().Name}"; }
+                            p9 = Record("P9-test", r9 && JsonInt(j9, "childExit") == 0, d9 + " " + assetPaths + " orphansKilled=" + orphansKilled + "[" + string.Join(",", orphanNames) + "] testout='" + testTail.Replace("\r", " ").Replace("\n", " ") + "' diag='" + diagTail.Replace("\r", " ").Replace("\n", " ") + "'", j9);
                         }
                     }
                     } // end if(topoOk): dotnet phases need the topology
@@ -1519,7 +1944,7 @@ internal static class LaunchStaircase
                     Environment.SetEnvironmentVariable("DOTNET_CLI_TELEMETRY_OPTOUT", oldTel);
                     Environment.SetEnvironmentVariable("SANDBOX_RUNNER_HOST_PID", oldHostPid);
                 }
-                string prof = SweepProfile(aidS + "0") + "+" + SweepProfile(aidS + "d") + "+" + SweepProfile(aidS + "1") + "+" + SweepProfile(aidS + "2") + "+" + SweepProfile(aidS + "3")
+                string prof = SweepProfile(aidS + "0") + "+" + SweepProfile(aidS + "T") + "+" + SweepProfile(aidS + "V") + "+" + SweepProfile(aidS + "Q") + "+" + SweepProfile(aidS + "Q2") + "+" + SweepProfile(aidS + "W") + "+" + SweepProfile(aidS + "U") + "+" + SweepProfile(aidS + "I") + "+" + SweepProfile(aidS + "N2") + "+" + SweepProfile(aidS + "Y2") + "+" + SweepProfile(aidS + "Z2") + "+" + SweepProfile(aidS + "DL") + "+" + SweepProfile(aidS + "DD") + "+" + SweepProfile(aidS + "DQ") + "+" + SweepProfile(aidS + "Y") + "+" + SweepProfile(aidS + "X") + "+" + SweepProfile(aidS + "L") + "+" + SweepProfile(aidS + "Z") + "+" + SweepProfile(aidS + "J") + "+" + SweepProfile(aidS + "K") + "+" + SweepProfile(aidS + "R") + "+" + SweepProfile(aidS + "S") + "+" + SweepProfile(aidS + "M") + "+" + SweepProfile(aidS + "N") + "+" + SweepProfile(aidS + "O") + "+" + SweepProfile(aidS + "P") + "+" + SweepProfile(aidS + "A") + "+" + SweepProfile(aidS + "B") + "+" + SweepProfile(aidS + "C") + "+" + SweepProfile(aidS + "D") + "+" + SweepProfile(aidS + "E") + "+" + SweepProfile(aidS + "F") + "+" + SweepProfile(aidS + "G") + "+" + SweepProfile(aidS + "H") + "+" + SweepProfile(aidS + "1") + "+" + SweepProfile(aidS + "2") + "+" + SweepProfile(aidS + "3")
                     + "+" + SweepProfile(aidS + "4") + "+" + SweepProfile(aidS + "5") + "+" + SweepProfile(aidS + "6")
                     + "+" + SweepProfile(aidS + "7") + "+" + SweepProfile(aidS + "8") + "+" + SweepProfile(aidS + "9");
                 bool wsOk = aws.DisposeAndReport() == "Confirmed" && !Directory.Exists(aws.Root);

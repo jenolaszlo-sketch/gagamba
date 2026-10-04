@@ -46,13 +46,27 @@ adopted with named follow-ups; no isolation weakened.
   `DOTNET_CLI_HOME`/`TMP`/`TEMP`/`APPDATA`/`NUGET_PACKAGES` (applied by the
   runner itself — caller env does NOT cross the boundary, proven by nulls
   in every `runnerEnv`).
-- P9-test FAIL (open): host restore pins MSTest packages ws-locally
-  (verified on host), but in-sandbox `dir` of the package dir →
-  `Access is denied.` and CSC reports CS0246. The restored tree has
-  ordinary inherited ACLs, no MOTW streams, no reparse points, no DENY
-  ACEs — yet reads denied while sibling copied sources read/write fine.
-  Next discriminators: `whoami /groups` token dump in-sandbox, file-read
-  vs dir-list split on the same objects.
+- P9-test: RESOLVED in three parts. (1) The CS0246 trail was a broken
+  fixture, not a sandbox finding: the hand-written `minitest` lacked
+  `using Microsoft.VisualStudio.TestTools.UnitTesting;` and fails
+  identically on the host (verified). The hunt it caused still proved the
+  full stack innocent: package files byte-identical via stream+mmap+hash,
+  evaluation resolves 370 refs, CSC invoked correctly (binlog forensics),
+  servers irrelevant, no path-length caps, no MOTW/ACL/reparse anomalies,
+  direct CSC works against sandbox-built refs (P8D4), even sandbox-copied
+  package bytes work as refs (P8D5). (2) The one genuine anomaly found
+  along the way — `cmd /c dir` denied on package dirs while runner-lists
+  pass — reproduces on known-good dirs too: `cmd/dir` is broken
+  in-sandbox generally (volume probe on `C:\`, same ancestor rule as
+  git), the package dir was never special. (3) With the fixture fixed,
+  `dotnet build` of minitest passes in-sandbox but `dotnet test` hangs:
+  vstest.diag shows `SocketServer.Start: Listening on endpoint :
+  127.0.0.1:6279` then `WaitForRequestHandlerConnection` (90s) — the
+  console↔testhost handshake needs TCP loopback, which offline-process-v1
+  denies by design. Our 60s bound fires first (orphan names recorded in
+  the leg). Verdict: test execution is blocked by network policy, not by
+  a provider quirk; unblocking it is a loopback-exception decision, not a
+  bug fix.
 
 ## Side findings (provider constants)
 

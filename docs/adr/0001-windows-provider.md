@@ -59,6 +59,48 @@ Gaps that shape the design:
   `%TEMP%` are rejected while the same shape under `C:\temp` is accepted
   (foreign ACEs on the `%TEMP%` tree are suspected). Preparation should
   validate the actual grant set and surface a typed rejection.
+- Grant binding has a currently unexplained non-deterministic or
+  content/state-dependent failure mode: grant totals 115/121/124 bind
+  while 118 rejects and one 121-char workspace failed 6/6 across runs
+  (same length, different names, opposite verdicts) — falsified as a
+  length cap, not yet called random; a deterministic variable may remain
+  unidentified. The spike retries with fresh identity+workspace as a
+  defensive workaround, never as path validation.
+
+## Execution domain (GW-1B-L7)
+
+Gagamba does not sandbox a process; it creates a **sandbox execution
+domain**:
+
+```text
+Sandbox Execution Domain
+│
+├── root process
+│   ├── child
+│   │   ├── grandchild
+│   │   └── grandchild
+│   └── child
+│
+├── filesystem grants
+├── environment
+├── network policy
+└── resource limits
+```
+
+Processes within the domain have enough normal OS semantics to function
+together (nested creation, parent/child discovery, inherited
+confinement); processes outside it remain isolated. Authority propagates
+downward, bounded by the parent: child authority ⊆ parent authority.
+Hufu may attenuate further, but a child never gains authority by being
+spawned — the provider gives the OS-level half (proven: nested children
+are confined), the supervisor owns the rest.
+
+Environment is a granted resource, not an inheritance: caller env does
+not cross the boundary, so the resident runner constructs child env
+explicitly (`--env`). The Hufu-facing direction is an explicit
+`SandboxExecutionRequest { Executable, Arguments, WorkingDirectory,
+Environment, Grants }` where allow/deny is per-variable (PATH yes,
+API keys no).
 
 ## Workload limitation: the sandbox hides host objects (git + dotnet, same rule)
 

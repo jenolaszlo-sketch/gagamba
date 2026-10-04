@@ -9,8 +9,20 @@
 // even when the topology under test is broken.
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.IO.MemoryMappedFiles;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
+
+static string ShaHex(byte[] data, int count)
+{
+    byte[] h = SHA256.HashData(data.AsSpan(0, count));
+    var sb = new StringBuilder(h.Length * 2);
+    foreach (byte b in h) sb.Append(b.ToString("x2"));
+    return sb.ToString();
+}
 
 static string J(string? s, int cap = 4096)
 {
@@ -85,6 +97,136 @@ string runnerEnvJson = "\"DOTNET_CLI_HOME\":" + SeenEnv("DOTNET_CLI_HOME")
 if (args.Length == 1 && args[0] == "--selftest")
 {
     Console.WriteLine($"{{\"runnerPid\":{selfPid},\"runnerParentPid\":{parentPid},\"visibleProcessCount\":{visible},\"runnerEnv\":{{{runnerEnvJson}}},\"mode\":\"selftest\"}}");
+    return 0;
+}
+
+// --mmap-read <path>: read via memory-mapped view (how compilers and
+// metadata readers consume DLLs). Hashes the WHOLE file (cap 32MB) so the
+// harness can prove full content-integrity against host-side hashes.
+if (args.Length == 2 && (args[0] == "--read-file" || args[0] == "--mmap-read"))
+{
+    const int cap = 32 * 1024 * 1024;
+    string target = args[1];
+    bool mmap = args[0] == "--mmap-read";
+    long size = -1;
+    int read = 0;
+    string sha = "";
+    string overNote = "";
+    string? fErr = null;
+    try
+    {
+        using var inc = SHA256.Create();
+        // NOTE: views may extend to the page boundary; cap reads at the file
+        // size (like every correct reader) and report the tail bytes so
+        // zero-padding vs leaked content is distinguishable.
+        if (mmap)
+        {
+            using var fsi = new FileStream(target, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            size = fsi.Length;
+            using var mmf = MemoryMappedFile.CreateFromFile(target, FileMode.Open, null, 0, MemoryMappedFileAccess.Read);
+            using var vs = mmf.CreateViewStream(0, 0, MemoryMappedFileAccess.Read);
+            byte[] buf = new byte[65536];
+            int n;
+            long total = 0;
+            while (total < Math.Min(cap, size) && (n = vs.Read(buf, 0, (int)Math.Min(buf.Length, Math.Min(cap, size) - total))) > 0)
+            {
+                inc.TransformBlock(buf, 0, n, null, 0);
+                total += n;
+            }
+            read = (int)Math.Min(total, int.MaxValue);
+            inc.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+            sha = BitConverter.ToString(inc.Hash ?? Array.Empty<byte>()).Replace("-", "").ToLowerInvariant();
+            long over = 0;
+            {
+                byte[] ob = new byte[4096];
+                int on;
+                while ((on = vs.Read(ob, 0, ob.Length)) > 0) over += on;
+            }
+            overNote = $"overEofBytes={over}";
+        }
+        else
+        {
+            using var fs = new FileStream(target, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            size = fs.Length;
+            byte[] buf = new byte[65536];
+            int n;
+            long total = 0;
+            while (total < cap && (n = fs.Read(buf, 0, (int)Math.Min(buf.Length, cap - total))) > 0)
+            {
+                inc.TransformBlock(buf, 0, n, null, 0);
+                total += n;
+            }
+            read = (int)Math.Min(total, int.MaxValue);
+            inc.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+            sha = BitConverter.ToString(inc.Hash ?? Array.Empty<byte>()).Replace("-", "").ToLowerInvariant();
+        }
+    }
+    catch (Exception ex) { fErr = $"{ex.GetType().Name}: {ex.Message.Split('\n')[0].Trim()}"; }
+    string feJson = fErr is null ? "null" : J(fErr, 300);
+    string overJson = overNote.Length > 0 ? J(overNote) : "null";
+    Console.WriteLine($"{{\"runnerPid\":{selfPid},\"mode\":\"{(mmap ? "mmap-read" : "read-file")}\",\"path\":{J(target)},\"size\":{size},\"readBytes\":{read},\"sha256\":{(sha.Length > 0 ? J(sha) : "null")},\"overEof\":{overJson},\"error\":{feJson}}}");
+    return 0;
+}
+
+// --list-dir <path>: enumerate one level in-process (progression step 2).
+if (args.Length == 2 && args[0] == "--list-dir")
+{
+    string target = args[1];
+    string? dErr = null;
+    var names = new System.Collections.Generic.List<string>();
+    try
+    {
+        foreach (string e in Directory.EnumerateFileSystemEntries(target))
+        {
+            names.Add(System.IO.Path.GetFileName(e));
+            if (names.Count >= 12) break;
+        }
+    }
+    catch (Exception ex) { dErr = $"{ex.GetType().Name}: {ex.Message.Split('\n')[0].Trim()}"; }
+    string deJson = dErr is null ? "null" : J(dErr, 300);
+    Console.WriteLine($"{{\"runnerPid\":{selfPid},\"mode\":\"list-dir\",\"path\":{J(target)},\"countCapped\":{names.Count},\"names\":[{string.Join(",", names.ConvertAll(n => J(n)))}],\"error\":{deJson}}}");
+    return 0;
+}
+
+// --load-test <path>: Assembly.LoadFrom + GetTypes in-process (.NET 8
+// context, unlike Windows PowerShell). Reports type count or the exact
+// loader failure chain (progression: can managed code CONSUME the DLL?).
+if (args.Length == 2 && args[0] == "--load-test")
+{
+    string target = args[1];
+    string? lErr = null;
+    int typeCount = -1;
+    string loaderNotes = "";
+    try
+    {
+        var asm = System.Reflection.Assembly.LoadFrom(target);
+        try { typeCount = asm.GetTypes().Length; }
+        catch (System.Reflection.ReflectionTypeLoadException rtle)
+        {
+            typeCount = rtle.Types.Count(t => t is not null);
+            var msgs = new System.Collections.Generic.List<string>();
+            foreach (var le in rtle.LoaderExceptions)
+                if (le is not null && msgs.Count < 3) msgs.Add($"{le.GetType().Name}:{le.Message.Split('\n')[0].Trim()}");
+            loaderNotes = string.Join(" | ", msgs);
+        }
+    }
+    catch (Exception ex)
+    {
+        lErr = $"{ex.GetType().Name}: {ex.Message.Split('\n')[0].Trim()}";
+        if (ex.InnerException is not null) lErr += $" /in:{ex.InnerException.GetType().Name}";
+    }
+    string leJson = lErr is null ? "null" : J(lErr, 400);
+    Console.WriteLine($"{{\"runnerPid\":{selfPid},\"mode\":\"load-test\",\"path\":{J(target)},\"typeCount\":{typeCount},\"loaderNotes\":{J(loaderNotes)},\"error\":{leJson}}}");
+    return 0;
+}
+if (args.Length == 2 && args[0] == "--mkdir")
+{
+    string target = args[1];
+    string? mErr = null;
+    try { Directory.CreateDirectory(target); }
+    catch (Exception ex) { mErr = $"{ex.GetType().Name}: {ex.Message.Split('\n')[0].Trim()}"; }
+    string meJson = mErr is null ? "null" : J(mErr, 300);
+    Console.WriteLine($"{{\"runnerPid\":{selfPid},\"mode\":\"mkdir\",\"path\":{J(target)},\"error\":{meJson}}}");
     return 0;
 }
 
