@@ -1143,6 +1143,87 @@ internal static class LaunchStaircase
                 if (!awsOk) gitWsOk = false;
                 gitProfs.Add(aprof);
             }
+                // GW-1B-L5 ancestor grants (explicitly authorized broad ro
+                // grants for this experiment only): msys getcwd walks
+                // ancestors and dies on list-denial (C:\ + profile per the
+                // ProcMon capture). Narrowest first: drive root, profile,
+                // combined, full chain. Each variant: fresh ws + repo copy,
+                // version canary + rev-parse + status.
+                var ancNotes = new List<string>();
+                bool ancOk = false;
+                string? driveRoot = Path.GetPathRoot(Path.GetTempPath());
+                string profileDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                var ancVariants = new List<(string name, List<string> extraRo)>();
+                if (driveRoot is not null && Directory.Exists(driveRoot))
+                    ancVariants.Add(("root", new List<string> { driveRoot }));
+                if (Directory.Exists(profileDir))
+                    ancVariants.Add(("profile", new List<string> { profileDir }));
+                if (driveRoot is not null && Directory.Exists(driveRoot) && Directory.Exists(profileDir))
+                    ancVariants.Add(("root+profile", new List<string> { driveRoot, profileDir }));
+                // Full chain: every ancestor of the ws up to the root.
+                var chain = new List<string>();
+                try
+                {
+                    string? cur = Path.GetDirectoryName(Path.GetTempPath().TrimEnd(Path.DirectorySeparatorChar));
+                    for (int i = 0; i < 12 && cur is not null; i++)
+                    {
+                        if (Directory.Exists(cur) && !chain.Contains(cur)) chain.Add(cur);
+                        if (cur == driveRoot?.TrimEnd(Path.DirectorySeparatorChar)) break;
+                        cur = Path.GetDirectoryName(cur);
+                    }
+                }
+                catch { }
+                if (chain.Count >= 2) ancVariants.Add(("fullchain", chain));
+                int ancIdx = 0;
+                foreach (var (vname, extraRo) in ancVariants)
+                {
+                    ancIdx++;
+                    // Run the full chain only if narrower variants all fail.
+                    if (vname == "fullchain" && ancOk) { ancNotes.Add("fullchain=skipped (narrower worked)"); break; }
+                    using var vws = FixtureWorkspace.Create($"gw1b-g{ancIdx}-" + runTag);
+                    string vCopy = Path.Combine(vws.Root, "repo");
+                    CopyDirExcluding(repoRoot, vCopy, new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                        { "bin", "obj", "artifacts", ".vs", ".idea", "TestResults" });
+                    string aidV = $"GagambaGW1B{runTag}v{ancIdx}";
+                    var vspec = new SandboxSpecRequest("0.1.0", true, [vws.Root], new List<string> { stageRoot }.Concat(extraRo).ToList());
+                    string tmpD = Path.Combine(vws.Root, "tmp");
+                    Directory.CreateDirectory(tmpD);
+                    string? oT = Environment.GetEnvironmentVariable("TMP");
+                    string? oTe = Environment.GetEnvironmentVariable("TEMP");
+                    Environment.SetEnvironmentVariable("TMP", tmpD);
+                    Environment.SetEnvironmentVariable("TEMP", tmpD);
+                    bool vPass = false;
+                    string vNote;
+                    try
+                    {
+                        var (okV, dV, oV, _) = await RunPipedAsync(aidV + "a", vspec, stagedGit, "--version", vws.Root, 0);
+                        var (okR, dR, oR, eR) = await RunPipedAsync(aidV + "b", vspec, stagedGit, "rev-parse HEAD", vCopy, 0);
+                        string rev = oR.Trim();
+                        bool revOk = okR && rev.Length == 40 && rev.All(c => Uri.IsHexDigit(c));
+                        string errR = eR.Replace("\r", " ").Replace("\n", " ").Trim();
+                        if (errR.Length > 160) errR = errR[..160] + "...";
+                        var (okS, dS, oS, eS) = await RunPipedAsync(aidV + "c", vspec, stagedGit, "status --porcelain", vCopy, 0);
+                        string errS = eS.Replace("\r", " ").Replace("\n", " ").Trim();
+                        if (errS.Length > 160) errS = errS[..160] + "...";
+                        bool statusOkV = okS && oS.Trim().Length < 4096;
+                        vPass = okV && oV.Contains("git version") && revOk && statusOkV;
+                        if (vPass) ancOk = true;
+                        vNote = $"{vname}: version[{dV}] revparse[{dR}] rev='{rev}' err='{errR}' status[{dS}] err='{errS}'";
+                        string vprof = SweepProfile(aidV + "a") + "+" + SweepProfile(aidV + "b") + "+" + SweepProfile(aidV + "c");
+                        gitProfs.Add(vprof);
+                        vNote += $" profile={vprof}";
+                    }
+                    finally
+                    {
+                        Environment.SetEnvironmentVariable("TMP", oT);
+                        Environment.SetEnvironmentVariable("TEMP", oTe);
+                    }
+                    bool vwsOk = vws.DisposeAndReport() == "Confirmed" && !Directory.Exists(vws.Root);
+                    if (!vwsOk) gitWsOk = false;
+                    ancNotes.Add(vNote);
+                }
+                gitDetail += " ancestors[" + string.Join(" | ", ancNotes) + "]";
+                gitOk = gitOk || ancOk;
                 string gitProfAll = string.Join("+", gitProfs);
                 bool gitProfOk = gitProfs.All(p => p.Split('+').All(q =>
                     q.StartsWith("deleted(") || q.StartsWith("deleted-never-materialized(")));

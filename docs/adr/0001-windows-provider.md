@@ -47,8 +47,10 @@ Gaps that shape the design:
   `ERROR_INVALID_DATA` deterministically, while `dotnet`, `Common Files`,
   `Windows`, and copies of Git's contents under `C:\temp` are accepted. The
   provider must validate grant roots at preparation and reject/fallback rather
-  than assume a directory is bindable. Staging bypasses this; the remaining
-  git gate is ancestor list-access during cwd resolution (see below).
+  than assume a directory is bindable. Update (GW-1B-L5): the user-profile
+  tree (`C:\Users\Laszlos`) is likewise unbindable and poisons any spec
+  containing it; the drive root `C:\` itself binds fine read-only, and that
+  single grant unblocks msys cwd resolution for the full Git workload.
 - Some host directory trees cannot be granted at all: `C:\Program Files\Git`
   (and its subdirectories, and `C:\Program Files` itself) returns
   `ERROR_INVALID_DATA` deterministically, while `dotnet`, `Common Files`,
@@ -132,8 +134,9 @@ Design consequences of the rule:
   grants, no outside-PID queries, no host-path/profile lookups. Treat any
   "not found"-shaped death of an otherwise-launchable binary as a
   visibility failure first.
-- Open: narrow ancestor list-grants (incl. drive root) for git; avoiding
-  the CLI host probe for framework-dependent launch.
+- Open: avoiding the CLI host probe for framework-dependent launch; the
+  git half is closed (ro drive-root grant), with profile trees documented
+  unbindable.
 
 ## Decision
 

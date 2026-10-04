@@ -17,7 +17,7 @@ Develop Gagamba alone as an independently useful .NET sandbox library. Windows, 
 - GW-1B slice 2 implemented (`61edee2`): denial with positive controls, descendant effects + inherited denial, cancel race proven; tree-stop gap and file-stdio rejection characterized.
 - GW-1B slice 3 implemented (`4b4ce8f`): pipes proven as transport, ToolHelp supervisor proven cross-boundary, whoami maps the base image, dotnet exits 1 silently in all grant configs. Provider ADR 0001 written.
 - GW-1B slice 4 implemented and reviewed: byte-exact spec encoder vs flatc (vendored vectors), crash-recovery by recorded PID, launch-stability/retry, grant-shape and Git-tree findings, and a review fix pass (crash-leg ordering, supervisor cost/PID-reuse, fixture bugs, eng-script false-green). 14/19 legs green; 4 open gates. Evidence `docs/evidence/windows-slice4-GW-1B.md`.
-- GW-1B-L5 git resolution: the staged-closure pattern is proven (staged `git --version` exits 0 in-sandbox) but every other git command dies `128` with `fatal: Unable to read current working directory: Permission denied` — ancestor dirs (`C:\`, profile) deny list access under AppContainer, confirmed by an elevated ProcMon capture. Fixed the harness pipe-drain gap (`RunPipedAsync` now drains when a child ran) that had hidden the fatal; trimmed the leg's bisect scaffolding.
+- GW-1B-L5 git resolution: the staged-closure pattern is proven (staged `git --version` exits 0 in-sandbox) but every other git command dies `128` with `fatal: Unable to read current working directory: Permission denied` — ancestor dirs (`C:\`, profile) deny list access under AppContainer, confirmed by an elevated ProcMon capture. Fixed the harness pipe-drain gap (`RunPipedAsync` now drains when a child ran) that had hidden the fatal; trimmed the leg's bisect scaffolding. **Closed**: with authorized broad ro grants, ro `C:\` alone turns the full workload green (true HEAD + clean status); the profile tree is unbindable and poisons any spec containing it. Provider rule: ro drive-root grants, closures outside profile trees.
 - GW-1B-L6 dotnet resolution: a new `L3-WORKLOAD-PIDPROBE` leg (manifest v6 = 20 IDs) stages a self-contained probe that exits 0 in-sandbox. Self-introspection works, but only `[System Process]` + self are visible; `GetProcessById(parent)` throws the verbatim dotnet `ArgumentException`. The CLI installer probe kills it, not the runtime — provider direction is self-contained managed closures.
 - GW-1B-L7 runner topology (per spec): `L5-SANDBOX-PARENT` (manifest v7 = 21 IDs) proves nested creation, same-domain visibility, nested confinement, `--list-sdks`/`--list-runtimes` and offline `build` under a generic resident runner. The package-readability hunt closed on a broken fixture (missing `using`, host fails too); `dotnet test` hangs on TCP-loopback handshake denied by the offline profile (policy, not quirk). Model adopted: sandbox execution domain → resident runner → tool tree; environment is a granted resource.
 - Current shell chat may still be rooted in Solo. Use the Gagamba path explicitly; Solo's planning staging files are not the source of truth. Prefer opening the next coding session directly in Gagamba so its workspace permissions match the work.
@@ -44,14 +44,12 @@ Verified GW-1A/GW-1B 2026-10-04 (Windows host, spike-only; no provider qualified
 
 ## Exact next task
 
-Continue **GW-1B (engine findings)**: (1) test ancestor-chain list grants vs
-cwd confinement under a grantable subtree for the Git workload (GW-1B-L5),
-and record whether the drive root can be granted narrowly; (2) decide the
-test-execution loopback question (VSTest needs 127.0.0.1 TCP; `build` is
-green, `test` hangs by policy) and the SCM-probing stance (`--info` tail
-only — classify CLI-core supported vs host-inspection restricted);
-(3) confirm the multi-grant-under-`%TEMP%` rule and document it as a
-preparation-time rejection; (4) design launcher-crash recovery beyond the
+Continue **GW-1B (engine findings)**: (1) decide the test-execution
+loopback question (VSTest needs 127.0.0.1 TCP; `build` is green, `test`
+hangs by policy) and the SCM-probing stance (`--info` tail only —
+classify CLI-core supported vs host-inspection restricted); (2) confirm
+the multi-grant-under-`%TEMP%` rule and document it as a
+preparation-time rejection; (3) design launcher-crash recovery beyond the
 supervisor (GQ-1 gate). Then GL-1A (separate Ubuntu WSL2) and GM-1A (macOS
 probe). Keep identities disposable and profiles deleted; never modify the
 host opportunistically.

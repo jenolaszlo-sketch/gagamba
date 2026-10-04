@@ -128,6 +128,27 @@ mystery; a rerun with fixed pipe draining confirmed the mechanism:
   untested) or a cwd confined under a fully grantable subtree. Open as
   GW-1B-L5; the staged-closure pattern (copy under `C:\temp`) itself is
   proven: the staged `git --version` exits 0 in-sandbox.
+
+## GW-1B-L5 closed: read-only C:\ grant unblocks the Git workload
+
+With explicit authorization for broad read-only grants, the L4 leg now
+tries ancestor variants (fresh ws + repo copy each): ro `C:\`, ro profile
+(`C:\Users\Laszlos`), both, and the full chain (gated on narrower
+failure). Result:
+
+- ro `C:\` alone: **full workload green** — `rev-parse HEAD` returns the
+  true HEAD, `status --porcelain` exits 0 with empty stderr. L4 passes.
+- ro profile: engine rejects the whole spec with `ERROR_INVALID_DATA`
+  (all three launches, `deleted-never-materialized`) — the user-profile
+  tree is unbindable, same family as the `C:\Program Files\Git` finding.
+  Any spec containing it fails wholesale (root+profile too).
+- Full chain unnecessary (skipped by gating).
+- The drive root itself binds fine; only profile subtrees refuse.
+
+Provider rule: msys/cygwin workloads get ro grants on the drive root for
+cwd resolution (read-only, no writes); user-profile subtrees cannot be
+granted at all, so closures must live outside them. No confinement
+alternative needed for git.
 - Side effect of the drain fix: the dotnet leg now reports its first real
   error instead of `err=''`: `System.TypeInitializationException` in
   `Microsoft.DotNet.Cli.Installer.Windows.InstallerBase` caused by
