@@ -44,6 +44,21 @@ Initial policy roots cannot themselves traverse unresolved symlinks/junctions, u
 
 UNC/network shares, device paths, alternate data streams and special device files are unsupported initial caller grants. A runtime baseline may explicitly expose minimal OS facilities such as a null device, but cannot turn that into general device access. Alternate spelling, case behavior and short names must not create additional access. New ordinary files inside writable roots are allowed; non-existing grant roots are not.
 
+## Grant preparation (multiple grants, normalization, conflicts)
+
+Multiple explicit grants are allowed; no root is a special singleton.
+Before launch, preparation must resolve/canonicalize each grant (fully
+qualified, separator-normalized, no trailing separator except roots,
+compared case-insensitively on Windows) and collapse exact duplicates
+within a kind. The same path in both kinds is a conflicting binding and
+rejects in preparation. Nested bindings are permitted with inner-wins
+semantics (a narrower inner grant never widens its outer grant); the
+provider verifies the effect and reports, never silently widens. An
+`ERROR_INVALID_DATA` grant rejection is retried on fresh inputs before
+being reported — measured verdicts are tuple-dependent (stable per path
+string, mechanism unknown, falsified as a length cap) — and persistent
+rejection is reported as unbindable, never dropped or broadened.
+
 ## Network and IPC
 
 No IPv4/IPv6 network communication is authorized, including remote destinations, host or sandbox loopback, DNS, outbound connections, inbound listeners and inherited connected sockets. V1 promises no private loopback allowance. A backend that can only isolate external networking while leaving usable loopback must add enforcement or reject this profile.

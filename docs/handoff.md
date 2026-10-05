@@ -44,17 +44,16 @@ Verified GW-1A/GW-1B 2026-10-04 (Windows host, spike-only; no provider qualified
 
 ## Exact next task
 
-Continue **GW-1B (engine findings)** in this order: (1) confirm the
-`%TEMP%` multi-grant rule as prep-time semantics (multiple explicit
-grants, resolve/canonicalize, overlap/conflict rules — no singleton
-special-case); (2) CI-1 real build/unit workflow (tests whether the
-sandbox serves a real workflow); (3) GQ-1 job-object descendant ownership
-(`KILL_ON_JOB_CLOSE`, supervisor above; verify breakaway/nested cases).
-Decided, no further experiments needed: loopback as `offline+loopback`
-profile capability, dotnet SCM probing restricted, msys ro drive-root
-grant transitional. Then GL-1A (separate Ubuntu WSL2) and GM-1A (macOS
-probe). Keep identities disposable and profiles deleted; never modify the
-host opportunistically.
+Continue **GW-1B (engine findings)** in this order: (1) CI-1 real
+build/unit workflow (tests whether the sandbox serves a real workflow);
+(2) GQ-1 job-object descendant ownership (`KILL_ON_JOB_CLOSE`,
+supervisor above; verify breakaway/nested cases). Decided, no further
+experiments needed: loopback as `offline+loopback` profile capability,
+dotnet SCM probing restricted, msys ro drive-root grant transitional,
+multi-grant prep semantics with tuple-dependent INVALID_DATA retry.
+Then GL-1A (separate Ubuntu WSL2) and GM-1A (macOS probe). Keep
+identities disposable and profiles deleted; never modify the host
+opportunistically.
 
 Before executing experiments that alter host ACLs/users/firewall or install a runtime, prepare the exact setup/cleanup implementation and inspect the task's authorization. No permission prompt is required merely to write code, read state or run safe fixtures. Keep privileged setup separate and attributable.
 

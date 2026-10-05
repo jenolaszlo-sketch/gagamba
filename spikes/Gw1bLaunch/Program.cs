@@ -2141,12 +2141,152 @@ internal static class LaunchStaircase
                 : (false, string.Join(" | ", log), (string?)null);
         });
 
-        // ---- L1-CLEANUP (aggregate proof) ----
+        // ---- L1-GRANT-SHAPE (prep-time grant semantics, GW-1B-L8) ----
+        // Rule table (all asserted green): multiple explicit grants bind
+        // (same-kind and mixed, %TEMP% and C:\temp); canonical forms bind
+        // identically; duplicates collapse and cross-kind conflicts reject
+        // in preparation (host-side asserts); nested overlap is inner-wins.
+        // INVALID_DATA verdicts are tuple-dependent (stable per path string,
+        // mechanism unknown — NOT a length cap, falsified as non-monotonic),
+        // so launch variants retry once on fresh inputs; two rejections on
+        // two fresh workspaces is the stable signal. Fresh workspace per
+        // attempt: a failed attempt can poison its grant path (stickiness).
+        await RunCase(collector, "L1-GRANT-SHAPE", async () =>
+        {
+            var notes = new List<string>();
+            bool shapesOk = true;
+            var shapeProfs = new List<string>();
+            bool shapeWsOk = true;
+            void Note(string tag, bool pass, string detail)
+            {
+                notes.Add($"{tag}={(pass ? "pass" : "FAIL")} {detail}");
+                if (!pass) shapesOk = false;
+            }
+            string cmdShape = Path.Combine(Environment.SystemDirectory, "cmd.exe");
+            const string canaryArgs = "/d /c echo shape-ok";
+            async Task ShapeLaunch(string tag, Func<string, SandboxSpecRequest> specOf)
+            {
+                bool launched = false;
+                string detail = "";
+                for (int attempt = 1; attempt <= 2 && !launched; attempt++)
+                {
+                    using var ws = FixtureWorkspace.Create($"gw1b-n-{tag}-{attempt}-" + runTag);
+                    string vid = $"GagambaGW1B{runTag}m{tag}a{attempt}";
+                    var (ok, d, oOut, eOut) = await RunPipedAsync(vid, specOf(ws.Root), cmdShape, canaryArgs, ws.Root, 0);
+                    string ee = eOut.Replace("\r", " ").Replace("\n", " ").Trim();
+                    if (ee.Length > 120) ee = ee[..120] + "...";
+                    launched = ok && oOut.Trim() == "shape-ok";
+                    detail += $"try{attempt}:[{d} err='{ee}'] ";
+                    shapeProfs.Add(SweepProfile(vid));
+                    if (!(ws.DisposeAndReport() == "Confirmed" && !Directory.Exists(ws.Root))) shapeWsOk = false;
+                }
+                Note("S-" + tag, launched, detail);
+            }
+            var roTargets = new List<FixtureWorkspace>();
+            try
+            {
+                // G1 single ro under %TEMP%: baseline must launch.
+                roTargets.Add(FixtureWorkspace.Create("gw1b-r1-" + runTag));
+                await ShapeLaunch("g1", wsRoot => new("0.1.0", true, [wsRoot], [roTargets[0].Root]));
+                // G2 ro+ro under %TEMP%: multiple explicit grants bind
+                // (the S0 rejection does not reproduce as a rule).
+                roTargets.Add(FixtureWorkspace.Create("gw1b-r2-" + runTag));
+                await ShapeLaunch("g2", wsRoot => new("0.1.0", true, [wsRoot], [roTargets[0].Root, roTargets[1].Root]));
+                // G3 rw+rw under %TEMP%: multiple explicit grants bind
+                // (the S0b rejection does not reproduce as a rule).
+                roTargets.Add(FixtureWorkspace.Create("gw1b-r3-" + runTag));
+                await ShapeLaunch("g3", wsRoot => new("0.1.0", true, [wsRoot, roTargets[2].Root], []));
+                // G4 rw+ro under %TEMP%: accepted (mixed pairs bind).
+                await ShapeLaunch("g4", wsRoot => new("0.1.0", true, [wsRoot, roTargets[2].Root], [roTargets[0].Root]));
+                // G5 ro+ro under a C:\temp root: accepted (confirms flatc).
+                string? cleanRoot = TryCleanStageRoot();
+                if (cleanRoot is null)
+                {
+                    Note("S-g5", false, "no clean staging root available");
+                }
+                else
+                {
+                    string grRoot = Path.Combine(cleanRoot, "gw1b-shaperoot-" + runTag);
+                    string grA = Path.Combine(grRoot, "a");
+                    string grB = Path.Combine(grRoot, "b");
+                    try
+                    {
+                        Directory.CreateDirectory(grA);
+                        Directory.CreateDirectory(grB);
+                        await ShapeLaunch("g5", wsRoot => new("0.1.0", true, [wsRoot], [grA, grB]));
+                    }
+                    finally
+                    {
+                        try { if (Directory.Exists(grRoot)) Directory.Delete(grRoot, recursive: true); } catch { }
+                    }
+                }
+                // G6 nested ro-child inside ro-parent... no: rw-child inside
+                // ro-parent. Strict inner-wins (sub written, top denied),
+                // retry once fresh. Insecure merge fails the leg.
+                {
+                    bool innerWins = false;
+                    string detail = "";
+                    for (int attempt = 1; attempt <= 2 && !innerWins; attempt++)
+                    {
+                        using var nws = FixtureWorkspace.Create($"gw1b-n-n6-{attempt}-" + runTag);
+                        string sub = Path.Combine(nws.Root, "sub");
+                        Directory.CreateDirectory(sub);
+                        string nid = $"GagambaGW1B{runTag}mg6a{attempt}";
+                        var nr = await LaunchLeg(nid,
+                            new SandboxSpecRequest("0.1.0", true, [sub], [nws.Root]),
+                            "/d /c echo x > \"sub\\f.txt\" & echo y > \"top.txt\"", nws.Root, null, null, exePath: cmdShape);
+                        shapeProfs.Add(SweepProfile(nid));
+                        bool subWrote = File.Exists(Path.Combine(sub, "f.txt"));
+                        bool topWrote = File.Exists(Path.Combine(nws.Root, "top.txt"));
+                        innerWins = nr.Ok && subWrote && !topWrote;
+                        detail += $"try{attempt}:[{nr.Detail} sub={subWrote} top={topWrote}] ";
+                        if (!(nws.DisposeAndReport() == "Confirmed" && !Directory.Exists(nws.Root))) shapeWsOk = false;
+                    }
+                    Note("S-g6", innerWins, detail);
+                }
+                // G7a duplicates collapse in preparation (host-side, no launch).
+                try
+                {
+                    var collapsed = SpecBuilder.NormalizeGrantPaths(["C:\\Temp\\X\\", "C:\\Temp\\X", "C:/Temp/X"]);
+                    Note("S-g7a", collapsed.Count == 1, $"normalized={collapsed.Count}");
+                }
+                catch (Exception ex) { Note("S-g7a", false, $"threw {ex.GetType().Name}"); }
+                // G7b same path in both kinds rejects in preparation.
+                try
+                {
+                    SpecBuilder.BuildVerified(new("0.1.0", true, ["C:\\Temp\\X"], ["C:\\Temp\\X"]));
+                    Note("S-g7b", false, "conflict accepted");
+                }
+                catch (ArgumentException) { Note("S-g7b", true, "conflict rejected in preparation"); }
+                catch (Exception ex) { Note("S-g7b", false, $"wrong throw {ex.GetType().Name}"); }
+                // G8 canonical forms bind identically (trailing sep,
+                // dot-segments, forward slashes).
+                await ShapeLaunch("t1", wsRoot => new("0.1.0", true, [wsRoot + "\\"], []));
+                await ShapeLaunch("t2", wsRoot => new("0.1.0", true, [wsRoot + "\\."], []));
+                await ShapeLaunch("t3", wsRoot => new("0.1.0", true, [wsRoot.Replace('\\', '/')], []));
+                string profAll = string.Join("+", shapeProfs);
+                cleanups.Add(("grantshape", new(true, true, profAll, shapeWsOk)));
+                return shapesOk
+                    ? (true, $"grant-shape matrix ({string.Join("; ", notes)}) profile={profAll}", (string?)null)
+                    : (false, $"grant-shape matrix: {string.Join("; ", notes)} profile={profAll}", (string?)null);
+            }
+            finally
+            {
+                foreach (var t in roTargets)
+                {
+                    try
+                    {
+                        if (!(t.DisposeAndReport() == "Confirmed" && !Directory.Exists(t.Root))) shapeWsOk = false;
+                    }
+                    catch { shapeWsOk = false; }
+                }
+            }
+        });
         await RunCase(collector, "L1-CLEANUP", () =>
         {
             var notes = cleanups.Select(c =>
                 $"{c.Leg}:reaped={c.Cleanup.ChildReaped}/profile={c.Cleanup.ProfileDisposition}/ws={c.Cleanup.WorkspaceDeleted}");
-            bool all = cleanups.Count == 18 && cleanups.All(c =>
+            bool all = cleanups.Count == 19 && cleanups.All(c =>
                 c.Cleanup.ChildReaped
                 && (c.Cleanup.ProfileDisposition.StartsWith("deleted(")
                     || c.Cleanup.ProfileDisposition.StartsWith("deleted-never-materialized("))

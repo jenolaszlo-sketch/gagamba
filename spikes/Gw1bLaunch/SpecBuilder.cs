@@ -199,18 +199,77 @@ public static class SpecBuilder
     /// <summary>
     /// Builds, then independently re-parses and requires round-trip equality.
     /// Throws when the buffer does not decode to exactly the request.
+    /// Normalizes grants first (preparation-time semantics, GW-1B-L8).
     /// </summary>
     public static byte[] BuildVerified(SandboxSpecRequest request)
     {
-        byte[] buf = Build(request);
+        SandboxSpecRequest norm = Normalize(request);
+        byte[] buf = Build(norm);
         SandboxSpecRequest decoded = Verify(buf);
-        if (decoded.Version != request.Version
-            || decoded.AppContainer != request.AppContainer
-            || decoded.Capabilities != request.Capabilities
-            || !decoded.FsReadWrite.SequenceEqual(request.FsReadWrite)
-            || !decoded.FsReadOnly.SequenceEqual(request.FsReadOnly))
+        if (decoded.Version != norm.Version
+            || decoded.AppContainer != norm.AppContainer
+            || decoded.Capabilities != norm.Capabilities
+            || !decoded.FsReadWrite.SequenceEqual(norm.FsReadWrite)
+            || !decoded.FsReadOnly.SequenceEqual(norm.FsReadOnly))
             throw new InvalidOperationException("spec round-trip mismatch: refusing to call");
         return buf;
+    }
+
+    /// <summary>
+    /// Preparation-time grant semantics (GW-1B-L8): resolve/canonicalize
+    /// every grant (full path, no trailing separator, drive roots kept
+    /// intact), collapse exact duplicates within a kind (case-insensitive
+    /// on Windows), and reject the same path in both kinds (a path cannot
+    /// be read-write and read-only at once). Nested overlap is NOT rejected
+    /// here: narrowing (ro inside rw) is legitimate least-privilege shaping
+    /// and the engine decides nested shapes (see L1-GRANT-SHAPE G6); widening
+    /// should be expressed as a single wider grant. Pure function of the
+    /// request: already-canonical distinct grants pass through unchanged.
+    /// </summary>
+    public static SandboxSpecRequest Normalize(SandboxSpecRequest request)
+    {
+        List<string> rw = NormalizeGrantPaths(request.FsReadWrite);
+        List<string> ro = NormalizeGrantPaths(request.FsReadOnly);
+        var both = new HashSet<string>(rw, StringComparer.OrdinalIgnoreCase);
+        both.IntersectWith(ro);
+        if (both.Count > 0)
+            throw new ArgumentException($"grant path in both rw and ro: {string.Join(",", both.Take(3))}");
+        return request with { FsReadWrite = rw, FsReadOnly = ro };
+    }
+
+    /// <summary>
+    /// Canonical form for one grant kind: fully-qualified, separator-
+    /// normalized, no trailing separator (except roots), order-preserving,
+    /// first-wins dedupe (case-insensitive). Throws on missing, relative,
+    /// overlong, or unresolvable paths.
+    /// </summary>
+    public static List<string> NormalizeGrantPaths(IEnumerable<string> paths)
+    {
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var clean = new List<string>();
+        foreach (string p in paths)
+        {
+            if (string.IsNullOrWhiteSpace(p) || p.Length > MaxPathChars)
+                throw new ArgumentException("grant path missing or exceeds bound");
+            if (!Path.IsPathRooted(p))
+                throw new ArgumentException($"grant path must be fully qualified: {p}");
+            string full;
+            try
+            {
+                full = Path.GetFullPath(p);
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException($"grant path not resolvable: {p}", ex);
+            }
+            string root = Path.GetPathRoot(full) ?? string.Empty;
+            string trimmed = full.Length > root.Length
+                ? full.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+                : full;
+            if (seen.Add(trimmed))
+                clean.Add(trimmed);
+        }
+        return clean;
     }
 
     /// <summary>Independent verifier: parses the buffer from scratch.</summary>
