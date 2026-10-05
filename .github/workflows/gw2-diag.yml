@@ -1,0 +1,18 @@
+# TEMPORARY GW-2 diagnostic: why do PowerShell-script provider tests fail
+# on the windows runner while the cmd.exe env test passes? Tests env
+# isolation and a script write under empty/minimal/inherited environments.
+# Remove after the root cause is recorded.
+name: gw2-diag
+
+on:
+  workflow_dispatch:
+
+jobs:
+  diag:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run diagnostic
+        shell: pwsh
+        run: ./eng/gw2-diag.ps1
