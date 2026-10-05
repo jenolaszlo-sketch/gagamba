@@ -92,12 +92,15 @@ $rich3 = @{}
 foreach ($k in $rich2.Keys) { $rich3[$k] = $rich2[$k] }
 $rich3['ComSpec'] = $env:ComSpec
 Test-Launch 'rich3+ComSpec' $rich3
-$rich4 = @{}
-foreach ($k in $rich3.Keys) { $rich4[$k] = $rich3[$k] }
-$rich4['PSModuleAnalysisCachePath'] = $env:PSModuleAnalysisCachePath
-$rich4['POWERSHELL_DISTRIBUTION_CHANNEL'] = $env:POWERSHELL_DISTRIBUTION_CHANNEL
-$rich4['PSModulePath'] = $env:PSModulePath
-Test-Launch 'rich4+PScache' $rich4
+$a = @{}; foreach ($k in $rich3.Keys) { $a[$k] = $rich3[$k] }
+$a['PSModuleAnalysisCachePath'] = $env:PSModuleAnalysisCachePath
+Test-Launch 'a+PSModuleAnalysisCachePath' $a
+$b = @{}; foreach ($k in $rich3.Keys) { $b[$k] = $rich3[$k] }
+$b['PSModulePath'] = $env:PSModulePath
+Test-Launch 'b+fullPSModulePath' $b
+$c = @{}; foreach ($k in $rich3.Keys) { $c[$k] = $rich3[$k] }
+$c['POWERSHELL_DISTRIBUTION_CHANNEL'] = $env:POWERSHELL_DISTRIBUTION_CHANNEL
+Test-Launch 'c+POWERSHELL_DIST' $c
 $inh = @{}
 foreach ($k in [Environment]::GetEnvironmentVariables().Keys) { $inh[$k] = [Environment]::GetEnvironmentVariable($k) }
 Test-Launch 'inherited' $inh
