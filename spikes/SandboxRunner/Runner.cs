@@ -16,14 +16,6 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 
-static string ShaHex(byte[] data, int count)
-{
-    byte[] h = SHA256.HashData(data.AsSpan(0, count));
-    var sb = new StringBuilder(h.Length * 2);
-    foreach (byte b in h) sb.Append(b.ToString("x2"));
-    return sb.ToString();
-}
-
 static string J(string? s, int cap = 4096)
 {
     if (s is null) return "null";
@@ -84,7 +76,7 @@ catch { }
 // caller env into the sandbox). Values capped; null when absent.
 string SeenEnv(string k)
 {
-    string v = Environment.GetEnvironmentVariable(k);
+    string? v = Environment.GetEnvironmentVariable(k);
     if (v is null) return "null";
     if (v.Length > 160) v = v[..160] + "...";
     return J(v);
@@ -257,7 +249,7 @@ string[] childArgs = new string[args.Length - ai - 1];
 for (int i = ai + 1; i < args.Length; i++)
     childArgs[i - ai - 1] = args[i].Replace("$RUNNER_PID", selfPid.ToString()).Replace("$HOST_PID", hostPid);
 
-string launchError = null;
+string? launchError = null;
 int childPid = 0;
 bool childVisibleWhileRunning = false;
 int childExit = -1;
