@@ -1,0 +1,87 @@
+// GP-3 execution-provider SPI: the smallest boundary that negotiates,
+// prepares, launches, terminates, and disposes an execution domain.
+// Handles are opaque: no PIDs, handles, cgroup paths, PGIDs, or labels
+// cross this contract. Providers own all OS mechanics.
+namespace Gagamba.Execution;
+
+/// <summary>Requested guarantees for one activity.</summary>
+public sealed record ExecutionRequirements(
+    IReadOnlyList<ExecutionRequirement> Required,
+    IReadOnlyList<ExecutionRequirement>? Preferred = null);
+
+/// <summary>What to run inside a prepared domain.</summary>
+public sealed record ProcessStartSpec(
+    string Executable,
+    string Arguments,
+    string WorkingDirectory,
+    IReadOnlyDictionary<string, string> Environment)
+{
+    public static ProcessStartSpec Simple(
+        string executable, string arguments = "", string workingDirectory = "",
+        IReadOnlyDictionary<string, string>? environment = null) =>
+        new(executable, arguments, workingDirectory,
+            environment ?? new Dictionary<string, string>());
+}
+
+/// <summary>
+/// Opaque preparation: proves negotiation happened with THIS provider.
+/// The token lets the provider recognize its own preparations; callers
+/// cannot read anything from it.
+/// </summary>
+public sealed record PreparedExecution(
+    string Provider,
+    Guid PreparationId,
+    IReadOnlyList<string> Met);
+
+/// <summary>
+/// Opaque running execution. No process IDs, no native handles.
+/// Root exit does not invalidate it while descendants remain owned.
+/// </summary>
+public sealed record ExecutionHandle(
+    string Provider,
+    Guid ExecutionId);
+
+/// <summary>Preparation outcome: usable domain or classified refusal.</summary>
+public abstract record PrepareResult
+{
+    private PrepareResult() { }
+    public sealed record Accepted(PreparedExecution Prepared) : PrepareResult;
+    public sealed record Rejected(IReadOnlyList<string> Reasons) : PrepareResult;
+}
+
+/// <summary>Launch outcome: running handle or classified refusal.</summary>
+public abstract record LaunchResult
+{
+    private LaunchResult() { }
+    public sealed record Started(ExecutionHandle Handle) : LaunchResult;
+    public sealed record Failed(IReadOnlyList<string> Reasons) : LaunchResult;
+}
+
+/// <summary>Termination outcome. Uses the domain primitive, never PID lists.</summary>
+public abstract record TerminateResult
+{
+    private TerminateResult() { }
+    public sealed record Terminated(ExecutionHandle Handle) : TerminateResult;
+    public sealed record Failed(IReadOnlyList<string> Reasons) : TerminateResult;
+}
+
+/// <summary>
+/// Minimal provider boundary: negotiation → preparation → launch →
+/// lifecycle control → disposal. Providers must throw
+/// <see cref="ObjectDisposedException"/> once disposed.
+/// </summary>
+public interface IExecutionProvider : IAsyncDisposable
+{
+    /// <summary>What this platform guarantees (the GP-2 matrix row).</summary>
+    PlatformCapabilities Describe();
+
+    /// <summary>Negotiate requirements; fail closed with reasons.</summary>
+    PrepareResult Prepare(ExecutionRequirements requirements);
+
+    /// <summary>Launch a process as the domain root. Suspend-assign-resume
+    /// semantics where the platform supports them; never an escape window.</summary>
+    LaunchResult Launch(PreparedExecution prepared, ProcessStartSpec process);
+
+    /// <summary>Terminate the whole domain via its own primitive.</summary>
+    TerminateResult Terminate(ExecutionHandle execution);
+}

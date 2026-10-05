@@ -60,7 +60,23 @@ accepts on Linux and macOS on visibly different grounds.
 
 - **No boolean called `IsSandboxed`** (mechanically enforced by
   contract tests): a workload can be well-owned without a security
-  boundary and vice versa; one bit would lie about both.
-- Matrix cells cite evidence; a cell without evidence isAbsent.
+  boundary and vice versa; one bit would lie about both. The rule bans
+  misleading sandbox booleans, not the word (`SandboxPolicy` stays legal).
+- Matrix cells cite evidence; a cell without evidence is Absent.
 - Partial grants name their bound in the evidence string.
 - Constructed grants name their composition in the evidence string.
+
+## Provider SPI (`IExecutionProvider`)
+
+Negotiation → preparation → launch → lifecycle control, then async
+disposal. An activity declares `ExecutionRequirements`
+(required + preferred); `Prepare` returns an opaque `PreparedExecution`
+or classified refusal. `Launch` takes the preparation plus a
+`ProcessStartSpec` (executable, arguments, working directory,
+environment — itself a granted resource, never inherited) and returns an
+opaque `ExecutionHandle`. `Terminate` uses the domain primitive, never
+PID lists. Handles expose no PIDs, native handles, cgroup paths, PGIDs,
+or job objects (mechanically enforced). Providers throw
+`ObjectDisposedException` once disposed; root exit never invalidates a
+handle while descendants remain. Only preparations a provider issued
+itself are honored.

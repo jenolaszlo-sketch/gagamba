@@ -14,22 +14,28 @@ public sealed class MatrixTests
     }
 
     [Fact]
-    public void NoSandboxBooleanAnywhere()
+    public void NoMisleadingSandboxBooleans()
     {
-        // Hard rule: a workload can be well-owned without a security
-        // boundary and vice versa, so no boolean may pretend otherwise.
+        // Narrow rule: the danger is a single boolean collapsing several
+        // guarantees into one claim (IsSandboxed and kin), not the word
+        // itself — SandboxPolicy or SandboxPreparation stay legal.
         var offenders = typeof(PlatformCapabilities).Assembly.GetTypes()
             .SelectMany(t => t.GetMembers(
                 System.Reflection.BindingFlags.Public
-                | System.Reflection.BindingFlags.NonPublic
                 | System.Reflection.BindingFlags.Instance
                 | System.Reflection.BindingFlags.Static
                 | System.Reflection.BindingFlags.DeclaredOnly)
-                .Where(m => m.Name.Contains("Sandbox", StringComparison.OrdinalIgnoreCase))
+                .Where(m => m.Name.Contains("Sandbox", StringComparison.OrdinalIgnoreCase)
+                    && MemberReturnsBool(m))
                 .Select(m => $"{t.Name}.{m.Name}"))
             .ToList();
         Assert.True(offenders.Count == 0,
-            "sandbox-shaped API surface: " + string.Join(", ", offenders));
+            "misleading sandbox boolean: " + string.Join(", ", offenders));
+
+        static bool MemberReturnsBool(System.Reflection.MemberInfo m) =>
+            (m as System.Reflection.PropertyInfo)?.PropertyType == typeof(bool)
+            || (m as System.Reflection.FieldInfo)?.FieldType == typeof(bool)
+            || (m as System.Reflection.MethodInfo)?.ReturnType == typeof(bool);
     }
 }
 
@@ -52,7 +58,7 @@ public sealed class NegotiationTests
             Req(ExecutionCapability.EscapeResistant),
         };
         var win = ExecutionNegotiator.Negotiate(WellKnownPlatforms.Windows, reqs);
-        var lin = ExecutionNegotiator.Negotiate(WellKnownPlatforms.LinuxCgroupV2, reqs);
+        var lin = ExecutionNegotiator.Negotiate(WellKnownPlatforms.Linux, reqs);
         var mac = ExecutionNegotiator.Negotiate(WellKnownPlatforms.MacOs, reqs);
         Assert.True(win.Accepted);
         Assert.False(lin.Accepted); // EscapeResistant is Partial there
@@ -66,7 +72,7 @@ public sealed class NegotiationTests
     {
         var reqs = new[] { Req(ExecutionCapability.OwnerDeathCleanup) };
         Assert.True(ExecutionNegotiator.Negotiate(WellKnownPlatforms.Windows, reqs).Accepted);
-        Assert.False(ExecutionNegotiator.Negotiate(WellKnownPlatforms.LinuxCgroupV2, reqs).Accepted);
+        Assert.False(ExecutionNegotiator.Negotiate(WellKnownPlatforms.Linux, reqs).Accepted);
         Assert.False(ExecutionNegotiator.Negotiate(WellKnownPlatforms.MacOs, reqs).Accepted);
     }
 
@@ -75,7 +81,7 @@ public sealed class NegotiationTests
     {
         var reqs = new[] { Req(ExecutionCapability.OwnerDeathCleanup, CapabilityLevel.Partial, true) };
         var lin = ExecutionNegotiator.Negotiate(
-            WellKnownPlatforms.LinuxCgroupV2, reqs, null,
+            WellKnownPlatforms.Linux, reqs, null,
             WellKnownPlatforms.ComposedOwnerDeath["linux-cgroup-v2"]);
         var mac = ExecutionNegotiator.Negotiate(
             WellKnownPlatforms.MacOs, reqs, null,

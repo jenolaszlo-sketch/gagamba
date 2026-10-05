@@ -3,8 +3,14 @@
 // Levels follow the weakest demonstrated behavior, never the hoped-for one.
 namespace Gagamba.Execution;
 
-public static class WellKnownPlatforms
-{
+    /// <summary>
+    /// Well-known platform profiles. Member names stay neutral on purpose
+    /// (no Job/Cgroup/Launchd concepts in the contract surface); the
+    /// Platform STRINGS below are evidence pointers ("which backend row"),
+    /// not mechanism exposure. See the opacity test.
+    /// </summary>
+    public static class WellKnownPlatforms
+    {
     private static CapabilityGrant FullNative(string evidence) =>
         new(CapabilityLevel.Full, GuaranteeKind.Native, evidence);
 
@@ -37,7 +43,7 @@ public static class WellKnownPlatforms
         });
 
     /// <summary>Linux cgroup v2 (GL-1A: L1-L14).</summary>
-    public static PlatformCapabilities LinuxCgroupV2 { get; } = new(
+    public static PlatformCapabilities Linux { get; } = new(
         "linux-cgroup-v2",
         new Dictionary<ExecutionCapability, CapabilityGrant>
         {
@@ -75,7 +81,7 @@ public static class WellKnownPlatforms
         });
 
     public static IReadOnlyList<PlatformCapabilities> All { get; } =
-        new[] { Windows, LinuxCgroupV2, MacOs };
+        new[] { Windows, Linux, MacOs };
 
     /// <summary>
     /// Composed guarantees Gagamba itself can provide, keyed by platform
