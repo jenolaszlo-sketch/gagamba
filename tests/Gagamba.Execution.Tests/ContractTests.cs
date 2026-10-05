@@ -20,6 +20,7 @@ public sealed class MatrixTests
         // guarantees into one claim (IsSandboxed and kin), not the word
         // itself — SandboxPolicy or SandboxPreparation stay legal.
         var offenders = typeof(PlatformCapabilities).Assembly.GetTypes()
+            .Where(t => t.IsPublic || t.IsNestedPublic)
             .SelectMany(t => t.GetMembers(
                 System.Reflection.BindingFlags.Public
                 | System.Reflection.BindingFlags.Instance

@@ -166,8 +166,11 @@ public sealed class ProviderContractTests
         // handle concept itself (ExecutionHandle) is allowed.
         bool bannedName(string n) =>
             bannedWords.Any(w => n.Contains(w, StringComparison.OrdinalIgnoreCase));
+        // Public contract surface only: internal helpers necessarily use
+        // native handles; the rule is that none cross into public view.
         var offenders = new List<string>();
-        foreach (var t in typeof(PlatformCapabilities).Assembly.GetTypes())
+        foreach (var t in typeof(PlatformCapabilities).Assembly.GetTypes()
+                     .Where(t => t.IsPublic || t.IsNestedPublic))
         {
             foreach (var m in t.GetMembers(
                 System.Reflection.BindingFlags.Public
