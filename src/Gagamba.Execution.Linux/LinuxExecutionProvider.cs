@@ -129,6 +129,51 @@ public sealed class LinuxExecutionProvider : IExecutionProvider
         return new TerminateResult.Terminated(execution);
     }
 
+    public async ValueTask<CompletionResult> WaitForCompletionAsync(ExecutionHandle execution,
+        CancellationToken cancellationToken = default)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        ExecutionRecord? rec;
+        lock (_gate)
+        {
+            if (execution.Provider != WellKnownPlatforms.Linux.Platform
+                || !_executions.TryGetValue(execution.ExecutionId, out rec))
+                return new CompletionResult.Failed(
+                    new[] { "unknown execution: not issued by this provider" });
+        }
+        // Wait for the root to terminate, reaping it and capturing its status.
+        int status = 0;
+        bool reaped = false;
+        while (true)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            int rc = NativeMethods.waitpid(rec.RootPid, out status, NativeMethods.WNOHANG);
+            if (rc == rec.RootPid) { reaped = true; break; }
+            if (rc < 0) break; // ECHILD: already reaped (for example by Terminate)
+            await Task.Delay(50, cancellationToken).ConfigureAwait(false);
+        }
+        // Domain terminal state: the execution cgroup must be unpopulated. A
+        // descendant that outlives the root keeps this pending.
+        while (!rec.Group.IsEmpty())
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            await Task.Delay(50, cancellationToken).ConfigureAwait(false);
+        }
+        bool terminated;
+        lock (_gate)
+        {
+            terminated = _executions.TryGetValue(execution.ExecutionId, out var cur) && cur.Terminated;
+            _executions.Remove(execution.ExecutionId); // completion consumes the handle
+        }
+        try { rec.Group.Dispose(); } catch { }
+        if (terminated) return new CompletionResult.Terminated();
+        if (!reaped) return new CompletionResult.Failed(
+            new[] { "root already reaped before completion was observed" });
+        return (status & 0x7f) == 0
+            ? new CompletionResult.NaturalExit((status >> 8) & 0xff)
+            : new CompletionResult.NaturalExit(128 + (status & 0x7f)); // signal death (shell convention)
+    }
+
     public ValueTask DisposeAsync()
     {
         List<ExecutionRecord> owned;

@@ -16,7 +16,9 @@ public sealed class WindowsExecutionProvider : IExecutionProvider
     private readonly object _gate = new();
     private bool _disposed;
     private readonly Dictionary<Guid, OwnedJob> _preparations = new();
-    private readonly Dictionary<Guid, OwnedJob> _executions = new();
+    private readonly Dictionary<Guid, ExecutionRecord> _executions = new();
+
+    private sealed record ExecutionRecord(OwnedJob Job, IntPtr ProcessHandle, bool Terminated);
 
     public PlatformCapabilities Describe() => WellKnownPlatforms.Windows;
 
@@ -90,40 +92,88 @@ public sealed class WindowsExecutionProvider : IExecutionProvider
     public TerminateResult Terminate(ExecutionHandle execution)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        OwnedJob? job;
+        ExecutionRecord? rec;
         lock (_gate)
         {
             if (execution.Provider != WellKnownPlatforms.Windows.Platform
-                || !_executions.TryGetValue(execution.ExecutionId, out job))
+                || !_executions.TryGetValue(execution.ExecutionId, out rec))
                 return new TerminateResult.Failed(
                     new[] { "unknown execution: not issued by this provider" });
         }
         // Idempotent: terminating twice (or terminating the already-dead)
         // succeeds. Cleanup races must not become errors.
-        var (ok, err) = job.Terminate(TerminateExitCode);
-        if (!ok && !IsGone(job))
+        var (ok, err) = rec.Job.Terminate(TerminateExitCode);
+        if (!ok && !rec.Job.IsClosed)
             return new TerminateResult.Failed(new[] { err });
+        lock (_gate)
+        {
+            if (_executions.TryGetValue(execution.ExecutionId, out var cur))
+                _executions[execution.ExecutionId] = cur with { Terminated = true };
+        }
         return new TerminateResult.Terminated(execution);
+    }
+
+    public async ValueTask<CompletionResult> WaitForCompletionAsync(ExecutionHandle execution,
+        CancellationToken cancellationToken = default)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        ExecutionRecord? rec;
+        lock (_gate)
+        {
+            if (execution.Provider != WellKnownPlatforms.Windows.Platform
+                || !_executions.TryGetValue(execution.ExecutionId, out rec))
+                return new CompletionResult.Failed(
+                    new[] { "unknown execution: not issued by this provider" });
+        }
+        // Wait for the root to exit. Bounded waits keep the token responsive;
+        // cancellation cancels the wait only and never terminates the domain.
+        while (true)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (NativeMethods.WaitForSingleObject(rec.ProcessHandle, 200) == NativeMethods.WAIT_OBJECT_0)
+                break;
+        }
+        uint exitCode = 0;
+        NativeMethods.GetExitCodeProcess(rec.ProcessHandle, out exitCode);
+        // Domain terminal state: the job must have no active processes. A child
+        // that outlives the root keeps this pending (the domain owns it).
+        while (!(rec.Job.TryActiveProcessCount(out uint active) && active == 0))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            await Task.Delay(50, cancellationToken).ConfigureAwait(false);
+        }
+        bool terminated;
+        lock (_gate)
+        {
+            terminated = _executions.TryGetValue(execution.ExecutionId, out var cur) && cur.Terminated;
+            _executions.Remove(execution.ExecutionId); // completion consumes the handle
+        }
+        CloseQuiet(rec.ProcessHandle);
+        try { rec.Job.Dispose(); } catch { }
+        return terminated
+            ? new CompletionResult.Terminated()
+            : new CompletionResult.NaturalExit(unchecked((int)exitCode));
     }
 
     public ValueTask DisposeAsync()
     {
-        List<OwnedJob> owned;
+        List<ExecutionRecord> owned;
         List<OwnedJob> prepared;
         lock (_gate)
         {
             if (_disposed) return ValueTask.CompletedTask;
             _disposed = true;
-            owned = new List<OwnedJob>(_executions.Values);
+            owned = new List<ExecutionRecord>(_executions.Values);
             _executions.Clear();
             prepared = new List<OwnedJob>(_preparations.Values);
             _preparations.Clear();
         }
         // Closing each job fires KILL_ON_JOB_CLOSE: the kernel tears down
         // every remaining tree. No TerminateJobObject needed on this path.
-        foreach (var job in owned)
+        foreach (var rec in owned)
         {
-            try { job.Dispose(); } catch { }
+            try { rec.Job.Dispose(); } catch { }
+            CloseQuiet(rec.ProcessHandle);
         }
         // Unlaunched preparations hold a job handle; close it too.
         foreach (var job in prepared)
@@ -184,9 +234,10 @@ public sealed class WindowsExecutionProvider : IExecutionProvider
                 $"resume fault err=0x{err:X}; target terminated, dead={dead}" });
         }
         CloseQuiet(pi.hThread);
-        CloseQuiet(pi.hProcess);
+        // Keep the process handle: WaitForCompletionAsync needs it to observe
+        // the root's exit and exit code. It is closed at completion/disposal.
         var handle = new ExecutionHandle(WellKnownPlatforms.Windows.Platform, Guid.NewGuid());
-        lock (_gate) _executions[handle.ExecutionId] = job;
+        lock (_gate) _executions[handle.ExecutionId] = new ExecutionRecord(job, pi.hProcess, false);
         return new LaunchResult.Started(handle);
     }
 
@@ -210,8 +261,6 @@ public sealed class WindowsExecutionProvider : IExecutionProvider
         error = Marshal.GetLastWin32Error();
         return false;
     }
-
-    private static bool IsGone(OwnedJob job) => job.IsClosed;
 
     private static void CloseQuiet(IntPtr h)
     {

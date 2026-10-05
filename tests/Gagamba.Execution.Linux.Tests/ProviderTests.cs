@@ -321,6 +321,46 @@ public sealed class ProviderTests : IAsyncLifetime
             new ProcessStartSpec("/bin/true", "", _ws, new Dictionary<string, string>())));
     }
 
+    [Fact]
+    public async Task Completion_ReportsNaturalRootExitCode()
+    {
+        if (!OperatingSystem.IsLinux() || !Usable()) return;
+        var h = MustLaunch("/bin/sh", "-c \"exit 17\"");
+        var completion = await _provider.WaitForCompletionAsync(h, TestContext.Current.CancellationToken);
+        Assert.Equal(17, Assert.IsType<CompletionResult.NaturalExit>(completion).RootExitCode);
+    }
+
+    [Fact]
+    public async Task Completion_TerminateWhileRunningReturnsTerminated()
+    {
+        if (!OperatingSystem.IsLinux() || !Usable()) return;
+        var h = MustLaunch("/bin/sh", "-c \"sleep 30\"");
+        Assert.IsType<TerminateResult.Terminated>(_provider.Terminate(h));
+        Assert.IsType<CompletionResult.Terminated>(
+            await _provider.WaitForCompletionAsync(h, TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
+    public async Task Completion_WaitsForTheDomainNotJustTheRoot()
+    {
+        if (!OperatingSystem.IsLinux() || !Usable()) return;
+        // Root exits; a same-cgroup child keeps the domain populated.
+        var h = MustLaunch("/bin/sh", "-c \"sleep 30 & exit 0\"");
+        var wait = _provider.WaitForCompletionAsync(h, TestContext.Current.CancellationToken).AsTask();
+        var finished = await Task.WhenAny(wait, Task.Delay(1500, TestContext.Current.CancellationToken));
+        Assert.NotSame(wait, finished); // root gone, child alive -> still pending
+        Assert.IsType<TerminateResult.Terminated>(_provider.Terminate(h));
+        Assert.IsType<CompletionResult.Terminated>(await wait);
+    }
+
+    [Fact]
+    public async Task Completion_ForeignHandleFailsClosed()
+    {
+        if (!OperatingSystem.IsLinux()) return;
+        Assert.IsType<CompletionResult.Failed>(await _provider.WaitForCompletionAsync(
+            new ExecutionHandle("other", Guid.NewGuid()), TestContext.Current.CancellationToken));
+    }
+
     private PreparedExecution MustPrepareSimple()
     {
         var prep = _provider.Prepare(new ExecutionRequirements(Array.Empty<ExecutionRequirement>()));

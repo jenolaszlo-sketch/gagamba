@@ -85,7 +85,7 @@ public sealed class ConformanceTests : IClassFixture<ConformanceFixture>
     private static readonly string[] Behavioral =
     {
         "single-use", "working-directory", "no-ambient-inherit",
-        "unit-termination", "root-exit", "dispose-cleanup",
+        "unit-termination", "root-exit", "dispose-cleanup", "completion",
     };
 
     private readonly ConformanceFixture _f;

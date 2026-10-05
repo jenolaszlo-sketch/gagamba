@@ -402,6 +402,47 @@ public sealed class ProviderTests : IAsyncLifetime
         Assert.True(offenders.Count == 0, "leaked native identity: " + string.Join(", ", offenders));
     }
 
+    [Fact]
+    public async Task Completion_ReportsNaturalRootExitCode()
+    {
+        if (!OperatingSystem.IsMacOS() || !Usable()) return;
+        var h = MustLaunch("/bin/sh", "-c \"exit 17\"");
+        var completion = await _provider.WaitForCompletionAsync(h, TestContext.Current.CancellationToken);
+        Assert.Equal(17, Assert.IsType<CompletionResult.NaturalExit>(completion).RootExitCode);
+    }
+
+    [Fact]
+    public async Task Completion_TerminateWhileRunningReturnsTerminated()
+    {
+        if (!OperatingSystem.IsMacOS() || !Usable()) return;
+        var h = MustLaunch("/bin/sh", "-c \"sleep 30\"");
+        Assert.IsType<TerminateResult.Terminated>(_provider.Terminate(h));
+        Assert.IsType<CompletionResult.Terminated>(
+            await _provider.WaitForCompletionAsync(h, TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
+    public async Task Completion_CompletesAfterLaunchdCleansSameProcessGroupChild()
+    {
+        if (!OperatingSystem.IsMacOS() || !Usable()) return;
+        // Root exits immediately; launchd cleans the same-PG remainder, so the
+        // native domain is terminal (an escaped setsid() descendant would be
+        // outside the native domain and irrelevant). macOS advertises Partial.
+        var h = MustLaunch("/bin/sh", "-c \"sleep 30 & exit 0\"");
+        var wait = _provider.WaitForCompletionAsync(h, TestContext.Current.CancellationToken).AsTask();
+        var finished = await Task.WhenAny(wait, Task.Delay(15000, TestContext.Current.CancellationToken));
+        if (!ReferenceEquals(wait, finished)) { _provider.Terminate(h); Assert.Fail("completion did not arrive"); }
+        Assert.IsType<CompletionResult.NaturalExit>(await wait);
+    }
+
+    [Fact]
+    public async Task Completion_ForeignHandleFailsClosed()
+    {
+        if (!OperatingSystem.IsMacOS()) return;
+        Assert.IsType<CompletionResult.Failed>(await _provider.WaitForCompletionAsync(
+            new ExecutionHandle("other", Guid.NewGuid()), TestContext.Current.CancellationToken));
+    }
+
     private PreparedExecution MustPrepareSimple()
     {
         var prep = _provider.Prepare(new ExecutionRequirements(Array.Empty<ExecutionRequirement>()));

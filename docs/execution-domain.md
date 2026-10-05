@@ -115,3 +115,21 @@ single-use, safe before launch, idempotent, releases resources allocated by
 allocate the domain at `Prepare` and reclaim it either at `Launch` or at
 `Discard`. This is not speculative growth; it is the missing state the
 consumer proved. `launch → terminate → dispose` is unchanged.
+
+**Amendment 2 — `WaitForCompletionAsync(ExecutionHandle, CancellationToken)`**
+(second exception, same doctrine: the workflow consumer HZ-1 proved a missing
+state). The SPI could launch, discard and terminate but never observe a domain
+reaching its terminal state, so a durable workflow could not await a process
+nor distinguish natural exit from termination. Completion means the root
+invocation terminated **and** the provider-controlled domain is empty — not
+merely that the root PID exited, because a domain deliberately outlives its
+root. The result is `NaturalExit(RootExitCode)` (any code, including non-zero,
+is a natural exit), `Terminated` (no portable exit code), or `Failed`
+(foreign/stale handle). The token cancels the wait only and never terminates
+the execution; callers terminate explicitly via `Terminate`. Completion
+consumes the handle's provider resources (like `Discard`), so it cannot leak.
+Per-provider terminal state: Windows waits for the root exit code and the Job
+reaching zero active processes; Linux reaps the root and requires the
+execution cgroup to become unpopulated; macOS observes launchd job termination
+and its recorded exit status (an escaped `setsid()` descendant is outside the
+native domain and does not block completion).

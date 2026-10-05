@@ -106,6 +106,15 @@ public sealed class ExecutionRuntime : IExecutionProvider
         return _provider.Discard(preparation);
     }
 
+    public ValueTask<CompletionResult> WaitForCompletionAsync(ExecutionHandle execution,
+        CancellationToken cancellationToken = default)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (_provider is null)
+            return ValueTask.FromResult<CompletionResult>(new CompletionResult.Failed(new[] { _refusal }));
+        return _provider.WaitForCompletionAsync(execution, cancellationToken);
+    }
+
     public ValueTask DisposeAsync()
     {
         lock (_gate)

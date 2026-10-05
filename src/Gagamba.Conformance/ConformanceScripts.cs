@@ -13,6 +13,7 @@ internal static class ConformanceScripts
         "  cwd) pwd > cwd.tmp && mv cwd.tmp cwd.txt ;;\n" +
         "  env) env > \"$dir/env.tmp\" && mv \"$dir/env.tmp\" \"$dir/env.txt\" ;;\n" +
         "  hold) while true; do beat \"$name\"; sleep 1; done ;;\n" +
+        "  exit17) exit 17 ;;\n" +
         "  tree) sh \"$0\" hold \"$dir\" child & while true; do beat root; sleep 1; done ;;\n" +
         "  exitroot) sh \"$0\" hold \"$dir\" child & sleep 1 ;;\n" +
         "esac\n";
@@ -61,6 +62,7 @@ internal static class ConformanceScripts
         "  'env' { Get-ChildItem Env: | ForEach-Object { '{0}={1}' -f $_.Name, $_.Value } | " +
         "Set-Content (Join-Path $Dir 'env.tmp'); Move-Item -Force (Join-Path $Dir 'env.tmp') (Join-Path $Dir 'env.txt') }\n" +
         "  'hold' { while ($true) { Beat $Name; Start-Sleep -Seconds 1 } }\n" +
+        "  'exit17' { exit 17 }\n" +
         "  'tree' { Spawn 'hold' 'child'; while ($true) { Beat 'root'; Start-Sleep -Seconds 1 } }\n" +
         "  'exitroot' { Spawn 'hold' 'child'; Start-Sleep -Seconds 1 }\n" +
         "}\n";

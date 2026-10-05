@@ -61,6 +61,23 @@ internal sealed class OwnedCgroup : IDisposable
         return out_;
     }
 
+    /// <summary>True when the cgroup has no processes (the domain reached its
+    /// terminal state). Uses cgroup.events populated; a missing cgroup counts
+    /// as empty, an unreadable one does not.</summary>
+    public bool IsEmpty()
+    {
+        try
+        {
+            string events = System.IO.Path.Combine(Path, "cgroup.events");
+            if (!File.Exists(events)) return true; // cgroup removed
+            foreach (string line in File.ReadAllLines(events))
+                if (line.StartsWith("populated ", StringComparison.Ordinal))
+                    return line.TrimEnd().EndsWith(" 0", StringComparison.Ordinal);
+            return false;
+        }
+        catch { return false; }
+    }
+
     public void Dispose()
     {
         if (_disposed) return;

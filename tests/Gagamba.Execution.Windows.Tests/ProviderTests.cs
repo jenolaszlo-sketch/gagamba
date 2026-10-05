@@ -296,6 +296,52 @@ public sealed class ProviderTreeTests : IAsyncLifetime
         }
     }
 
+    [Fact]
+    public async Task Completion_ReportsNaturalRootExitCode()
+    {
+        if (!OperatingSystem.IsWindows()) return;
+        var prep = MustPrepare();
+        var started = Assert.IsType<LaunchResult.Started>(_provider.Launch(prep,
+            new ProcessStartSpec(CmdExe, "/d /c exit 17", _ws, TestEnv())));
+        var completion = await _provider.WaitForCompletionAsync(started.Handle, TestContext.Current.CancellationToken);
+        Assert.Equal(17, Assert.IsType<CompletionResult.NaturalExit>(completion).RootExitCode);
+    }
+
+    [Fact]
+    public async Task Completion_TerminateWhileRunningReturnsTerminated()
+    {
+        if (!OperatingSystem.IsWindows()) return;
+        var prep = MustPrepare();
+        var started = Assert.IsType<LaunchResult.Started>(_provider.Launch(prep,
+            new ProcessStartSpec(CmdExe, "/d /c ping -n 30 127.0.0.1 > NUL", _ws, TestEnv())));
+        Assert.IsType<TerminateResult.Terminated>(_provider.Terminate(started.Handle));
+        Assert.IsType<CompletionResult.Terminated>(
+            await _provider.WaitForCompletionAsync(started.Handle, TestContext.Current.CancellationToken));
+    }
+
+    [Fact]
+    public async Task Completion_WaitsForTheDomainNotJustTheRoot()
+    {
+        if (!OperatingSystem.IsWindows()) return;
+        // exit-root spawns a same-job child (L4.lock) and exits immediately.
+        var started = Assert.IsType<LaunchResult.Started>(LaunchPs1("exit-root.ps1", $"-Dir \"{_ws}\""));
+        Assert.True(await PollAsync(() => LockHeld(Path.Combine(_ws, "L4.lock")), 15000),
+            "child never materialized");
+        var wait = _provider.WaitForCompletionAsync(started.Handle, TestContext.Current.CancellationToken).AsTask();
+        var finished = await Task.WhenAny(wait, Task.Delay(1500, TestContext.Current.CancellationToken));
+        Assert.NotSame(wait, finished); // root gone, child alive -> still pending
+        Assert.IsType<TerminateResult.Terminated>(_provider.Terminate(started.Handle));
+        Assert.IsType<CompletionResult.Terminated>(await wait);
+    }
+
+    [Fact]
+    public async Task Completion_ForeignHandleFailsClosed()
+    {
+        if (!OperatingSystem.IsWindows()) return;
+        Assert.IsType<CompletionResult.Failed>(
+            await _provider.WaitForCompletionAsync(new ExecutionHandle("other", Guid.NewGuid()), TestContext.Current.CancellationToken));
+    }
+
     private static (OwnedJob? Job, string Error) OwnedJobCreate() =>
         OwnedJob.Create();
 }

@@ -116,6 +116,47 @@ public sealed class MacOsExecutionProvider : IExecutionProvider
         return new TerminateResult.Terminated(execution);
     }
 
+    public async ValueTask<CompletionResult> WaitForCompletionAsync(ExecutionHandle execution,
+        CancellationToken cancellationToken = default)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        ExecutionRecord? rec;
+        lock (_gate)
+        {
+            if (execution.Provider != WellKnownPlatforms.MacOs.Platform
+                || !_executions.TryGetValue(execution.ExecutionId, out rec))
+                return new CompletionResult.Failed(
+                    new[] { "unknown execution: not issued by this provider" });
+        }
+        // Observe launchd job termination and its recorded exit status. An
+        // escaped setsid() descendant is outside the launchd-managed domain
+        // and does not block completion (macOS advertises only Partial).
+        int? exitCode = null;
+        while (true)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            bool terminated;
+            lock (_gate) terminated = _executions.TryGetValue(execution.ExecutionId, out var cur) && cur.Terminated;
+            if (terminated) break;
+            var (rc, output) = Launchd.Print(rec.Job.ServiceTarget);
+            var state = Launchd.ParseState(output, rc);
+            if (state.ExitCode is int code) exitCode = code;
+            if (!state.Running) break; // terminal: exited or no longer loaded
+            await Task.Delay(200, cancellationToken).ConfigureAwait(false);
+        }
+        bool wasTerminated;
+        lock (_gate)
+        {
+            wasTerminated = _executions.TryGetValue(execution.ExecutionId, out var cur) && cur.Terminated;
+            _executions.Remove(execution.ExecutionId); // completion consumes the handle
+        }
+        try { rec.Job.Dispose(); } catch { } // bootout + delete the private directory
+        if (wasTerminated) return new CompletionResult.Terminated();
+        return exitCode is int finalCode
+            ? new CompletionResult.NaturalExit(finalCode)
+            : new CompletionResult.Failed(new[] { "launchd exit status unavailable" });
+    }
+
     public ValueTask DisposeAsync()
     {
         List<ExecutionRecord> owned;

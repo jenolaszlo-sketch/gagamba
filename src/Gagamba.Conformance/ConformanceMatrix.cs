@@ -38,6 +38,7 @@ public static class ConformanceMatrix
         "unit-termination",
         "root-exit",
         "dispose-cleanup",
+        "completion",
         "setsid-escape",
     };
 

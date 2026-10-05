@@ -54,6 +54,21 @@ internal sealed class OwnedJob : IDisposable
         return (true, "");
     }
 
+    /// <summary>Number of processes still assigned to the job (active).
+    /// False if the job handle is closed or the query failed.</summary>
+    public bool TryActiveProcessCount(out uint active)
+    {
+        active = 0;
+        if (_disposed || _job == IntPtr.Zero) return false;
+        var info = default(NativeMethods.JobObjectBasicAccountingInformation);
+        if (!NativeMethods.QueryInformationJobObject(_job,
+                NativeMethods.JobObjectBasicAccountingInformationClass, ref info,
+                (uint)Marshal.SizeOf<NativeMethods.JobObjectBasicAccountingInformation>(), IntPtr.Zero))
+            return false;
+        active = info.ActiveProcesses;
+        return true;
+    }
+
     public void Dispose()
     {
         if (_disposed) return;

@@ -29,6 +29,7 @@ loudly instead of silently redefining its guarantee.
 | Unit termination | PASS | PASS | PASS |
 | Root-exit survivor termination | PASS | PASS | PASS |
 | Dispose cleanup | PASS | PASS | PASS |
+| Completion (natural exit / terminate) | PASS | PASS | PASS |
 | `setsid` escape | resistant | resistant* | observed |
 
 Capability levels behind the behavioral rows:
@@ -44,6 +45,16 @@ Capability levels behind the behavioral rows:
 \* Linux is honestly **Partial**: `setsid`/session escape stays inside the
 cgroup (so the escapee is still owned and dies), but broader
 `cgroup.procs`-migration resistance is untested and not claimed.
+
+Completion characterization (Amendment 2): "complete" means the root has
+terminated **and** the provider-owned domain is empty, so a domain that
+outlives its root does not falsely complete. The portable leg checks a natural
+exit code (root exits 17 ⇒ all report 17), termination while running
+(⇒ `Terminated`), and a foreign handle (fails closed). The platform difference
+is deliberate: root exits while a same-domain child remains ⇒ Windows/Linux
+stay pending (the domain still owns the child); macOS launchd cleans the
+same-PG remainder, so it completes (an escaped `setsid()` descendant is outside
+the native domain and irrelevant, matching macOS `Partial`).
 
 The `setsid` escape row is the one intentional cross-platform difference.
 The correct macOS result is **observed**, not killed: the same-process-group

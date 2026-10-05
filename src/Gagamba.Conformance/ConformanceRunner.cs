@@ -32,6 +32,7 @@ public static class ConformanceRunner
             await UnitTermination(factory, options),
             await RootExit(factory, options),
             await DisposeCleanup(factory, options),
+            await Completion(factory, options),
             await SetsidEscape(factory, options, known ? expected : null),
         };
         return new ConformanceReport(caps.Platform, legs);
@@ -241,6 +242,45 @@ public static class ConformanceRunner
         return frozen
             ? new("dispose-cleanup", ConformanceOutcome.Passed, "live tree frozen by provider disposal")
             : new("dispose-cleanup", ConformanceOutcome.Failed, "tree survived provider disposal");
+    }
+
+    private static async Task<ConformanceLeg> Completion(Func<IExecutionProvider> factory, ConformanceOptions o)
+    {
+        // Natural root exit code is observed.
+        await using (var p = factory())
+        {
+            if (!TryPrepare(p, out var prep, out string why))
+                return Skip("completion", why);
+            var launched = LaunchTarget(p, prep!, o.Workspace, "exit17", "hb", Marker, "1");
+            if (launched is not LaunchResult.Started natural)
+                return new("completion", ConformanceOutcome.Failed, "launch refused: " + Reasons(launched));
+            var result = await p.WaitForCompletionAsync(natural.Handle, CancellationToken.None);
+            if (result is not CompletionResult.NaturalExit { RootExitCode: 17 })
+                return new("completion", ConformanceOutcome.Failed, $"natural exit not observed: {result.GetType().Name}");
+        }
+        // Terminate while running completes as Terminated.
+        await using (var p = factory())
+        {
+            if (!TryPrepare(p, out var prep, out string why))
+                return Skip("completion", why);
+            var launched = LaunchTarget(p, prep!, o.Workspace, "hold", "hb", Marker, "1");
+            if (launched is not LaunchResult.Started running)
+                return new("completion", ConformanceOutcome.Failed, "launch refused: " + Reasons(launched));
+            p.Terminate(running.Handle);
+            var result = await p.WaitForCompletionAsync(running.Handle, CancellationToken.None);
+            if (result is not CompletionResult.Terminated)
+                return new("completion", ConformanceOutcome.Failed, $"terminate completion: {result.GetType().Name}");
+        }
+        // Foreign handle fails closed.
+        {
+            await using var p = factory();
+            var result = await p.WaitForCompletionAsync(
+                new ExecutionHandle("other", Guid.NewGuid()), CancellationToken.None);
+            if (result is not CompletionResult.Failed)
+                return new("completion", ConformanceOutcome.Failed, "foreign handle did not fail closed");
+        }
+        return new("completion", ConformanceOutcome.Passed,
+            "natural exit 17 observed, terminate->Terminated, foreign fail-closed");
     }
 
     private static async Task<ConformanceLeg> SetsidEscape(

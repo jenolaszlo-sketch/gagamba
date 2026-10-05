@@ -70,6 +70,17 @@ internal sealed class FakeProvider : IExecutionProvider
         return new TerminateResult.Terminated(execution);
     }
 
+    public ValueTask<CompletionResult> WaitForCompletionAsync(ExecutionHandle execution,
+        CancellationToken cancellationToken = default)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (execution.Provider != _profile.Platform || !_executions.Contains(execution.ExecutionId))
+            return ValueTask.FromResult<CompletionResult>(
+                new CompletionResult.Failed(new[] { "unknown execution: not issued by this provider" }));
+        _executions.Remove(execution.ExecutionId);
+        return ValueTask.FromResult<CompletionResult>(new CompletionResult.NaturalExit(0));
+    }
+
     public ValueTask DisposeAsync()
     {
         _disposed = true;

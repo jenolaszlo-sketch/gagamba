@@ -83,6 +83,31 @@ internal static class Launchd
         return false;
     }
 
+    /// <summary>Terminal state of a launchd job as reported by `print`.
+    /// Running is true only while the job root is alive; a non-zero print rc
+    /// means the service is no longer loaded (terminal). ExitCode is present
+    /// once launchd records a last exit.</summary>
+    internal readonly record struct JobState(bool Running, int? ExitCode);
+
+    internal static JobState ParseState(string printOutput, int printRc)
+    {
+        bool running = false;
+        int? exitCode = null;
+        foreach (string line in printOutput.Split('\n'))
+        {
+            string t = line.Trim();
+            if (t.StartsWith("state =", StringComparison.Ordinal))
+                running = t.Contains("running", StringComparison.Ordinal);
+            else if (t.Contains("exit code", StringComparison.OrdinalIgnoreCase))
+            {
+                int eq = t.LastIndexOf('=');
+                if (eq >= 0 && int.TryParse(t[(eq + 1)..].Trim(), out int code)) exitCode = code;
+            }
+        }
+        // A non-zero rc means the service is not loaded at all: terminal.
+        return new JobState(printRc == 0 && running, exitCode);
+    }
+
     /// <summary>Split a command line into argv (whitespace, quotes, backslash).</summary>
     internal static string[] SplitArguments(string commandLine)
     {

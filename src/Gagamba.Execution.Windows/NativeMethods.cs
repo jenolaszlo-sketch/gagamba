@@ -13,11 +13,13 @@ internal static class NativeMethods
     // ERROR_INVALID_PARAMETER (measured 0x57), even for byte-perfect blocks.
     public const uint CREATE_UNICODE_ENVIRONMENT = 0x400;
     public const int JobObjectExtendedLimitInformationClass = 9;
+    public const int JobObjectBasicAccountingInformationClass = 1;
     public const uint JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE = 0x2000;
     public const uint ERROR_ACCESS_DENIED = 5;
     public const uint PROCESS_QUERY_LIMITED_INFORMATION = 0x1000;
     public const uint SYNCHRONIZE = 0x00100000;
     public const uint WAIT_OBJECT_0 = 0;
+    public const uint WAIT_TIMEOUT = 258;
     public const uint STILL_ACTIVE = 259;
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
@@ -88,6 +90,19 @@ internal static class NativeMethods
         public UIntPtr PeakJobMemoryUsed;
     }
 
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct JobObjectBasicAccountingInformation
+    {
+        public long TotalUserTime;
+        public long TotalKernelTime;
+        public long ThisPeriodTotalUserTime;
+        public long ThisPeriodTotalKernelTime;
+        public uint TotalPageFaultCount;
+        public uint TotalProcesses;
+        public uint ActiveProcesses;
+        public uint TotalTerminatedProcesses;
+    }
+
     [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static extern bool CreateProcessW(
@@ -119,6 +134,11 @@ internal static class NativeMethods
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static extern bool SetInformationJobObject(IntPtr hJob, int jobObjectInformationClass,
         ref JobObjectExtendedLimitInformation jobObjectInformation, uint cbJobObjectInformationLength);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool QueryInformationJobObject(IntPtr hJob, int jobObjectInformationClass,
+        ref JobObjectBasicAccountingInformation jobObjectInformation, uint cbJobObjectInformationLength, IntPtr lpReturnLength);
 
     [DllImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]

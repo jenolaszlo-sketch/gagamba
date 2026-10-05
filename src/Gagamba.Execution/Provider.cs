@@ -78,6 +78,25 @@ public abstract record DiscardResult
 }
 
 /// <summary>
+/// How a launched execution reached its terminal state. Completion means the
+/// root invocation has terminated AND the provider-controlled execution domain
+/// has reached its terminal state (no owned processes remain), not merely that
+/// the root exited.
+/// </summary>
+public abstract record CompletionResult
+{
+    private CompletionResult() { }
+    /// <summary>The root invocation exited on its own. Any exit code is a
+    /// natural exit; the caller decides whether a non-zero code is a failure.</summary>
+    public sealed record NaturalExit(int RootExitCode) : CompletionResult;
+    /// <summary>The execution was terminated (explicitly) and the domain
+    /// reached its terminal state. No portable root exit code is claimed.</summary>
+    public sealed record Terminated : CompletionResult;
+    /// <summary>The handle is foreign/stale or the wait faulted. Fail closed.</summary>
+    public sealed record Failed(IReadOnlyList<string> Reasons) : CompletionResult;
+}
+
+/// <summary>
 /// Minimal provider boundary: negotiation → preparation → launch →
 /// lifecycle control → disposal. Providers must throw
 /// <see cref="ObjectDisposedException"/> once disposed.
@@ -102,4 +121,14 @@ public interface IExecutionProvider : IAsyncDisposable
 
     /// <summary>Terminate the whole domain via its own primitive.</summary>
     TerminateResult Terminate(ExecutionHandle execution);
+
+    /// <summary>
+    /// Wait until the root has terminated and the provider-controlled domain is
+    /// empty, then reclaim the handle's provider resources (like Discard
+    /// consumes a preparation). The cancellation token cancels the wait only;
+    /// it never terminates the execution — terminate explicitly to interrupt a
+    /// running domain. A handle not issued by this provider fails closed.
+    /// </summary>
+    ValueTask<CompletionResult> WaitForCompletionAsync(ExecutionHandle execution,
+        CancellationToken cancellationToken = default);
 }
