@@ -2,7 +2,7 @@
 
 Standalone .NET execution sandbox library — architecture and feasibility work.
 
-Status: research/prototyping, updated 2026-10-04. The GP-0 design baseline, GP-1A/GP-1B fixtures, GW-1A availability probe and GW-1B Windows launch slices 1–4 are implemented as **spikes and test tooling**. No production provider, package, workflow or qualified security boundary exists yet; several GW-1B legs are deliberately red pending engine findings. Start with the [handoff](docs/handoff.md) and [current queue](docs/work-queue.md).
+Status: research/prototyping with a working execution substrate, updated 2026-10-05. Three native providers (Windows Job Objects, Linux cgroup v2, macOS launchd) implement one frozen `IExecutionProvider` SPI, validated by a shared cross-platform conformance matrix, plus a requirement-driven `ExecutionRuntime`. Packages are published to NuGet.org. The Windows launch engine (GW-1B) still carries deliberately red legs pending engine findings. Start with the [handoff](docs/handoff.md) and [current queue](docs/work-queue.md).
 
 Gagamba accepts an explicit execution policy and uses a supported backend to confine a process and its descendants. It is independently useful and has no Penghou, Hufu, Luban, workflow, authorization-engine, or agent dependency.
 
@@ -16,6 +16,33 @@ Gagamba accepts an explicit execution policy and uses a supported backend to con
 - Prove the platform mechanisms before freezing a package family or public API.
 
 Standalone scope, three-platform scope and local-first testing are user-selected. The offline-process-v1 baseline is now defined for implementation preparation; backend choices and public APIs remain open.
+
+## Packages
+
+Published to NuGet.org (current preview line: `0.1.0-preview.*`). Reference
+`Gagamba.Runtime` and it pulls the contract and all providers:
+
+| Package | Contents |
+| --- | --- |
+| `Gagamba.Execution` | Frozen contract: capability matrix, fail-closed negotiation, `IExecutionProvider`. |
+| `Gagamba.Runtime` | `ExecutionRuntime`: selects the OS provider and offers requirement-driven launch. |
+| `Gagamba.Execution.Windows` | Windows provider (Job Objects). |
+| `Gagamba.Execution.Linux` | Linux provider (cgroup v2). |
+| `Gagamba.Execution.MacOS` | macOS provider (launchd). |
+
+```csharp
+await using var runtime = ExecutionRuntime.Create();
+var prep = runtime.Prepare(new ExecutionRequirements(new[]
+{
+    ExecutionRequirement.Require(ExecutionCapability.UnitTermination),
+    ExecutionRequirement.Require(ExecutionCapability.SurvivesRootExit),
+}));
+// Accepted -> launch/terminate via the same runtime; Rejected -> reasons.
+```
+
+Publishing runs from `.github/workflows/publish.yml` on `v*` version tags via
+NuGet trusted publishing (OIDC; repo secret `NUGET_USER`). See
+[conformance and provider selection](docs/conformance.md).
 
 ## Implementation and qualification
 
@@ -36,7 +63,7 @@ The original proposal is historical input. Its integration roadmap and illustrat
 
 GP-1A/GP-1B fixture self-tests and the GW-1A probe are green. GW-1B is mid-slice: denial, descendants, cancel races, pipes and supervisor sweep are demonstrated, but four legs remain red pending engine findings — descendant stop on root exit, STARTUPINFO/file-handle transport, `dotnet` runtime compatibility, and granting the Git installation tree. See the [current queue](docs/work-queue.md), the [slice-4 evidence](docs/evidence/windows-slice4-GW-1B.md) and [ADR 0001](docs/adr/0001-windows-provider.md). Next: resolve or narrow those findings, then proceed to GL-1A (separate Ubuntu WSL2) and GM-1A (macOS probe). See the [test environment plan](docs/test-environments.md).
 
-This repository contains planning documents, private test tooling (`tests/Fixtures/`), feasibility spikes (`spikes/`), local entrypoints (`eng/`) and a read-only verification script. It is connected to [GitHub](https://github.com/jenolaszlo-sketch/gagamba); the initial license is preserved. No packages, CI workflows or host security changes exist yet.
+This repository contains planning documents, private test tooling (`tests/Fixtures/`), feasibility spikes (`spikes/`), the production providers and runtime (`src/`), conformance tests, local entrypoints (`eng/`) and a read-only verification script. It is connected to [GitHub](https://github.com/jenolaszlo-sketch/gagamba); the initial license is preserved.
 
 ## Verify preparation on Windows
 

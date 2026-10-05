@@ -58,6 +58,29 @@ jobs:
         run: dotnet build Gagamba.sln -c $env:CONFIGURATION --nologo
         shell: pwsh
 
+  pack:
+    name: pack (packaging metadata)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      # Validate packaging (metadata, lockstep dependencies, symbols) on
+      # every change; publishing itself only runs on version tags.
+      - name: Pack packages
+        shell: bash
+        run: |
+          for csproj in \
+            src/Gagamba.Execution/Gagamba.Execution.csproj \
+            src/Gagamba.Execution.Windows/Gagamba.Execution.Windows.csproj \
+            src/Gagamba.Execution.Linux/Gagamba.Execution.Linux.csproj \
+            src/Gagamba.Execution.MacOS/Gagamba.Execution.MacOS.csproj \
+            src/Gagamba.Runtime/Gagamba.Runtime.csproj; do
+            dotnet pack "$csproj" --configuration Release --output ./artifacts
+          done
+
   unit:
     name: unit tests (${{ matrix.os }})
     needs: build

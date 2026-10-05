@@ -4,6 +4,12 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+
+    <IsPackable>true</IsPackable>
+    <PackageId>Gagamba.Execution.MacOS</PackageId>
+    <Title>Gagamba.Execution.MacOS</Title>
+    <Description>macOS execution provider for Gagamba: launchd job ownership with process-group-scoped cleanup and behavioral readiness.</Description>
+    <PackageTags>execution;sandbox;process;macos;launchd</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

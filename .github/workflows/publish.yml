@@ -1,0 +1,77 @@
+# Publish Gagamba packages to NuGet.org using trusted publishing (OIDC).
+#
+# Mirrors Penghou.Baize: NuGet/login@v1 exchanges the GitHub OIDC token for a
+# short-lived NuGet API key, so no long-lived NUGET_API_KEY secret is stored.
+# Required repo secret: NUGET_USER (the nuget.org profile name). nuget.org must
+# have a trusted-publishing policy for this repository + workflow file.
+#
+# Packages (lockstep version): Gagamba.Execution + the three providers +
+# Gagamba.Runtime. A version tag v<semver> sets the package version; manual
+# dispatch publishes the Directory.Build.props preview version.
+name: Publish to NuGet
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Pack
+        shell: bash
+        run: |
+          args=()
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            # Set Version (not just PackageVersion) so the inter-package
+            # dependencies in Gagamba.Runtime stay in lockstep with the tag.
+            args+=(--property:Version="${GITHUB_REF_NAME#v}")
+          fi
+          for csproj in \
+            src/Gagamba.Execution/Gagamba.Execution.csproj \
+            src/Gagamba.Execution.Windows/Gagamba.Execution.Windows.csproj \
+            src/Gagamba.Execution.Linux/Gagamba.Execution.Linux.csproj \
+            src/Gagamba.Execution.MacOS/Gagamba.Execution.MacOS.csproj \
+            src/Gagamba.Runtime/Gagamba.Runtime.csproj; do
+            dotnet pack "$csproj" \
+              --configuration Release \
+              --output ./artifacts \
+              "${args[@]}"
+          done
+
+      - name: NuGet login (OIDC -> temp API key)
+        id: login
+        uses: NuGet/login@v1
+        with:
+          user: ${{ secrets.NUGET_USER }}
+
+      - name: Push packages to NuGet
+        run: >
+          dotnet nuget push ./artifacts/*.nupkg
+          --no-symbols
+          --source https://api.nuget.org/v3/index.json
+          --api-key ${{ steps.login.outputs.NUGET_API_KEY }}
+          --skip-duplicate
+
+      - name: Push symbols to NuGet
+        run: >
+          dotnet nuget push ./artifacts/*.snupkg
+          --source https://api.nuget.org/v3/index.json
+          --api-key ${{ steps.login.outputs.NUGET_API_KEY }}
+          --skip-duplicate

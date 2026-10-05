@@ -4,6 +4,12 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+
+    <IsPackable>true</IsPackable>
+    <PackageId>Gagamba.Execution.Windows</PackageId>
+    <Title>Gagamba.Execution.Windows</Title>
+    <Description>Windows execution provider for Gagamba: kernel-owned Job Object lifecycle with suspend-assign-resume and exclusive environment.</Description>
+    <PackageTags>execution;sandbox;process;windows;job-object</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

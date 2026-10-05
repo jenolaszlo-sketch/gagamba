@@ -4,6 +4,12 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+
+    <IsPackable>true</IsPackable>
+    <PackageId>Gagamba.Runtime</PackageId>
+    <Title>Gagamba.Runtime</Title>
+    <Description>Requirement-driven execution runtime for Gagamba: selects the native provider for the current OS and negotiates capabilities. Reference this package; it pulls the contract and all providers.</Description>
+    <PackageTags>execution;sandbox;process;runtime;capabilities</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

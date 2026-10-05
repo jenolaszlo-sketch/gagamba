@@ -4,6 +4,12 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+
+    <IsPackable>true</IsPackable>
+    <PackageId>Gagamba.Execution</PackageId>
+    <Title>Gagamba.Execution</Title>
+    <Description>Frozen execution-domain contract: capability guarantees, fail-closed negotiation, and the IExecutionProvider SPI over opaque handles.</Description>
+    <PackageTags>execution;sandbox;process;lifecycle;capabilities</PackageTags>
   </PropertyGroup>
 
 </Project>

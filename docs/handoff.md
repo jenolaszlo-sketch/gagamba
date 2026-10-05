@@ -1,6 +1,6 @@
 # Gagamba handoff
 
-Updated 2026-10-05 for GR-0 (conformance + provider selection) on top of GM-2, GL-2, GW-2, GP-3.
+Updated 2026-10-05 for GR-PKG (NuGet packaging + trusted publishing) on top of GR-0, GM-2, GL-2.
 
 ## User direction
 
@@ -34,6 +34,7 @@ Develop Gagamba alone as an independently useful .NET sandbox library. Windows, 
 - GP-3 FROZEN. Three materially different providers (Windows Job Objects, Linux cgroup v2, macOS launchd+PG) exercised the SPI with zero signature changes; no extension without a downstream consumer proving a gap.
 - GR-0 conformance + provider selection (`src/Gagamba.Conformance`, `src/Gagamba.Runtime`): one expected matrix + one runner over the frozen SPI (`tests/Gagamba.Conformance.Tests`, run per OS in CI); `ExecutionRuntime.Create()` selects the OS provider and offers requirement-driven launch. Environment guarantee restated portably (ambient not inherited; requested entries provided; platform-owned domain vars may additionally exist) without complicating GP-3. Matrix + semantic-probing doctrine in `docs/conformance.md`. Constructed owner-death cleanup stays out of native providers/runtime.
 - **Architectural checkpoint: commit `c5d6f3f`, tag `arch-execution-domain-v1`** (ADR 0002). One frozen SPI, three material implementations, one requirement-driven runtime, conformance that preserves platform differences. Durable design rules in `docs/design-rules.md`. Do NOT add features speculatively (no quotas/watchdogs/output capture/richer isolation/resource policy/VFS). Next pressure = a downstream integration (Hufu consumes `ExecutionRuntime`); reconsider GP-3 only if that exposes a missing concept with evidence.
+- GR-PKG packaging/publishing mirrors Penghou.Baize: `Directory.Build.props` holds shared metadata and the preview version `0.1.0-preview.1`; five packages (Gagamba.Execution + the three providers + Gagamba.Runtime) are lockstep. `.github/workflows/publish.yml` publishes on `v*` tags via NuGet **trusted publishing** (OIDC, no stored API key) and manual dispatch; `ci.yml` has a `pack` validation job. Packaging sets `Version` (not just `PackageVersion`) so Gagamba.Runtime's dependency versions follow the tag. Operator must create the nuget.org trusted-publisher policy and the `NUGET_USER` repo secret before the first tag push.
 - Current shell chat may still be rooted in Solo. Use the Gagamba path explicitly; Solo's planning staging files are not the source of truth. Prefer opening the next coding session directly in Gagamba so its workspace permissions match the work.
 
 ## Read in this order

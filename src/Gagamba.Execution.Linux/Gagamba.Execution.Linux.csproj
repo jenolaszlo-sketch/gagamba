@@ -4,6 +4,12 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+
+    <IsPackable>true</IsPackable>
+    <PackageId>Gagamba.Execution.Linux</PackageId>
+    <Title>Gagamba.Execution.Linux</Title>
+    <Description>Linux execution provider for Gagamba: cgroup-v2 domain with atomic CLONE_INTO_CGROUP placement and cgroup.kill termination.</Description>
+    <PackageTags>execution;sandbox;process;linux;cgroup</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
