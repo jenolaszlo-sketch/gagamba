@@ -35,7 +35,7 @@ Gaps that shape the design:
 
 - The engine does NOT stop descendants on root kill OR natural root exit
   (both variants measured). Tree ownership must live in Gagamba.
-- `dotnet --info` launches but exits 1 silently in every grant configuration
+- `dotnet --info` launches but exits 1 in every grant configuration
   (ws-only through full closure), while `whoami.exe` runs fine with no
   grants at all. Resolved by GW-1B-L6 (see Workload limitation below): the
   CLI installer probe queries an outside PID; the runtime itself is healthy
