@@ -100,6 +100,17 @@ def wait_all_alive(pids, timeout=10.0):
     return all(alive(p) for p in pids)
 
 
+def sustained_alive(pids, duration=10.0):
+    """Alive at the END of the window, not just at first poll: survival
+    means staying alive, since death is permanent."""
+    deadline = time.time() + duration
+    while time.time() < deadline:
+        if not all(alive(p) for p in pids):
+            return False
+        time.sleep(0.2)
+    return all(alive(p) for p in pids)
+
+
 def reap(proc, timeout=15.0):
     try:
         return proc.wait(timeout=timeout)
@@ -218,8 +229,8 @@ def leg_pg_root_exits(ctx):
             reap(sup)
             return False, ["leaf record missing"], {}
         rc = sup.wait(timeout=20)
-        ok = rc == 0 and alive(leaf["pid"])
-        notes = [f"supervisor exited rc={rc}, leaf alive={alive(leaf['pid'])} pgid={leaf['pgid']}"]
+        ok = rc == 0 and sustained_alive([leaf["pid"]], duration=5.0)
+        notes = [f"supervisor exited rc={rc}, leaf alive-sustained={ok} pgid={leaf['pgid']}"]
         kill_group(leaf["pgid"])
         wait_all_dead([leaf["pid"]], timeout=15.0)
         return ok, notes, {"leaf": leaf}
@@ -266,7 +277,7 @@ def leg_pg_supervisor_dies(ctx):
         kill_pid(sup.pid)
         reap(sup)
         # EXPECTED: workload survives (no owner-death semantic).
-        survived = wait_all_alive([root["pid"], leaf["pid"]], timeout=5.0)
+        survived = sustained_alive([root["pid"], leaf["pid"]], duration=5.0)
         notes = [f"supervisor killed; root/leaf alive={survived} (expected: survive)"]
         kill_group(root["pgid"])
         wait_all_dead([root["pid"], leaf["pid"]], timeout=15.0)
@@ -297,7 +308,7 @@ def leg_pg_escape(ctx):
         kill_pid(sup.pid)
         reap(sup)
         kill_group(pgid)
-        esc_alive = wait_all_alive([root["pid"]], timeout=5.0)
+        esc_alive = sustained_alive([root["pid"]], duration=5.0)
         leaf_dead = wait_all_dead([leaf["pid"]], timeout=15.0)
         notes = [f"escaper sid={root['sid']} alive={esc_alive} (expected: survive); "
                  f"leaf dead={leaf_dead}"]
@@ -403,8 +414,75 @@ def leg_launchd_escape(ctx):
     d = ctx.rundir("M8")
     if not ctx.domain:
         return False, ["no launchd domain (capability)"], {}
+    # The job root itself is a session leader under launchd (setsid there
+    # gives EPERM — informative, not the question). A WRAPPER supervisor
+    # spawns the escaper as an ordinary group member (setsid works there),
+    # waits for readiness, then exits: does the escaped descendant (new
+    # session/PG) survive the job root going away under launchd?
     label = f"org.gagamba.gm1a.m8.{os.getpid()}"
-    plist = write_plist(d, label, ["escape-session", "--dir", d, "--role", "root"])
+    # Wrapper program, built with real newlines (compound statements need
+    # blocks, not semicolons).
+    wrapper = "\n".join([
+        "import subprocess, sys, os, time",
+        f"d = {d!r}",
+        f"fix = {FIXTURE!r}",
+        "rt = subprocess.Popen([sys.executable, fix, 'escape-session', "
+        "'--dir', d, '--role', 'root'])",
+        "deadline = time.time() + 20",
+        "while time.time() < deadline:",
+        "    import os as _o",
+        "    if _o.path.exists(d + '/root.ready'):",
+        "        break",
+        "    time.sleep(0.1)",
+    ])
+    wrapper_path = os.path.join(d, "wrapper.py")
+    with open(wrapper_path, "w") as f:
+        f.write(wrapper + "\n")
+    plist2 = {
+        "Label": label,
+        "ProgramArguments": [sys.executable, wrapper_path],
+        "WorkingDirectory": d,
+        "StandardOutPath": os.path.join(d, "launchd-out.log"),
+        "StandardErrorPath": os.path.join(d, "launchd-err.log"),
+    }
+    with open(os.path.join(d, label + ".plist"), "wb") as f:
+        plistlib.dump(plist2, f)
+    try:
+        rc, out = launchctl("bootstrap", ctx.domain, os.path.join(d, label + ".plist"))
+        if rc != 0:
+            return False, [f"bootstrap rc={rc}: {out[:200]}"], {}
+        rc, out = launchctl("kickstart", f"{ctx.domain}/{label}")
+        if rc != 0:
+            bootout(ctx.domain, label)
+            return False, [f"kickstart rc={rc}: {out[:200]}"], {}
+        root = wait_record(d, "root")
+        leaf = wait_record(d, "root-leaf")
+        if root is None or leaf is None:
+            return False, ["records missing"], {}
+        if not root.get("escaped"):
+            return False, [f"setsid failed: {root.get('escape_error')}"], {"root": root}
+        # Wrapper exited after readiness (its only job); the escaper lives in
+        # a NEW session/PG. Observe 15s sustained: survival = launchd missed it.
+        survived = sustained_alive([root["pid"]], duration=15.0)
+        leaf_state = "dead" if wait_all_dead([leaf["pid"]], timeout=1.0) else "alive"
+        notes = [f"escaped sid={root['sid']} survived={survived} "
+                 f"(expected: survive = no containment even under launchd); "
+                 f"leaf(old pg)={leaf_state}"]
+        return survived, notes, {"root": root, "leaf": leaf}
+    finally:
+        bootout(ctx.domain, label)
+        try:
+            root = read_record(d, "root")
+            leaf = read_record(d, "root-leaf")
+            for r in (root, leaf):
+                if r:
+                    kill_pid(r["pid"])
+            if leaf:
+                wait_all_dead([leaf["pid"]], timeout=15.0)
+            if root:
+                wait_all_dead([root["pid"]], timeout=15.0)
+        except Exception:
+            pass
     try:
         rc, out = launchctl("bootstrap", ctx.domain, plist)
         if rc != 0:
@@ -421,7 +499,7 @@ def leg_launchd_escape(ctx):
             return False, [f"setsid failed: {root.get('escape_error')}"], {"root": root}
         # Root (the job's original process) exits; observe the escaped child.
         # Escapee has a NEW pgid/sid: launchd's same-PG cleanup should miss it.
-        survived = wait_all_alive([root["pid"]], timeout=15.0)
+        survived = sustained_alive([root["pid"]], duration=15.0)
         notes = [f"escaped sid={root['sid']} survived-root-exit={survived} "
                  f"(expected: survive = no containment even under launchd)"]
         return True, notes, {"root": root, "leaf": leaf}
@@ -506,7 +584,8 @@ def leg_launchd_submitter_dies(ctx):
         if not done or leaf is None:
             return False, [f"submitter done=[{done}] leaf-record={leaf is not None}"], {}
         # Submitter is gone (reaped, rc recorded); does the job survive?
-        survived = wait_all_alive([leaf["pid"]], timeout=10.0)
+        # Sustained: it must still be alive at the end of the window.
+        survived = sustained_alive([leaf["pid"]], duration=10.0)
         _, state = launchctl("print", f"{ctx.domain}/{label}")
         notes = [f"submitter rc={rc} done=[{done}]; job alive={survived} "
                  f"(expected: survive = launchd owns the job, not the client)"]
@@ -623,7 +702,7 @@ def leg_watchdog_escape(ctx):
         kill_pid(sup.pid)
         reap(sup)
         leaf_dead = wait_all_dead([leaf["pid"]], timeout=15.0)
-        esc_alive = wait_all_alive([root["pid"]], timeout=5.0)
+        esc_alive = sustained_alive([root["pid"]], duration=5.0)
         fired = read_record(d, "watchdog-fired")
         notes = [f"leaf dead={leaf_dead}, escaper alive={esc_alive}, fired={fired is not None}: "
                  f"constructed cleanup exists, complete ownership does not"]
