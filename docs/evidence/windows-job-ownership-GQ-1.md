@@ -27,9 +27,12 @@ No quotas, completion ports, UI restrictions, or telemetry.
   itself runs `self-jobbed` (host shell job) — nesting works routinely.
 - J8 incompatible assignment: a plain process assigned to job A, then to
   job B — permitted here as nesting (verified member of BOTH), contained
-  via job A regardless. Where Windows denies (access-denied), the code
-  path terminates the target and records the classified failure with no
-  silent fallback (unexercised on this host — nesting is permitted).
+  via job A regardless. The deny path (terminate the target, record the
+  classified failure, no silent fallback) is implemented in
+  `JobOwnership.LaunchIntoJob` and covered by a unit test forcing
+  assignment failure with an invalid job handle; this host did not expose
+  a genuinely incompatible nesting configuration, so real Windows
+  rejection behavior is classified-but-unobserved.
 
 ## Contract (verified, was direction)
 

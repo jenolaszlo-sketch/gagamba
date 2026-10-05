@@ -17,13 +17,33 @@ Updated 2026-10-03 following the user clarification: Windows, Linux, and macOS a
 Read-only `wsl --status`, `wsl --list --verbose`, and `docker version` checks succeeded outside the assistant's restricted execution wrapper. Initial access-denied results were execution-context restrictions, not proof of broken installations.
 
 - WSL default version: 2.
-- Only listed distribution: `docker-desktop`, running, version 2.
-- No separate Ubuntu or other user Linux distribution was listed.
+- Listed distributions: `docker-desktop` (running) plus a separately
+  installed `Ubuntu` (Stopped when idle), both version 2.
 - Docker Desktop: 4.75.0; Docker client/server: 29.5.2; Linux engine architecture: amd64.
 - Engine kernel: `6.6.114.1-microsoft-standard-WSL2`.
 - Prior Windows inventory: build 26200.9457, .NET SDK 10.0.401, `processmodel.dll` 10.0.26100.9444. The export and launch were later tested (GW-1A/GW-1B, see [evidence](evidence/windows-slice4-GW-1B.md)); several engine gates remain open.
 
-Do not develop inside Docker's internal WSL distribution. Recommend installing a separate Ubuntu WSL2 distribution when Linux setup begins. No distribution, image, package, or host security configuration was installed or changed by this planning update.
+## Ubuntu WSL2 setup for GL-1A (installed 2026-10-05, no elevation needed)
+
+Installed via `wsl --install -d Ubuntu --no-launch` (Store distribution,
+per-user; the WSL component already existed for Docker, so no
+elevation prompt). Verified with `wsl -d Ubuntu -u root` (avoids the
+interactive first-run user setup; probing runs as root):
+
+- Distro: Ubuntu 26.04.1 LTS, WSL version 2, real kernel above.
+- PID 1 is `systemd` (full system, not container-lite).
+- **cgroup v2 unified**: `cgroup2 on /sys/fs/cgroup` (`cgroup2fs`).
+  Controllers present: `cpuset cpu io memory hugetlb pids rdma`;
+  root `subtree_control` enables `cpu memory hugetlb pids rdma`.
+  This decides the GL-1A design space: cgroup-based kill (incl.
+  `cgroup.kill`) is available to test against POSIX process-group
+  semantics; supervisor death is the critical discriminator.
+- Toolchain: `python3` present; no `gcc`, no `dotnet` (GL-1A probes use
+  shell + python3; `apt` install only if C becomes necessary).
+- Default distribution left as `docker-desktop` (unchanged); the Ubuntu
+  instance is addressed explicitly (`-d Ubuntu`) and stays Stopped idle.
+
+Do not develop inside Docker's internal WSL distribution. A separate Ubuntu WSL2 distribution is installed (see above); keep source and fixtures in its Linux filesystem when Linux setup begins. No distribution, image, package, or host security configuration was installed or changed by this planning update (the Ubuntu install itself is recorded above as the GL-1A prerequisite it is).
 
 ## WSL2 and Docker serve different test purposes
 

@@ -7,6 +7,8 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Gw1bLaunch.Tests")]
+
 namespace Gagamba.Spikes.Gw1bLaunch;
 
 internal static class JobOwnership
@@ -73,14 +75,16 @@ internal static class JobOwnership
             int err = Marshal.GetLastWin32Error();
             try { Native.TerminateProcess(pi.hProcess, 99); } catch { }
             CloseBoth(pi.hProcess, pi.hThread);
-            return (false, $"assign rejected err=0x{err:X} (no unmanaged execution: target terminated)", IntPtr.Zero, 0);
+            // PID retained for verification: the target was terminated, and
+            // callers (and tests) can prove nothing escaped.
+            return (false, $"assign rejected err=0x{err:X} (no unmanaged execution: target terminated)", IntPtr.Zero, pid);
         }
         if (Native.ResumeThread(pi.hThread) == uint.MaxValue)
         {
             int err = Marshal.GetLastWin32Error();
             try { Native.TerminateProcess(pi.hProcess, 99); } catch { }
             CloseBoth(pi.hProcess, pi.hThread);
-            return (false, $"resume fault err=0x{err:X}", IntPtr.Zero, 0);
+            return (false, $"resume fault err=0x{err:X}", IntPtr.Zero, pid);
         }
         try { Native.CloseHandle(pi.hThread); } catch { }
         return (true, $"launched suspended+assigned+resumed pid={pid}", pi.hProcess, pid);
