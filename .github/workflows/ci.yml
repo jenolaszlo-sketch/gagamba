@@ -142,3 +142,22 @@ jobs:
           name: launch-evidence
           path: artifacts/windows-launch-*.json
           retention-days: 30
+
+  macos-probe:
+    name: macOS lifecycle probe (GM-1A)
+    runs-on: macos-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      # No setup-python/setup-dotnet: system python3 only, by design (no
+      # .NET in the macOS probe). Strict: launchd legs fail honestly where
+      # the runner lacks bootstrap rights; portable legs must stay green.
+      - name: Run GM-1A lifecycle probe
+        run: bash eng/gm1a-life.sh
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gm1a-evidence
+          path: artifacts/gm1a-life-*.json
+          retention-days: 30
