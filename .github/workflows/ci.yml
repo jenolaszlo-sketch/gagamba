@@ -75,6 +75,9 @@ jobs:
       - name: xUnit unit tests (fixture SelfTest, no sandbox API)
         run: dotnet test tests/Fixtures/Gagamba.Fixture.SelfTest/Gagamba.Fixture.SelfTest.csproj -c $env:CONFIGURATION --nologo
         shell: pwsh
+      - name: xUnit contract tests (GP-2 execution domain, pure logic)
+        run: dotnet test tests/Gagamba.Execution.Tests/Gagamba.Execution.Tests.csproj -c $env:CONFIGURATION --nologo
+        shell: pwsh
       - name: GQ-1 job-ownership unit tests (Windows-only, skip elsewhere)
         run: dotnet test spikes/Gw1bLaunch.Tests/Gw1bLaunch.Tests.csproj -c $env:CONFIGURATION --nologo
         shell: pwsh

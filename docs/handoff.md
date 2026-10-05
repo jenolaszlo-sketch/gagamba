@@ -1,6 +1,6 @@
 # Gagamba handoff
 
-Updated 2026-10-05 for GM-1A (macOS lifecycle verdict: launchd cleans same-PG only, escape survives, watchdog+PG composes) — all three platforms now evidenced; GP-2 contract extraction is next.
+Updated 2026-10-05 for GP-2 (capabilities contract extracted from all three platforms) on top of GM-1A, GQ-1, L8, CI-1.
 
 ## User direction
 
@@ -25,6 +25,7 @@ Develop Gagamba alone as an independently useful .NET sandbox library. Windows, 
 - GQ-1 job ownership proven: `L5-JOB-OWNERSHIP` (manifest v9 = 23 IDs), all 8 acceptance phases green (terminate, close-kill, exit-code proof, crashed-supervisor cleanup, nesting incl. self-jobbed hosts, incompatible-assign handling). J8 denial path unit-covered (invalid-handle forcing). Contract: no descendant outlives the domain via parent exit or supervisor crash.
 - GL-1A Linux lifecycle matrix green (`spikes/Gl1aLife`, shell+python only, no .NET/gcc): PG addressable but no owner-death/containment; PDEATHSIG direct coupling only (root-only vs cascade); cgroup v2 recursive kill but no auto owner-death; L14 watchdog composition works as constructed ownership. GP-2 contract extraction comes after GM-1A, never before.
 - GM-1A macOS verdict (`spikes/Gm1aLife`, `macos-latest` arm64): PG works; launchd cleans same-PG on job death (M7) but escapees survive (M8); job outlives its client (M10); `bootout` cleans, `stop` doesn't (M9); watchdog+PG composes without containment (M11/M12). macOS primitive weakest of the three — GP-2 must be capabilities-based, never `IProcessJob`.
+- GP-2 capabilities contract extracted (`src/Gagamba.Execution` + 7 tests): six capabilities, Absent/Partial/Full × Native/Constructed/None, per-platform matrix with evidence, required/preferred negotiation, fail-closed, no `IsSandboxed` (mechanically enforced). Strict coding agent: Windows only. Owner-death: native Windows, composed elsewhere (never equated).
 - Current shell chat may still be rooted in Solo. Use the Gagamba path explicitly; Solo's planning staging files are not the source of truth. Prefer opening the next coding session directly in Gagamba so its workspace permissions match the work.
 
 ## Read in this order
@@ -49,9 +50,9 @@ Verified GW-1A/GW-1B 2026-10-04 (Windows host, spike-only; no provider qualified
 
 ## Exact next task
 
-Continue **all three platforms evidenced (Windows GQ-1, Linux GL-1A, macOS GM-1A)**:
-next is GP-2 contract extraction — capabilities-based, never `IProcessJob`.
-Decided, no further experiments needed: loopback as `offline+loopback`
+Continue **all platforms evidenced + GP-2 contracted**:
+next is GP-3/GW-2 providers (managed core against the contract), then
+GL-2/GM-2 and GQ-1/GR-1 conformance. Decided, no further experiments needed: loopback as `offline+loopback`
 profile capability, dotnet SCM probing restricted, msys ro drive-root
 grant transitional, multi-grant prep semantics, kernel job-object
 ownership, watchdog compositions constructed-not-kernel. Keep identities
