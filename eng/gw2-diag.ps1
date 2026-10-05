@@ -58,7 +58,38 @@ $rich = @{
     PSModulePath = "$env:SystemRoot\system32\WindowsPowerShell\v1.0\Modules"; OS = $env:OS
 }
 Test-Launch 'rich' $rich
+$rich2 = @{}
+foreach ($k in $rich.Keys) { $rich2[$k] = $rich[$k] }
+$extra = @{
+    ProgramData = $env:ProgramData
+    ProgramFiles = ${env:ProgramFiles}
+    'ProgramFiles(x86)' = ${env:ProgramFiles(x86)}
+    CommonProgramFiles = $env:CommonProgramFiles
+    'CommonProgramFiles(x86)' = ${env:CommonProgramFiles(x86)}
+    ALLUSERSPROFILE = $env:ALLUSERSPROFILE
+    PUBLIC = $env:PUBLIC
+    USERNAME = $env:USERNAME
+    USERDOMAIN = $env:USERDOMAIN
+    LOGONSERVER = $env:LOGONSERVER
+    PROCESSOR_ARCHITEW6432 = $env:PROCESSOR_ARCHITEW6432
+    PROCESSOR_IDENTIFIER = $env:PROCESSOR_IDENTIFIER
+    PROCESSOR_LEVEL = $env:PROCESSOR_LEVEL
+    PROCESSOR_REVISION = $env:PROCESSOR_REVISION
+    DriverData = $env:DriverData
+    OneDrive = $env:OneDrive
+    ChocolateyInstall = $env:ChocolateyInstall
+    VCPKG_INSTALLATION_ROOT = $env:VCPKG_INSTALLATION_ROOT
+    RUNTIME_IDENTIFIER = $env:RUNTIME_IDENTIFIER
+    RUNNER_TEMP = $env:RUNNER_TEMP
+    RUNNER_TOOL_CACHE = $env:RUNNER_TOOL_CACHE
+    RUNNER_OS = $env:RUNNER_OS
+    ImageOS = $env:ImageOS
+    '=C:' = 'C:'
+}
+foreach ($k in $extra.Keys) { if ($extra[$k]) { $rich2[$k] = $extra[$k] } }
+Test-Launch 'rich2' $rich2
 $inh = @{}
 foreach ($k in [Environment]::GetEnvironmentVariables().Keys) { $inh[$k] = [Environment]::GetEnvironmentVariable($k) }
+Write-Host "inherited keys: $(($inh.Keys | Sort-Object) -join ',')"
 Test-Launch 'inherited' $inh
 Write-Host 'diag done'
