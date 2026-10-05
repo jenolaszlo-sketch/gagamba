@@ -1,0 +1,163 @@
+# Gagamba CI: real build/unit/evidence workflow (CI-1). No placeholder
+# success jobs: every job runs the repo's own entrypoints strictly.
+#
+# Portable baseline (must stay green everywhere): preparation check, solution
+# build, xUnit unit tests. The fixture Harness runner is Windows-proven
+# only until GL-1A provisions Linux, so Ubuntu stops at unit tests.
+#
+# Windows-only evidence jobs (probe, fixture self-test, launch spike) run
+# the eng scripts strictly and upload their evidence JSON always. They need
+# a qualified host for green (Windows 11 25H2+ with the experimental
+# processmodel API for launch legs); elsewhere they report honestly red.
+# Do NOT paper over them with continue-on-error.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_NOLOGO: 1
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  CONFIGURATION: Release
+
+jobs:
+  verify:
+    name: preparation
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify preparation baseline
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File eng/verify-preparation.ps1
+
+  build:
+    name: build (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Build solution
+        run: dotnet build Gagamba.sln -c $env:CONFIGURATION --nologo
+        shell: pwsh
+
+  unit:
+    name: unit tests (${{ matrix.os }})
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: xUnit unit tests (fixture SelfTest, no sandbox API)
+        run: dotnet test tests/Fixtures/Gagamba.Fixture.SelfTest/Gagamba.Fixture.SelfTest.csproj -c $env:CONFIGURATION --nologo
+        shell: pwsh
+      - name: GQ-1 job-ownership unit tests (Windows-only, skip elsewhere)
+        run: dotnet test spikes/Gw1bLaunch.Tests/Gw1bLaunch.Tests.csproj -c $env:CONFIGURATION --nologo
+        shell: pwsh
+
+  fixtures:
+    name: fixture self-test (windows)
+    needs: unit
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Fixture self-test entrypoint
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File eng/fixture-selftest.ps1
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fixture-selftest-evidence
+          path: artifacts/fixture-selftest-*.json
+          retention-days: 30
+
+  probe:
+    name: availability probe (windows)
+    needs: fixtures
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Availability probe entrypoint
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File eng/probe.ps1
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: probe-evidence
+          path: artifacts/windows-probe-*.json
+          retention-days: 30
+
+  spike:
+    name: launch spike (windows)
+    needs: probe
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      # Smoke, not strict aggregate: open engine gates fail legs by design
+      # (see docs/work-queue.md), so aggregate Passed is a milestone, not a
+      # CI gate. This proves the spike builds, runs end-to-end, and emits
+      # schema-valid evidence. eng/launch-smoke.ps1 documents the contract.
+      - name: Launch spike smoke entrypoint
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File eng/launch-smoke.ps1
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: launch-evidence
+          path: artifacts/windows-launch-*.json
+          retention-days: 30
+
+  macos-probe:
+    name: macOS lifecycle probe (GM-1A)
+    runs-on: macos-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      # No setup-python/setup-dotnet: system python3 only, by design (no
+      # .NET in the macOS probe). Strict: launchd legs fail honestly where
+      # the runner lacks bootstrap rights; portable legs must stay green.
+      - name: Run GM-1A lifecycle probe
+        run: bash eng/gm1a-life.sh
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gm1a-evidence
+          path: artifacts/gm1a-life-*.json
+          retention-days: 30

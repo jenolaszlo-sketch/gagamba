@@ -11,7 +11,7 @@ Updated 2026-10-03. Separate user-selected direction from review recommendations
 | D05 | Implementation baseline | Begin with denied network, explicit filesystem grants and reviewed runtime dependencies. |
 | D06 | Proposed | Probe the three platform mechanisms before freezing public APIs or creating the package family. |
 | D07 | Implementation baseline | Keep output bounds and wall-clock stop in the initial runner; advertise other resource limits individually. |
-| D08 | Open | Windows production mechanism: experimental API, restricted-token implementation, or qualified external runtime. |
+| D08 | Accepted for prototyping | Windows production mechanism: experimental API supplemented by a Gagamba supervisor — see [ADR 0001](adr/0001-windows-provider.md). Restricted-token/dedicated-user remains a fallback; production qualification still open. |
 | D09 | Open | Minimum supported OS/kernel/.NET versions, helper distribution and installation privileges. |
 | D10 | Deferred | Mediated endpoints, persistent sandboxes, live narrowing and OpenShell. |
 | D11 | Deferred | Hufu adapter and any replacement of Luban workflows. |

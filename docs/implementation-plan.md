@@ -1,6 +1,6 @@
 # Gagamba implementation plan
 
-Status: actionable planning baseline, 2026-10-03. Runtime implementation has not started. GP-0 is complete as a documented design baseline; GP-1A is next. The [current queue](work-queue.md) and [handoff](handoff.md) record the exact checkpoint; local inventory is recorded in [test environments](test-environments.md).
+Status: actionable planning baseline, 2026-10-03; progress notes 2026-10-04. GP-0 is complete as a document. GP-1A/GP-1B fixtures, GW-1A availability and GW-1B Windows launch slices 1–4 are implemented as spikes (14/19 launch legs green; four engine gates open). Runtime production implementation has not started. The [current queue](work-queue.md) and [handoff](handoff.md) record the exact checkpoint; local inventory is recorded in [test environments](test-environments.md).
 
 This is the canonical implementation sequence. The [design](design.md) defines the proposed semantics, the [research plan](research-plan.md) contains backend experiments, and the [testing and CI plan](testing-and-ci.md) defines evidence and automation. Later implementation findings may revise the design through recorded decisions.
 
@@ -81,13 +81,13 @@ Exit met as documentation: [offline-process-v1](security-model.md) specifies the
 
 Create a small managed probe host and controlled worker programs. Their protocol should work on all target systems and avoid dependence on shell-specific output parsing. They are test tools, not public packages.
 
-- [ ] Add fixture commands for read/write/create/delete/rename, spawning children/grandchildren, attempted daemonization, large output, hanging, and deterministic exit.
-- [ ] Add bounded local TCP/UDP listeners and filesystem sentinels outside the target's grants. Use synthetic data only.
-- [ ] Add explicit worker handshakes/barriers for launch/cancel races; use deadlines, not arbitrary sleeps, to decide failure.
-- [ ] Add a fixture-only native worker where managed code cannot exercise relevant OS operations.
-- [ ] Emit a versioned JSON evidence report plus ordinary test results. Distinguish Passed, Failed, Unsupported and NotRun.
-- [ ] Use a disposable workspace root and an external watchdog to clean test-owned resources if a candidate launcher fails.
-- [ ] Demonstrate unsandboxed controls can reach the sentinel or listener before evaluating a sandbox denial. These controls must never be exposed as a library fallback.
+- [x] Add fixture commands for read/write/create/delete/rename, spawning children/grandchildren, attempted daemonization, large output, hanging, and deterministic exit.
+- [ ] Add bounded local TCP/UDP listeners and filesystem sentinels outside the target's grants. Use synthetic data only. *(sentinel isolation done; network listeners pending F4)*
+- [x] Add explicit worker handshakes/barriers for launch/cancel races; use deadlines, not arbitrary sleeps, to decide failure.
+- [ ] Add a fixture-only native worker where managed code cannot exercise relevant OS operations. *(pending)*
+- [x] Emit a versioned JSON evidence report plus ordinary test results. Distinguish Passed, Failed, Unsupported and NotRun.
+- [x] Use a disposable workspace root and an external watchdog to clean test-owned resources if a candidate launcher fails.
+- [x] Demonstrate unsandboxed controls can reach the sentinel or listener before evaluating a sandbox denial. These controls must never be exposed as a library fallback.
 
 Exit: trustworthy fixture behavior, reliable cleanup, and no tests incorrectly credited to an outer container or missing prerequisite.
 
@@ -95,13 +95,13 @@ Exit: trustworthy fixture behavior, reliable cleanup, and no tests incorrectly c
 
 Start here after GP-1, on the current Windows host and within disposable fixture directories.
 
-- [ ] Record exact OS/build, architecture, filesystem, token privilege, existing job membership and API exports.
-- [ ] Obtain and pin a verified schema matching `Experimental_CreateProcessInSandbox`; do not infer field layouts from prose.
-- [ ] Prove minimal creation, denied filesystem/network access, explicit environment and captured stdout/stderr/stdin. Handle inheritance is an explicit early question in the documented API. [Microsoft API](https://learn.microsoft.com/en-us/windows/win32/secauthz/createprocessinsandbox)
-- [ ] Establish containment before target code runs, then verify child restrictions, job nesting/breakaway behavior, root exit and launcher-crash cleanup.
-- [ ] Verify identity isolation and profile/ACL/network artifacts before/after failure and concurrent runs.
-- [ ] Run offline .NET build/test, Git inspection, PowerShell and cmd fixtures with explicit dependency grants and contained/disabled build servers.
-- [ ] Write a backend ADR: use the API, supplement it, or reject it. If rejected, run a bounded second spike for restricted tokens/dedicated identity or an existing runtime using the same tests.
+- [x] Record exact OS/build, architecture, filesystem, token privilege, existing job membership and API exports.
+- [x] Obtain and pin a verified schema matching `Experimental_CreateProcessInSandbox`; do not infer field layouts from prose.
+- [~] Prove minimal creation, denied filesystem/network access, explicit environment and captured stdout/stderr/stdin. Handle inheritance is an explicit early question in the documented API. *(creation, filesystem denial and pipe capture proven; network denial and file-handle stdio open)* [Microsoft API](https://learn.microsoft.com/en-us/windows/win32/secauthz/createprocessinsandbox)
+- [~] Establish containment before target code runs, then verify child restrictions, job nesting/breakaway behavior, root exit and launcher-crash cleanup. *(child restrictions, inherited denial and launcher-crash recovery proven; engine does not stop descendants on root exit — supervisor compensates)*
+- [x] Verify identity isolation and profile/ACL/network artifacts before/after failure and concurrent runs.
+- [~] Run offline .NET build/test, Git inspection, PowerShell and cmd fixtures with explicit dependency grants and contained/disabled build servers. *(cmd proven; dotnet runtime and Git install grants blocked — see evidence)*
+- [x] Write a backend ADR: use the API, supplement it, or reject it. If rejected, run a bounded second spike for restricted tokens/dedicated identity or an existing runtime using the same tests. *([ADR 0001](adr/0001-windows-provider.md): API + supervisor, prototyping)*
 
 Exit: W1/W2 evidence and a mechanism choice. Export availability or a successful command alone does not pass. If machine-wide installation/elevation is required, first document concrete changes, ownership and rollback rather than modifying the user's host opportunistically.
 
@@ -193,9 +193,9 @@ artifacts/                     ignored raw reports, logs and package candidates
 ## Immediate work queue
 
 1. GP-0 design baseline is complete; read [security-model.md](security-model.md) before implementation.
-2. GP-1A is next: implement the [fixture/evidence contract](fixture-protocol.md), then GP-1B adds lifecycle fixtures. See [current queue](work-queue.md) for the refined slices.
-3. GW-1: probe the local Windows API and prove one contained process with captured output and reliable stop.
-4. Create basic build CI when code exists; prepare the bounded macOS probe and Linux environment next.
+2. GP-1A/GP-1B are implemented (fixtures, self-test evidence) and GW-1A is complete. GW-1B slices 1–4 are implemented; four Windows engine gates remain open. See [current queue](work-queue.md) and [slice-4 evidence](evidence/windows-slice4-GW-1B.md).
+3. Resolve or narrow the GW-1B gates (descendant stop, file-handle I/O, dotnet runtime, Git grants); GW-1 acceptance also needs a provider ADR (started: [ADR 0001](adr/0001-windows-provider.md)).
+4. Prepare the bounded macOS probe and Linux environment next; add build/unit CI when a workflow is warranted.
 5. Use GW-1/GL-1/GM-1 evidence to select providers and freeze the contract candidate.
 
 Re-estimate scope after the spikes. If a mechanism cannot satisfy the profile, select another mechanism or publish the limitation explicitly; do not quietly weaken the contract to complete a milestone.
