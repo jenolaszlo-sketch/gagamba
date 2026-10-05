@@ -80,3 +80,13 @@ or job objects (mechanically enforced). Providers throw
 `ObjectDisposedException` once disposed; root exit never invalidates a
 handle while descendants remain. Only preparations a provider issued
 itself are honored.
+
+Environment guarantee, stated honestly per platform: the spec's variables
+are always present and the launcher's ambient environment is never
+inherited (Windows explicit block; Linux `envp`; macOS plist
+`EnvironmentVariables` — proven by GM-2). Exact set equality with the spec
+is Native on Windows/Linux; on macOS launchd additionally injects OS
+session variables (HOME, PATH, TMPDIR, XPC_*, …) that are supplied by the
+domain owner, not inherited. That delta is a platform property; the
+contract requires presence of the granted set and absence of ambient
+inheritance, not byte-identical environments.

@@ -1,5 +1,7 @@
-# TEMPORARY GM-2 probe: launchd environment exactness. Deleted after the
-# verdict lands in docs/evidence/. Trigger manually; never part of CI.
+# Manual GM-2 environment-exactness probe: proves launchd's plist
+# EnvironmentVariables behavior on a live GUI domain and records the full
+# delivered environment. Run on demand when re-validating on a new macOS
+# (the same assertions now also run as GM-2 provider tests in ci.yml).
 name: gm2-env-probe
 
 on:

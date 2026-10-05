@@ -81,6 +81,9 @@ jobs:
       - name: xUnit provider tests (GW-2 Windows, skips off-Windows)
         run: dotnet test tests/Gagamba.Execution.Windows.Tests/Gagamba.Execution.Windows.Tests.csproj -c $env:CONFIGURATION --nologo
         shell: pwsh
+      - name: xUnit provider tests (GL-2 Linux, OS legs need cgroup delegation)
+        run: dotnet test tests/Gagamba.Execution.Linux.Tests/Gagamba.Execution.Linux.Tests.csproj -c $env:CONFIGURATION --nologo
+        shell: pwsh
       - name: GQ-1 job-ownership unit tests (Windows-only, skip elsewhere)
         run: dotnet test spikes/Gw1bLaunch.Tests/Gw1bLaunch.Tests.csproj -c $env:CONFIGURATION --nologo
         shell: pwsh
@@ -148,6 +151,21 @@ jobs:
           name: launch-evidence
           path: artifacts/windows-launch-*.json
           retention-days: 30
+
+  macos-provider-tests:
+    name: GM-2 macOS provider tests
+    runs-on: macos-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      # Real provider semantics on a GUI launchd domain: environment
+      # exactness first, then bootout lifecycle, escape-is-observed, and
+      # fail-closed paths. Non-macOS tests in the same assembly skip.
+      - name: xUnit provider tests (GM-2 macOS)
+        run: dotnet test tests/Gagamba.Execution.MacOS.Tests/Gagamba.Execution.MacOS.Tests.csproj -c ${{ env.CONFIGURATION }} --nologo
 
   macos-probe:
     name: macOS lifecycle probe (GM-1A)
