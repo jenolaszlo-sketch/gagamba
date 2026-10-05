@@ -3,6 +3,7 @@
 Status: accepted (architectural checkpoint; `IExecutionProvider` frozen).
 Date: 2026-10-05.
 Milestone commit: `c5d6f3f`. Tag: `arch-execution-domain-v1`.
+Amendment 1 commit: `cbabf56`. Tag: `arch-execution-domain-amendment-1`. Package: `0.1.0-preview.2`.
 Durable rules: `docs/design-rules.md`. Conformance: `docs/conformance.md`.
 
 ## Context
@@ -54,12 +55,29 @@ Owner-death composition (Linux/macOS watchdog), quotas and resource policy,
 stdout/stderr capture, richer sandboxing, and VFS/overlay integration.
 Windows owner-death cleanup already exists natively and is unaffected.
 
+## Amendment 1: `Discard(PreparedExecution)`
+
+The first downstream consumer (`Penghou.Hufu.Sandbox`, the Hufu → Gagamba
+integration, milestone HG-1) proved a missing lifecycle state: a provider may
+allocate domain resources at `Prepare`, and a launch that is revoked or
+cancelled before it runs leaves that preparation unreclaimed until provider
+disposal. GP-3 gained `IExecutionProvider.Discard` — provider-owned,
+single-use, safe before launch, idempotent, foreign-preparation fail-closed.
+The providers now allocate the domain at `Prepare` and reclaim it at `Launch`
+or `Discard`; `launch → terminate → dispose` is unchanged. This is the
+narrowest justified amendment to a frozen SPI, and it is recorded as such.
+`arch-execution-domain-v1` (the pre-amendment checkpoint) plus Amendment 1 is
+the frozen execution-authority milestone.
+
 ## Next pressure
 
-Let Hufu request execution requirements and consume Gagamba through
-`ExecutionRuntime`, without teaching Hufu anything about Job Objects,
-cgroups, or launchd. If that integration exposes a missing concept, GP-3 is
-reconsidered with that evidence.
+HG-1 is complete: an authorized workflow-less activity launches through
+`ExecutionRuntime`, authority is revalidated at launch, revocation terminates
+the domain, and every confirmed model survived contact without distorting
+either system. The next pressure is **workflow-side (HZ-1: workflow-authorized
+execution)**: a durable workflow activity consumes `Penghou.Hufu.Sandbox` so
+identity/authority/revision survive orchestration, retries, cancellation and
+recovery. No new sandbox capability is added for it.
 
 ## Consequences
 
