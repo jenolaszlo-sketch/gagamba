@@ -24,6 +24,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gagamba.Execution", "src\Ga
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gagamba.Execution.Tests", "tests\Gagamba.Execution.Tests\Gagamba.Execution.Tests.csproj", "{51F7B4FC-0CD0-46AE-B6A2-01F85E12903C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gagamba.Execution.Windows", "src\Gagamba.Execution.Windows\Gagamba.Execution.Windows.csproj", "{1FBD030B-B6F1-4607-BD70-8FC3575CB1A0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gagamba.Execution.Windows.Tests", "tests\Gagamba.Execution.Windows.Tests\Gagamba.Execution.Windows.Tests.csproj", "{F00B57A7-05B1-4C46-B2AB-18BE5BBF236A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,5 +78,13 @@ Global
 		{51F7B4FC-0CD0-46AE-B6A2-01F85E12903C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51F7B4FC-0CD0-46AE-B6A2-01F85E12903C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51F7B4FC-0CD0-46AE-B6A2-01F85E12903C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FBD030B-B6F1-4607-BD70-8FC3575CB1A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FBD030B-B6F1-4607-BD70-8FC3575CB1A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FBD030B-B6F1-4607-BD70-8FC3575CB1A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FBD030B-B6F1-4607-BD70-8FC3575CB1A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F00B57A7-05B1-4C46-B2AB-18BE5BBF236A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F00B57A7-05B1-4C46-B2AB-18BE5BBF236A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F00B57A7-05B1-4C46-B2AB-18BE5BBF236A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F00B57A7-05B1-4C46-B2AB-18BE5BBF236A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

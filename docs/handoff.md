@@ -1,6 +1,6 @@
 # Gagamba handoff
 
-Updated 2026-10-05 for GP-3 (provider SPI + opaque handles) on top of GP-2, GM-1A, GQ-1.
+Updated 2026-10-05 for GW-2 (Windows provider over Job Objects, 10 tests) on top of GP-3, GM-1A, GQ-1.
 
 ## User direction
 
@@ -26,7 +26,8 @@ Develop Gagamba alone as an independently useful .NET sandbox library. Windows, 
 - GL-1A Linux lifecycle matrix green (`spikes/Gl1aLife`, shell+python only, no .NET/gcc): PG addressable but no owner-death/containment; PDEATHSIG direct coupling only (root-only vs cascade); cgroup v2 recursive kill but no auto owner-death; L14 watchdog composition works as constructed ownership. GP-2 contract extraction comes after GM-1A, never before.
 - GM-1A macOS verdict (`spikes/Gm1aLife`, `macos-latest` arm64): PG works; launchd cleans same-PG on job death (M7) but escapees survive (M8); job outlives its client (M10); `bootout` cleans, `stop` doesn't (M9); watchdog+PG composes without containment (M11/M12). macOS primitive weakest of the three — GP-2 must be capabilities-based, never `IProcessJob`.
 - GP-2 capabilities contract extracted (`src/Gagamba.Execution` + tests): six capabilities, Absent/Partial/Full × Native/Constructed/None, per-platform matrix with evidence, required/preferred negotiation, fail-closed, no `IsSandboxed` (mechanically enforced). Strict coding agent: Windows only. Owner-death: native Windows, composed elsewhere (never equated).
-- GP-3 provider SPI defined (`IExecutionProvider` + opaque handles, 13 tests): negotiation → preparation → launch → lifecycle control → disposal, issuance validation, disposal rules. No provider implementation; GW-2 (Windows) is next as its first consumer.
+- GP-3 provider SPI defined (`IExecutionProvider` + opaque handles, 13 tests): negotiation → preparation → launch → lifecycle control → disposal, issuance validation, disposal rules.
+- GW-2 Windows provider live (`src/Gagamba.Execution.Windows` + 10 tests): suspend-assign-resume, kill-on-close, exclusive env, single-use tokens, idempotent terminate, opaque handles; tree-kill/root-exit/dispose/env/foreign/probe coverage without PIDs. GP-3 survived contact unchanged. Next: GL-2/GM-2 providers, then conformance.
 - Current shell chat may still be rooted in Solo. Use the Gagamba path explicitly; Solo's planning staging files are not the source of truth. Prefer opening the next coding session directly in Gagamba so its workspace permissions match the work.
 
 ## Read in this order
@@ -51,9 +52,8 @@ Verified GW-1A/GW-1B 2026-10-04 (Windows host, spike-only; no provider qualified
 
 ## Exact next task
 
-Continue **all platforms evidenced + GP-2 contracted**:
-next is GP-3/GW-2 providers (managed core against the contract), then
-GL-2/GM-2 and GQ-1/GR-1 conformance. Decided, no further experiments needed: loopback as `offline+loopback`
+Continue **contracts + Windows provider done (GP-2/GP-3/GW-2)**:
+next is GL-2/GM-2 providers against the same SPI, then GR-1 conformance. Decided, no further experiments needed: loopback as `offline+loopback`
 profile capability, dotnet SCM probing restricted, msys ro drive-root
 grant transitional, multi-grant prep semantics, kernel job-object
 ownership, watchdog compositions constructed-not-kernel. Keep identities

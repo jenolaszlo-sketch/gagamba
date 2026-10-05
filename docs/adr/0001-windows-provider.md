@@ -188,3 +188,7 @@ missing mechanisms reject before target dispatch.
   abstraction above; breakaway/nested-job cases verified working, including
   self-jobbed hosts. No descendant outlives the domain via parent exit or
   supervisor crash.
+- GW-2 implements it: `src/Gagamba.Execution.Windows` (`IExecutionProvider`)
+  with suspend-assign-resume, exclusive caller-built environment
+  (`CREATE_UNICODE_ENVIRONMENT` is mandatory for custom blocks), single-use
+  preparations, idempotent terminate, opaque handles. GP-3 unchanged.

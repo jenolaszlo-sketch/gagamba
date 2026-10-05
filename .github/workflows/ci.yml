@@ -78,6 +78,9 @@ jobs:
       - name: xUnit contract tests (GP-2 execution domain, pure logic)
         run: dotnet test tests/Gagamba.Execution.Tests/Gagamba.Execution.Tests.csproj -c $env:CONFIGURATION --nologo
         shell: pwsh
+      - name: xUnit provider tests (GW-2 Windows, skips off-Windows)
+        run: dotnet test tests/Gagamba.Execution.Windows.Tests/Gagamba.Execution.Windows.Tests.csproj -c $env:CONFIGURATION --nologo
+        shell: pwsh
       - name: GQ-1 job-ownership unit tests (Windows-only, skip elsewhere)
         run: dotnet test spikes/Gw1bLaunch.Tests/Gw1bLaunch.Tests.csproj -c $env:CONFIGURATION --nologo
         shell: pwsh
