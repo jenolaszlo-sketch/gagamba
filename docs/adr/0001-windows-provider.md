@@ -183,6 +183,8 @@ missing mechanisms reject before target dispatch.
   workload (e.g. test runners). Least privilege intact.
 - The msys read-only drive-root grant is a transitional compatibility
   concession (adapter quirk), not the intended filesystem model.
-- GQ-1 contract direction: kernel-backed descendant ownership via Job
-  Objects (`KILL_ON_JOB_CLOSE`), supervisor as the abstraction above;
-  breakaway/nested-job cases still to verify.
+- GQ-1 contract verified (not just direction): kernel-backed descendant
+  ownership via Job Objects (`KILL_ON_JOB_CLOSE`), supervisor as the
+  abstraction above; breakaway/nested-job cases verified working, including
+  self-jobbed hosts. No descendant outlives the domain via parent exit or
+  supervisor crash.

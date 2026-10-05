@@ -1,6 +1,6 @@
 # Gagamba handoff
 
-Updated 2026-10-04 for GW-1B slice 4 (encoder, crash recovery, stability, workloads) plus a review pass, then GW-1B-L5 (git-getcwd resolution, harness pipe-drain fix), GW-1B-L6 (dotnet exit-1 mechanism) and GW-1B-L7 (resident-runner topology verdict per experiment spec). Start the next session in `C:\Users\Laszlos\source\repos\Gagamba`.
+Updated 2026-10-05 for GQ-1 (job-object ownership proven, all 8 acceptance phases) on top of GW-1B-L8, CI-1, L5-L7. Start the next session in `C:\Users\Laszlos\source\repos\Gagamba`.
 
 ## User direction
 
@@ -20,6 +20,7 @@ Develop Gagamba alone as an independently useful .NET sandbox library. Windows, 
 - GW-1B-L5 git resolution: the staged-closure pattern is proven (staged `git --version` exits 0 in-sandbox) but every other git command dies `128` with `fatal: Unable to read current working directory: Permission denied` — ancestor dirs (`C:\`, profile) deny list access under AppContainer, confirmed by an elevated ProcMon capture. Fixed the harness pipe-drain gap (`RunPipedAsync` now drains when a child ran) that had hidden the fatal; trimmed the leg's bisect scaffolding. **Closed**: with authorized broad ro grants, ro `C:\` alone turns the full workload green (true HEAD + clean status); the profile tree is unbindable and poisons any spec containing it. Provider rule: ro drive-root grants, closures outside profile trees.
 - GW-1B-L6 dotnet resolution: a new `L3-WORKLOAD-PIDPROBE` leg (manifest v6 = 20 IDs) stages a self-contained probe that exits 0 in-sandbox. Self-introspection works, but only `[System Process]` + self are visible; `GetProcessById(parent)` throws the verbatim dotnet `ArgumentException`. The CLI installer probe kills it, not the runtime — provider direction is self-contained managed closures.
 - GW-1B-L7 runner topology (per spec): `L5-SANDBOX-PARENT` (manifest v7 = 21 IDs) proves nested creation, same-domain visibility, nested confinement, `--list-sdks`/`--list-runtimes` and offline `build` under a generic resident runner. The package-readability hunt closed on a broken fixture (missing `using`, host fails too); `dotnet test` hangs on TCP-loopback handshake denied by the offline profile (policy, not quirk). Model adopted: sandbox execution domain → resident runner → tool tree; environment is a granted resource.
+- GQ-1 job ownership proven: `L5-JOB-OWNERSHIP` (manifest v9 = 23 IDs), all 8 acceptance phases green (terminate, close-kill, exit-code proof, crashed-supervisor cleanup, nesting incl. self-jobbed hosts, incompatible-assign handling). Contract: no descendant outlives the domain via parent exit or supervisor crash.
 - Current shell chat may still be rooted in Solo. Use the Gagamba path explicitly; Solo's planning staging files are not the source of truth. Prefer opening the next coding session directly in Gagamba so its workspace permissions match the work.
 
 ## Read in this order
@@ -44,16 +45,14 @@ Verified GW-1A/GW-1B 2026-10-04 (Windows host, spike-only; no provider qualified
 
 ## Exact next task
 
-Continue **GW-1B (engine findings)** in this order: (1) CI-1 real
-build/unit workflow (tests whether the sandbox serves a real workflow);
-(2) GQ-1 job-object descendant ownership (`KILL_ON_JOB_CLOSE`,
-supervisor above; verify breakaway/nested cases). Decided, no further
-experiments needed: loopback as `offline+loopback` profile capability,
-dotnet SCM probing restricted, msys ro drive-root grant transitional,
-multi-grant prep semantics with tuple-dependent INVALID_DATA retry.
-Then GL-1A (separate Ubuntu WSL2) and GM-1A (macOS probe). Keep
-identities disposable and profiles deleted; never modify the host
-opportunistically.
+Continue **GW-1B/GQ-1 done (16–18/23 green, rest understood constraints)**:
+next is GL-1A (separate Ubuntu WSL2 install + namespace/seccomp inventory,
+a host setup step) or GM-1A (bounded macOS runner probe), then GP-2
+contracts. Decided, no further experiments needed: loopback as
+`offline+loopback` profile capability, dotnet SCM probing restricted,
+msys ro drive-root grant transitional, multi-grant prep semantics,
+kernel job-object ownership. Keep identities disposable and profiles
+deleted; never modify the host opportunistically.
 
 Before executing experiments that alter host ACLs/users/firewall or install a runtime, prepare the exact setup/cleanup implementation and inspect the task's authorization. No permission prompt is required merely to write code, read state or run safe fixtures. Keep privileged setup separate and attributable.
 

@@ -105,6 +105,86 @@ internal static class Native
     [DllImport("kernel32.dll")]
     public static extern uint GetProcessId(IntPtr hProcess);
 
+    // Plain Win32 process + Job Object API for GQ-1 ownership (not the
+    // sandbox API): suspend-launch, assign-before-resume (no escape
+    // window), kill-on-close, terminate. No quotas, no UI limits.
+    public const uint CREATE_SUSPENDED = 0x4;
+    public const int JobObjectExtendedLimitInformationClass = 9;
+    public const uint JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE = 0x2000;
+    // Deliberately never set: breakaway would defeat tree ownership.
+    public const uint JOB_OBJECT_LIMIT_BREAKAWAY_OK = 0x8;
+    public const uint JOB_OBJECT_LIMIT_SILENT_BREAKAWAY_OK = 0x1000;
+    public const uint ERROR_ACCESS_DENIED = 5;
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool CreateProcessW(
+        string? applicationName,
+        System.Text.StringBuilder commandLine,
+        IntPtr processAttributes,
+        IntPtr threadAttributes,
+        [MarshalAs(UnmanagedType.Bool)] bool inheritHandles,
+        uint creationFlags,
+        IntPtr environment,
+        string? currentDirectory,
+        ref StartupInfo startupInfo,
+        out ProcessInformation processInformation);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    public static extern uint ResumeThread(IntPtr hThread);
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    public static extern IntPtr CreateJobObjectW(IntPtr jobAttributes, string? name);
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct JobObjectBasicLimitInformation
+    {
+        public long PerProcessUserTimeLimit;
+        public long PerJobUserTimeLimit;
+        public uint LimitFlags;
+        public UIntPtr MinimumWorkingSetSize;
+        public UIntPtr MaximumWorkingSetSize;
+        public uint ActiveProcessLimit;
+        public UIntPtr Affinity;
+        public uint PriorityClass;
+        public uint SchedulingClass;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct IoCounters
+    {
+        public ulong ReadOperationCount;
+        public ulong WriteOperationCount;
+        public ulong OtherOperationCount;
+        public ulong ReadTransferCount;
+        public ulong WriteTransferCount;
+        public ulong OtherTransferCount;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct JobObjectExtendedLimitInformation
+    {
+        public JobObjectBasicLimitInformation BasicLimitInformation;
+        public IoCounters IoInfo;
+        public UIntPtr ProcessMemoryLimit;
+        public UIntPtr JobMemoryLimit;
+        public UIntPtr PeakProcessMemoryUsed;
+        public UIntPtr PeakJobMemoryUsed;
+    }
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool SetInformationJobObject(IntPtr hJob, int jobObjectInformationClass,
+        ref JobObjectExtendedLimitInformation jobObjectInformation, uint cbJobObjectInformationLength);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool AssignProcessToJobObject(IntPtr hJob, IntPtr hProcess);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool TerminateJobObject(IntPtr hJob, uint exitCode);
+
     // ToolHelp process enumeration for the supervisor sweep (no job handle is
     // returned by the launch API, so descendants are found via parent PIDs).
     public const uint TH32CS_SNAPPROCESS = 0x2;

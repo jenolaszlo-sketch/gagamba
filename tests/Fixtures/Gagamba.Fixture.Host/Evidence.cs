@@ -36,14 +36,15 @@ public static class ProbeManifest
 
 public static class LaunchManifest
 {
-    public const int Version = 8;
+    public const int Version = 9;
 
     // Trusted mandatory IDs for GW-1B launch work: slice 1 (schema pin,
     // verified spec build, launch staircase with I/O effect, cleanup proof),
     // slice 2 (denial with controls, tree effect/stop, races, transport) and
     // slice 3 (pipes, supervisor sweep, workloads) and slice 4 (crash
     // recovery, git, conditional build) plus the L5 pid-probe leg, the
-    // L5 sandbox-parent runner topology leg, and the L8 grant-shape leg.
+    // L5 sandbox-parent runner topology leg, the L8 grant-shape leg, and
+    // the GQ-1 job-ownership leg.
     public static readonly IReadOnlyList<string> MandatoryIds = new[]
     {
         "L1-SCHEMA-PIN",
@@ -63,6 +64,7 @@ public static class LaunchManifest
         "L3-WORKLOAD-DOTNET",
         "L3-WORKLOAD-PIDPROBE",
         "L5-SANDBOX-PARENT",
+        "L5-JOB-OWNERSHIP",
         "L1-GRANT-SHAPE",
         "L4-CRASH-RECOVERY",
         "L4-WORKLOAD-GIT",

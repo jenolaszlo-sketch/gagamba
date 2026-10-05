@@ -74,6 +74,58 @@ internal static class LaunchStaircase
                 return 1;
             }
         }
+        // GQ-1 supervisor-death probe: create a kill-on-close job, launch a
+        // quick-exit root plus a sleeper in it, report PIDs, then die
+        // without cleanup (TerminateProcess on self). The kernel must kill
+        // the tree when our last job handle closes.
+        // Usage: crash-owner --ws <dir> --report <file>
+        if (args.Length >= 1 && args[0] == "crash-owner")
+        {
+            if (!OperatingSystem.IsWindows()) { Console.Error.WriteLine("crash-owner: Windows-only."); return 2; }
+            string coWs = Arg(args, "--ws") ?? "";
+            string coReport = Arg(args, "--report") ?? "";
+            if (coWs.Length == 0 || coReport.Length == 0 || !Directory.Exists(coWs)) return 2;
+            var (hCoJob, jCoDetail) = JobOwnership.CreateKillOnCloseJob();
+            if (hCoJob == IntPtr.Zero) { File.WriteAllText(coReport, "setup-failed " + jCoDetail); return 1; }
+            var (okR, dR, hRoot, rootPid) = JobOwnership.LaunchIntoJob(hCoJob, JobOwnership.CmdExe, "/d /c exit 0", coWs);
+            var (okS, dS, hSleep, sleepPid) = JobOwnership.LaunchIntoJob(hCoJob, JobOwnership.CmdExe, JobOwnership.SleepArgs, coWs);
+            bool rootExited = false;
+            if (okR) rootExited = Native.WaitForSingleObject(hRoot, 5000) == Native.WAIT_OBJECT_0;
+            bool sleepAlive = okS && !JobOwnership.IsDead(sleepPid);
+            File.WriteAllText(coReport,
+                $"rootPid={rootPid} rootOk={okR} rootExited={rootExited} sleepPid={sleepPid} sleepOk={okS} sleepAlive={sleepAlive}");
+            try { if (hRoot != IntPtr.Zero) Native.CloseHandle(hRoot); } catch { }
+            try { if (hSleep != IntPtr.Zero) Native.CloseHandle(hSleep); } catch { }
+            // hCoJob intentionally never closed: our death closes it.
+            Native.TerminateProcess(System.Diagnostics.Process.GetCurrentProcess().Handle, 99);
+            await Task.Delay(1); // unreachable
+            return 99;
+        }
+        // GQ-1 nesting probe: assumes the caller already placed us in an
+        // outer job. Creates an inner kill-on-close job, launches a sleeper
+        // in it, verifies membership, reports, exits NORMALLY (inner close
+        // on our exit must kill the sleeper — verified by the parent).
+        // Usage: nest-probe --ws <dir> --report <file>
+        if (args.Length >= 1 && args[0] == "nest-probe")
+        {
+            if (!OperatingSystem.IsWindows()) { Console.Error.WriteLine("nest-probe: Windows-only."); return 2; }
+            string npWs = Arg(args, "--ws") ?? "";
+            string npReport = Arg(args, "--report") ?? "";
+            if (npWs.Length == 0 || npReport.Length == 0 || !Directory.Exists(npWs)) return 2;
+            bool outerMember = JobOwnership.IsInJob(System.Diagnostics.Process.GetCurrentProcess().Handle);
+            var (hInner, jNpDetail) = JobOwnership.CreateKillOnCloseJob();
+            if (hInner == IntPtr.Zero)
+            {
+                File.WriteAllText(npReport, $"outerMember={outerMember} inner=denied {jNpDetail}");
+                return 1;
+            }
+            var (okS, dS, hSleep, sleepPid) = JobOwnership.LaunchIntoJob(hInner, JobOwnership.CmdExe, JobOwnership.SleepArgs, npWs);
+            bool inInner = okS && JobOwnership.IsPidInJob(sleepPid);
+            File.WriteAllText(npReport, $"outerMember={outerMember} sleepPid={sleepPid} sleepOk={okS} inInner={inInner}");
+            try { if (hSleep != IntPtr.Zero) Native.CloseHandle(hSleep); } catch { }
+            try { Native.CloseHandle(hInner); } catch { }
+            return (okS && inInner) ? 0 : 1;
+        }
         // Diagnostic: launch a wait-loop tree and sample liveness/visibility
         // every 500 ms for 20 s (root alive? visible? exit code? sleeper?),
         // then clean up. Diagnoses mid-run disappearances.
@@ -2043,6 +2095,279 @@ internal static class LaunchStaircase
             }
         });
 
+        // ---- L5-JOB-OWNERSHIP (kernel tree ownership, GQ-1) ----
+        // One Job Object per activity, KILL_ON_JOB_CLOSE, no breakaway
+        // flags, suspend-assign-resume (no escape window). J1 root-only
+        // terminate; J2 depth terminate; J3 close kills survivor; J4
+        // terminate exit-code proof; J5 close kills tree (dispose framing);
+        // J6 crashed supervisor leaves none; J7 nested-under-existing-job;
+        // J8 incompatible assignment fails closed. No quotas or telemetry.
+        await RunCase(collector, "L5-JOB-OWNERSHIP", async () =>
+        {
+            using var ws = FixtureWorkspace.Create("gw1b-job-" + runTag);
+            var notes = new List<string>();
+            bool jobsOk = true;
+            void Note(string tag, bool pass, string detail)
+            {
+                notes.Add($"{tag}={(pass ? "pass" : "FAIL")} {detail}");
+                if (!pass) jobsOk = false;
+            }
+            void Shut(IntPtr h) { try { if (h != IntPtr.Zero) Native.CloseHandle(h); } catch { } }
+            string selfJob = JobOwnership.IsInJob(System.Diagnostics.Process.GetCurrentProcess().Handle)
+                ? "self-jobbed" : "self-unjobbed";
+            // Depth tree (root->mid->ping) inside the given job. Returns the
+            // root PID/handle plus discovered member PIDs for verification.
+            async Task<(bool ok, string note, uint rootPid, IntPtr rootHandle, List<uint> members)> BuildTree(IntPtr hJob)
+            {
+                WriteBat(ws.Root, "jobroot.bat", "@echo off", "cmd /d /c call \"%~dp0jobmid.bat\"");
+                WriteBat(ws.Root, "jobmid.bat", "@echo off", "cmd /d /c ping -n 30 127.0.0.1 > NUL");
+                var (ok, d, hRoot, rootPid) = JobOwnership.LaunchIntoJob(hJob,
+                    JobOwnership.CmdExe, $"/d /c call \"{ws.Root}\\jobroot.bat\"", ws.Root);
+                var members = new List<uint>();
+                if (!ok) return (false, d, 0, IntPtr.Zero, members);
+                members.Add(rootPid);
+                var sw = Stopwatch.StartNew();
+                List<TreeMember> found = new();
+                while (sw.ElapsedMilliseconds < 5000)
+                {
+                    found = Supervisor.DescendantsOf(rootPid)
+                        .Where(m => m.Exe.Equals("cmd.exe", StringComparison.OrdinalIgnoreCase)
+                            || m.Exe.StartsWith("ping", StringComparison.OrdinalIgnoreCase)).ToList();
+                    if (found.Count >= 2) break;
+                    await Task.Delay(200);
+                }
+                foreach (var m in found) members.Add(m.Pid);
+                return (true, $"{d} depth={found.Count}", rootPid, hRoot, members);
+            }
+            // J1 root only: terminate the job, root dies.
+            try
+            {
+                var (hJ, jd) = JobOwnership.CreateKillOnCloseJob();
+                if (hJ == IntPtr.Zero) Note("J1-root-only", false, jd);
+                else
+                {
+                    var (ok, d, hP, pid) = JobOwnership.LaunchIntoJob(hJ, JobOwnership.CmdExe, JobOwnership.SleepArgs, ws.Root);
+                    bool inJob = ok && JobOwnership.IsPidInJob(pid);
+                    bool dead = false;
+                    if (ok && inJob) { Native.TerminateJobObject(hJ, 99); dead = JobOwnership.WaitAllDead([pid], 5000); }
+                    Shut(hP); Shut(hJ);
+                    Note("J1-root-only", ok && inJob && dead, $"{d} inJob={inJob} dead={dead}");
+                }
+            }
+            catch (Exception ex) { Note("J1-root-only", false, $"fault {ex.GetType().Name}"); }
+            // J2 depth: root->mid->ping all in job, terminate kills all.
+            try
+            {
+                var (hJ, jd) = JobOwnership.CreateKillOnCloseJob();
+                if (hJ == IntPtr.Zero) Note("J2-depth", false, jd);
+                else
+                {
+                    var (ok, d, rootPid, hRoot, members) = await BuildTree(hJ);
+                    bool allIn = ok && members.Count >= 3 && members.All(JobOwnership.IsPidInJob);
+                    bool dead = false;
+                    if (allIn) { Native.TerminateJobObject(hJ, 99); dead = JobOwnership.WaitAllDead(members, 10000); }
+                    Shut(hRoot); Shut(hJ);
+                    Note("J2-depth", allIn && dead, $"{d} allIn={allIn} dead={dead}");
+                }
+            }
+            catch (Exception ex) { Note("J2-depth", false, $"fault {ex.GetType().Name}"); }
+            // J3 close kills the survivor (no terminate call at all).
+            try
+            {
+                var (hJ, jd) = JobOwnership.CreateKillOnCloseJob();
+                if (hJ == IntPtr.Zero) Note("J3-close-survivor", false, jd);
+                else
+                {
+                    var (ok, d, hP, pid) = JobOwnership.LaunchIntoJob(hJ, JobOwnership.CmdExe, JobOwnership.SleepArgs, ws.Root);
+                    bool alive = ok && !JobOwnership.IsDead(pid);
+                    bool inJob = alive && JobOwnership.IsPidInJob(pid);
+                    bool dead = false;
+                    if (inJob) { Shut(hJ); hJ = IntPtr.Zero; dead = JobOwnership.WaitAllDead([pid], 10000); }
+                    Shut(hP); Shut(hJ);
+                    Note("J3-close-survivor", inJob && dead, $"{d} alive={alive} inJob={inJob} deadAfterClose={dead}");
+                }
+            }
+            catch (Exception ex) { Note("J3-close-survivor", false, $"fault {ex.GetType().Name}"); }
+            // J4 terminate exit-code proof: OUR code (99) marks the death.
+            try
+            {
+                var (hJ, jd) = JobOwnership.CreateKillOnCloseJob();
+                if (hJ == IntPtr.Zero) Note("J4-exit-code", false, jd);
+                else
+                {
+                    var (ok, d, hP, pid) = JobOwnership.LaunchIntoJob(hJ, JobOwnership.CmdExe, JobOwnership.SleepArgs, ws.Root);
+                    bool dead = false;
+                    uint code = 0;
+                    if (ok)
+                    {
+                        Native.TerminateJobObject(hJ, 99);
+                        dead = JobOwnership.WaitAllDead([pid], 5000);
+                        JobOwnership.TryExitCode(pid, out code);
+                    }
+                    Shut(hP); Shut(hJ);
+                    Note("J4-exit-code", dead && code == 99, $"{d} dead={dead} code={code}");
+                }
+            }
+            catch (Exception ex) { Note("J4-exit-code", false, $"fault {ex.GetType().Name}"); }
+            // J5 dispose framing: closing the owner handle kills the tree.
+            try
+            {
+                var (hJ, jd) = JobOwnership.CreateKillOnCloseJob();
+                if (hJ == IntPtr.Zero) Note("J5-dispose-tree", false, jd);
+                else
+                {
+                    var (ok, d, rootPid, hRoot, members) = await BuildTree(hJ);
+                    bool dead = false;
+                    if (ok && members.Count >= 3)
+                    {
+                        Shut(hJ); hJ = IntPtr.Zero; // dispose the owner: kernel kills the tree
+                        dead = JobOwnership.WaitAllDead(members, 10000);
+                    }
+                    Shut(hRoot); Shut(hJ);
+                    Note("J5-dispose-tree", dead, $"{d} deadAfterDispose={dead}");
+                }
+            }
+            catch (Exception ex) { Note("J5-dispose-tree", false, $"fault {ex.GetType().Name}"); }
+            // J6 crashed supervisor leaves none (helper dies by itself).
+            try
+            {
+                string? selfExe = Environment.ProcessPath;
+                if (string.IsNullOrEmpty(selfExe) || !File.Exists(selfExe))
+                {
+                    Note("J6-crash-owner", false, "self exe path unavailable");
+                }
+                else
+                {
+                    string report = Path.Combine(ws.Root, "crash-report.txt");
+                    var helper = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(selfExe,
+                        $"crash-owner --ws \"{ws.Root}\" --report \"{report}\"")
+                    { WorkingDirectory = ws.Root, UseShellExecute = false });
+                    if (helper is null) { Note("J6-crash-owner", false, "helper failed to start"); }
+                    else
+                    {
+                    uint helperPid = (uint)helper.Id;
+                    string rep = "";
+                    var sw = Stopwatch.StartNew();
+                    while (sw.ElapsedMilliseconds < 10000 && rep.Length == 0)
+                    {
+                        if (File.Exists(report)) rep = File.ReadAllText(report);
+                        else await Task.Delay(200);
+                    }
+                    // key=value space-separated report
+                    uint rootPid = 0, sleepPid = 0;
+                    bool rootExited = false, sleepAlive = false;
+                    foreach (string kv in rep.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        var parts = kv.Split('=', 2);
+                        if (parts.Length != 2) continue;
+                        if (parts[0] == "rootPid") uint.TryParse(parts[1], out rootPid);
+                        if (parts[0] == "sleepPid") uint.TryParse(parts[1], out sleepPid);
+                        if (parts[0] == "rootExited") bool.TryParse(parts[1], out rootExited);
+                        if (parts[0] == "sleepAlive") bool.TryParse(parts[1], out sleepAlive);
+                    }
+                    bool helperDead = JobOwnership.WaitAllDead([helperPid], 10000);
+                    bool treeDead = sleepPid != 0 && JobOwnership.WaitAllDead([sleepPid], 10000);
+                    if (!treeDead && sleepPid != 0) KillByPid(sleepPid); // contain a violation, loudly recorded
+                    try { helper.Dispose(); } catch { }
+                    Note("J6-crash-owner", rep.Length > 0 && rootExited && sleepAlive && helperDead && treeDead,
+                        $"report=[{rep}] helperDead={helperDead} treeDead={treeDead}");
+                    } // end else (helper started)
+                }
+            }
+            catch (Exception ex) { Note("J6-crash-owner", false, $"fault {ex.GetType().Name}"); }
+            // J7 nested under an existing job (outer owned here).
+            try
+            {
+                string? selfExe = Environment.ProcessPath;
+                var (hOuter, jd) = JobOwnership.CreateKillOnCloseJob();
+                if (hOuter == IntPtr.Zero || string.IsNullOrEmpty(selfExe) || !File.Exists(selfExe))
+                {
+                    Note("J7-nested", false, $"setup: {jd} exe={selfExe is not null}");
+                    Shut(hOuter);
+                }
+                else
+                {
+                    string report = Path.Combine(ws.Root, "nest-report.txt");
+                    var (okH, dH, hHelper, helperPid) = JobOwnership.LaunchIntoJob(hOuter, selfExe,
+                        $"nest-probe --ws \"{ws.Root}\" --report \"{report}\"", ws.Root);
+                    bool helperOk = false;
+                    uint innerPid = 0;
+                    bool outerMember = false, inInner = false, innerDead = false;
+                    if (okH)
+                    {
+                        bool exited = Native.WaitForSingleObject(hHelper, 30000) == Native.WAIT_OBJECT_0;
+                        helperOk = exited && Native.GetExitCodeProcess(hHelper, out uint hc) && hc == 0;
+                        var sw = Stopwatch.StartNew();
+                        string rep = "";
+                        while (sw.ElapsedMilliseconds < 5000 && rep.Length == 0)
+                        {
+                            if (File.Exists(report)) rep = File.ReadAllText(report);
+                            else await Task.Delay(200);
+                        }
+                        foreach (string kv in rep.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            var parts = kv.Split('=', 2);
+                            if (parts.Length != 2) continue;
+                            if (parts[0] == "sleepPid") uint.TryParse(parts[1], out innerPid);
+                            if (parts[0] == "outerMember") bool.TryParse(parts[1], out outerMember);
+                            if (parts[0] == "inInner") bool.TryParse(parts[1], out inInner);
+                        }
+                        // Helper exited normally closes inner: sleeper dead?
+                        if (innerPid != 0) innerDead = JobOwnership.WaitAllDead([innerPid], 5000);
+                    }
+                    Shut(hHelper); Shut(hOuter);
+                    Note("J7-nested", helperOk && outerMember && inInner && innerDead,
+                        $"{selfJob} helperExit={helperOk} outerMember={outerMember} inInner={inInner} innerDead={innerDead}");
+                }
+            }
+            catch (Exception ex) { Note("J7-nested", false, $"fault {ex.GetType().Name}"); }
+            // J8 incompatible assignment fails closed (no silent fallback).
+            try
+            {
+                var (hA, jdA) = JobOwnership.CreateKillOnCloseJob();
+                var (hB, jdB) = JobOwnership.CreateKillOnCloseJob();
+                if (hA == IntPtr.Zero || hB == IntPtr.Zero)
+                {
+                    Note("J8-incompatible", false, $"setup {jdA} {jdB}");
+                    Shut(hA); Shut(hB);
+                }
+                else
+                {
+                    var plain = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(
+                        JobOwnership.CmdExe, JobOwnership.SleepArgs) { WorkingDirectory = ws.Root, UseShellExecute = false });
+                    if (plain is null)
+                    {
+                        Note("J8-incompatible", false, "plain target failed to start");
+                        Shut(hA); Shut(hB);
+                    }
+                    else
+                    {
+                    uint plainPid = (uint)plain.Id;
+                    bool firstOk = Native.AssignProcessToJobObject(hA, plain.Handle);
+                    bool secondOk = Native.AssignProcessToJobObject(hB, plain.Handle);
+                    int secondErr = secondOk ? 0 : Marshal.GetLastWin32Error();
+                    bool inA = secondOk && Native.IsProcessInJob(plain.Handle, hA, out bool bA) && bA;
+                    bool inB = secondOk && Native.IsProcessInJob(plain.Handle, hB, out bool bB) && bB;
+                    bool nestedBoth = inA && inB && JobOwnership.IsPidInJob(plainPid);
+                    bool classified = !secondOk && secondErr == (int)Native.ERROR_ACCESS_DENIED;
+                    // Contain everything via job A regardless of outcome.
+                    Native.TerminateJobObject(hA, 99);
+                    bool dead = JobOwnership.WaitAllDead([plainPid], 5000);
+                    try { plain.Dispose(); } catch { }
+                    Shut(hA); Shut(hB);
+                    Note("J8-incompatible", firstOk && dead && (classified || nestedBoth),
+                        $"first={firstOk} second={secondOk} err=0x{secondErr:X} nestedBoth={nestedBoth} dead={dead}");
+                    } // end else (plain started)
+                }
+            }
+            catch (Exception ex) { Note("J8-incompatible", false, $"fault {ex.GetType().Name}"); }
+            bool wsOk = ws.DisposeAndReport() == "Confirmed" && !Directory.Exists(ws.Root);
+            cleanups.Add(("jobownership", new(true, true, "deleted-never-materialized(no-profiles)", wsOk)));
+            return jobsOk
+                ? (true, $"job ownership ({selfJob}): {string.Join("; ", notes)}", (string?)null)
+                : (false, $"job ownership ({selfJob}): {string.Join("; ", notes)}", (string?)null);
+        });
+
         // ---- L4-WORKLOAD-BUILD (offline compile; gated on runtime) ----
         if (!dotnetWorks)
         {
@@ -2286,7 +2611,7 @@ internal static class LaunchStaircase
         {
             var notes = cleanups.Select(c =>
                 $"{c.Leg}:reaped={c.Cleanup.ChildReaped}/profile={c.Cleanup.ProfileDisposition}/ws={c.Cleanup.WorkspaceDeleted}");
-            bool all = cleanups.Count == 19 && cleanups.All(c =>
+            bool all = cleanups.Count == 20 && cleanups.All(c =>
                 c.Cleanup.ChildReaped
                 && (c.Cleanup.ProfileDisposition.StartsWith("deleted(")
                     || c.Cleanup.ProfileDisposition.StartsWith("deleted-never-materialized("))

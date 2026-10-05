@@ -28,7 +28,8 @@ Updated 2026-10-04. Status definitions: Complete = stated artifact exists; Ready
 | GQ-1 | Direction set — job objects | Kernel-backed descendant ownership is the contract: Job Objects (`KILL_ON_JOB_CLOSE`), supervisor as the Gagamba abstraction above. Covers natural root exit and supervisor crash; verify no breakaway/nested-job cases |
 | GP-2 | Held on all backend spike evidence | Review public contracts and provider decisions |
 | GP-3 / GW-2 / GL-2 / GM-2 | Pending | Managed core and actual providers after reviewed contracts |
-| GQ-1 / GR-1 | Pending | Full conformance, independent review and isolated package qualification |
+| GQ-1 | Complete 2026-10-05 — kernel tree ownership proven | `L5-JOB-OWNERSHIP` (manifest v9 = 23 IDs): one job per activity, kill-on-close, no breakaway, suspend-assign-resume. All 8 acceptance phases green incl. crashed-supervisor cleanup and nested jobs (spike itself runs self-jobbed). Contract: no descendant outlives the domain via parent exit or supervisor crash — see [job-ownership evidence](evidence/windows-job-ownership-GQ-1.md) |
+| GR-1 | Pending | Full conformance, independent review and isolated package qualification |
 | Hufu/Luban integration | Deferred | Outside current project scope |
 
 The GP-1A/B and GW-1A/B slices refine the broader milestones in the [implementation plan](implementation-plan.md); they allow availability/minimal-launch research before full adversarial fixture completion. They do not relax backend acceptance criteria.
