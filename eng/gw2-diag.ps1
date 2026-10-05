@@ -88,8 +88,17 @@ $extra = @{
 }
 foreach ($k in $extra.Keys) { if ($extra[$k]) { $rich2[$k] = $extra[$k] } }
 Test-Launch 'rich2' $rich2
+$rich3 = @{}
+foreach ($k in $rich2.Keys) { $rich3[$k] = $rich2[$k] }
+$rich3['ComSpec'] = $env:ComSpec
+Test-Launch 'rich3+ComSpec' $rich3
+$rich4 = @{}
+foreach ($k in $rich3.Keys) { $rich4[$k] = $rich3[$k] }
+$rich4['PSModuleAnalysisCachePath'] = $env:PSModuleAnalysisCachePath
+$rich4['POWERSHELL_DISTRIBUTION_CHANNEL'] = $env:POWERSHELL_DISTRIBUTION_CHANNEL
+$rich4['PSModulePath'] = $env:PSModulePath
+Test-Launch 'rich4+PScache' $rich4
 $inh = @{}
 foreach ($k in [Environment]::GetEnvironmentVariables().Keys) { $inh[$k] = [Environment]::GetEnvironmentVariable($k) }
-Write-Host "inherited keys: $(($inh.Keys | Sort-Object) -join ',')"
 Test-Launch 'inherited' $inh
 Write-Host 'diag done'
