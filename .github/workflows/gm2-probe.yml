@@ -1,0 +1,16 @@
+# TEMPORARY GM-2 probe: launchd environment exactness. Deleted after the
+# verdict lands in docs/evidence/. Trigger manually; never part of CI.
+name: gm2-env-probe
+
+on:
+  workflow_dispatch:
+
+jobs:
+  env-probe:
+    name: launchd env exactness probe
+    runs-on: macos-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run GM-2 env probe
+        run: python3 spikes/Gm2Env/probe.py "$(pwd)/artifacts/gm2env"
