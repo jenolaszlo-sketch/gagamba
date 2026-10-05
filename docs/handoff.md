@@ -1,6 +1,6 @@
 # Gagamba handoff
 
-Updated 2026-10-05 for GL-1A (Linux lifecycle matrix green, all 14 legs) on top of GQ-1, L8, CI-1, L5-L7. Start the next session in `C:\Users\Laszlos\source\repos\Gagamba`.
+Updated 2026-10-05 for GM-1A (macOS lifecycle verdict: launchd cleans same-PG only, escape survives, watchdog+PG composes) — all three platforms now evidenced; GP-2 contract extraction is next.
 
 ## User direction
 
@@ -24,6 +24,7 @@ Develop Gagamba alone as an independently useful .NET sandbox library. Windows, 
 - CI-1 workflow exists: `Gagamba.sln` (9 projects incl. `Gw1bLaunch.Tests`) + `.github/workflows/ci.yml` (verify/build/unit/fixtures/probe/spike-smoke); spike gate asserts run-to-completion + valid evidence, not aggregate Passed. Remote signal pending first push run.
 - GQ-1 job ownership proven: `L5-JOB-OWNERSHIP` (manifest v9 = 23 IDs), all 8 acceptance phases green (terminate, close-kill, exit-code proof, crashed-supervisor cleanup, nesting incl. self-jobbed hosts, incompatible-assign handling). J8 denial path unit-covered (invalid-handle forcing). Contract: no descendant outlives the domain via parent exit or supervisor crash.
 - GL-1A Linux lifecycle matrix green (`spikes/Gl1aLife`, shell+python only, no .NET/gcc): PG addressable but no owner-death/containment; PDEATHSIG direct coupling only (root-only vs cascade); cgroup v2 recursive kill but no auto owner-death; L14 watchdog composition works as constructed ownership. GP-2 contract extraction comes after GM-1A, never before.
+- GM-1A macOS verdict (`spikes/Gm1aLife`, `macos-latest` arm64): PG works; launchd cleans same-PG on job death (M7) but escapees survive (M8); job outlives its client (M10); `bootout` cleans, `stop` doesn't (M9); watchdog+PG composes without containment (M11/M12). macOS primitive weakest of the three — GP-2 must be capabilities-based, never `IProcessJob`.
 - Current shell chat may still be rooted in Solo. Use the Gagamba path explicitly; Solo's planning staging files are not the source of truth. Prefer opening the next coding session directly in Gagamba so its workspace permissions match the work.
 
 ## Read in this order
@@ -48,20 +49,19 @@ Verified GW-1A/GW-1B 2026-10-04 (Windows host, spike-only; no provider qualified
 
 ## Exact next task
 
-Continue **GW-1B/GQ-1 done (16–18/23 green, rest understood constraints)**:
-next is GL-1A (separate Ubuntu WSL2 install + namespace/seccomp inventory,
-a host setup step) or GM-1A (bounded macOS runner probe), then GP-2
-contracts. Decided, no further experiments needed: loopback as
-`offline+loopback` profile capability, dotnet SCM probing restricted,
-msys ro drive-root grant transitional, multi-grant prep semantics,
-kernel job-object ownership. Keep identities disposable and profiles
-deleted; never modify the host opportunistically.
+Continue **all three platforms evidenced (Windows GQ-1, Linux GL-1A, macOS GM-1A)**:
+next is GP-2 contract extraction — capabilities-based, never `IProcessJob`.
+Decided, no further experiments needed: loopback as `offline+loopback`
+profile capability, dotnet SCM probing restricted, msys ro drive-root
+grant transitional, multi-grant prep semantics, kernel job-object
+ownership, watchdog compositions constructed-not-kernel. Keep identities
+disposable and profiles deleted; never modify the host opportunistically.
 
 Before executing experiments that alter host ACLs/users/firewall or install a runtime, prepare the exact setup/cleanup implementation and inspect the task's authorization. No permission prompt is required merely to write code, read state or run safe fixtures. Keep privileged setup separate and attributable.
 
 ## Resume prompt
 
-> Continue standalone Gagamba in C:\Users\Laszlos\source\repos\Gagamba. Read AGENTS.md, docs/handoff.md, docs/work-queue.md, docs/security-model.md and docs/fixture-protocol.md first. GW-1B slice 4 is complete and reviewed; GW-1B-L5 resolved the git silent-128 (ancestor list-access gate, staged closures proven, harness drain fixed); GW-1B-L6 resolved the dotnet exit-1 (parent-PID query in the CLI installer probe, self-contained closures green). Remaining Windows gates: descendant stop on root exit, file-handle stdio, dotnet CLI host, and Git ancestor grants. Keep public APIs provisional, all restrictions fail-closed, Windows local testing first, Linux/macOS in scope, and Hufu/Luban integration deferred. Do not mistake fixture self-tests, upstream examples or Docker's outer restrictions for Gagamba enforcement. Inspect the repository state and preserve the original proposal.
+> Continue standalone Gagamba in C:\Users\Laszlos\source\repos\Gagamba. Read AGENTS.md, docs/handoff.md, docs/work-queue.md, docs/security-model.md and docs/fixture-protocol.md first. All three platforms evidenced: Windows job-object ownership (GQ-1), Linux lifecycle matrix (GL-1A), macOS lifecycle verdict (GM-1A: launchd cleans same-PG only, escape survives, watchdog+PG composes). Next is GP-2 capabilities-based contract extraction. Keep public APIs provisional, all restrictions fail-closed, and Hufu/Luban integration deferred. Do not mistake fixture self-tests, upstream examples or Docker's outer restrictions for Gagamba enforcement. Inspect the repository state and preserve the original proposal.
 
 ## Validation of this preparation
 
