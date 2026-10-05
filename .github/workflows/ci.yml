@@ -145,6 +145,9 @@ jobs:
     needs: fixtures
     runs-on: windows-latest
     timeout-minutes: 10
+    outputs:
+      verdict: ${{ steps.host.outputs.verdict }}
+      qualified: ${{ steps.host.outputs.qualified }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
@@ -152,6 +155,22 @@ jobs:
           dotnet-version: 10.0.x
       - name: Availability probe smoke entrypoint
         run: powershell -NoProfile -ExecutionPolicy Bypass -File eng/probe-smoke.ps1
+      # The probe verdict decides whether the launch spike can run at all.
+      # GitHub-hosted runners report MODULE-ABSENT (no processmodel.dll), so
+      # the spike is skipped rather than run for 25 minutes against a host
+      # that cannot launch. A qualified host (25H2+) turns it on.
+      - name: Classify host capability
+        id: host
+        shell: pwsh
+        run: |
+          $latest = Get-ChildItem artifacts/windows-probe-*.json | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+          if (-not $latest) { throw 'no probe report emitted' }
+          $j = Get-Content $latest.FullName -Raw | ConvertFrom-Json
+          $verdict = (($j.cleanup.diagnostics -replace '^\s*verdict=', '')).Trim()
+          $qualified = @('AVAILABLE', 'EXPORT-PRESENT-SCHEMA-UNPINNED') -contains $verdict
+          Write-Host "probe: verdict=$verdict qualified=$qualified"
+          "verdict=$verdict" >> $env:GITHUB_OUTPUT
+          "qualified=$($qualified.ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
       - name: Upload evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -163,6 +182,9 @@ jobs:
   spike:
     name: launch spike (windows)
     needs: probe
+    # Only a host with the experimental launch API can run the staircase;
+    # elsewhere the smoke would just churn until the timeout.
+    if: needs.probe.outputs.qualified == 'true'
     runs-on: windows-latest
     timeout-minutes: 25
     steps:
