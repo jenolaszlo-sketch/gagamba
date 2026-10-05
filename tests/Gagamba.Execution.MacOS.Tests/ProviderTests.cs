@@ -39,32 +39,47 @@ public sealed class ProviderTests : IAsyncLifetime
             "#!/bin/sh\ndir=\"$1\"\n" +
             "sh -c \"while true; do date +%s > \\\"$dir/L4.lock\\\"; sleep 1; done\" &\n" +
             "sleep 2\nexit 0\n");
-        // Escape target (python3: macOS ships no setsid(1)). Job root
-        // spawns a same-PG leaf, waits for it, then leaves the session:
-        // the leaf must die with the domain, the escapee must observably
-        // survive it (M8). Both exit on the stopfile (test cleanup).
+        // Escape target (python3: macOS ships no setsid(1)). The launchd
+        // job root is ALREADY a session leader, so setsid must come from a
+        // non-leader descendant (GM-1A method note): root spawns a same-PG
+        // leaf and a same-PG escaper; the escaper leaves the session. After
+        // bootout the same-PG leaf must die while the escaper observably
+        // survives (M8). All roles exit on the stopfile (test cleanup).
         await File.WriteAllTextAsync(Path.Combine(_ws, "esc.py"),
             "import os, sys, time\n" +
             "d = sys.argv[1]\n" +
+            "F = os.path.abspath(__file__)\n" +
             "stopfile = os.path.join(d, 'stopfile')\n" +
-            "leaf = os.spawnlp(os.P_NOWAIT, '/bin/sh', '/bin/sh', '-c',\n" +
-            "    'while [ ! -f \"' + stopfile + '\" ]; do '\n" +
-            "    'date +%s > \"' + d + '/hb-leaf\"; sleep 1; done')\n" +
-            "deadline = time.time() + 15\n" +
-            "while time.time() < deadline:\n" +
-            "    p = os.path.join(d, 'hb-leaf')\n" +
-            "    if os.path.exists(p) and time.time() - os.path.getmtime(p) < 5:\n" +
-            "        break\n" +
-            "    time.sleep(0.1)\n" +
-            "os.setsid()\n" +
-            "with open(os.path.join(d, 'ids-esc.txt'), 'w') as f:\n" +
-            "    f.write('pgid=%d sid=%d\\n' % (os.getpgid(0), os.getsid(0)))\n" +
-            "with open(os.path.join(d, 'ids-leaf.txt'), 'w') as f:\n" +
-            "    f.write('pgid=%d sid=%d\\n' % (os.getpgid(leaf), os.getsid(leaf)))\n" +
-            "while not os.path.exists(stopfile):\n" +
-            "    with open(os.path.join(d, 'hb-esc'), 'w') as f:\n" +
+            "mode = sys.argv[2]\n" +
+            "\n" +
+            "def beat(name):\n" +
+            "    with open(os.path.join(d, name), 'w') as f:\n" +
             "        f.write('%d\\n' % int(time.time()))\n" +
-            "    time.sleep(1)\n");
+            "\n" +
+            "if mode == 'root':\n" +
+            "    with open(os.path.join(d, 'ids-root.txt'), 'w') as f:\n" +
+            "        f.write('sid=%d\\n' % os.getsid(0))\n" +
+            "    os.spawnl(os.P_NOWAIT, sys.executable, sys.executable, F, d, 'leaf')\n" +
+            "    os.spawnl(os.P_NOWAIT, sys.executable, sys.executable, F, d, 'escaper')\n" +
+            "    while not os.path.exists(stopfile):\n" +
+            "        time.sleep(0.2)\n" +
+            "elif mode == 'leaf':\n" +
+            "    while not os.path.exists(stopfile):\n" +
+            "        beat('hb-leaf'); time.sleep(1)\n" +
+            "elif mode == 'escaper':\n" +
+            "    deadline = time.time() + 15\n" +
+            "    while time.time() < deadline and not os.path.exists(os.path.join(d, 'hb-leaf')):\n" +
+            "        time.sleep(0.1)\n" +
+            "    try:\n" +
+            "        os.setsid()\n" +
+            "    except OSError as ex:\n" +
+            "        with open(os.path.join(d, 'esc-error.txt'), 'w') as f:\n" +
+            "            f.write('%s\\n' % ex)\n" +
+            "        sys.exit(3)\n" +
+            "    with open(os.path.join(d, 'ids-esc.txt'), 'w') as f:\n" +
+            "        f.write('sid=%d\\n' % os.getsid(0))\n" +
+            "    while not os.path.exists(stopfile):\n" +
+            "        beat('hb-esc'); time.sleep(1)\n");
     }
 
     public async ValueTask DisposeAsync()
@@ -125,9 +140,12 @@ public sealed class ProviderTests : IAsyncLifetime
 
     private ExecutionHandle MustLaunch(string exe, string args, Dictionary<string, string>? env = null)
     {
+        // macOS grants UnitTermination as Partial/Native (PG-scoped; no
+        // subtree primitive) and SurvivesRootExit Full. Requiring Full
+        // native termination would (correctly) be rejected.
         var prep = _provider.Prepare(new ExecutionRequirements(new[]
         {
-            ExecutionRequirement.Require(ExecutionCapability.UnitTermination),
+            ExecutionRequirement.Require(ExecutionCapability.UnitTermination, CapabilityLevel.Partial),
             ExecutionRequirement.Require(ExecutionCapability.SurvivesRootExit),
         }));
         var accepted = prep as PrepareResult.Accepted;
@@ -311,14 +329,17 @@ public sealed class ProviderTests : IAsyncLifetime
     {
         if (!OperatingSystem.IsMacOS() || !Usable()) return;
         if (!File.Exists("/usr/bin/python3")) return;
-        var h = MustLaunch("/usr/bin/python3", $"\"{_ws}/esc.py\" \"{_ws}\"");
+        var h = MustLaunch("/usr/bin/python3", $"\"{_ws}/esc.py\" \"{_ws}\" root");
         try
         {
             Assert.True(await PollAsync(() => Fresh(Path.Combine(_ws, "hb-esc")), 15000),
-                "escaper heartbeat never fresh");
+                "escaper heartbeat never fresh (setsid from non-leader expected)");
+            Assert.False(File.Exists(Path.Combine(_ws, "esc-error.txt")),
+                "setsid failed: " + (File.Exists(Path.Combine(_ws, "esc-error.txt"))
+                    ? File.ReadAllText(Path.Combine(_ws, "esc-error.txt")) : ""));
             string escIds = File.ReadAllText(Path.Combine(_ws, "ids-esc.txt"));
-            string leafIds = File.ReadAllText(Path.Combine(_ws, "ids-leaf.txt"));
-            Assert.NotEqual(SidOf(leafIds), SidOf(escIds));
+            string rootIds = File.ReadAllText(Path.Combine(_ws, "ids-root.txt"));
+            Assert.NotEqual(SidOf(rootIds), SidOf(escIds));
             Assert.IsType<TerminateResult.Terminated>(_provider.Terminate(h));
             // M8 truth: the same-PG leaf dies with the domain, but the
             // session escapee observably survives it — escape, not kill.
