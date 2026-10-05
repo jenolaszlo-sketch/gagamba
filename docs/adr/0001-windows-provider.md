@@ -178,3 +178,11 @@ missing mechanisms reject before target dispatch.
   a mutually-visible domain (parent/child/self) while outside PIDs stay
   sealed. The runner is generic (exe + args + env); caller env does not
   cross the boundary, so the runner applies child env itself.
+- Network profiles: `offline` means no network including loopback;
+  `offline+loopback` adds localhost-only, requested explicitly per
+  workload (e.g. test runners). Least privilege intact.
+- The msys read-only drive-root grant is a transitional compatibility
+  concession (adapter quirk), not the intended filesystem model.
+- GQ-1 contract direction: kernel-backed descendant ownership via Job
+  Objects (`KILL_ON_JOB_CLOSE`), supervisor as the abstraction above;
+  breakaway/nested-job cases still to verify.

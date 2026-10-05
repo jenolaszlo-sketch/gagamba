@@ -44,13 +44,15 @@ Verified GW-1A/GW-1B 2026-10-04 (Windows host, spike-only; no provider qualified
 
 ## Exact next task
 
-Continue **GW-1B (engine findings)**: (1) decide the test-execution
-loopback question (VSTest needs 127.0.0.1 TCP; `build` is green, `test`
-hangs by policy) and the SCM-probing stance (`--info` tail only —
-classify CLI-core supported vs host-inspection restricted); (2) confirm
-the multi-grant-under-`%TEMP%` rule and document it as a
-preparation-time rejection; (3) design launcher-crash recovery beyond the
-supervisor (GQ-1 gate). Then GL-1A (separate Ubuntu WSL2) and GM-1A (macOS
+Continue **GW-1B (engine findings)** in this order: (1) confirm the
+`%TEMP%` multi-grant rule as prep-time semantics (multiple explicit
+grants, resolve/canonicalize, overlap/conflict rules — no singleton
+special-case); (2) CI-1 real build/unit workflow (tests whether the
+sandbox serves a real workflow); (3) GQ-1 job-object descendant ownership
+(`KILL_ON_JOB_CLOSE`, supervisor above; verify breakaway/nested cases).
+Decided, no further experiments needed: loopback as `offline+loopback`
+profile capability, dotnet SCM probing restricted, msys ro drive-root
+grant transitional. Then GL-1A (separate Ubuntu WSL2) and GM-1A (macOS
 probe). Keep identities disposable and profiles deleted; never modify the
 host opportunistically.
 
