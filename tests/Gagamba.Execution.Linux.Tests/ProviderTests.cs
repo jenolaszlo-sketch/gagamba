@@ -212,7 +212,7 @@ public sealed class ProviderTests : IAsyncLifetime
         Environment.SetEnvironmentVariable(ambient, "ambient-value");
         try
         {
-            var h = MustLaunch("/bin/sh", "-c \"env > env-out.txt\"",
+            var h = MustLaunch("/bin/sh", "-c \"env > env-out.tmp; mv env-out.tmp env-out.txt\"",
                 new Dictionary<string, string> { [marker] = "hello-lin" });
             Assert.True(await PollAsync(() => File.Exists(Path.Combine(_ws, "env-out.txt"))),
                 "env dump never appeared");
@@ -301,6 +301,24 @@ public sealed class ProviderTests : IAsyncLifetime
             }
         }
         Assert.True(offenders.Count == 0, "leaked native identity: " + string.Join(", ", offenders));
+    }
+
+    [Fact]
+    public async Task DiscardReclaimsPreparedCgroupAndIsIdempotent()
+    {
+        if (!OperatingSystem.IsLinux() || !Usable()) return;
+        // Warm up the one-time placement probe, then measure a clean baseline.
+        Assert.IsType<DiscardResult.Discarded>(_provider.Discard(MustPrepareSimple()));
+        int before = Directory.GetDirectories(Parent).Length;
+
+        var prep = MustPrepareSimple();
+        Assert.Equal(before + 1, Directory.GetDirectories(Parent).Length); // Prepare allocated one cgroup
+
+        Assert.IsType<DiscardResult.Discarded>(_provider.Discard(prep));
+        Assert.Equal(before, Directory.GetDirectories(Parent).Length);     // reclaimed
+        Assert.IsType<DiscardResult.Discarded>(_provider.Discard(prep));   // idempotent
+        Assert.IsType<LaunchResult.Failed>(_provider.Launch(prep,
+            new ProcessStartSpec("/bin/true", "", _ws, new Dictionary<string, string>())));
     }
 
     private PreparedExecution MustPrepareSimple()

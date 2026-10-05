@@ -15,7 +15,7 @@ public sealed class WindowsExecutionProvider : IExecutionProvider
 
     private readonly object _gate = new();
     private bool _disposed;
-    private readonly HashSet<Guid> _preparations = new();
+    private readonly Dictionary<Guid, OwnedJob> _preparations = new();
     private readonly Dictionary<Guid, OwnedJob> _executions = new();
 
     public PlatformCapabilities Describe() => WellKnownPlatforms.Windows;
@@ -27,32 +27,56 @@ public sealed class WindowsExecutionProvider : IExecutionProvider
             WellKnownPlatforms.Windows, requirements.Required, requirements.Preferred);
         if (!r.Accepted)
             return new PrepareResult.Rejected(r.Unmet);
+        // Allocate the domain at preparation so a caller that never launches
+        // can reclaim it explicitly through Discard.
+        var (job, jobError) = OwnedJob.Create();
+        if (job is null)
+            return new PrepareResult.Rejected(new[] { jobError });
         var prep = new PreparedExecution(
             WellKnownPlatforms.Windows.Platform, Guid.NewGuid(), r.Met);
-        lock (_gate) _preparations.Add(prep.PreparationId);
+        lock (_gate) _preparations[prep.PreparationId] = job;
         return new PrepareResult.Accepted(prep);
+    }
+
+    public DiscardResult Discard(PreparedExecution preparation)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (preparation.Provider != WellKnownPlatforms.Windows.Platform)
+            return new DiscardResult.Failed(
+                new[] { "unknown preparation: not issued by this provider" });
+        // Idempotent: a preparation already launched or discarded is a no-op.
+        OwnedJob? job;
+        lock (_gate) _preparations.Remove(preparation.PreparationId, out job);
+        try { job?.Dispose(); } catch { }
+        return new DiscardResult.Discarded(preparation);
     }
 
     public LaunchResult Launch(PreparedExecution prepared, ProcessStartSpec process)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
+        OwnedJob? job;
         lock (_gate)
         {
             if (prepared.Provider != WellKnownPlatforms.Windows.Platform
-                || !_preparations.Contains(prepared.PreparationId))
+                || !_preparations.Remove(prepared.PreparationId, out job))
                 return new LaunchResult.Failed(
                     new[] { "unknown preparation: not issued by this provider" });
-            // Single-use token: one Launch attempt consumes it, success or
-            // failure, so a preparation can never become a reusable authority.
-            _preparations.Remove(prepared.PreparationId);
+            // Single-use: consuming the preparation removes it above, success
+            // or failure, so it can never become a reusable authority.
         }
         if (string.IsNullOrWhiteSpace(process.Executable))
+        {
+            try { job.Dispose(); } catch { }
             return new LaunchResult.Failed(new[] { "no executable" });
+        }
         if (!TryBuildEnvironment(process.Environment, out IntPtr env, out string envError))
+        {
+            try { job.Dispose(); } catch { }
             return new LaunchResult.Failed(new[] { envError });
+        }
         try
         {
-            return LaunchInner(process, env);
+            return LaunchInner(job, process, env);
         }
         finally
         {
@@ -85,12 +109,14 @@ public sealed class WindowsExecutionProvider : IExecutionProvider
     public ValueTask DisposeAsync()
     {
         List<OwnedJob> owned;
+        List<OwnedJob> prepared;
         lock (_gate)
         {
             if (_disposed) return ValueTask.CompletedTask;
             _disposed = true;
             owned = new List<OwnedJob>(_executions.Values);
             _executions.Clear();
+            prepared = new List<OwnedJob>(_preparations.Values);
             _preparations.Clear();
         }
         // Closing each job fires KILL_ON_JOB_CLOSE: the kernel tears down
@@ -99,14 +125,16 @@ public sealed class WindowsExecutionProvider : IExecutionProvider
         {
             try { job.Dispose(); } catch { }
         }
+        // Unlaunched preparations hold a job handle; close it too.
+        foreach (var job in prepared)
+        {
+            try { job.Dispose(); } catch { }
+        }
         return ValueTask.CompletedTask;
     }
 
-    private LaunchResult LaunchInner(ProcessStartSpec process, IntPtr env)
+    private LaunchResult LaunchInner(OwnedJob job, ProcessStartSpec process, IntPtr env)
     {
-        var (job, jobError) = OwnedJob.Create();
-        if (job is null)
-            return new LaunchResult.Failed(new[] { jobError });
         var commandLine = new StringBuilder(32768);
         commandLine.Append('"').Append(process.Executable).Append("\" ").Append(process.Arguments);
         var si = new NativeMethods.StartupInfo { cb = Marshal.SizeOf<NativeMethods.StartupInfo>() };

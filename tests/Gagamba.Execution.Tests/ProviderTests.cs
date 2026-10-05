@@ -40,6 +40,15 @@ internal sealed class FakeProvider : IExecutionProvider
         return new PrepareResult.Accepted(prep);
     }
 
+    public DiscardResult Discard(PreparedExecution preparation)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (preparation.Provider != _profile.Platform)
+            return new DiscardResult.Failed(new[] { "unknown preparation: not issued by this provider" });
+        _preparations.Remove(preparation.PreparationId);
+        return new DiscardResult.Discarded(preparation);
+    }
+
     public LaunchResult Launch(PreparedExecution prepared, ProcessStartSpec process)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
@@ -118,6 +127,23 @@ public sealed class ProviderContractTests
     }
 
     [Fact]
+    public async Task DiscardReclaimsPreparationAndIsIdempotent()
+    {
+        await using var win = new FakeProvider(WellKnownPlatforms.Windows);
+        await using var mac = new FakeProvider(WellKnownPlatforms.MacOs);
+        var prep = Assert.IsType<PrepareResult.Accepted>(
+            win.Prepare(new ExecutionRequirements(Array.Empty<ExecutionRequirement>()))).Prepared;
+
+        Assert.IsType<DiscardResult.Discarded>(win.Discard(prep));
+        // After discard the preparation can never launch.
+        Assert.IsType<LaunchResult.Failed>(win.Launch(prep, ProcessStartSpec.Simple("tool.exe")));
+        // Idempotent: a second discard is still a no-op success.
+        Assert.IsType<DiscardResult.Discarded>(win.Discard(prep));
+        // A preparation not issued by this provider fails closed.
+        Assert.IsType<DiscardResult.Failed>(mac.Discard(prep));
+    }
+
+    [Fact]
     public async Task ComposedOwnerDeathFlowsThroughProvider()
     {
         await using var lin = new FakeProvider(WellKnownPlatforms.Linux,
@@ -144,6 +170,8 @@ public sealed class ProviderContractTests
                 ProcessStartSpec.Simple("x")));
         Assert.Throws<ObjectDisposedException>(() =>
             provider.Terminate(new ExecutionHandle("x", Guid.NewGuid())));
+        Assert.Throws<ObjectDisposedException>(() =>
+            provider.Discard(new PreparedExecution("x", Guid.NewGuid(), Array.Empty<string>())));
     }
 
     [Fact]

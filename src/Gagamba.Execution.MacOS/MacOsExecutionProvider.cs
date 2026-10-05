@@ -15,7 +15,7 @@ public sealed class MacOsExecutionProvider : IExecutionProvider
     private readonly object _gate = new();
     private readonly string _domain;
     private bool _disposed;
-    private readonly HashSet<Guid> _preparations = new();
+    private readonly Dictionary<Guid, OwnedJob> _preparations = new();
     private readonly Dictionary<Guid, ExecutionRecord> _executions = new();
 
     private sealed record ExecutionRecord(OwnedJob Job, bool Terminated);
@@ -39,29 +39,56 @@ public sealed class MacOsExecutionProvider : IExecutionProvider
             return new PrepareResult.Rejected(r.Unmet);
         if (!CheckDomain(out string why))
             return new PrepareResult.Rejected(new[] { why });
+        // Allocate the private job directory at preparation so a caller that
+        // never launches can reclaim it through Discard.
+        OwnedJob job;
+        try { job = OwnedJob.Create(_domain); }
+        catch (Exception ex)
+        {
+            return new PrepareResult.Rejected(new[] { $"job directory unavailable: {ex.GetType().Name}" });
+        }
         var prep = new PreparedExecution(
             WellKnownPlatforms.MacOs.Platform, Guid.NewGuid(), r.Met);
-        lock (_gate) _preparations.Add(prep.PreparationId);
+        lock (_gate) _preparations[prep.PreparationId] = job;
         return new PrepareResult.Accepted(prep);
+    }
+
+    public DiscardResult Discard(PreparedExecution preparation)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (preparation.Provider != WellKnownPlatforms.MacOs.Platform)
+            return new DiscardResult.Failed(
+                new[] { "unknown preparation: not issued by this provider" });
+        // Idempotent: a preparation already launched or discarded is a no-op.
+        OwnedJob? job;
+        lock (_gate) _preparations.Remove(preparation.PreparationId, out job);
+        try { job?.Dispose(); } catch { }
+        return new DiscardResult.Discarded(preparation);
     }
 
     public LaunchResult Launch(PreparedExecution prepared, ProcessStartSpec process)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
+        OwnedJob? job;
         lock (_gate)
         {
             if (prepared.Provider != WellKnownPlatforms.MacOs.Platform
-                || !_preparations.Contains(prepared.PreparationId))
+                || !_preparations.Remove(prepared.PreparationId, out job))
                 return new LaunchResult.Failed(
                     new[] { "unknown preparation: not issued by this provider" });
             // Single-use token: one Launch attempt consumes it.
-            _preparations.Remove(prepared.PreparationId);
         }
         if (string.IsNullOrWhiteSpace(process.Executable))
+        {
+            try { job.Dispose(); } catch { }
             return new LaunchResult.Failed(new[] { "no executable" });
+        }
         if (!TryBuildEnvironment(process.Environment, out var env, out string envError))
+        {
+            try { job.Dispose(); } catch { }
             return new LaunchResult.Failed(new[] { envError });
-        return LaunchInner(process, env!);
+        }
+        return LaunchInner(job, process, env!);
     }
 
     public TerminateResult Terminate(ExecutionHandle execution)
@@ -92,12 +119,14 @@ public sealed class MacOsExecutionProvider : IExecutionProvider
     public ValueTask DisposeAsync()
     {
         List<ExecutionRecord> owned;
+        List<OwnedJob> prepared;
         lock (_gate)
         {
             if (_disposed) return ValueTask.CompletedTask;
             _disposed = true;
             owned = new List<ExecutionRecord>(_executions.Values);
             _executions.Clear();
+            prepared = new List<OwnedJob>(_preparations.Values);
             _preparations.Clear();
         }
         foreach (var rec in owned)
@@ -109,17 +138,15 @@ public sealed class MacOsExecutionProvider : IExecutionProvider
             }
             catch { }
         }
+        foreach (var job in prepared)
+        {
+            try { job.Dispose(); } catch { }
+        }
         return ValueTask.CompletedTask;
     }
 
-    private LaunchResult LaunchInner(ProcessStartSpec process, IReadOnlyDictionary<string, string> env)
+    private LaunchResult LaunchInner(OwnedJob job, ProcessStartSpec process, IReadOnlyDictionary<string, string> env)
     {
-        OwnedJob job;
-        try { job = OwnedJob.Create(_domain); }
-        catch (Exception ex)
-        {
-            return new LaunchResult.Failed(new[] { $"job directory unavailable: {ex.GetType().Name}" });
-        }
         LaunchResult Fail(string reason)
         {
             try

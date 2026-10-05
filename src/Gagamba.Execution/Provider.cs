@@ -66,6 +66,18 @@ public abstract record TerminateResult
 }
 
 /// <summary>
+/// Reclamation outcome for a preparation that will not be launched. Discarding
+/// is how a lifecycle that stops after Prepare (for example a pre-launch
+/// authority denial) returns any domain resources the provider allocated.
+/// </summary>
+public abstract record DiscardResult
+{
+    private DiscardResult() { }
+    public sealed record Discarded(PreparedExecution Prepared) : DiscardResult;
+    public sealed record Failed(IReadOnlyList<string> Reasons) : DiscardResult;
+}
+
+/// <summary>
 /// Minimal provider boundary: negotiation → preparation → launch →
 /// lifecycle control → disposal. Providers must throw
 /// <see cref="ObjectDisposedException"/> once disposed.
@@ -77,6 +89,12 @@ public interface IExecutionProvider : IAsyncDisposable
 
     /// <summary>Negotiate requirements; fail closed with reasons.</summary>
     PrepareResult Prepare(ExecutionRequirements requirements);
+
+    /// <summary>Reclaim a preparation that will not be launched. Idempotent,
+    /// single-use, and safe before launch; a preparation not issued by this
+    /// provider fails closed. After a successful discard the preparation can
+    /// never launch.</summary>
+    DiscardResult Discard(PreparedExecution preparation);
 
     /// <summary>Launch a process as the domain root. Suspend-assign-resume
     /// semantics where the platform supports them; never an escape window.</summary>

@@ -13,7 +13,7 @@ public sealed class LinuxExecutionProvider : IExecutionProvider
     private readonly object _gate = new();
     private readonly string _cgroupParent;
     private bool _disposed;
-    private readonly HashSet<Guid> _preparations = new();
+    private readonly Dictionary<Guid, OwnedCgroup> _preparations = new();
     private readonly Dictionary<Guid, ExecutionRecord> _executions = new();
     private bool _placementChecked;
     private bool _placementOk;
@@ -54,29 +54,54 @@ public sealed class LinuxExecutionProvider : IExecutionProvider
         }
         if (!_placementOk)
             return new PrepareResult.Rejected(new[] { _placementWhy });
+        // Allocate the execution domain (one cgroup) at preparation so a
+        // caller that never launches can reclaim it through Discard rather
+        // than leaking an emptied cgroup until provider disposal.
+        var (group, gerr) = OwnedCgroup.Create(_cgroupParent);
+        if (group is null)
+            return new PrepareResult.Rejected(new[] { gerr });
         var prep = new PreparedExecution(
             WellKnownPlatforms.Linux.Platform, Guid.NewGuid(), r.Met);
-        lock (_gate) _preparations.Add(prep.PreparationId);
+        lock (_gate) _preparations[prep.PreparationId] = group;
         return new PrepareResult.Accepted(prep);
+    }
+
+    public DiscardResult Discard(PreparedExecution preparation)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (preparation.Provider != WellKnownPlatforms.Linux.Platform)
+            return new DiscardResult.Failed(
+                new[] { "unknown preparation: not issued by this provider" });
+        // Idempotent: a preparation already launched or discarded is a no-op.
+        OwnedCgroup? group;
+        lock (_gate) _preparations.Remove(preparation.PreparationId, out group);
+        try { group?.Dispose(); } catch { }
+        return new DiscardResult.Discarded(preparation);
     }
 
     public LaunchResult Launch(PreparedExecution prepared, ProcessStartSpec process)
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
+        OwnedCgroup? group;
         lock (_gate)
         {
             if (prepared.Provider != WellKnownPlatforms.Linux.Platform
-                || !_preparations.Contains(prepared.PreparationId))
+                || !_preparations.Remove(prepared.PreparationId, out group))
                 return new LaunchResult.Failed(
                     new[] { "unknown preparation: not issued by this provider" });
             // Single-use token: one Launch attempt consumes it.
-            _preparations.Remove(prepared.PreparationId);
         }
         if (string.IsNullOrWhiteSpace(process.Executable))
+        {
+            try { group.Dispose(); } catch { }
             return new LaunchResult.Failed(new[] { "no executable" });
+        }
         if (!TryBuildEnvironment(process.Environment, out string?[] envp, out string envError))
+        {
+            try { group.Dispose(); } catch { }
             return new LaunchResult.Failed(new[] { envError });
-        return LaunchInner(process, envp!);
+        }
+        return LaunchInner(group, process, envp!);
     }
 
     public TerminateResult Terminate(ExecutionHandle execution)
@@ -107,12 +132,14 @@ public sealed class LinuxExecutionProvider : IExecutionProvider
     public ValueTask DisposeAsync()
     {
         List<ExecutionRecord> owned;
+        List<OwnedCgroup> prepared;
         lock (_gate)
         {
             if (_disposed) return ValueTask.CompletedTask;
             _disposed = true;
             owned = new List<ExecutionRecord>(_executions.Values);
             _executions.Clear();
+            prepared = new List<OwnedCgroup>(_preparations.Values);
             _preparations.Clear();
         }
         foreach (var rec in owned)
@@ -125,14 +152,15 @@ public sealed class LinuxExecutionProvider : IExecutionProvider
             }
             catch { }
         }
+        foreach (var group in prepared)
+        {
+            try { group.Dispose(); } catch { }
+        }
         return ValueTask.CompletedTask;
     }
 
-    private LaunchResult LaunchInner(ProcessStartSpec process, string?[] envp)
+    private LaunchResult LaunchInner(OwnedCgroup group, ProcessStartSpec process, string?[] envp)
     {
-        var (group, gerr) = OwnedCgroup.Create(_cgroupParent);
-        if (group is null)
-            return new LaunchResult.Failed(new[] { gerr });
         IntPtr attr = IntPtr.Zero;
         IntPtr fa = IntPtr.Zero;
         int cfd = -1;

@@ -103,3 +103,15 @@ launchd) exercised it without any signature change. It will not be extended
 unless a downstream consumer proves something is missing; new platform
 differences are expressed through already-frozen mechanisms (capability
 grants, classified refusal), never by widening the SPI.
+
+**Amendment 1 — `Discard(PreparedExecution)`** (the first, and so far only,
+exception, justified by a real downstream consumer). The Hufu →
+Gagamba integration (`Penghou.Hufu.Sandbox`) exposed a lifecycle hole: a
+provider may allocate domain resources at `Prepare`, and an
+authorization-revoked or cancelled launch leaves that preparation
+unreclaimed until provider disposal. `Discard` is provider-owned,
+single-use, safe before launch, idempotent, releases resources allocated by
+`Prepare`, and fails closed for a foreign preparation. Providers now
+allocate the domain at `Prepare` and reclaim it either at `Launch` or at
+`Discard`. This is not speculative growth; it is the missing state the
+consumer proved. `launch → terminate → dispose` is unchanged.

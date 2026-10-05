@@ -98,6 +98,14 @@ public sealed class ExecutionRuntime : IExecutionProvider
         return _provider.Terminate(execution);
     }
 
+    public DiscardResult Discard(PreparedExecution preparation)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (_provider is null)
+            return new DiscardResult.Failed(new[] { _refusal });
+        return _provider.Discard(preparation);
+    }
+
     public ValueTask DisposeAsync()
     {
         lock (_gate)
