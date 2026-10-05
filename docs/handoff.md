@@ -1,6 +1,6 @@
 # Gagamba handoff
 
-Updated 2026-10-05 for GW-2 (Windows provider over Job Objects, 10 tests) on top of GP-3, GM-1A, GQ-1.
+Updated 2026-10-05 for GM-2 (macOS launchd provider) on top of GL-2, GW-2, GP-3, GM-1A, GQ-1.
 
 ## User direction
 
@@ -28,6 +28,9 @@ Develop Gagamba alone as an independently useful .NET sandbox library. Windows, 
 - GP-2 capabilities contract extracted (`src/Gagamba.Execution` + tests): six capabilities, Absent/Partial/Full × Native/Constructed/None, per-platform matrix with evidence, required/preferred negotiation, fail-closed, no `IsSandboxed` (mechanically enforced). Strict coding agent: Windows only. Owner-death: native Windows, composed elsewhere (never equated).
 - GP-3 provider SPI defined (`IExecutionProvider` + opaque handles, 13 tests): negotiation → preparation → launch → lifecycle control → disposal, issuance validation, disposal rules.
 - GW-2 Windows provider live (`src/Gagamba.Execution.Windows` + 10 tests): suspend-assign-resume, kill-on-close, exclusive env, single-use tokens, idempotent terminate, opaque handles; tree-kill/root-exit/dispose/env/foreign/probe coverage without PIDs. GP-3 survived contact unchanged. Next: GL-2/GM-2 providers, then conformance.
+- GL-2 Linux provider live (`src/Gagamba.Execution.Linux` + 19 tests, green as root in WSL): `posix_spawn`+SETCGROUP atomic placement (`CLONE_INTO_CGROUP`), `cgroup.kill` terminate/dispose, `addchdir_np` workdir, exclusive env, single-use tokens, opaque handles. Two from-memory libc constants were wrong and failed SILENTLY (`O_DIRECTORY` 0x4000 vs real 0x10000; SETCGROUP 0x40 is USEVFORK, real bit 0x100). Since a wrong bit fails silently, first `Prepare` runs a live placement self-test (sacrificial sleeper must be BORN in `cgroup.procs`) and rejects otherwise. Evidence `docs/evidence/linux-provider-GL-2.md`.
+- GM-2 macOS provider live (`src/Gagamba.Execution.MacOS` + 20 tests, green on `macos-latest`): unique launchd job per execution, bootstrap→kickstart→`print` readiness, `bootout` termination/cleanup (never `stop`), no KeepAlive/AbandonProcessGroup, WorkingDirectory, exclusive env, opaque handles, no PID use, escape observed-not-killed (setsid must come from a non-leader; launchd session-isolates job roots). Environment pressure point resolved by measurement: plist `EnvironmentVariables` gives granted-present + ambient-absent (launchd adds OS session vars — documented delta, GP-3 unchanged, no trampoline). Evidence `docs/evidence/macos-provider-GM-2.md`.
+- GW-2 CI runner root cause: the Windows provider tree tests declared a 2-variable env (SYSTEMROOT/SYSTEMDRIVE) that works locally but NOT on `windows-latest`, where PowerShell 5.1 stalls during startup module analysis unless `PSModulePath` (or a module-cache path) is present — cmd.exe tolerates a bare block, PowerShell 5.1 does not. The provider was correct (it passes the spec exactly); the test spec was unrealistic. Fix: `TestEnv()` declares the system variables the PowerShell fixture genuinely needs. Diagnosed via a temporary `gw2-diag` workflow (now removed).
 - Current shell chat may still be rooted in Solo. Use the Gagamba path explicitly; Solo's planning staging files are not the source of truth. Prefer opening the next coding session directly in Gagamba so its workspace permissions match the work.
 
 ## Read in this order

@@ -85,11 +85,29 @@ public sealed class ProviderTreeTests : IAsyncLifetime
     private static Dictionary<string, string> TestEnv()
     {
         // Explicit-only environment (contract): the provider adds nothing,
-        // so tools needing SystemRoot must declare it. No TEMP/TMP/PATH.
-        return new Dictionary<string, string>
+        // so every variable the target needs must be declared here. No
+        // ambient inheritance (the separate ChildEnvironmentIsExclusive
+        // test proves unlisted ambient values never reach the child).
+        // cmd.exe tolerates a bare block, but PowerShell 5.1 stalls during
+        // startup module analysis when PSModulePath is absent (measured on
+        // windows-latest: no lock is ever taken). Declare the system
+        // variables the fixture host genuinely requires.
+        string win = Environment.GetFolderPath(Environment.SpecialFolder.Windows);
+        return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
-            ["SYSTEMROOT"] = Environment.GetFolderPath(Environment.SpecialFolder.Windows),
+            ["SYSTEMROOT"] = win,
             ["SYSTEMDRIVE"] = Path.GetPathRoot(Environment.SystemDirectory) ?? "C:\\",
+            ["WINDIR"] = win,
+            ["PATH"] = Environment.GetEnvironmentVariable("PATH") ?? "",
+            ["PATHEXT"] = Environment.GetEnvironmentVariable("PATHEXT") ?? ".COM;.EXE;.BAT;.CMD",
+            ["PSModulePath"] = Environment.GetEnvironmentVariable("PSModulePath") ?? "",
+            ["TEMP"] = Path.GetTempPath(),
+            ["TMP"] = Path.GetTempPath(),
+            ["USERPROFILE"] = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+            ["APPDATA"] = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            ["LOCALAPPDATA"] = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            ["COMPUTERNAME"] = Environment.MachineName,
+            ["NUMBER_OF_PROCESSORS"] = Environment.ProcessorCount.ToString(),
         };
     }
 
