@@ -166,7 +166,7 @@ public sealed class ProviderTests : IAsyncLifetime
     {
         if (!OperatingSystem.IsMacOS() || !Usable()) return;
         const string marker = "GM2_PROBE_XYZ";
-        var h = MustLaunch("/bin/sh", "-c \"env > env-out.txt\"",
+        var h = MustLaunch("/bin/sh", "-c \"env > env-out.tmp; mv env-out.tmp env-out.txt\"",
             new Dictionary<string, string> { [marker] = "hello-mac" });
         Assert.True(await PollAsync(() => File.Exists(Path.Combine(_ws, "env-out.txt")), 15000),
             "env dump never appeared");
@@ -183,7 +183,7 @@ public sealed class ProviderTests : IAsyncLifetime
         Environment.SetEnvironmentVariable(ambient, "ambient-value");
         try
         {
-            var h = MustLaunch("/bin/sh", "-c \"env > env-amb.txt\"",
+            var h = MustLaunch("/bin/sh", "-c \"env > env-amb.tmp; mv env-amb.tmp env-amb.txt\"",
                 new Dictionary<string, string> { ["GM2_GRANTED_XYZ"] = "yes" });
             Assert.True(await PollAsync(() => File.Exists(Path.Combine(_ws, "env-amb.txt")), 15000),
                 "env dump never appeared");
@@ -202,7 +202,7 @@ public sealed class ProviderTests : IAsyncLifetime
     public async Task WorkingDirectoryIsHonored()
     {
         if (!OperatingSystem.IsMacOS() || !Usable()) return;
-        var h = MustLaunch("/bin/sh", "-c \"pwd > pwd.txt\"");
+        var h = MustLaunch("/bin/sh", "-c \"pwd > pwd.tmp; mv pwd.tmp pwd.txt\"");
         Assert.True(await PollAsync(() => File.Exists(Path.Combine(_ws, "pwd.txt")), 15000),
             "pwd dump never appeared (wrong cwd?)");
         string actual = File.ReadAllText(Path.Combine(_ws, "pwd.txt")).Trim();
