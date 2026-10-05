@@ -41,6 +41,26 @@ function Test-Launch([string]$label, [hashtable]$envVars) {
 
 Test-Launch 'empty' @{}
 Test-Launch 'minimal' @{ SYSTEMROOT = $env:SystemRoot; SYSTEMDRIVE = 'C:' }
+$rich = @{
+    SYSTEMROOT = $env:SystemRoot
+    SYSTEMDRIVE = 'C:'
+    WINDIR = $env:WINDIR
+    PATH = "$env:SystemRoot\System32;$env:SystemRoot\System32\WindowsPowerShell\v1.0"
+    PATHEXT = '.COM;.EXE;.BAT;.CMD'
+    TEMP = $env:TEMP
+    TMP = $env:TMP
+    USERPROFILE = $env:USERPROFILE
+    HOMEDRIVE = $env:HOMEDRIVE
+    HOMEPATH = $env:HOMEPATH
+    APPDATA = $env:APPDATA
+    LOCALAPPDATA = $env:LOCALAPPDATA
+    COMPUTERNAME = $env:COMPUTERNAME
+    NUMBER_OF_PROCESSORS = $env:NUMBER_OF_PROCESSORS
+    PROCESSOR_ARCHITECTURE = $env:PROCESSOR_ARCHITECTURE
+    PSModulePath = "$env:SystemRoot\system32\WindowsPowerShell\v1.0\Modules"
+    OS = $env:OS
+}
+Test-Launch 'rich' $rich
 $inh = @{}
 foreach ($k in [Environment]::GetEnvironmentVariables().Keys) { $inh[$k] = [Environment]::GetEnvironmentVariable($k) }
 Test-Launch 'inherited' $inh
