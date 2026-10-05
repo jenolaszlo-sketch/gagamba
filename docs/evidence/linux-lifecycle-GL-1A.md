@@ -52,4 +52,8 @@ kills each test supervisor itself and observes from outside.
 Method notes: readiness files gate every kill (no sleeps); orchestrator
 never signals its own group/session (asserted); zombies count as dead
 (PID 1 reaps orphans); per-leg cleanup plus an end-of-run cgroup sweep,
-with leftovers failing the run (zero in the recorded runs).
+with leftovers failing the run (zero in the recorded runs). Two
+harness-level races were found and closed: records are read only after
+both readiness file AND parsable JSON exist, and cgroup legs explicitly
+re-place live members (a child forked before the parent's move lands in
+the parent cgroup). Hand-rolled JSON must use lowercase booleans.

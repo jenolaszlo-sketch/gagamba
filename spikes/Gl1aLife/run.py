@@ -150,6 +150,26 @@ class Ctx:
                 pass
         return out
 
+    def ensure_placed(self, path, pids, timeout=5.0):
+        """A child forked before we moved its parent lands in the parent
+        cgroup, not ours. Move each live pid explicitly, then verify.
+        Dead pids need no placement. (Fork-timing race, not a finding.)"""
+        deadline = time.time() + timeout
+        while time.time() < deadline:
+            members = self.cg_members(path)
+            missing = [p for p in pids if p not in members and alive(p)]
+            if not missing:
+                live = [p for p in pids if alive(p)]
+                return all(p in self.cg_members(path) for p in live)
+            for p in missing:
+                try:
+                    self.cg_write_procs(path, p)
+                except OSError:
+                    pass
+            time.sleep(0.1)
+        live = [p for p in pids if alive(p)]
+        return all(p in self.cg_members(path) for p in live)
+
     def cg_remove(self, *parts):
         p = self.cg(*parts)
         try:
@@ -444,9 +464,10 @@ def leg_cg_tree(ctx):
             kill_pid(sup.pid)
             reap(sup)
             return False, ["records missing"], {}
+        placed = ctx.ensure_placed(cg, [root["pid"], leaf["pid"]])
         members = ctx.cg_members(cg)
-        ok = root["pid"] in members and leaf["pid"] in members
-        notes = [f"workload members={sorted(members)}"]
+        ok = placed and root["pid"] in members and leaf["pid"] in members
+        notes = [f"workload members={sorted(members)} placed={placed}"]
         kill_pid(sup.pid)
         reap(sup)
         cleanup_tree([root["pid"], leaf["pid"]])
@@ -474,8 +495,9 @@ def leg_cg_root_exits(ctx):
             reap(sup)
             return False, ["leaf record missing"], {}
         rc = sup.wait(timeout=15)
+        placed = ctx.ensure_placed(cg, [leaf["pid"]])
         members = ctx.cg_members(cg)
-        ok = rc == 0 and alive(leaf["pid"]) and leaf["pid"] in members
+        ok = rc == 0 and alive(leaf["pid"]) and placed and leaf["pid"] in members
         notes = [f"supervisor rc={rc}, leaf alive+in-cgroup={ok}"]
         ctx.cg_kill(cg)
         wait_all_dead([leaf["pid"]], timeout=10.0)
@@ -501,6 +523,7 @@ def leg_cg_kill(ctx):
             reap(sup)
             return False, ["records missing"], {}
         pids = [root["pid"]] + ([child["pid"]] if child else []) + [leaf["pid"]]
+        ctx.ensure_placed(cg, pids)
         ctx.cg_kill(cg)
         dead = wait_all_dead(pids, timeout=10.0)
         notes = [f"cgroup.kill all-dead={dead}"]
@@ -567,6 +590,7 @@ def leg_cg_supervisor_dies(ctx):
         kill_pid(sup.pid)
         reap(sup)
         # EXPECTED: workload survives (cgroup membership is not ownership).
+        ctx.ensure_placed(cg, [root["pid"], leaf["pid"]])
         survived = wait_all_alive([root["pid"], leaf["pid"]], timeout=5.0)
         members = ctx.cg_members(cg)
         notes = [f"supervisor killed; workload alive={survived} (expected: survive), "
@@ -617,7 +641,11 @@ def leg_watchdog(ctx):
             return False, ["records missing"], {}
         pids = [root["pid"]] + ([child["pid"]] if child else [])
         for p in pids:
-            ctx.cg_write_procs(cg, p)
+            try:
+                ctx.cg_write_procs(cg, p)
+            except OSError:
+                pass
+        ctx.ensure_placed(cg, pids)
         wdog = wait_record(d, "watchdog")
         kill_pid(sup.pid)
         reap(sup)
