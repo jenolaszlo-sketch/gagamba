@@ -1,0 +1,71 @@
+# ADR 0002: Execution-domain architectural checkpoint
+
+Status: accepted (architectural checkpoint; `IExecutionProvider` frozen).
+Date: 2026-10-05.
+Milestone commit: `c5d6f3f`. Tag: `arch-execution-domain-v1`.
+Durable rules: `docs/design-rules.md`. Conformance: `docs/conformance.md`.
+
+## Context
+
+The execution-domain work reached a coherent milestone:
+
+- **GP-2** extracted platform capabilities (guarantees, not mechanisms)
+  from GL-1A/GM-1A/GQ-1 evidence: `Absent`/`Partial`/`Full` ×
+  `Native`/`Constructed`/`None`, required/preferred negotiation, fail-closed.
+- **GP-3 (`IExecutionProvider`)** defined the SPI: Describe / Prepare /
+  Launch / Terminate / DisposeAsync, opaque handles, issuance validation.
+- Three genuinely different implementations exercised it with **zero
+  signature changes**:
+  - Windows — Job Objects (`Gagamba.Execution.Windows`), evidence GW-2/GQ-1.
+  - Linux — cgroup v2 with atomic `CLONE_INTO_CGROUP` placement
+    (`Gagamba.Execution.Linux`), evidence GL-2.
+  - macOS — launchd ownership + process groups with a visible escape
+    limitation (`Gagamba.Execution.MacOS`), evidence GM-2.
+- **GR-0** added one conformance matrix + runner over the frozen SPI
+  (`Gagamba.Conformance`, run per OS in CI) and a requirement-driven runtime
+  (`Gagamba.Runtime.ExecutionRuntime`): `requirements → capability
+  negotiation → native provider → evidenced guarantee`, with no OS
+  primitive or provider class in caller code.
+
+Conformance preserves platform differences instead of hiding them: macOS
+must demonstrate that a `setsid` escape survives, Linux must demonstrate
+the escapee is still owned and dies, and a hosted environment that cannot
+exercise a privileged behavior reports Skipped with the reason.
+
+## Decision
+
+1. **Freeze GP-3.** No extension to `IExecutionProvider` unless a
+   downstream consumer proves a missing concept with evidence. New platform
+   differences are expressed through already-frozen mechanisms (capability
+   grants, classified refusal), never by widening the SPI.
+2. **Adopt the durable design rules** in `docs/design-rules.md` as
+   load-bearing.
+3. **Add no features speculatively.** Explicitly out of scope until a real
+   consumer demands them: quotas, watchdogs/owner-death composition, output
+   capture, richer isolation, resource policy, and VFS integration.
+4. **Keep constructed guarantees out of native providers** and out of the
+   runtime; composition is a later, explicit layer.
+5. **Seek the next pressure from a downstream integration**, not from
+   another round of interface design.
+
+## Out of scope (until demanded)
+
+Owner-death composition (Linux/macOS watchdog), quotas and resource policy,
+stdout/stderr capture, richer sandboxing, and VFS/overlay integration.
+Windows owner-death cleanup already exists natively and is unaffected.
+
+## Next pressure
+
+Let Hufu request execution requirements and consume Gagamba through
+`ExecutionRuntime`, without teaching Hufu anything about Job Objects,
+cgroups, or launchd. If that integration exposes a missing concept, GP-3 is
+reconsidered with that evidence.
+
+## Consequences
+
+- The public SPI and the capability vocabulary are stable; consumers may
+  depend on them.
+- Conformance must keep measuring behavioral properties on every claimed
+  OS build; semantic probing is permanent doctrine.
+- The package is a defensible execution substrate, not merely a process
+  launcher: capability-negotiated, fail-closed, and behaviorally verified.

@@ -33,15 +33,19 @@ Develop Gagamba alone as an independently useful .NET sandbox library. Windows, 
 - GM-2 CI runner root cause: the Windows provider tree tests declared a 2-variable env (SYSTEMROOT/SYSTEMDRIVE) that works locally but NOT on `windows-latest`, where PowerShell 5.1 stalls during startup module analysis unless `PSModulePath` (or a module-cache path) is present — cmd.exe tolerates a bare block, PowerShell 5.1 does not. The provider was correct (it passes the spec exactly); the test spec was unrealistic. Fix: `TestEnv()` declares the system variables the PowerShell fixture genuinely needs. Diagnosed via a temporary `gw2-diag` workflow (now removed).
 - GP-3 FROZEN. Three materially different providers (Windows Job Objects, Linux cgroup v2, macOS launchd+PG) exercised the SPI with zero signature changes; no extension without a downstream consumer proving a gap.
 - GR-0 conformance + provider selection (`src/Gagamba.Conformance`, `src/Gagamba.Runtime`): one expected matrix + one runner over the frozen SPI (`tests/Gagamba.Conformance.Tests`, run per OS in CI); `ExecutionRuntime.Create()` selects the OS provider and offers requirement-driven launch. Environment guarantee restated portably (ambient not inherited; requested entries provided; platform-owned domain vars may additionally exist) without complicating GP-3. Matrix + semantic-probing doctrine in `docs/conformance.md`. Constructed owner-death cleanup stays out of native providers/runtime.
+- **Architectural checkpoint: commit `c5d6f3f`, tag `arch-execution-domain-v1`** (ADR 0002). One frozen SPI, three material implementations, one requirement-driven runtime, conformance that preserves platform differences. Durable design rules in `docs/design-rules.md`. Do NOT add features speculatively (no quotas/watchdogs/output capture/richer isolation/resource policy/VFS). Next pressure = a downstream integration (Hufu consumes `ExecutionRuntime`); reconsider GP-3 only if that exposes a missing concept with evidence.
 - Current shell chat may still be rooted in Solo. Use the Gagamba path explicitly; Solo's planning staging files are not the source of truth. Prefer opening the next coding session directly in Gagamba so its workspace permissions match the work.
 
 ## Read in this order
 
 1. [Current work queue](work-queue.md) — actual ready/held statuses.
-2. [Security model](security-model.md) — normative offline-process-v1 baseline for the spike.
-3. [Fixture contract](fixture-protocol.md) — first coding slice and evidence semantics.
-4. [Implementation plan](implementation-plan.md) and [testing/CI plan](testing-and-ci.md).
-5. [Test environments](test-environments.md), then detailed [research plan](research-plan.md) as needed.
+2. [Durable design rules](design-rules.md) — the load-bearing rules.
+3. [Execution-domain contract](execution-domain.md) — frozen SPI + capability matrix.
+4. [Conformance](conformance.md) — matrix, runtime selection, semantic probing.
+5. [Security model](security-model.md) — normative offline-process-v1 baseline for the spike.
+6. [Fixture contract](fixture-protocol.md) — first coding slice and evidence semantics.
+7. [Implementation plan](implementation-plan.md) and [testing/CI plan](testing-and-ci.md).
+8. [Test environments](test-environments.md), then detailed [research plan](research-plan.md) as needed.
 
 The work queue refines the broader milestone order. The security model refines the draft design. Original proposal examples do not override either. If experiments disprove a chosen mechanism, document the finding and select another mechanism; do not silently broaden permissions.
 
