@@ -81,12 +81,25 @@ or job objects (mechanically enforced). Providers throw
 handle while descendants remain. Only preparations a provider issued
 itself are honored.
 
-Environment guarantee, stated honestly per platform: the spec's variables
-are always present and the launcher's ambient environment is never
-inherited (Windows explicit block; Linux `envp`; macOS plist
-`EnvironmentVariables` — proven by GM-2). Exact set equality with the spec
-is Native on Windows/Linux; on macOS launchd additionally injects OS
-session variables (HOME, PATH, TMPDIR, XPC_*, …) that are supplied by the
-domain owner, not inherited. That delta is a platform property; the
-contract requires presence of the granted set and absence of ambient
-inheritance, not byte-identical environments.
+Environment guarantee (portable, three parts): **caller ambient state is
+not implicitly inherited; requested environment entries are provided;
+platform-owned execution-domain variables may additionally exist when the
+provider documents them.** This is what all three providers guarantee.
+Windows and Linux can additionally advertise exact-set equality (they pass
+exactly the declared block/`envp`); macOS cannot, because launchd injects
+OS session variables (`HOME`, `PATH`, `TMPDIR`, `XPC_*`, …) that belong to
+the domain and are not inherited. The portable contract deliberately stops
+at the three-part guarantee; byte-exactness is a stronger, separate
+property a consumer may require later. An explicit environment is not a
+minimal environment: the caller declares the runtime dependencies of what
+it launches (the GW-2 runner finding), and Gagamba never reconstructs
+ambient state on its behalf.
+
+## Frozen
+
+The `IExecutionProvider` SPI (GP-3) is **frozen**. Three materially
+different implementations (Windows Job Objects, Linux cgroup v2, macOS
+launchd) exercised it without any signature change. It will not be extended
+unless a downstream consumer proves something is missing; new platform
+differences are expressed through already-frozen mechanisms (capability
+grants, classified refusal), never by widening the SPI.

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Gagamba.Execution\Gagamba.Execution.csproj" />
+    <ProjectReference Include="..\Gagamba.Execution.Windows\Gagamba.Execution.Windows.csproj" />
+    <ProjectReference Include="..\Gagamba.Execution.Linux\Gagamba.Execution.Linux.csproj" />
+    <ProjectReference Include="..\Gagamba.Execution.MacOS\Gagamba.Execution.MacOS.csproj" />
+  </ItemGroup>
+
+</Project>

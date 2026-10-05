@@ -84,6 +84,12 @@ jobs:
       - name: xUnit provider tests (GL-2 Linux, OS legs need cgroup delegation)
         run: dotnet test tests/Gagamba.Execution.Linux.Tests/Gagamba.Execution.Linux.Tests.csproj -c $env:CONFIGURATION --nologo
         shell: pwsh
+      - name: xUnit runtime tests (provider selection + requirement-driven launch)
+        run: dotnet test tests/Gagamba.Runtime.Tests/Gagamba.Runtime.Tests.csproj -c $env:CONFIGURATION --nologo
+        shell: pwsh
+      - name: Cross-platform conformance (shared matrix; OS legs skip without delegation)
+        run: dotnet test tests/Gagamba.Conformance.Tests/Gagamba.Conformance.Tests.csproj -c $env:CONFIGURATION --nologo
+        shell: pwsh
       - name: GQ-1 job-ownership unit tests (Windows-only, skip elsewhere)
         run: dotnet test spikes/Gw1bLaunch.Tests/Gw1bLaunch.Tests.csproj -c $env:CONFIGURATION --nologo
         shell: pwsh
@@ -166,6 +172,8 @@ jobs:
       # fail-closed paths. Non-macOS tests in the same assembly skip.
       - name: xUnit provider tests (GM-2 macOS)
         run: dotnet test tests/Gagamba.Execution.MacOS.Tests/Gagamba.Execution.MacOS.Tests.csproj -c ${{ env.CONFIGURATION }} --nologo
+      - name: Cross-platform conformance (macOS row, real launchd)
+        run: dotnet test tests/Gagamba.Conformance.Tests/Gagamba.Conformance.Tests.csproj -c ${{ env.CONFIGURATION }} --nologo
 
   macos-probe:
     name: macOS lifecycle probe (GM-1A)
