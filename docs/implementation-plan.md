@@ -6,7 +6,7 @@ This is the canonical implementation sequence. The [design](design.md) defines t
 
 ## Outcome
 
-Deliver an independently usable .NET library that runs a command and its descendants inside an explicit, verified execution boundary on Windows, Linux, and macOS. Start testing on the user's Windows host, then use a separate Linux WSL2 distribution and GitHub macOS runners. Hufu, Luban, workflow adapters, approval systems, remote execution, and OpenShell integration are outside this delivery plan.
+Deliver an independently usable .NET library that runs a command and its descendants inside an explicit, verified execution boundary on Windows, Linux, and macOS. Start testing on the user's Windows host, then use a separate Linux WSL2 distribution and GitHub macOS runners. Hufu, Luban, workflow adapters, approval systems, remote execution, and OpenShell integration are outside this delivery plan. Update 2026-10-06: Luban is parked (see [Fuwen ADR 0012](../../Penghou.Fuwen/docs/decisions/0012-defer-luban-decouple-hufu-from-command-language.md)); authorized native execution via neutral Hufu requests stays a first-class consumer path and never requires Luban.
 
 The first useful release is an experimental offline runner. A three-platform claim requires qualified evidence on all three platforms; an unavailable or failed backend never falls back to ordinary execution.
 
