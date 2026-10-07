@@ -412,6 +412,19 @@ public sealed class ProviderTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task Completion_InstantExitCompletesWithRecordedCode()
+    {
+        if (!OperatingSystem.IsMacOS() || !Usable()) return;
+        // Instant commands may exit before the first readiness poll, when
+        // launchd reports `state = not running` with a recorded code. That
+        // is proof of execution: Launch must accept it and completion must
+        // report the code, never poll forever.
+        var h = MustLaunch("/bin/sh", "-c \"exit 3\"");
+        var completion = await _provider.WaitForCompletionAsync(h, TestContext.Current.CancellationToken);
+        Assert.Equal(3, Assert.IsType<CompletionResult.NaturalExit>(completion).RootExitCode);
+    }
+
+    [Fact]
     public async Task Completion_TerminateWhileRunningReturnsTerminated()
     {
         if (!OperatingSystem.IsMacOS() || !Usable()) return;

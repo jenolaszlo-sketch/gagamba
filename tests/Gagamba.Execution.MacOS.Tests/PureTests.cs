@@ -52,4 +52,22 @@ public sealed class PureTests
         Assert.False(Launchd.IsRunning("pid = 1891\n"));
         Assert.False(Launchd.IsRunning(""));
     }
+
+    [Fact]
+    public void NotRunningIsNotRunning()
+    {
+        // Consumer-pressure regression (Hufu SandboxRunner, 2026-10-07):
+        // launchd reports instantly-exited on-demand jobs as
+        // `state = not running` with a recorded code. Substring matching
+        // misread that as running: Launch "succeeded" on a never-observed
+        // job and completion polled forever.
+        Assert.False(Launchd.IsRunning("state = not running\n"));
+        Assert.False(Launchd.IsRunning("pid = 0\nstate = not running\nlast exit code = 0\n"));
+        var terminal = Launchd.ParseState("state = not running\nlast exit code = 0\n", 0);
+        Assert.False(terminal.Running);
+        Assert.Equal(0, terminal.ExitCode);
+        var gone = Launchd.ParseState("Could not find service \"org.example\" in domain", 113);
+        Assert.False(gone.Running);
+        Assert.Null(gone.ExitCode);
+    }
 }

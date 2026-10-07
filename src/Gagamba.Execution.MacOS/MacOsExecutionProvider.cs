@@ -226,7 +226,12 @@ public sealed class MacOsExecutionProvider : IExecutionProvider
             try
             {
                 var (rc, out_) = Launchd.Print(job.ServiceTarget);
-                if (rc == 0 && Launchd.IsRunning(out_)) return true;
+                var state = Launchd.ParseState(out_, rc);
+                // Demonstrably ran: observed running now, or exited with a
+                // recorded code before the first observation. Instant-exit
+                // commands report `state = not running` (never `running`);
+                // the recorded code is the proof of execution.
+                if (rc == 0 && (state.Running || state.ExitCode.HasValue)) return true;
             }
             catch { }
             Thread.Sleep(200);
@@ -234,7 +239,8 @@ public sealed class MacOsExecutionProvider : IExecutionProvider
         try
         {
             var (rc, out_) = Launchd.Print(job.ServiceTarget);
-            return rc == 0 && Launchd.IsRunning(out_);
+            var state = Launchd.ParseState(out_, rc);
+            return rc == 0 && (state.Running || state.ExitCode.HasValue);
         }
         catch { return false; }
     }

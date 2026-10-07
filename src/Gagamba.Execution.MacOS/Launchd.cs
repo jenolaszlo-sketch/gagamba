@@ -71,14 +71,17 @@ internal static class Launchd
 
     /// <summary>True only when launchd reports the job actually running.
     /// The pid line, when present, is deliberately never read: no PID
-    /// crosses into the provider, let alone the contract.</summary>
+    /// crosses into the provider, let alone the contract. The comparison is
+    /// an exact match: instantly-exited on-demand jobs report
+    /// `state = not running`, and substring matching misreads that as
+    /// running, hanging completion forever.</summary>
     internal static bool IsRunning(string printOutput)
     {
         foreach (string line in printOutput.Split('\n'))
         {
             string t = line.Trim();
             if (t.StartsWith("state =", StringComparison.Ordinal))
-                return t.Contains("running", StringComparison.Ordinal);
+                return t.Equals("state = running", StringComparison.Ordinal);
         }
         return false;
     }
@@ -97,7 +100,7 @@ internal static class Launchd
         {
             string t = line.Trim();
             if (t.StartsWith("state =", StringComparison.Ordinal))
-                running = t.Contains("running", StringComparison.Ordinal);
+                running = t.Equals("state = running", StringComparison.Ordinal);
             else if (t.Contains("exit code", StringComparison.OrdinalIgnoreCase))
             {
                 int eq = t.LastIndexOf('=');
