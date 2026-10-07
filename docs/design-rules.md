@@ -80,3 +80,16 @@ turn "portable" into a lowest-common-denominator fiction and would hide a
 real containment difference. A hosted environment that cannot exercise a
 privileged behavior reports **Skipped with the reason** — never a pass.
 See `docs/conformance.md` (matrix) and `src/Gagamba.Conformance`.
+
+## 8. Prefer deterministic proofs at architectural seams over monolithic integration tests
+
+When a timing-sensitive end-to-end test mostly measures scheduler behavior,
+polling, leases, and harness interleavings, split it: prove each link
+deterministically at a stable seam and compose the evidence explicitly.
+Consumer #5 (operator cancel across Zhinu/Hufu/Gagamba) established this:
+operator cancel into Zhinu semantics, Zhinu cancellation into HZ-1
+termination plus durable evidence, and sandbox termination into real domain
+death are each proven separately; a single 8-step scenario test proved only
+that the test thread could not observe a live execution reliably. Compose
+the proofs; do not keep a mega-test whose failures cannot distinguish a
+product defect from scheduling noise.
