@@ -71,20 +71,25 @@ internal static class Launchd
 
     /// <summary>True only when launchd reports the job actually running.
     /// The pid line, when present, is deliberately never read: no PID
-    /// crosses into the provider, let alone the contract. The comparison is
-    /// an exact match: instantly-exited on-demand jobs report
-    /// `state = not running`, and substring matching misreads that as
-    /// running, hanging completion forever.</summary>
+    /// crosses into the provider, let alone the contract. The first
+    /// `state =` line decides (historical behavior). It must contain
+    /// "running" without the "not running" negation: instantly-exited
+    /// on-demand jobs report `state = not running`, and plain substring
+    /// matching misreads that as running, hanging completion forever.</summary>
     internal static bool IsRunning(string printOutput)
     {
         foreach (string line in printOutput.Split('\n'))
         {
             string t = line.Trim();
             if (t.StartsWith("state =", StringComparison.Ordinal))
-                return t.Equals("state = running", StringComparison.Ordinal);
+                return IsRunningState(t);
         }
         return false;
     }
+
+    internal static bool IsRunningState(string stateLine) =>
+        stateLine.Contains("running", StringComparison.Ordinal) &&
+        !stateLine.Contains("not running", StringComparison.Ordinal);
 
     /// <summary>Terminal state of a launchd job as reported by `print`.
     /// Running is true only while the job root is alive; a non-zero print rc
@@ -95,12 +100,19 @@ internal static class Launchd
     internal static JobState ParseState(string printOutput, int printRc)
     {
         bool running = false;
+        bool seenState = false;
         int? exitCode = null;
         foreach (string line in printOutput.Split('\n'))
         {
             string t = line.Trim();
             if (t.StartsWith("state =", StringComparison.Ordinal))
-                running = t.Equals("state = running", StringComparison.Ordinal);
+            {
+                if (!seenState)
+                {
+                    running = IsRunningState(t);
+                    seenState = true;
+                }
+            }
             else if (t.Contains("exit code", StringComparison.OrdinalIgnoreCase))
             {
                 int eq = t.LastIndexOf('=');
