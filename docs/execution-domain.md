@@ -133,3 +133,30 @@ reaching zero active processes; Linux reaps the root and requires the
 execution cgroup to become unpopulated; macOS observes launchd job termination
 and its recorded exit status (an escaped `setsid()` descendant is outside the
 native domain and does not block completion).
+
+**Provider correctness fix, `0.1.0-preview.4` (not an amendment).** The SPI
+above is unchanged and remains frozen; preview.4 is the current provider
+implementation. It fixes one proven defect, exposed by the first real
+consumer (`Penghou.Hufu.SandboxRunner`, 2026-10-07) rather than by
+unit/conformance tests: launchd reports instantly-exited on-demand jobs as
+`state = not running`, and substring matching misread that as running, so
+Launch "succeeded" on a never-observed job and completion polled forever.
+State comparison is now negation-aware (`running` without the `not running`
+negation), and a recorded exit code counts as proof of execution at Launch,
+so instant commands complete deterministically instead of racing the first
+readiness poll. This was a bug fix, not Amendment 3: no signature changed,
+no capability was added, and no new infrastructure was justified.
+
+**Consumer-1 checkpoint (durable conclusions).** Real consumer #1 is
+continuously exercised on Windows, macOS, and capability-qualified Linux; it
+exposed the defect above and required zero architectural expansion:
+
+- Consumer tests belong in CI. Unit/conformance tests had not exposed the
+  instant-exit launchd race; only the assembled consumer did.
+- Provider acceptance is a semantic claim. Once `Prepare` accepts,
+  unexpected execution failure is a test failure, never something to skip;
+  only classified pre-acceptance refusal (unsatisfiable negotiation,
+  unpreparable domain) may skip, with its exact reason.
+- Negative state parsing must be explicit. `not running` matching
+  `running` joins the earlier glibc constant failures as evidence for the
+  semantic-probing doctrine (rule 6): successful API calls are not proof.

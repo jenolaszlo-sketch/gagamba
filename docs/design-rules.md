@@ -61,6 +61,11 @@ inference from an API returning success:
   placement before the first real launch.
 - GM-2: `bootstrap`/`kickstart` returning `0` does not mean the job runs;
   the provider polls `print` for `state = running` and boots out on failure.
+- GM-2 (2026-10-07, consumer pressure): `print` reporting
+  `state = not running` does not mean the job runs either; substring
+  matching read that as running, so Launch "succeeded" on a never-observed
+  job and completion polled forever. Negative state parsing must be
+  explicit, and a recorded exit code counts as proof of execution.
 
 When an API's success could be a lie, prove the property.
 See `docs/conformance.md` (semantic probing).
