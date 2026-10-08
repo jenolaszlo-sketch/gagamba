@@ -4,7 +4,7 @@ Updated 2026-10-09. Status definitions: Complete = stated artifact exists; Ready
 
 ## Current priority: independent-review remediation
 
-User-requested handoff: [Sol action plan](review-remediation-sol.md). Source review: [2026-10-08 independent review](reviews/2026-10-08-independent-review.md), baseline `8dea7d86c8ee2f1c924100acdbc1bf5dc14b2a88`. [AR-1 evidence](evidence/windows-lifecycle-AR-1.md) records the bounded Windows repair. Current priority supersedes historical next-work notes elsewhere in this file.
+User-requested handoff: [Sol action plan](review-remediation-sol.md). Source review: [2026-10-08 independent review](reviews/2026-10-08-independent-review.md), baseline `8dea7d86c8ee2f1c924100acdbc1bf5dc14b2a88`. [AR-1 evidence](evidence/windows-lifecycle-AR-1.md) records the bounded Windows repair and [AR-2 evidence](evidence/linux-lifecycle-AR-2.md) records the bounded Linux repair. Current priority supersedes historical next-work notes elsewhere in this file.
 
 **AR-2–AR-7 completion gate:** each slice must have its own durable
 `docs/evidence/` artifact satisfying the [remediation evidence
@@ -17,8 +17,8 @@ open. This rule also applies to future security-sensitive remediation.
 | --- | --- | --- |
 | AR-0 | Complete — documentation/test rules, not security qualification | Shipped lifecycle-only scope and direct-descendant escape wording corrected; fresh nonce/barrier/watchdog rules recorded (F01/F02/F14). F01 hostile-profile work and F02 broader capability decision remain open. |
 | AR-1 | Implemented; locally Windows-native-tested; not package-qualified | E1/E2/E3 baseline failures and fixed results recorded; launch/dispose, async completion, cancellation, multiple waiters and native handle ownership repaired (F03/F04/F05 on Windows). See [evidence](evidence/windows-lifecycle-AR-1.md). |
-| AR-2 | Ready for separate implementation request; not started | Linux persistent root status, descriptor allowlist, cleanup and prerequisite refusal (F03/F05/F08/F09/F10) |
-| AR-3 | Pending AR-1 invariants | macOS bounded helper, classified observation and proven termination; native qualification required (F03/F05/F06/F07) |
+| AR-2 | Implemented; native-qualified on stated WSL2 glibc-2.43 host, root and delegated UID 65534; not package-qualified | Source `9550ff768cf09889de4a37a2811a187a0281c44d`: persistent reaping, admission/disposal ownership, child FD close-from, checked/retryable cgroup cleanup and prerequisite refusal. Linux root 38/38 and delegated 13/13 focused tests passed; E10 privileged migration remains Partial. See [evidence](evidence/linux-lifecycle-AR-2.md). |
+| AR-3 | Ready for separate implementation request; native qualification required | macOS bounded helper, classified observation and proven termination (F03/F05/F06/F07) |
 | AR-4 | Pending AR-1–AR-3 | Immutable inputs/maps, argv compatibility, capability honesty and correct same-provider token issuance (F02/F11/F12) |
 | AR-5 | Pending AR-1–AR-4 | Deadline/termination orchestration, bounded output and structured execution/cleanup evidence (F13) |
 | AR-6 | Pending repaired applicable claims | Trustworthy native conformance, explicit skips and exact-revision package release gate (F14/F15) |

@@ -1,23 +1,23 @@
 # Gagamba handoff
 
-Updated 2026-10-09: AR-0/AR-1 Windows lifecycle remediation is implemented and locally native-tested. AR-2 and later slices remain untouched. The [remediation evidence standard](remediation-evidence-standard.md) now governs AR-2–AR-7 and future security-sensitive remediation.
+Updated 2026-10-09: AR-0/AR-1 Windows lifecycle remediation and AR-2 Linux lifecycle remediation are implemented. AR-2 passed native root-WSL and delegated UID 65534 tests on the documented glibc-2.43 host; see [AR-2 evidence](evidence/linux-lifecycle-AR-2.md). AR-3 onward remains planned. The [remediation evidence standard](remediation-evidence-standard.md) governs AR-2–AR-7 and future security-sensitive remediation.
 
-## Current action — AR-1 review and AR-2 handoff
+## Current action — AR-2 evidence and AR-3 handoff
 
 Start with [the Sol remediation plan](review-remediation-sol.md), [the archived review](reviews/2026-10-08-independent-review.md), and [AR-1 evidence](evidence/windows-lifecycle-AR-1.md). The review audited source `8dea7d86c8ee2f1c924100acdbc1bf5dc14b2a88` (`0.1.0-preview.4`) and reported 15 findings. Its security verdict remains **NOT YET A RELIABLE SECURITY BOUNDARY**: AR-1 repairs lifecycle ownership, not restricted execution.
 
 Existing Windows provider/contract/conformance assertions passed (14 + 14 + 5), while focused Windows/Linux probes reproduced lifecycle and descriptor defects. macOS findings still require native follow-up. The [evidence manifest](reviews/2026-10-08-evidence/evidence.json) distinguishes measurements from static/pure-code observations.
 
-**AR-0/AR-1 status:** scope wording is corrected; E1/E2/E3 failed on the reviewed baseline and pass after the Windows repair. The provider now tracks admitted launches through disposal, observes completion once per execution, supports concurrent/cancelled waiters, and owns process/job handles with SafeHandles. See [the lifecycle invariants](windows-lifecycle-invariants.md). Local Windows provider, contract, and conformance suites pass; package qualification was not run. **Next planned slice is AR-2**, subject to a separate request. Hostile-workload enforcement remains a held decision gate (AR-7).
+**AR-0/AR-1 status:** scope wording is corrected; E1/E2/E3 failed on the reviewed baseline and pass after the Windows repair. The provider now tracks admitted launches through disposal, observes completion once per execution, supports concurrent/cancelled waiters, and owns process/job handles with SafeHandles. See [the lifecycle invariants](windows-lifecycle-invariants.md). Local Windows provider, contract, and conformance suites pass; package qualification was not run. **AR-2 status:** source `9550ff768cf09889de4a37a2811a187a0281c44d` repairs Linux admission, persistent reaping, child FD closure, cgroup cleanup and prerequisite refusal. Root WSL 38/38 Linux provider tests and delegated UID 65534 13/13 focused tests passed; E10 still demonstrates privileged sibling migration. [AR-2 evidence](evidence/linux-lifecycle-AR-2.md) states the exact host and exclusions. **Next planned slice is AR-3**, subject to a separate request. Hostile-workload enforcement remains a held decision gate (AR-7).
 
-For each future AR-2–AR-7 slice, implementation and green tests alone are not
+For each AR-2–AR-7 slice, implementation and green tests alone are not
 completion. Produce a separate durable `docs/evidence/` document with exact
 source/host binding, before/after observations, test counts, cleanup proof,
 finding status, and qualification exclusions. If required native qualification
 is unavailable, report `IMPLEMENTED — NATIVE QUALIFICATION PENDING`. See the
 [mandatory standard](remediation-evidence-standard.md) for per-slice criteria.
 
-This current action supersedes historical next-step/freeze statements below for the demonstrated review defects. Keep earlier milestone evidence as history; do not redo GP-2/GL-2/GM-2. AR-1 does not qualify Linux/macOS or a hostile-code security boundary.
+This current action supersedes historical next-step/freeze statements below for the demonstrated review defects. Keep earlier milestone evidence as history; do not redo GP-2/GL-2/GM-2. AR-1/AR-2 do not qualify macOS, an installed package, or a hostile-code security boundary.
 
 ## User direction
 
@@ -85,13 +85,13 @@ Verified GW-1A/GW-1B 2026-10-04 (Windows host, spike-only; no provider qualified
 
 ## Exact next task
 
-Review the completed AR-0/AR-1 Windows slice against [its evidence](evidence/windows-lifecycle-AR-1.md) and [invariants](windows-lifecycle-invariants.md). AR-2 Linux work remains planned and was not started in this slice. Preserve the lifecycle-only scope and public SPI. Require separate native evidence before claiming further platform or package qualification.
+Review AR-0/AR-1 against [Windows evidence](evidence/windows-lifecycle-AR-1.md) and [invariants](windows-lifecycle-invariants.md), and AR-2 against [Linux evidence](evidence/linux-lifecycle-AR-2.md). AR-3 macOS remains planned. Preserve the lifecycle-only scope and public SPI. Require separate native evidence before claiming further platform or package qualification.
 
 Before executing experiments that alter host ACLs/users/firewall or install a runtime, prepare the exact setup/cleanup implementation and inspect the task's authorization. No permission prompt is required merely to write code, read state or run safe fixtures. Keep privileged setup separate and attributable.
 
 ## Resume prompt
 
-> Continue Gagamba in C:/Users/Laszlos/source/repos/Gagamba as Sol, using docs/review-remediation-sol.md as the current action plan. Read AGENTS.md, docs/handoff.md, docs/work-queue.md and the linked independent review first. Complete AR-0 then AR-1, adding deterministic E1/E2/E3 regressions before repairing Windows lifecycle ownership and completion. Preserve platform differences, standalone scope, unrelated edits and original proposal bytes. No speculative platform work, sibling changes or publication. Update queue/handoff with measured tests and cleanup evidence after each slice; follow the remaining dependencies and keep AR-7's restricted-profile decision explicit.
+> Continue Gagamba in C:/Users/Laszlos/source/repos/Gagamba as Sol, using docs/review-remediation-sol.md as the current action plan. Read AGENTS.md, docs/handoff.md, docs/work-queue.md, the independent review, and the AR-1/AR-2 evidence first. AR-0 through AR-2 are implemented; start AR-3 only when separately directed. Preserve platform differences, standalone scope, unrelated edits and original proposal bytes. No speculative platform work, sibling changes or publication. Update queue/handoff with measured native tests and cleanup evidence after each slice; keep AR-7's restricted-profile decision explicit.
 
 ## Validation of this preparation
 
