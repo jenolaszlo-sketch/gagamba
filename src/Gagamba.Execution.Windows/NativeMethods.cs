@@ -2,6 +2,7 @@
 // GW-1B/GQ-1 spike; duplicated here so src never depends on spike code.
 using System.Runtime.InteropServices;
 using System.Text;
+using Microsoft.Win32.SafeHandles;
 
 namespace Gagamba.Execution.Windows;
 
@@ -20,6 +21,7 @@ internal static class NativeMethods
     public const uint SYNCHRONIZE = 0x00100000;
     public const uint WAIT_OBJECT_0 = 0;
     public const uint WAIT_TIMEOUT = 258;
+    public const uint WAIT_FAILED = 0xFFFFFFFF;
     public const uint STILL_ACTIVE = 259;
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
@@ -118,35 +120,39 @@ internal static class NativeMethods
         out ProcessInformation processInformation);
 
     [DllImport("kernel32.dll", SetLastError = true)]
-    internal static extern uint ResumeThread(IntPtr hThread);
+    internal static extern uint ResumeThread(SafeWaitHandle hThread);
 
     [DllImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    internal static extern bool TerminateProcess(IntPtr hProcess, uint uExitCode);
+    internal static extern bool TerminateProcess(SafeWaitHandle hProcess, uint uExitCode);
 
     [DllImport("kernel32.dll")]
-    internal static extern uint GetProcessId(IntPtr hProcess);
+    internal static extern uint GetProcessId(SafeWaitHandle hProcess);
 
     [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
     internal static extern IntPtr CreateJobObjectW(IntPtr jobAttributes, string? name);
 
     [DllImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    internal static extern bool SetInformationJobObject(IntPtr hJob, int jobObjectInformationClass,
+    internal static extern bool SetInformationJobObject(SafeWaitHandle hJob, int jobObjectInformationClass,
         ref JobObjectExtendedLimitInformation jobObjectInformation, uint cbJobObjectInformationLength);
 
     [DllImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    internal static extern bool QueryInformationJobObject(IntPtr hJob, int jobObjectInformationClass,
+    internal static extern bool QueryInformationJobObject(SafeWaitHandle hJob, int jobObjectInformationClass,
         ref JobObjectBasicAccountingInformation jobObjectInformation, uint cbJobObjectInformationLength, IntPtr lpReturnLength);
 
     [DllImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    internal static extern bool AssignProcessToJobObject(IntPtr hJob, IntPtr hProcess);
+    internal static extern bool AssignProcessToJobObject(SafeWaitHandle hJob, SafeWaitHandle hProcess);
 
     [DllImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    internal static extern bool TerminateJobObject(IntPtr hJob, uint exitCode);
+    internal static extern bool AssignProcessToJobObject(SafeWaitHandle hJob, IntPtr hProcess);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool TerminateJobObject(SafeWaitHandle hJob, uint exitCode);
 
     [DllImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
@@ -154,10 +160,10 @@ internal static class NativeMethods
 
     [DllImport("kernel32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    internal static extern bool GetExitCodeProcess(IntPtr hProcess, out uint lpExitCode);
+    internal static extern bool GetExitCodeProcess(SafeWaitHandle hProcess, out uint lpExitCode);
 
     [DllImport("kernel32.dll", SetLastError = true)]
-    internal static extern uint WaitForSingleObject(IntPtr hHandle, uint dwMilliseconds);
+    internal static extern uint WaitForSingleObject(SafeWaitHandle hHandle, uint dwMilliseconds);
 
     [DllImport("kernel32.dll", SetLastError = true)]
     internal static extern IntPtr OpenProcess(uint access, bool inherit, uint pid);

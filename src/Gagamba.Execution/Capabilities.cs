@@ -18,7 +18,9 @@ public enum ExecutionCapability
     OwnerDeathCleanup,
     /// <summary>Descendants are automatically included in the owned domain.</summary>
     RecursiveMembership,
-    /// <summary>A descendant cannot leave the domain via normal process APIs.</summary>
+    /// <summary>An ordinarily created direct descendant cannot break away
+    /// from its lifecycle domain. Work created through an external broker
+    /// (such as WMI or a service) is outside this capability.</summary>
     EscapeResistant,
     /// <summary>The OS itself enforces the full lifecycle relationship.</summary>
     KernelOwnedLifecycle,

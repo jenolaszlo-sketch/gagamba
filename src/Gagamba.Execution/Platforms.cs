@@ -37,7 +37,7 @@ namespace Gagamba.Execution;
             [ExecutionCapability.RecursiveMembership] =
                 FullNative("J2: root->mid->ping all in job, all killed"),
             [ExecutionCapability.EscapeResistant] =
-                FullNative("No breakaway flags are ever set; no Win32 path leaves the job"),
+                FullNative("Direct descendants inherit the job; normal breakaway flags are disabled. Broker-mediated creation (WMI/services/scheduled work) is outside this guarantee"),
             [ExecutionCapability.KernelOwnedLifecycle] =
                 FullNative("J3-J6: lifetime enforced by the kernel, no userspace reaper"),
         });

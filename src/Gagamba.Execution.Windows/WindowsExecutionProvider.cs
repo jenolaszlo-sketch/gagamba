@@ -1,300 +1,339 @@
-// GW-2 Windows execution provider: IExecutionProvider over Job Objects.
-// Negotiation reflects the GP-2 Windows profile; suspend-assign-resume has
-// no escape window; assignment failure terminates the suspended target and
-// proves it dead (fail-closed); termination uses the job, never PID lists;
-// disposal closes job handles (kill-on-close does the teardown). No quotas,
-// graceful shutdown, output capture, or telemetry.
 using System.Runtime.InteropServices;
 using System.Text;
+using Microsoft.Win32.SafeHandles;
 
 namespace Gagamba.Execution.Windows;
 
+/// <summary>Windows lifecycle provider over kill-on-close Job Objects.</summary>
 public sealed class WindowsExecutionProvider : IExecutionProvider
 {
     public const uint TerminateExitCode = 99;
 
+    // Gate linearizes admission, release, terminal removal and disposal.
+    // Prepared -> LaunchAdmission -> WindowsExecutionState -> terminal task.
     private readonly object _gate = new();
     private bool _disposed;
+    private Task? _disposeTask;
+    private TaskCompletionSource? _launchesDrained;
     private readonly Dictionary<Guid, OwnedJob> _preparations = new();
-    private readonly Dictionary<Guid, ExecutionRecord> _executions = new();
+    private readonly HashSet<LaunchAdmission> _launches = new();
+    private readonly List<LaunchAdmission> _failedAdmissions = new();
+    private readonly Dictionary<Guid, WindowsExecutionState> _executions = new();
+    private readonly Dictionary<Guid, (WeakReference<ExecutionHandle> Handle, Task<CompletionResult> Result)> _completed = new();
+    private int _completedSincePrune;
 
-    private sealed record ExecutionRecord(OwnedJob Job, IntPtr ProcessHandle, bool Terminated);
+    // Internal fault injection is limited to tests; it never relaxes the
+    // production assignment/resume path.
+    internal bool FailAssignmentForTest { get; set; }
+    internal bool FailResumeForTest { get; set; }
+    internal int CleanupConfirmationFailuresForTest;
+
+    private sealed class LaunchAdmission(OwnedJob job)
+    {
+        public OwnedJob Job { get; } = job;
+        public SafeWaitHandle? Process { get; set; }
+        public SafeWaitHandle? Thread { get; set; }
+        public bool Transferred { get; set; }
+        public bool Assigned { get; set; }
+        public WindowsExecutionState? Running { get; set; }
+
+        public string? Cleanup(bool suppressConfirmation = false)
+        {
+            Thread?.Dispose();
+            Thread = null;
+            if (Transferred) return null;
+            if (Process is not null)
+            {
+                // Assignment failure is the dangerous case: the job cannot
+                // kill an unassigned suspended root. Keep its process handle
+                // owned if termination cannot be confirmed.
+                bool killed = NativeMethods.TerminateProcess(Process, TerminateExitCode);
+                int killError = killed ? 0 : Marshal.GetLastWin32Error();
+                if (Assigned) Job.Terminate(TerminateExitCode);
+                uint wait = NativeMethods.WaitForSingleObject(Process, 5000);
+                if (wait != NativeMethods.WAIT_OBJECT_0 || suppressConfirmation)
+                {
+                    int waitError = wait == NativeMethods.WAIT_FAILED ? Marshal.GetLastWin32Error() : 0;
+                    return $"suspended-root cleanup unconfirmed: TerminateProcess err=0x{killError:X}, wait=0x{wait:X}, waitErr=0x{waitError:X}";
+                }
+                Process.Dispose();
+                Process = null;
+            }
+            Job.Dispose();
+            return null;
+        }
+    }
 
     public PlatformCapabilities Describe() => WellKnownPlatforms.Windows;
 
     public PrepareResult Prepare(ExecutionRequirements requirements)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
         var r = ExecutionNegotiator.Negotiate(
             WellKnownPlatforms.Windows, requirements.Required, requirements.Preferred);
-        if (!r.Accepted)
-            return new PrepareResult.Rejected(r.Unmet);
-        // Allocate the domain at preparation so a caller that never launches
-        // can reclaim it explicitly through Discard.
-        var (job, jobError) = OwnedJob.Create();
-        if (job is null)
-            return new PrepareResult.Rejected(new[] { jobError });
-        var prep = new PreparedExecution(
-            WellKnownPlatforms.Windows.Platform, Guid.NewGuid(), r.Met);
-        lock (_gate) _preparations[prep.PreparationId] = job;
-        return new PrepareResult.Accepted(prep);
+        lock (_gate)
+        {
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            if (!r.Accepted) return new PrepareResult.Rejected(r.Unmet);
+            // Allocation and registration are one gate-owned transition.
+            var (job, error) = OwnedJob.Create();
+            if (job is null) return new PrepareResult.Rejected(new[] { error });
+            var prep = new PreparedExecution(
+                WellKnownPlatforms.Windows.Platform, Guid.NewGuid(), r.Met);
+            _preparations.Add(prep.PreparationId, job);
+            return new PrepareResult.Accepted(prep);
+        }
     }
 
     public DiscardResult Discard(PreparedExecution preparation)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
-        if (preparation.Provider != WellKnownPlatforms.Windows.Platform)
-            return new DiscardResult.Failed(
-                new[] { "unknown preparation: not issued by this provider" });
-        // Idempotent: a preparation already launched or discarded is a no-op.
-        OwnedJob? job;
-        lock (_gate) _preparations.Remove(preparation.PreparationId, out job);
-        try { job?.Dispose(); } catch { }
-        return new DiscardResult.Discarded(preparation);
+        lock (_gate)
+        {
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            if (preparation.Provider != WellKnownPlatforms.Windows.Platform)
+                return new DiscardResult.Failed(new[] { "unknown preparation: not issued by this provider" });
+            if (_preparations.Remove(preparation.PreparationId, out var job))
+                job.Dispose();
+            return new DiscardResult.Discarded(preparation);
+        }
     }
 
     public LaunchResult Launch(PreparedExecution prepared, ProcessStartSpec process)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
-        OwnedJob? job;
+        LaunchAdmission admission;
         lock (_gate)
         {
+            ObjectDisposedException.ThrowIf(_disposed, this);
             if (prepared.Provider != WellKnownPlatforms.Windows.Platform
-                || !_preparations.Remove(prepared.PreparationId, out job))
-                return new LaunchResult.Failed(
-                    new[] { "unknown preparation: not issued by this provider" });
-            // Single-use: consuming the preparation removes it above, success
-            // or failure, so it can never become a reusable authority.
+                || !_preparations.Remove(prepared.PreparationId, out var job))
+                return new LaunchResult.Failed(new[] { "unknown preparation: not issued by this provider" });
+            admission = new LaunchAdmission(job);
+            _launches.Add(admission);
         }
-        if (string.IsNullOrWhiteSpace(process.Executable))
-        {
-            try { job.Dispose(); } catch { }
-            return new LaunchResult.Failed(new[] { "no executable" });
-        }
-        if (!TryBuildEnvironment(process.Environment, out IntPtr env, out string envError))
-        {
-            try { job.Dispose(); } catch { }
-            return new LaunchResult.Failed(new[] { envError });
-        }
+
+        IntPtr environment = IntPtr.Zero;
+        LaunchResult result = new LaunchResult.Failed(new[] { "launch did not complete" });
+        string? cleanupFailure = null;
         try
         {
-            return LaunchInner(job, process, env);
+            if (string.IsNullOrWhiteSpace(process.Executable))
+                result = new LaunchResult.Failed(new[] { "no executable" });
+            else if (!TryBuildEnvironment(process.Environment, out environment, out string envError))
+                result = new LaunchResult.Failed(new[] { envError });
+            else
+                result = LaunchInner(admission, process, environment);
+        }
+        catch (Exception ex)
+        {
+            result = new LaunchResult.Failed(new[] { $"launch fault: {ex.GetType().Name}: {ex.Message}" });
         }
         finally
         {
-            if (env != IntPtr.Zero)
+            try
             {
-                try { Marshal.FreeHGlobal(env); } catch { }
+                if (environment != IntPtr.Zero) Marshal.FreeHGlobal(environment);
+                cleanupFailure = admission.Cleanup(TakeCleanupFaultForTest());
+            }
+            catch (Exception ex) { cleanupFailure = $"launch cleanup fault: {ex.GetType().Name}: {ex.Message}"; }
+            finally
+            {
+                lock (_gate)
+                {
+                    if (cleanupFailure is not null) _failedAdmissions.Add(admission);
+                    _launches.Remove(admission);
+                    if (_launches.Count == 0) _launchesDrained?.TrySetResult();
+                }
             }
         }
+        if (cleanupFailure is null) return result;
+        admission.Running?.Stop();
+        return new LaunchResult.Failed(new[] { cleanupFailure });
     }
 
     public TerminateResult Terminate(ExecutionHandle execution)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
-        ExecutionRecord? rec;
+        WindowsExecutionState? state;
         lock (_gate)
         {
-            if (execution.Provider != WellKnownPlatforms.Windows.Platform
-                || !_executions.TryGetValue(execution.ExecutionId, out rec))
-                return new TerminateResult.Failed(
-                    new[] { "unknown execution: not issued by this provider" });
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            if (execution.Provider != WellKnownPlatforms.Windows.Platform)
+                return new TerminateResult.Failed(new[] { "unknown execution: not issued by this provider" });
+            if (!_executions.TryGetValue(execution.ExecutionId, out state))
+            {
+                if (_completed.TryGetValue(execution.ExecutionId, out var completed)
+                    && completed.Handle.TryGetTarget(out _)
+                    && completed.Result.Result is CompletionResult.Terminated)
+                    return new TerminateResult.Terminated(execution);
+                return new TerminateResult.Failed(new[] { "unknown or already terminal execution" });
+            }
         }
-        // Idempotent: terminating twice (or terminating the already-dead)
-        // succeeds. Cleanup races must not become errors.
-        var (ok, err) = rec.Job.Terminate(TerminateExitCode);
-        if (!ok && !rec.Job.IsClosed)
-            return new TerminateResult.Failed(new[] { err });
-        lock (_gate)
-        {
-            if (_executions.TryGetValue(execution.ExecutionId, out var cur))
-                _executions[execution.ExecutionId] = cur with { Terminated = true };
-        }
-        return new TerminateResult.Terminated(execution);
+        return state.Stop();
     }
 
-    public async ValueTask<CompletionResult> WaitForCompletionAsync(ExecutionHandle execution,
+    public ValueTask<CompletionResult> WaitForCompletionAsync(ExecutionHandle execution,
         CancellationToken cancellationToken = default)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
-        ExecutionRecord? rec;
+        Task<CompletionResult> terminal;
         lock (_gate)
         {
-            if (execution.Provider != WellKnownPlatforms.Windows.Platform
-                || !_executions.TryGetValue(execution.ExecutionId, out rec))
-                return new CompletionResult.Failed(
-                    new[] { "unknown execution: not issued by this provider" });
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            if (execution.Provider != WellKnownPlatforms.Windows.Platform)
+                return new ValueTask<CompletionResult>(new CompletionResult.Failed(
+                    new[] { "unknown execution: not issued by this provider" }));
+            if (_executions.TryGetValue(execution.ExecutionId, out var state))
+                terminal = state.Completion;
+            else if (!_completed.TryGetValue(execution.ExecutionId, out var completed)
+                || !completed.Handle.TryGetTarget(out _))
+                return new ValueTask<CompletionResult>(new CompletionResult.Failed(
+                    new[] { "unknown execution: not issued by this provider" }));
+            else terminal = completed.Result;
         }
-        // Wait for the root to exit. Bounded waits keep the token responsive;
-        // cancellation cancels the wait only and never terminates the domain.
-        while (true)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            if (NativeMethods.WaitForSingleObject(rec.ProcessHandle, 200) == NativeMethods.WAIT_OBJECT_0)
-                break;
-        }
-        uint exitCode = 0;
-        NativeMethods.GetExitCodeProcess(rec.ProcessHandle, out exitCode);
-        // Domain terminal state: the job must have no active processes. A child
-        // that outlives the root keeps this pending (the domain owns it).
-        while (!(rec.Job.TryActiveProcessCount(out uint active) && active == 0))
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            await Task.Delay(50, cancellationToken).ConfigureAwait(false);
-        }
-        bool terminated;
-        lock (_gate)
-        {
-            terminated = _executions.TryGetValue(execution.ExecutionId, out var cur) && cur.Terminated;
-            _executions.Remove(execution.ExecutionId); // completion consumes the handle
-        }
-        CloseQuiet(rec.ProcessHandle);
-        try { rec.Job.Dispose(); } catch { }
-        return terminated
-            ? new CompletionResult.Terminated()
-            : new CompletionResult.NaturalExit(unchecked((int)exitCode));
+        // Cancellation applies only to this observation. The execution's
+        // terminal task, root exit and cleanup remain owned by its state.
+        return new ValueTask<CompletionResult>(terminal.WaitAsync(cancellationToken));
     }
 
     public ValueTask DisposeAsync()
     {
-        List<ExecutionRecord> owned;
-        List<OwnedJob> prepared;
         lock (_gate)
         {
-            if (_disposed) return ValueTask.CompletedTask;
-            _disposed = true;
-            owned = new List<ExecutionRecord>(_executions.Values);
-            _executions.Clear();
-            prepared = new List<OwnedJob>(_preparations.Values);
+            if (_disposeTask is not null)
+            {
+                // A native cleanup fault retains the failed admission. A
+                // later disposal call may retry that still-owned resource;
+                // the first call never reports successful cleanup.
+                if (_disposeTask.IsFaulted && _failedAdmissions.Count > 0)
+                    _disposeTask = RetryFailedCleanupsAsync();
+                return new ValueTask(_disposeTask);
+            }
+            _disposed = true; // disposal's admission linearization point
+            var prepared = _preparations.Values.ToArray();
             _preparations.Clear();
+            var running = _executions.Values.ToArray();
+            if (_launches.Count > 0)
+                _launchesDrained = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            _disposeTask = DisposeCoreAsync(prepared, running, _launchesDrained?.Task);
+            return new ValueTask(_disposeTask);
         }
-        // Closing each job fires KILL_ON_JOB_CLOSE: the kernel tears down
-        // every remaining tree. No TerminateJobObject needed on this path.
-        foreach (var rec in owned)
-        {
-            try { rec.Job.Dispose(); } catch { }
-            CloseQuiet(rec.ProcessHandle);
-        }
-        // Unlaunched preparations hold a job handle; close it too.
-        foreach (var job in prepared)
-        {
-            try { job.Dispose(); } catch { }
-        }
-        return ValueTask.CompletedTask;
     }
 
-    private LaunchResult LaunchInner(OwnedJob job, ProcessStartSpec process, IntPtr env)
+    private async Task DisposeCoreAsync(OwnedJob[] prepared,
+        WindowsExecutionState[] running, Task? launchesDrained)
+    {
+        await Task.Yield();
+        foreach (var job in prepared) job.Dispose();
+        foreach (var state in running) state.Stop();
+        if (launchesDrained is not null) await launchesDrained.ConfigureAwait(false);
+        var outcomes = await Task.WhenAll(running.Select(state => state.Completion)).ConfigureAwait(false);
+        await CleanupFailedAdmissionsAsync().ConfigureAwait(false);
+        if (outcomes.OfType<CompletionResult.Failed>().Any())
+            throw new InvalidOperationException("Windows execution observation or cleanup failed during disposal");
+    }
+
+    private async Task RetryFailedCleanupsAsync()
+    {
+        await Task.Yield();
+        await CleanupFailedAdmissionsAsync().ConfigureAwait(false);
+    }
+
+    private Task CleanupFailedAdmissionsAsync()
+    {
+        LaunchAdmission[] failed;
+        lock (_gate) failed = _failedAdmissions.ToArray();
+        var errors = new List<string>();
+        foreach (var admission in failed)
+        {
+            string? error = admission.Cleanup(TakeCleanupFaultForTest());
+            if (error is not null) errors.Add(error);
+            else { lock (_gate) _failedAdmissions.Remove(admission); }
+        }
+        if (errors.Count != 0)
+            throw new InvalidOperationException("Windows launch cleanup unconfirmed: " + string.Join("; ", errors));
+        return Task.CompletedTask;
+    }
+
+    private LaunchResult LaunchInner(LaunchAdmission admission, ProcessStartSpec process, IntPtr environment)
     {
         var commandLine = new StringBuilder(32768);
         commandLine.Append('"').Append(process.Executable).Append("\" ").Append(process.Arguments);
         var si = new NativeMethods.StartupInfo { cb = Marshal.SizeOf<NativeMethods.StartupInfo>() };
-        bool created;
-        NativeMethods.ProcessInformation pi;
-        try
+        if (!NativeMethods.CreateProcessW(null, commandLine, IntPtr.Zero, IntPtr.Zero, false,
+            NativeMethods.CREATE_SUSPENDED | NativeMethods.CREATE_UNICODE_ENVIRONMENT,
+            environment, string.IsNullOrWhiteSpace(process.WorkingDirectory) ? null : process.WorkingDirectory,
+            ref si, out var pi))
         {
-            created = NativeMethods.CreateProcessW(null, commandLine,
-                IntPtr.Zero, IntPtr.Zero, false,
-                NativeMethods.CREATE_SUSPENDED | NativeMethods.CREATE_UNICODE_ENVIRONMENT,
-                env, string.IsNullOrWhiteSpace(process.WorkingDirectory) ? null : process.WorkingDirectory,
-                ref si, out pi);
+            int error = Marshal.GetLastWin32Error();
+            return new LaunchResult.Failed(new[] { $"CreateProcess err=0x{error:X} (no target ran)" });
         }
-        catch (Exception ex)
-        {
-            job.Dispose();
-            return new LaunchResult.Failed(new[] { $"invocation fault: {ex.GetType().Name}" });
-        }
-        if (!created)
-        {
-            int err = Marshal.GetLastWin32Error();
-            job.Dispose();
-            return new LaunchResult.Failed(new[] { $"CreateProcess err=0x{err:X} (no target ran)" });
-        }
-        uint pid = NativeMethods.GetProcessId(pi.hProcess);
-        if (!TryAssign(job, pi.hProcess, out int assignErr))
-        {
-            // Fail closed: the target never ran unsandboxed... it never ran
-            // at all (still suspended). Terminate it, prove it dead.
-            try { NativeMethods.TerminateProcess(pi.hProcess, TerminateExitCode); } catch { }
-            CloseQuiet(pi.hProcess);
-            CloseQuiet(pi.hThread);
-            job.Dispose();
-            bool dead = WaitPidDead(pid, 5000);
+
+        // Own both raw handles immediately. If wrapping one throws, the
+        // admission's finally path closes the wrapped one and the other raw.
+        try { admission.Process = new SafeWaitHandle(pi.hProcess, ownsHandle: true); }
+        catch { NativeMethods.CloseHandle(pi.hProcess); NativeMethods.CloseHandle(pi.hThread); throw; }
+        try { admission.Thread = new SafeWaitHandle(pi.hThread, ownsHandle: true); }
+        catch { NativeMethods.CloseHandle(pi.hThread); throw; }
+
+        int assignError = 6;
+        if (FailAssignmentForTest || !admission.Job.TryAssign(admission.Process, out assignError))
             return new LaunchResult.Failed(new[] {
-                $"assign rejected err=0x{assignErr:X}; suspended target terminated, dead={dead}" });
-        }
-        if (NativeMethods.ResumeThread(pi.hThread) == uint.MaxValue)
+                $"assign rejected err=0x{(FailAssignmentForTest ? 6 : assignError):X}; suspended target cleanup owned" });
+
+        admission.Assigned = true;
+
+        lock (_gate)
         {
-            int err = Marshal.GetLastWin32Error();
-            try { NativeMethods.TerminateProcess(pi.hProcess, TerminateExitCode); } catch { }
-            CloseQuiet(pi.hProcess);
-            CloseQuiet(pi.hThread);
-            job.Dispose();
-            bool dead = WaitPidDead(pid, 5000);
-            return new LaunchResult.Failed(new[] {
-                $"resume fault err=0x{err:X}; target terminated, dead={dead}" });
-        }
-        CloseQuiet(pi.hThread);
-        // Keep the process handle: WaitForCompletionAsync needs it to observe
-        // the root's exit and exit code. It is closed at completion/disposal.
-        var handle = new ExecutionHandle(WellKnownPlatforms.Windows.Platform, Guid.NewGuid());
-        lock (_gate) _executions[handle.ExecutionId] = new ExecutionRecord(job, pi.hProcess, false);
-        return new LaunchResult.Started(handle);
-    }
-
-    /// <summary>
-    /// Assign with classified failure. Separated for direct unit coverage:
-    /// a dead/incompatible target must fail here, never reach resume.
-    /// </summary>
-    internal static bool TryAssign(OwnedJob job, IntPtr process, out int error) =>
-        TryAssign(job.DangerousHandle, process, out error);
-
-    internal static bool TryAssign(IntPtr job, IntPtr process, out int error)
-    {
-        error = 0;
-        if (job == IntPtr.Zero || process == IntPtr.Zero)
-        {
-            error = 6; // ERROR_INVALID_HANDLE
-            return false;
-        }
-        if (NativeMethods.AssignProcessToJobObject(job, process))
-            return true;
-        error = Marshal.GetLastWin32Error();
-        return false;
-    }
-
-    private static void CloseQuiet(IntPtr h)
-    {
-        try { if (h != IntPtr.Zero) NativeMethods.CloseHandle(h); } catch { }
-    }
-
-    private static bool WaitPidDead(uint pid, int budgetMs)
-    {
-        var sw = System.Diagnostics.Stopwatch.StartNew();
-        while (sw.ElapsedMilliseconds < budgetMs)
-        {
-            IntPtr h = IntPtr.Zero;
-            try
+            if (_disposed)
+                return new LaunchResult.Failed(new[] { "disposal won before target release" });
+            if (FailResumeForTest || NativeMethods.ResumeThread(admission.Thread) == uint.MaxValue)
             {
-                h = NativeMethods.OpenProcess(
-                    NativeMethods.PROCESS_QUERY_LIMITED_INFORMATION | NativeMethods.SYNCHRONIZE,
-                    false, pid);
-                if (h == IntPtr.Zero) return true;
-                if (NativeMethods.GetExitCodeProcess(h, out uint rc) && rc != NativeMethods.STILL_ACTIVE)
-                    return true;
+                int error = FailResumeForTest ? 6 : Marshal.GetLastWin32Error();
+                return new LaunchResult.Failed(new[] { $"resume fault err=0x{error:X}; target cleanup owned" });
             }
-            catch { return true; }
-            finally { CloseQuiet(h); }
-            Thread.Sleep(100);
+            var handle = new ExecutionHandle(WellKnownPlatforms.Windows.Platform, Guid.NewGuid());
+            var state = new WindowsExecutionState(handle, admission.Job, admission.Process, OnTerminal);
+            _executions.Add(handle.ExecutionId, state);
+            admission.Transferred = true;
+            admission.Running = state;
+            admission.Process = null;
+            state.Start();
+            return new LaunchResult.Started(handle);
         }
-        return false;
     }
 
-    /// <summary>
-    /// Child environment is built EXCLUSIVELY from the spec: sorted,
-    /// double-null-terminated block. No ambient inheritance. Rejects
-    /// unencodable entries (NUL bytes, '=' in names, empty names,
-    /// case-insensitive duplicates) before any process starts.
-    /// </summary>
+    private void OnTerminal(WindowsExecutionState state, CompletionResult result)
+    {
+        lock (_gate)
+        {
+            if (_executions.TryGetValue(state.Handle.ExecutionId, out var current)
+                && ReferenceEquals(current, state))
+                _executions.Remove(state.Handle.ExecutionId);
+            // Weak-keyed retention permits repeated waits on the issued
+            // handle without retaining every past execution indefinitely.
+            if (++_completedSincePrune >= 64)
+            {
+                _completedSincePrune = 0;
+                foreach (var id in _completed.Where(pair => !pair.Value.Handle.TryGetTarget(out _))
+                    .Select(pair => pair.Key).ToArray()) _completed.Remove(id);
+            }
+            _completed[state.Handle.ExecutionId] =
+                (new WeakReference<ExecutionHandle>(state.Handle), Task.FromResult(result));
+        }
+    }
+
+    private bool TakeCleanupFaultForTest()
+    {
+        while (true)
+        {
+            int remaining = Volatile.Read(ref CleanupConfirmationFailuresForTest);
+            if (remaining <= 0) return false;
+            if (Interlocked.CompareExchange(ref CleanupConfirmationFailuresForTest,
+                remaining - 1, remaining) == remaining) return true;
+        }
+    }
+
+    internal static bool TryAssign(OwnedJob job, IntPtr process, out int error) =>
+        job.TryAssign(process, out error);
+
+    /// <summary>Encode only explicitly requested environment entries.</summary>
     internal static bool TryBuildEnvironment(
         IReadOnlyDictionary<string, string> spec, out IntPtr block, out string error)
     {
@@ -322,8 +361,6 @@ public sealed class WindowsExecutionProvider : IExecutionProvider
         string text = string.Join("\0",
             spec.OrderBy(kv => kv.Key, StringComparer.Ordinal)
                 .Select(kv => $"{kv.Key}={kv.Value}")) + "\0";
-        // Manual double-null-terminated block: StringToHGlobalUni must not
-        // be trusted with interior NULs (measured 0x57 from CreateProcess).
         char[] chars = text.ToCharArray();
         try
         {
@@ -334,11 +371,8 @@ public sealed class WindowsExecutionProvider : IExecutionProvider
         }
         catch (Exception ex)
         {
-            if (block != IntPtr.Zero)
-            {
-                try { Marshal.FreeHGlobal(block); } catch { }
-                block = IntPtr.Zero;
-            }
+            if (block != IntPtr.Zero) Marshal.FreeHGlobal(block);
+            block = IntPtr.Zero;
             error = $"environment encode fault: {ex.GetType().Name}";
             return false;
         }
