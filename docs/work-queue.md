@@ -1,6 +1,25 @@
 # Current work queue
 
-Updated 2026-10-04. Status definitions: Complete = stated artifact exists; Ready = dependencies sufficient to start; Held = named prerequisite missing; Pending = later delivery. Complete design work never implies completed security qualification.
+Updated 2026-10-09. Status definitions: Complete = stated artifact exists; Ready = dependencies sufficient to start; Held = named prerequisite missing; Pending = later delivery. Complete design work never implies completed security qualification.
+
+## Current priority: independent-review remediation
+
+User-requested handoff: [Sol action plan](review-remediation-sol.md). Source review: [2026-10-08 independent review](reviews/2026-10-08-independent-review.md), baseline `8dea7d86c8ee2f1c924100acdbc1bf5dc14b2a88`. [AR-1 evidence](evidence/windows-lifecycle-AR-1.md) records the bounded Windows repair. Current priority supersedes historical next-work notes elsewhere in this file.
+
+| ID | State | Next action / acceptance |
+| --- | --- | --- |
+| AR-0 | Complete — documentation/test rules, not security qualification | Shipped lifecycle-only scope and direct-descendant escape wording corrected; fresh nonce/barrier/watchdog rules recorded (F01/F02/F14). F01 hostile-profile work and F02 broader capability decision remain open. |
+| AR-1 | Implemented; locally Windows-native-tested; not package-qualified | E1/E2/E3 baseline failures and fixed results recorded; launch/dispose, async completion, cancellation, multiple waiters and native handle ownership repaired (F03/F04/F05 on Windows). See [evidence](evidence/windows-lifecycle-AR-1.md). |
+| AR-2 | Ready for separate implementation request; not started | Linux persistent root status, descriptor allowlist, cleanup and prerequisite refusal (F03/F05/F08/F09/F10) |
+| AR-3 | Pending AR-1 invariants | macOS bounded helper, classified observation and proven termination; native qualification required (F03/F05/F06/F07) |
+| AR-4 | Pending AR-1–AR-3 | Immutable inputs/maps, argv compatibility, capability honesty and correct same-provider token issuance (F02/F11/F12) |
+| AR-5 | Pending AR-1–AR-4 | Deadline/termination orchestration, bounded output and structured execution/cleanup evidence (F13) |
+| AR-6 | Pending repaired applicable claims | Trustworthy native conformance, explicit skips and exact-revision package release gate (F14/F15) |
+| AR-7 | Held: concrete restricted-profile decision | Define and qualify actual filesystem/network/IPC/identity enforcement before hostile-workload readiness (F01) |
+
+Completion requires the plan's specific tests and recorded cleanup evidence. Passing baseline suites alone does not close findings. Lifecycle hardening is distinct from hostile-workload security qualification; do not mark AR-7/F01 complete through documentation changes alone.
+
+## Historical milestone queue
 
 | ID | Status | Next action / exit evidence |
 | --- | --- | --- |

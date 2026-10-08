@@ -1,21 +1,21 @@
 # Gagamba
 
-Standalone .NET execution sandbox library — architecture and feasibility work.
+Standalone .NET process-lifecycle library with separate sandbox research.
 
 Status: research/prototyping with a working execution substrate, updated 2026-10-05. Three native providers (Windows Job Objects, Linux cgroup v2, macOS launchd) implement one frozen `IExecutionProvider` SPI, validated by a shared cross-platform conformance matrix, plus a requirement-driven `ExecutionRuntime`. Packages are published to NuGet.org. The Windows launch engine (GW-1B) still carries deliberately red legs pending engine findings. Start with the [handoff](docs/handoff.md) and [current queue](docs/work-queue.md).
 
-Gagamba accepts an explicit execution policy and uses a supported backend to confine a process and its descendants. It is independently useful and has no Penghou, Hufu, Luban, workflow, authorization-engine, or agent dependency.
+The published native providers negotiate **process lifecycle** guarantees: preparation, launch into an owned OS domain, descendant membership where supported, termination, completion observation, and cleanup. They do not enforce filesystem grants, network denial, credential or identity isolation, IPC restrictions, or limits on broker/service access. Run only workloads appropriate to the host account's existing authority. The offline-process-v1 security model and experimental Windows isolation engine are separate, unqualified work; lifecycle capabilities do not make hostile code safe. Gagamba is independently useful and has no Penghou, Hufu, Luban, workflow, authorization-engine, or agent dependency.
 
 ## Current direction
 
 - Windows, Linux, and macOS are target platforms. Start testing on the local Windows host, use WSL2 for early Linux work, and investigate GitHub-hosted macOS CI. Each platform needs independent evidence.
 - Develop and qualify Gagamba alone. Any Hufu integration is deferred.
 - Reject unsupported restrictions and backend failures before target execution. Never fall back to unrestricted execution.
-- Start with one execution and its process tree per sandbox, immutable policy, explicit filesystem access, and denied network.
+- The offline-process-v1 design targets one execution, explicit filesystem grants, and denied network; the published providers do not implement those restrictions.
 - Treat endpoint mediation, persistent sessions, live changes and OpenShell as later extensions. macOS is in scope, with backend selection subject to research.
 - Prove the platform mechanisms before freezing a package family or public API.
 
-Standalone scope, three-platform scope and local-first testing are user-selected. The offline-process-v1 baseline is now defined for implementation preparation; backend choices and public APIs remain open.
+Standalone scope, three-platform scope and local-first testing are user-selected. The offline-process-v1 baseline remains a design target, not a shipped security boundary.
 
 ## Packages
 

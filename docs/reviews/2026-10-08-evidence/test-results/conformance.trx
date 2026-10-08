@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="d9943a9b-f940-470a-b09f-a3e27e5e9bc4" name="Laszlos@LAPTOP-KBD8D8JG 2026-10-08 19:47:47" runUser="LAPTOP-KBD8D8JG\Laszlos" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-08T19:47:47.9124978+08:00" queuing="2026-10-08T19:47:47.9124986+08:00" start="2026-10-08T19:47:26.5088955+08:00" finish="2026-10-08T19:47:47.9204241+08:00" />
+  <TestSettings name="default" id="7a3eb440-534e-4ea3-a4e2-149c20e9a667">
+    <Deployment runDeploymentRoot="Laszlos_LAPTOP-KBD8D8JG_2026-10-08_19_47_47" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="58bb51f4-3017-4d16-ac11-694f87ce6bba" testId="9271e570-751c-57b2-1a5a-8e6027ad9320" testName="Gagamba.Conformance.Tests.ConformanceTests.CapabilityMatrixMatchesPlatform" computerName="LAPTOP-KBD8D8JG" duration="00:00:00.2213602" startTime="2026-10-08T19:47:47.4911508+08:00" endTime="2026-10-08T19:47:47.7281174+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="58bb51f4-3017-4d16-ac11-694f87ce6bba" />
+    <UnitTestResult executionId="3cf09060-3692-4693-9786-95037a4e9808" testId="3c11734d-3b2c-eeb9-1946-8cc4de765774" testName="Gagamba.Conformance.Tests.ConformanceTests.PublicSurfaceStaysOpaque" computerName="LAPTOP-KBD8D8JG" duration="00:00:00.0002617" startTime="2026-10-08T19:47:47.7398037+08:00" endTime="2026-10-08T19:47:47.7401511+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3cf09060-3692-4693-9786-95037a4e9808" />
+    <UnitTestResult executionId="292ca68b-b79f-45be-80f9-5ac1de7c1ecc" testId="7eff0ab4-16d1-57a5-ede8-f7d0f7e895ff" testName="Gagamba.Conformance.Tests.ConformanceTests.ReportContainsEveryLeg" computerName="LAPTOP-KBD8D8JG" duration="00:00:00.0004891" startTime="2026-10-08T19:47:47.7439890+08:00" endTime="2026-10-08T19:47:47.7445555+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="292ca68b-b79f-45be-80f9-5ac1de7c1ecc" />
+    <UnitTestResult executionId="c8061bf8-3ed9-4587-8322-e9515aa54f2f" testId="1a44d008-c54d-48e6-17d9-2aceb3e778c8" testName="Gagamba.Conformance.Tests.ConformanceTests.BehavioralLegsMatchPlatformTruth" computerName="LAPTOP-KBD8D8JG" duration="00:00:00.0021824" startTime="2026-10-08T19:47:47.7408377+08:00" endTime="2026-10-08T19:47:47.7431239+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c8061bf8-3ed9-4587-8322-e9515aa54f2f" />
+    <UnitTestResult executionId="47efa1c8-3879-47e3-af1b-caea8974db9b" testId="9f2d6ba3-61a7-7375-824b-967e9c80f68d" testName="Gagamba.Conformance.Tests.ConformanceTests.SetsidEscapeMatchesExpectedSemantics" computerName="LAPTOP-KBD8D8JG" duration="00:00:00.0006874" startTime="2026-10-08T19:47:47.7379209+08:00" endTime="2026-10-08T19:47:47.7387031+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="47efa1c8-3879-47e3-af1b-caea8974db9b" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Gagamba.Conformance.Tests.ConformanceTests.SetsidEscapeMatchesExpectedSemantics" storage="c:\users\laszlos\.codex\visualizations\2026\10\08\01a11b4e-197e-7731-bc30-e1905e115772\gagamba-review\snapshot\tests\gagamba.conformance.tests\bin\release\net10.0\gagamba.conformance.tests.dll" id="9f2d6ba3-61a7-7375-824b-967e9c80f68d">
+      <Execution id="47efa1c8-3879-47e3-af1b-caea8974db9b" />
+      <TestMethod codeBase="C:\Users\Laszlos\.codex\visualizations\2026\10\08\01a11b4e-197e-7731-bc30-e1905e115772\gagamba-review\snapshot\tests\Gagamba.Conformance.Tests\bin\Release\net10.0\Gagamba.Conformance.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Gagamba.Conformance.Tests.ConformanceTests" name="SetsidEscapeMatchesExpectedSemantics" />
+    </UnitTest>
+    <UnitTest name="Gagamba.Conformance.Tests.ConformanceTests.PublicSurfaceStaysOpaque" storage="c:\users\laszlos\.codex\visualizations\2026\10\08\01a11b4e-197e-7731-bc30-e1905e115772\gagamba-review\snapshot\tests\gagamba.conformance.tests\bin\release\net10.0\gagamba.conformance.tests.dll" id="3c11734d-3b2c-eeb9-1946-8cc4de765774">
+      <Execution id="3cf09060-3692-4693-9786-95037a4e9808" />
+      <TestMethod codeBase="C:\Users\Laszlos\.codex\visualizations\2026\10\08\01a11b4e-197e-7731-bc30-e1905e115772\gagamba-review\snapshot\tests\Gagamba.Conformance.Tests\bin\Release\net10.0\Gagamba.Conformance.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Gagamba.Conformance.Tests.ConformanceTests" name="PublicSurfaceStaysOpaque" />
+    </UnitTest>
+    <UnitTest name="Gagamba.Conformance.Tests.ConformanceTests.ReportContainsEveryLeg" storage="c:\users\laszlos\.codex\visualizations\2026\10\08\01a11b4e-197e-7731-bc30-e1905e115772\gagamba-review\snapshot\tests\gagamba.conformance.tests\bin\release\net10.0\gagamba.conformance.tests.dll" id="7eff0ab4-16d1-57a5-ede8-f7d0f7e895ff">
+      <Execution id="292ca68b-b79f-45be-80f9-5ac1de7c1ecc" />
+      <TestMethod codeBase="C:\Users\Laszlos\.codex\visualizations\2026\10\08\01a11b4e-197e-7731-bc30-e1905e115772\gagamba-review\snapshot\tests\Gagamba.Conformance.Tests\bin\Release\net10.0\Gagamba.Conformance.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Gagamba.Conformance.Tests.ConformanceTests" name="ReportContainsEveryLeg" />
+    </UnitTest>
+    <UnitTest name="Gagamba.Conformance.Tests.ConformanceTests.BehavioralLegsMatchPlatformTruth" storage="c:\users\laszlos\.codex\visualizations\2026\10\08\01a11b4e-197e-7731-bc30-e1905e115772\gagamba-review\snapshot\tests\gagamba.conformance.tests\bin\release\net10.0\gagamba.conformance.tests.dll" id="1a44d008-c54d-48e6-17d9-2aceb3e778c8">
+      <Execution id="c8061bf8-3ed9-4587-8322-e9515aa54f2f" />
+      <TestMethod codeBase="C:\Users\Laszlos\.codex\visualizations\2026\10\08\01a11b4e-197e-7731-bc30-e1905e115772\gagamba-review\snapshot\tests\Gagamba.Conformance.Tests\bin\Release\net10.0\Gagamba.Conformance.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Gagamba.Conformance.Tests.ConformanceTests" name="BehavioralLegsMatchPlatformTruth" />
+    </UnitTest>
+    <UnitTest name="Gagamba.Conformance.Tests.ConformanceTests.CapabilityMatrixMatchesPlatform" storage="c:\users\laszlos\.codex\visualizations\2026\10\08\01a11b4e-197e-7731-bc30-e1905e115772\gagamba-review\snapshot\tests\gagamba.conformance.tests\bin\release\net10.0\gagamba.conformance.tests.dll" id="9271e570-751c-57b2-1a5a-8e6027ad9320">
+      <Execution id="58bb51f4-3017-4d16-ac11-694f87ce6bba" />
+      <TestMethod codeBase="C:\Users\Laszlos\.codex\visualizations\2026\10\08\01a11b4e-197e-7731-bc30-e1905e115772\gagamba-review\snapshot\tests\Gagamba.Conformance.Tests\bin\Release\net10.0\Gagamba.Conformance.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Gagamba.Conformance.Tests.ConformanceTests" name="CapabilityMatrixMatchesPlatform" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="9271e570-751c-57b2-1a5a-8e6027ad9320" executionId="58bb51f4-3017-4d16-ac11-694f87ce6bba" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3c11734d-3b2c-eeb9-1946-8cc4de765774" executionId="3cf09060-3692-4693-9786-95037a4e9808" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7eff0ab4-16d1-57a5-ede8-f7d0f7e895ff" executionId="292ca68b-b79f-45be-80f9-5ac1de7c1ecc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1a44d008-c54d-48e6-17d9-2aceb3e778c8" executionId="c8061bf8-3ed9-4587-8322-e9515aa54f2f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="9f2d6ba3-61a7-7375-824b-967e9c80f68d" executionId="47efa1c8-3879-47e3-af1b-caea8974db9b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="5" executed="5" passed="5" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.12)&#xD;
+[xUnit.net 00:00:01.50]   Discovering: Gagamba.Conformance.Tests&#xD;
+[xUnit.net 00:00:01.96]   Discovered:  Gagamba.Conformance.Tests&#xD;
+[xUnit.net 00:00:02.39]   Starting:    Gagamba.Conformance.Tests&#xD;
+[xUnit.net 00:00:19.45]   Finished:    Gagamba.Conformance.Tests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

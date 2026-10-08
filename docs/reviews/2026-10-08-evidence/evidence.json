@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-08",
+  "sourceRevision": "8dea7d86c8ee2f1c924100acdbc1bf5dc14b2a88",
+  "sourceWorkingTreeInitiallyClean": true,
+  "sourceVersion": "0.1.0-preview.4",
+  "windows": { "architecture": "x64", "sdk": "10.0.401", "runtime": "10.0.12", "execution": "outside Codex sandbox; copied source" },
+  "linux": { "environment": "existing Ubuntu WSL2", "uid": 0, "kernel": "6.6.114.1-microsoft-standard-WSL2", "sdk": "10.0.112", "glibc": "2.43-2ubuntu2.4" },
+  "baseline": [
+    { "suite": "Gagamba.Execution.Tests", "passed": 14, "failed": 0, "trx": "test-results/contract.trx" },
+    { "suite": "Gagamba.Execution.Windows.Tests", "passed": 14, "failed": 0, "trx": "test-results/windows.trx" },
+    { "suite": "Gagamba.Conformance.Tests on Windows", "passed": 5, "failed": 0, "trx": "test-results/conformance.trx", "note": "Five xUnit assertions wrap conformance; Windows setsid leg is inapplicable. Not five cross-platform qualifications." }
+  ],
+  "probes": [
+    { "id": "E1", "kind": "Windows native", "observation": "WaitForCompletionAsync invocation itself took 1607 ms for a finite 1500 ms child; returned NaturalExit(0)." },
+    { "id": "E2", "kind": "Windows native with deterministic scheduling barrier", "observation": "Launch consumed preparation, blocked enumerating environment, provider disposed, launch resumed: Started, execution records=1. Test-owned job/process handles explicitly closed afterward." },
+    { "id": "E3", "kind": "Windows native", "observation": "Completion wait did not settle after disposal; exited only when its 700 ms cancellation token fired." },
+    { "id": "E4", "kind": "Windows provider", "observation": "Discard on a second provider instance accepted a preparation issued by the first: Discarded." },
+    { "id": "E5", "kind": "Pure macOS parser code on Windows, synthetic input", "observation": "Full text with state beyond 2100 characters parsed Running=true; its first 2000 characters parsed false; rc124 timeout also parsed false. Not a native launchd experiment." },
+    { "id": "E6", "kind": "Pure Linux ownership code on Windows, fake directory", "observation": "OwnedCgroup.Dispose left cgroup.kill sentinel unchanged and directory present. Demonstrates disposed-before-Kill ordering only; not a native cgroup cleanup experiment." },
+    { "id": "E7", "kind": "Pure argument parser", "observation": "Quoted a\\qb became aqb. This demonstrates the parser's lossy backslash behavior; it is not an external shell execution test." },
+    { "id": "E8", "kind": "Linux native", "observation": "Root exits17; descendant sleeps2s; wait canceled after250ms; retry after2300ms returns Failed, not NaturalExit(17)." },
+    { "id": "E9", "kind": "Linux native", "observation": "Child used inherited fd40 to write 'inherited' to disposable host sentinel; NaturalExit(0). No secret data involved." },
+    { "id": "E10", "kind": "Linux native, root-host precondition", "observation": "Test descendant moved to sibling cgroup within unique audit parent; Terminate returned Terminated; descendant wrote marker afterward. Audit parent and workspace removed." }
+  ],
+  "limits": ["No native macOS execution", "No destructive flood or real credential probe", "No WMI broker escape executed", "No host ACL/firewall/user changes", "No published-package qualification or remote CI rerun"]
+}

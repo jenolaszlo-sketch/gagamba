@@ -1,0 +1,24 @@
+[
+  {
+    "experiment": "E8_linux_cancel_resume",
+    "cancelled": true,
+    "result": "Failed { Reasons = System.String[] }"
+  },
+  {
+    "experiment": "E9_linux_inherited_fd",
+    "fd": 40,
+    "contents": "inherited",
+    "result": "NaturalExit { RootExitCode = 0 }"
+  },
+  {
+    "experiment": "E10_linux_migration",
+    "terminated": "Terminated",
+    "wroteAfterTermination": true,
+    "scope": "root host; sibling inside unique audit parent"
+  },
+  {
+    "experiment": "cleanup",
+    "auditCgroupRemoved": true,
+    "workspaceRemoved": true
+  }
+]

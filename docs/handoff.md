@@ -1,12 +1,22 @@
 # Gagamba handoff
 
-Updated 2026-10-05: execution-authority milestone frozen (`arch-execution-domain-v1` + Amendment 1, `arch-hg-1`); next pressure is workflow-side (HZ-1).
+Updated 2026-10-09: AR-0/AR-1 Windows lifecycle remediation is implemented and locally native-tested. AR-2 and later slices remain untouched.
+
+## Current action — AR-1 review and AR-2 handoff
+
+Start with [the Sol remediation plan](review-remediation-sol.md), [the archived review](reviews/2026-10-08-independent-review.md), and [AR-1 evidence](evidence/windows-lifecycle-AR-1.md). The review audited source `8dea7d86c8ee2f1c924100acdbc1bf5dc14b2a88` (`0.1.0-preview.4`) and reported 15 findings. Its security verdict remains **NOT YET A RELIABLE SECURITY BOUNDARY**: AR-1 repairs lifecycle ownership, not restricted execution.
+
+Existing Windows provider/contract/conformance assertions passed (14 + 14 + 5), while focused Windows/Linux probes reproduced lifecycle and descriptor defects. macOS findings still require native follow-up. The [evidence manifest](reviews/2026-10-08-evidence/evidence.json) distinguishes measurements from static/pure-code observations.
+
+**AR-0/AR-1 status:** scope wording is corrected; E1/E2/E3 failed on the reviewed baseline and pass after the Windows repair. The provider now tracks admitted launches through disposal, observes completion once per execution, supports concurrent/cancelled waiters, and owns process/job handles with SafeHandles. See [the lifecycle invariants](windows-lifecycle-invariants.md). Local Windows provider, contract, and conformance suites pass; package qualification was not run. **Next planned slice is AR-2**, subject to a separate request. Hostile-workload enforcement remains a held decision gate (AR-7).
+
+This current action supersedes historical next-step/freeze statements below for the demonstrated review defects. Keep earlier milestone evidence as history; do not redo GP-2/GL-2/GM-2. AR-1 does not qualify Linux/macOS or a hostile-code security boundary.
 
 ## User direction
 
 Develop Gagamba alone as an independently useful .NET sandbox library. Windows, Linux and macOS are target platforms. Start locally on the user's Windows host; Linux may use WSL2/Docker and macOS may use GitHub CI. Hufu integration and replacing Luban remain deferred. Luban itself is parked since 2026-10-06 (see [Fuwen ADR 0012](https://github.com/jenolaszlo-sketch/penghou-fuwen/blob/main/docs/decisions/0012-defer-luban-decouple-hufu-from-command-language.md)); native execution via neutral Hufu-authorized requests stays the first-class path. The latest request prioritized preparation and handoff.
 
-## Repository checkpoint
+## Historical repository checkpoints (see current action above)
 
 - Local Git repository is connected to `https://github.com/jenolaszlo-sketch/gagamba.git` as `origin`. Preparation baseline `7bdb28f690a4b7988876ec463b3e77254dc075fe` was committed and pushed on main, preserving initial license commit `fcc2fdc`. Local and remote main were verified to match before the verifier-entrypoint fix. The older staged-only report is superseded. Use git log, git status and git ls-remote origin refs/heads/main for the current checkpoint, since follow-up fixes advance it.
 - Original proposal is preserved byte-for-byte under `docs/proposals/2026-10-03-original-proposal.md`; it is historical input, not the current implementation queue.
@@ -43,6 +53,8 @@ Develop Gagamba alone as an independently useful .NET sandbox library. Windows, 
 
 ## Read in this order
 
+Start with [the current Sol plan](review-remediation-sol.md) and [review findings](reviews/2026-10-08-independent-review.md), then use the supporting references below.
+
 1. [Current work queue](work-queue.md) — actual ready/held statuses.
 2. [Durable design rules](design-rules.md) — the load-bearing rules.
 3. [Execution-domain contract](execution-domain.md) — frozen SPI + capability matrix.
@@ -54,7 +66,7 @@ Develop Gagamba alone as an independently useful .NET sandbox library. Windows, 
 
 The work queue refines the broader milestone order. The security model refines the draft design. Original proposal examples do not override either. If experiments disprove a chosen mechanism, document the finding and select another mechanism; do not silently broaden permissions.
 
-## Verified versus unverified
+## Historical verified versus unverified notes
 
 Observed earlier on this machine: .NET SDK 10.0.401, Windows registry build 26200.9457/display 25H2, and processmodel.dll version 10.0.26100.9444. The registry's legacy product label differed; this does not qualify the API.
 
@@ -66,18 +78,13 @@ Verified GW-1A/GW-1B 2026-10-04 (Windows host, spike-only; no provider qualified
 
 ## Exact next task
 
-Continue **contracts + Windows provider done (GP-2/GP-3/GW-2)**:
-next is GL-2/GM-2 providers against the same SPI, then GR-1 conformance. Decided, no further experiments needed: loopback as `offline+loopback`
-profile capability, dotnet SCM probing restricted, msys ro drive-root
-grant transitional, multi-grant prep semantics, kernel job-object
-ownership, watchdog compositions constructed-not-kernel. Keep identities
-disposable and profiles deleted; never modify the host opportunistically.
+Review the completed AR-0/AR-1 Windows slice against [its evidence](evidence/windows-lifecycle-AR-1.md) and [invariants](windows-lifecycle-invariants.md). AR-2 Linux work remains planned and was not started in this slice. Preserve the lifecycle-only scope and public SPI. Require separate native evidence before claiming further platform or package qualification.
 
 Before executing experiments that alter host ACLs/users/firewall or install a runtime, prepare the exact setup/cleanup implementation and inspect the task's authorization. No permission prompt is required merely to write code, read state or run safe fixtures. Keep privileged setup separate and attributable.
 
 ## Resume prompt
 
-> Continue standalone Gagamba in C:\Users\Laszlos\source\repos\Gagamba. Read AGENTS.md, docs/handoff.md, docs/work-queue.md, docs/security-model.md and docs/fixture-protocol.md first. All three platforms evidenced: Windows job-object ownership (GQ-1), Linux lifecycle matrix (GL-1A), macOS lifecycle verdict (GM-1A: launchd cleans same-PG only, escape survives, watchdog+PG composes). Next is GP-2 capabilities-based contract extraction. Keep public APIs provisional, all restrictions fail-closed, and Hufu/Luban integration deferred. Do not mistake fixture self-tests, upstream examples or Docker's outer restrictions for Gagamba enforcement. Inspect the repository state and preserve the original proposal.
+> Continue Gagamba in C:/Users/Laszlos/source/repos/Gagamba as Sol, using docs/review-remediation-sol.md as the current action plan. Read AGENTS.md, docs/handoff.md, docs/work-queue.md and the linked independent review first. Complete AR-0 then AR-1, adding deterministic E1/E2/E3 regressions before repairing Windows lifecycle ownership and completion. Preserve platform differences, standalone scope, unrelated edits and original proposal bytes. No speculative platform work, sibling changes or publication. Update queue/handoff with measured tests and cleanup evidence after each slice; follow the remaining dependencies and keep AR-7's restricted-profile decision explicit.
 
 ## Validation of this preparation
 
@@ -85,4 +92,4 @@ Documentation link resolution and original-proposal SHA-256 equality are checked
 
 Verifier regression checks passed on 2026-10-03: Windows PowerShell -File with default/explicit root, call-operator invocation, PowerShell 7 -File with default/explicit root, and missing/empty root rejection (seven cases). Default-root tests ran outside the repository. Documentation links and the original proposal hash still pass. These are preparation-tool checks only.
 
-No backend, package, or CI conformance tests apply yet because no provider exists. The user created the remote and it is connected locally. GW-1B slice-4 code is uncommitted on top of `4b4ce8f`; commit it before further engine work so the source manifest pins exactly. CI activation, distro installation and package publication remain pending.
+Historical preparation notes about absent providers, pending CI and uncommitted GW-1B work are superseded by the later checkpoints and the 2026-10-08 review baseline. Use current Git state and the Sol plan for new work.

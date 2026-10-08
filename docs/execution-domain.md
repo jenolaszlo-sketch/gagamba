@@ -1,9 +1,18 @@
 # Execution-domain contract (GP-2)
 
-Status: accepted vocabulary + negotiation rules, extracted from
-GW-1B/GQ-1 (Windows), GL-1A (Linux), GM-1A (macOS) evidence. No provider
-implementation; the only code is `src/Gagamba.Execution` (types) plus
-contract tests. No backend fields, no OS concepts in the public shape.
+Status: accepted vocabulary and three native lifecycle providers, extracted
+from GW-1B/GQ-1 (Windows), GL-1A (Linux), and GM-1A (macOS) evidence. The
+public shape contains no backend-specific resource identifiers.
+
+The shipped providers supply process-lifecycle containment: preparation,
+launch, OS-domain membership, termination, completion observation, and cleanup.
+These guarantees do not restrict filesystem or network access, credentials,
+identity, IPC, or external broker/service APIs. Windows Job Objects keep
+ordinary direct descendants in the job and disable normal breakaway, but do
+not prove that WMI, a service, or another broker cannot create work elsewhere
+with the caller's authority. The offline-process-v1 restricted-execution
+design and experimental Windows isolation engine are separate from these
+production providers; neither is qualified by this lifecycle table.
 
 ## Vocabulary
 
@@ -15,7 +24,7 @@ Six capabilities, one per evidenced question:
 | `SurvivesRootExit` | Descendants stay owned after the original root exits? |
 | `OwnerDeathCleanup` | Workload dies if the Gagamba owner/supervisor disappears? |
 | `RecursiveMembership` | Descendants automatically included in the owned domain? |
-| `EscapeResistant` | A descendant cannot leave via normal process APIs? |
+| `EscapeResistant` | Can an ordinary directly created descendant break out of its owned process domain? This lifecycle property does not cover work created by external brokers. |
 | `KernelOwnedLifecycle` | The OS itself enforces the full lifecycle relationship? |
 
 Levels: `Absent < Partial < Full`. Partial always names its bound (e.g.
@@ -31,7 +40,7 @@ construction, never equated), `None` (for Absent only).
 | SurvivesRootExit | Full/Native | Full/Native | Full/Native |
 | OwnerDeathCleanup | Full/Native | Absent (compose: Partial/Constructed) | Absent (compose: Partial/Constructed) |
 | RecursiveMembership | Full/Native | Full/Native | Partial/Native, no nesting |
-| EscapeResistant | Full/Native | Partial/Native, escape path untested | Absent |
+| EscapeResistant | Full/Native for direct descendants with breakaway disabled; external brokers are outside the job boundary | Partial/Native, migration depends on hierarchy authority | Absent |
 | KernelOwnedLifecycle | Full/Native | Absent | Absent |
 
 Composed owner-death differs by platform and is recorded as such: Linux
@@ -127,7 +136,17 @@ root. The result is `NaturalExit(RootExitCode)` (any code, including non-zero,
 is a natural exit), `Terminated` (no portable exit code), or `Failed`
 (foreign/stale handle). The token cancels the wait only and never terminates
 the execution; callers terminate explicitly via `Terminate`. Completion
-consumes the handle's provider resources (like `Discard`), so it cannot leak.
+reclaims the handle's provider resources (like `Discard`), so it cannot leak.
+In the Windows AR-1 implementation, one execution-owned terminal result is
+observed by any concurrent waiters and by later waits using the issued handle
+while the provider remains alive. Equivalent handle values also work while
+that issued handle remains reachable. A new call after provider disposal still
+throws, as the SPI specifies. Cancelling one wait only cancels that
+observer; it does not cancel execution or discard the result. Completed
+Windows results are weakly retained with their issued handle and pruned,
+avoiding an
+unbounded provider-owned history. Linux/macOS completion reuse is not
+qualified by AR-1 and is scheduled for their separate repair slices.
 Per-provider terminal state: Windows waits for the root exit code and the Job
 reaching zero active processes; Linux reaps the root and requires the
 execution cgroup to become unpopulated; macOS observes launchd job termination
