@@ -23,8 +23,15 @@ internal static class NativeMethods
     public const int O_CLOEXEC = 0x80000;
     public const int EOPNOTSUPP = 95;
     public const int ENOENT = 2;
+    public const int ESRCH = 3;
+    public const int EACCES = 13;
+    public const int ENOSYS = 38;
     public const int WNOHANG = 1;
     public const int ECHILD = 10;
+    public const int EINTR = 4;
+
+    [DllImport("libc")]
+    internal static extern IntPtr gnu_get_libc_version();
 
     [DllImport("libc", SetLastError = true, CharSet = CharSet.Ansi)]
     internal static extern int posix_spawn(
@@ -63,6 +70,9 @@ internal static class NativeMethods
     internal static extern int posix_spawn_file_actions_addchdir_np(IntPtr actions, string path);
 
     [DllImport("libc")]
+    internal static extern int posix_spawn_file_actions_addclosefrom_np(IntPtr actions, int from);
+
+    [DllImport("libc", SetLastError = true)]
     internal static extern int kill(int pid, int sig);
 
     [DllImport("libc", SetLastError = true)]

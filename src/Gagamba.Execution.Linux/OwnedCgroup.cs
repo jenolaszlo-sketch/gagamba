@@ -1,99 +1,99 @@
-// One execution cgroup owned for exactly one activity lifetime. Created
-// under the provider's delegated parent; killed via cgroup.kill (never PID
-// enumeration); removed when empty at disposal. Deterministic: kill, reap,
-// remove exactly once.
 namespace Gagamba.Execution.Linux;
 
-internal sealed class OwnedCgroup : IDisposable
+// A cgroup stays owned until population and removal have both been confirmed.
+internal sealed class OwnedCgroup
 {
     public string Path { get; }
-    private bool _disposed;
-
+    public bool IsRemoved => _removed;
+    internal Func<string, bool>? FaultForTest { get; set; }
+    private volatile bool _removed;
+    private readonly SemaphoreSlim _cleanupGate = new(1, 1);
     private OwnedCgroup(string path) => Path = path;
+    internal static OwnedCgroup Adopt(string path) => new(path);
 
     public static (OwnedCgroup? Group, string Error) Create(string parent)
     {
-        string path = System.IO.Path.Combine(parent,
-            "gagamba-" + Guid.NewGuid().ToString("N"));
+        string path = System.IO.Path.Combine(parent, "gagamba-" + Guid.NewGuid().ToString("N"));
         try
         {
             Directory.CreateDirectory(path);
+            if (!File.Exists(System.IO.Path.Combine(path, "cgroup.kill")))
+            {
+                Directory.Delete(path);
+                return (null, $"not a cgroup v2 mount at '{parent}' (no cgroup.kill)");
+            }
+            return (new OwnedCgroup(path), "");
         }
         catch (Exception ex)
         {
-            return (null, $"cgroup delegation unavailable at '{parent}': {ex.GetType().Name}");
+            try { if (Directory.Exists(path)) Directory.Delete(path); } catch { }
+            return (null, $"cgroup delegation unavailable at '{parent}': {ex.GetType().Name}: {ex.Message}");
         }
-        if (!File.Exists(System.IO.Path.Combine(path, "cgroup.kill")))
-            return (null, $"not a cgroup v2 mount at '{parent}' (no cgroup.kill)");
-        return (new OwnedCgroup(path), "");
     }
 
-    /// <summary>Kernel-recursive kill of the cgroup and descendant cgroups.</summary>
     public (bool Ok, string Error) Kill()
     {
-        if (_disposed) return (false, "cgroup already removed");
+        if (_removed) return (true, "");
+        if (FaultForTest?.Invoke("kill") == true) return (false, "cgroup.kill fault: injected denial");
         try
         {
             File.WriteAllText(System.IO.Path.Combine(Path, "cgroup.kill"), "1");
             return (true, "");
         }
-        catch (Exception ex)
-        {
-            return (false, $"cgroup.kill fault: {ex.GetType().Name}");
-        }
+        catch (Exception ex) { return (false, $"cgroup.kill fault: {ex.GetType().Name}: {ex.Message}"); }
     }
 
-    /// <summary>Member PIDs currently in this cgroup subtree.</summary>
-    public IReadOnlyList<int> Members()
+    public (bool Empty, string Error) Population()
     {
-        var out_ = new List<int>();
+        if (_removed) return (true, "");
+        if (FaultForTest?.Invoke("read") == true)
+            return (false, "cgroup.events read fault: injected denial");
+        string events = System.IO.Path.Combine(Path, "cgroup.events");
         try
         {
-            foreach (string dir in Directory.EnumerateDirectories(Path, "*", SearchOption.AllDirectories).Prepend(Path))
+            string[] lines = File.ReadAllLines(events);
+            foreach (string line in lines)
             {
-                string procs = System.IO.Path.Combine(dir, "cgroup.procs");
-                if (!File.Exists(procs)) continue;
-                foreach (string line in File.ReadAllLines(procs))
-                    if (int.TryParse(line.Trim(), out int pid)) out_.Add(pid);
+                if (line == "populated 0") return (true, "");
+                if (line == "populated 1") return (false, "");
             }
+            return (false, $"cgroup.events lacks populated at '{Path}'");
         }
-        catch { }
-        return out_;
+        catch (Exception ex) { return (false, $"cgroup.events read fault at '{Path}': {ex.GetType().Name}: {ex.Message}"); }
     }
 
-    /// <summary>True when the cgroup has no processes (the domain reached its
-    /// terminal state). Uses cgroup.events populated; a missing cgroup counts
-    /// as empty, an unreadable one does not.</summary>
-    public bool IsEmpty()
+    public async Task<string?> StopAndRemoveAsync(bool kill, TimeSpan timeout)
     {
+        await _cleanupGate.WaitAsync().ConfigureAwait(false);
         try
         {
-            string events = System.IO.Path.Combine(Path, "cgroup.events");
-            if (!File.Exists(events)) return true; // cgroup removed
-            foreach (string line in File.ReadAllLines(events))
-                if (line.StartsWith("populated ", StringComparison.Ordinal))
-                    return line.TrimEnd().EndsWith(" 0", StringComparison.Ordinal);
-            return false;
-        }
-        catch { return false; }
-    }
-
-    public void Dispose()
-    {
-        if (_disposed) return;
-        _disposed = true;
-        // Best effort in fixed order: kill, then remove emptied dirs.
-        try { Kill(); } catch { }
-        try
-        {
-            foreach (string dir in Directory.EnumerateDirectories(Path, "*", SearchOption.AllDirectories)
-                         .OrderByDescending(d => d.Length))
+            if (_removed) return null;
+            if (kill)
             {
-                try { Directory.Delete(dir); } catch { }
+                var killed = Kill();
+                if (!killed.Ok) return killed.Error;
             }
-            Directory.Delete(Path);
+            var timer = System.Diagnostics.Stopwatch.StartNew();
+            while (true)
+            {
+                var population = Population();
+                if (population.Error.Length != 0) return population.Error;
+                if (population.Empty) break;
+                if (timer.Elapsed >= timeout) return $"cgroup population did not empty within {timeout.TotalSeconds}s at '{Path}'";
+                await Task.Delay(50).ConfigureAwait(false);
+            }
+            try
+            {
+                if (FaultForTest?.Invoke("remove") == true)
+                    return "cgroup remove fault: injected denial";
+                foreach (string dir in Directory.EnumerateDirectories(Path, "*", SearchOption.AllDirectories)
+                    .OrderByDescending(dir => dir.Length)) Directory.Delete(dir);
+                Directory.Delete(Path);
+                _removed = true;
+                return null;
+            }
+            catch (Exception ex) { return $"cgroup remove fault at '{Path}': {ex.GetType().Name}: {ex.Message}"; }
         }
-        catch { }
-        GC.SuppressFinalize(this);
+        finally { _cleanupGate.Release(); }
     }
 }
