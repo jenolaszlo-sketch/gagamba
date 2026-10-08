@@ -6,6 +6,13 @@ next private test-tooling slice. docs/implementation-plan.md and
 docs/testing-and-ci.md define delivery and qualification. Update the queue and
 handoff with actual evidence after a coherent slice.
 
+For AR-2 through AR-7 and any future security-sensitive remediation, follow
+docs/remediation-evidence-standard.md. A completed slice requires a durable
+docs/evidence/ artifact bound to the exact source revision, native host and
+qualification scope, with baseline-to-fix observations, exact checks, cleanup
+evidence, and explicit exclusions. Green tests alone are not completion;
+unavailable native qualification is recorded as pending, never passed.
+
 Keep Gagamba independently usable. No Penghou, Hufu, Luban, workflow or
 authorization-engine dependencies. Windows, Linux and macOS are in scope; start
 with local Windows. Do not implement the archived proposal's integration roadmap.

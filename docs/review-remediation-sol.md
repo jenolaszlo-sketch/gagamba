@@ -4,6 +4,15 @@ Date: 2026-10-08. Status updated 2026-10-09: **AR-0/AR-1 implemented and locally
 
 User direction: turn the independent review into an actionable implementation handoff in Gagamba's docs. Sol implemented the bounded AR-0/AR-1 slice and stopped. This plan does not claim release or hostile-workload security qualification.
 
+**Mandatory evidence gate for AR-2 through AR-7:** Follow the
+[remediation evidence standard](remediation-evidence-standard.md) for each
+slice and any future security-sensitive remediation. A slice is not complete
+without its own durable document under `docs/evidence/` containing the required
+source/host header, baseline-to-fix table, exact test counts, cleanup evidence,
+ownership semantics, finding dispositions, exclusions, and model-review facts
+when used. Record `IMPLEMENTED — NATIVE QUALIFICATION PENDING` when required
+native qualification is unavailable; never treat a skip as qualification.
+
 Review baseline: commit `8dea7d86c8ee2f1c924100acdbc1bf5dc14b2a88`, package source version `0.1.0-preview.4`. Read the [full review](reviews/2026-10-08-independent-review.md) and [evidence manifest](reviews/2026-10-08-evidence/evidence.json). The review's F01–F15 finding IDs and E1–E10 experiment IDs are stable references throughout this plan.
 
 ## Outcome and scope
@@ -21,7 +30,7 @@ The earlier instruction to freeze features pending consumer pressure does not bl
 1. Read `AGENTS.md`, current handoff/queue, this plan, the review, `design-rules.md` and `execution-domain.md`.
 2. Inspect the current Git revision and working tree. Preserve unrelated changes; do not assume the reviewed revision remains HEAD.
 3. Complete AR-0, then implement AR-1. Turn E1/E2/E3 into bounded deterministic regression tests before repairing Windows lifecycle code. Do not begin with new sandbox mechanisms or API expansion.
-4. Continue through the dependency table. For each completed slice, record measured evidence and update the handoff and queue. If a native host is unavailable, complete portable/internal work and state the exact native qualification still pending; do not mark the slice qualified.
+4. Continue through the dependency table only when separately directed. For each AR-2–AR-7 slice, produce the required `docs/evidence/` artifact before marking it complete, then update the handoff and queue to its measured status. If a native host is unavailable, complete portable/internal work and state the exact native qualification still pending; do not mark the slice qualified.
 
 ## Dependency and finding map
 
@@ -44,6 +53,14 @@ AR-1 is implemented and locally Windows-native-tested; AR-2 and later were not
 started. F01 hostile-workload enforcement, F02 broader capability honesty,
 and F14 release qualification remain open beyond the bounded AR-0 wording and
 test-oracle corrections.
+
+The evidence gate applies separately to every later slice: AR-2 must separate
+root/WSL from delegated unprivileged Linux; AR-3 must separate parser/fake
+helper tests from native launchd; AR-4 must include compatibility and invocation
+round trips; AR-5 must prove bounded output and distinct stop causes; AR-6 must
+bind source and package candidates and negatively test its release gate; AR-7
+requires positive and negative controls for each claimed restriction. The
+standard gives the full checklist and completion vocabulary.
 
 ## AR-0 — Correct the contract and establish regression rules
 
@@ -155,7 +172,19 @@ Original review results: 14/14 contract tests, 14/14 Windows provider tests, fiv
 
 Archived probes and original results live under [review evidence](reviews/2026-10-08-evidence/README.md). Their project source includes resolve to the current checkout for convenience. For baseline reproduction, use an isolated checkout of the recorded SHA; do not revert this working tree or assume an old binary tests a new source revision. Keep probes test-only and promote targeted cases into proper regression suites.
 
-For each slice, record: finding IDs; source revision/dirty state; implementation and API changes; exact tests; before/after observation; host identity/prerequisites; unsupported/skipped cases; cleanup result; remaining risks and next action. Place a concise summary under `docs/evidence/` and raw run output under ignored `artifacts/`. Update queue/handoff only to the level actually established: implemented, locally tested, native-qualified, package-qualified.
+For AR-2 through AR-7, the [evidence standard](remediation-evidence-standard.md)
+is an exit criterion, not a progress-report format. Give each slice a separate
+`docs/evidence/` document that follows the standard's platform-specific section.
+Bind baseline and final observations to exact source SHAs and dirty state;
+identify the tested host, prerequisites, positive/negative controls, exact
+passed/failed/skipped/unsupported counts, native-domain and cleanup evidence,
+finding dispositions, and what the result does not qualify. Preserve raw logs
+under ignored `artifacts/` when useful. An evidence-only documentation commit
+may follow the tested source commit, but the document must identify the exact
+tested source SHA and must not silently transfer qualification to a later
+security-sensitive code change. Update queue/handoff only to the level actually
+established: implemented, locally tested, native-qualified,
+package-qualified, or release-qualified.
 
 Use finite disposable workloads, bounded test waits and positive controls. Do not access real credentials or run host-exhausting floods. Prepare exact setup/cleanup before privilege-sensitive host changes and check existing task authorization. A test fixture's outer protection does not prove the library enforced the corresponding inner restriction.
 

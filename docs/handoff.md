@@ -1,6 +1,6 @@
 # Gagamba handoff
 
-Updated 2026-10-09: AR-0/AR-1 Windows lifecycle remediation is implemented and locally native-tested. AR-2 and later slices remain untouched.
+Updated 2026-10-09: AR-0/AR-1 Windows lifecycle remediation is implemented and locally native-tested. AR-2 and later slices remain untouched. The [remediation evidence standard](remediation-evidence-standard.md) now governs AR-2–AR-7 and future security-sensitive remediation.
 
 ## Current action — AR-1 review and AR-2 handoff
 
@@ -9,6 +9,13 @@ Start with [the Sol remediation plan](review-remediation-sol.md), [the archived 
 Existing Windows provider/contract/conformance assertions passed (14 + 14 + 5), while focused Windows/Linux probes reproduced lifecycle and descriptor defects. macOS findings still require native follow-up. The [evidence manifest](reviews/2026-10-08-evidence/evidence.json) distinguishes measurements from static/pure-code observations.
 
 **AR-0/AR-1 status:** scope wording is corrected; E1/E2/E3 failed on the reviewed baseline and pass after the Windows repair. The provider now tracks admitted launches through disposal, observes completion once per execution, supports concurrent/cancelled waiters, and owns process/job handles with SafeHandles. See [the lifecycle invariants](windows-lifecycle-invariants.md). Local Windows provider, contract, and conformance suites pass; package qualification was not run. **Next planned slice is AR-2**, subject to a separate request. Hostile-workload enforcement remains a held decision gate (AR-7).
+
+For each future AR-2–AR-7 slice, implementation and green tests alone are not
+completion. Produce a separate durable `docs/evidence/` document with exact
+source/host binding, before/after observations, test counts, cleanup proof,
+finding status, and qualification exclusions. If required native qualification
+is unavailable, report `IMPLEMENTED — NATIVE QUALIFICATION PENDING`. See the
+[mandatory standard](remediation-evidence-standard.md) for per-slice criteria.
 
 This current action supersedes historical next-step/freeze statements below for the demonstrated review defects. Keep earlier milestone evidence as history; do not redo GP-2/GL-2/GM-2. AR-1 does not qualify Linux/macOS or a hostile-code security boundary.
 

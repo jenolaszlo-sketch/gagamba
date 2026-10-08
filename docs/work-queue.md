@@ -6,6 +6,13 @@ Updated 2026-10-09. Status definitions: Complete = stated artifact exists; Ready
 
 User-requested handoff: [Sol action plan](review-remediation-sol.md). Source review: [2026-10-08 independent review](reviews/2026-10-08-independent-review.md), baseline `8dea7d86c8ee2f1c924100acdbc1bf5dc14b2a88`. [AR-1 evidence](evidence/windows-lifecycle-AR-1.md) records the bounded Windows repair. Current priority supersedes historical next-work notes elsewhere in this file.
 
+**AR-2–AR-7 completion gate:** each slice must have its own durable
+`docs/evidence/` artifact satisfying the [remediation evidence
+standard](remediation-evidence-standard.md). Implementation, green tests, or a
+skip do not by themselves complete a slice. Where required native qualification
+is absent, use `IMPLEMENTED — NATIVE QUALIFICATION PENDING` and keep the slice
+open. This rule also applies to future security-sensitive remediation.
+
 | ID | State | Next action / acceptance |
 | --- | --- | --- |
 | AR-0 | Complete — documentation/test rules, not security qualification | Shipped lifecycle-only scope and direct-descendant escape wording corrected; fresh nonce/barrier/watchdog rules recorded (F01/F02/F14). F01 hostile-profile work and F02 broader capability decision remain open. |
