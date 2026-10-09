@@ -130,10 +130,16 @@ public static class ConformanceRunner
         var second = LaunchTarget(p, prep!, o.Workspace, "hold", "hb0b", Marker, "1");
         bool ran = await PollAsync(() => ReadyAndHeld(o.Workspace, "hb0"), o.PollMilliseconds);
         bool denied = second is LaunchResult.Failed;
+        string lockProbe;
+        try { lockProbe = LockHeld(Path.Combine(o.Workspace, "hb0.lock")) ? "held" : "released"; }
+        catch (Exception ex) { lockProbe = ex.GetType().Name + ": " + ex.Message; }
+        string heartbeat = Path.Combine(o.Workspace, "hb0");
+        bool heartbeatExists = File.Exists(heartbeat);
+        bool heartbeatFresh = Fresh(heartbeat);
         p.Terminate(st.Handle);
         return new("single-use", denied && ran ? ConformanceOutcome.Passed : ConformanceOutcome.Failed,
             denied && ran ? "first workload ran; second launch with spent preparation refused"
-                : $"firstRan={ran} secondDenied={denied} ready={ReadOr(Path.Combine(o.Workspace, "hb0.ready"))} lockExists={File.Exists(Path.Combine(o.Workspace, "hb0.lock"))} python={ReadOr(Path.Combine(o.Workspace, "hb0.python"))} error={ReadOr(Path.Combine(o.Workspace, "hb0.error"))} stderr={ReadSmall(Path.Combine(o.Workspace, "hb0.stderr"))}");
+                : $"firstRan={ran} secondDenied={denied} ready={ReadOr(Path.Combine(o.Workspace, "hb0.ready"))} lock={lockProbe} heartbeatExists={heartbeatExists} heartbeatFresh={heartbeatFresh} python={ReadOr(Path.Combine(o.Workspace, "hb0.python"))} error={ReadOr(Path.Combine(o.Workspace, "hb0.error"))} stderr={ReadSmall(Path.Combine(o.Workspace, "hb0.stderr"))}");
     }
 
     private static async Task<ConformanceLeg> WorkingDirectory(Func<IExecutionProvider> factory, ConformanceOptions o)
