@@ -467,7 +467,16 @@ public static class ConformanceRunner
             try { using var file = File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None); return false; }
             catch (IOException) { return true; }
         }
-        using var stream = File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+        FileStream stream;
+        try { stream = File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite); }
+        catch (IOException ex) when (OperatingSystem.IsMacOS()
+            && ex.HResult == unchecked((int)0x80070020))
+        {
+            // On macOS, .NET's open can reject a Python-held flock before our
+            // explicit flock probe. Only the sharing-violation code proves it.
+            return true;
+        }
+        using var opened = stream;
         if (OperatingSystem.IsMacOS())
         {
             int fd = checked((int)stream.SafeFileHandle.DangerousGetHandle());
