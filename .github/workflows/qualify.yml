@@ -2,6 +2,9 @@ name: Qualify release candidate
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - 'qualification/**'
 
 permissions:
   contents: read
@@ -45,7 +48,7 @@ jobs:
           - key: windows
             runner: windows-latest
           - key: linux
-            runner: [self-hosted, linux, gagamba-cgroup-v2-delegated]
+            runner: ubuntu-26.04
           - key: macos
             runner: macos-latest
     runs-on: ${{ matrix.runner }}
@@ -54,7 +57,6 @@ jobs:
       GAGAMBA_QUALIFICATION: 1
       GAGAMBA_SOURCE_SHA: ${{ github.sha }}
       GAGAMBA_QUALIFICATION_OUTPUT: ${{ github.workspace }}/qualification/conformance-${{ matrix.key }}.json
-      GAGAMBA_LINUX_CGROUP: ${{ matrix.key == 'linux' && '/sys/fs/cgroup/gagamba-qualification' || '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
@@ -68,13 +70,22 @@ jobs:
           name: candidate-packages
           path: candidate
       - name: Strict native conformance
+        if: matrix.key != 'linux'
         shell: bash
         run: dotnet test tests/Gagamba.Conformance.Tests/Gagamba.Conformance.Tests.csproj -c Release --nologo
       - name: Independent installed-package lifecycle
+        if: matrix.key != 'linux'
         shell: bash
         run: |
           version=$(python -c 'import xml.etree.ElementTree as E; print(E.parse("Directory.Build.props").findtext(".//Version"))')
           python eng/verify_package_consumer.py --packages-dir candidate --version "$version" --source-sha "$GITHUB_SHA" --output "qualification/consumer-${{ matrix.key }}.json"
+      - name: Strict delegated Linux conformance and installed consumer
+        if: matrix.key == 'linux'
+        shell: bash
+        run: |
+          sudo env "PATH=$PATH" "DOTNET_ROOT=${DOTNET_ROOT:-}" \
+            bash eng/qualify-linux-delegated.sh "$GITHUB_WORKSPACE" "$GITHUB_SHA" \
+            "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$GAGAMBA_QUALIFICATION_OUTPUT"
       - uses: actions/upload-artifact@v4
         with:
           name: qualification-${{ matrix.key }}
