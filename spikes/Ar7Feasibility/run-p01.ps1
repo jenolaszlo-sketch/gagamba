@@ -1,5 +1,7 @@
 param([switch]$BuildOnly)
 $ErrorActionPreference = 'Stop'
+$gitExe = (Get-Command git.exe).Source
+$dotnetExe = (Get-Command dotnet.exe).Source
 $repo = (Resolve-Path (Join-Path $PSScriptRoot '../..')).Path
 $out = Join-Path $repo 'artifacts/ar7/P01'
 New-Item -ItemType Directory -Force -Path $out | Out-Null
@@ -22,10 +24,10 @@ $nonce = [Guid]::NewGuid().ToString('N')
 $fixture = Join-Path $out "fixture-$nonce"
 $run = Join-Path $out $nonce
 New-Item -ItemType Directory -Path $run | Out-Null
-$sourceState = & git -C $repo status --porcelain
+$sourceState = & $gitExe -C $repo status --porcelain
 $context = [ordered]@{
     baseline = '06c8ac7eff6b968804a5cdd6c651f1a0c6845d56'
-    probeCommit = (& git -C $repo rev-parse HEAD)
+    probeCommit = (& $gitExe -C $repo rev-parse HEAD)
     dirty = [bool]$sourceState
     sourceState = @($sourceState)
     nonce = $nonce; fixture = $fixture; profile = "GagambaAR7$nonce"
@@ -37,7 +39,7 @@ $context = [ordered]@{
     identity = [Security.Principal.WindowsIdentity]::GetCurrent().Name
     sdk = $env:WindowsSDKVersion; compiler = $env:VCToolsVersion
     powershell = $PSVersionTable.PSVersion.ToString()
-    dotnet = (& dotnet --version)
+    dotnet = (& $dotnetExe --version)
     watchdogSeconds = 30
 }
 $context | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $run 'context.json')
