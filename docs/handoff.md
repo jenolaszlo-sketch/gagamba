@@ -1,6 +1,8 @@
 # Gagamba handoff
 
-## Current review action — AR-7 feasibility decision required; AR-6 remains frozen
+## Current action — AR-7 P01 blocked; mandatory probe stop; AR-6 remains frozen
+
+The [AR-7 feasibility evidence](evidence/restricted-execution-AR-7-feasibility.md) records the exact clean P01 probe source `ee170724c14d8bd138cec1a461d86eb8bec76ec6`. Zero-capability LPAC reached a synthetic ARAP broker, which created a child outside the candidate Job; all owned Jobs/endpoints/profiles/workspaces were cleaned. LPAC + Job alone is blocked for the proposed closure/IPC contract. The user's hard-stop instruction was applied: P02/P03/P04/P07 are not run. Luna independently challenged the raw evidence and narrow conclusion. Await Astra/user decision before further probes or implementation; no real-service exploit or all-native impossibility is claimed.
 
 The user froze `06c8ac7eff6b968804a5cdd6c651f1a0c6845d56` on `qualification/ar6-native`, tagged `ar6-review-baseline-06c8ac7`. Its final [qualification run](https://github.com/jenolaszlo-sketch/gagamba/actions/runs/37902043866), exact-source seal and retained archive remain associated with that SHA. Do not change the frozen execution architecture or rewrite its qualification evidence.
 

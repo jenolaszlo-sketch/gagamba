@@ -4,6 +4,8 @@ Date: 2026-10-09. Slice: architecture-blocking probe only. **Conclusion: BLOCKED
 
 **WINDOWS NATIVE PATH BLOCKED** for the tested unaugmented zero-capability LPAC + Job composition: an ungranted synthetic ARAP file remained readable and an ARAP broker created work outside the candidate Job. This is a counterexample to the proposed explicit-closure/no-host-IPC boundary, not proof that every Windows native composition is impossible or that a real Windows service is exploitable. The assignment's section 24 hard stop applies; no architecture repair or subsequent probe was attempted.
 
+Here, **ungranted means not granted by the proposed execution profile/manifest**. The synthetic object DACL deliberately grants the broad ARAP SID, so the experiment tests ambient class authority available without a package-specific execution grant; it does not claim an ACE-free object was accessed.
+
 ## Source binding and environment
 
 | Field | Recorded value |

@@ -4,6 +4,8 @@ Updated 2026-10-09. Status definitions: Complete = stated artifact exists; Ready
 
 ## Current priority: independent-review remediation
 
+AR-7 feasibility is **Blocked — user/Astra decision required**: [P01](evidence/ar7-P01-windows-lpac.md) found synthetic ARAP file/broker authority in the tested LPAC + Job composition, with external child and complete cleanup evidence. The assignment's immediate hard stop applies; P02/P03/P04/P07 are **NOT RUN**, not passed. See [consolidated source-bound disposition](evidence/restricted-execution-AR-7-feasibility.md). Do not repair the architecture or continue probes without that decision. Frozen AR-6 source/tag/seal remain unchanged.
+
 User-requested handoff: [Sol action plan](review-remediation-sol.md). Source review: [2026-10-08 independent review](reviews/2026-10-08-independent-review.md), baseline `8dea7d86c8ee2f1c924100acdbc1bf5dc14b2a88`. [AR-1 evidence](evidence/windows-lifecycle-AR-1.md) records the bounded Windows repair and [AR-2 evidence](evidence/linux-lifecycle-AR-2.md) records the bounded Linux repair. Current priority supersedes historical next-work notes elsewhere in this file.
 
 **AR-2–AR-7 completion gate:** each slice must have its own durable
