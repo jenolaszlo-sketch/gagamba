@@ -12,7 +12,7 @@ internal static class ConformanceScripts
         "case \"$mode\" in\n" +
         "  cwd) pwd > \"$dir/cwd-absolute.txt\"; pwd > cwd.tmp && mv cwd.tmp cwd.txt ;;\n" +
         "  env) env > \"$dir/env.tmp\" && mv \"$dir/env.tmp\" \"$dir/env.txt\" ;;\n" +
-        "  hold) printf '%s' \"$CONF_PYTHON\" > \"$dir/$name.python\"; exec \"$CONF_PYTHON\" \"$dir/hold.py\" \"$dir\" \"$name\" ;;\n" +
+        "  hold) printf '%s' \"$CONF_PYTHON\" > \"$dir/$name.python\"; exec \"$CONF_PYTHON\" \"$dir/hold.py\" \"$dir\" \"$name\" 2>\"$dir/$name.stderr\" ;;\n" +
         "  exit17) printf '%s' \"$dir\" > \"$dir/exit17-proof\"; exit 17 ;;\n" +
         "  tree) sh \"$0\" hold \"$dir\" child & exec sh \"$0\" hold \"$dir\" root ;;\n" +
         "  exitroot) sh \"$0\" hold \"$dir\" child & i=0; while [ ! -f \"$dir/child.ready\" ] && [ $i -lt 100 ]; do sleep 0.1; i=$((i+1)); done; [ -f \"$dir/child.ready\" ] || exit 4; printf '%s' \"$dir\" > \"$dir/root-exit-proof\" ;;\n" +
