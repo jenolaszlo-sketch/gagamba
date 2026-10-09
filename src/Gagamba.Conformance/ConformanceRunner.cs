@@ -226,11 +226,16 @@ public static class ConformanceRunner
         if (launched is not LaunchResult.Started st)
             return new("root-exit", ConformanceOutcome.Failed, "launch refused: " + Reasons(launched));
         string child = Path.Combine(o.Workspace, "child");
-        if (!await PollAsync(() => ReadyAndHeld(o.Workspace, "child")
-            && File.Exists(Path.Combine(o.Workspace, "root-exit-proof")), o.PollMilliseconds))
+        if (!await PollAsync(() => ReadyAndHeld(o.Workspace, "child"), o.PollMilliseconds))
         {
             p.Terminate(st.Handle);
-            return new("root-exit", ConformanceOutcome.Failed, "survivor heartbeat never fresh after root exit");
+            return new("root-exit", ConformanceOutcome.Failed, "child lifetime lock never held before root exit");
+        }
+        File.WriteAllText(Path.Combine(o.Workspace, "root-exit-release"), "go");
+        if (!await PollAsync(() => File.Exists(Path.Combine(o.Workspace, "root-exit-proof")), o.PollMilliseconds))
+        {
+            p.Terminate(st.Handle);
+            return new("root-exit", ConformanceOutcome.Failed, "root exit proof absent after release");
         }
         if (p.Describe().Platform == WellKnownPlatforms.MacOs.Platform)
         {
@@ -245,6 +250,8 @@ public static class ConformanceRunner
                 : new("root-exit", ConformanceOutcome.Failed,
                     $"terminal={outcome?.GetType().Name ?? "missing"} childLockReleased={released}");
         }
+        bool survivorHeld = await PollAsync(() => ReadyAndHeld(o.Workspace, "child")
+            && Fresh(child), 3000);
         bool pending;
         using (var probe = new CancellationTokenSource(TimeSpan.FromMilliseconds(400)))
         {
@@ -254,11 +261,11 @@ public static class ConformanceRunner
         var term = p.Terminate(st.Handle);
         bool terminal = await TerminalConfirmedAsync(p, st.Handle);
         bool releasedAfterStop = await PollAsync(() => Released(o.Workspace, "child"), 5000);
-        return pending && term is TerminateResult.Terminated && terminal && releasedAfterStop
+        return survivorHeld && pending && term is TerminateResult.Terminated && terminal && releasedAfterStop
             ? new("root-exit", ConformanceOutcome.Passed,
                 "root-exit proof, survivor lock held; wait pending until terminate, then domain terminal")
             : new("root-exit", ConformanceOutcome.Failed,
-                $"pending={pending} terminate={term.GetType().Name} terminal={terminal} childLockReleased={releasedAfterStop}");
+                $"survivorHeld={survivorHeld} pending={pending} terminate={term.GetType().Name} terminal={terminal} childLockReleased={releasedAfterStop}");
     }
 
     private static async Task<ConformanceLeg> DisposeCleanup(Func<IExecutionProvider> factory, ConformanceOptions o)

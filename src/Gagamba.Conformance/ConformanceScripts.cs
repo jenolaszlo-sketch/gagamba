@@ -15,7 +15,7 @@ internal static class ConformanceScripts
         "  hold) printf '%s' \"$CONF_PYTHON\" > \"$dir/$name.python\"; exec \"$CONF_PYTHON\" \"$dir/hold.py\" \"$dir\" \"$name\" 2>\"$dir/$name.stderr\" ;;\n" +
         "  exit17) printf '%s' \"$dir\" > \"$dir/exit17-proof\"; exit 17 ;;\n" +
         "  tree) sh \"$0\" hold \"$dir\" child & exec sh \"$0\" hold \"$dir\" root ;;\n" +
-        "  exitroot) sh \"$0\" hold \"$dir\" child & i=0; while [ ! -f \"$dir/child.ready\" ] && [ $i -lt 100 ]; do sleep 0.1; i=$((i+1)); done; [ -f \"$dir/child.ready\" ] || exit 4; printf '%s' \"$dir\" > \"$dir/root-exit-proof\" ;;\n" +
+        "  exitroot) sh \"$0\" hold \"$dir\" child & i=0; while [ ! -f \"$dir/child.ready\" ] && [ $i -lt 100 ]; do sleep 0.1; i=$((i+1)); done; [ -f \"$dir/child.ready\" ] || exit 4; i=0; while [ ! -f \"$dir/root-exit-release\" ] && [ $i -lt 100 ]; do sleep 0.1; i=$((i+1)); done; [ -f \"$dir/root-exit-release\" ] || exit 5; printf '%s' \"$dir\" > \"$dir/root-exit-proof\" ;;\n" +
         "esac\n";
 
     internal const string UnixHoldPy =
@@ -90,7 +90,8 @@ internal static class ConformanceScripts
         "  'tree' { Spawn 'hold' 'child'; $lock=[System.IO.File]::Open((Join-Path $Dir 'root.lock'),'OpenOrCreate','ReadWrite','None'); " +
         "[System.IO.File]::WriteAllText((Join-Path $Dir 'root.ready'),$Dir); while ($true) { Beat 'root'; Start-Sleep -Milliseconds 250 } }\n" +
         "  'exitroot' { Spawn 'hold' 'child'; $i=0; while (-not (Test-Path (Join-Path $Dir 'child.ready')) -and $i -lt 100) { Start-Sleep -Milliseconds 100; $i++ }; " +
-        "if (-not (Test-Path (Join-Path $Dir 'child.ready'))) { exit 4 }; [System.IO.File]::WriteAllText((Join-Path $Dir 'root-exit-proof'),$Dir) }\n" +
+        "if (-not (Test-Path (Join-Path $Dir 'child.ready'))) { exit 4 }; $i=0; while (-not (Test-Path (Join-Path $Dir 'root-exit-release')) -and $i -lt 100) { Start-Sleep -Milliseconds 100; $i++ }; " +
+        "if (-not (Test-Path (Join-Path $Dir 'root-exit-release'))) { exit 5 }; [System.IO.File]::WriteAllText((Join-Path $Dir 'root-exit-proof'),$Dir) }\n" +
         "}\n";
 
     internal static string UnixWorkPath(string ws) => Path.Combine(ws, "work.sh");
