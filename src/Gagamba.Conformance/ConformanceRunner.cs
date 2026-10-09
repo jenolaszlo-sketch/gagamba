@@ -469,11 +469,11 @@ public static class ConformanceRunner
         }
         FileStream stream;
         try { stream = File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite); }
-        catch (IOException ex) when (OperatingSystem.IsMacOS()
-            && ex.HResult is unchecked((int)0x80070020) or unchecked((int)0x80070021))
+        catch (IOException ex) when (OperatingSystem.IsMacOS() && ex.HResult == 35)
         {
             // On macOS, .NET's open can reject a Python-held flock before our
-            // explicit flock probe. Only sharing/lock violation proves it.
+            // explicit flock probe. EWOULDBLOCK (35) is the native contention
+            // code observed on the qualification host; other I/O errors fail.
             return true;
         }
         using var opened = stream;
