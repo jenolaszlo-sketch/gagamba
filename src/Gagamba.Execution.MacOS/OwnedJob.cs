@@ -1,7 +1,7 @@
 // One launchd job owned for exactly one activity lifetime. The job is a
 // unique label in the user's gui domain; termination is bootout (removes
-// the service and cleans its same-PG remainder). The plist file and stdio
-// logs live in a private directory removed at disposal. Deterministic:
+// the service and cleans its same-PG remainder). The plist file lives in a
+// private directory removed at disposal. Legacy stdio goes to /dev/null.
 // bootout, then delete, exactly once. No PIDs anywhere.
 using System.Text;
 
@@ -31,7 +31,7 @@ internal sealed class OwnedJob : IDisposable
         string label = "org.gagamba.exec." + Guid.NewGuid().ToString("N");
         // CreateTempSubdirectory uses an atomic, private (0700 on Unix)
         // directory. A shared, predictably named parent can expose the plist
-        // (arguments and environment) and the target's stdout/stderr logs.
+        // (arguments and environment). Target stdio is discarded by default.
         string dir = Directory.CreateTempSubdirectory("gagamba-macos-").FullName;
         return new OwnedJob(label, domain, dir, transport ?? new ProcessLaunchdTransport());
     }
@@ -64,8 +64,11 @@ internal sealed class OwnedJob : IDisposable
                 sb.AppendLine($"<key>{Escape(kv.Key)}</key><string>{Escape(kv.Value)}</string>");
             sb.AppendLine("</dict>");
         }
-        sb.AppendLine($"<key>StandardOutPath</key><string>{Escape(Path.Combine(WorkDir, "launchd-out.log"))}</string>");
-        sb.AppendLine($"<key>StandardErrorPath</key><string>{Escape(Path.Combine(WorkDir, "launchd-err.log"))}</string>");
+        // Legacy launch has no output-capture contract. Discard stdio instead
+        // of creating unbounded private files. Bounded capture explicitly
+        // refuses before dispatch until a native launchd topology is proven.
+        sb.AppendLine("<key>StandardOutPath</key><string>/dev/null</string>");
+        sb.AppendLine("<key>StandardErrorPath</key><string>/dev/null</string>");
         sb.AppendLine("</dict></plist>");
         File.WriteAllText(PlistPath, sb.ToString());
     }

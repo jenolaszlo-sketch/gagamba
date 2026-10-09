@@ -6,7 +6,7 @@ using Microsoft.Win32.SafeHandles;
 namespace Gagamba.Execution.Windows;
 
 /// <summary>Windows lifecycle provider over kill-on-close Job Objects.</summary>
-public sealed class WindowsExecutionProvider : IExecutionProvider
+public sealed class WindowsExecutionProvider : IExecutionProvider, IOutputCaptureProvider
 {
     public const uint TerminateExitCode = 99;
 
@@ -113,6 +113,42 @@ public sealed class WindowsExecutionProvider : IExecutionProvider
     }
 
     public LaunchResult Launch(PreparedExecution prepared, ProcessStartSpec process)
+        => LaunchCore(prepared, process, null);
+
+    public CaptureLaunchResult LaunchCaptured(PreparedExecution prepared,
+        ProcessStartSpec process, OutputCaptureOptions options)
+    {
+        lock (_gate) ObjectDisposedException.ThrowIf(_disposed, this);
+        if (options is null) return new CaptureLaunchResult.Failed(new[] { "output options required" });
+        if (!options.TryValidate(out string error)) return new CaptureLaunchResult.Failed(new[] { error });
+        if (!OperatingSystem.IsWindows())
+            return new CaptureLaunchResult.Failed(new[] { "Windows pipe capture unavailable on this host" });
+        WindowsCapturePipes pipes;
+        try { pipes = WindowsCapturePipes.Create(); }
+        catch (Exception ex) { return new CaptureLaunchResult.Failed(new[] { $"pipe creation fault: {ex.GetType().Name}" }); }
+        using (pipes)
+        {
+            LaunchResult launch = LaunchCore(prepared, process, pipes);
+            if (launch is LaunchResult.Failed failed)
+                return new CaptureLaunchResult.Failed(failed.Reasons);
+            var handle = ((LaunchResult.Started)launch).Handle;
+            try
+            {
+                var (stdout, stderr) = pipes.TakeReaders();
+                return new CaptureLaunchResult.Started(handle,
+                    new OutputCaptureSession(stdout, stderr,
+                        WaitForCompletionAsync(handle).AsTask(), options));
+            }
+            catch (Exception ex)
+            {
+                Terminate(handle);
+                return new CaptureLaunchResult.Failed(new[] { $"capture stream fault: {ex.GetType().Name}" });
+            }
+        }
+    }
+
+    private LaunchResult LaunchCore(PreparedExecution prepared, ProcessStartSpec process,
+        WindowsCapturePipes? capture)
     {
         lock (_gate) ObjectDisposedException.ThrowIf(_disposed, this);
         if (!ProcessStartSpec.TrySnapshot(process, windows: true, out var invocation, out var inputError))
@@ -141,7 +177,7 @@ public sealed class WindowsExecutionProvider : IExecutionProvider
             else if (!TryBuildEnvironment(invocation.Environment, out environment, out string envError))
                 result = new LaunchResult.Failed(new[] { envError });
             else
-                result = LaunchInner(admission, invocation, environment);
+                result = LaunchInner(admission, invocation, environment, capture);
         }
         catch (Exception ex)
         {
@@ -273,7 +309,8 @@ public sealed class WindowsExecutionProvider : IExecutionProvider
         return Task.CompletedTask;
     }
 
-    private LaunchResult LaunchInner(LaunchAdmission admission, ProcessStartSpec process, IntPtr environment)
+    private LaunchResult LaunchInner(LaunchAdmission admission, ProcessStartSpec process,
+        IntPtr environment, WindowsCapturePipes? capture)
     {
         var commandLine = new StringBuilder(32768);
         if (process.ArgumentVector is null)
@@ -282,13 +319,27 @@ public sealed class WindowsExecutionProvider : IExecutionProvider
             commandLine.Append(WindowsCommandLine.Serialize(
                 new[] { process.Executable }.Concat(process.ArgumentVector)));
         var si = new NativeMethods.StartupInfo { cb = Marshal.SizeOf<NativeMethods.StartupInfo>() };
-        if (!NativeMethods.CreateProcessW(null, commandLine, IntPtr.Zero, IntPtr.Zero, false,
-            NativeMethods.CREATE_SUSPENDED | NativeMethods.CREATE_UNICODE_ENVIRONMENT,
-            environment, string.IsNullOrWhiteSpace(process.WorkingDirectory) ? null : process.WorkingDirectory,
-            ref si, out var pi))
+        NativeMethods.ProcessInformation pi;
+        bool created;
+        if (capture is null)
+            created = NativeMethods.CreateProcessW(null, commandLine, IntPtr.Zero, IntPtr.Zero, false,
+                NativeMethods.CREATE_SUSPENDED | NativeMethods.CREATE_UNICODE_ENVIRONMENT,
+                environment, string.IsNullOrWhiteSpace(process.WorkingDirectory) ? null : process.WorkingDirectory,
+                ref si, out pi);
+        else
         {
-            int error = Marshal.GetLastWin32Error();
-            return new LaunchResult.Failed(new[] { $"CreateProcess err=0x{error:X} (no target ran)" });
+            var extended = capture.StartupInfo;
+            created = NativeMethods.CreateProcessWExtended(null, commandLine, IntPtr.Zero,
+                IntPtr.Zero, true, NativeMethods.CREATE_SUSPENDED |
+                NativeMethods.CREATE_UNICODE_ENVIRONMENT | NativeMethods.EXTENDED_STARTUPINFO_PRESENT,
+                environment, string.IsNullOrWhiteSpace(process.WorkingDirectory) ? null : process.WorkingDirectory,
+                ref extended, out pi);
+        }
+        int createError = created ? 0 : Marshal.GetLastWin32Error();
+        capture?.CloseChildEnds();
+        if (!created)
+        {
+            return new LaunchResult.Failed(new[] { $"CreateProcess err=0x{createError:X} (no target ran)" });
         }
 
         // Own both raw handles immediately. If wrapping one throws, the

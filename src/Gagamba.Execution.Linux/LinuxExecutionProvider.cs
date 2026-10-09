@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 namespace Gagamba.Execution.Linux;
 
 /// <summary>Linux cgroup-v2 provider. A successful launch is born in its cgroup.</summary>
-public sealed class LinuxExecutionProvider : IExecutionProvider
+public sealed class LinuxExecutionProvider : IExecutionProvider, IOutputCaptureProvider
 {
     private readonly object _gate = new();
     private readonly string _cgroupParent;
@@ -103,6 +103,40 @@ public sealed class LinuxExecutionProvider : IExecutionProvider
     }
 
     public LaunchResult Launch(PreparedExecution prepared, ProcessStartSpec process)
+        => LaunchCore(prepared, process, null);
+
+    public CaptureLaunchResult LaunchCaptured(PreparedExecution prepared,
+        ProcessStartSpec process, OutputCaptureOptions options)
+    {
+        lock (_gate) ObjectDisposedException.ThrowIf(_disposed, this);
+        if (options is null)
+            return new CaptureLaunchResult.Failed(new[] { "output options required" });
+        if (!options.TryValidate(out string error))
+            return new CaptureLaunchResult.Failed(new[] { error });
+        if (!OperatingSystem.IsLinux())
+            return new CaptureLaunchResult.Failed(new[] { "Linux pipe capture unavailable on this host" });
+        using var pipes = LinuxCapturePipes.Create(out error);
+        if (pipes is null) return new CaptureLaunchResult.Failed(new[] { error });
+        LaunchResult launch = LaunchCore(prepared, process, pipes);
+        if (launch is LaunchResult.Failed failed)
+            return new CaptureLaunchResult.Failed(failed.Reasons);
+        var handle = ((LaunchResult.Started)launch).Handle;
+        try
+        {
+            var (stdout, stderr) = pipes.TakeReaders();
+            var capture = new OutputCaptureSession(stdout, stderr,
+                WaitForCompletionAsync(handle).AsTask(), options);
+            return new CaptureLaunchResult.Started(handle, capture);
+        }
+        catch (Exception ex)
+        {
+            Terminate(handle);
+            return new CaptureLaunchResult.Failed(new[] { $"capture setup fault: {ex.GetType().Name}" });
+        }
+    }
+
+    private LaunchResult LaunchCore(PreparedExecution prepared, ProcessStartSpec process,
+        LinuxCapturePipes? capture)
     {
         lock (_gate) ObjectDisposedException.ThrowIf(_disposed, this);
         if (!ProcessStartSpec.TrySnapshot(process, windows: false, out var invocation, out var inputError))
@@ -134,7 +168,7 @@ public sealed class LinuxExecutionProvider : IExecutionProvider
                 lock (_gate)
                     result = _disposed
                         ? new LaunchResult.Failed(new[] { "disposal won before target spawn" })
-                        : LaunchInner(group, invocation, envp);
+                        : LaunchInner(group, invocation, envp, capture);
             }
         }
         catch (Exception ex)
@@ -305,7 +339,8 @@ public sealed class LinuxExecutionProvider : IExecutionProvider
         }
     }
 
-    private LaunchResult LaunchInner(OwnedCgroup group, ProcessStartSpec process, string?[] envp)
+    private LaunchResult LaunchInner(OwnedCgroup group, ProcessStartSpec process, string?[] envp,
+        LinuxCapturePipes? capture)
     {
         IntPtr attr = IntPtr.Zero, fa = IntPtr.Zero;
         bool attrReady = false, actionsReady = false;
@@ -327,8 +362,13 @@ public sealed class LinuxExecutionProvider : IExecutionProvider
                 rc = NativeMethods.posix_spawn_file_actions_addchdir_np(fa, process.WorkingDirectory);
                 if (rc != 0) return new LaunchResult.Failed(new[] { $"spawn addchdir errno={rc}" });
             }
-            // Keep trusted stdio 0/1/2; close every unrelated descriptor in
-            // the child before target code, including callers' inheritable FDs.
+            // Captured stdio is installed before close-from; every unrelated
+            // descriptor >=3 still closes before target code.
+            if (capture is not null)
+            {
+                rc = capture.AddActions(fa);
+                if (rc != 0) return new LaunchResult.Failed(new[] { $"spawn capture dup2 errno={rc}" });
+            }
             rc = NativeMethods.posix_spawn_file_actions_addclosefrom_np(fa, 3);
             if (rc != 0) return new LaunchResult.Failed(new[] { $"spawn addclosefrom errno={rc}" });
             cfd = NativeMethods.open(group.Path,
@@ -341,6 +381,7 @@ public sealed class LinuxExecutionProvider : IExecutionProvider
             string?[] argvZ = new string?[argv.Length + 1];
             Array.Copy(argv, argvZ, argv.Length);
             rc = NativeMethods.posix_spawn(out int pid, process.Executable, fa, attr, argvZ, envp);
+            capture?.CloseWriters();
             if (rc != 0) return new LaunchResult.Failed(new[] { ClassifySpawnError(rc) });
             var handle = new ExecutionHandle(WellKnownPlatforms.Linux.Platform, Guid.NewGuid());
             var state = new LinuxExecutionState(handle, group, pid, OnTerminal);

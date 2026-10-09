@@ -36,7 +36,7 @@ public sealed record ExecutionRuntimeOptions
 /// frozen SPI. On an unsupported OS it still exists but every Prepare is an
 /// explicit refusal (fail-closed), never a silent no-op.
 /// </summary>
-public sealed class ExecutionRuntime : IExecutionProvider
+public sealed class ExecutionRuntime : IExecutionProvider, IOutputCaptureProvider
 {
     private readonly IExecutionProvider? _provider;
     private readonly string _refusal;
@@ -91,6 +91,15 @@ public sealed class ExecutionRuntime : IExecutionProvider
         if (_provider is null)
             return new LaunchResult.Failed(new[] { _refusal });
         return _provider.Launch(prepared, process);
+    }
+
+    public CaptureLaunchResult LaunchCaptured(PreparedExecution prepared,
+        ProcessStartSpec process, OutputCaptureOptions options)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        if (_provider is not IOutputCaptureProvider capture)
+            return new CaptureLaunchResult.Failed(new[] { "bounded output unavailable on this platform" });
+        return capture.LaunchCaptured(prepared, process, options);
     }
 
     public TerminateResult Terminate(ExecutionHandle execution)

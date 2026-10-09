@@ -72,6 +72,12 @@ internal static class NativeMethods
     [DllImport("libc")]
     internal static extern int posix_spawn_file_actions_addclosefrom_np(IntPtr actions, int from);
 
+    [DllImport("libc")]
+    internal static extern int posix_spawn_file_actions_adddup2(IntPtr actions, int fd, int newfd);
+
+    [DllImport("libc", SetLastError = true)]
+    internal static extern int pipe2([Out] int[] pipefd, int flags);
+
     [DllImport("libc", SetLastError = true)]
     internal static extern int kill(int pid, int sig);
 

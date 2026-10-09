@@ -9,6 +9,13 @@ namespace Gagamba.Execution.Windows;
 internal static class NativeMethods
 {
     public const uint CREATE_SUSPENDED = 0x4;
+    public const uint EXTENDED_STARTUPINFO_PRESENT = 0x80000;
+    public const uint STARTF_USESTDHANDLES = 0x100;
+    public const uint HANDLE_FLAG_INHERIT = 0x1;
+    public const int PROC_THREAD_ATTRIBUTE_HANDLE_LIST = 0x20002;
+    public const uint GENERIC_READ = 0x80000000;
+    public const uint FILE_SHARE_READ = 0x1;
+    public const uint OPEN_EXISTING = 3;
     // Mandatory whenever lpEnvironment is a caller-built Unicode block;
     // without it CreateProcess rejects the call with ERROR_INVALID_DATA-ish
     // ERROR_INVALID_PARAMETER (measured 0x57), even for byte-perfect blocks.
@@ -54,6 +61,21 @@ internal static class NativeMethods
         public IntPtr hThread;
         public uint dwProcessId;
         public uint dwThreadId;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct StartupInfoEx
+    {
+        public StartupInfo StartupInfo;
+        public IntPtr AttributeList;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct SecurityAttributes
+    {
+        public int Length;
+        public IntPtr SecurityDescriptor;
+        [MarshalAs(UnmanagedType.Bool)] public bool InheritHandle;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -118,6 +140,40 @@ internal static class NativeMethods
         string? currentDirectory,
         ref StartupInfo startupInfo,
         out ProcessInformation processInformation);
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true, EntryPoint = "CreateProcessW")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool CreateProcessWExtended(
+        string? applicationName, StringBuilder commandLine, IntPtr processAttributes,
+        IntPtr threadAttributes, [MarshalAs(UnmanagedType.Bool)] bool inheritHandles,
+        uint creationFlags, IntPtr environment, string? currentDirectory,
+        ref StartupInfoEx startupInfo, out ProcessInformation processInformation);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool CreatePipe(out IntPtr readPipe, out IntPtr writePipe,
+        ref SecurityAttributes pipeAttributes, uint size);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool SetHandleInformation(IntPtr handle, uint mask, uint flags);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool InitializeProcThreadAttributeList(IntPtr list, int count,
+        uint flags, ref IntPtr size);
+
+    [DllImport("kernel32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool UpdateProcThreadAttribute(IntPtr list, uint flags,
+        IntPtr attribute, IntPtr value, IntPtr size, IntPtr previous, IntPtr returnSize);
+
+    [DllImport("kernel32.dll")]
+    internal static extern void DeleteProcThreadAttributeList(IntPtr list);
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    internal static extern IntPtr CreateFileW(string name, uint access, uint share,
+        ref SecurityAttributes attributes, uint creation, uint flags, IntPtr template);
 
     [DllImport("kernel32.dll", SetLastError = true)]
     internal static extern uint ResumeThread(SafeWaitHandle hThread);

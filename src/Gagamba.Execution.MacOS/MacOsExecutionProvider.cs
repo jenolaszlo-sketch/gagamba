@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 namespace Gagamba.Execution.MacOS;
 
 /// <summary>Launchd lifecycle provider; same-process-group scope only.</summary>
-public sealed class MacOsExecutionProvider : IExecutionProvider
+public sealed class MacOsExecutionProvider : IExecutionProvider, IOutputCaptureProvider
 {
     private readonly object _gate = new();
     private readonly string _domain;
@@ -32,6 +32,14 @@ public sealed class MacOsExecutionProvider : IExecutionProvider
 
     public PlatformCapabilities Describe()
     { lock (_gate) { ObjectDisposedException.ThrowIf(_disposed, this); return WellKnownPlatforms.MacOs; } }
+
+    public CaptureLaunchResult LaunchCaptured(PreparedExecution prepared,
+        ProcessStartSpec process, OutputCaptureOptions options)
+    {
+        lock (_gate) ObjectDisposedException.ThrowIf(_disposed, this);
+        return new CaptureLaunchResult.Failed(new[] {
+            "bounded macOS launchd capture is unavailable; no target dispatched" });
+    }
 
     public PrepareResult Prepare(ExecutionRequirements requirements)
     {
