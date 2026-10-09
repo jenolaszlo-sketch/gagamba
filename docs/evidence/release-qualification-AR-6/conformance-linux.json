@@ -1,0 +1,73 @@
+{
+  "schema": "gagamba-conformance/v1",
+  "sourceSha": "e22e4422c663282883699cd2dc738392e6b7e365",
+  "runId": "7400897577b04cfc9aac43834c013de7",
+  "host": "Ubuntu 26.04.1 LTS",
+  "architecture": "X64",
+  "runtime": ".NET 10.0.12",
+  "platform": "linux-cgroup-v2",
+  "usable": true,
+  "cleanup": "Confirmed",
+  "skippedMandatory": 0,
+  "unsupportedMandatory": 0,
+  "cgroupVersion": 2,
+  "delegated": false,
+  "launchdDomain": null,
+  "legs": [
+    {
+      "Name": "capability-matrix",
+      "outcome": "Passed",
+      "Detail": "unit=Full, rootExit=Full, escapeResistant=Partial"
+    },
+    {
+      "Name": "opaque-handles",
+      "outcome": "Passed",
+      "Detail": "no native identity on the public surface"
+    },
+    {
+      "Name": "prepare",
+      "outcome": "Passed",
+      "Detail": "negotiation accepted for platform requirements"
+    },
+    {
+      "Name": "single-use",
+      "outcome": "Passed",
+      "Detail": "first workload ran; second launch with spent preparation refused"
+    },
+    {
+      "Name": "working-directory",
+      "outcome": "Passed",
+      "Detail": "relative write landed in the unique workspace"
+    },
+    {
+      "Name": "no-ambient-inherit",
+      "outcome": "Passed",
+      "Detail": "granted present, ambient absent"
+    },
+    {
+      "Name": "unit-termination",
+      "outcome": "Passed",
+      "Detail": "root\u002Bchild lifetime locks released after domain terminal"
+    },
+    {
+      "Name": "root-exit",
+      "outcome": "Passed",
+      "Detail": "root-exit proof, survivor lock held; wait pending until terminate, then domain terminal"
+    },
+    {
+      "Name": "dispose-cleanup",
+      "outcome": "Passed",
+      "Detail": "live root\u002Bchild lifetime locks released by provider disposal"
+    },
+    {
+      "Name": "completion",
+      "outcome": "Passed",
+      "Detail": "natural exit 17 observed, terminate-\u003ETerminated, foreign fail-closed"
+    },
+    {
+      "Name": "setsid-escape",
+      "outcome": "Passed",
+      "Detail": "setsid escapee was still owned and died (resistant)"
+    }
+  ]
+}
