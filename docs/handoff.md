@@ -1,6 +1,12 @@
 # Gagamba handoff
 
-## Current action — AR-6 qualified at one exact SHA; stop before AR-7
+## Current review action — AR-7 feasibility decision required; AR-6 remains frozen
+
+The user froze `06c8ac7eff6b968804a5cdd6c651f1a0c6845d56` on `qualification/ar6-native`, tagged `ar6-review-baseline-06c8ac7`. Its final [qualification run](https://github.com/jenolaszlo-sketch/gagamba/actions/runs/37902043866), exact-source seal and retained archive remain associated with that SHA. Do not change the frozen execution architecture or rewrite its qualification evidence.
+
+The [AR-7 architecture review](reviews/2026-10-09-ar7-security-architecture.md), [probe/Sol handoff](reviews/2026-10-09-ar7-probes-and-handoff.md), and [review evidence](evidence/restricted-execution-AR-7-review.md) are documentation-only on a separate review branch. Recommendation: a copied-closure offline profile; probe Windows LPAC/Job/storage and Linux unprivileged namespace-helper/cgroup compositions; initially refuse macOS. No privileged broker is approved. Blocking IPC, control-plane, resource and crash assumptions require native probes before an architecture decision. AR-7A is the proposed next evidence-only slice; AR-7B–G production work remains held. Original F01 is open; no AR-7 restriction is implemented or qualified.
+
+## Prior action — AR-6 qualified at one exact SHA; stop before AR-7 implementation
 
 AR-6 source `7660f16dbb5b4b165e6a5279b131bf53c5bf6a7b` passed [hosted three-platform qualification](https://github.com/jenolaszlo-sketch/gagamba/actions/runs/37901286740): strict Windows Job Object, delegated non-root Ubuntu cgroup v2, and macOS `gui/501` launchd conformance; all three installed-package consumers; and the exact-source seal. The downloaded seal independently verified against a clean checkout and all ten package files. [AR-6 evidence](evidence/release-qualification-AR-6.md) includes the manifest, raw host/consumer reports, hashes, negative controls and scope limits. This documentation update creates a new SHA requiring its own passing gate before that revision can be released. No tag or package was published. Stop before AR-7; restricted-execution security design requires separate review.
 

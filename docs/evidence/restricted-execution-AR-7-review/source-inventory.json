@@ -1,0 +1,296 @@
+{
+  "schema": "gagamba-ar7-static-review-source-inventory/v1",
+  "date": "2026-10-09",
+  "reviewedSourceSha": "06c8ac7eff6b968804a5cdd6c651f1a0c6845d56",
+  "frozenBranch": "qualification/ar6-native",
+  "frozenTag": "ar6-review-baseline-06c8ac7",
+  "reviewBranch": "review/ar7-architecture",
+  "scope": "Static review only. Inventory is not native execution evidence or a full line-by-line audit.",
+  "hashMethod": "SHA-256 of git show BASE:path raw blob bytes, not checkout newline-converted bytes.",
+  "ar7NativeProbesRun": 0,
+  "ar7PackageTestsRun": 0,
+  "frozenArchive": {
+    "file": "gagamba-ar6-review-baseline-06c8ac7.zip",
+    "sha256": "9b548946ef7df529115352d53accf76f9fac10cfc1e6bbbf5cd450845e1ee2a4",
+    "sourceSha": "06c8ac7eff6b968804a5cdd6c651f1a0c6845d56",
+    "version": "0.1.0-preview.4",
+    "run": "https://github.com/jenolaszlo-sketch/gagamba/actions/runs/37902043866"
+  },
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "gitBlob": "1d1a4f08734f4fbad875334afc36c62b95180316",
+      "sha256GitBlobBytes": "d2aca8898025dc61ae2c7802ab3b0f981691e736b7ae296a8e41926ca152e1d9"
+    },
+    {
+      "path": "docs/design-rules.md",
+      "gitBlob": "300fbc8cca738cf1e214fc4d9e6699a8e68b7c24",
+      "sha256GitBlobBytes": "b20696db03966500ae31be5bdb1790893fad2e959d15e8b9f7e1f93b833fdac7"
+    },
+    {
+      "path": "docs/evidence/execution-orchestration-AR-5.md",
+      "gitBlob": "87ba57d3adbc28594e799654c2b8e2eae66fadd4",
+      "sha256GitBlobBytes": "260b9f701081879fcbbcad3978ccd7f4687c243cad024cce40fc98df947a63d8"
+    },
+    {
+      "path": "docs/evidence/invocation-contract-AR-4.md",
+      "gitBlob": "2004461f8967306706b5ef937143d33f076a5963",
+      "sha256GitBlobBytes": "09a82e1391f818f0dcf65964ba1b68ffe91be03a4ab4789b7c977216aa68fcf2"
+    },
+    {
+      "path": "docs/evidence/linux-lifecycle-AR-2.md",
+      "gitBlob": "6dd408ff80a040d0796afe1c5c6887d8e631120e",
+      "sha256GitBlobBytes": "ba04da17c00f4bc99511be28dfe640add1c18da8e187201d6b0f5acaae5d7884"
+    },
+    {
+      "path": "docs/evidence/macos-lifecycle-AR-3.md",
+      "gitBlob": "e5a2d332fe430c9cf4e65443e90946b817eff290",
+      "sha256GitBlobBytes": "04a60b51d41a2efba5ce702ffcfb07be340195f5b3d4370b024ec178c74ad308"
+    },
+    {
+      "path": "docs/evidence/release-qualification-AR-6.md",
+      "gitBlob": "2ffc400903007a56c0432629f0754e5c41667802",
+      "sha256GitBlobBytes": "bbd47e3574f67639aefc553a099b8cb255487223c25cf5ab2b597a7acd775217"
+    },
+    {
+      "path": "docs/evidence/windows-lifecycle-AR-1.md",
+      "gitBlob": "6f5be2687c2a62d5dfd0a917bc7a9cc54091be13",
+      "sha256GitBlobBytes": "8fe54ec34df9043572bb1c865785c13bdaae39520527ce030101e1cf31938956"
+    },
+    {
+      "path": "docs/execution-domain.md",
+      "gitBlob": "99a3d3986dfbe8d39948df6ecf652b42feee18b1",
+      "sha256GitBlobBytes": "56532000f469e252e97702ac8154023ff68de0c5a1a4c375ab756dcda7c2a911"
+    },
+    {
+      "path": "docs/handoff.md",
+      "gitBlob": "5bf141b99773d032919fbfd3720221373cd42b1d",
+      "sha256GitBlobBytes": "29c6ea717bbb1fa1102f1c330bac48be56c058a2091e432406949de1bdac7c48"
+    },
+    {
+      "path": "docs/implementation-plan.md",
+      "gitBlob": "b5d949564ff0b4403572f16f131e11a73b1a2650",
+      "sha256GitBlobBytes": "7b05011a0732c518b97b226274ecbfa62f5f34c2690570d9a8ba16b16b441b88"
+    },
+    {
+      "path": "docs/remediation-evidence-standard.md",
+      "gitBlob": "ab98eec3498089292ddd868c00506f0bb83a028f",
+      "sha256GitBlobBytes": "7947b91e3e9bd92c74e50fe02751ba23161e1ab83fb1c661067238c2689d2e03"
+    },
+    {
+      "path": "docs/review-remediation-sol.md",
+      "gitBlob": "832f03897a70d0419d95bd2b3edf426635b84f45",
+      "sha256GitBlobBytes": "891e4c3870c6d61d4bdf268a9a3c759b7edd28f6ad7ae3cc0227f38381a2b0c5"
+    },
+    {
+      "path": "docs/reviews/2026-10-08-independent-review.md",
+      "gitBlob": "1108fd4aa24a1e459ff97fbc31a26227fca49bfe",
+      "sha256GitBlobBytes": "a5e659d6d02ae1710852f4e4c2056e0019c675158a324520a001475191dede4c"
+    },
+    {
+      "path": "docs/security-model.md",
+      "gitBlob": "79f9da7bfc2b945868ec8176d9602187d1340545",
+      "sha256GitBlobBytes": "869f173f6c489160d804e582bd9494f90542ac687cf2013beb5e2bc7d6638c38"
+    },
+    {
+      "path": "docs/testing-and-ci.md",
+      "gitBlob": "6d47402950d6d3ab15c6baf67d5eace5cc49147a",
+      "sha256GitBlobBytes": "5922231bb9a1f9fea9ebf3fa8ba7a4901775da8b9d5e0e07246f973f16760fac"
+    },
+    {
+      "path": "docs/work-queue.md",
+      "gitBlob": "706a9713cb5c04f52c5dd394aa5f3490be246449",
+      "sha256GitBlobBytes": "7e66057f8fe62399b6c86754d3221f9604de54bec2adcf1965f49da2461f0588"
+    },
+    {
+      "path": "src/Gagamba.Conformance/ConformanceMatrix.cs",
+      "gitBlob": "85aa471a81912a90b18ebad1b21c4ed68b326486",
+      "sha256GitBlobBytes": "5ccaf50a85cabba92d412f277c0284165060cd87faf8e207882eed4eccec7634"
+    },
+    {
+      "path": "src/Gagamba.Conformance/ConformanceReport.cs",
+      "gitBlob": "8b664cb3dc2522e7363962e8c7665fcc95f80d92",
+      "sha256GitBlobBytes": "5b25ff93caaa0d8a808e64d8e9a38b8d8ed74f32f1e54d11a8b592dd0e058133"
+    },
+    {
+      "path": "src/Gagamba.Conformance/ConformanceRunner.cs",
+      "gitBlob": "0b6966d846aecfd5be6e2bdad72b13f551bb6009",
+      "sha256GitBlobBytes": "0413771521fce8a0a1e0edfb9a6b8d32504c6332431cb6871d27261b9f63a51b"
+    },
+    {
+      "path": "src/Gagamba.Conformance/ConformanceScripts.cs",
+      "gitBlob": "12ac590bb8c1a7c350c80118f27316d683d59101",
+      "sha256GitBlobBytes": "f9fd8c8b04a6acecfdc05f61668517e21ed3e1f278d097618a1c1ca851786517"
+    },
+    {
+      "path": "src/Gagamba.Conformance/Gagamba.Conformance.csproj",
+      "gitBlob": "337c2f3bd896c3b0a09fcccf2844da2c78bc6031",
+      "sha256GitBlobBytes": "99db4cdfd9b6993ce3d23673856004a8d64eb9a9894ca749f51b7178d4c46d9f"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux/Gagamba.Execution.Linux.csproj",
+      "gitBlob": "ddb580b325bd58fda45777e22a26f4cd1030406d",
+      "sha256GitBlobBytes": "2c2767e472b32819a68ee373c9cf25e56beabf1653dcc19fc9983f6089982f08"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux/LinuxCapturePipes.cs",
+      "gitBlob": "395da43dde6258e8d0da969df208a26ae81a90ae",
+      "sha256GitBlobBytes": "2aa9a91adc64bc0e3665d601f4b814c6b7decf8a27e86737d1c140f23bc00bbf"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux/LinuxExecutionProvider.cs",
+      "gitBlob": "4a4e7732e2dfca0cb5acb54f5835aca5103adfaf",
+      "sha256GitBlobBytes": "983a1051025f4540c133ee29ffc7fd250db5df23b72d231ca156af88ad8b048b"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux/LinuxExecutionState.cs",
+      "gitBlob": "831da692f779643717fb795f69f4f49c2c099d76",
+      "sha256GitBlobBytes": "1eedeaee0c53094a3ecc7d03c7bb9879b9820fb722ca24d7060350a1a64ba4ca"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux/NativeMethods.cs",
+      "gitBlob": "21ec47fca6259a6568581f6ef919bd067aefb9fe",
+      "sha256GitBlobBytes": "612677bc620afba0aab9db2d494e9047b3f3f8cc0be8a3f713786be4afb01101"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux/OwnedCgroup.cs",
+      "gitBlob": "9e2ca7327800a0f4158f90eb1eadeb7d5fbc0757",
+      "sha256GitBlobBytes": "308504f97025074c5b758d4a781fbe6f92c96c255e8be9ea93eb9b88391db820"
+    },
+    {
+      "path": "src/Gagamba.Execution.MacOS/Gagamba.Execution.MacOS.csproj",
+      "gitBlob": "34a9e2c08eac16691635786ff80bd11686862996",
+      "sha256GitBlobBytes": "2ad473d05c2ca68ee7e8187511814a24fec1ef5b6650b0890386618dbab3ba27"
+    },
+    {
+      "path": "src/Gagamba.Execution.MacOS/Launchd.cs",
+      "gitBlob": "d716386416188e73eb5d54f37c44dde0067dee45",
+      "sha256GitBlobBytes": "c5a81bbe11a4bf7d7529c9c8ff59e316fa1ed9e01350a3727113e3139bf2a360"
+    },
+    {
+      "path": "src/Gagamba.Execution.MacOS/MacExecutionState.cs",
+      "gitBlob": "c1fd84338ceae07d41af05dbf436084e6475543a",
+      "sha256GitBlobBytes": "2f2826850c3e7f31af30be18add59d4bc85ce87ec96535dcd9a32809bfa3cf48"
+    },
+    {
+      "path": "src/Gagamba.Execution.MacOS/MacOsExecutionProvider.cs",
+      "gitBlob": "8a1b11ce653edb8c950b648c53a540990f7fcb5f",
+      "sha256GitBlobBytes": "77babfc067af0a57624708073e7ac0510d1ac3e1bec95673af78ce4fdf893d5f"
+    },
+    {
+      "path": "src/Gagamba.Execution.MacOS/OwnedJob.cs",
+      "gitBlob": "45bf559f0fb8789c399b84f349e99b28b151ce46",
+      "sha256GitBlobBytes": "d3aa66ff22ab130e26d8c286183fb9de846977357c6597a47bccf17c61d76c77"
+    },
+    {
+      "path": "src/Gagamba.Execution.Windows/Gagamba.Execution.Windows.csproj",
+      "gitBlob": "1d74bd724421d32d5b45d40dedb9e0819f1ea42d",
+      "sha256GitBlobBytes": "30389b0c47e2e84599de550d9f92d12518687d4e2e233b90ddd8c5fc1d7df526"
+    },
+    {
+      "path": "src/Gagamba.Execution.Windows/NativeMethods.cs",
+      "gitBlob": "67ed6e9df32a9987cc30329fd8c969e8a75d4cab",
+      "sha256GitBlobBytes": "e932a9639e03e4de0a96cdcc4f7b5e28ebd36f755f9763b90d442d555ed09c75"
+    },
+    {
+      "path": "src/Gagamba.Execution.Windows/OwnedJob.cs",
+      "gitBlob": "93a949e7ba91be0d726fc24a5b9a1f00aa8c8ea3",
+      "sha256GitBlobBytes": "e27316a8e3e1affd637c8676e6e9842e8e24dbd130221b98fd6fa00840c5c0bc"
+    },
+    {
+      "path": "src/Gagamba.Execution.Windows/WindowsCapturePipes.cs",
+      "gitBlob": "7f6e781e439bac2720817a3c56d9992352491ce3",
+      "sha256GitBlobBytes": "b3dde6cbb12577adcb3eb1dc6dc3ed335065e0ff1402495da7c1cd1594d1e091"
+    },
+    {
+      "path": "src/Gagamba.Execution.Windows/WindowsCommandLine.cs",
+      "gitBlob": "1adb25925addd9f8f8cbd872dab5fdab3c643d11",
+      "sha256GitBlobBytes": "2ea8f1b6fe6c43e21ae9c3f31e993c8e5d975a4e8e12344efe69abed3b2a3e79"
+    },
+    {
+      "path": "src/Gagamba.Execution.Windows/WindowsExecutionProvider.cs",
+      "gitBlob": "daea67533cd8c0b692ac0d6e8b554cf76bd5647f",
+      "sha256GitBlobBytes": "6ad9f22d754906903e351f0181065083b8aaeb2540f83d2946282f7aaeb04ec3"
+    },
+    {
+      "path": "src/Gagamba.Execution.Windows/WindowsExecutionState.cs",
+      "gitBlob": "9d5b88c465fd25e12cdde9ee22caa8843b31fc2b",
+      "sha256GitBlobBytes": "2114b27eb57cd07e4e0d37589172147e96835db7b22bf3f26977a9d79a654222"
+    },
+    {
+      "path": "src/Gagamba.Execution/Capabilities.cs",
+      "gitBlob": "7fd75159de5f8bc15bb9e2aab9c79b665b9e77b0",
+      "sha256GitBlobBytes": "9c2dea932a6f09830a52518d5bdb7f26729af9685b163533004a66ce8a450235"
+    },
+    {
+      "path": "src/Gagamba.Execution/Gagamba.Execution.csproj",
+      "gitBlob": "54f84dcb4e81e4107b33931669738bf5952fa6db",
+      "sha256GitBlobBytes": "c84e337117a16830019921cc589b90e5215b07c542a2dcd52b3cb47ba20b0a95"
+    },
+    {
+      "path": "src/Gagamba.Execution/Negotiation.cs",
+      "gitBlob": "dec853b4b600c2aba1417b07db20b233948ecc00",
+      "sha256GitBlobBytes": "7a0113ec935a4a04912dcceaa88df0bf1d66cd5c1298bdf80c3c2643170a82fb"
+    },
+    {
+      "path": "src/Gagamba.Execution/OutputCapture.cs",
+      "gitBlob": "0d5b7a3aed9fd06c2ed85d1c42128796b2bb4c95",
+      "sha256GitBlobBytes": "e57d0b4c62f284ead11bca88e1331b72c06625082914f205700f805a1b2c2172"
+    },
+    {
+      "path": "src/Gagamba.Execution/Platforms.cs",
+      "gitBlob": "95a3fe7aeeeecf5723cac04e25b120c4a403ade5",
+      "sha256GitBlobBytes": "c91b25bef31f76d4d23ce35aa259b680fc9fb0c0fda1744445b963474e32feb4"
+    },
+    {
+      "path": "src/Gagamba.Execution/Provider.cs",
+      "gitBlob": "29eb4e97bea2050899379eca43732b1e47ba242d",
+      "sha256GitBlobBytes": "f3cf739f9ccf75d0cd355a54ce1433eef69ea999f1b62aa37da88b993d56da40"
+    },
+    {
+      "path": "src/Gagamba.Execution/Validation.cs",
+      "gitBlob": "3b3aa5915cf97962e28dd4c491f0dbc0cf396ff6",
+      "sha256GitBlobBytes": "96655e4eb8ac8b3acbda2469812cf219f7afbcfc83873fc94194ba9e76a9775a"
+    },
+    {
+      "path": "src/Gagamba.Runtime/ExecutionOrchestrator.cs",
+      "gitBlob": "bbe44d35e6da51eb3f4228cb0e2d72cbb602d0ea",
+      "sha256GitBlobBytes": "5f6f065e294a0c5c66c6b91c0399cad04e0a4788bb10ef3ee899576181e8855b"
+    },
+    {
+      "path": "src/Gagamba.Runtime/ExecutionRuntime.cs",
+      "gitBlob": "5d174ebc1378e5dc51c42eecd694105e31c3b753",
+      "sha256GitBlobBytes": "8d4ad4217e911365f1ceaa1a23b8316d551ea9b0da2792144edab420a5d7ed1f"
+    },
+    {
+      "path": "src/Gagamba.Runtime/Gagamba.Runtime.csproj",
+      "gitBlob": "ab30708fe28c43cd92d31fc7215118bfc6d3bedf",
+      "sha256GitBlobBytes": "021b1e9c641016ee8c7b933b6f2f65462838ab94d0ff6b8bbcb32eecc0159ab3"
+    },
+    {
+      "path": "tests/Gagamba.Conformance.Tests/BrokenProviderTests.cs",
+      "gitBlob": "5e62e7ceaf8dad86d9d4890799ce8a89ff6fcc5c",
+      "sha256GitBlobBytes": "9b6b0ae835f89b1c9edd46ca2cb6747d7ed3aa4aae3d4a63488d53a21af02afb"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.Tests/LifecycleRegressions.cs",
+      "gitBlob": "ea674567b0cfcc74459bbb9d3100f1a202be74d6",
+      "sha256GitBlobBytes": "01b5a0d0bed21e7d2788613a6b548fb6dac67ac71986ede571768bd1cfca13b8"
+    },
+    {
+      "path": "tests/Gagamba.Execution.MacOS.Tests/Ar3Regressions.cs",
+      "gitBlob": "dff424c041493811d6f9525e1089ac710892a294",
+      "sha256GitBlobBytes": "801916fb48efb431ad3bbdd8777bbdcc83f9550e8365372878760b2122f92143"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Tests/Ar4CoreTests.cs",
+      "gitBlob": "43b61f44fce4b3456fe1b5e1fb9c4c81ad5eff12",
+      "sha256GitBlobBytes": "c238a9a8dafc1b7e46e0ffd6938e914460f474942778b091efdeef30246fa1de"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Windows.Tests/LifecycleRegressions.cs",
+      "gitBlob": "6b491246f8134b512aeeeafcd3bc2857013a6c94",
+      "sha256GitBlobBytes": "d7e8db6cb8fdaca55bd3245d0921487406f2881ec83cc423c64f24f5ea30cea3"
+    }
+  ]
+}

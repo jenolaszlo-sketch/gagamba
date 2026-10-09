@@ -159,6 +159,8 @@ Require matching exact-revision qualification before a tag/manual publish workfl
 
 ## AR-7 — Restricted-execution boundary: held decision gate
 
+2026-10-09 review handoff: [AR-7 architecture](reviews/2026-10-09-ar7-security-architecture.md), [ordered probes and conditional implementation slices](reviews/2026-10-09-ar7-probes-and-handoff.md), [static evidence](evidence/restricted-execution-AR-7-review.md). Frozen source is `06c8ac7eff6b968804a5cdd6c651f1a0c6845d56`; preserve its branch/tag/seal. The review concludes that feasibility probes are required before architecture selection. Do not implement AR-7B–G or add a privileged broker until the blocking results and material product decisions are resolved. AR-7A is an evidence-only proposed next slice, not authorization to change production.
+
 F01 remains open as a security-readiness gap after lifecycle repairs. Prepare a narrow design decision for the first actual hostile workload: target identity, filesystem grants/runtime closure, network and local IPC policy, inherited authority, control-file protection, process/memory/output/deadline limits, cleanup/recovery bounds and platform support.
 
 Select mechanisms only after focused feasibility experiments. A disposable workspace or voluntary VFS does not confine arbitrary native code. No container/provider choice is preselected. Unsupported profiles must reject before target release. Do not silently weaken a requested profile on Linux or macOS to match Windows.
