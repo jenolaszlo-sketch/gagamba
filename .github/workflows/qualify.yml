@@ -87,10 +87,11 @@ jobs:
             bash eng/qualify-linux-delegated.sh "$GITHUB_WORKSPACE" "$GITHUB_SHA" \
             "$GITHUB_RUN_ID" "$GITHUB_RUN_ATTEMPT" "$GAGAMBA_QUALIFICATION_OUTPUT"
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: qualification-${{ matrix.key }}
           path: qualification/*.json
-          if-no-files-found: error
+          if-no-files-found: warn
 
   seal:
     needs: native-qualification

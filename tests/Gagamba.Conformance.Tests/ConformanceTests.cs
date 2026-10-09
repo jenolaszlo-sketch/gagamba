@@ -47,7 +47,8 @@ public sealed class ConformanceFixture : IAsyncLifetime
             {
                 var leg = Report.Find(name);
                 if (leg is null || leg.Outcome != ConformanceOutcome.Passed)
-                    throw new InvalidOperationException($"mandatory conformance leg {name} was not Passed: {leg?.Outcome}");
+                    throw new InvalidOperationException(
+                        $"mandatory conformance leg {name} was not Passed: {leg?.Outcome} ({leg?.Detail})");
             }
         }
     }
