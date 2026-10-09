@@ -132,7 +132,7 @@ public static class ConformanceRunner
         bool denied = second is LaunchResult.Failed;
         string lockProbe;
         try { lockProbe = LockHeld(Path.Combine(o.Workspace, "hb0.lock")) ? "held" : "released"; }
-        catch (Exception ex) { lockProbe = ex.GetType().Name + ": " + ex.Message; }
+        catch (Exception ex) { lockProbe = ex.GetType().Name + $" (0x{ex.HResult:x8}): " + ex.Message; }
         string heartbeat = Path.Combine(o.Workspace, "hb0");
         bool heartbeatExists = File.Exists(heartbeat);
         bool heartbeatFresh = Fresh(heartbeat);
@@ -470,10 +470,10 @@ public static class ConformanceRunner
         FileStream stream;
         try { stream = File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite); }
         catch (IOException ex) when (OperatingSystem.IsMacOS()
-            && ex.HResult == unchecked((int)0x80070020))
+            && ex.HResult is unchecked((int)0x80070020) or unchecked((int)0x80070021))
         {
             // On macOS, .NET's open can reject a Python-held flock before our
-            // explicit flock probe. Only the sharing-violation code proves it.
+            // explicit flock probe. Only sharing/lock violation proves it.
             return true;
         }
         using var opened = stream;
