@@ -69,12 +69,22 @@ jobs:
         with:
           name: candidate-packages
           path: candidate
-      - name: Strict native conformance
-        if: matrix.key != 'linux'
+      - name: Strict Windows conformance
+        if: matrix.key == 'windows'
+        shell: pwsh
+        run: dotnet test tests/Gagamba.Conformance.Tests/Gagamba.Conformance.Tests.csproj -c Release --nologo
+      - name: Strict macOS conformance
+        if: matrix.key == 'macos'
         shell: bash
         run: dotnet test tests/Gagamba.Conformance.Tests/Gagamba.Conformance.Tests.csproj -c Release --nologo
-      - name: Independent installed-package lifecycle
-        if: matrix.key != 'linux'
+      - name: Independent Windows installed-package lifecycle
+        if: matrix.key == 'windows'
+        shell: pwsh
+        run: |
+          $version = ([xml](Get-Content Directory.Build.props -Raw)).SelectSingleNode('//Version').InnerText
+          python eng/verify_package_consumer.py --packages-dir candidate --version $version --source-sha $env:GITHUB_SHA --output qualification/consumer-windows.json
+      - name: Independent macOS installed-package lifecycle
+        if: matrix.key == 'macos'
         shell: bash
         run: |
           version=$(python -c 'import xml.etree.ElementTree as E; print(E.parse("Directory.Build.props").findtext(".//Version"))')

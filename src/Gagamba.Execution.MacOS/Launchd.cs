@@ -168,6 +168,7 @@ internal static class Launchd
         string? state = null;
         int? exit = null;
         bool malformedExit = false;
+        string? malformedField = null;
         foreach (string line in result.Output.Split('\n'))
         {
             string text = line.Trim();
@@ -177,17 +178,18 @@ internal static class Launchd
             {
                 if (int.TryParse(text["last exit code =".Length..].Trim(), out int code))
                     exit = code < 0 ? 128 - code : code;
-                else malformedExit = true;
+                else { malformedExit = true; malformedField = Excerpt(text); }
             }
             else if (text.StartsWith("last exit status =", StringComparison.OrdinalIgnoreCase))
             {
                 if (int.TryParse(text["last exit status =".Length..].Trim(), out int code))
                     exit = code < 0 ? 128 - code : code;
-                else malformedExit = true;
+                else { malformedExit = true; malformedField = Excerpt(text); }
             }
         }
         if (malformedExit)
-            return new JobObservation(JobObservationKind.Unknown, null, "malformed launchd exit field");
+            return new JobObservation(JobObservationKind.Unknown, null,
+                "malformed launchd exit field: " + malformedField);
         if (state == "running") return new JobObservation(JobObservationKind.Running, null);
         if (state is "not running" or "exited")
             return exit is int code
