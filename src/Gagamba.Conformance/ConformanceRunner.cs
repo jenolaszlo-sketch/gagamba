@@ -133,7 +133,7 @@ public static class ConformanceRunner
         p.Terminate(st.Handle);
         return new("single-use", denied && ran ? ConformanceOutcome.Passed : ConformanceOutcome.Failed,
             denied && ran ? "first workload ran; second launch with spent preparation refused"
-                : $"firstRan={ran} secondDenied={denied}");
+                : $"firstRan={ran} secondDenied={denied} python={ReadOr(Path.Combine(o.Workspace, "hb0.python"))} error={ReadOr(Path.Combine(o.Workspace, "hb0.error"))}");
     }
 
     private static async Task<ConformanceLeg> WorkingDirectory(Func<IExecutionProvider> factory, ConformanceOptions o)
@@ -154,7 +154,7 @@ public static class ConformanceRunner
             Path.GetFullPath(o.Workspace), OperatingSystem.IsWindows()
                 ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
         return new("working-directory", correct ? ConformanceOutcome.Passed : ConformanceOutcome.Failed,
-            correct ? "relative write landed in the unique workspace" : "relative cwd did not match unique workspace");
+            correct ? "relative write landed in the unique workspace" : $"relative cwd did not match unique workspace; absolute={ReadOr(Path.Combine(o.Workspace, "cwd-absolute.txt"))}");
     }
 
     private static async Task<ConformanceLeg> NoAmbientInherit(Func<IExecutionProvider> factory, ConformanceOptions o)

@@ -10,9 +10,9 @@ internal static class ConformanceScripts
         "mode=\"$1\"; dir=\"$2\"; name=\"${3:-hb}\"\n" +
         "beat() { date +%s > \"$dir/$1\"; }\n" +
         "case \"$mode\" in\n" +
-        "  cwd) pwd > cwd.tmp && mv cwd.tmp cwd.txt ;;\n" +
+        "  cwd) pwd > \"$dir/cwd-absolute.txt\"; pwd > cwd.tmp && mv cwd.tmp cwd.txt ;;\n" +
         "  env) env > \"$dir/env.tmp\" && mv \"$dir/env.tmp\" \"$dir/env.txt\" ;;\n" +
-        "  hold) exec \"$CONF_PYTHON\" \"$dir/hold.py\" \"$dir\" \"$name\" ;;\n" +
+        "  hold) printf '%s' \"$CONF_PYTHON\" > \"$dir/$name.python\"; exec \"$CONF_PYTHON\" \"$dir/hold.py\" \"$dir\" \"$name\" ;;\n" +
         "  exit17) printf '%s' \"$dir\" > \"$dir/exit17-proof\"; exit 17 ;;\n" +
         "  tree) sh \"$0\" hold \"$dir\" child & exec sh \"$0\" hold \"$dir\" root ;;\n" +
         "  exitroot) sh \"$0\" hold \"$dir\" child & i=0; while [ ! -f \"$dir/child.ready\" ] && [ $i -lt 100 ]; do sleep 0.1; i=$((i+1)); done; [ -f \"$dir/child.ready\" ] || exit 4; printf '%s' \"$dir\" > \"$dir/root-exit-proof\" ;;\n" +
@@ -21,6 +21,9 @@ internal static class ConformanceScripts
     internal const string UnixHoldPy =
         "import fcntl, os, sys, time\n" +
         "d, name = sys.argv[1:3]\n" +
+        "def report_error(typ, value, tb):\n" +
+        "    with open(os.path.join(d, name + '.error'), 'w') as f: f.write(str(typ.__name__) + ': ' + str(value))\n" +
+        "sys.excepthook = report_error\n" +
         "lock = open(os.path.join(d, name + '.lock'), 'w+')\n" +
         "if sys.platform == 'darwin': fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)\n" +
         "else: fcntl.lockf(lock, fcntl.LOCK_EX | fcntl.LOCK_NB, 1)\n" +
