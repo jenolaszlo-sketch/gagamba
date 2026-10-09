@@ -46,6 +46,8 @@ public sealed class Ar3Regressions
     [InlineData("state = runningish\n", 0)]
     [InlineData("state = not running\n", 0)]
     [InlineData("state = not running\nlast exit code = x\n", 0)]
+    [InlineData("state = not running\nlast exit code = (never exited)\n", 0)]
+    [InlineData("state = running\nlast exit code = malformed\n", 0)]
     [InlineData("", 0)]
     [InlineData("permission denied", 1)]
     [InlineData("launchctl timed out", 124)]
@@ -64,6 +66,8 @@ public sealed class Ar3Regressions
         Assert.Equal(137, signal.ExitCode);
         Assert.Equal(JobObservationKind.Running,
             Launchd.Observe(Ok("state = running\n")).Kind);
+        Assert.Equal(JobObservationKind.Running,
+            Launchd.Observe(Ok("state = running\nlast exit code = (never exited)\n")).Kind);
     }
 
     [Fact]

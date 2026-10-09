@@ -168,6 +168,7 @@ internal static class Launchd
         string? state = null;
         int? exit = null;
         bool malformedExit = false;
+        bool neverExited = false;
         string? malformedField = null;
         foreach (string line in result.Output.Split('\n'))
         {
@@ -176,8 +177,10 @@ internal static class Launchd
                 state = text["state =".Length..].Trim();
             else if (text.StartsWith("last exit code =", StringComparison.OrdinalIgnoreCase))
             {
-                if (int.TryParse(text["last exit code =".Length..].Trim(), out int code))
+                string value = text["last exit code =".Length..].Trim();
+                if (int.TryParse(value, out int code))
                     exit = code < 0 ? 128 - code : code;
+                else if (value == "(never exited)") neverExited = true;
                 else { malformedExit = true; malformedField = Excerpt(text); }
             }
             else if (text.StartsWith("last exit status =", StringComparison.OrdinalIgnoreCase))
@@ -192,7 +195,7 @@ internal static class Launchd
                 "malformed launchd exit field: " + malformedField);
         if (state == "running") return new JobObservation(JobObservationKind.Running, null);
         if (state is "not running" or "exited")
-            return exit is int code
+            return !neverExited && exit is int code
                 ? new JobObservation(JobObservationKind.Terminal, code)
                 : new JobObservation(JobObservationKind.Unknown, null, "terminal state lacks exit status");
         return new JobObservation(JobObservationKind.Unknown, null,
