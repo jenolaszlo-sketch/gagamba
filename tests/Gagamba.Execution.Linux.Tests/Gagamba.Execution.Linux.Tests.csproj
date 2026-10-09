@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Gagamba.Execution.Linux\Gagamba.Execution.Linux.csproj" />
     <ProjectReference Include="..\..\src\Gagamba.Execution\Gagamba.Execution.csproj" />
+    <ProjectReference Include="..\..\src\Gagamba.Runtime\Gagamba.Runtime.csproj" />
   </ItemGroup>
 
 </Project>
