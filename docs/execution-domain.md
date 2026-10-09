@@ -32,6 +32,35 @@ PG-scoped). Kinds: `Native` (intrinsic to the OS primitive),
 `Constructed` (composed by Gagamba, e.g. watchdog + kill — weaker by
 construction, never equated), `None` (for Absent only).
 
+`Full` is full only for the named capability's documented scope. Windows
+`EscapeResistant=Full/Native` covers ordinarily created direct descendants
+with Job Object breakaway disabled. It does not cover external brokers,
+host filesystem/network/IPC access, credentials, or privileged interference.
+Treating it as hostile-code containment would require a new/versioned
+capability and separate qualification. AR-4 retains this bounded meaning.
+
+Invocation uses an explicit constructed environment. `ProcessStartSpec`'s
+existing `Arguments` string remains the raw compatibility route: Windows
+passes it after the executable in the CreateProcess command line, while Unix
+providers use the existing compatibility splitter. `ProcessStartSpec.Vector`
+supplies ordered arguments without Unix reparsing; Windows serializes them
+with CRT-compatible quote/backslash rules. A program with a custom Windows
+command-line parser may interpret the string differently. Providers validate
+and copy arguments, environment and capability requirements before consuming
+a preparation. Linux environment names are case-sensitive.
+
+A relative executable uses the host/provider's normal lookup rules; an
+absolute path names a location, not a durable file identity. The working
+directory is likewise checked by path and can be replaced before native use.
+Neither form proves resistance to executable or directory replacement.
+Security-sensitive profiles must establish stronger identity semantics before
+claiming them; AR-4 does not add a restricted-execution profile. Issued
+preparations are bound to the issuing provider instance and exact token object.
+Repeated Discard of that issued token is idempotent while the caller retains
+it; a same-platform token from another instance or a reconstructed record
+fails closed. All provider methods except repeat disposal throw after disposal,
+including `Describe`.
+
 ## Per-platform matrix (weakest demonstrated behavior)
 
 | Capability | Windows Job | Linux cgroup v2 | macOS launchd/PG |

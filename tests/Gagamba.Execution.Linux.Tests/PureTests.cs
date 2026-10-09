@@ -28,10 +28,11 @@ public sealed class PureTests
         Assert.False(LinuxExecutionProvider.TryBuildEnvironment(
             new Dictionary<string, string> { ["A"] = "x\0" }, out _, out string e2));
         Assert.Contains("NUL", e2);
-        Assert.False(LinuxExecutionProvider.TryBuildEnvironment(
+        Assert.True(LinuxExecutionProvider.TryBuildEnvironment(
             new Dictionary<string, string> { ["Path"] = "a", ["PATH"] = "b" },
-            out _, out string e3));
-        Assert.Contains("duplicate", e3);
+            out var envp, out string e3), e3);
+        Assert.Contains("Path=a", envp);
+        Assert.Contains("PATH=b", envp);
     }
 
     [Fact]

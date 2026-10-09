@@ -71,8 +71,11 @@ public sealed class ExecutionRuntime : IExecutionProvider
             $"no execution provider for '{RuntimeInformation.OSDescription}'");
     }
 
-    public PlatformCapabilities Describe() =>
-        _provider?.Describe() ?? UnsupportedPlatform;
+    public PlatformCapabilities Describe()
+    {
+        lock (_gate) ObjectDisposedException.ThrowIf(_disposed, this);
+        return _provider?.Describe() ?? UnsupportedPlatform;
+    }
 
     public PrepareResult Prepare(ExecutionRequirements requirements)
     {

@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 namespace Gagamba.Execution.Linux;
 
@@ -11,6 +12,8 @@ public sealed class LinuxExecutionProvider : IExecutionProvider
     private Task? _disposeTask;
     private TaskCompletionSource? _launchesDrained;
     private readonly Dictionary<Guid, OwnedCgroup> _preparations = new();
+    private readonly ConditionalWeakTable<PreparedExecution, StrongBox<byte>> _issued = new();
+    private readonly Dictionary<Guid, PreparedExecution> _activeTokens = new();
     private readonly HashSet<OwnedCgroup> _launches = new();
     private readonly HashSet<OwnedCgroup> _failedGroups = new();
     private readonly List<string> _terminalFailures = new();
@@ -35,12 +38,16 @@ public sealed class LinuxExecutionProvider : IExecutionProvider
         _cgroupParent = cgroupParent;
     }
 
-    public PlatformCapabilities Describe() => WellKnownPlatforms.Linux;
+    public PlatformCapabilities Describe()
+    { lock (_gate) { ObjectDisposedException.ThrowIf(_disposed, this); return WellKnownPlatforms.Linux; } }
 
     public PrepareResult Prepare(ExecutionRequirements requirements)
     {
+        lock (_gate) ObjectDisposedException.ThrowIf(_disposed, this);
+        if (!ExecutionRequirements.TrySnapshot(requirements, out var snapshot, out var inputError))
+            return new PrepareResult.Rejected(new[] { inputError });
         var r = ExecutionNegotiator.Negotiate(
-            WellKnownPlatforms.Linux, requirements.Required, requirements.Preferred);
+            WellKnownPlatforms.Linux, snapshot!.Required, snapshot.Preferred);
         lock (_gate)
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
@@ -66,50 +73,59 @@ public sealed class LinuxExecutionProvider : IExecutionProvider
             group.FaultForTest = op => DenyCgroupOperationForTest == op;
             var prepared = new PreparedExecution(WellKnownPlatforms.Linux.Platform, Guid.NewGuid(), r.Met);
             _preparations.Add(prepared.PreparationId, group);
+            _issued.Add(prepared, new StrongBox<byte>(0));
+            _activeTokens.Add(prepared.PreparationId, prepared);
             return new PrepareResult.Accepted(prepared);
         }
     }
 
     public DiscardResult Discard(PreparedExecution preparation)
     {
-        OwnedCgroup? group;
         lock (_gate)
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
-            if (preparation.Provider != WellKnownPlatforms.Linux.Platform)
+            if (preparation is null || !_issued.TryGetValue(preparation, out var token)
+                || token.Value == 1)
                 return new DiscardResult.Failed(new[] { "unknown preparation: not issued by this provider" });
-            _preparations.Remove(preparation.PreparationId, out group);
-        }
-        if (group is not null)
-        {
+            if (token.Value == 2) return new DiscardResult.Discarded(preparation);
+            if (!_preparations.Remove(preparation.PreparationId, out var group))
+                return new DiscardResult.Failed(new[] { "preparation cleanup state unavailable" });
             string? error = group.StopAndRemoveAsync(false, TimeSpan.FromSeconds(5)).GetAwaiter().GetResult();
             if (error is not null)
             {
-                lock (_gate) _failedGroups.Add(group);
+                _preparations.Add(preparation.PreparationId, group);
                 return new DiscardResult.Failed(new[] { error });
             }
+            token.Value = 2;
+            _activeTokens.Remove(preparation.PreparationId);
+            return new DiscardResult.Discarded(preparation);
         }
-        return new DiscardResult.Discarded(preparation);
     }
 
     public LaunchResult Launch(PreparedExecution prepared, ProcessStartSpec process)
     {
+        lock (_gate) ObjectDisposedException.ThrowIf(_disposed, this);
+        if (!ProcessStartSpec.TrySnapshot(process, windows: false, out var invocation, out var inputError))
+            return new LaunchResult.Failed(new[] { inputError });
         OwnedCgroup group;
         lock (_gate)
         {
-            ObjectDisposedException.ThrowIf(_disposed, this);
-            if (prepared.Provider != WellKnownPlatforms.Linux.Platform
+            if (_disposed) return new LaunchResult.Failed(new[] { "disposal won before admission" });
+            if (prepared is null || !_issued.TryGetValue(prepared, out var token)
+                || token.Value != 0
                 || !_preparations.Remove(prepared.PreparationId, out group!))
                 return new LaunchResult.Failed(new[] { "unknown preparation: not issued by this provider" });
+            token.Value = 1;
+            _activeTokens.Remove(prepared.PreparationId);
             _launches.Add(group);
         }
         LaunchResult result;
         string? cleanupFailure = null;
         try
         {
-            if (string.IsNullOrWhiteSpace(process.Executable))
+            if (string.IsNullOrWhiteSpace(invocation!.Executable))
                 result = new LaunchResult.Failed(new[] { "no executable" });
-            else if (!TryBuildEnvironment(process.Environment, out var envp, out string error))
+            else if (!TryBuildEnvironment(invocation.Environment, out var envp, out string error))
                 result = new LaunchResult.Failed(new[] { error });
             else
             {
@@ -118,7 +134,7 @@ public sealed class LinuxExecutionProvider : IExecutionProvider
                 lock (_gate)
                     result = _disposed
                         ? new LaunchResult.Failed(new[] { "disposal won before target spawn" })
-                        : LaunchInner(group, process, envp);
+                        : LaunchInner(group, invocation, envp);
             }
         }
         catch (Exception ex)
@@ -196,6 +212,7 @@ public sealed class LinuxExecutionProvider : IExecutionProvider
             _disposed = true;
             var prepared = _preparations.Values.ToArray();
             _preparations.Clear();
+            _activeTokens.Clear();
             if (_launches.Count > 0)
                 _launchesDrained = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
             _disposeTask = DisposeCoreAsync(prepared, _launchesDrained?.Task);
@@ -319,7 +336,8 @@ public sealed class LinuxExecutionProvider : IExecutionProvider
             if (cfd < 0) return new LaunchResult.Failed(new[] { $"cgroup fd open errno={Marshal.GetLastWin32Error()}" });
             rc = NativeMethods.posix_spawnattr_setcgroup_np(attr, cfd);
             if (rc != 0) return new LaunchResult.Failed(new[] { $"spawnattr_setcgroup errno={rc}" });
-            string[] argv = new[] { process.Executable }.Concat(NativeMethods.SplitArguments(process.Arguments)).ToArray();
+            string[] argv = new[] { process.Executable }.Concat(process.ArgumentVector
+                ?? NativeMethods.SplitArguments(process.Arguments)).ToArray();
             string?[] argvZ = new string?[argv.Length + 1];
             Array.Copy(argv, argvZ, argv.Length);
             rc = NativeMethods.posix_spawn(out int pid, process.Executable, fa, attr, argvZ, envp);
@@ -477,7 +495,7 @@ public sealed class LinuxExecutionProvider : IExecutionProvider
         out string?[] envp, out string error)
     {
         envp = Array.Empty<string?>(); error = "";
-        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var seen = new HashSet<string>(StringComparer.Ordinal);
         foreach (var kv in spec)
         {
             if (string.IsNullOrEmpty(kv.Key) || kv.Key.Contains('=') || kv.Key.Contains('\0'))

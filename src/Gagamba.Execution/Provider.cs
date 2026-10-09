@@ -2,12 +2,32 @@
 // prepares, launches, terminates, and disposes an execution domain.
 // Handles are opaque: no PIDs, handles, cgroup paths, PGIDs, or labels
 // cross this contract. Providers own all OS mechanics.
+using System.Collections.ObjectModel;
 namespace Gagamba.Execution;
 
 /// <summary>Requested guarantees for one activity.</summary>
 public sealed record ExecutionRequirements(
     IReadOnlyList<ExecutionRequirement> Required,
-    IReadOnlyList<ExecutionRequirement>? Preferred = null);
+    IReadOnlyList<ExecutionRequirement>? Preferred = null)
+{
+    public static bool TrySnapshot(ExecutionRequirements? input,
+        out ExecutionRequirements? snapshot, out string error)
+    {
+        snapshot = null; error = "";
+        if (input?.Required is null) { error = "required capabilities are null"; return false; }
+        try
+        {
+            var required = input.Required.ToArray();
+            var preferred = input.Preferred?.ToArray();
+            if (required.Any(x => x is null) || preferred?.Any(x => x is null) == true)
+            { error = "null capability requirement"; return false; }
+            snapshot = new ExecutionRequirements(Array.AsReadOnly(required),
+                preferred is null ? null : Array.AsReadOnly(preferred));
+            return true;
+        }
+        catch (Exception ex) { error = $"capability snapshot failed: {ex.GetType().Name}"; return false; }
+    }
+}
 
 /// <summary>What to run inside a prepared domain.</summary>
 public sealed record ProcessStartSpec(
@@ -16,6 +36,59 @@ public sealed record ProcessStartSpec(
     string WorkingDirectory,
     IReadOnlyDictionary<string, string> Environment)
 {
+    /// <summary>When set, this ordered argv replaces raw Arguments. The raw
+    /// constructor remains the compatibility route and retains its semantics.</summary>
+    public IReadOnlyList<string>? ArgumentVector { get; init; }
+
+    public static ProcessStartSpec Vector(string executable, IEnumerable<string> arguments,
+        string workingDirectory = "", IReadOnlyDictionary<string, string>? environment = null) =>
+        new(executable, "", workingDirectory, environment ?? new Dictionary<string, string>())
+        { ArgumentVector = Array.AsReadOnly(arguments.ToArray()) };
+
+    /// <summary>Validate and copy caller-owned inputs before consuming a
+    /// preparation. The returned collections cannot be changed by callers.</summary>
+    public static bool TrySnapshot(ProcessStartSpec? input, bool windows,
+        out ProcessStartSpec? snapshot, out string error)
+    {
+        snapshot = null; error = "";
+        if (input is null) { error = "process specification is null"; return false; }
+        if (string.IsNullOrWhiteSpace(input.Executable) || input.Executable.Contains('\0'))
+        { error = "executable is blank or contains NUL"; return false; }
+        if (input.Arguments is null || input.Arguments.Contains('\0'))
+        { error = "raw arguments are null or contain NUL"; return false; }
+        if (input.WorkingDirectory is null || input.WorkingDirectory.Contains('\0')
+            || (!string.IsNullOrWhiteSpace(input.WorkingDirectory)
+                && !Directory.Exists(input.WorkingDirectory)))
+        { error = "working directory is invalid"; return false; }
+        if (input.Environment is null) { error = "environment is null"; return false; }
+        try
+        {
+            var env = new Dictionary<string, string>(windows
+                ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal);
+            foreach (var pair in input.Environment)
+            {
+                if (string.IsNullOrEmpty(pair.Key) || pair.Key.Contains('=')
+                    || pair.Key.Contains('\0') || pair.Value is null || pair.Value.Contains('\0'))
+                { error = "environment contains a malformed name or value"; return false; }
+                if (!env.TryAdd(pair.Key, pair.Value))
+                { error = "duplicate environment name"; return false; }
+            }
+            string[]? vector = input.ArgumentVector?.ToArray();
+            if (vector is not null)
+            {
+                if (input.Arguments.Length != 0)
+                { error = "raw arguments and argument vector are both set"; return false; }
+                if (vector.Any(a => a is null || a.Contains('\0')))
+                { error = "argument vector contains null or NUL"; return false; }
+            }
+            snapshot = new ProcessStartSpec(input.Executable, input.Arguments,
+                input.WorkingDirectory, new ReadOnlyDictionary<string, string>(env))
+            { ArgumentVector = vector is null ? null : Array.AsReadOnly(vector) };
+            return true;
+        }
+        catch (Exception ex) { error = $"process snapshot failed: {ex.GetType().Name}"; return false; }
+    }
+
     public static ProcessStartSpec Simple(
         string executable, string arguments = "", string workingDirectory = "",
         IReadOnlyDictionary<string, string>? environment = null) =>

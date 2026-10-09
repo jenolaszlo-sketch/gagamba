@@ -134,6 +134,21 @@ public sealed class ProviderTests : IAsyncLifetime
     });
 
     [Fact]
+    public async Task ArgumentVectorPreservesEmptySpacesQuotesBackslashesAndUnicode()
+    {
+        if (!OperatingSystem.IsLinux() || !Usable()) return;
+        var prep = Assert.IsType<PrepareResult.Accepted>(
+            _provider.Prepare(new ExecutionRequirements(Array.Empty<ExecutionRequirement>()))).Prepared;
+        var args = new[] { "-c", "printf '%s\\n' \"$@\" > argv.txt", "sh",
+            "", "two words", "a\"b", "C:\\trail\\", "雪" };
+        var spec = ProcessStartSpec.Vector("/bin/sh", args, _ws, new Dictionary<string, string>());
+        var handle = Assert.IsType<LaunchResult.Started>(_provider.Launch(prep, spec)).Handle;
+        Assert.IsType<CompletionResult.NaturalExit>(
+            await _provider.WaitForCompletionAsync(handle, TestContext.Current.CancellationToken));
+        Assert.Equal(args.Skip(3), File.ReadAllLines(Path.Combine(_ws, "argv.txt")));
+    }
+
+    [Fact]
     public async Task RootLaunch_TerminateWorks()
     {
         if (!OperatingSystem.IsLinux() || !Usable()) return;
@@ -319,6 +334,18 @@ public sealed class ProviderTests : IAsyncLifetime
         Assert.IsType<DiscardResult.Discarded>(_provider.Discard(prep));   // idempotent
         Assert.IsType<LaunchResult.Failed>(_provider.Launch(prep,
             new ProcessStartSpec("/bin/true", "", _ws, new Dictionary<string, string>())));
+    }
+
+    [Fact]
+    public async Task ForeignInstanceAndForgedPreparationCannotBeDiscarded()
+    {
+        if (!OperatingSystem.IsLinux() || !Usable()) return;
+        var token = MustPrepareSimple();
+        await using var foreign = new LinuxExecutionProvider(Parent);
+        Assert.IsType<DiscardResult.Failed>(foreign.Discard(token));
+        Assert.IsType<DiscardResult.Failed>(_provider.Discard(new PreparedExecution(
+            token.Provider, token.PreparationId, token.Met)));
+        Assert.IsType<DiscardResult.Discarded>(_provider.Discard(token));
     }
 
     [Fact]

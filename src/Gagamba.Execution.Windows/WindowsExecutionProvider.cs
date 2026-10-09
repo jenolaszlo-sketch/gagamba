@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Microsoft.Win32.SafeHandles;
 
@@ -16,6 +17,10 @@ public sealed class WindowsExecutionProvider : IExecutionProvider
     private Task? _disposeTask;
     private TaskCompletionSource? _launchesDrained;
     private readonly Dictionary<Guid, OwnedJob> _preparations = new();
+    // Weak keys retain spent-token idempotence only while the caller retains
+    // the exact issued object; forged equal records do not gain provenance.
+    private readonly ConditionalWeakTable<PreparedExecution, StrongBox<byte>> _issued = new();
+    private readonly Dictionary<Guid, PreparedExecution> _activeTokens = new();
     private readonly HashSet<LaunchAdmission> _launches = new();
     private readonly List<LaunchAdmission> _failedAdmissions = new();
     private readonly Dictionary<Guid, WindowsExecutionState> _executions = new();
@@ -64,12 +69,16 @@ public sealed class WindowsExecutionProvider : IExecutionProvider
         }
     }
 
-    public PlatformCapabilities Describe() => WellKnownPlatforms.Windows;
+    public PlatformCapabilities Describe()
+    { lock (_gate) { ObjectDisposedException.ThrowIf(_disposed, this); return WellKnownPlatforms.Windows; } }
 
     public PrepareResult Prepare(ExecutionRequirements requirements)
     {
+        lock (_gate) ObjectDisposedException.ThrowIf(_disposed, this);
+        if (!ExecutionRequirements.TrySnapshot(requirements, out var snapshot, out var inputError))
+            return new PrepareResult.Rejected(new[] { inputError });
         var r = ExecutionNegotiator.Negotiate(
-            WellKnownPlatforms.Windows, requirements.Required, requirements.Preferred);
+            WellKnownPlatforms.Windows, snapshot!.Required, snapshot.Preferred);
         lock (_gate)
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
@@ -80,6 +89,8 @@ public sealed class WindowsExecutionProvider : IExecutionProvider
             var prep = new PreparedExecution(
                 WellKnownPlatforms.Windows.Platform, Guid.NewGuid(), r.Met);
             _preparations.Add(prep.PreparationId, job);
+            _issued.Add(prep, new StrongBox<byte>(0));
+            _activeTokens.Add(prep.PreparationId, prep);
             return new PrepareResult.Accepted(prep);
         }
     }
@@ -89,23 +100,33 @@ public sealed class WindowsExecutionProvider : IExecutionProvider
         lock (_gate)
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
-            if (preparation.Provider != WellKnownPlatforms.Windows.Platform)
+            if (preparation is null || !_issued.TryGetValue(preparation, out var token)
+                || token.Value == 1)
                 return new DiscardResult.Failed(new[] { "unknown preparation: not issued by this provider" });
+            if (token.Value == 2) return new DiscardResult.Discarded(preparation);
             if (_preparations.Remove(preparation.PreparationId, out var job))
                 job.Dispose();
+            token.Value = 2;
+            _activeTokens.Remove(preparation.PreparationId);
             return new DiscardResult.Discarded(preparation);
         }
     }
 
     public LaunchResult Launch(PreparedExecution prepared, ProcessStartSpec process)
     {
+        lock (_gate) ObjectDisposedException.ThrowIf(_disposed, this);
+        if (!ProcessStartSpec.TrySnapshot(process, windows: true, out var invocation, out var inputError))
+            return new LaunchResult.Failed(new[] { inputError });
         LaunchAdmission admission;
         lock (_gate)
         {
-            ObjectDisposedException.ThrowIf(_disposed, this);
-            if (prepared.Provider != WellKnownPlatforms.Windows.Platform
+            if (_disposed) return new LaunchResult.Failed(new[] { "disposal won before admission" });
+            if (prepared is null || !_issued.TryGetValue(prepared, out var token)
+                || token.Value != 0
                 || !_preparations.Remove(prepared.PreparationId, out var job))
                 return new LaunchResult.Failed(new[] { "unknown preparation: not issued by this provider" });
+            token.Value = 1;
+            _activeTokens.Remove(prepared.PreparationId);
             admission = new LaunchAdmission(job);
             _launches.Add(admission);
         }
@@ -115,12 +136,12 @@ public sealed class WindowsExecutionProvider : IExecutionProvider
         string? cleanupFailure = null;
         try
         {
-            if (string.IsNullOrWhiteSpace(process.Executable))
+            if (string.IsNullOrWhiteSpace(invocation!.Executable))
                 result = new LaunchResult.Failed(new[] { "no executable" });
-            else if (!TryBuildEnvironment(process.Environment, out environment, out string envError))
+            else if (!TryBuildEnvironment(invocation.Environment, out environment, out string envError))
                 result = new LaunchResult.Failed(new[] { envError });
             else
-                result = LaunchInner(admission, process, environment);
+                result = LaunchInner(admission, invocation, environment);
         }
         catch (Exception ex)
         {
@@ -208,6 +229,7 @@ public sealed class WindowsExecutionProvider : IExecutionProvider
             _disposed = true; // disposal's admission linearization point
             var prepared = _preparations.Values.ToArray();
             _preparations.Clear();
+            _activeTokens.Clear();
             var running = _executions.Values.ToArray();
             if (_launches.Count > 0)
                 _launchesDrained = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
@@ -254,7 +276,11 @@ public sealed class WindowsExecutionProvider : IExecutionProvider
     private LaunchResult LaunchInner(LaunchAdmission admission, ProcessStartSpec process, IntPtr environment)
     {
         var commandLine = new StringBuilder(32768);
-        commandLine.Append('"').Append(process.Executable).Append("\" ").Append(process.Arguments);
+        if (process.ArgumentVector is null)
+            commandLine.Append('"').Append(process.Executable).Append("\" ").Append(process.Arguments);
+        else
+            commandLine.Append(WindowsCommandLine.Serialize(
+                new[] { process.Executable }.Concat(process.ArgumentVector)));
         var si = new NativeMethods.StartupInfo { cb = Marshal.SizeOf<NativeMethods.StartupInfo>() };
         if (!NativeMethods.CreateProcessW(null, commandLine, IntPtr.Zero, IntPtr.Zero, false,
             NativeMethods.CREATE_SUSPENDED | NativeMethods.CREATE_UNICODE_ENVIRONMENT,

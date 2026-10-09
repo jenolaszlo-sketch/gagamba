@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace Gagamba.Execution.MacOS;
 
 /// <summary>Launchd lifecycle provider; same-process-group scope only.</summary>
@@ -10,6 +12,8 @@ public sealed class MacOsExecutionProvider : IExecutionProvider
     private Task? _disposeTask;
     private TaskCompletionSource? _launchesDrained;
     private readonly Dictionary<Guid, OwnedJob> _preparations = new();
+    private readonly ConditionalWeakTable<PreparedExecution, StrongBox<byte>> _issued = new();
+    private readonly Dictionary<Guid, PreparedExecution> _activeTokens = new();
     private readonly HashSet<OwnedJob> _launches = new();
     private readonly HashSet<OwnedJob> _failedJobs = new();
     private readonly Dictionary<Guid, MacExecutionState> _executions = new();
@@ -26,12 +30,16 @@ public sealed class MacOsExecutionProvider : IExecutionProvider
         _transport = transport;
     }
 
-    public PlatformCapabilities Describe() => WellKnownPlatforms.MacOs;
+    public PlatformCapabilities Describe()
+    { lock (_gate) { ObjectDisposedException.ThrowIf(_disposed, this); return WellKnownPlatforms.MacOs; } }
 
     public PrepareResult Prepare(ExecutionRequirements requirements)
     {
+        lock (_gate) ObjectDisposedException.ThrowIf(_disposed, this);
+        if (!ExecutionRequirements.TrySnapshot(requirements, out var snapshot, out var inputError))
+            return new PrepareResult.Rejected(new[] { inputError });
         var r = ExecutionNegotiator.Negotiate(
-            WellKnownPlatforms.MacOs, requirements.Required, requirements.Preferred);
+            WellKnownPlatforms.MacOs, snapshot!.Required, snapshot.Preferred);
         lock (_gate)
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
@@ -46,6 +54,8 @@ public sealed class MacOsExecutionProvider : IExecutionProvider
             { return new PrepareResult.Rejected(new[] { $"job directory unavailable: {ex.GetType().Name}: {ex.Message}" }); }
             var prep = new PreparedExecution(WellKnownPlatforms.MacOs.Platform, Guid.NewGuid(), r.Met);
             _preparations.Add(prep.PreparationId, job);
+            _issued.Add(prep, new StrongBox<byte>(0));
+            _activeTokens.Add(prep.PreparationId, prep);
             return new PrepareResult.Accepted(prep);
         }
     }
@@ -56,43 +66,51 @@ public sealed class MacOsExecutionProvider : IExecutionProvider
         lock (_gate)
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
-            if (preparation.Provider != WellKnownPlatforms.MacOs.Platform)
+            if (preparation is null || !_issued.TryGetValue(preparation, out var token)
+                || token.Value == 1)
                 return new DiscardResult.Failed(new[] { "unknown preparation: not issued by this provider" });
-            _preparations.Remove(preparation.PreparationId, out job);
-        }
-        if (job is not null)
-        {
+            if (token.Value == 2) return new DiscardResult.Discarded(preparation);
+            if (!_preparations.Remove(preparation.PreparationId, out job))
+                return new DiscardResult.Failed(new[] { "preparation cleanup state unavailable" });
             var cleanup = job.Cleanup();
             if (!cleanup.Ok)
             {
-                lock (_gate) _failedJobs.Add(job);
+                _preparations.Add(preparation.PreparationId, job);
                 return new DiscardResult.Failed(new[] { cleanup.Error });
             }
+            token.Value = 2;
+            _activeTokens.Remove(preparation.PreparationId);
+            return new DiscardResult.Discarded(preparation);
         }
-        return new DiscardResult.Discarded(preparation);
     }
 
     public LaunchResult Launch(PreparedExecution prepared, ProcessStartSpec process)
     {
+        lock (_gate) ObjectDisposedException.ThrowIf(_disposed, this);
+        if (!ProcessStartSpec.TrySnapshot(process, windows: false, out var invocation, out var inputError))
+            return new LaunchResult.Failed(new[] { inputError });
         OwnedJob job;
         lock (_gate)
         {
-            ObjectDisposedException.ThrowIf(_disposed, this);
-            if (prepared.Provider != WellKnownPlatforms.MacOs.Platform
+            if (_disposed) return new LaunchResult.Failed(new[] { "disposal won before admission" });
+            if (prepared is null || !_issued.TryGetValue(prepared, out var token)
+                || token.Value != 0
                 || !_preparations.Remove(prepared.PreparationId, out job!))
                 return new LaunchResult.Failed(new[] { "unknown preparation: not issued by this provider" });
+            token.Value = 1;
+            _activeTokens.Remove(prepared.PreparationId);
             _launches.Add(job);
         }
         LaunchResult result = new LaunchResult.Failed(new[] { "launch did not complete" });
         string? cleanupFailure = null;
         try
         {
-            if (string.IsNullOrWhiteSpace(process.Executable))
+            if (string.IsNullOrWhiteSpace(invocation!.Executable))
                 result = new LaunchResult.Failed(new[] { "no executable" });
-            else if (!TryBuildEnvironment(process.Environment, out var env, out string envError))
+            else if (!TryBuildEnvironment(invocation.Environment, out var env, out string envError))
                 result = new LaunchResult.Failed(new[] { envError });
             else
-                result = LaunchInner(job, process, env!);
+                result = LaunchInner(job, invocation, env!);
         }
         catch (Exception ex)
         { result = new LaunchResult.Failed(new[] { $"launch fault: {ex.GetType().Name}: {ex.Message}" }); }
@@ -115,7 +133,8 @@ public sealed class MacOsExecutionProvider : IExecutionProvider
     private LaunchResult LaunchInner(OwnedJob job, ProcessStartSpec process,
         IReadOnlyDictionary<string, string> env)
     {
-        job.WritePlist(process.Executable, Launchd.SplitArguments(process.Arguments),
+        job.WritePlist(process.Executable, process.ArgumentVector?.ToArray()
+            ?? Launchd.SplitArguments(process.Arguments),
             process.WorkingDirectory, env);
         var bootstrap = _transport.Run("bootstrap", _domain, job.PlistPath);
         if (!bootstrap.Ok) return new LaunchResult.Failed(new[] { "bootstrap refused: " + bootstrap.Diagnostic });
@@ -207,6 +226,7 @@ public sealed class MacOsExecutionProvider : IExecutionProvider
             _disposed = true;
             var prepared = _preparations.Values.ToArray();
             _preparations.Clear();
+            _activeTokens.Clear();
             if (_launches.Count > 0)
                 _launchesDrained = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
             _disposeTask = DisposeCoreAsync(prepared, _launchesDrained?.Task);

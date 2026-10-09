@@ -30,7 +30,7 @@ public sealed record NegotiationResult(
     IReadOnlyList<string> PreferredNotes)
 {
     public static NegotiationResult Reject(IEnumerable<string> unmet) =>
-        new(false, unmet.ToList(), Array.Empty<string>(), Array.Empty<string>());
+        new(false, Array.AsReadOnly(unmet.ToArray()), Array.Empty<string>(), Array.Empty<string>());
 }
 
 public static class ExecutionNegotiator
@@ -86,6 +86,8 @@ public static class ExecutionNegotiator
             else
                 notes.Add($"{platform.Platform}: preferred {pref.Capability} missing (advisory only)");
         }
-        return new NegotiationResult(unmet.Count == 0, unmet, met, notes);
+        return new NegotiationResult(unmet.Count == 0,
+            Array.AsReadOnly(unmet.ToArray()), Array.AsReadOnly(met.ToArray()),
+            Array.AsReadOnly(notes.ToArray()));
     }
 }
