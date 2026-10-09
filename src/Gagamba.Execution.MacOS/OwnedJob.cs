@@ -13,21 +13,27 @@ internal sealed class OwnedJob : IDisposable
     public string Domain { get; }
     public string WorkDir { get; }
     public string ServiceTarget => $"{Domain}/{Label}";
-    private bool _disposed;
+    private readonly object _gate = new();
+    private readonly ILaunchdTransport _transport;
+    private bool _loaded;
+    private bool _removed;
 
-    private OwnedJob(string label, string domain, string workDir)
+    private OwnedJob(string label, string domain, string workDir, ILaunchdTransport transport)
     {
         Label = label;
         Domain = domain;
         WorkDir = workDir;
+        _transport = transport;
     }
 
-    public static OwnedJob Create(string domain)
+    public static OwnedJob Create(string domain, ILaunchdTransport? transport = null)
     {
         string label = "org.gagamba.exec." + Guid.NewGuid().ToString("N");
-        string dir = Path.Combine(Path.GetTempPath(), "gagamba-macos", label);
-        Directory.CreateDirectory(dir);
-        return new OwnedJob(label, domain, dir);
+        // CreateTempSubdirectory uses an atomic, private (0700 on Unix)
+        // directory. A shared, predictably named parent can expose the plist
+        // (arguments and environment) and the target's stdout/stderr logs.
+        string dir = Directory.CreateTempSubdirectory("gagamba-macos-").FullName;
+        return new OwnedJob(label, domain, dir, transport ?? new ProcessLaunchdTransport());
     }
 
     public string PlistPath => Path.Combine(WorkDir, Label + ".plist");
@@ -69,23 +75,40 @@ internal sealed class OwnedJob : IDisposable
          .Replace("<", "&lt;", StringComparison.Ordinal)
          .Replace(">", "&gt;", StringComparison.Ordinal);
 
-    /// <summary>Authoritative domain termination. Gone-already still
-    /// succeeds (idempotent terminate); other failures classify.</summary>
-    public (bool Ok, string Error) Bootout()
+    public void MarkLoaded() { lock (_gate) _loaded = true; }
+
+    public JobObservation Observe()
     {
-        try
+        lock (_gate)
         {
-            var (rc, out_) = Launchd.Bootout(ServiceTarget);
-            if (rc == 0) return (true, "");
-            // Not-loaded after a successful life is the idempotent case:
-            // verify instead of trusting stderr text across releases.
-            var (prc, _) = Launchd.Print(ServiceTarget);
-            if (prc != 0) return (true, "");
-            return (false, $"bootout refused rc={rc}: {FirstLine(out_)}");
+            if (_removed) return new JobObservation(JobObservationKind.ConfirmedNotFound, null);
+            return Launchd.Observe(_transport.Run("print", ServiceTarget));
         }
-        catch (Exception ex)
+    }
+
+    /// <summary>Bootout is only confirmed by recognized absence. Errors
+    /// retain both the label and the private directory for retry.</summary>
+    public (bool Ok, string Error) Cleanup()
+    {
+        lock (_gate)
         {
-            return (false, $"bootout fault: {ex.GetType().Name}");
+            if (_removed) return (true, "");
+            if (_loaded)
+            {
+                HelperResult bootout = _transport.Run("bootout", ServiceTarget);
+                JobObservation observed = Launchd.Observe(_transport.Run("print", ServiceTarget));
+                if (observed.Kind != JobObservationKind.ConfirmedNotFound)
+                    return (false, $"bootout unconfirmed ({bootout.Diagnostic}); print: {observed.Reason}");
+                _loaded = false;
+            }
+            try
+            {
+                Directory.Delete(WorkDir, recursive: true);
+                _removed = true;
+                return (true, "");
+            }
+            catch (Exception ex)
+            { return (false, $"job directory cleanup fault: {ex.GetType().Name}: {ex.Message}"); }
         }
     }
 
@@ -97,12 +120,5 @@ internal sealed class OwnedJob : IDisposable
     }
 
     public void Dispose()
-    {
-        if (_disposed) return;
-        _disposed = true;
-        // Best effort in fixed order: bootout, then delete the directory.
-        try { Bootout(); } catch { }
-        try { System.IO.Directory.Delete(WorkDir, recursive: true); } catch { }
-        GC.SuppressFinalize(this);
-    }
+    { var result = Cleanup(); if (!result.Ok) throw new InvalidOperationException(result.Error); }
 }

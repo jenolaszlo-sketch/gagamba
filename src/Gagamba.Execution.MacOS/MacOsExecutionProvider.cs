@@ -1,315 +1,317 @@
-// GM-2 macOS execution provider: IExecutionProvider over launchd jobs +
-// process groups. Native profile only: no watchdog composition, no PG-kill
-// fallback. Launch succeeds only after launchd owns the job (bootstrap)
-// AND the target demonstrably runs under it (print shows running); a
-// private poll proves readiness without any PID crossing the contract.
-// Terminate is bootout (authoritative; stop is never sufficient). Cleanup
-// always attempts bootout. Environment comes exclusively from the spec
-// (direct plist EnvironmentVariables: spec granted, ambient never
-// inherited; launchd adds its session vars — documented platform delta,
-// see evidence; no trampoline, GP-3 untouched).
 namespace Gagamba.Execution.MacOS;
 
+/// <summary>Launchd lifecycle provider; same-process-group scope only.</summary>
 public sealed class MacOsExecutionProvider : IExecutionProvider
 {
     private readonly object _gate = new();
     private readonly string _domain;
+    private readonly ILaunchdTransport _transport;
     private bool _disposed;
+    private Task? _disposeTask;
+    private TaskCompletionSource? _launchesDrained;
     private readonly Dictionary<Guid, OwnedJob> _preparations = new();
-    private readonly Dictionary<Guid, ExecutionRecord> _executions = new();
+    private readonly HashSet<OwnedJob> _launches = new();
+    private readonly HashSet<OwnedJob> _failedJobs = new();
+    private readonly Dictionary<Guid, MacExecutionState> _executions = new();
+    private readonly Dictionary<Guid, (WeakReference<ExecutionHandle> Handle, Task<CompletionResult> Result)> _completed = new();
+    private readonly List<string> _terminalFailures = new();
+    private int _completedSincePrune;
 
-    private sealed record ExecutionRecord(OwnedJob Job, bool Terminated);
-
-    /// <param name="domain">launchd domain, default gui/&lt;uid&gt;.
-    /// Validated at Prepare (print must succeed).</param>
     public MacOsExecutionProvider(string? domain = null)
+        : this(domain, new ProcessLaunchdTransport()) { }
+
+    internal MacOsExecutionProvider(string? domain, ILaunchdTransport transport)
     {
         _domain = string.IsNullOrWhiteSpace(domain) ? Launchd.UserDomain() : domain!;
+        _transport = transport;
     }
 
     public PlatformCapabilities Describe() => WellKnownPlatforms.MacOs;
 
     public PrepareResult Prepare(ExecutionRequirements requirements)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
-        // Native profile only: composition is a separate, explicit layer.
         var r = ExecutionNegotiator.Negotiate(
             WellKnownPlatforms.MacOs, requirements.Required, requirements.Preferred);
-        if (!r.Accepted)
-            return new PrepareResult.Rejected(r.Unmet);
-        if (!CheckDomain(out string why))
-            return new PrepareResult.Rejected(new[] { why });
-        // Allocate the private job directory at preparation so a caller that
-        // never launches can reclaim it through Discard.
-        OwnedJob job;
-        try { job = OwnedJob.Create(_domain); }
-        catch (Exception ex)
+        lock (_gate)
         {
-            return new PrepareResult.Rejected(new[] { $"job directory unavailable: {ex.GetType().Name}" });
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            if (!r.Accepted) return new PrepareResult.Rejected(r.Unmet);
+            var check = _transport.Run("print", _domain);
+            if (!check.Ok)
+                return new PrepareResult.Rejected(new[] {
+                    $"launchd domain '{_domain}' unavailable: {check.Diagnostic}" });
+            OwnedJob job;
+            try { job = OwnedJob.Create(_domain, _transport); }
+            catch (Exception ex)
+            { return new PrepareResult.Rejected(new[] { $"job directory unavailable: {ex.GetType().Name}: {ex.Message}" }); }
+            var prep = new PreparedExecution(WellKnownPlatforms.MacOs.Platform, Guid.NewGuid(), r.Met);
+            _preparations.Add(prep.PreparationId, job);
+            return new PrepareResult.Accepted(prep);
         }
-        var prep = new PreparedExecution(
-            WellKnownPlatforms.MacOs.Platform, Guid.NewGuid(), r.Met);
-        lock (_gate) _preparations[prep.PreparationId] = job;
-        return new PrepareResult.Accepted(prep);
     }
 
     public DiscardResult Discard(PreparedExecution preparation)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
-        if (preparation.Provider != WellKnownPlatforms.MacOs.Platform)
-            return new DiscardResult.Failed(
-                new[] { "unknown preparation: not issued by this provider" });
-        // Idempotent: a preparation already launched or discarded is a no-op.
         OwnedJob? job;
-        lock (_gate) _preparations.Remove(preparation.PreparationId, out job);
-        try { job?.Dispose(); } catch { }
+        lock (_gate)
+        {
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            if (preparation.Provider != WellKnownPlatforms.MacOs.Platform)
+                return new DiscardResult.Failed(new[] { "unknown preparation: not issued by this provider" });
+            _preparations.Remove(preparation.PreparationId, out job);
+        }
+        if (job is not null)
+        {
+            var cleanup = job.Cleanup();
+            if (!cleanup.Ok)
+            {
+                lock (_gate) _failedJobs.Add(job);
+                return new DiscardResult.Failed(new[] { cleanup.Error });
+            }
+        }
         return new DiscardResult.Discarded(preparation);
     }
 
     public LaunchResult Launch(PreparedExecution prepared, ProcessStartSpec process)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
-        OwnedJob? job;
+        OwnedJob job;
         lock (_gate)
         {
+            ObjectDisposedException.ThrowIf(_disposed, this);
             if (prepared.Provider != WellKnownPlatforms.MacOs.Platform
-                || !_preparations.Remove(prepared.PreparationId, out job))
-                return new LaunchResult.Failed(
-                    new[] { "unknown preparation: not issued by this provider" });
-            // Single-use token: one Launch attempt consumes it.
+                || !_preparations.Remove(prepared.PreparationId, out job!))
+                return new LaunchResult.Failed(new[] { "unknown preparation: not issued by this provider" });
+            _launches.Add(job);
         }
-        if (string.IsNullOrWhiteSpace(process.Executable))
+        LaunchResult result = new LaunchResult.Failed(new[] { "launch did not complete" });
+        string? cleanupFailure = null;
+        try
         {
-            try { job.Dispose(); } catch { }
-            return new LaunchResult.Failed(new[] { "no executable" });
+            if (string.IsNullOrWhiteSpace(process.Executable))
+                result = new LaunchResult.Failed(new[] { "no executable" });
+            else if (!TryBuildEnvironment(process.Environment, out var env, out string envError))
+                result = new LaunchResult.Failed(new[] { envError });
+            else
+                result = LaunchInner(job, process, env!);
         }
-        if (!TryBuildEnvironment(process.Environment, out var env, out string envError))
+        catch (Exception ex)
+        { result = new LaunchResult.Failed(new[] { $"launch fault: {ex.GetType().Name}: {ex.Message}" }); }
+        finally
         {
-            try { job.Dispose(); } catch { }
-            return new LaunchResult.Failed(new[] { envError });
+            if (result is not LaunchResult.Started)
+            {
+                var cleanup = job.Cleanup();
+                if (!cleanup.Ok) { cleanupFailure = cleanup.Error; lock (_gate) _failedJobs.Add(job); }
+            }
+            lock (_gate)
+            {
+                _launches.Remove(job);
+                if (_launches.Count == 0) _launchesDrained?.TrySetResult();
+            }
         }
-        return LaunchInner(job, process, env!);
+        return cleanupFailure is null ? result : new LaunchResult.Failed(new[] { cleanupFailure });
+    }
+
+    private LaunchResult LaunchInner(OwnedJob job, ProcessStartSpec process,
+        IReadOnlyDictionary<string, string> env)
+    {
+        job.WritePlist(process.Executable, Launchd.SplitArguments(process.Arguments),
+            process.WorkingDirectory, env);
+        var bootstrap = _transport.Run("bootstrap", _domain, job.PlistPath);
+        if (!bootstrap.Ok) return new LaunchResult.Failed(new[] { "bootstrap refused: " + bootstrap.Diagnostic });
+        job.MarkLoaded();
+        HelperResult kickstart;
+        lock (_gate)
+        {
+            if (_disposed) return new LaunchResult.Failed(new[] { "disposal won before target release" });
+            kickstart = _transport.Run("kickstart", job.ServiceTarget);
+        }
+        if (!kickstart.Ok) return new LaunchResult.Failed(new[] { "kickstart refused: " + kickstart.Diagnostic });
+        string? readiness = WaitRunning(job, TimeSpan.FromSeconds(15));
+        if (readiness is not null) return new LaunchResult.Failed(new[] { readiness });
+        lock (_gate)
+        {
+            if (_disposed) return new LaunchResult.Failed(new[] { "disposal won during launch readiness" });
+            var handle = new ExecutionHandle(WellKnownPlatforms.MacOs.Platform, Guid.NewGuid());
+            var state = new MacExecutionState(handle, job, OnTerminal);
+            _executions.Add(handle.ExecutionId, state);
+            state.Start();
+            return new LaunchResult.Started(handle);
+        }
+    }
+
+    private static string? WaitRunning(OwnedJob job, TimeSpan timeout)
+    {
+        var timer = System.Diagnostics.Stopwatch.StartNew();
+        while (timer.Elapsed < timeout)
+        {
+            JobObservation seen = job.Observe();
+            if (seen.Kind is JobObservationKind.Running or JobObservationKind.Terminal) return null;
+            if (seen.Kind == JobObservationKind.Unknown
+                && !seen.Reason.Contains("exit status", StringComparison.Ordinal))
+                return "readiness observation failed: " + seen.Reason;
+            Thread.Sleep(100);
+        }
+        return "job never reached running or recorded exit within readiness deadline";
     }
 
     public TerminateResult Terminate(ExecutionHandle execution)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
-        ExecutionRecord? rec;
+        MacExecutionState? state;
         lock (_gate)
         {
-            if (execution.Provider != WellKnownPlatforms.MacOs.Platform
-                || !_executions.TryGetValue(execution.ExecutionId, out rec))
-                return new TerminateResult.Failed(
-                    new[] { "unknown execution: not issued by this provider" });
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            if (execution.Provider != WellKnownPlatforms.MacOs.Platform)
+                return new TerminateResult.Failed(new[] { "unknown execution: not issued by this provider" });
+            if (!_executions.TryGetValue(execution.ExecutionId, out state))
+            {
+                if (_completed.TryGetValue(execution.ExecutionId, out var completed)
+                    && completed.Handle.TryGetTarget(out _)
+                    && completed.Result.Result is CompletionResult.Terminated)
+                    return new TerminateResult.Terminated(execution);
+                return new TerminateResult.Failed(new[] { "unknown or already terminal execution" });
+            }
         }
-        // Idempotent: an already-terminated domain still reports success,
-        // and the record stays so repeats classify the same way.
-        if (rec.Terminated) return new TerminateResult.Terminated(execution);
-        var (ok, err) = rec.Job.Bootout();
-        if (!ok)
-            return new TerminateResult.Failed(new[] { err });
-        lock (_gate)
-        {
-            if (_executions.TryGetValue(execution.ExecutionId, out var cur))
-                _executions[execution.ExecutionId] = cur with { Terminated = true };
-        }
-        return new TerminateResult.Terminated(execution);
+        return state.Stop();
     }
 
-    public async ValueTask<CompletionResult> WaitForCompletionAsync(ExecutionHandle execution,
+    public ValueTask<CompletionResult> WaitForCompletionAsync(ExecutionHandle execution,
         CancellationToken cancellationToken = default)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
-        ExecutionRecord? rec;
+        Task<CompletionResult> result;
         lock (_gate)
         {
-            if (execution.Provider != WellKnownPlatforms.MacOs.Platform
-                || !_executions.TryGetValue(execution.ExecutionId, out rec))
-                return new CompletionResult.Failed(
-                    new[] { "unknown execution: not issued by this provider" });
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            if (execution.Provider != WellKnownPlatforms.MacOs.Platform)
+                return new ValueTask<CompletionResult>(new CompletionResult.Failed(
+                    new[] { "unknown execution: not issued by this provider" }));
+            if (_executions.TryGetValue(execution.ExecutionId, out var state)) result = state.Completion;
+            else if (_completed.TryGetValue(execution.ExecutionId, out var completed)
+                     && completed.Handle.TryGetTarget(out _)) result = completed.Result;
+            else return new ValueTask<CompletionResult>(new CompletionResult.Failed(
+                    new[] { "unknown execution: not issued by this provider" }));
         }
-        // Observe launchd job termination and its recorded exit status. An
-        // escaped setsid() descendant is outside the launchd-managed domain
-        // and does not block completion (macOS advertises only Partial).
-        int? exitCode = null;
-        while (true)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            bool terminated;
-            lock (_gate) terminated = _executions.TryGetValue(execution.ExecutionId, out var cur) && cur.Terminated;
-            if (terminated) break;
-            var (rc, output) = Launchd.Print(rec.Job.ServiceTarget);
-            var state = Launchd.ParseState(output, rc);
-            if (state.ExitCode is int code) exitCode = code;
-            if (!state.Running) break; // terminal: exited or no longer loaded
-            await Task.Delay(200, cancellationToken).ConfigureAwait(false);
-        }
-        bool wasTerminated;
-        lock (_gate)
-        {
-            wasTerminated = _executions.TryGetValue(execution.ExecutionId, out var cur) && cur.Terminated;
-            _executions.Remove(execution.ExecutionId); // completion consumes the handle
-        }
-        try { rec.Job.Dispose(); } catch { } // bootout + delete the private directory
-        if (wasTerminated) return new CompletionResult.Terminated();
-        return exitCode is int finalCode
-            ? new CompletionResult.NaturalExit(finalCode)
-            : new CompletionResult.Failed(new[] { "launchd exit status unavailable" });
+        return new ValueTask<CompletionResult>(result.WaitAsync(cancellationToken));
     }
 
     public ValueTask DisposeAsync()
     {
-        List<ExecutionRecord> owned;
-        List<OwnedJob> prepared;
         lock (_gate)
         {
-            if (_disposed) return ValueTask.CompletedTask;
-            _disposed = true;
-            owned = new List<ExecutionRecord>(_executions.Values);
-            _executions.Clear();
-            prepared = new List<OwnedJob>(_preparations.Values);
-            _preparations.Clear();
-        }
-        foreach (var rec in owned)
-        {
-            try
+            if (_disposeTask is not null)
             {
-                rec.Job.Bootout();
-                rec.Job.Dispose();
+                if (_disposeTask.IsFaulted && (_failedJobs.Count > 0 || _executions.Count > 0))
+                    _disposeTask = RetryFailedAsync();
+                return new ValueTask(_disposeTask);
             }
-            catch { }
+            _disposed = true;
+            var prepared = _preparations.Values.ToArray();
+            _preparations.Clear();
+            if (_launches.Count > 0)
+                _launchesDrained = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            _disposeTask = DisposeCoreAsync(prepared, _launchesDrained?.Task);
+            return new ValueTask(_disposeTask);
         }
+    }
+
+    private async Task DisposeCoreAsync(OwnedJob[] prepared, Task? launchesDrained)
+    {
+        await Task.Yield();
+        var errors = new List<string>();
         foreach (var job in prepared)
         {
-            try { job.Dispose(); } catch { }
+            var cleanup = job.Cleanup();
+            if (!cleanup.Ok) { errors.Add(cleanup.Error); lock (_gate) _failedJobs.Add(job); }
         }
-        return ValueTask.CompletedTask;
+        if (launchesDrained is not null) await launchesDrained.ConfigureAwait(false);
+        MacExecutionState[] states;
+        lock (_gate) states = _executions.Values.ToArray();
+        var join = new List<MacExecutionState>();
+        foreach (var state in states)
+        {
+            if (state.Stop() is TerminateResult.Failed failure && !state.Completion.IsCompleted)
+            { errors.AddRange(failure.Reasons); lock (_gate) _failedJobs.Add(state.Job); }
+            else join.Add(state);
+        }
+        var results = await Task.WhenAll(join.Select(state => state.Completion)).ConfigureAwait(false);
+        foreach (var failed in results.OfType<CompletionResult.Failed>()) errors.AddRange(failed.Reasons);
+        lock (_gate) errors.AddRange(_terminalFailures);
+        await CleanupFailedAsync(errors).ConfigureAwait(false);
+        if (errors.Count > 0)
+            throw new InvalidOperationException("macOS cleanup/observation unconfirmed: " + string.Join("; ", errors));
     }
 
-    private LaunchResult LaunchInner(OwnedJob job, ProcessStartSpec process, IReadOnlyDictionary<string, string> env)
+    private async Task RetryFailedAsync()
     {
-        LaunchResult Fail(string reason)
+        await Task.Yield();
+        var errors = new List<string>();
+        MacExecutionState[] states;
+        lock (_gate) states = _executions.Values.ToArray();
+        var join = new List<MacExecutionState>();
+        foreach (var state in states)
         {
-            try
+            // Observation failure is already delivered to the original waiters.
+            // A disposal retry only needs to establish cleanup, not rewrite that result.
+            if (state.Completion.IsCompleted) continue;
+            if (state.Stop() is TerminateResult.Failed failure && !state.Completion.IsCompleted)
+                errors.AddRange(failure.Reasons);
+            else join.Add(state);
+        }
+        var results = await Task.WhenAll(join.Select(state => state.Completion)).ConfigureAwait(false);
+        foreach (var failed in results.OfType<CompletionResult.Failed>()) errors.AddRange(failed.Reasons);
+        await CleanupFailedAsync(errors).ConfigureAwait(false);
+        if (errors.Count > 0)
+            throw new InvalidOperationException("macOS cleanup unconfirmed: " + string.Join("; ", errors));
+    }
+
+    private Task CleanupFailedAsync(List<string> errors)
+    {
+        OwnedJob[] failed;
+        lock (_gate) failed = _failedJobs.ToArray();
+        foreach (var job in failed)
+        {
+            var cleanup = job.Cleanup();
+            if (!cleanup.Ok) errors.Add(cleanup.Error);
+            else lock (_gate) _failedJobs.Remove(job);
+        }
+        return Task.CompletedTask;
+    }
+
+    private void OnTerminal(MacExecutionState state, CompletionResult result)
+    {
+        lock (_gate)
+        {
+            if (result is CompletionResult.Failed failure)
+            { _failedJobs.Add(state.Job); _terminalFailures.AddRange(failure.Reasons); }
+            else _executions.Remove(state.Handle.ExecutionId);
+            if (++_completedSincePrune >= 64)
             {
-                try { job.Bootout(); } catch { }
-                job.Dispose();
+                _completedSincePrune = 0;
+                foreach (var id in _completed.Where(pair => !pair.Value.Handle.TryGetTarget(out _))
+                    .Select(pair => pair.Key).ToArray()) _completed.Remove(id);
             }
-            catch { }
-            return new LaunchResult.Failed(new[] { reason });
+            _completed[state.Handle.ExecutionId] =
+                (new WeakReference<ExecutionHandle>(state.Handle), Task.FromResult(result));
         }
-        try { job.WritePlist(process.Executable, Launchd.SplitArguments(process.Arguments), process.WorkingDirectory, env); }
-        catch (Exception ex)
-        {
-            return Fail($"plist write failed: {ex.GetType().Name}");
-        }
-        var (brc, bout) = Launchd.Bootstrap(_domain, job.PlistPath);
-        if (brc != 0)
-            return Fail($"bootstrap refused rc={brc}: {FirstLine(bout)} (no job loaded)");
-        var (krc, kout) = Launchd.Kickstart(job.ServiceTarget);
-        if (krc != 0)
-            return Fail($"kickstart refused rc={krc}: {FirstLine(kout)} (booted out)");
-        // Launch invariant: success only after the target demonstrably
-        // runs under the owned job. Failure here boots out immediately.
-        if (!WaitRunning(job, 15000))
-            return Fail("job never reached running (booted out; target may not exist)");
-        var handle = new ExecutionHandle(WellKnownPlatforms.MacOs.Platform, Guid.NewGuid());
-        lock (_gate) _executions[handle.ExecutionId] = new ExecutionRecord(job, false);
-        return new LaunchResult.Started(handle);
     }
 
-    private static bool WaitRunning(OwnedJob job, int timeoutMs)
-    {
-        var sw = System.Diagnostics.Stopwatch.StartNew();
-        while (sw.ElapsedMilliseconds < timeoutMs)
-        {
-            try
-            {
-                var (rc, out_) = Launchd.Print(job.ServiceTarget);
-                var state = Launchd.ParseState(out_, rc);
-                // Demonstrably ran: observed running now, or exited with a
-                // recorded code before the first observation. Instant-exit
-                // commands report `state = not running` (never `running`);
-                // the recorded code is the proof of execution.
-                if (rc == 0 && (state.Running || state.ExitCode.HasValue)) return true;
-            }
-            catch { }
-            Thread.Sleep(200);
-        }
-        try
-        {
-            var (rc, out_) = Launchd.Print(job.ServiceTarget);
-            var state = Launchd.ParseState(out_, rc);
-            return rc == 0 && (state.Running || state.ExitCode.HasValue);
-        }
-        catch { return false; }
-    }
-
-    private static string FirstLine(string s)
-    {
-        int i = s.IndexOf('\n');
-        string line = (i < 0 ? s : s[..i]).Trim();
-        return line.Length > 160 ? line[..160] : line;
-    }
-
-    /// <summary>macOS env is case-sensitive (Unix): duplicates compare
-    /// ordinally. Names must be non-empty, contain no '=' or NUL; values
-    /// must contain no NUL.</summary>
-    internal static bool TryBuildEnvironment(
-        IReadOnlyDictionary<string, string> spec,
+    internal static bool TryBuildEnvironment(IReadOnlyDictionary<string, string> spec,
         out IReadOnlyDictionary<string, string>? env, out string error)
     {
-        env = null;
-        error = "";
+        env = null; error = "";
         var seen = new HashSet<string>(StringComparer.Ordinal);
         var clean = new Dictionary<string, string>(StringComparer.Ordinal);
         foreach (var kv in spec.OrderBy(kv => kv.Key, StringComparer.Ordinal))
         {
-            if (string.IsNullOrEmpty(kv.Key)
-                || kv.Key.Contains('=', StringComparison.Ordinal)
-                || kv.Key.Contains('\0'))
-            {
-                error = $"invalid environment name {Format(kv.Key)} (empty, '=' or NUL)";
-                return false;
-            }
-            if (kv.Value.Contains('\0'))
-            {
-                error = $"NUL byte in value of {Format(kv.Key)}";
-                return false;
-            }
+            if (string.IsNullOrEmpty(kv.Key) || kv.Key.Contains('=') || kv.Key.Contains('\0'))
+            { error = $"invalid environment name '{kv.Key}' (empty, '=' or NUL)"; return false; }
+            if (kv.Value is null || kv.Value.Contains('\0'))
+            { error = $"NUL or null value of '{kv.Key}'"; return false; }
             if (!seen.Add(kv.Key))
-            {
-                error = $"duplicate environment name {Format(kv.Key)}";
-                return false;
-            }
+            { error = $"duplicate environment name '{kv.Key}'"; return false; }
             clean[kv.Key] = kv.Value;
         }
         env = clean;
         return true;
-    }
-
-    private static string Format(string name) =>
-        string.IsNullOrEmpty(name) ? "(empty)" : "'" + name + "'";
-
-    private bool CheckDomain(out string why)
-    {
-        // Probe: print the domain itself. No job runs; failure classifies
-        // as missing bootstrap rights, never as success.
-        why = "";
-        try
-        {
-            var (rc, out_) = Launchd.Print(_domain);
-            if (rc != 0)
-            {
-                why = $"launchd domain '{_domain}' unavailable (no bootstrap rights?): rc={rc}";
-                return false;
-            }
-            return true;
-        }
-        catch (Exception ex)
-        {
-            why = $"launchd unavailable: {ex.GetType().Name}";
-            return false;
-        }
     }
 }
