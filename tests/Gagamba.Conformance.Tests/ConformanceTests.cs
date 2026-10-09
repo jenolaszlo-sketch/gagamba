@@ -13,6 +13,7 @@ namespace Gagamba.Conformance.Tests;
 
 public sealed class ConformanceFixture : IAsyncLifetime
 {
+    private static bool Strict => Environment.GetEnvironmentVariable("GAGAMBA_QUALIFICATION") == "1";
     public string Workspace { get; } = Path.Combine(Path.GetTempPath(),
         "gagamba-conformance", Guid.NewGuid().ToString("N"));
     public ConformanceReport? Report { get; private set; }
@@ -21,18 +22,40 @@ public sealed class ConformanceFixture : IAsyncLifetime
 
     public async ValueTask InitializeAsync()
     {
+        if (Strict)
+        {
+            string? sha = Environment.GetEnvironmentVariable("GAGAMBA_SOURCE_SHA")
+                ?? Environment.GetEnvironmentVariable("GITHUB_SHA");
+            if (sha is null || !System.Text.RegularExpressions.Regex.IsMatch(sha, "^[0-9a-fA-F]{40}$"))
+                throw new InvalidOperationException("qualification requires exact source SHA");
+        }
         Directory.CreateDirectory(Workspace);
         if (!OperatingSystem.IsWindows() && !OperatingSystem.IsLinux() && !OperatingSystem.IsMacOS())
+        {
+            if (Strict) throw new InvalidOperationException("qualification host unsupported");
             return;
+        }
         Report = await ConformanceRunner.RunAsync(NewProvider, new ConformanceOptions(Workspace));
         Platform = Report.Platform;
         Usable = Report.Outcome("prepare") == ConformanceOutcome.Passed;
         WriteEvidence(Report);
+        if (Strict)
+        {
+            var required = ConformanceMatrix.LegNames.Where(n =>
+                n != "setsid-escape" || !OperatingSystem.IsWindows());
+            foreach (string name in required)
+            {
+                var leg = Report.Find(name);
+                if (leg is null || leg.Outcome != ConformanceOutcome.Passed)
+                    throw new InvalidOperationException($"mandatory conformance leg {name} was not Passed: {leg?.Outcome}");
+            }
+        }
     }
 
     public ValueTask DisposeAsync()
     {
-        try { Directory.Delete(Workspace, recursive: true); } catch { }
+        try { Directory.Delete(Workspace, recursive: true); }
+        catch when (!Strict) { }
         return ValueTask.CompletedTask;
     }
 
@@ -50,22 +73,64 @@ public sealed class ConformanceFixture : IAsyncLifetime
         try
         {
             string? root = FindRepoRoot();
-            if (root is null) return;
+            if (root is null)
+            {
+                if (Strict) throw new InvalidOperationException("qualification source root unavailable");
+                return;
+            }
             string dir = Path.Combine(root, "artifacts");
             Directory.CreateDirectory(dir);
             string stamp = DateTime.UtcNow.ToString("yyyyMMdd-HHmmss");
+            var required = ConformanceMatrix.LegNames.Where(n =>
+                n != "setsid-escape" || !OperatingSystem.IsWindows()).ToArray();
+            bool cleanup = new[] { "unit-termination", "root-exit", "dispose-cleanup", "completion" }
+                .All(n => report.Find(n)?.Outcome == ConformanceOutcome.Passed);
+            string? launchdDomain = null;
+            if (OperatingSystem.IsMacOS())
+            {
+                using var id = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                { FileName = "/usr/bin/id", Arguments = "-u", RedirectStandardOutput = true,
+                  UseShellExecute = false });
+                launchdDomain = id is null ? null : "gui/" + id.StandardOutput.ReadToEnd().Trim();
+                id?.WaitForExit();
+            }
+            bool delegatedLinux = false;
+            if (OperatingSystem.IsLinux())
+            {
+                string uid = File.ReadLines("/proc/self/status")
+                    .First(line => line.StartsWith("Uid:", StringComparison.Ordinal));
+                string[] values = uid.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
+                delegatedLinux = values.Length > 2 && values[2] != "0"
+                    && !string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("GAGAMBA_LINUX_CGROUP"));
+            }
             var payload = new
             {
+                schema = "gagamba-conformance/v1",
+                sourceSha = Environment.GetEnvironmentVariable("GAGAMBA_SOURCE_SHA")
+                    ?? Environment.GetEnvironmentVariable("GITHUB_SHA"),
+                runId = Path.GetFileName(Workspace),
+                host = System.Runtime.InteropServices.RuntimeInformation.OSDescription,
+                architecture = System.Runtime.InteropServices.RuntimeInformation.OSArchitecture.ToString(),
+                runtime = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription,
                 platform = report.Platform,
                 usable = Usable,
+                cleanup = cleanup ? "Confirmed" : "Unknown",
+                skippedMandatory = required.Count(n => report.Find(n)?.Outcome == ConformanceOutcome.Skipped),
+                unsupportedMandatory = required.Count(n => report.Find(n) is null),
+                cgroupVersion = OperatingSystem.IsLinux() && File.Exists("/sys/fs/cgroup/cgroup.controllers") ? 2 : 0,
+                delegated = delegatedLinux,
+                launchdDomain,
                 legs = report.Legs.Select(l => new { l.Name, outcome = l.Outcome.ToString(), l.Detail }),
             };
-            File.WriteAllText(
-                Path.Combine(dir, $"conformance-{report.Platform}-{stamp}.json"),
-                System.Text.Json.JsonSerializer.Serialize(payload,
-                    new System.Text.Json.JsonSerializerOptions { WriteIndented = true }));
+            string output = Strict
+                ? Environment.GetEnvironmentVariable("GAGAMBA_QUALIFICATION_OUTPUT")
+                    ?? throw new InvalidOperationException("qualification output path required")
+                : Path.Combine(dir, $"conformance-{report.Platform}-{stamp}.json");
+            Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(output))!);
+            File.WriteAllText(output, System.Text.Json.JsonSerializer.Serialize(payload,
+                new System.Text.Json.JsonSerializerOptions { WriteIndented = true }));
         }
-        catch { }
+        catch when (!Strict) { }
     }
 
     private static string? FindRepoRoot()
@@ -95,53 +160,49 @@ public sealed class ConformanceTests : IClassFixture<ConformanceFixture>
     [Fact]
     public void CapabilityMatrixMatchesPlatform()
     {
-        if (_f.Report is null) return;
+        if (_f.Report is null) { Assert.Skip("unsupported conformance host"); return; }
         Assert.Equal(ConformanceOutcome.Passed, _f.Report.Outcome("capability-matrix"));
     }
 
     [Fact]
     public void PublicSurfaceStaysOpaque()
     {
-        if (_f.Report is null) return;
+        if (_f.Report is null) { Assert.Skip("unsupported conformance host"); return; }
         Assert.Equal(ConformanceOutcome.Passed, _f.Report.Outcome("opaque-handles"));
     }
 
     [Fact]
     public void BehavioralLegsMatchPlatformTruth()
     {
-        if (_f.Report is null) return;
+        if (_f.Report is null) { Assert.Skip("unsupported conformance host"); return; }
+        if (!_f.Usable) { Assert.Skip("native prerequisite unavailable"); return; }
         foreach (string name in Behavioral)
         {
             var leg = _f.Report.Find(name);
             Assert.NotNull(leg);
-            if (_f.Usable)
-                Assert.True(leg!.Outcome == ConformanceOutcome.Passed,
-                    $"{name}: expected Passed, got {leg.Outcome} ({leg.Detail})");
-            else
-                Assert.True(leg!.Outcome == ConformanceOutcome.Skipped,
-                    $"{name}: expected Skipped on unusable host, got {leg.Outcome} ({leg.Detail})");
+            Assert.True(leg!.Outcome == ConformanceOutcome.Passed,
+                $"{name}: expected Passed, got {leg.Outcome} ({leg.Detail})");
         }
     }
 
     [Fact]
     public void SetsidEscapeMatchesExpectedSemantics()
     {
-        if (_f.Report is null) return;
+        if (_f.Report is null) { Assert.Skip("unsupported conformance host"); return; }
+        if (!_f.Usable) { Assert.Skip("native prerequisite unavailable"); return; }
         var leg = _f.Report.Find("setsid-escape");
         Assert.NotNull(leg);
         if (OperatingSystem.IsWindows())
             Assert.Equal(ConformanceOutcome.Skipped, leg!.Outcome);
-        else if (_f.Usable)
+        else
             Assert.True(leg!.Outcome == ConformanceOutcome.Passed,
                 $"setsid-escape: expected Passed, got {leg.Outcome} ({leg.Detail})");
-        else
-            Assert.Equal(ConformanceOutcome.Skipped, leg!.Outcome);
     }
 
     [Fact]
     public void ReportContainsEveryLeg()
     {
-        if (_f.Report is null) return;
+        if (_f.Report is null) { Assert.Skip("unsupported conformance host"); return; }
         foreach (string name in ConformanceMatrix.LegNames)
             Assert.True(_f.Report.Find(name) is not null, $"missing leg: {name}");
     }

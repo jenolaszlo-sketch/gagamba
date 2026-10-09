@@ -1,13 +1,4 @@
-# Publish Gagamba packages to NuGet.org using trusted publishing (OIDC).
-#
-# Mirrors Penghou.Baize: NuGet/login@v1 exchanges the GitHub OIDC token for a
-# short-lived NuGet API key, so no long-lived NUGET_API_KEY secret is stored.
-# Required repo secret: NUGET_USER (the nuget.org profile name). nuget.org must
-# have a trusted-publishing policy for this repository + workflow file.
-#
-# Packages (lockstep version): Gagamba.Execution + the three providers +
-# Gagamba.Runtime. A version tag v<semver> sets the package version; manual
-# dispatch publishes the Directory.Build.props preview version.
+# Only the exact candidate sealed by a successful qualification run can be published.
 name: Publish to NuGet
 
 on:
@@ -18,6 +9,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   publish:
@@ -25,53 +17,45 @@ jobs:
     permissions:
       id-token: write
       contents: read
+      actions: read
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
-
-      - name: Pack
+      - name: Find successful qualification of this source commit
+        env:
+          GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
-          args=()
-          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
-            # Set Version (not just PackageVersion) so the inter-package
-            # dependencies in Gagamba.Runtime stay in lockstep with the tag.
-            args+=(--property:Version="${GITHUB_REF_NAME#v}")
+          run_id=$(gh run list --workflow qualify.yml --commit "$GITHUB_SHA" --status success --limit 100 --json databaseId,conclusion --jq '.[] | select(.conclusion == "success") | .databaseId' | head -n 1)
+          test -n "$run_id" || { echo 'No successful qualification for this source SHA' >&2; exit 1; }
+          test "$(gh run view "$run_id" --json headSha --jq .headSha)" = "$GITHUB_SHA" || { echo 'Qualification source SHA mismatch' >&2; exit 1; }
+          echo "QUALIFICATION_RUN_ID=$run_id" >> "$GITHUB_ENV"
+      - name: Download sealed candidate
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh run download "$QUALIFICATION_RUN_ID" --name qualified-release-candidate --dir "$RUNNER_TEMP/qualified"
+      - name: Verify source, version, native evidence and exact package bytes
+        shell: bash
+        run: |
+          if [ "$GITHUB_REF_TYPE" = tag ]; then
+            version="${GITHUB_REF_NAME#v}"
+          else
+            version=$(python -c 'import xml.etree.ElementTree as E; print(E.parse("Directory.Build.props").findtext(".//Version"))')
           fi
-          for csproj in \
-            src/Gagamba.Execution/Gagamba.Execution.csproj \
-            src/Gagamba.Execution.Windows/Gagamba.Execution.Windows.csproj \
-            src/Gagamba.Execution.Linux/Gagamba.Execution.Linux.csproj \
-            src/Gagamba.Execution.MacOS/Gagamba.Execution.MacOS.csproj \
-            src/Gagamba.Runtime/Gagamba.Runtime.csproj; do
-            dotnet pack "$csproj" \
-              --configuration Release \
-              --output ./artifacts \
-              "${args[@]}"
-          done
-
-      - name: NuGet login (OIDC -> temp API key)
+          python eng/qualification_gate.py verify --manifest "$RUNNER_TEMP/qualified/manifest.json" --source-sha "$GITHUB_SHA" --version "$version" --packages-dir "$RUNNER_TEMP/qualified/packages" --repo .
+      - name: NuGet login
         id: login
         uses: NuGet/login@v1
         with:
           user: ${{ secrets.NUGET_USER }}
-
-      - name: Push packages to NuGet
-        run: >
-          dotnet nuget push ./artifacts/*.nupkg
-          --no-symbols
-          --source https://api.nuget.org/v3/index.json
-          --api-key ${{ steps.login.outputs.NUGET_API_KEY }}
-          --skip-duplicate
-
-      - name: Push symbols to NuGet
-        run: >
-          dotnet nuget push ./artifacts/*.snupkg
-          --source https://api.nuget.org/v3/index.json
-          --api-key ${{ steps.login.outputs.NUGET_API_KEY }}
-          --skip-duplicate
+      - name: Push qualified packages
+        shell: bash
+        run: |
+          for package in "$RUNNER_TEMP"/qualified/packages/*.nupkg; do
+            dotnet nuget push "$package" --no-symbols --source https://api.nuget.org/v3/index.json --api-key '${{ steps.login.outputs.NUGET_API_KEY }}' --skip-duplicate
+          done
+          for package in "$RUNNER_TEMP"/qualified/packages/*.snupkg; do
+            dotnet nuget push "$package" --source https://api.nuget.org/v3/index.json --api-key '${{ steps.login.outputs.NUGET_API_KEY }}' --skip-duplicate
+          done

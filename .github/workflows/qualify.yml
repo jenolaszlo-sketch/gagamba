@@ -1,0 +1,109 @@
+name: Qualify release candidate
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  DOTNET_NOLOGO: 1
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+
+jobs:
+  candidate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Pack one exact source candidate
+        shell: bash
+        run: |
+          test -z "$(git status --porcelain)"
+          for project in \
+            src/Gagamba.Execution/Gagamba.Execution.csproj \
+            src/Gagamba.Execution.Windows/Gagamba.Execution.Windows.csproj \
+            src/Gagamba.Execution.Linux/Gagamba.Execution.Linux.csproj \
+            src/Gagamba.Execution.MacOS/Gagamba.Execution.MacOS.csproj \
+            src/Gagamba.Runtime/Gagamba.Runtime.csproj; do
+            dotnet pack "$project" -c Release -o candidate --property:RepositoryCommit="$GITHUB_SHA"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: candidate-packages
+          path: candidate/*
+          if-no-files-found: error
+
+  native-qualification:
+    needs: candidate
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - key: windows
+            runner: windows-latest
+          - key: linux
+            runner: [self-hosted, linux, gagamba-cgroup-v2-delegated]
+          - key: macos
+            runner: macos-latest
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    env:
+      GAGAMBA_QUALIFICATION: 1
+      GAGAMBA_SOURCE_SHA: ${{ github.sha }}
+      GAGAMBA_QUALIFICATION_OUTPUT: ${{ github.workspace }}/qualification/conformance-${{ matrix.key }}.json
+      GAGAMBA_LINUX_CGROUP: ${{ matrix.key == 'linux' && '/sys/fs/cgroup/gagamba-qualification' || '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@v4
+        with:
+          name: candidate-packages
+          path: candidate
+      - name: Strict native conformance
+        shell: bash
+        run: dotnet test tests/Gagamba.Conformance.Tests/Gagamba.Conformance.Tests.csproj -c Release --nologo
+      - name: Independent installed-package lifecycle
+        shell: bash
+        run: |
+          version=$(python -c 'import xml.etree.ElementTree as E; print(E.parse("Directory.Build.props").findtext(".//Version"))')
+          python eng/verify_package_consumer.py --packages-dir candidate --version "$version" --source-sha "$GITHUB_SHA" --output "qualification/consumer-${{ matrix.key }}.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: qualification-${{ matrix.key }}
+          path: qualification/*.json
+          if-no-files-found: error
+
+  seal:
+    needs: native-qualification
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: candidate-packages
+          path: ${{ runner.temp }}/qualified/packages
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: qualification-*
+          path: ${{ runner.temp }}/qualified/evidence
+          merge-multiple: true
+      - name: Seal and verify exact candidate
+        shell: bash
+        run: |
+          version=$(python -c 'import xml.etree.ElementTree as E; print(E.parse("Directory.Build.props").findtext(".//Version"))')
+          python eng/qualification_gate.py seal --source-sha "$GITHUB_SHA" --version "$version" --packages-dir "$RUNNER_TEMP/qualified/packages" --evidence-dir "$RUNNER_TEMP/qualified/evidence" --output "$RUNNER_TEMP/qualified/manifest.json" --repo .
+          python eng/qualification_gate.py verify --manifest "$RUNNER_TEMP/qualified/manifest.json" --source-sha "$GITHUB_SHA" --version "$version" --packages-dir "$RUNNER_TEMP/qualified/packages" --repo .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: qualified-release-candidate
+          path: ${{ runner.temp }}/qualified/
+          if-no-files-found: error
+          retention-days: 90

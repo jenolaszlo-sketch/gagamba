@@ -3,10 +3,11 @@
 // Behavioral legs that cannot even prepare (e.g. Linux without a delegated
 // cgroup) report Skipped with the reason, never a false pass.
 using Gagamba.Execution;
+using System.Runtime.InteropServices;
 
 namespace Gagamba.Conformance;
 
-public sealed record ConformanceOptions(string Workspace);
+public sealed record ConformanceOptions(string Workspace, int PollMilliseconds = 15000);
 
 public static class ConformanceRunner
 {
@@ -17,23 +18,31 @@ public static class ConformanceRunner
         Func<IExecutionProvider> factory, ConformanceOptions options)
     {
         Directory.CreateDirectory(options.Workspace);
-        ConformanceScripts.Write(options.Workspace);
-        var caps = factory().Describe();
+        ConformanceOptions Leg(string name)
+        {
+            string workspace = Path.Combine(options.Workspace,
+                name + "-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(workspace);
+            ConformanceScripts.Write(workspace);
+            return new ConformanceOptions(workspace, options.PollMilliseconds);
+        }
+        await using var inspectionProvider = factory();
+        var caps = inspectionProvider.Describe();
         bool known = ConformanceMatrix.TryForPlatform(caps.Platform, out var expected);
 
         var legs = new List<ConformanceLeg>
         {
             CapabilityMatrix(caps, known ? expected : null),
-            OpaqueHandles(factory()),
+            OpaqueHandles(inspectionProvider),
             await Prepare(factory),
-            await SingleUse(factory, options),
-            await WorkingDirectory(factory, options),
-            await NoAmbientInherit(factory, options),
-            await UnitTermination(factory, options),
-            await RootExit(factory, options),
-            await DisposeCleanup(factory, options),
-            await Completion(factory, options),
-            await SetsidEscape(factory, options, known ? expected : null),
+            await SingleUse(factory, Leg("single-use")),
+            await WorkingDirectory(factory, Leg("working-directory")),
+            await NoAmbientInherit(factory, Leg("no-ambient-inherit")),
+            await UnitTermination(factory, Leg("unit-termination")),
+            await RootExit(factory, Leg("root-exit")),
+            await DisposeCleanup(factory, Leg("dispose-cleanup")),
+            await Completion(factory, Leg("completion")),
+            await SetsidEscape(factory, Leg("setsid-escape"), known ? expected : null),
         };
         return new ConformanceReport(caps.Platform, legs);
     }
@@ -119,10 +128,12 @@ public static class ConformanceRunner
         if (first is not LaunchResult.Started st)
             return new("single-use", ConformanceOutcome.Failed, "first launch refused: " + Reasons(first));
         var second = LaunchTarget(p, prep!, o.Workspace, "hold", "hb0b", Marker, "1");
+        bool ran = await PollAsync(() => ReadyAndHeld(o.Workspace, "hb0"), o.PollMilliseconds);
         bool denied = second is LaunchResult.Failed;
         p.Terminate(st.Handle);
-        return new("single-use", denied ? ConformanceOutcome.Passed : ConformanceOutcome.Failed,
-            denied ? "second launch with a spent preparation refused" : "second launch unexpectedly accepted");
+        return new("single-use", denied && ran ? ConformanceOutcome.Passed : ConformanceOutcome.Failed,
+            denied && ran ? "first workload ran; second launch with spent preparation refused"
+                : $"firstRan={ran} secondDenied={denied}");
     }
 
     private static async Task<ConformanceLeg> WorkingDirectory(Func<IExecutionProvider> factory, ConformanceOptions o)
@@ -136,11 +147,14 @@ public static class ConformanceRunner
         // The workload writes a RELATIVE cwd.txt: it appears in the
         // workspace only if the child's working directory is the workspace.
         string probe = Path.Combine(o.Workspace, "cwd.txt");
-        bool ok = await PollAsync(() => File.Exists(probe), 15000);
+        bool ok = await PollAsync(() => File.Exists(probe), o.PollMilliseconds);
         string seen = ok ? File.ReadAllText(probe).Trim() : "";
         p.Terminate(st.Handle);
-        return new("working-directory", ok ? ConformanceOutcome.Passed : ConformanceOutcome.Failed,
-            ok ? $"relative write landed in workspace; child cwd={seen}" : "relative cwd.txt never appeared in workspace");
+        bool correct = ok && string.Equals(Path.GetFullPath(seen),
+            Path.GetFullPath(o.Workspace), OperatingSystem.IsWindows()
+                ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal);
+        return new("working-directory", correct ? ConformanceOutcome.Passed : ConformanceOutcome.Failed,
+            correct ? "relative write landed in the unique workspace" : "relative cwd did not match unique workspace");
     }
 
     private static async Task<ConformanceLeg> NoAmbientInherit(Func<IExecutionProvider> factory, ConformanceOptions o)
@@ -155,7 +169,7 @@ public static class ConformanceRunner
             if (launched is not LaunchResult.Started st)
                 return new("no-ambient-inherit", ConformanceOutcome.Failed, "launch refused: " + Reasons(launched));
             string dump = Path.Combine(o.Workspace, "env.txt");
-            bool ok = await PollAsync(() => File.Exists(dump), 15000);
+            bool ok = await PollAsync(() => File.Exists(dump), o.PollMilliseconds);
             string content = ok ? File.ReadAllText(dump) : "";
             p.Terminate(st.Handle);
             bool granted = content.Contains(Marker + "=", StringComparison.Ordinal);
@@ -181,17 +195,20 @@ public static class ConformanceRunner
             return new("unit-termination", ConformanceOutcome.Failed, "launch refused: " + Reasons(launched));
         string root = Path.Combine(o.Workspace, "root");
         string child = Path.Combine(o.Workspace, "child");
-        if (!await PollAsync(() => Fresh(root) && Fresh(child), 15000))
+        if (!await PollAsync(() => ReadyAndHeld(o.Workspace, "root")
+            && ReadyAndHeld(o.Workspace, "child"), o.PollMilliseconds))
         {
             p.Terminate(st.Handle);
             return new("unit-termination", ConformanceOutcome.Failed, "root+child heartbeats never both fresh");
         }
         var term = p.Terminate(st.Handle);
-        bool frozen = await FrozenAsync(root) && await FrozenAsync(child);
-        return term is TerminateResult.Terminated && frozen
-            ? new("unit-termination", ConformanceOutcome.Passed, "root+child frozen after terminate")
+        bool terminal = await TerminalConfirmedAsync(p, st.Handle);
+        bool released = await PollAsync(() => Released(o.Workspace, "root")
+            && Released(o.Workspace, "child"), 5000);
+        return term is TerminateResult.Terminated && terminal && released
+            ? new("unit-termination", ConformanceOutcome.Passed, "root+child lifetime locks released after domain terminal")
             : new("unit-termination", ConformanceOutcome.Failed,
-                $"terminate={term.GetType().Name} frozen={frozen}");
+                $"terminate={term.GetType().Name} terminal={terminal} locksReleased={released}");
     }
 
     private static async Task<ConformanceLeg> RootExit(Func<IExecutionProvider> factory, ConformanceOptions o)
@@ -203,17 +220,39 @@ public static class ConformanceRunner
         if (launched is not LaunchResult.Started st)
             return new("root-exit", ConformanceOutcome.Failed, "launch refused: " + Reasons(launched));
         string child = Path.Combine(o.Workspace, "child");
-        if (!await PollAsync(() => Fresh(child), 15000))
+        if (!await PollAsync(() => ReadyAndHeld(o.Workspace, "child")
+            && File.Exists(Path.Combine(o.Workspace, "root-exit-proof")), o.PollMilliseconds))
         {
             p.Terminate(st.Handle);
             return new("root-exit", ConformanceOutcome.Failed, "survivor heartbeat never fresh after root exit");
         }
+        if (p.Describe().Platform == WellKnownPlatforms.MacOs.Platform)
+        {
+            CompletionResult? outcome = null;
+            try { outcome = await p.WaitForCompletionAsync(st.Handle).AsTask()
+                .WaitAsync(TimeSpan.FromSeconds(10)); }
+            catch { }
+            bool released = await PollAsync(() => Released(o.Workspace, "child"), 5000);
+            return outcome is CompletionResult.NaturalExit && released
+                ? new("root-exit", ConformanceOutcome.Passed,
+                    "launchd terminal observed after root exit; same-PG child lock released")
+                : new("root-exit", ConformanceOutcome.Failed,
+                    $"terminal={outcome?.GetType().Name ?? "missing"} childLockReleased={released}");
+        }
+        bool pending;
+        using (var probe = new CancellationTokenSource(TimeSpan.FromMilliseconds(400)))
+        {
+            try { await p.WaitForCompletionAsync(st.Handle, probe.Token); pending = false; }
+            catch (OperationCanceledException) { pending = true; }
+        }
         var term = p.Terminate(st.Handle);
-        bool frozen = await FrozenAsync(child);
-        return term is TerminateResult.Terminated && frozen
-            ? new("root-exit", ConformanceOutcome.Passed, "handle terminated a post-root-exit survivor")
+        bool terminal = await TerminalConfirmedAsync(p, st.Handle);
+        bool releasedAfterStop = await PollAsync(() => Released(o.Workspace, "child"), 5000);
+        return pending && term is TerminateResult.Terminated && terminal && releasedAfterStop
+            ? new("root-exit", ConformanceOutcome.Passed,
+                "root-exit proof, survivor lock held; wait pending until terminate, then domain terminal")
             : new("root-exit", ConformanceOutcome.Failed,
-                $"terminate={term.GetType().Name} frozen={frozen}");
+                $"pending={pending} terminate={term.GetType().Name} terminal={terminal} childLockReleased={releasedAfterStop}");
     }
 
     private static async Task<ConformanceLeg> DisposeCleanup(Func<IExecutionProvider> factory, ConformanceOptions o)
@@ -232,16 +271,19 @@ public static class ConformanceRunner
         }
         string root = Path.Combine(o.Workspace, "root");
         string child = Path.Combine(o.Workspace, "child");
-        if (!await PollAsync(() => Fresh(root) && Fresh(child), 15000))
+        if (!await PollAsync(() => ReadyAndHeld(o.Workspace, "root")
+            && ReadyAndHeld(o.Workspace, "child"), o.PollMilliseconds))
         {
             await p.DisposeAsync();
             return new("dispose-cleanup", ConformanceOutcome.Failed, "live tree never materialized");
         }
         await p.DisposeAsync();
-        bool frozen = await FrozenAsync(root) && await FrozenAsync(child);
-        return frozen
-            ? new("dispose-cleanup", ConformanceOutcome.Passed, "live tree frozen by provider disposal")
-            : new("dispose-cleanup", ConformanceOutcome.Failed, "tree survived provider disposal");
+        bool released = await PollAsync(() => Released(o.Workspace, "root")
+            && Released(o.Workspace, "child"), 5000);
+        return released
+            ? new("dispose-cleanup", ConformanceOutcome.Passed,
+                "live root+child lifetime locks released by provider disposal")
+            : new("dispose-cleanup", ConformanceOutcome.Failed, "tree lock survived provider disposal");
     }
 
     private static async Task<ConformanceLeg> Completion(Func<IExecutionProvider> factory, ConformanceOptions o)
@@ -255,7 +297,9 @@ public static class ConformanceRunner
             if (launched is not LaunchResult.Started natural)
                 return new("completion", ConformanceOutcome.Failed, "launch refused: " + Reasons(launched));
             var result = await p.WaitForCompletionAsync(natural.Handle, CancellationToken.None);
-            if (result is not CompletionResult.NaturalExit { RootExitCode: 17 })
+            string proof = Path.Combine(o.Workspace, "exit17-proof");
+            bool ran = File.Exists(proof) && File.ReadAllText(proof).Trim() == o.Workspace;
+            if (!ran || result is not CompletionResult.NaturalExit { RootExitCode: 17 })
                 return new("completion", ConformanceOutcome.Failed, $"natural exit not observed: {result.GetType().Name}");
         }
         // Terminate while running completes as Terminated.
@@ -266,6 +310,8 @@ public static class ConformanceRunner
             var launched = LaunchTarget(p, prep!, o.Workspace, "hold", "hb", Marker, "1");
             if (launched is not LaunchResult.Started running)
                 return new("completion", ConformanceOutcome.Failed, "launch refused: " + Reasons(launched));
+            if (!await PollAsync(() => ReadyAndHeld(o.Workspace, "hb"), o.PollMilliseconds))
+                return new("completion", ConformanceOutcome.Failed, "terminable workload never acquired lifetime lock");
             p.Terminate(running.Handle);
             var result = await p.WaitForCompletionAsync(running.Handle, CancellationToken.None);
             if (result is not CompletionResult.Terminated)
@@ -304,8 +350,8 @@ public static class ConformanceRunner
         if (launched is not LaunchResult.Started st)
             return new("setsid-escape", ConformanceOutcome.Failed, "esc-capture launch refused: " + Reasons(launched));
         string hbEsc = Path.Combine(o.Workspace, "hb-esc");
-        string hbLeaf = Path.Combine(o.Workspace, "hb-leaf");
-        if (!await PollAsync(() => Fresh(hbEsc), 15000))
+        if (!await PollAsync(() => ReadyAndHeld(o.Workspace, "leaf")
+            && ReadyAndHeld(o.Workspace, "esc") && Fresh(hbEsc), o.PollMilliseconds))
         {
             p.Terminate(st.Handle);
             File.WriteAllText(Path.Combine(o.Workspace, "stopfile"), "stop");
@@ -317,17 +363,18 @@ public static class ConformanceRunner
         {
             if (expected.Escape == EscapeExpectation.Resistant)
             {
-                bool escDead = await FrozenAsync(hbEsc);
-                return term is TerminateResult.Terminated && escDead
+                bool escDead = await PollAsync(() => Released(o.Workspace, "esc"), 5000);
+                bool leafReleased = await PollAsync(() => Released(o.Workspace, "leaf"), 5000);
+                return term is TerminateResult.Terminated && escDead && leafReleased
                     ? new("setsid-escape", ConformanceOutcome.Passed, "setsid escapee was still owned and died (resistant)")
-                    : new("setsid-escape", ConformanceOutcome.Failed, $"escapee survived (expected resistant): frozen={escDead}");
+                    : new("setsid-escape", ConformanceOutcome.Failed, $"escapee survived (expected resistant): releasedEsc={escDead} releasedLeaf={leafReleased}");
             }
             // Observed: the same-PG leaf dies, the session escapee survives.
-            bool leafDead = await FrozenAsync(hbLeaf);
-            bool escAlive = Fresh(hbEsc) || await PollAsync(() => Fresh(hbEsc), 3000);
-            return leafDead && escAlive
+            bool leafDead = await PollAsync(() => Released(o.Workspace, "leaf"), 5000);
+            bool escAlive = ReadyAndHeld(o.Workspace, "esc") && Fresh(hbEsc);
+            return term is TerminateResult.Terminated && leafDead && escAlive
                 ? new("setsid-escape", ConformanceOutcome.Passed, "escape observed: same-PG leaf died, escapee survived")
-                : new("setsid-escape", ConformanceOutcome.Failed, $"leafDead={leafDead} escapeeAlive={escAlive}");
+                : new("setsid-escape", ConformanceOutcome.Failed, $"leafReleased={leafDead} escapeeHeld={escAlive}");
         }
         finally
         {
@@ -384,6 +431,52 @@ public static class ConformanceRunner
     private static string ReadOr(string path) =>
         File.Exists(path) ? File.ReadAllText(path).Trim() : "(no detail)";
 
+    private static bool ReadyAndHeld(string workspace, string name)
+    {
+        string ready = Path.Combine(workspace, name + ".ready");
+        return File.Exists(ready) && File.ReadAllText(ready) == workspace
+            && LockHeld(Path.Combine(workspace, name + ".lock"));
+    }
+
+    private static bool Released(string workspace, string name)
+    {
+        string path = Path.Combine(workspace, name + ".lock");
+        return File.Exists(path) && !LockHeld(path);
+    }
+
+    private static bool LockHeld(string path)
+    {
+        if (!File.Exists(path)) return false;
+        if (OperatingSystem.IsWindows())
+        {
+            try { using var file = File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None); return false; }
+            catch (IOException) { return true; }
+        }
+        using var stream = File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+        if (OperatingSystem.IsMacOS())
+        {
+            int fd = checked((int)stream.SafeFileHandle.DangerousGetHandle());
+            int result = flock(fd, 2 | 4); // LOCK_EX | LOCK_NB
+            if (result == 0) { flock(fd, 8); return false; } // LOCK_UN
+            int errno = Marshal.GetLastWin32Error();
+            if (errno == 35) return true; // EWOULDBLOCK
+            throw new IOException($"macOS flock probe errno={errno}");
+        }
+        try { stream.Lock(0, 1); stream.Unlock(0, 1); return false; }
+        catch (IOException) { return true; }
+    }
+
+    [DllImport("libc", SetLastError = true)]
+    private static extern int flock(int fd, int operation);
+
+    private static async Task<bool> TerminalConfirmedAsync(IExecutionProvider provider,
+        ExecutionHandle handle)
+    {
+        try { return await provider.WaitForCompletionAsync(handle).AsTask()
+            .WaitAsync(TimeSpan.FromSeconds(10)) is CompletionResult.Terminated; }
+        catch { return false; }
+    }
+
     private static bool Fresh(string path, int maxAgeSec = 8)
     {
         try
@@ -403,19 +496,6 @@ public static class ConformanceRunner
             await Task.Delay(200);
         }
         return Safe(cond);
-    }
-
-    private static async Task<bool> FrozenAsync(string path, int observeMs = 2500)
-    {
-        try
-        {
-            if (!File.Exists(path)) return false;
-            var t1 = File.GetLastWriteTimeUtc(path);
-            await Task.Delay(observeMs);
-            if (!File.Exists(path)) return false;
-            return File.GetLastWriteTimeUtc(path) == t1;
-        }
-        catch { return false; }
     }
 
     private static bool Safe(Func<bool> cond)
