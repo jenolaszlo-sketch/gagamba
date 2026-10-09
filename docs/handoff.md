@@ -1,6 +1,10 @@
 # Gagamba handoff
 
-## Current action — AR-7 P01 blocked; mandatory probe stop; AR-6 remains frozen
+## Current action — resume independent AR-7 feasibility under the post-P01 decision
+
+The [post-P01 architecture decision and exact Sol handoff](reviews/2026-10-09-ar7-post-p01-decision.md) eliminates unaugmented LPAC + Job, retains Windows refusal for the common restricted profile, and makes Linux P02 the next independent probe. One distinct Windows P01B full restricting-SID + LPAC composition is permitted as a bounded feasibility question, followed by P03/P04/P07 only on surviving candidates. VM-backed execution is the fallback direction, not approved implementation. No profile relaxation, production code, privileged service or new experiment was performed in the decision review. The prior global probe stop was observed; the new decision changes scheduling and gates, not the P01 evidence or frozen baseline.
+
+## Prior action — AR-7 P01 blocked; mandatory probe stop observed
 
 The [AR-7 feasibility evidence](evidence/restricted-execution-AR-7-feasibility.md) records the exact clean P01 probe source `ee170724c14d8bd138cec1a461d86eb8bec76ec6`. Zero-capability LPAC reached a synthetic ARAP broker, which created a child outside the candidate Job; all owned Jobs/endpoints/profiles/workspaces were cleaned. LPAC + Job alone is blocked for the proposed closure/IPC contract. The user's hard-stop instruction was applied: P02/P03/P04/P07 are not run. Luna independently challenged the raw evidence and narrow conclusion. Await Astra/user decision before further probes or implementation; no real-service exploit or all-native impossibility is claimed.
 
