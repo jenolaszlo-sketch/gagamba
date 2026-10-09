@@ -1,6 +1,6 @@
 # Review remediation plan — handoff to Sol
 
-Date: 2026-10-08. Status updated 2026-10-09: **AR-0/AR-1 implemented and locally Windows-native-tested; AR-2 native-tested on stated root/delegated WSL2 host; AR-3 implemented with native macOS qualification pending; AR-4 implemented with Windows/WSL2 tests, native macOS/package qualification pending; AR-5 stopped at bounded-output guarantee gate; AR-6 not started**. See [AR-1](evidence/windows-lifecycle-AR-1.md), [AR-2](evidence/linux-lifecycle-AR-2.md), [AR-3](evidence/macos-lifecycle-AR-3.md), [AR-4](evidence/invocation-contract-AR-4.md), and [AR-5 gate](evidence/execution-orchestration-AR-5.md) evidence.
+Date: 2026-10-08. Status updated 2026-10-09: **AR-0/AR-1 implemented and locally Windows-native-tested; AR-2 native-tested on stated root/delegated WSL2 host; AR-3 implemented with native macOS qualification pending; AR-4 implemented with Windows/WSL2 tests, native macOS/package qualification pending; AR-5 implemented with native Windows/root WSL2 tests and explicit pre-dispatch macOS capture refusal; AR-6 next**. See [AR-1](evidence/windows-lifecycle-AR-1.md), [AR-2](evidence/linux-lifecycle-AR-2.md), [AR-3](evidence/macos-lifecycle-AR-3.md), [AR-4](evidence/invocation-contract-AR-4.md), and [AR-5](evidence/execution-orchestration-AR-5.md) evidence.
 
 User direction: turn the independent review into an actionable implementation handoff in Gagamba's docs. Sol implemented the bounded AR-0/AR-1 slice and stopped. This plan does not claim release or hostile-workload security qualification.
 
@@ -51,7 +51,7 @@ The table preserves the original dependency plan. Current disposition is in
 [the work queue](work-queue.md): AR-0 is documentation/test-rule complete;
 AR-1 is implemented and locally Windows-native-tested; AR-2 is implemented and
 native-tested on the host specified in [its evidence](evidence/linux-lifecycle-AR-2.md);
-AR-3 is implemented with native macOS qualification pending; AR-4 is implemented and locally/native-tested on the stated hosts; AR-5 stopped at its bounded-output guarantee gate without source changes, and AR-6 was not started. F01 hostile-workload enforcement, F02 broader capability honesty,
+AR-3 is implemented with native macOS qualification pending; AR-4 is implemented and locally/native-tested on the stated hosts; AR-5 is implemented and native-tested on the stated Windows/root WSL2 hosts, while macOS capture refuses before dispatch pending native qualification. AR-6 is next. F01 hostile-workload enforcement, F02 broader capability honesty,
 and F14 release qualification remain open beyond the bounded AR-0 wording and
 test-oracle corrections.
 
