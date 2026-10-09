@@ -1,0 +1,14 @@
+{
+  "sourceSha": "7660f16dbb5b4b165e6a5279b131bf53c5bf6a7b",
+  "version": "0.1.0-preview.4",
+  "result": "Passed",
+  "lifecycle": "Passed",
+  "platform": "linux",
+  "packageSha256": {
+    "Gagamba.Execution": "b2af19fd0cf8ed4419bb5c4798ab9efa4ec72f0653e7922dfb82c32e9bb43e0b",
+    "Gagamba.Execution.Windows": "8f97f53f66ae56f72e9a65773b5ed69c03deacb74461789d4e14b0abd542cb1d",
+    "Gagamba.Execution.Linux": "2c66689de80b82f63b7b856550417f5f33592df017812910127956de329b8869",
+    "Gagamba.Execution.MacOS": "99b57c6c42f9f4eb67e6ead91b9522d0aa78ddc3d9e52e3656a069de91942389",
+    "Gagamba.Runtime": "7c3604acf9078f9c237ad81c72cf7dfe315a21f701fd378ae58156f8098c431a"
+  }
+}

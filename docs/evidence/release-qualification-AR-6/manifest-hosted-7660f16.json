@@ -1,0 +1,173 @@
+{
+  "schema": "gagamba-release-qualification/v1",
+  "sourceSha": "7660f16dbb5b4b165e6a5279b131bf53c5bf6a7b",
+  "sourceTreeClean": true,
+  "version": "0.1.0-preview.4",
+  "packages": [
+    {
+      "id": "Gagamba.Execution",
+      "version": "0.1.0-preview.4",
+      "file": "Gagamba.Execution.0.1.0-preview.4.nupkg",
+      "sha256": "b2af19fd0cf8ed4419bb5c4798ab9efa4ec72f0653e7922dfb82c32e9bb43e0b",
+      "symbolSha256": "7dd9bb69de226cb4f2bc6453c429ba817625dd1e82c7c2bde56125b1846e5961"
+    },
+    {
+      "id": "Gagamba.Execution.Windows",
+      "version": "0.1.0-preview.4",
+      "file": "Gagamba.Execution.Windows.0.1.0-preview.4.nupkg",
+      "sha256": "8f97f53f66ae56f72e9a65773b5ed69c03deacb74461789d4e14b0abd542cb1d",
+      "symbolSha256": "7a2e52e8ec03f73c629307d562d5ef8fcc68cc01d8146121e6faa84e9b90bf04"
+    },
+    {
+      "id": "Gagamba.Execution.Linux",
+      "version": "0.1.0-preview.4",
+      "file": "Gagamba.Execution.Linux.0.1.0-preview.4.nupkg",
+      "sha256": "2c66689de80b82f63b7b856550417f5f33592df017812910127956de329b8869",
+      "symbolSha256": "0932e3067d887bc492aa70ee18d3f33bbab61506adf40e0c692be190bb6724d9"
+    },
+    {
+      "id": "Gagamba.Execution.MacOS",
+      "version": "0.1.0-preview.4",
+      "file": "Gagamba.Execution.MacOS.0.1.0-preview.4.nupkg",
+      "sha256": "99b57c6c42f9f4eb67e6ead91b9522d0aa78ddc3d9e52e3656a069de91942389",
+      "symbolSha256": "7f0b30e5dc3c8a8ba9d024d66365157ab45e8a7915c2f4b722152d5a6fae69f1"
+    },
+    {
+      "id": "Gagamba.Runtime",
+      "version": "0.1.0-preview.4",
+      "file": "Gagamba.Runtime.0.1.0-preview.4.nupkg",
+      "sha256": "7c3604acf9078f9c237ad81c72cf7dfe315a21f701fd378ae58156f8098c431a",
+      "symbolSha256": "afda649042c36178962f46bb3d0d42a7e299b5ada9e1404cf47a2b2a362259e1"
+    }
+  ],
+  "hosts": {
+    "windows": {
+      "sourceSha": "7660f16dbb5b4b165e6a5279b131bf53c5bf6a7b",
+      "platform": "windows-job",
+      "nativeMechanism": "job-object",
+      "native": true,
+      "usable": true,
+      "cleanup": "Confirmed",
+      "os": "Microsoft Windows 10.0.26100",
+      "architecture": "X64",
+      "runtime": ".NET 10.0.12",
+      "runId": "b08011f88f7a454f96e82cc5aaa28bb2",
+      "legs": {
+        "capability-matrix": "Passed",
+        "opaque-handles": "Passed",
+        "prepare": "Passed",
+        "single-use": "Passed",
+        "working-directory": "Passed",
+        "no-ambient-inherit": "Passed",
+        "unit-termination": "Passed",
+        "root-exit": "Passed",
+        "dispose-cleanup": "Passed",
+        "completion": "Passed",
+        "setsid-escape": "Skipped"
+      },
+      "skippedMandatory": 0,
+      "unsupportedMandatory": 0
+    },
+    "linux": {
+      "sourceSha": "7660f16dbb5b4b165e6a5279b131bf53c5bf6a7b",
+      "platform": "linux-cgroup-v2",
+      "nativeMechanism": "cgroup-v2",
+      "native": true,
+      "usable": true,
+      "cleanup": "Confirmed",
+      "os": "Ubuntu 26.04.1 LTS",
+      "architecture": "X64",
+      "runtime": ".NET 10.0.12",
+      "runId": "0a39583580f74bfb9308c0c3c67a404b",
+      "legs": {
+        "capability-matrix": "Passed",
+        "opaque-handles": "Passed",
+        "prepare": "Passed",
+        "single-use": "Passed",
+        "working-directory": "Passed",
+        "no-ambient-inherit": "Passed",
+        "unit-termination": "Passed",
+        "root-exit": "Passed",
+        "dispose-cleanup": "Passed",
+        "completion": "Passed",
+        "setsid-escape": "Passed"
+      },
+      "skippedMandatory": 0,
+      "unsupportedMandatory": 0,
+      "cgroupVersion": 2,
+      "delegated": true
+    },
+    "macos": {
+      "sourceSha": "7660f16dbb5b4b165e6a5279b131bf53c5bf6a7b",
+      "platform": "macos-launchd-pg",
+      "nativeMechanism": "launchd-process-group",
+      "native": true,
+      "usable": true,
+      "cleanup": "Confirmed",
+      "os": "macOS 26.6.2",
+      "architecture": "Arm64",
+      "runtime": ".NET 10.0.12",
+      "runId": "8cac0745ab75450e9e8abe6ced14b746",
+      "legs": {
+        "capability-matrix": "Passed",
+        "opaque-handles": "Passed",
+        "prepare": "Passed",
+        "single-use": "Passed",
+        "working-directory": "Passed",
+        "no-ambient-inherit": "Passed",
+        "unit-termination": "Passed",
+        "root-exit": "Passed",
+        "dispose-cleanup": "Passed",
+        "completion": "Passed",
+        "setsid-escape": "Passed"
+      },
+      "skippedMandatory": 0,
+      "unsupportedMandatory": 0,
+      "launchdDomain": "gui/501"
+    }
+  },
+  "installedConsumers": {
+    "windows": {
+      "sourceSha": "7660f16dbb5b4b165e6a5279b131bf53c5bf6a7b",
+      "version": "0.1.0-preview.4",
+      "result": "Passed",
+      "lifecycle": "Passed",
+      "platform": "windows",
+      "packageSha256": {
+        "Gagamba.Execution": "b2af19fd0cf8ed4419bb5c4798ab9efa4ec72f0653e7922dfb82c32e9bb43e0b",
+        "Gagamba.Execution.Windows": "8f97f53f66ae56f72e9a65773b5ed69c03deacb74461789d4e14b0abd542cb1d",
+        "Gagamba.Execution.Linux": "2c66689de80b82f63b7b856550417f5f33592df017812910127956de329b8869",
+        "Gagamba.Execution.MacOS": "99b57c6c42f9f4eb67e6ead91b9522d0aa78ddc3d9e52e3656a069de91942389",
+        "Gagamba.Runtime": "7c3604acf9078f9c237ad81c72cf7dfe315a21f701fd378ae58156f8098c431a"
+      }
+    },
+    "linux": {
+      "sourceSha": "7660f16dbb5b4b165e6a5279b131bf53c5bf6a7b",
+      "version": "0.1.0-preview.4",
+      "result": "Passed",
+      "lifecycle": "Passed",
+      "platform": "linux",
+      "packageSha256": {
+        "Gagamba.Execution": "b2af19fd0cf8ed4419bb5c4798ab9efa4ec72f0653e7922dfb82c32e9bb43e0b",
+        "Gagamba.Execution.Windows": "8f97f53f66ae56f72e9a65773b5ed69c03deacb74461789d4e14b0abd542cb1d",
+        "Gagamba.Execution.Linux": "2c66689de80b82f63b7b856550417f5f33592df017812910127956de329b8869",
+        "Gagamba.Execution.MacOS": "99b57c6c42f9f4eb67e6ead91b9522d0aa78ddc3d9e52e3656a069de91942389",
+        "Gagamba.Runtime": "7c3604acf9078f9c237ad81c72cf7dfe315a21f701fd378ae58156f8098c431a"
+      }
+    },
+    "macos": {
+      "sourceSha": "7660f16dbb5b4b165e6a5279b131bf53c5bf6a7b",
+      "version": "0.1.0-preview.4",
+      "result": "Passed",
+      "lifecycle": "Passed",
+      "platform": "macos",
+      "packageSha256": {
+        "Gagamba.Execution": "b2af19fd0cf8ed4419bb5c4798ab9efa4ec72f0653e7922dfb82c32e9bb43e0b",
+        "Gagamba.Execution.Windows": "8f97f53f66ae56f72e9a65773b5ed69c03deacb74461789d4e14b0abd542cb1d",
+        "Gagamba.Execution.Linux": "2c66689de80b82f63b7b856550417f5f33592df017812910127956de329b8869",
+        "Gagamba.Execution.MacOS": "99b57c6c42f9f4eb67e6ead91b9522d0aa78ddc3d9e52e3656a069de91942389",
+        "Gagamba.Runtime": "7c3604acf9078f9c237ad81c72cf7dfe315a21f701fd378ae58156f8098c431a"
+      }
+    }
+  }
+}

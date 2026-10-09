@@ -1,0 +1,73 @@
+{
+  "schema": "gagamba-conformance/v1",
+  "sourceSha": "7660f16dbb5b4b165e6a5279b131bf53c5bf6a7b",
+  "runId": "8cac0745ab75450e9e8abe6ced14b746",
+  "host": "macOS 26.6.2",
+  "architecture": "Arm64",
+  "runtime": ".NET 10.0.12",
+  "platform": "macos-launchd-pg",
+  "usable": true,
+  "cleanup": "Confirmed",
+  "skippedMandatory": 0,
+  "unsupportedMandatory": 0,
+  "cgroupVersion": 0,
+  "delegated": false,
+  "launchdDomain": "gui/501",
+  "legs": [
+    {
+      "Name": "capability-matrix",
+      "outcome": "Passed",
+      "Detail": "unit=Partial, rootExit=Full, escapeResistant=Absent"
+    },
+    {
+      "Name": "opaque-handles",
+      "outcome": "Passed",
+      "Detail": "no native identity on the public surface"
+    },
+    {
+      "Name": "prepare",
+      "outcome": "Passed",
+      "Detail": "negotiation accepted for platform requirements"
+    },
+    {
+      "Name": "single-use",
+      "outcome": "Passed",
+      "Detail": "first workload ran; second launch with spent preparation refused"
+    },
+    {
+      "Name": "working-directory",
+      "outcome": "Passed",
+      "Detail": "relative write landed in the unique workspace; reported cwd=/private/var/folders/36/tjdph2t965j8snz9_vkdnw0r0000gn/T/gagamba-conformance/8cac0745ab75450e9e8abe6ced14b746/working-directory-d005435fa87d4a2b88058df9ccaa0bd2"
+    },
+    {
+      "Name": "no-ambient-inherit",
+      "outcome": "Passed",
+      "Detail": "granted present, ambient absent"
+    },
+    {
+      "Name": "unit-termination",
+      "outcome": "Passed",
+      "Detail": "root\u002Bchild lifetime locks released after domain terminal"
+    },
+    {
+      "Name": "root-exit",
+      "outcome": "Passed",
+      "Detail": "launchd terminal observed after root exit; same-PG child lock released"
+    },
+    {
+      "Name": "dispose-cleanup",
+      "outcome": "Passed",
+      "Detail": "live root\u002Bchild lifetime locks released by provider disposal"
+    },
+    {
+      "Name": "completion",
+      "outcome": "Passed",
+      "Detail": "natural exit 17 observed, terminate-\u003ETerminated, foreign fail-closed"
+    },
+    {
+      "Name": "setsid-escape",
+      "outcome": "Passed",
+      "Detail": "escape observed: same-PG leaf died, escapee survived"
+    }
+  ]
+}

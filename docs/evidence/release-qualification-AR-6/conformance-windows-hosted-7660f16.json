@@ -1,0 +1,73 @@
+{
+  "schema": "gagamba-conformance/v1",
+  "sourceSha": "7660f16dbb5b4b165e6a5279b131bf53c5bf6a7b",
+  "runId": "b08011f88f7a454f96e82cc5aaa28bb2",
+  "host": "Microsoft Windows 10.0.26100",
+  "architecture": "X64",
+  "runtime": ".NET 10.0.12",
+  "platform": "windows-job",
+  "usable": true,
+  "cleanup": "Confirmed",
+  "skippedMandatory": 0,
+  "unsupportedMandatory": 0,
+  "cgroupVersion": 0,
+  "delegated": false,
+  "launchdDomain": null,
+  "legs": [
+    {
+      "Name": "capability-matrix",
+      "outcome": "Passed",
+      "Detail": "unit=Full, rootExit=Full, escapeResistant=Full"
+    },
+    {
+      "Name": "opaque-handles",
+      "outcome": "Passed",
+      "Detail": "no native identity on the public surface"
+    },
+    {
+      "Name": "prepare",
+      "outcome": "Passed",
+      "Detail": "negotiation accepted for platform requirements"
+    },
+    {
+      "Name": "single-use",
+      "outcome": "Passed",
+      "Detail": "first workload ran; second launch with spent preparation refused"
+    },
+    {
+      "Name": "working-directory",
+      "outcome": "Passed",
+      "Detail": "relative write landed in the unique workspace; reported cwd=C:\\Users\\runneradmin\\AppData\\Local\\Temp\\gagamba-conformance\\b08011f88f7a454f96e82cc5aaa28bb2\\working-directory-bd86154fb8eb4c7584c5ee8ed61e03df"
+    },
+    {
+      "Name": "no-ambient-inherit",
+      "outcome": "Passed",
+      "Detail": "granted present, ambient absent"
+    },
+    {
+      "Name": "unit-termination",
+      "outcome": "Passed",
+      "Detail": "root\u002Bchild lifetime locks released after domain terminal"
+    },
+    {
+      "Name": "root-exit",
+      "outcome": "Passed",
+      "Detail": "root-exit proof, survivor lock held; wait pending until terminate, then domain terminal"
+    },
+    {
+      "Name": "dispose-cleanup",
+      "outcome": "Passed",
+      "Detail": "live root\u002Bchild lifetime locks released by provider disposal"
+    },
+    {
+      "Name": "completion",
+      "outcome": "Passed",
+      "Detail": "natural exit 17 observed, terminate-\u003ETerminated, foreign fail-closed"
+    },
+    {
+      "Name": "setsid-escape",
+      "outcome": "Skipped",
+      "Detail": "no setsid on this OS; EscapeResistant attested structurally"
+    }
+  ]
+}

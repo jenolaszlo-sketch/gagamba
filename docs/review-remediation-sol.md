@@ -1,6 +1,6 @@
 # Review remediation plan — handoff to Sol
 
-Date: 2026-10-08. Status updated 2026-10-09: **AR-0/AR-1 implemented and locally Windows-native-tested; AR-2 native-tested on stated root/delegated WSL2 host; AR-3 implemented with native macOS qualification pending; AR-4 implemented with Windows/WSL2 tests, native macOS/package qualification pending; AR-5 implemented with native Windows/root WSL2 tests and explicit pre-dispatch macOS capture refusal; AR-6 next**. See [AR-1](evidence/windows-lifecycle-AR-1.md), [AR-2](evidence/linux-lifecycle-AR-2.md), [AR-3](evidence/macos-lifecycle-AR-3.md), [AR-4](evidence/invocation-contract-AR-4.md), and [AR-5](evidence/execution-orchestration-AR-5.md) evidence.
+Date: 2026-10-08. Status updated 2026-10-09: **AR-0 through AR-5 implemented with slice-specific evidence; AR-6 three-host native and exact-package qualification passed at SHA 7660f16; AR-7 held for a separate restricted-execution security decision.** Earlier slice documents retain the native coverage measured at their original SHAs. AR-5 macOS bounded capture still refuses before dispatch. See the [current queue](work-queue.md) and [AR-6 evidence](evidence/release-qualification-AR-6.md).
 
 User direction: turn the independent review into an actionable implementation handoff in Gagamba's docs. Sol implemented the bounded AR-0/AR-1 slice and stopped. This plan does not claim release or hostile-workload security qualification.
 
@@ -51,9 +51,9 @@ The table preserves the original dependency plan. Current disposition is in
 [the work queue](work-queue.md): AR-0 is documentation/test-rule complete;
 AR-1 is implemented and locally Windows-native-tested; AR-2 is implemented and
 native-tested on the host specified in [its evidence](evidence/linux-lifecycle-AR-2.md);
-AR-3 is implemented with native macOS qualification pending; AR-4 is implemented and locally/native-tested on the stated hosts; AR-5 is implemented and native-tested on the stated Windows/root WSL2 hosts, while macOS capture refuses before dispatch pending native qualification. AR-6 is next. F01 hostile-workload enforcement, F02 broader capability honesty,
-and F14 release qualification remain open beyond the bounded AR-0 wording and
-test-oracle corrections.
+AR-3 through AR-5 slice documents record their original SHAs and host limits. At the later AR-6 SHA, Windows, delegated Linux and macOS lifecycle conformance and installed consumers passed the exact-source gate. AR-5 macOS capture remains an explicit refusal. F01 hostile-workload enforcement and the broader restricted-profile decision remain open; F14/F15 have a qualified release gate at the stated SHA.
+
+The earlier plan wording below is historical; source changes after the AR-6-qualified SHA require requalification.
 
 The evidence gate applies separately to every later slice: AR-2 must separate
 root/WSL from delegated unprivileged Linux; AR-3 must separate parser/fake
