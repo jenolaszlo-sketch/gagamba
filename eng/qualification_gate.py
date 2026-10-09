@@ -145,7 +145,7 @@ def validate(manifest: dict, source_sha: str, version: str, packages_dir: Path,
                 f"{key}: host identity incomplete")
         os_name = host["os"].lower()
         require((key == "windows" and "windows" in os_name)
-                or (key == "linux" and "linux" in os_name)
+                or (key == "linux" and ("linux" in os_name or "ubuntu" in os_name))
                 or (key == "macos" and ("mac" in os_name or "darwin" in os_name)),
                 f"{key}: host OS identity mismatch")
         require(host["runId"] not in run_ids, f"{key}: reused conformance run ID")

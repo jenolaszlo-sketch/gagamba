@@ -69,6 +69,13 @@ class QualificationGateTests(unittest.TestCase):
     def test_complete_exact_candidate_accepts(self):
         validate(self.manifest, SHA, VERSION, self.packages)
 
+    def test_hosted_ubuntu_os_description_accepts(self):
+        self.manifest["hosts"]["linux"]["os"] = "Ubuntu 26.04.1 LTS"
+        validate(self.manifest, SHA, VERSION, self.packages)
+
+    def test_windows_host_cannot_claim_linux_evidence(self):
+        self.check_rejects(lambda m: m["hosts"]["linux"].update(os="Microsoft Windows 10.0"))
+
     def test_stale_source_rejects(self):
         self.check_rejects(lambda m: m.update(sourceSha="b" * 40))
 
