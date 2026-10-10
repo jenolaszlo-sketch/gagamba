@@ -112,8 +112,9 @@ def starttime_of(pid):
     except (OSError, IndexError):
         return None
 
-def validate_pid(pid, outer_frag, expect_cmd=('bwrap', '/target', 'worker')):
-    """Fresh external validation: cgroup membership + cmdline, with starttime."""
+def revalidate_pid(pid, outer_frag, leaf_frag=None, cmd_frag=None):
+    """Fresh single-PID identity read: cgroup membership + starttime +
+    cmdline. Returns the record or None if absent/unreadable. Never acts."""
     try:
         cg = pathlib.Path('/proc/%d/cgroup' % pid).read_text()
         cmd = pathlib.Path('/proc/%d/cmdline' % pid).read_bytes().replace(b'\0', b' ').decode(errors='replace')
@@ -121,9 +122,57 @@ def validate_pid(pid, outer_frag, expect_cmd=('bwrap', '/target', 'worker')):
         return None
     if outer_frag not in cg:
         return None
-    if not any(s in cmd for s in expect_cmd):
+    if leaf_frag is not None and leaf_frag not in cg:
         return None
-    return {'pid': pid, 'cgroup_frag_ok': True, 'starttime': starttime_of(pid), 'cmdline': cmd[:200]}
+    if cmd_frag is not None and cmd_frag not in cmd:
+        return None
+    st = starttime_of(pid)
+    if st is None:
+        return None
+    return {'pid': pid, 'starttime': st, 'cmdline': cmd[:160]}
+
+def signal_validated(pid, expected, signo, outer_frag, leaf_frag=None, cmd_frag=None):
+    """R6 safeguard: re-read identity immediately before acting. Signal ONLY
+    on exact pid+starttime match (+ optional leaf/cmd re-check). On absence
+    or any mismatch, refuse and record — never touch the numeric PID."""
+    fresh = revalidate_pid(pid, outer_frag, leaf_frag, cmd_frag)
+    if fresh is None:
+        return {'action': 'refused-absent', 'pid': pid}
+    if fresh['starttime'] != expected.get('starttime'):
+        return {'action': 'refused-mismatch', 'pid': pid,
+                'expected_starttime': expected.get('starttime'),
+                'observed_starttime': fresh['starttime']}
+    os.kill(pid, signo)
+    return {'action': 'signaled', 'pid': pid, 'signo': signo,
+            'starttime': fresh['starttime']}
+
+def scan_leaf_targets(outer_frag, leaf_frag='delegated/target'):
+    """All /target-cmdline processes in the fixture leaf with innermost NSpid
+    and state. Root has innermost ns-pid 2; descendants 3+."""
+    found = []
+    for entry in os.listdir('/proc'):
+        if not entry.isdecimal():
+            continue
+        pid = int(entry)
+        try:
+            st = pathlib.Path('/proc/%d/status' % pid).read_text()
+            cg = pathlib.Path('/proc/%d/cgroup' % pid).read_text()
+            cmd = pathlib.Path('/proc/%d/cmdline' % pid).read_bytes().replace(b'\0', b' ').decode(errors='replace')
+        except OSError:
+            continue
+        if outer_frag not in cg or leaf_frag not in cg:
+            continue
+        if '/target' not in cmd:
+            continue
+        nspid, state = None, None
+        for line in st.splitlines():
+            if line.startswith('NSpid:'):
+                nspid = line.split()[-1]
+            if line.startswith('State:'):
+                state = line.split(':', 1)[1].strip()
+        found.append({'pid': pid, 'ns_pid': nspid, 'state': state,
+                      'starttime': starttime_of(pid), 'cmdline': cmd[:120]})
+    return sorted(found, key=lambda d: d['pid'])
 
 def resolve_ns_root(outer_frag, leaf_frag='delegated/target', ns_pid='2', cmd_frag='/target'):
     """Resolve an announced namespace PID to its host PID: scan host /proc
@@ -445,8 +494,13 @@ def do_c6(ctx, outer_frag):
         rec['leg'] = 'INCONCLUSIVE (ns-init not uniquely identifiable: %d others)' % len(others)
         return rec
     nspid = others[0]['pid']
-    os.kill(nspid, signal.SIGKILL)
-    evt({'case': 'c6', 'fault': 'SIGKILL ns-init host-PID %d' % nspid})
+    sig = signal_validated(nspid, others[0], signal.SIGKILL, outer_frag, 'target', 'bwrap')
+    rec['ns_init_signal'] = sig
+    evt({'case': 'c6', 'fault': 'SIGKILL ns-init host-PID %d' % nspid, 'guard': sig['action']})
+    if sig['action'] != 'signaled':
+        p.kill(); p.wait()
+        rec['leg'] = 'INCONCLUSIVE (ns-init identity guard refused)'
+        return rec
     try:
         stdout, stderr = p.communicate(timeout=15)
         rec['chain_collapsed'] = True
@@ -526,8 +580,14 @@ def do_c10(ctx, outer_frag):
         rec['leg'] = 'INCONCLUSIVE (target root not validatable)'
         return rec
     time.sleep(0.5)
-    os.kill(validated['pid'], signal.SIGKILL)
-    evt({'case': 'c10', 'fault': 'SIGKILL resolved target-root host-PID %d' % validated['pid']})
+    sig = signal_validated(validated['pid'], validated, signal.SIGKILL, outer_frag, 'target', '/target')
+    rec['target_signal'] = sig
+    evt({'case': 'c10', 'fault': 'SIGKILL resolved target-root host-PID %d' % validated['pid'],
+         'guard': sig['action']})
+    if sig['action'] != 'signaled':
+        p.kill(); p.wait()
+        rec['leg'] = 'INCONCLUSIVE (target identity guard refused)'
+        return rec
     try:
         stdout, stderr = p.communicate(timeout=15)
         rec['chain_collapsed'] = True
@@ -623,6 +683,298 @@ def battery_case(mode, N, want_rc, markers, empty_bound=15.0):
         return rec
     return fn
 
+def is_in_ns_desc(t):
+    try:
+        v = int(t.get('ns_pid') or 'x')
+        return 3 <= v < 100000
+    except ValueError:
+        return False
+
+def leaf_pids(cg, outer_frag, exclude=()):
+    """Every fixture-domain process across the four leaves (for stray scans).
+    Callers exclude themselves."""
+    found = []
+    for leaf in ('manager', 'target', 'sibling', 'positive'):
+        lp = cg / leaf
+        if not lp.exists():
+            continue
+        for pid in read(lp / 'cgroup.procs').split():
+            if not pid.isdecimal() or int(pid) in exclude:
+                continue
+            try:
+                member = pathlib.Path('/proc/%s/cgroup' % pid).read_text()
+                cmd = pathlib.Path('/proc/%s/cmdline' % pid).read_bytes().replace(b'\0', b' ').decode(errors='replace')
+            except OSError:
+                continue
+            if outer_frag not in member:
+                continue
+            found.append({'pid': int(pid), 'leaf': leaf, 'cmdline': cmd[:120]})
+    return sorted(found, key=lambda d: d['pid'])
+
+def do_positives_r(ctx, outer_frag):
+    rec = {'legs': []}
+    for mode, N, want_rc, markers in [('trickle', 6, 0, ['trickle_done', 'complete']),
+                                      ('holdchild', 2, 0, ['root_holding', 'complete'])]:
+        pos = positive_run(ctx, mode, N)
+        ok = pos['rc'] == want_rc and not pos['timeout'] and all(m in pos['stdout'] for m in markers)
+        rec['legs'].append({'mode': mode, 'rc': pos['rc'], 'gate': ok,
+                            'stdout_tail': pos['stdout'][-1500:], 'timeout': pos['timeout']})
+        evt({'case': 'positives-r', 'mode': mode, 'gate': ok})
+    rec['leg'] = 'SUPPORTED-leg' if all(l['gate'] for l in rec['legs']) else 'INCONCLUSIVE (positive gate failed)'
+    return rec
+
+def do_r1worker(ctx, outer_frag):
+    # R1b releaser: owned release of a long-lived root; SPAWNED (with NSpid
+    # validation) goes to manager stdout, which the provisioner redirects to
+    # a capture file — so it survives the provisioner's death.
+    argv = (ctx.common + ['--seccomp', str(ctx.secc()), '--', '/target', 'hold', str(ctx.cg),
+                          str(ctx.root), ctx.nonce, '/input', '0'])
+    p = subprocess.Popen(argv, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                         close_fds=True, pass_fds=(ctx.seccomp_fd,), preexec_fn=lambda: ctx.enter_target(None))
+    # NOTE (m1): the worker preamble (identity/input lines) precedes RELEASED;
+    # the marker is awaited by draining, never by assuming the first line.
+    marker = False; ident = {}
+    for _ in range(10):
+        line = p.stdout.readline()
+        if not line:
+            break
+        if b'RELEASED' in line:
+            marker = True
+            break
+        if line.startswith(b'identity '):
+            for kv in line.decode(errors='replace').split()[1:]:
+                k, _, v = kv.partition('=')
+                ident[k] = v
+    resolved = resolve_ns_root(outer_frag) if ident.get('pid', '').isdecimal() else []
+    validated = resolved[0] if len(resolved) == 1 else None
+    evt({'r1': 'SPAWNED', 'marker': marker, 'validation': validated})
+    try:
+        stdout, stderr = p.communicate(timeout=25)
+        rec = {'marker_seen': marker, 'ns_resolution': resolved, 'external_validation': validated,
+               'hold_rc': p.returncode}
+    except subprocess.TimeoutExpired:
+        p.kill(); p.communicate()
+        rec = {'marker_seen': marker, 'ns_resolution': resolved, 'external_validation': validated,
+               'hold_rc': 'timeout-killed-by-manager'}
+    rec['leg'] = ('RELEASED-OWNED (caller-independent; see runner audit)'
+                  if marker and validated else 'INCONCLUSIVE (R1 release unvalidated)')
+    return rec
+
+def do_r2deadline(ctx, outer_frag):
+    # Genuine pre-target setup deadline: STOP-freeze our own unreaped child at
+    # the earliest instant, prove phase (outer present, no /target process,
+    # zero target bytes), then decide. Up to 3 attempts; every attempt fully
+    # recorded. No GO is ever written on any path.
+    rec = {'attempts': []}
+    for attempt in (1, 2, 3):
+        argv = (ctx.common + ['--seccomp', str(ctx.secc()), '--', '/target', 'root-hold', str(ctx.cg),
+                              str(ctx.root), ctx.nonce, '/input', '30'])
+        p = subprocess.Popen(argv, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                             close_fds=True, pass_fds=(ctx.seccomp_fd,),
+                             preexec_fn=lambda: ctx.enter_target(None))
+        os.kill(p.pid, signal.SIGSTOP)  # own unreaped child: parenthood kernel-tracked
+        time.sleep(0.05)
+        pre = scan_leaf_targets(outer_frag)
+        target_present = any(t['cmdline'].startswith('/target ') or t['cmdline'].startswith('/target\x00')
+                             or t['cmdline'].split(' ')[0] == '/target' for t in pre)
+        os.kill(p.pid, signal.SIGKILL)  # deadline decision at the setup barrier
+        try:
+            p.stdin.close()
+        except OSError:
+            pass
+        try:
+            stdout, stderr = p.communicate(timeout=20)
+            drained = True
+        except subprocess.TimeoutExpired:
+            p.kill(); stdout, stderr = p.communicate()
+            drained = False
+        out = stdout.decode(errors='replace')
+        att = {'attempt': attempt, 'outer_host_pid': p.pid, 'outer_frozen_first': True,
+               'target_process_seen_pre_decision': target_present,
+               'target_bytes_in_pipe': b'READY' in stdout or b'identity' in stdout,
+               'drained_via_owned_pipe': drained, 'wrapper_rc': p.returncode}
+        rec['attempts'].append(att)
+        evt({'case': 'r2deadline', 'attempt': attempt, 'pre_target': not target_present})
+        if not target_present and not att['target_bytes_in_pipe']:
+            empty, dt = wait_empty(ctx.cg / 'target', 10.0)
+            att['domain_empty'] = empty; att['empty_after_s'] = dt
+            if drained and empty:
+                rec['leg'] = ('SUPPORTED-leg (deadline won during setup on attempt %d; '
+                              'target never executed; no release; domain empty)' % attempt)
+                return rec
+            rec['leg'] = 'INCONCLUSIVE (R2 drain unmet)'
+            return rec
+        empty, dt = wait_empty(ctx.cg / 'target', 10.0)
+        att['domain_empty'] = empty; att['branch'] = 'post-exec race lost; drained; not counted as R2'
+    rec['leg'] = 'INCONCLUSIVE (could not land a pre-target deadline in 3 attempts)'
+    return rec
+
+def do_r3a(ctx, outer_frag):
+    # R3 part 1: release root + descendant, prove the descendant alive twice
+    # over a 1 s gap, then EXIT with the workload running (no wait, no reap).
+    # The observer issues the whole-domain stop afterwards.
+    argv = (ctx.common + ['--seccomp', str(ctx.secc()), '--', '/target', 'holdchild', str(ctx.cg),
+                          str(ctx.root), ctx.nonce, '/input', '30'])
+    p = subprocess.Popen(argv, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                         close_fds=True, pass_fds=(ctx.seccomp_fd,),
+                         preexec_fn=lambda: ctx.enter_target(None))
+    ready = b''
+    while b'READY' not in ready:
+        chunk = p.stdout.readline()
+        if not chunk:
+            break
+        ready += chunk
+    ident = {}
+    for line in ready.decode(errors='replace').splitlines():
+        if line.startswith('identity '):
+            for kv in line.split()[1:]:
+                k, _, v = kv.partition('=')
+                ident[k] = v
+    resolved = resolve_ns_root(outer_frag) if ident.get('pid', '').isdecimal() else []
+    rec = {'ready_seen': b'READY' in ready, 'announced_identity': ident, 'ns_resolution': resolved}
+    if len(resolved) != 1:
+        p.kill(); p.wait()
+        rec['leg'] = 'INCONCLUSIVE (R3 root unresolvable)'
+        return rec
+    try:
+        p.stdin.write(b'G'); p.stdin.flush()
+    except OSError:
+        pass
+    time.sleep(1.0)
+    snap1 = scan_leaf_targets(outer_frag)
+    time.sleep(1.0)
+    snap2 = scan_leaf_targets(outer_frag)
+    d1 = [t for t in snap1 if is_in_ns_desc(t)]
+    d2 = [t for t in snap2 if is_in_ns_desc(t)]
+    rec['descendants_t0'] = d1; rec['descendants_t1'] = d2
+    alive = [t for t in d2 if t['state'] and t['state'][0] in 'RSD'
+             and any(o['pid'] == t['pid'] and o['starttime'] == t['starttime'] for o in d1)]
+    rec['descendant_alive_twice'] = alive
+    rec['alive_claim'] = len(alive) >= 1
+    rec['bwrap_host_pid'] = p.pid
+    rec['leg'] = ('RELEASED-OWNED-DESCENDANT-ALIVE (workload left running; domain stop pending; '
+                  'see observer_stop)' if rec['alive_claim']
+                  else 'INCONCLUSIVE (no live descendant provable)')
+    return rec
+
+def do_r3b(ctx, outer_frag):
+    # R3 part 2 (runs after the observer's target-leaf kill): verify empty +
+    # no strays anywhere in the domain.
+    me = os.getpid()
+    empty, dt = wait_empty(ctx.cg / 'target', 5.0)
+    strays = leaf_pids(ctx.cg, outer_frag, exclude=(me,))
+    rec = {'domain_empty': empty, 'empty_after_s': dt, 'strays': strays}
+    if not empty:
+        rec['leg'] = 'BLOCKED (target domain survived the whole-domain stop)'
+    elif strays:
+        rec['leg'] = 'INCONCLUSIVE (stray fixture processes outside expectation)'
+    else:
+        rec['leg'] = 'SUPPORTED-leg (post-stop verification: empty, no strays)'
+    return rec
+
+def do_r4a(ctx, outer_frag):
+    # R4 part 1: release the trickle spawner, prove spawning actively in
+    # progress (streamed count >= 8 + leaf scan), then EXIT mid-spawn.
+    argv = (ctx.common + ['--seccomp', str(ctx.secc()), '--', '/target', 'trickle', str(ctx.cg),
+                          str(ctx.root), ctx.nonce, '/input', '30'])
+    p = subprocess.Popen(argv, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                         close_fds=True, pass_fds=(ctx.seccomp_fd,),
+                         preexec_fn=lambda: ctx.enter_target(None))
+    ready = b''
+    while b'READY' not in ready:
+        chunk = p.stdout.readline()
+        if not chunk:
+            break
+        ready += chunk
+    ident = {}
+    for line in ready.decode(errors='replace').splitlines():
+        if line.startswith('identity '):
+            for kv in line.split()[1:]:
+                k, _, v = kv.partition('=')
+                ident[k] = v
+    resolved = resolve_ns_root(outer_frag) if ident.get('pid', '').isdecimal() else []
+    rec = {'ready_seen': b'READY' in ready, 'announced_identity': ident, 'ns_resolution': resolved}
+    if len(resolved) != 1:
+        p.kill(); p.wait()
+        rec['leg'] = 'INCONCLUSIVE (R4 root unresolvable)'
+        return rec
+    try:
+        p.stdin.write(b'G'); p.stdin.flush()
+    except OSError:
+        pass
+    spawned = 0
+    for _ in range(300):
+        line = p.stdout.readline()
+        if not line:
+            break
+        if line.startswith(b'spawned '):
+            try:
+                spawned = int(line.split()[1])
+            except ValueError:
+                pass
+            if spawned >= 8:
+                break
+    snap = scan_leaf_targets(outer_frag)
+    desc = [t for t in snap if is_in_ns_desc(t)]
+    rec['streamed_spawned_count'] = spawned
+    rec['leaf_descendants'] = desc
+    rec['spawning_claim'] = spawned >= 8 and len(desc) >= 8
+    rec['bwrap_host_pid'] = p.pid
+    rec['leg'] = ('SPAWNING-IN-PROGRESS (left running mid-spawn; domain stop pending; see observer_stop)'
+                  if rec['spawning_claim'] else 'INCONCLUSIVE (spawn progress unprovable)')
+    return rec
+
+def do_r4b(ctx, outer_frag):
+    return do_r3b(ctx, outer_frag)
+
+def do_r5phase(ctx, outer_frag):
+    # R5 releaser: hold victim; after the manager itself observes target
+    # execution (RELEASED line), it persists a nonce phase file. The wrapper
+    # kills the observer only on (phase file + populated leaf).
+    argv = (ctx.common + ['--seccomp', str(ctx.secc()), '--', '/target', 'hold', str(ctx.cg),
+                          str(ctx.root), ctx.nonce, '/input', '0'])
+    p = subprocess.Popen(argv, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                         close_fds=True, pass_fds=(ctx.seccomp_fd,), preexec_fn=lambda: ctx.enter_target(None))
+    line = p.stdout.readline()
+    marker = b'RELEASED' in line
+    phase = ctx.root / 'phase-r5'
+    if marker:
+        phase.write_text('RELEASED-EXECUTING monotonic=%r nonce=%s' % (time.monotonic(), ctx.nonce))
+        evt({'case': 'r5phase', 'phase': 'RELEASED-EXECUTING'})
+    try:
+        stdout, stderr = p.communicate(timeout=35)
+        rec = {'marker_seen': marker, 'phase_file': phase.exists(), 'hold_rc': p.returncode}
+    except subprocess.TimeoutExpired:
+        p.kill(); p.communicate()
+        rec = {'marker_seen': marker, 'phase_file': phase.exists(), 'hold_rc': 'timeout'}
+    rec['leg'] = ('RELEASED-EXECUTING (proven phase persisted; see wrapper audit)'
+                  if marker and p.returncode == 0 else 'INCONCLUSIVE (R5 phase unproven)')
+    return rec
+
+def do_r6stale(ctx, outer_frag):
+    # R6 guard demonstration. No host games: a reaped child (absent), self
+    # with a wrong starttime (mismatch), self with the true starttime + SIG0
+    # (match passes, harmless).
+    rec = {'checks': []}
+    c = os.fork()
+    if c == 0:
+        os._exit(0)
+    st = starttime_of(c)
+    os.waitpid(c, 0)
+    ra = signal_validated(c, {'starttime': st}, signal.SIGKILL, outer_frag, 'manager', 'p07.py')
+    rec['checks'].append({'name': 'absent-pid', 'result': ra})
+    me = os.getpid()
+    rb = signal_validated(me, {'starttime': '0'}, signal.SIGKILL, outer_frag)
+    rec['checks'].append({'name': 'mismatched-starttime', 'result': rb})
+    true_st = starttime_of(me)
+    rc = signal_validated(me, {'starttime': true_st}, 0, outer_frag)
+    rec['checks'].append({'name': 'matching-identity-sig0', 'result': rc})
+    ok = (ra.get('action') == 'refused-absent' and rb.get('action') == 'refused-mismatch'
+          and rc.get('action') == 'signaled')
+    rec['leg'] = ('SUPPORTED-leg (guard refuses absent + mismatched, passes matching)'
+                  if ok else 'BLOCKED (identity guard misbehaved)')
+    return rec
+
 CASES = {
     'positives': do_positives,
     'c1': do_c1, 'c2': do_c2, 'c3': do_c3, 'c4': do_c4, 'c5': do_c5,
@@ -632,6 +984,10 @@ CASES = {
     'bat_fork': battery_case('forker', 40, 0, ['complete']),
     'bat_reexec': battery_case('reexec', 0, 0, ['generation second']),
     'bat_interfere': battery_case('interfere', 0, 0, ['complete']),
+    'positives-r': do_positives_r,
+    'r1worker': do_r1worker, 'r2deadline': do_r2deadline,
+    'r3a': do_r3a, 'r3b': do_r3b, 'r4a': do_r4a, 'r4b': do_r4b,
+    'r5phase': do_r5phase, 'r6stale': do_r6stale,
 }
 SUITE = ['positives', 'c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10',
          'cancel_det', 'cancel_race', 'bat_daemon', 'bat_fork', 'bat_reexec', 'bat_interfere', 'c11']
@@ -641,7 +997,7 @@ def observer(a):
     nonce = uuid.uuid4().hex; root = pathlib.Path('/tmp') / ('gagamba-ar7-P07-' + nonce)
     outer = pathlib.Path('/sys/fs/cgroup') / ('gagamba-ar7-P07-' + nonce); cg = outer / 'delegated'
     repo = pathlib.Path(__file__).resolve().parent.parent.parent
-    only = [a.only] if a.only else SUITE
+    only = a.only.split(',') if a.only else SUITE
     if a.only == 'c11-wrapper-victim':
         only = ['c11']
     data = {'probe': 'P07', 'source_sha': a.source_sha, 'nonce': nonce,
@@ -768,6 +1124,39 @@ def observer(a):
                     crec['verdict'] = leg
                     if leg.startswith('BLOCKED') or leg.startswith('HELPER TOPOLOGY'):
                         halted = True
+                elif case in ('r3a', 'r4a'):
+                    # R3/R4: the manager exited leaving a proven-live workload.
+                    # The observer now issues the whole-domain stop itself on
+                    # the TARGET leaf (manager lives outside it) and verifies.
+                    rec = (crec['result'] or {}).get('record', {}) or {}
+                    claim = rec.get('alive_claim') if case == 'r3a' else rec.get('spawning_claim')
+                    audit = {'manager_rc': crec.get('manager_rc'), 'claim': bool(claim)}
+                    pre = leaf_pids(cg, outer_frag)
+                    audit['populated_before_stop'] = [(e['pid'], e['leaf']) for e in pre
+                                                      if e['leaf'] == 'target']
+                    if crec.get('manager_rc') == 0 and claim and audit['populated_before_stop']:
+                        if case == 'r4a':
+                            time.sleep(0.3)
+                            pre2 = leaf_pids(cg, outer_frag)
+                            n1 = len([e for e in pre if e['leaf'] == 'target'])
+                            n2 = len([e for e in pre2 if e['leaf'] == 'target'])
+                            audit['growth_check'] = {'before': n1, 'after': n2}
+                        write(cg / 'target/cgroup.kill', 1)
+                        audit['stop_issued'] = 'target/cgroup.kill by root observer'
+                        empty, dt = wait_empty(cg / 'target', 10.0)
+                        audit['domain_empty'] = empty; audit['empty_after_s'] = dt
+                        audit['strays_after'] = leaf_pids(cg, outer_frag)
+                        if empty and not audit['strays_after']:
+                            audit['root_status'] = 'known per manager record; domain observation governs'
+                            crec['verdict'] = 'SUPPORTED-leg (live domain stopped via owned cgroup.kill; empty, no strays)'
+                        elif not empty:
+                            crec['verdict'] = 'BLOCKED (target domain survived the whole-domain stop)'
+                            halted = True
+                        else:
+                            crec['verdict'] = 'INCONCLUSIVE (strays after domain stop)'
+                    else:
+                        crec['verdict'] = 'INCONCLUSIVE (R3/R4 stop preconditions unmet)'
+                    crec['observer_stop'] = audit
                 else:
                     leg = (crec['result'] or {}).get('record', {}).get('leg', 'INCONCLUSIVE (no result)')
                     crec['verdict'] = leg
@@ -916,11 +1305,333 @@ def c11_wrapper(a):
     print(json.dumps(audit, indent=2))
     return 0 if audit.get('verdict', '').startswith('SUPPORTED') else 2
 
+def manifest_append(manifest, obj):
+    with open(manifest, 'a') as f:
+        f.write(json.dumps(obj) + '\n')
+
+def provisioner(a):
+    """R1 dedicated outer provisioning/caller (root). Persists a nonce-bound
+    manifest incrementally OUTSIDE the candidate lifecycle domain, then
+    terminates itself at the intended barrier. r1a: mid-provisioning (before
+    any manager spawn). r1b: after the manager's release is observed."""
+    assert os.getuid() == 0
+    variant = a.variant
+    root = pathlib.Path(a.root); outer = pathlib.Path(a.outer); cg = outer / 'delegated'
+    nonce = a.nonce
+    manifest = pathlib.Path(str(root) + '.manifest-' + variant + '.json')
+    root.mkdir(mode=0o755, exist_ok=True)
+    manifest_append(manifest, {'step': 0, 'action': 'provisioner-start', 'nonce': nonce, 'variant': variant})
+    (root / 'input').write_text(nonce); os.chmod(root / 'input', 0o444)
+    manifest_append(manifest, {'step': 1, 'action': 'workspace+input', 'paths': [str(root), str(root / 'input')]})
+    outer.mkdir(exist_ok=True); write(outer / 'memory.max', 268435456); write(outer / 'pids.max', 64)
+    write(outer / 'memory.swap.max', 0); write(outer / 'cgroup.subtree_control', '+memory +pids')
+    cg.mkdir(exist_ok=True); write(cg / 'memory.max', 268435456); write(cg / 'pids.max', 64)
+    write(cg / 'cgroup.subtree_control', '+memory +pids'); leaf_own(cg)
+    for name in ('manager', 'target', 'positive'):
+        (cg / name).mkdir(exist_ok=True); leaf_own(cg / name)
+    write(cg / 'target/memory.max', 134217728); write(cg / 'target/pids.max', 48)
+    manifest_append(manifest, {'step': 2, 'action': 'cgroup-tree',
+                               'paths': [str(outer), str(cg), str(cg / 'manager'), str(cg / 'target'),
+                                         str(cg / 'positive')]})
+    if variant == 'r1a':
+        manifest_append(manifest, {'step': 3, 'action': 'barrier-pre-manager-spawn',
+                                   'fault': 'SIGKILL self mid-provisioning'})
+        os.kill(os.getpid(), signal.SIGKILL)
+        return
+    # r1b: complete provisioning, spawn the manager, die once its release
+    # is observed in the capture file.
+    data = {'compile': run(['/usr/bin/gcc', '-static', '-O2', '-Wall', '-Wextra', '-o',
+                            str(root / 'worker'), str(pathlib.Path(__file__).with_suffix('.c'))])}
+    if data['compile']['rc']:
+        manifest_append(manifest, {'step': 3, 'action': 'compile-failed', 'fault': 'SIGKILL self'})
+        os.kill(os.getpid(), signal.SIGKILL)
+        return
+    os.chown(root, UID, UID)
+    capture = root / 'r1b-capture.txt'
+    capture.touch(); os.chown(capture, UID, UID)
+    manifest_append(manifest, {'step': 3, 'action': 'worker+capture',
+                               'paths': [str(root / 'worker'), str(capture)],
+                               'worker_sha256': sha(root / 'worker')})
+    def drop_r1():
+        write(cg / 'manager/cgroup.procs', os.getpid()); os.setgroups([]); os.setgid(UID); os.setuid(UID)
+        bounds(fsize=False)
+    cmd = [sys.executable, __file__, '--manager', '--case', 'r1worker', '--root', str(root),
+           '--cg', str(cg), '--nonce', nonce, '--outer-frag', str(outer).removeprefix('/sys/fs/cgroup')]
+    with open(capture, 'w') as cap:
+        m = subprocess.Popen(cmd, stdout=cap, stderr=subprocess.STDOUT, preexec_fn=drop_r1, close_fds=True)
+        manifest_append(manifest, {'step': 4, 'action': 'manager-spawned', 'manager_pid': m.pid})
+        t0 = time.monotonic(); seen = False
+        while time.monotonic() - t0 < 60.0:
+            try:
+                if 'SPAWNED' in capture.read_text():
+                    seen = True
+                    break
+            except OSError:
+                pass
+            if m.poll() is not None:
+                break
+            time.sleep(0.05)
+        manifest_append(manifest, {'step': 5, 'action': 'barrier-release-observed' if seen else 'barrier-manager-gone',
+                                   'fault': 'SIGKILL self post-manager-spawn'})
+        os.kill(os.getpid(), signal.SIGKILL)
+
+def run_r1(a):
+    """R1 independent surviving observer (root): provision nothing itself,
+    await the provisioner's death, then audit release/domain/population and
+    enforce whole-domain cleanup on a dedicated R1 domain."""
+    assert os.getuid() == 0
+    variant = a.variant
+    nonce = uuid.uuid4().hex
+    root = pathlib.Path('/tmp') / ('gagamba-ar7-P07-' + nonce)
+    outer = pathlib.Path('/sys/fs/cgroup') / ('gagamba-ar7-P07-' + nonce)
+    outer_frag = str(outer).removeprefix('/sys/fs/cgroup')
+    manifest = pathlib.Path(str(root) + '.manifest-' + variant + '.json')
+    data = {'leg': 'r1' + variant, 'source_sha': a.source_sha, 'nonce': nonce,
+            'date_utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
+            'host': {'kernel': os.uname().release, 'arch': os.uname().machine},
+            'source_hashes': {p.name: sha(p) for p in list(pathlib.Path(__file__).parent.glob('p07.*'))},
+            'paths': {'root': str(root), 'outer': str(outer)}, 'observer_uid': 0}
+    try:
+        if sha('/usr/bin/bwrap') != PIN or os.stat('/usr/bin/bwrap').st_mode & 0o6000:
+            raise RuntimeError('helper pin/nonsetuid prerequisite changed')
+        cmd = [sys.executable, __file__, '--provisioner', '--variant', variant, '--root', str(root),
+               '--outer', str(outer), '--nonce', nonce]
+        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, close_fds=True)
+        try:
+            out, _ = p.communicate(timeout=120)
+            data['provisioner_rc'] = p.returncode
+            data['provisioner_signo'] = -p.returncode if p.returncode < 0 else 0
+            data['provisioner_output'] = out.decode(errors='replace')[-2000:]
+        except subprocess.TimeoutExpired:
+            p.kill(); p.communicate()
+            data['provisioner_watchdog'] = True
+        steps = []
+        try:
+            with open(manifest) as f:
+                for line in f:
+                    line = line.strip()
+                    if line:
+                        steps.append(json.loads(line))
+        except OSError as e:
+            data['manifest_error'] = repr(e)
+        data['manifest_steps'] = steps
+        if variant == 'r1a':
+            listed = [path for s in steps for path in s.get('paths', [])]
+            data['manifest_paths'] = listed
+            data['paths_exist'] = {q: pathlib.Path(q).exists() for q in listed}
+            procs = leaf_pids(outer / 'delegated', outer_frag) if (outer / 'delegated').exists() else []
+            data['domain_processes'] = procs
+            data['target_released'] = False
+            for q in listed:
+                qp = pathlib.Path(q)
+                try:
+                    if qp.is_file() or qp.is_symlink():
+                        qp.unlink()
+                except OSError as e:
+                    data.setdefault('removal_errors', []).append(repr(e))
+            for q in sorted([q for q in listed if pathlib.Path(q).is_dir()], reverse=True):
+                try:
+                    pathlib.Path(q).rmdir()
+                except OSError as e:
+                    data.setdefault('removal_errors', []).append(repr(e))
+            data['cleanup_absence'] = {'outer': not outer.exists(), 'workspace': not root.exists(),
+                                       'manifest': not manifest.exists()}
+            for q in (root, manifest):
+                try:
+                    if q.is_file() or q.is_symlink():
+                        q.unlink()
+                    elif q.is_dir():
+                        q.rmdir()
+                except OSError as e:
+                    data.setdefault('removal_errors', []).append(repr(e))
+            data['cleanup_absence'] = {'outer': not outer.exists(), 'workspace': not root.exists(),
+                                       'manifest': not manifest.exists()}
+            ok = (data['provisioner_signo'] == signal.SIGKILL and not procs
+                  and all(data['cleanup_absence'].values()) and not data.get('removal_errors'))
+            data['verdict'] = ('SUPPORTED-leg (caller died mid-provisioning; manifest-driven audit: '
+                               'nothing released, no domain population, all listed state removed)'
+                               if ok else 'INCONCLUSIVE (R1a audit unmet)')
+        else:
+            cap = root / 'r1b-capture.txt'
+            try:
+                data['capture'] = cap.read_text()[-4000:]
+            except OSError as e:
+                data['capture_error'] = repr(e)
+            spawned = 'SPAWNED' in data.get('capture', '')
+            mgr = [e for e in leaf_pids(outer / 'delegated', outer_frag) if e['leaf'] == 'manager']
+            tgt = [e for e in leaf_pids(outer / 'delegated', outer_frag) if e['leaf'] == 'target']
+            data['manager_leaf'] = mgr; data['target_leaf_pre_kill'] = [(e['pid'], e['cmdline'][:60]) for e in tgt]
+            data['ownership_without_caller'] = spawned and len(mgr) > 0 and len(tgt) > 0
+            if outer.exists():
+                write(outer / 'cgroup.kill', 1)
+                for _ in range(50):
+                    if 'populated 0' in read(outer / 'cgroup.events'):
+                        break
+                    time.sleep(.1)
+                data['outer_empty'] = 'populated 0' in read(outer / 'cgroup.events')
+                known = {'manager', 'target', 'positive'}
+                for parent in (outer / 'delegated', outer):
+                    if parent.exists():
+                        for q in sorted(parent.iterdir()):
+                            if q.is_dir() and q.name in known:
+                                try:
+                                    q.rmdir()
+                                except OSError:
+                                    pass
+                        try:
+                            parent.rmdir()
+                        except OSError:
+                            pass
+            data['outer_gone'] = not outer.exists()
+            try:
+                data['capture_final'] = cap.read_text()[-2000:]
+            except OSError:
+                pass
+            if root.exists():
+                for q in list(root.iterdir()):
+                    try:
+                        if q.is_file() or q.is_symlink():
+                            q.unlink()
+                    except OSError:
+                        pass
+                for q in list(root.iterdir()):
+                    try:
+                        if q.is_dir():
+                            q.rmdir()
+                    except OSError as e:
+                        data.setdefault('removal_errors', []).append(repr(e))
+                try:
+                    root.rmdir()
+                except OSError as e:
+                    data.setdefault('removal_errors', []).append(repr(e))
+            if manifest.exists():
+                try:
+                    manifest.unlink()
+                except OSError as e:
+                    data.setdefault('removal_errors', []).append(repr(e))
+            data['cleanup_absence'] = {'outer': not outer.exists(), 'workspace': not root.exists(),
+                                       'manifest': not manifest.exists()}
+            ok = (data['provisioner_signo'] == signal.SIGKILL and data['ownership_without_caller']
+                  and data.get('outer_empty') and all(data['cleanup_absence'].values()))
+            data['verdict'] = ('SUPPORTED-leg (caller died post-spawn; release + domain population '
+                               'survived without the caller; observer-enforced domain kill emptied; all removed)'
+                               if ok else 'INCONCLUSIVE (R1b audit unmet)')
+    except Exception as e:
+        data['setup_error'] = repr(e)
+    dest = pathlib.Path(a.output); dest.mkdir(parents=True, exist_ok=True)
+    (dest / ('r1-' + variant + '-' + nonce + '.json')).write_text(json.dumps(data, indent=2))
+    print(json.dumps(data, indent=2))
+    return 0 if data.get('verdict', '').startswith('SUPPORTED') else 2
+
+def r5_wrapper(a):
+    """R5 observer loss at a proven phase (root). The manager persists a
+    nonce phase file only after IT observes target execution; the wrapper
+    kills the observer solely on (phase file + populated leaf). Binds exact
+    source SHA and harness hashes, unlike the original C11 record."""
+    assert os.getuid() == 0
+    here = pathlib.Path(__file__).parent
+    binding = {'source_sha': a.source_sha or '',
+               'p07_py_sha256': sha(here / 'p07.py'), 'p07_c_sha256': sha(here / 'p07.c')}
+    cmd = [sys.executable, __file__, '--observer-only-r5', '--source-sha', a.source_sha or '',
+           '--output', a.output]
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1, close_fds=True)
+    nonce = None; killed = False; transcript = []
+    try:
+        line = p.stdout.readline()
+        transcript.append(line[:500])
+        if line.startswith('NONCE '):
+            nonce = line.split()[1].strip()
+        else:
+            raise RuntimeError('no NONCE first line: ' + line[:200])
+        root = pathlib.Path('/tmp') / ('gagamba-ar7-P07-' + nonce)
+        outer = pathlib.Path('/sys/fs/cgroup') / ('gagamba-ar7-P07-' + nonce)
+        phase = root / 'phase-r5'
+        target_procs = outer / 'delegated' / 'target' / 'cgroup.procs'
+        t0 = time.monotonic(); proven = False
+        while time.monotonic() - t0 < 90.0:
+            try:
+                if phase.exists() and target_procs.read_text().strip():
+                    proven = True
+                    break
+            except OSError:
+                pass
+            time.sleep(0.05)
+        transcript.append('proven_phase=%r' % proven)
+        try:
+            transcript.append('phase_content=' + phase.read_text()[:200])
+        except OSError as e:
+            transcript.append('phase_read_error=' + repr(e))
+        if proven:
+            time.sleep(1.0)
+            p.send_signal(signal.SIGKILL)
+            killed = True
+        p.wait(timeout=30)
+    except Exception as e:
+        transcript.append('wrapper-error: ' + repr(e))
+    audit = {'leg': 'r5', 'binding': binding, 'nonce': nonce, 'observer_killed': killed,
+             'observer_rc': p.poll()}
+    if nonce:
+        root = pathlib.Path('/tmp') / ('gagamba-ar7-P07-' + nonce)
+        outer = pathlib.Path('/sys/fs/cgroup') / ('gagamba-ar7-P07-' + nonce)
+        try:
+            if outer.exists():
+                write(outer / 'cgroup.kill', 1)
+                for _ in range(50):
+                    if 'populated 0' in read(outer / 'cgroup.events'):
+                        break
+                    time.sleep(.1)
+                audit['outer_empty'] = 'populated 0' in read(outer / 'cgroup.events')
+                for parent in (outer / 'delegated', outer):
+                    if parent.exists():
+                        for q in sorted(parent.iterdir()):
+                            if q.is_dir():
+                                try:
+                                    q.rmdir()
+                                except OSError:
+                                    pass
+                        try:
+                            parent.rmdir()
+                        except OSError:
+                            pass
+            audit['outer_gone'] = not outer.exists()
+            if root.exists():
+                for q in list(root.iterdir()):
+                    try:
+                        if q.is_file() or q.is_symlink():
+                            q.unlink()
+                    except OSError:
+                        pass
+                try:
+                    root.rmdir()
+                except OSError as e:
+                    audit['workspace_error'] = repr(e)
+            audit['workspace_gone'] = not root.exists()
+        except Exception as e:
+            audit['audit_error'] = repr(e)
+        # Temporal split, explicit: execution result Unknown after observer
+        # loss (never recovered); domain cleanup confirmed independently
+        # afterwards. Cleanup confirmation implies nothing about results.
+        audit['execution_result'] = 'UNKNOWN (observer loss; never recovered or inferred)'
+        audit['verdict'] = ('SUPPORTED-leg (proven-phase observer loss; result Unknown; '
+                            'independent domain cleanup confirmed afterwards)'
+                            if killed and audit.get('outer_gone') and audit.get('workspace_gone')
+                            else 'INCONCLUSIVE (R5 wrapper audit unmet)')
+    audit['transcript_tail'] = transcript[-15:]
+    dest = pathlib.Path(a.output); dest.mkdir(parents=True, exist_ok=True)
+    (dest / ('r5-wrapper-' + (nonce or 'nononce') + '.json')).write_text(json.dumps(audit, indent=2))
+    print(json.dumps(audit, indent=2))
+    return 0 if audit.get('verdict', '').startswith('SUPPORTED') else 2
+
 if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument('--manager', action='store_true')
     ap.add_argument('--c11-wrapper', action='store_true')
     ap.add_argument('--observer-only-c11', action='store_true')
+    ap.add_argument('--provisioner', action='store_true')
+    ap.add_argument('--r1', action='store_true')
+    ap.add_argument('--r5-wrapper', action='store_true')
+    ap.add_argument('--observer-only-r5', action='store_true')
+    ap.add_argument('--variant'); ap.add_argument('--outer')
     ap.add_argument('--case'); ap.add_argument('--only')
     ap.add_argument('--source-sha'); ap.add_argument('--output')
     ap.add_argument('--root'); ap.add_argument('--cg'); ap.add_argument('--nonce'); ap.add_argument('--outer-frag')
@@ -932,6 +1643,15 @@ if __name__ == '__main__':
         sys.exit(c11_wrapper(args))
     elif args.observer_only_c11:
         args.only = 'c11-wrapper-victim'; args.quiet = True
+        sys.exit(observer(args))
+    elif args.provisioner:
+        provisioner(args)
+    elif args.r1:
+        sys.exit(run_r1(args))
+    elif args.r5_wrapper:
+        sys.exit(r5_wrapper(args))
+    elif args.observer_only_r5:
+        args.only = 'r5phase'; args.quiet = True
         sys.exit(observer(args))
     else:
         sys.exit(observer(args))

@@ -68,6 +68,34 @@ int main(int argc, char **argv) {
         printf("root_holding %ld\n", N);
         sleep((unsigned int)(N > 0 ? N : 30)); // long-lived root, no children (C6/C10 victim)
         return 0;
+    } else if (!strcmp(mode, "holdchild")) {
+        wait_go();
+        pid_t c = fork(); result("fork", c);
+        if (c == 0) { detach_stdout(); sleep((unsigned int)(N > 0 ? N : 30)); _exit(0); }
+        printf("child %d sleep %ld root_holding\n", (int)c, N);
+        sleep((unsigned int)(N > 0 ? N : 30)); // root AND descendant alive together (R3)
+        goto trailer;
+    } else if (!strcmp(mode, "trickle")) {
+        wait_go();
+        // R4: bounded incremental spawner. SIGPIPE ignored so the spawn loop
+        // survives the manager closing the pipe (stop must come from the
+        // lifecycle domain, never from pipe fate).
+        signal(SIGPIPE, SIG_IGN);
+        long want = N > 0 ? N : 30;
+        if (want > 30) want = 30;
+        long made = 0; int fail_errno = 0;
+        for (long i = 0; i < want; i++) {
+            pid_t c = fork();
+            if (c < 0) { fail_errno = errno; break; }
+            if (c == 0) { detach_stdout(); sleep(10); _exit((int)i); }
+            made++;
+            printf("spawned %ld\n", made);
+            usleep(100000);
+        }
+        printf("trickle_done %ld fail_errno %d\n", made, fail_errno);
+        int st = 0;
+        while (waitpid(-1, &st, 0) > 0) {}
+        goto trailer;
     } else if (!strcmp(mode, "pipeholder")) {
         wait_go();
         pid_t c = fork(); result("fork", c);
@@ -130,6 +158,9 @@ int main(int argc, char **argv) {
         if (ns >= 0) { result("setns_host", setns(ns, CLONE_NEWPID)); close(ns); }
         result("mkdir_mnt", mkdir("/tmp/mnt-p07", 0700));
         result("mount_tmpfs", mount("none", "/tmp/mnt-p07", "tmpfs", 0, ""));
+        // R7-cleanup: the mount attempt is expected to fail; never leave the
+        // fixture mountpoint behind on the host (positives run unconfined).
+        result("rmdir_mnt", rmdir("/tmp/mnt-p07"));
         result("pdeathsig_set", prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0));
         int sig = 0; result("pdeathsig_get", prctl(PR_GET_PDEATHSIG, (unsigned long)&sig, 0, 0, 0));
         printf("pdeathsig_val %d\n", sig);
