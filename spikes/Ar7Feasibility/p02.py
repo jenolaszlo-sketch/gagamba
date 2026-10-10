@@ -58,8 +58,8 @@ def manager(a):
         out['control_pid']=control.pid
         out['control_membership']=read(f'/proc/{control.pid}/cgroup')
         socket_path=str(root/'daemon.sock'); abstract='ar7-P02-'+a.nonce
-        for address in (socket_path,'\0'+abstract):
-            s=socket.socket(socket.AF_UNIX);s.bind(address);s.listen(4);s.setblocking(False);listeners.append(s)
+        for socket_address in (socket_path,'\0'+abstract):
+            s=socket.socket(socket.AF_UNIX);s.bind(socket_address);s.listen(4);s.setblocking(False);listeners.append(s)
         # Keep one known control FD open; child execs close everything except seccomp.
         authority=os.open(cg/'cgroup.procs',os.O_WRONLY|os.O_CLOEXEC)
         args=[str(cg),str(os.getpid()),str(control.pid),socket_path,abstract,a.nonce,str(root/'input'),address,str(authority)]
