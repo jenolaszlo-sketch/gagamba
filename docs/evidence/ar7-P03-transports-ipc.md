@@ -99,12 +99,15 @@ nonces' workspaces/cgroups/endpoint names absent. Watchdog never fired.
 
 ## Review, consequence, and non-claims
 
-No Luna read-only challenge has yet covered this run; that review is pending
-and its absence is recorded here rather than treated as qualification. The
-follow-up discipline from P02 (review-driven variants, exact-source binding)
-was applied by construction. Suggested review checklist (all artifacts cited
-above): positive-gate completeness for both syscall paths; io_uring field
-layout provenance (liburing-mapped, empirically verified pre-harness);
+Independent review: pending / not performed in this session. No independent
+reviewer (another model or human in a separate session) has yet covered this
+run; that absence is recorded here rather than treated as qualification or
+approval. The follow-up discipline from P02 (review-driven variants,
+exact-source binding) was applied by construction. Independent review is a
+quality gate before final architectural acceptance, not a blocker for
+designing the next probe. Checklist for the future reviewer (all artifacts
+cited above): positive-gate completeness for both syscall paths; io_uring
+field layout provenance (liburing-mapped, empirically verified pre-harness);
 barrier attribution per errno (filter vs namespace vs capability); phase-tag
 race audit in listener threads; abstract-socket netns scoping claim; EACCES
 ping-socket interpretation; cleanup independence; any variant that would
