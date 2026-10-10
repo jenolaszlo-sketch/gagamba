@@ -218,8 +218,7 @@ int main(int argc, char **argv) {
             }
             printf("zero_bytes %ld\n", total); close(f);
         }
-        f = open("/target/probe", O_CREAT | O_EXCL | O_WRONLY | O_CLOEXEC, 0600);
-        result("target_write", f);
+        f = open(argv[5], O_WRONLY | O_CLOEXEC); result("rofile_write", f);
         if (f >= 0) close(f);
         f = open("/sys/x", O_CREAT | O_EXCL | O_WRONLY | O_CLOEXEC, 0600);
         result("sys_write", f);

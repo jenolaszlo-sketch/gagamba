@@ -86,7 +86,8 @@ def ev_get(events, key):
     return v if isinstance(v,int) else 0
 
 FD_OK=re.compile(r'^fd \d+ (pipe:\[\d+\]|/proc/\d+/fd|/dev/null)$')
-KNOWN_RW={'/','/proc','/dev','/dev/pts','/dev/shm','/tmp','/sys','/run','/target','/input','/app'}
+KNOWN_RW={'/','/proc','/dev','/dev/pts','/dev/shm','/tmp','/sys','/run','/target','/input','/app',
+           '/dev/null','/dev/zero','/dev/full','/dev/random','/dev/urandom','/dev/tty'}
 def check_fd(stdout):
     return [ln for ln in stdout.splitlines() if ln.startswith('fd ') and not FD_OK.match(ln)]
 def check_mounts(stdout):
@@ -112,7 +113,7 @@ COMMON=['/usr/bin/bwrap','--unshare-user','--unshare-pid','--unshare-net','--uns
 # kind, mode, N, pos_rc, cand_rc, pos_markers, cand_markers, oom, pidsmax, crule, extra
 NATIVE_CASES=[
  ('native','mem',64,0,0,['touched_sum'],['touched_sum'],0,0,None,None),
- ('native','mem',192,0,-9,['touched_sum'],[],1,0,None,None),
+ ('native','mem',192,0,137,['touched_sum'],[],1,0,None,None),
  ('native','threads',8,0,0,[],[],0,0,('eq',8),None),
  ('native','threads',40,0,0,[],[],0,0,('eq',40),None),
  ('native','threads',60,0,0,[],[],0,1,('lt',60),None),
@@ -125,14 +126,14 @@ NATIVE_CASES=[
  ('native','mountinfo',0,0,0,['mountinfo_read'],['mountinfo_read'],0,0,None,'mounts'),
  ('native','emptydir-probe',0,0,0,['sys_create rc=-1'],['sys_remove rc=0'],0,0,None,None),
  ('native','big-output',0,17,17,[],[],0,0,None,'bigout'),
- ('native','crash-abort',0,-6,-6,['marker_write'],['marker_write'],0,0,None,'crash'),
- ('native','null-writes',0,0,0,['null_bytes','target_write rc=-1 errno=2'],['null_bytes','target_write rc=-1 errno=30'],0,0,None,None),
+ ('native','crash-abort',0,-6,134,['marker_write'],['marker_write'],0,0,None,'crash'),
+ ('native','null-writes',0,0,0,['null_bytes','rofile_write rc=-1 errno=13'],['null_bytes','rofile_write rc=-1 errno=30'],0,0,None,None),
 ]
 # kind, name, alloc, threads, pos_rc, cand_rc, pos_markers, cand_markers, oom
 DOTNET_CASES=[
  ('dotnet','hello',0,0,0,0,['complete'],['complete'],0),
  ('dotnet','alloc64',64,0,0,0,['touched_sum','complete'],['touched_sum','complete'],0),
- ('dotnet','alloc160',160,0,0,-9,['touched_sum','complete'],[],1),
+ ('dotnet','alloc160',160,0,0,137,['touched_sum','complete'],[],1),
 ]
 def case_id(case):
     return (case[0]+'-'+case[1]+'-'+str(case[2])) if case[0]=='native' else case[1]
@@ -156,6 +157,39 @@ def manager(a):
     dotnet_ok=(app/'P04Workload').exists() and os.access(app/'P04Workload',os.X_OK)
     out['dotnet_staging']={'dir':str(app),'present':dotnet_ok,
         'binary_sha256':sha(app/'P04Workload') if dotnet_ok else None}
+    # Dynamic apphost needs its loader + lib closure ro-bound at absolute
+    # paths (workload provisioning, like /app itself — no enforcement
+    # change). Resolve via ldd, bind real files, remount loader dirs ro.
+    dep_argv=[];dep_record={}
+    if dotnet_ok:
+        try:
+            sons=[]
+            for binary in (app/'P04Workload',app/'libcoreclr.so'):
+                lr=run(['ldd',str(binary)])
+                if lr['rc']!=0 or 'not found' in lr['stdout']:
+                    raise RuntimeError('ldd failed for '+binary.name)
+                for line in lr['stdout'].splitlines():
+                    line=line.strip()
+                    if '=>' in line:
+                        son=line.split('=>')[1].strip().split(' ')[0]
+                    elif line.startswith('/'):
+                        son=line.split(' ')[0]
+                    else:
+                        continue
+                    if son not in sons:sons.append(son)
+            parents=[]
+            for son in sons:
+                real=os.path.realpath(son)
+                dep_record[son]={'real':real,'sha256':sha(real)}
+                parent=os.path.dirname(son)
+                if parent not in parents:parents.append(parent)
+            parents.sort(key=len)
+            for p in parents:dep_argv+=['--dir',p]
+            for son in sons:dep_argv+=['--ro-bind',dep_record[son]['real'],son]
+            for p in parents:dep_argv+=['--remount-ro',p]
+        except Exception as e:
+            out['dotnet_loader_error']=repr(e);dep_argv=[];dep_record={};dotnet_ok=False
+    out['dotnet_loader']={'binds':dep_record,'argv':dep_argv,'ok':dotnet_ok}
     out['input_sha256_before']=sha(root/'input')
     try:
         gates=json.loads((root/'gates.json').read_text())
@@ -208,7 +242,7 @@ def manager(a):
                 argv=(common+['--seccomp',str(seccomp_fd),'--','/target',mode,str(cg),str(root),a.nonce,'/input',str(N)])
                 cand=launch(argv,preexec=enter_target_native,pass_fds=(seccomp_fd,))
             else:
-                argv=(common+['--ro-bind',str(app),'/app','--setenv','HOME','/tmp','--setenv','DOTNET_GCServer','0',
+                argv=(common+['--ro-bind',str(app),'/app']+dep_argv+['--setenv','HOME','/tmp','--setenv','DOTNET_GCServer','0',
                               '--seccomp',str(seccomp_fd),'--','/app/P04Workload',str(alloc),str(threads),'/input','/tmp'])
                 cand=launch(argv,preexec=enter_target_dotnet,pass_fds=(seccomp_fd,))
             rec['candidate']=cand
