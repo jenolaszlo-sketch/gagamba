@@ -338,7 +338,12 @@ def observer(a):
         write(cg/'target/memory.max',134217728);write(cg/'target/pids.max',48)
         os.chown(root,UID,UID)
         def drop():
-            write(cg/'manager/cgroup.procs',os.getpid());os.setgroups([]);os.setgid(UID);os.setuid(UID);bounds()
+            # No FSIZE here: the manager never writes big files, and any
+            # limit set here would be inherited by all candidates, which
+            # cannot raise hard limits unprivileged (measured CoreCLR
+            # startup failure). Per-kind file bounds belong in each
+            # case's own preexec, which may only lower them.
+            write(cg/'manager/cgroup.procs',os.getpid());os.setgroups([]);os.setgid(UID);os.setuid(UID);bounds(fsize=False)
         cmd=[sys.executable,__file__,'--manager','--root',str(root),'--cg',str(cg),'--nonce',nonce,'--app-dir',str(staging)]
         p=subprocess.Popen(cmd,stdout=subprocess.PIPE,stderr=subprocess.PIPE,preexec_fn=drop,close_fds=True)
         data['manager_pid']=p.pid
