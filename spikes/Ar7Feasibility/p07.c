@@ -182,13 +182,26 @@ int main(int argc, char **argv) {
         else { printf("GATE_REFUSED eof\n"); return 125; }
         if (!strcmp(ab, nonce)) {
             printf("GATE_AUTH_OK exec_target\n");
-            char *const av[] = { argv[0], "sleeper", argv[2], argv[3], argv[4], argv[5], "2", NULL };
+            char *const av[] = { argv[0], "spinwork", argv[2], argv[3], argv[4], argv[5], "0", NULL };
             execv("/target", av);
             result("execv_target", -1);
             return 3;
         }
         printf("GATE_REFUSED mismatch\n");
         return 125;
+    } else if (!strcmp(mode, "spinwork")) {
+        // Barrier-free bounded useful work for the gate's post-release exec:
+        // touches 16 MiB across 16 mappings, prints a checksum, exits via the
+        // trailer. Needs no stdin, forks nothing.
+        unsigned long sum = 0;
+        for (long i = 0; i < 16; i++) {
+            char *pg = mmap(NULL, 1 << 20, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+            if (pg == MAP_FAILED) { result("spin_mmap", -1); break; }
+            for (size_t j = 0; j < (1 << 20); j += 4096) { pg[j] = (char)(i + (j >> 12)); sum += (unsigned char)pg[j]; }
+            munmap(pg, 1 << 20);
+        }
+        printf("spinwork_sum %lu\n", sum);
+        goto trailer;
     } else if (!strcmp(mode, "hang")) {
         sleep(30); // no READY by design: C9 setup-hang victim
         return 0;

@@ -1184,13 +1184,13 @@ def do_r2gate(ctx, outer_frag, positive):
         rec['candidate'] = dict(rc=p.returncode, timeout=True)
     out = rec['candidate'].get('stdout_tail', '')
     rec['auth_received_echo'] = 'AUTH_RECEIVED' in out
-    rec['target_markers'] = [m for m in ('GATE_AUTH_OK', 'generation second', 'complete')
+    rec['target_markers'] = [m for m in ('GATE_AUTH_OK', 'spinwork_sum', 'complete')
                              if m in out]
     empty, dt = wait_empty(ctx.cg / 'target', 10.0)
     rec['domain_empty'] = empty; rec['empty_after_s'] = dt
     if positive:
         if (rec['auth_sent'] and rec['auth_received_echo'] and 'GATE_AUTH_OK' in out
-                and 'complete' in out and p.returncode == 0 and empty):
+                and 'spinwork_sum' in out and 'complete' in out and p.returncode == 0 and empty):
             rec['leg'] = ('SUPPORTED-leg (gate released the real target on exact-nonce auth; '
                           'useful bounded work; empty)')
         else:
@@ -2101,6 +2101,7 @@ def run_r2(a, kind):
                     rec = (data.get('manager_result') or {}).get('record', {}) or {}
                     ok = (rec.get('auth_sent') and rec.get('auth_received_echo')
                           and 'GATE_AUTH_OK' in str(rec.get('target_markers'))
+                          and 'spinwork_sum' in str(rec.get('target_markers'))
                           and 'complete' in str(rec.get('target_markers'))
                           and data.get('manager_rc') == 0 and rec.get('domain_empty'))
                     data['verdict'] = ('SUPPORTED-leg (gate released the real target on exact-nonce auth; '
