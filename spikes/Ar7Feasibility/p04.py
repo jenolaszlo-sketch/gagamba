@@ -1,14 +1,15 @@
-"""Disposable P04 only. Root provisions, runs all positive controls, and
-observes; manager (UID 65534) runs restricted candidates only. Only root can
-place processes across delegation scopes (measured kernel rule), so positives
-are root-spawned into the outer-bounded leaf with the documented UID handover
-(Popen user=/group=); the observer context cannot create namespaces (measured
-unshare EPERM despite full capabilities), so positives share the host /tmp
-with worker self-cleanup plus root sweeps. Candidates self-place inside the
-delegated subtree as in P02/P03. Candidate composition is otherwise
-byte-identical to frozen P02/P03. No production code. Every case is bounded
-by the outer cgroup and the observer watchdog. Never remove
-target-provided paths.
+"""Disposable P04 only. Single-manager flow as in P02/P03: the manager
+(UID 65534) runs positive controls and restricted candidates, all
+self-placing inside ONE delegated subtree (measured kernel rule: an
+unprivileged writer cannot migrate even itself across delegation scopes;
+CPython applies user=/group= before preexec_fn, so root-spawned positives
+cannot place themselves either — no user= params are used anywhere).
+Candidate composition is byte-identical to frozen P02/P03 except that the
+target leaf now carries EXPLICIT memory.max=128MiB/pids.max=48 (identical
+effective bounds to the inherited ones; the delegated parent passes through
+outer's 256MiB/64). Positives run in a `positive` leaf under delegated
+(outer-level bounds only). No production code. Every case is bounded by the
+outer cgroup and the observer watchdog. Never remove target-provided paths.
 """
 import argparse
 import hashlib
@@ -44,6 +45,7 @@ def bounds(fsize=True):
     # file-size limit breaks CoreCLR startup immediately (0x8007000E), so
     # .NET cases run without it; their storage bound stays the 8 MiB tmpfs
     # plus manager capture caps. Native cases keep the 1 MiB backstop.
+    # Lowering hard limits is permitted unprivileged; no setuid here.
     if fsize:
         resource.setrlimit(resource.RLIMIT_FSIZE, (1048576,1048576))
     resource.setrlimit(resource.RLIMIT_NOFILE,(64,64))
@@ -131,11 +133,9 @@ DOTNET_CASES=[
 def case_id(case):
     return (case[0]+'-'+case[1]+'-'+str(case[2])) if case[0]=='native' else case[1]
 
-def launch(cmd, cwd=None, env=None, preexec=None, pass_fds=(), timeout=20,
-           as_uid=False):
-    extra = dict(user=UID, group=UID, extra_groups=[]) if as_uid else {}
+def launch(cmd, cwd=None, env=None, preexec=None, pass_fds=(), timeout=20):
     p=subprocess.Popen(cmd,stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.PIPE,
-                       cwd=cwd,env=env,close_fds=True,pass_fds=pass_fds,preexec_fn=preexec,**extra)
+                       cwd=cwd,env=env,close_fds=True,pass_fds=pass_fds,preexec_fn=preexec)
     try:
         stdout,stderr=p.communicate(timeout=timeout)
         return dict(rc=p.returncode,out_len=len(stdout),err_len=len(stderr),
@@ -148,13 +148,11 @@ def launch(cmd, cwd=None, env=None, preexec=None, pass_fds=(), timeout=20,
 def manager(a):
     assert os.getuid()==UID and os.getgid()==UID
     cg=pathlib.Path(a.cg); root=pathlib.Path(a.root); app=pathlib.Path(a.app_dir)
+    nonce=a.nonce
     out={'uid':os.getuid(),'gid':os.getgid(),'status':read('/proc/self/status'),'cgroup':read('/proc/self/cgroup')}
     dotnet_ok=(app/'P04Workload').exists() and os.access(app/'P04Workload',os.X_OK)
     out['dotnet_staging']={'dir':str(app),'present':dotnet_ok,
         'binary_sha256':sha(app/'P04Workload') if dotnet_ok else None}
-    # Dynamic apphost needs its loader + lib closure ro-bound at absolute
-    # paths (workload provisioning, like /app itself — no enforcement
-    # change). Resolve via ldd, bind real files, remount loader dirs ro.
     dep_argv=[];dep_record={}
     if dotnet_ok:
         try:
@@ -181,32 +179,18 @@ def manager(a):
             parents.sort(key=len)
             for p in parents:dep_argv+=['--dir',p]
             for son in sons:dep_argv+=['--ro-bind',dep_record[son]['real'],son]
-            # No --remount-ro: it applies to mount points, not plain dirs
-            # (measured: "Unable to find in mount table"). Loader dirs stay
-            # writable private tmpfs, memcg-bounded and destroyed at teardown
-            # — same class as /sys//run, covered by the mount inventory.
         except Exception as e:
             out['dotnet_loader_error']=repr(e);dep_argv=[];dep_record={};dotnet_ok=False
     out['dotnet_loader']={'binds':dep_record,'argv':dep_argv,'ok':dotnet_ok}
     out['input_sha256_before']=sha(root/'input')
-    try:
-        gates=json.loads((root/'gates.json').read_text())
-        positives=json.loads((root/'positives.json').read_text())
-    except OSError as e:
-        out['error']='gate file missing: '+repr(e);print(json.dumps(out),flush=True);return
-    out['positives_embedded']=sorted(positives.keys())
-    try:
-        out['positives']={k:positives[k] for k in sorted(positives.keys())}
-    except Exception as e:
-        out['positives_embed_error']=repr(e)
     cases=[]; halted=False; seccomp_fd=None
     try:
         (cg/'sibling').mkdir();out['sibling_create']=True
         write(cg/'sibling/memory.max',67108864);write(cg/'sibling/pids.max',16)
-        def enter_target_native():
-            write(cg/'target/cgroup.procs',os.getpid());bounds()
-        def enter_target_dotnet():
-            write(cg/'target/cgroup.procs',os.getpid());bounds(fsize=False)
+        def enter_positive(native_dotnet):
+            write(cg/'positive/cgroup.procs',os.getpid());bounds(fsize=(native_dotnet=='native'))
+        def enter_target(dotnet):
+            write(cg/'target/cgroup.procs',os.getpid());bounds(fsize=not dotnet)
         seccomp_fd=os.memfd_create('ar7-P04-seccomp',os.MFD_CLOEXEC)
         os.write(seccomp_fd,filter_bytes());os.lseek(seccomp_fd,0,0)
         out['filter_sha256']=hashlib.sha256(filter_bytes()).hexdigest()
@@ -216,33 +200,63 @@ def manager(a):
             if kind=='dotnet' and not dotnet_ok:
                 cases.append({'case':case[1],'leg':'INCONCLUSIVE (staging absent)'})
                 continue
-            dname=case_id(case)
             if kind=='native':
                 _,mode,N,pos_rc,cand_rc,pos_markers,cand_markers,oom,pidsmax,crule,extra=case
+                dname=case_id(case)
             else:
-                _,_,alloc,threads,pos_rc,cand_rc,pos_markers,cand_markers,oom=case
+                _,dname,alloc,threads,pos_rc,cand_rc,pos_markers,cand_markers,oom=case
                 N=(alloc,threads);mode=None;crule=None;extra=None;pidsmax=0
             if halted:
                 cases.append({'case':dname,'status':'NOT RUN (halted after BLOCKED leg)'})
                 continue
             rec={'case':dname,'N':N}
-            g=gates.get(dname)
-            if not isinstance(g,dict) or not g.get('ok'):
+            files_before=sorted(p.name for p in root.iterdir())
+            # Positive control in the outer-bounded positive leaf.
+            if kind=='native':
+                pos_cmd=[str(root/'worker'),mode,str(cg),str(root),nonce,str(root/'input'),str(N)]
+                pos_kw=dict(cwd=str(root),env=None,preexec=lambda:enter_positive('native'))
+            else:
+                pos_cmd=[str(app/'P04Workload'),str(alloc),str(threads),str(root/'input'),str(root)]
+                pos_kw=dict(cwd=str(root),
+                            env={'HOME':str(root),'DOTNET_GCServer':'0','PATH':os.environ.get('PATH','')},
+                            preexec=lambda:enter_positive('dotnet'))
+            pos=launch(pos_cmd,**pos_kw);rec['positive']=pos
+            pos_ok=(pos['rc']==pos_rc and not pos['timeout']
+                    and all(m in pos['stdout'] for m in pos_markers))
+            if kind=='native':
+                pos_ok=pos_ok and not check_fd(pos['stdout'])
+                if mode=='threads':
+                    pos_ok=pos_ok and created_threads(pos['stdout'])==N
+                if mode=='big-output':
+                    pos_ok=pos_ok and pos['out_len']>=1048576
+            rec['positive_gate']=pos_ok
+            if kind=='native' and mode=='crash-abort' and (root/'crash-marker').exists():
+                rec['positive_marker']=read(root/'crash-marker')
+                (root/'crash-marker').unlink()
+            if kind=='native' and mode=='shm-path':
+                left=[x.name for x in pathlib.Path('/dev/shm').iterdir() if x.name.startswith('p04-')]
+                rec['positive_shm_left']=left
+                for x in pathlib.Path('/dev/shm').iterdir():
+                    if x.name.startswith('p04-'):x.unlink()
+            for pat in ('fill-*','inode-*'):
+                swept=[x.name for x in pathlib.Path('/tmp').glob(pat)]
+                if swept:
+                    rec.setdefault('host_tmp_swept',[]).extend(swept)
+                    for x in pathlib.Path('/tmp').glob(pat):x.unlink()
+            if not pos_ok:
                 rec['leg']='INCONCLUSIVE (positive gate failed; candidate not released)'
                 cases.append(rec);continue
-            files_before=sorted(p.name for p in root.iterdir())
             bt_before=leaf_counters(cg/'target')
-            # The pass_fds dup shares the memfd offset: every bwrap consumes
-            # the filter bytes, so rewind before each launch or later
-            # candidates read an empty program (measured EINVAL cause).
+            # pass_fds dups share the memfd offset: every bwrap consumes the
+            # filter bytes, so rewind before each launch (measured EINVAL).
             os.lseek(seccomp_fd,0,os.SEEK_SET)
             if kind=='native':
-                argv=(common+['--seccomp',str(seccomp_fd),'--','/target',mode,str(cg),str(root),a.nonce,'/input',str(N)])
-                cand=launch(argv,preexec=enter_target_native,pass_fds=(seccomp_fd,))
+                argv=(common+['--seccomp',str(seccomp_fd),'--','/target',mode,str(cg),str(root),nonce,'/input',str(N)])
+                cand=launch(argv,preexec=lambda:enter_target(False),pass_fds=(seccomp_fd,))
             else:
                 argv=(common+['--ro-bind',str(app),'/app']+dep_argv+['--setenv','HOME','/tmp','--setenv','DOTNET_GCServer','0',
                               '--seccomp',str(seccomp_fd),'--','/app/P04Workload',str(alloc),str(threads),'/input','/tmp'])
-                cand=launch(argv,preexec=enter_target_dotnet,pass_fds=(seccomp_fd,))
+                cand=launch(argv,preexec=lambda:enter_target(True),pass_fds=(seccomp_fd,))
             rec['candidate']=cand
             bt_after=leaf_counters(cg/'target')
             oom_delta=ev_get(bt_after['events'],'oom_kill')-ev_get(bt_before['events'],'oom_kill')
@@ -315,84 +329,12 @@ def observer(a):
         (root/'input').write_text(nonce);os.chmod(root/'input',0o444)
         outer.mkdir();write(outer/'memory.max',268435456);write(outer/'pids.max',64)
         write(outer/'memory.swap.max',0);write(outer/'cgroup.subtree_control','+memory +pids')
-        cg.mkdir();write(cg/'memory.max',134217728);write(cg/'pids.max',48)
+        cg.mkdir();write(cg/'memory.max',268435456);write(cg/'pids.max',64)
         write(cg/'cgroup.subtree_control','+memory +pids');leaf_own(cg)
-        for name in ('manager','target'):(cg/name).mkdir();leaf_own(cg/name)
-        (outer/'unbounded').mkdir();leaf_own(outer/'unbounded')
+        for name in ('manager','target','sibling','positive'):
+            (cg/name).mkdir();leaf_own(cg/name)
+        write(cg/'target/memory.max',134217728);write(cg/'target/pids.max',48)
         os.chown(root,UID,UID)
-        unbounded=outer/'unbounded'
-        def place_pos(dotnet):
-            # No namespaces here: this observer context cannot invoke
-            # unshare (measured EPERM despite full capabilities), while the
-            # bwrap-launched candidates can (clone3 path). Positives therefore
-            # share the host /tmp; workers self-clean and the sweeps below
-            # verify. Placement + bounds run as root; UID handover is via
-            # Popen user=/group= (manual preexec setuid breaks 3.14 Popen).
-            write(unbounded/'cgroup.procs',os.getpid())
-            bounds(fsize=not dotnet)
-        dotnet_ok=data['dotnet_staging']['present']
-        positives={};gates={}
-        all_cases=NATIVE_CASES+([c for c in DOTNET_CASES] if dotnet_ok else [])
-        for case in all_cases:
-            kind=case[0]
-            if kind=='native':
-                _,mode,N,pos_rc,_,pos_markers,_,_,_,crule,extra=case
-                dname=case_id(case)
-                cmd=[str(root/'worker'),mode,str(cg),str(root),nonce,str(root/'input'),str(N)]
-                kw=dict(cwd=str(root),env=None)
-                def pre():
-                    place_pos(False)
-            else:
-                _,dname,alloc,threads,pos_rc,_,pos_markers,_,_=case
-                cmd=[str(staging/'P04Workload'),str(alloc),str(threads),str(root/'input'),str(root)]
-                kw=dict(cwd=str(root),env={'HOME':str(root),'DOTNET_GCServer':'0','PATH':os.environ.get('PATH','')})
-                def pre():
-                    place_pos(True)
-            rec={'case':dname}
-            bu_before=leaf_counters(unbounded)
-            try:
-                pos=launch(cmd,preexec=pre,as_uid=True,**kw)
-            except Exception as e:
-                rec['positive']={'launch_error':repr(e)};rec['gate']=False
-                positives[dname]=rec;gates[dname]={'ok':False,'reason':'launch failed'};continue
-            rec['positive']=pos
-            bu_after=leaf_counters(unbounded)
-            rec['unbounded_oom_delta']=ev_get(bu_after['events'],'oom_kill')-ev_get(bu_before['events'],'oom_kill')
-            ok=(pos['rc']==pos_rc and not pos['timeout']
-                and all(m in pos['stdout'] for m in pos_markers))
-            if kind=='native':
-                ok=ok and not check_fd(pos['stdout'])
-                if mode=='threads':
-                    ok=ok and created_threads(pos['stdout'])==N
-                if mode=='big-output':
-                    ok=ok and pos['out_len']>=1048576
-            rec['gate']=ok
-            gates[dname]={'ok':ok}
-            if kind=='native' and mode=='crash-abort' and (root/'crash-marker').exists():
-                rec['positive_marker']=read(root/'crash-marker')
-                (root/'crash-marker').unlink()
-            if kind=='native' and mode=='shm-path':
-                left=[x.name for x in pathlib.Path('/dev/shm').iterdir() if x.name.startswith('p04-')]
-                rec['positive_shm_left']=left
-                for x in pathlib.Path('/dev/shm').iterdir():
-                    if x.name.startswith('p04-'):x.unlink()
-            # Host /tmp is shared with positives: sweep worker scratch names
-            # (workers self-clean on success paths; this covers violent ends).
-            swept=[]
-            for pat in ('fill-*','inode-*'):
-                for x in pathlib.Path('/tmp').glob(pat):
-                    swept.append(x.name);x.unlink()
-            rec['host_tmp_swept']=swept
-            positives[dname]=rec
-        # Host /tmp is shared with positives: the per-case sweep above is the
-        # primary cleanup for worker scratch names; this final sweep is the
-        # backstop. Candidate /tmp stays private per run (bwrap tmpfs).
-        for pat in ('fill-*','inode-*'):
-            for x in pathlib.Path('/tmp').glob(pat):
-                x.unlink()
-        data['positives']={'count':len(positives),'gates_passed':sum(1 for g in gates.values() if g.get('ok'))}
-        (root/'positives.json').write_text(json.dumps(positives))
-        (root/'gates.json').write_text(json.dumps({k:{'ok':bool(v.get('ok'))} for k,v in gates.items()}))
         def drop():
             write(cg/'manager/cgroup.procs',os.getpid());os.setgroups([]);os.setgid(UID);os.setuid(UID);bounds()
         cmd=[sys.executable,__file__,'--manager','--root',str(root),'--cg',str(cg),'--nonce',nonce,'--app-dir',str(staging)]
@@ -401,7 +343,7 @@ def observer(a):
         data['external_process_samples']={}
         def observe():
             while not done.wait(.05):
-                for path in (cg/'manager',cg/'target',cg/'sibling',outer/'unbounded'):
+                for path in (cg/'manager',cg/'target',cg/'sibling',cg/'positive'):
                     if not path.exists():continue
                     for pid in read(path/'cgroup.procs').split():
                         if not pid.isdecimal() or pid in data['external_process_samples']:continue
@@ -418,7 +360,7 @@ def observer(a):
             data['watchdog_fired']=True;write(outer/'cgroup.kill',1);stdout,stderr=p.communicate(timeout=5)
             data['partial_stdout']=stdout[:32768].decode(errors='replace')
         data['host_shm_p04_left']=[x.name for x in pathlib.Path('/dev/shm').iterdir() if x.name.startswith('p04-')]
-        data['observer_domains']={str(q.relative_to(outer)):read(q/'cgroup.procs') for q in [outer,cg,*cg.iterdir(),*outer.iterdir()] if q.is_dir()}
+        data['observer_domains']={str(q.relative_to(outer)):read(q/'cgroup.procs') for q in [outer,cg,*cg.iterdir()] if q.is_dir()}
     except Exception as e:data['setup_error']=repr(e)
     finally:
         done.set()
@@ -432,9 +374,8 @@ def observer(a):
                     time.sleep(.1)
                 data['cleanup_events']=read(outer/'cgroup.events')
                 if 'populated 0' not in data['cleanup_events']:raise RuntimeError('outer not empty')
-                known={'manager','target','sibling','new-positive','new-candidate','unbounded'}
-                unknown=([q.name for q in cg.iterdir() if q.is_dir() and q.name not in known]
-                         +[q.name for q in outer.iterdir() if q.is_dir() and q.name not in known | {'delegated'}])
+                known={'manager','target','sibling','positive','new-positive','new-candidate'}
+                unknown=[q.name for q in list(cg.iterdir())+list(outer.iterdir()) if q.is_dir() and q.name not in known | {'delegated'}]
                 if unknown:raise RuntimeError('unknown cgroup descendants preserved: '+repr(unknown))
                 for parent in (cg,outer):
                     for name in sorted(known):
@@ -445,7 +386,7 @@ def observer(a):
             except Exception as e:data['cleanup_error']=repr(e)
         if not outer.exists():
             if root.exists():
-                for name in ('input','worker','crash-marker','positives.json','gates.json'):
+                for name in ('input','worker','crash-marker'):
                     q=root/name
                     if q.exists() or q.is_symlink():q.unlink()
                 try:root.rmdir()

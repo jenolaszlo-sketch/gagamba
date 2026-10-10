@@ -1,0 +1,478 @@
+{
+  "probe": "P04",
+  "source_sha": "0f2d13cc6d443b36638080f643f5795ce6c1294b",
+  "nonce": "0ff2eb8a509441e99cb4f11c94b23c00",
+  "date_utc": "2026-10-10T03:06:26Z",
+  "host": {
+    "kernel": "6.6.114.1-microsoft-standard-WSL2",
+    "arch": "x86_64",
+    "distribution": "PRETTY_NAME=\"Ubuntu 26.04.1 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"26.04\"\nVERSION=\"26.04.1 LTS (Resolute Raccoon)\"\nVERSION_CODENAME=resolute\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=resolute\nLOGO=ubuntu-logo",
+    "glibc": "glibc 2.43",
+    "lsm": "UNKNOWN: [Errno 2] No such file or directory: '/sys/kernel/security/lsm'",
+    "yama": "1",
+    "userns_max": "30743",
+    "cgroup_mount": "none /usr/lib/modules/6.6.114.1-microsoft-standard-WSL2 overlay rw,nosuid,nodev,noatime,lowerdir=/modules,upperdir=/lib/modules/6.6.114.1-microsoft-standard-WSL2/rw/upper,workdir=/lib/modules/6.6.114.1-microsoft-standard-WSL2/rw/work,uuid=on 0 0\nnone /mnt/wsl tmpfs rw,relatime 0 0\ndrivers /usr/lib/wsl/drivers 9p ro,nosuid,nodev,noatime,aname=drivers;fmask=222;dmask=222,cache=5,access=client,msize=65536,trans=fd,rfd=8,wfd=8 0 0\n/dev/sdf / ext4 rw,relatime,discard,errors=remount-ro,data=ordered 0 0\nnone /mnt/wslg tmpfs rw,relatime 0 0\n/dev/sdf /mnt/wslg/distro ext4 ro,relatime,discard,errors=remount-ro,data=ordered 0 0\nnone /usr/lib/wsl/lib overlay rw,nosuid,nodev,noatime,lowerdir=/gpu_lib_packaged:/gpu_lib_inbox,upperdir=/gpu_lib/rw/upper,workdir=/gpu_lib/rw/work,uuid=on 0 0\nrootfs /init rootfs ro,size=3935116k,nr_inodes=983779 0 0\nnone /dev devtmpfs rw,nosuid,relatime,size=3935116k,nr_inodes=983779,mode=755 0 0\nsysfs /sys sysfs rw,nosuid,nodev,noexec,noatime 0 0\nproc /proc proc rw,nosuid,nodev,noexec,noatime 0 0\ndevpts /dev/pts devpts rw,nosuid,noexec,noatime,gid=5,mode=620,ptmxmode=000 0 0\nnone /run tmpfs rw,nosuid,nodev,mode=755 0 0\nnone /run/lock tmpfs rw,nosuid,nodev,noexec,noatime 0 0\nnone /run/shm tmpfs rw,nosuid,nodev,noatime 0 0\nnone /dev/shm tmpfs rw,nosuid,nodev,noatime 0 0\nnone /run/user tmpfs rw,nosuid,nodev,noexec,noatime,mode=755 0 0\nbinfmt_misc /proc/sys/fs/binfmt_misc binfmt_misc rw,relatime 0 0\ncgroup2 /sys/fs/cgroup cgroup2 rw,nosuid,nodev,noexec,relatime,nsdelegate 0 0\nnone /mnt/wslg/versions.txt overlay rw,relatime,lowerdir=/systemvhd,upperdir=/system/rw/upper,workdir=/system/rw/work,uuid=on 0 0\nnone /mnt/wslg/doc overlay rw,relatime,lowerdir=/systemvhd,upperdir=/system/rw/upper,workdir=/system/rw/work,uuid=on 0 0\nnone /tmp/.X11-unix tmpfs ro,relatime 0 0\nC:\\134 /mnt/c 9p rw,noatime,aname=drvfs;path=C:\\;uid=0;gid=0;symlinkroot=/mnt/,cache=5,access=client,msize=65536,trans=fd,rfd=6,wfd=6 0 0\nD:\\134 /mnt/d 9p rw,noatime,aname=drvfs;path=D:\\;uid=0;gid=0;symlinkroot=/mnt/,cache=5,access=client,msize=65536,trans=fd,rfd=6,wfd=6 0 0\nnone /run/user tmpfs rw,relatime 0 0\nnone /run/credentials/systemd-journald.service tmpfs ro,nosuid,nodev,noexec,relatime,nosymfollow,size=1024k,nr_inodes=1024,mode=700,noswap 0 0\nmqueue /dev/mqueue mqueue rw,nosuid,nodev,noexec,relatime 0 0\ntracefs /sys/kernel/tracing tracefs rw,nosuid,nodev,noexec,relatime 0 0\nhugetlbfs /dev/hugepages hugetlbfs rw,nosuid,nodev,relatime,pagesize=2M 0 0\ntmpfs /tmp tmpfs rw,nosuid,nodev,nr_inodes=1048576 0 0\ndebugfs /sys/kernel/debug debugfs rw,nosuid,nodev,noexec,relatime 0 0\nconfigfs /sys/kernel/config configfs rw,nosuid,nodev,noexec,relatime 0 0\nfusectl /sys/fs/fuse/connections fusectl rw,nosuid,nodev,noexec,relatime 0 0\nnone /run/credentials/systemd-resolved.service tmpfs ro,nosuid,nodev,noexec,relatime,nosymfollow,size=1024k,nr_inodes=1024,mode=700,noswap 0 0\nnone /tmp/.X11-unix tmpfs ro,relatime 0 0\nnone /run/credentials/getty@tty1.service tmpfs ro,nosuid,nodev,noexec,relatime,nosymfollow,size=1024k,nr_inodes=1024,mode=700,noswap 0 0\ntmpfs /run/user/0 tmpfs rw,nosuid,nodev,relatime,size=788024k,nr_inodes=197006,mode=700 0 0\ntmpfs /mnt/wslg/run/user/0 tmpfs rw,nosuid,nodev,relatime,size=788024k,nr_inodes=197006,mode=700 0 0",
+    "helper": {
+      "argv": [
+        "/usr/bin/bwrap",
+        "--version"
+      ],
+      "rc": 0,
+      "stdout": "bubblewrap 0.11.1\n",
+      "stderr": ""
+    },
+    "helper_sha256": "523da3e7399044be5163aee6f57a77a6bef7454376e28f0a0627920bae1b76b6",
+    "helper_mode": "0o755"
+  },
+  "paths": {
+    "root": "/tmp/gagamba-ar7-P04-0ff2eb8a509441e99cb4f11c94b23c00",
+    "outer": "/sys/fs/cgroup/gagamba-ar7-P04-0ff2eb8a509441e99cb4f11c94b23c00",
+    "delegated": "/sys/fs/cgroup/gagamba-ar7-P04-0ff2eb8a509441e99cb4f11c94b23c00/delegated"
+  },
+  "observer_uid": 0,
+  "source_hashes": {
+    "p04.c": "632dcae4749243bb3311c67bc29221aac692ad9e526550bfcd38dccd016e70ca",
+    "p04.py": "8563d6c2c574faec8fa58851deea5d6d356d3131afb593185ed6fb1c0197a5ed",
+    "Program.cs": "9bbdda26f94ec07979fd91822d55f476f5ad160c586c70bd4b2428c5910ddd03",
+    "P04Workload.csproj": "44994dac618cc6c29bd9ec3882c4b5506dd2794e20ce783b40acd5a5f40906d5"
+  },
+  "dotnet_staging": {
+    "dir": "/mnt/c/Users/Laszlos/source/repos/Gagamba/artifacts/ar7/P04/dotnet",
+    "present": true,
+    "binary_sha256": "2c7bd57ed811ccf800a8587523c273661ddf8e8f350aed496a2aa0f37a190e3c"
+  },
+  "compile": {
+    "argv": [
+      "/usr/bin/gcc",
+      "-static",
+      "-O2",
+      "-pthread",
+      "-Wall",
+      "-Wextra",
+      "-o",
+      "/tmp/gagamba-ar7-P04-0ff2eb8a509441e99cb4f11c94b23c00/worker",
+      "/mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p04.c"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": "/mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p04.c: In function \u2018main\u2019:\n/mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p04.c:197:23: warning: ignoring return value of \u2018write\u2019 declared with attribute \u2018warn_unused_result\u2019 [-Wunused-result]\n  197 |         if (f >= 0) { write(f, nonce, strlen(nonce)); close(f); }\n      |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
+  },
+  "worker_sha256": "c3ebe4c218f1fdebf1341be423c4a00fcafe92b18c838ca3bf52fcda74e70955",
+  "positives": {
+    "count": 19,
+    "gates_passed": 0
+  },
+  "manager_pid": 1055722,
+  "external_process_samples": {
+    "1055722": {
+      "cgroup": "0::/gagamba-ar7-P04-0ff2eb8a509441e99cb4f11c94b23c00/delegated/manager",
+      "status": "Name:\tpython3\nUmask:\t0022\nState:\tR (running)\nTgid:\t1055722\nNgid:\t0\nPid:\t1055722\nPPid:\t1055688\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1055722\nNSpid:\t1055722\nNSpgid:\t1055688\nNSsid:\t1055688\nKthread:\t0\nVmPeak:\t   18976 kB\nVmSize:\t   18976 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t   12284 kB\nVmRSS:\t   12284 kB\nRssAnon:\t    5656 kB\nRssFile:\t    6628 kB\nRssShmem:\t       0 kB\nVmData:\t    7912 kB\nVmStk:\t     132 kB\nVmExe:\t    3608 kB\nVmLib:\t    2668 kB\nVmPTE:\t      76 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000001001000\nSigCgt:\t0000000000000002\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t85\nnonvoluntary_ctxt_switches:\t2",
+      "command": "/usr/bin/python3\u0000/mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p04.py\u0000--manager\u0000--root\u0000/tmp/gagamba-ar7-P04-0ff2eb8a509441e99cb4f11c94b23c00\u0000--cg\u0000/sys/fs/cgroup/gagamba-ar7-P04-0ff2eb8a509441e99cb4f11c94b23c00/delegated\u0000--nonce\u00000ff2eb8a509441e99cb4f11c94b23c00\u0000--app-dir\u0000/mnt/c/Users/Laszlos/source/repos/Gagamba/artifacts/ar7/P04/dotnet\u0000"
+    },
+    "1055726": {
+      "cgroup": "0::/gagamba-ar7-P04-0ff2eb8a509441e99cb4f11c94b23c00/delegated/manager",
+      "status": "Name:\tldd\nUmask:\t0022\nState:\tS (sleeping)\nTgid:\t1055726\nNgid:\t0\nPid:\t1055726\nPPid:\t1055722\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1055726\nNSpid:\t1055726\nNSpgid:\t1055688\nNSsid:\t1055688\nKthread:\t0\nVmPeak:\t    4940 kB\nVmSize:\t    4940 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t    3748 kB\nVmRSS:\t    3748 kB\nRssAnon:\t     300 kB\nRssFile:\t    3448 kB\nRssShmem:\t       0 kB\nVmData:\t     308 kB\nVmStk:\t     132 kB\nVmExe:\t    1036 kB\nVmLib:\t    1908 kB\nVmPTE:\t      52 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000010000\nSigIgn:\t0000000000000004\nSigCgt:\t0000000000010002\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t61\nnonvoluntary_ctxt_switches:\t0",
+      "command": "/bin/bash\u0000/usr/bin/ldd\u0000/mnt/c/Users/Laszlos/source/repos/Gagamba/artifacts/ar7/P04/dotnet/P04Workload\u0000"
+    },
+    "1055730": {
+      "cgroup": "0::/gagamba-ar7-P04-0ff2eb8a509441e99cb4f11c94b23c00/delegated/manager",
+      "status": "Name:\tldd\nUmask:\t0022\nState:\tS (sleeping)\nTgid:\t1055730\nNgid:\t0\nPid:\t1055730\nPPid:\t1055726\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1055730\nNSpid:\t1055730\nNSpgid:\t1055688\nNSsid:\t1055688\nKthread:\t0\nVmPeak:\t    4940 kB\nVmSize:\t    4940 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t    1952 kB\nVmRSS:\t    1952 kB\nRssAnon:\t     300 kB\nRssFile:\t    1652 kB\nRssShmem:\t       0 kB\nVmData:\t     308 kB\nVmStk:\t     132 kB\nVmExe:\t    1036 kB\nVmLib:\t    1908 kB\nVmPTE:\t      52 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000002\nSigIgn:\t0000000000000000\nSigCgt:\t0000000000010002\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t1\nnonvoluntary_ctxt_switches:\t0",
+      "command": "/bin/bash\u0000/usr/bin/ldd\u0000/mnt/c/Users/Laszlos/source/repos/Gagamba/artifacts/ar7/P04/dotnet/P04Workload\u0000"
+    },
+    "1055731": {
+      "cgroup": "0::/gagamba-ar7-P04-0ff2eb8a509441e99cb4f11c94b23c00/delegated/manager",
+      "status": "Name:\tldd\nUmask:\t0022\nState:\tS (sleeping)\nTgid:\t1055731\nNgid:\t0\nPid:\t1055731\nPPid:\t1055730\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1055731\nNSpid:\t1055731\nNSpgid:\t1055688\nNSsid:\t1055688\nKthread:\t0\nVmPeak:\t    4940 kB\nVmSize:\t    4940 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t    2028 kB\nVmRSS:\t    2028 kB\nRssAnon:\t     312 kB\nRssFile:\t    1716 kB\nRssShmem:\t       0 kB\nVmData:\t     308 kB\nVmStk:\t     132 kB\nVmExe:\t    1036 kB\nVmLib:\t    1908 kB\nVmPTE:\t      52 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000010000\nSigIgn:\t0000000000000000\nSigCgt:\t0000000000010002\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t1\nnonvoluntary_ctxt_switches:\t0",
+      "command": "/bin/bash\u0000/usr/bin/ldd\u0000/mnt/c/Users/Laszlos/source/repos/Gagamba/artifacts/ar7/P04/dotnet/P04Workload\u0000"
+    },
+    "1055732": {
+      "cgroup": "0::/gagamba-ar7-P04-0ff2eb8a509441e99cb4f11c94b23c00/delegated/manager",
+      "status": "Name:\tld-linux-x86-64\nUmask:\t0022\nState:\tD (disk sleep)\nTgid:\t1055732\nNgid:\t0\nPid:\t1055732\nPPid:\t1055731\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1055732\nNSpid:\t1055732\nNSpgid:\t1055688\nNSsid:\t1055688\nKthread:\t0\nVmPeak:\t     496 kB\nVmSize:\t     496 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t     256 kB\nVmRSS:\t     256 kB\nRssAnon:\t      32 kB\nRssFile:\t     224 kB\nRssShmem:\t       0 kB\nVmData:\t      24 kB\nVmStk:\t     132 kB\nVmExe:\t     188 kB\nVmLib:\t      56 kB\nVmPTE:\t      24 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000000000000\nSigCgt:\t0000000000000000\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t14\nnonvoluntary_ctxt_switches:\t0",
+      "command": "/lib64/ld-linux-x86-64.so.2\u0000/mnt/c/Users/Laszlos/source/repos/Gagamba/artifacts/ar7/P04/dotnet/P04Workload\u0000"
+    },
+    "1055733": {
+      "cgroup": "0::/gagamba-ar7-P04-0ff2eb8a509441e99cb4f11c94b23c00/delegated/manager",
+      "status": "Name:\tldd\nUmask:\t0022\nState:\tS (sleeping)\nTgid:\t1055733\nNgid:\t0\nPid:\t1055733\nPPid:\t1055722\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1055733\nNSpid:\t1055733\nNSpgid:\t1055688\nNSsid:\t1055688\nKthread:\t0\nVmPeak:\t    4940 kB\nVmSize:\t    4940 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t    3716 kB\nVmRSS:\t    3716 kB\nRssAnon:\t     300 kB\nRssFile:\t    3416 kB\nRssShmem:\t       0 kB\nVmData:\t     308 kB\nVmStk:\t     132 kB\nVmExe:\t    1036 kB\nVmLib:\t    1908 kB\nVmPTE:\t      56 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000010000\nSigIgn:\t0000000000000004\nSigCgt:\t0000000000010002\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t60\nnonvoluntary_ctxt_switches:\t0",
+      "command": "/bin/bash\u0000/usr/bin/ldd\u0000/mnt/c/Users/Laszlos/source/repos/Gagamba/artifacts/ar7/P04/dotnet/libcoreclr.so\u0000"
+    },
+    "1055737": {
+      "cgroup": "0::/gagamba-ar7-P04-0ff2eb8a509441e99cb4f11c94b23c00/delegated/manager",
+      "status": "Name:\tldd\nUmask:\t0022\nState:\tS (sleeping)\nTgid:\t1055737\nNgid:\t0\nPid:\t1055737\nPPid:\t1055733\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1055737\nNSpid:\t1055737\nNSpgid:\t1055688\nNSsid:\t1055688\nKthread:\t0\nVmPeak:\t    4940 kB\nVmSize:\t    4940 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t    2060 kB\nVmRSS:\t    2060 kB\nRssAnon:\t     300 kB\nRssFile:\t    1760 kB\nRssShmem:\t       0 kB\nVmData:\t     308 kB\nVmStk:\t     132 kB\nVmExe:\t    1036 kB\nVmLib:\t    1908 kB\nVmPTE:\t      56 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000002\nSigIgn:\t0000000000000000\nSigCgt:\t0000000000010002\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t2\nnonvoluntary_ctxt_switches:\t0",
+      "command": "/bin/bash\u0000/usr/bin/ldd\u0000/mnt/c/Users/Laszlos/source/repos/Gagamba/artifacts/ar7/P04/dotnet/libcoreclr.so\u0000"
+    },
+    "1055738": {
+      "cgroup": "0::/gagamba-ar7-P04-0ff2eb8a509441e99cb4f11c94b23c00/delegated/manager",
+      "status": "Name:\tldd\nUmask:\t0022\nState:\tS (sleeping)\nTgid:\t1055738\nNgid:\t0\nPid:\t1055738\nPPid:\t1055737\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1055738\nNSpid:\t1055738\nNSpgid:\t1055688\nNSsid:\t1055688\nKthread:\t0\nVmPeak:\t    4940 kB\nVmSize:\t    4940 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t    2068 kB\nVmRSS:\t    2068 kB\nRssAnon:\t     308 kB\nRssFile:\t    1760 kB\nRssShmem:\t       0 kB\nVmData:\t     308 kB\nVmStk:\t     132 kB\nVmExe:\t    1036 kB\nVmLib:\t    1908 kB\nVmPTE:\t      56 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000010000\nSigIgn:\t0000000000000000\nSigCgt:\t0000000000010002\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t1\nnonvoluntary_ctxt_switches:\t0",
+      "command": "/bin/bash\u0000/usr/bin/ldd\u0000/mnt/c/Users/Laszlos/source/repos/Gagamba/artifacts/ar7/P04/dotnet/libcoreclr.so\u0000"
+    },
+    "1055739": {
+      "cgroup": "0::/gagamba-ar7-P04-0ff2eb8a509441e99cb4f11c94b23c00/delegated/manager",
+      "status": "Name:\tld-linux-x86-64\nState:\tD (disk sleep)\nTgid:\t1055739\nNgid:\t0\nPid:\t1055739\nPPid:\t1055738\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t0\nGroups:\t \nNStgid:\t1055739\nNSpid:\t1055739\nNSpgid:\t1055688\nNSsid:\t1055688\nKthread:\t0\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000000000000\nSigCgt:\t0000000000000000\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t19\nnonvoluntary_ctxt_switches:\t0",
+      "command": ""
+    }
+  },
+  "manager_rc": 0,
+  "manager_stderr": "",
+  "manager": {
+    "uid": 65534,
+    "gid": 65534,
+    "status": "Name:\tpython3\nUmask:\t0022\nState:\tR (running)\nTgid:\t1055722\nNgid:\t0\nPid:\t1055722\nPPid:\t1055688\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1055722\nNSpid:\t1055722\nNSpgid:\t1055688\nNSsid:\t1055688\nKthread:\t0\nVmPeak:\t   31696 kB\nVmSize:\t   31696 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t   23012 kB\nVmRSS:\t   23012 kB\nRssAnon:\t   11416 kB\nRssFile:\t   11596 kB\nRssShmem:\t       0 kB\nVmData:\t   13076 kB\nVmStk:\t     132 kB\nVmExe:\t    3608 kB\nVmLib:\t    7348 kB\nVmPTE:\t     104 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000001001000\nSigCgt:\t0000000000000002\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t534\nnonvoluntary_ctxt_switches:\t2",
+    "cgroup": "0::/gagamba-ar7-P04-0ff2eb8a509441e99cb4f11c94b23c00/delegated/manager",
+    "dotnet_staging": {
+      "dir": "/mnt/c/Users/Laszlos/source/repos/Gagamba/artifacts/ar7/P04/dotnet",
+      "present": true,
+      "binary_sha256": "2c7bd57ed811ccf800a8587523c273661ddf8e8f350aed496a2aa0f37a190e3c"
+    },
+    "dotnet_loader": {
+      "binds": {
+        "/usr/lib/x86_64-linux-gnu/libdl.so.2": {
+          "real": "/usr/lib/x86_64-linux-gnu/libdl.so.2",
+          "sha256": "59d725ca30596a9863f4fa2552a7125f834842abc86b40890231c129358965d2"
+        },
+        "/usr/lib/x86_64-linux-gnu/libpthread.so.0": {
+          "real": "/usr/lib/x86_64-linux-gnu/libpthread.so.0",
+          "sha256": "1327fc40710691dbd94e88b6cf4efce27fefe8fbb93f7d1164a75b4dccaea696"
+        },
+        "/usr/lib/x86_64-linux-gnu/libstdc++.so.6": {
+          "real": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.35",
+          "sha256": "5bb0d21308f123b6ad46c6f35b42cedfcb8d6d439a53aa3dae04d880aaffdde3"
+        },
+        "/usr/lib/x86_64-linux-gnu/libm.so.6": {
+          "real": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+          "sha256": "1c488db6f4fe8cecb72456bc018de000b7a9b539c2994864b0416b5e8371b3d8"
+        },
+        "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1": {
+          "real": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+          "sha256": "9d339ecb409578d6a5d587e6c537a8f9589b8a13fefba30d167433a4b5758bee"
+        },
+        "/usr/lib/x86_64-linux-gnu/libc.so.6": {
+          "real": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "sha256": "85e64f97e348786a8fb4d9f3d52fec289e2fb86bba20f0731dfe61990525e0f7"
+        },
+        "/lib64/ld-linux-x86-64.so.2": {
+          "real": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+          "sha256": "bda779ea9e9ad234f60315477d7cfd0bdde861cd8ddd9df8cdaf62f18c4cec14"
+        },
+        "/usr/lib/x86_64-linux-gnu/librt.so.1": {
+          "real": "/usr/lib/x86_64-linux-gnu/librt.so.1",
+          "sha256": "9f3cc59207bcaaac74aaf7aca961f4816f0f4d945e4bd1c3cb98ec516becf161"
+        }
+      },
+      "argv": [
+        "--dir",
+        "/lib64",
+        "--dir",
+        "/usr/lib/x86_64-linux-gnu",
+        "--ro-bind",
+        "/usr/lib/x86_64-linux-gnu/libdl.so.2",
+        "/usr/lib/x86_64-linux-gnu/libdl.so.2",
+        "--ro-bind",
+        "/usr/lib/x86_64-linux-gnu/libpthread.so.0",
+        "/usr/lib/x86_64-linux-gnu/libpthread.so.0",
+        "--ro-bind",
+        "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.35",
+        "/usr/lib/x86_64-linux-gnu/libstdc++.so.6",
+        "--ro-bind",
+        "/usr/lib/x86_64-linux-gnu/libm.so.6",
+        "/usr/lib/x86_64-linux-gnu/libm.so.6",
+        "--ro-bind",
+        "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+        "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+        "--ro-bind",
+        "/usr/lib/x86_64-linux-gnu/libc.so.6",
+        "/usr/lib/x86_64-linux-gnu/libc.so.6",
+        "--ro-bind",
+        "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+        "/lib64/ld-linux-x86-64.so.2",
+        "--ro-bind",
+        "/usr/lib/x86_64-linux-gnu/librt.so.1",
+        "/usr/lib/x86_64-linux-gnu/librt.so.1"
+      ],
+      "ok": true
+    },
+    "input_sha256_before": "d837147f1c96f93893281827f5e6e366f5c359f5f7bf902f3da154941ce7b87e",
+    "positives_embedded": [
+      "alloc160",
+      "alloc64",
+      "hello",
+      "native-big-output-0",
+      "native-crash-abort-0",
+      "native-emptydir-probe-0",
+      "native-fd-consume-0",
+      "native-inode-fill-0",
+      "native-mem-192",
+      "native-mem-64",
+      "native-mountinfo-0",
+      "native-null-writes-0",
+      "native-oomscore-0",
+      "native-scratch-fill-0",
+      "native-shm-path-0",
+      "native-shm-probe-0",
+      "native-threads-40",
+      "native-threads-60",
+      "native-threads-8"
+    ],
+    "positives": {
+      "alloc160": {
+        "case": "alloc160",
+        "positive": {
+          "launch_error": "SubprocessError('Exception occurred in preexec_fn.')"
+        },
+        "gate": false
+      },
+      "alloc64": {
+        "case": "alloc64",
+        "positive": {
+          "launch_error": "SubprocessError('Exception occurred in preexec_fn.')"
+        },
+        "gate": false
+      },
+      "hello": {
+        "case": "hello",
+        "positive": {
+          "launch_error": "SubprocessError('Exception occurred in preexec_fn.')"
+        },
+        "gate": false
+      },
+      "native-big-output-0": {
+        "case": "native-big-output-0",
+        "positive": {
+          "launch_error": "SubprocessError('Exception occurred in preexec_fn.')"
+        },
+        "gate": false
+      },
+      "native-crash-abort-0": {
+        "case": "native-crash-abort-0",
+        "positive": {
+          "launch_error": "SubprocessError('Exception occurred in preexec_fn.')"
+        },
+        "gate": false
+      },
+      "native-emptydir-probe-0": {
+        "case": "native-emptydir-probe-0",
+        "positive": {
+          "launch_error": "SubprocessError('Exception occurred in preexec_fn.')"
+        },
+        "gate": false
+      },
+      "native-fd-consume-0": {
+        "case": "native-fd-consume-0",
+        "positive": {
+          "launch_error": "SubprocessError('Exception occurred in preexec_fn.')"
+        },
+        "gate": false
+      },
+      "native-inode-fill-0": {
+        "case": "native-inode-fill-0",
+        "positive": {
+          "launch_error": "SubprocessError('Exception occurred in preexec_fn.')"
+        },
+        "gate": false
+      },
+      "native-mem-192": {
+        "case": "native-mem-192",
+        "positive": {
+          "launch_error": "SubprocessError('Exception occurred in preexec_fn.')"
+        },
+        "gate": false
+      },
+      "native-mem-64": {
+        "case": "native-mem-64",
+        "positive": {
+          "launch_error": "SubprocessError('Exception occurred in preexec_fn.')"
+        },
+        "gate": false
+      },
+      "native-mountinfo-0": {
+        "case": "native-mountinfo-0",
+        "positive": {
+          "launch_error": "SubprocessError('Exception occurred in preexec_fn.')"
+        },
+        "gate": false
+      },
+      "native-null-writes-0": {
+        "case": "native-null-writes-0",
+        "positive": {
+          "launch_error": "SubprocessError('Exception occurred in preexec_fn.')"
+        },
+        "gate": false
+      },
+      "native-oomscore-0": {
+        "case": "native-oomscore-0",
+        "positive": {
+          "launch_error": "SubprocessError('Exception occurred in preexec_fn.')"
+        },
+        "gate": false
+      },
+      "native-scratch-fill-0": {
+        "case": "native-scratch-fill-0",
+        "positive": {
+          "launch_error": "SubprocessError('Exception occurred in preexec_fn.')"
+        },
+        "gate": false
+      },
+      "native-shm-path-0": {
+        "case": "native-shm-path-0",
+        "positive": {
+          "launch_error": "SubprocessError('Exception occurred in preexec_fn.')"
+        },
+        "gate": false
+      },
+      "native-shm-probe-0": {
+        "case": "native-shm-probe-0",
+        "positive": {
+          "launch_error": "SubprocessError('Exception occurred in preexec_fn.')"
+        },
+        "gate": false
+      },
+      "native-threads-40": {
+        "case": "native-threads-40",
+        "positive": {
+          "launch_error": "SubprocessError('Exception occurred in preexec_fn.')"
+        },
+        "gate": false
+      },
+      "native-threads-60": {
+        "case": "native-threads-60",
+        "positive": {
+          "launch_error": "SubprocessError('Exception occurred in preexec_fn.')"
+        },
+        "gate": false
+      },
+      "native-threads-8": {
+        "case": "native-threads-8",
+        "positive": {
+          "launch_error": "SubprocessError('Exception occurred in preexec_fn.')"
+        },
+        "gate": false
+      }
+    },
+    "sibling_create": true,
+    "filter_sha256": "30bfaf6b62030de8b105e1ac8de43f2a9884b2bd5de20e98aef81dce426c1aad",
+    "cases": [
+      {
+        "case": "native-mem-64",
+        "N": 64,
+        "leg": "INCONCLUSIVE (positive gate failed; candidate not released)"
+      },
+      {
+        "case": "native-mem-192",
+        "N": 192,
+        "leg": "INCONCLUSIVE (positive gate failed; candidate not released)"
+      },
+      {
+        "case": "native-threads-8",
+        "N": 8,
+        "leg": "INCONCLUSIVE (positive gate failed; candidate not released)"
+      },
+      {
+        "case": "native-threads-40",
+        "N": 40,
+        "leg": "INCONCLUSIVE (positive gate failed; candidate not released)"
+      },
+      {
+        "case": "native-threads-60",
+        "N": 60,
+        "leg": "INCONCLUSIVE (positive gate failed; candidate not released)"
+      },
+      {
+        "case": "native-scratch-fill-0",
+        "N": 0,
+        "leg": "INCONCLUSIVE (positive gate failed; candidate not released)"
+      },
+      {
+        "case": "native-inode-fill-0",
+        "N": 0,
+        "leg": "INCONCLUSIVE (positive gate failed; candidate not released)"
+      },
+      {
+        "case": "native-fd-consume-0",
+        "N": 0,
+        "leg": "INCONCLUSIVE (positive gate failed; candidate not released)"
+      },
+      {
+        "case": "native-shm-probe-0",
+        "N": 0,
+        "leg": "INCONCLUSIVE (positive gate failed; candidate not released)"
+      },
+      {
+        "case": "native-shm-path-0",
+        "N": 0,
+        "leg": "INCONCLUSIVE (positive gate failed; candidate not released)"
+      },
+      {
+        "case": "native-oomscore-0",
+        "N": 0,
+        "leg": "INCONCLUSIVE (positive gate failed; candidate not released)"
+      },
+      {
+        "case": "native-mountinfo-0",
+        "N": 0,
+        "leg": "INCONCLUSIVE (positive gate failed; candidate not released)"
+      },
+      {
+        "case": "native-emptydir-probe-0",
+        "N": 0,
+        "leg": "INCONCLUSIVE (positive gate failed; candidate not released)"
+      },
+      {
+        "case": "native-big-output-0",
+        "N": 0,
+        "leg": "INCONCLUSIVE (positive gate failed; candidate not released)"
+      },
+      {
+        "case": "native-crash-abort-0",
+        "N": 0,
+        "leg": "INCONCLUSIVE (positive gate failed; candidate not released)"
+      },
+      {
+        "case": "native-null-writes-0",
+        "N": 0,
+        "leg": "INCONCLUSIVE (positive gate failed; candidate not released)"
+      },
+      {
+        "case": "hello",
+        "N": [
+          0,
+          0
+        ],
+        "leg": "INCONCLUSIVE (positive gate failed; candidate not released)"
+      },
+      {
+        "case": "alloc64",
+        "N": [
+          64,
+          0
+        ],
+        "leg": "INCONCLUSIVE (positive gate failed; candidate not released)"
+      },
+      {
+        "case": "alloc160",
+        "N": [
+          160,
+          0
+        ],
+        "leg": "INCONCLUSIVE (positive gate failed; candidate not released)"
+      }
+    ],
+    "halted": false,
+    "input_sha256_after": "d837147f1c96f93893281827f5e6e366f5c359f5f7bf902f3da154941ce7b87e",
+    "manager_final_cgroup": "0::/gagamba-ar7-P04-0ff2eb8a509441e99cb4f11c94b23c00/delegated/manager"
+  },
+  "host_shm_p04_left": [],
+  "observer_domains": {
+    ".": "",
+    "delegated": "",
+    "delegated/target": "",
+    "delegated/manager": "",
+    "delegated/sibling": "",
+    "unbounded": ""
+  },
+  "cleanup_events": "populated 0\nfrozen 0",
+  "cleanup_absence": {
+    "outer": true,
+    "workspace": true,
+    "manager": true,
+    "host_shm_clean": true
+  },
+  "cleanup_confirmed": true
+}
