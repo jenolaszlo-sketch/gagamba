@@ -98,418 +98,503 @@ Add narrowly named friend assemblies only where internal contracts cross project
 
 ## 5. Core internal contracts
 
-These are semantic contracts; final signatures may vary without changing them:
+The decisions in Sections 5–15 are the implementation baseline, not a menu of alternatives. Names below are expected internal types; ordinary private helpers may be added within the owning component. A changed trust boundary, authority, state transition or wire format requires review before implementation continues.
 
-| Contract | Required content / operations |
+### 5.1 Values, handles and authority
+
+Implement these immutable value contracts in the two `Gagamba.Execution/Restricted/` files identified in Section 4. Use sealed records, copied immutable arrays, explicit enums and checked integer quantities; never retain caller-owned collections. Serialization is diagnostic, not an admission API.
+
+| Contract | Required fields and meaning |
 |---|---|
-| `M1RequestSnapshot` | Fixed fixture identity, ordered argv, one input descriptor, explicit environment, logical cwd, complete fixed resource values, monotonic setup/overall deadlines. Reject arbitrary target identities. |
-| `AuthorityManifest` | Schema and baseline revisions, closure/input digests, logical read/write map, channel classes, no-host-IPC/no-IP intent and establishment/qualification states. No policy grants or tokens. |
-| `ResourceManifest` | Units, scope and finite values for memory/swap/tasks/FDs/storage/output/time/staging; explicit unsupported or pending dimensions. |
-| `PreparedTransaction` | Opaque random ID, issuer instance/generation, immutable manifest digest, expiry, private bound-object owner and atomic state. It cannot be reconstructed from serialized caller fields. |
-| `DomainLease` | Private stable handles, owned leaf identity, delegation/boot context; `KillDomain`, `ReadPopulation`, `ReadLimits`, guarded reclaim. Never accepts a caller PID to stop. |
-| `IHeldLauncher` | `StartHeld(prepared, domain, descriptorMap)` yields either a held trusted setup instance or a classified establishment failure; no target release in this call. |
-| `HeldExecution` | Single owner, installation report, private release/status channels, helper observation, abort operation; invalid after release or abort. |
-| `ReleaseArbiter` | `TryRelease(exactPreparation)`, `RequestStop(cause)`, deadline event, owner-loss event; one ordering authority. No mutable request values passed at release. |
-| `ExecutionObservation` | Exec disposition (`NotReleased`, `MayHaveExecuted`, `ExecObserved`), target root result (`Exit`, `Signal`, `Unknown`), wrapper result, domain state and output state. |
-| `CleanupReport` | DomainStopped, ProcessesReaped where observable, StorageReclaimed, ControlsReclaimed; each Confirmed/Failed/Unknown and finite reasons. Export is explicitly not applicable in M1. |
-| `OwnershipRecord` | Version, execution/issuer/boot IDs, owned resource identities, phase/sequence, release intent, digests and outstanding cleanup components. No reusable release secret. |
+| `RestrictedManifest` | Schema version 1, implementation ID `linux-m1-native-transaction`, authority, resources, closure, invocation and channels. Canonical binary encoding is versioned, length-prefixed UTF-8 with ordered fields; collection order is explicit. SHA-256 covers that encoding, not a serializer's incidental property order. |
+| `AuthorityManifest` | Required namespace set; capability set empty; no_new_privs true; filter identity; read-only object destinations; writable-store inventory; no ambient environment, IPC endpoints or inherited target FDs beyond 0–2. Production no-IP qualification is separately Pending, never encoded as already established. |
+| `ResourceManifest` | Exact Section 11 expected budgets with units and mandatory/qualification disposition per constraint; inode/object qualification explicitly PendingQualification. Actual readback results belong to a separate immutable establishment report and never mutate the prepared manifest. Absence, zero, unlimited and pending are distinct. |
+| `ClosureIdentity` | Tool, input, coordinator, Bubblewrap and filter identities: SHA-256, length, build/source identity, object role and fixed destination. Helper dynamic dependencies are identified separately if present. No runtime discovery. Native handles are excluded. |
+| `InvocationManifest` | Fixed target `/tool`, allowlisted fixture mode and fixed `/input` argument; bounded argument vector and environment; work directory `/tmp`; no shell command or arbitrary path. |
+| `ChannelManifest` | stdin EOF; stdout/stderr limits and aggregate limit; no interactive, network, export or user-defined control channel. |
+| `PreparationIdentity` | Execution UUID, issuer UUID, process-generation UUID, preparation UUID, manifest digest. This value is an identifier, not a release capability. |
+| `ReleaseDisposition` | NotCommitted, Committed, MayHaveExecuted. A durable ReleaseIntent with lost owner observation is MayHaveExecuted even if no byte was actually sent. |
+| `ExecDisposition` | NotAttempted, FailedBeforeExec(errno), Confirmed, Unknown. Never infer Confirmed from application stdout or Bubblewrap exit. |
+| `RootResult` / `HelperResult` | Separate tagged Unknown, NotStarted, Exited(code), Signalled(signal, coreDumped); optional raw wait status retained. A wrapper's 128+signal convention is not a target signal result. |
+| `ExecutionOutcome` | Unsupported, FailedToEstablish, CancelledBeforeRelease, Succeeded, TargetFailed, Stopped, Unknown. Stop cause is a separate first-accepted value plus a bounded set of later causes. |
+| `CaptureResult` | Stored and observed-byte counters for each stream and total, overflow/read-failure/truncation flags, EOF/completeness and final-drain disposition. |
+| `CleanupReport` | Confirmed, Failed or Unknown, with separate domain-empty, reaping, mount/staging-removal and journal-finalization results. Confirmed requires all required cleanup items. |
+| `TransactionObservation` | Identities, states and the distinct fields above, requested/established manifests, evidence version and monotonic transition sequence. Published terminal observation is immutable. |
 
-Store copied immutable collections rather than exposing mutable arrays through records. A digest identifies content and is not authorization or proof of installation. An establishment result distinguishes Requested, Established, Unsupported and FailedToEstablish. Production qualification remains a separate dimension; an internal receipt cannot mark the full profile qualified.
+Use a sealed partial **non-record** `PreparedTransaction` in the M1 implementation with a private constructor, no public factory, no clone/deserialize route and no mutable public fields. `PreparationStore` is an internal nested class of `PreparedTransaction` (declared in the companion `PreparationStore.cs` partial-type file), so it can invoke that private constructor without a public/internal minting factory on the capability. The store owns each capability and indexes the exact object reference by preparation ID. It contains an immutable manifest snapshot, identity, monotonic expiry, `PreparedClosure` safe handles and a private consumption state. Lookup must validate reference equality, issuer, generation, digest, expiry and unused state. A matching GUID/digest in a fabricated object is insufficient. Only `PreparationStore` can mint it; only `ReleaseArbiter` can consume it. Disposal/abort invalidates it permanently. Safe handles remain alive through launch binding and cleanup, not through a caller's temporary scope.
 
-Allocate bounded operation budgets for preparation and evidence parsing. Malformed or oversized input, environment, command data, protocol frames and recovery records are classified failures before release. Defaults are frozen into the M1 manifest; no automatic budget increase.
+The per-execution owner process is the issuer and holds the sole release-pipe writer. Across its private parent/owner channel, the caller receives `PreparedDescription` (identity + immutable manifest) and can return `Authorize(identity, digest)` once. That message is accepted only on the original inherited channel associated with that live owner generation; it resolves the owner's existing capability and cannot construct another one. There is no named socket, transferable serialized bearer token, persistence of release authority, reconnect/resume API or public provider registration. Channel EOF is caller loss and requests stop. The designated recovery scope has domain controls but never receives a release writer.
+
+`DomainLease` exclusively owns safe handles for the domain directory, `cgroup.kill`, `cgroup.events`, required resource files and parent directory, plus the bound identities in Section 10. Duplicates held by the recovery scope are separately owned safe handles. Disposal alone does not imply termination. Only the owner and recovery scope may invoke domain stop; the target/coordinator receive none of these handles.
+
+`IHeldLauncher` has only `PrepareHeldAsync(PreparedTransaction, DomainLease, LaunchChannels, deadline) -> HeldExecution` and `AbortAsync(HeldExecution)`. `HeldExecution` owns the helper reaper, trusted status reader, immutable establishment report and one internal release transport consumed by the arbiter. It cannot spawn another command. Release arbitration, resources, journals and results stay outside Bubblewrap argument construction. Observation cancellation cancels a wait only; explicit `RequestStop(cause)` affects execution.
+
+Canonical encoding lives in `RestrictedManifest.cs` as an internal codec. Encode fields in the table order; use fixed-width little-endian integers, a one-byte presence/discriminant tag, u32 byte lengths/counts, strict UTF-8 without normalization, raw 32-byte digests and RFC-order UUID bytes. Preserve argument order; sort environment keys, object roles, mount destinations and set-valued names by ordinal UTF-8 bytes, rejecting duplicates. Do not hash native handles, live readbacks, timestamps or result records into the manifest. Pin enum/discriminant numbers and golden vectors in WP01; changing their meaning requires a schema version change. `TransactionState` has Preparing, Prepared, Owned, ReleaseCommitted, Running, Stopping, Completed, Failed, Cancelled and Unknown; `ExecutionOutcome` carries the finer result distinction. Pre-preparation rejection returns a typed refusal without allocating a releasable state.
+
+### 5.2 Exact work-package-one boundary
+
+WP01 creates value contracts, canonical encoding, the capability/store skeleton, a pure transition model and fake dependencies only. The pure model exposes `PublishPrepared`, `MarkOwned`, `TryCommitRelease`, `AcceptStop`, `ObserveExec`, `ObserveRoot`, `ObserveHelper`, `ObserveCaptureTerminal`, `ObserveDomainEmpty` and `PublishTerminal`. Invalid order returns a typed invariant failure without mutating state. All dependency clocks, journal and release transports are fake at this stage. Native object acquisition, a real owner, serialization across processes and any launch are forbidden in WP01. Section 16 specifies every file and the review gate; no architecture choice is left to that agent.
 
 ## 6. Execution state machine
 
-```text
-Preparing → Prepared → Owned → ReleaseCommitted → Running → Completed
-     \          \         \             \           \
-      └──────────┴─────────┴──────────────┴───────────→ Stopping
-                                                       ↓
-                                             Failed / Cancelled
+The primary state is `Preparing → Prepared → Owned → ReleaseCommitted → Running → Completed`; stop/failure transitions lead through `Stopping` to a terminal Failed/Cancelled/Unknown observation. Root, wrapper, capture and cleanup observations progress independently. `Running` requires trusted exec confirmation; a fast process may supply exec and root confirmation in the same ordered status sequence. `Completed` requires a known root result, domain emptiness and terminal capture, not necessarily successful staging removal. A normal nonzero target exit is TargetFailed, not a restriction violation.
 
-Observation loss: execution outcome Unknown; reconcile separately.
-Cleanup state: Confirmed / Failed / Unknown, independent of the above.
-```
+| Transition | Preconditions and required effects |
+|---|---|
+| Start → Preparing | Recovery scope registered, initial journal durable, setup/overall clocks armed. Allocate only under a pre-registered private parent. |
+| Preparing → Prepared | Closure copied, protected and verified; handles and immutable manifests fixed; Prepared journal durable; capability atomically published. No partial preparation is visible. |
+| Prepared → Owned | Atomic helper admission succeeded; coordinator reports HELD; independent drains and status/reaper are active; mandatory resource readbacks and namespace/mount/filter establishment accepted; external recovery has acknowledged live controls. Owned record durable. |
+| Owned → ReleaseCommitted | Durable ReleaseIntent; final authorization/identity/stop/deadline checks under the single arbiter; capability consumed; one release frame delivery attempted. Section 8 defines the linearization point. |
+| ReleaseCommitted → Running | Trusted coordinator establishes the exec condition in Section 8. An unconfirmed exec remains MayHaveExecuted while observed, not guessed Running. |
+| Running → Completed | Sole target reaper supplies root status, whole domain becomes empty and capture terminates. Owner still finalizes cleanup separately. |
+| Any nonterminal state → Stopping | Accepted explicit stop, caller loss, setup/overall expiry, overflow, reader/status failure, setup failure or recovery takeover. Invalidate capability, close release transport, request cgroup kill if allocated, then bounded drain/reap/cleanup. |
+| Observation loss → Unknown | Apply Section 13 field by field. Stop/reconcile; do not replay or use cleanup to manufacture a result. |
 
-| Transition | Preconditions and authoritative action | Crash disposition |
-|---|---|---|
-| Enter Preparing | External owner registered, setup deadline running, journal intent reserved before allocation | Reconcile partial allocations; no target exists. |
-| Preparing → Prepared | Protected copies and manifest complete; all later mutation paths closed | Unpublished/partial preparation cannot release; reclaim by recorded identities. |
-| Prepared → Owned | Held helper domain-owned; required namespace/filter/limits/channel checks passed; output readers and stop path armed | Abort held setup; no target initialization. |
-| Owned → ReleaseCommitted | Release arbiter checks issuer, unused state, exact digest, establishment, stop latch, owner lease and deadline; consumes once | Durable release-intent record means may-have-executed if precise observation is lost. |
-| ReleaseCommitted → Running | Trusted exec observation, distinct from target stdout | If exec cannot be established, remain MayHaveExecuted and stop/reconcile. |
-| Running → Completed | Root result known, domain empty and output terminal | Publish stable execution result; cleanup may independently fail. |
-| Any nonterminal → Stopping | Accepted stop/expiry/owner-loss/failure; close unreleased channel and use domain kill when allocated | Retain cleanup debt; never repeat release. |
+The first accepted stop cause is stable. Subsequent causes may add bounded diagnostic flags but cannot authorize release or replace the original result. Concurrent observers share one terminal task; waiter cancellation leaves that task and the execution intact.
 
-Helper OS processes may exist before the semantic Owned state, but they are already in the lifecycle domain and cannot exec the target. Owned means all release prerequisites are satisfied, not the first moment lifecycle responsibility appears.
+### Owner death at every major state
 
-A rapidly exiting target can have exec and terminal evidence arrive together without an observable Running interval. Failed/Cancelled expresses the run disposition, not proof of death. Publish a stable root/exec outcome separately from subsequent versioned cleanup reconciliation. Cancelling a waiter detaches that observer only; explicit execution cancellation goes through the arbiter.
+The following is M1's declared process-failure model: a live, unprivileged external recovery scope survives loss of the per-execution owner. It retains domain/preparation handles, a direct-child owner pidfd, a deadline and its own journal access. M1 does not claim automatic recovery after that scope and all handle holders also die.
+
+| Last durable state at owner death | Recovery action and truthful result |
+|---|---|
+| AllocationIntent / Preparing | No release possible. Kill any allocated domain, remove only registered staging objects and incomplete allocations. Report setup failure and NotStarted if no ReleaseIntent exists. |
+| Prepared | Invalidate preparation by losing the issuer generation; never recreate it. Reconcile as above. |
+| HelperAdmitted / Held / Owned | Target still barred if ReleaseIntent is absent. Whole-domain stop removes helpers. Release channel EOF is not authorization. |
+| ReleaseIntent, including before in-memory commit | MayHaveExecuted / Unknown unless already durable trusted result narrows a field. Kill and reconcile once; no resend. |
+| ReleaseCommitted / Running | MayHaveExecuted; preserve any durable trusted root result, otherwise root Unknown. Kill whole domain, close/drain channels and reconcile. |
+| RootObserved but descendants or writers remain | Preserve durable root status, mark incomplete execution/capture observations Unknown as appropriate; kill the domain and finalize capture as incomplete. |
+| Cleanup in progress | Resume only idempotent identity-checked cleanup. Root/result fields never improve from absence of processes. |
+| Terminal durable | Return the identical terminal record; repeated cleanup may append a separate reconciliation report, not rewrite execution history. |
+
+Recovery authority loss while owner lives requests stop via its lifetime pipe. Caller loss also requests stop. If the owner is stalled rather than dead, recovery may stop the domain at its own deadline but cannot concurrently become the journal writer; it must first establish owner termination via its retained pidfd/direct-child wait. Simultaneous loss of owner and recovery scope is an explicit production gap; restart with records alone returns Unknown and quarantines unresolved resources. Bubblewrap death containment is defense in depth and is not credited as the sole recovery mechanism.
 
 ## 7. Preparation and immutable binding
 
-M1 accepts one trusted-build static ELF fixture and one ordinary input file, copied into a fresh protected staging root. No directory-tree import or general file grant language is needed. Reject symlinks, special objects and unsupported filesystems; copy regular hardlinked source bytes into a new inode rather than preserving the link. Strip source privilege/security metadata. Set fixed destination modes and logical names.
+1. Receive only an internal allowlisted fixture request and bounded regular-file input. Snapshot scalar values and copy collections immediately. Reject an unknown mode, runtime, path mapping, extra channel, export request or production profile request.
+2. Register allocation intent before creating a private staging child. Use an already opened trusted parent directory and relative, single-component names; owner permissions 0700, no target bind of the parent. Record the child's identity before later allocation. The recovery scope retains the parent/child handles before the owner can publish preparation.
+3. Open input/tool using `openat2` with `RESOLVE_BENEATH | RESOLVE_NO_SYMLINKS | RESOLVE_NO_MAGICLINKS` relative to approved roots and `O_NOFOLLOW | O_CLOEXEC`. Require ordinary files, bounded length and supported filesystem behavior. Refuse missing syscall support; no path-walk fallback. Copy from opened descriptors to new exclusive files, never hard-link/reflink or expose the caller's source. Hash destination bytes. The resulting copied snapshot is authoritative; concurrent source mutation cannot change the published copy. A claimed source digest, if supplied, must match the copy.
+4. Enforce staging totals while copying: tool ≤4 MiB, input ≤256 KiB, all staged content including coordinator/filter ≤16 MiB and ≤128 objects; stop before the first excess allocation/write. Bound arguments/environment/config to 16 KiB in total. Reject sparse/oversized objects instead of allocating based on attacker-controlled lengths. All names are fixed roles, not paths supplied by the input.
+5. Close every writable copy descriptor, set tool/coordinator mode 0500 and input/filter 0400, and retain read-only object descriptors plus directory identity. Do not rely on modes or hashes alone: staged parent is inaccessible to the target, host writes are restricted to the trusted owner/recovery scope, and mounts bind those exact descriptors. There is no cache or later replacement/reopen by pathname. Compromise of the trusted host owner is outside the ADR's threat model.
+6. Validate fixture/coordinator build identity and helper/filter pins. Hash the exact opened Bubblewrap executable and prohibit setuid/setgid/file capabilities. Pin any dynamic helper dependencies in a protected installation inventory and refuse writable/unidentified dependencies. Spawn the helper with a fixed clean environment, with no LD_PRELOAD/LD_LIBRARY_PATH or caller loader variables; clearing the later sandbox environment alone is insufficient. The trusted installation is held unchanged for the transaction; an observed replacement invalidates preparation. Unknown dependencies refuse. The static target has no dynamic-loader closure. Record source and artifact hashes separately.
+7. Canonicalize and hash the completed manifest, bind prepared configuration to it, persist Prepared, then insert the private capability atomically into `PreparationStore`. Failed or cancelled preparation publishes no capability. Partial allocations remain journaled for cleanup.
+8. Before release, compare held mounted-object identities with the retained copied-object identities and manifest; verify no writer remains and all expected mounts are read-only. Changing the source name, replacing a staging name or presenting a different preparation cannot switch the bound FD. Replacement of a protected staging entry is also an integrity failure: refuse, even if the already-open original is still safe. Re-authorization requires a new preparation, never mutation of the current one.
 
-Use trusted root directory handles and component-relative, no-follow resolution with checked object classes. Add the exact supported native resolution primitives through the Linux adapter and qualify their use; lexical prefix checks are not sufficient. Source handles stabilize names but do not freeze bytes against an existing writer: copy first, hash the resulting protected destination, and make the destination identity the authorized input. A source concurrently modified during copy may yield a rejected copy or the actual copied snapshot; it must never falsely retain an expected digest. The fixture must match its expected build digest or refuse.
-
-Staging is not under target scratch. The target cannot access its host parent, alter its mount sources or recover staging FDs. Protect staging before publication; drop writable preparation descriptors and use read-only object bindings for helper setup. Hashes alone do not protect against later writes. Exclude hostile unrelated host processes, as the ADR threat model does; include every write attempt by the target.
-
-`PreparedTransaction` binds fixture bytes, input bytes, environment, argv, cwd, helper/filter/coordinator identity, mount plan, channel plan and resource manifest. A final caller or harness acceptance references this exact digest. Publication and consumption are atomic under the owner. Mutation after publication requires discard and a new preparation, never updating an existing token.
-
-Proposed fixed M1 admission configuration: one execution, fixture <=4 MiB, input <=256 KiB, staging <=16 MiB and <=128 objects including implementation-owned records. These are implementation test limits, not qualified runtime budgets. Count bytes while copying and abort before exceeding admission limits. The execution deadline begins before preparation. Test under-budget acceptance and deterministic over-budget refusal.
-
-Register allocation intent before creating an object, then persist the confirmed identity. A crash between these operations leaves a narrowly scoped incomplete intent requiring guarded reconciliation. Names are generated by the owner under a retained trusted root; never adopt arbitrary paths from a record or scan unrelated directories by prefix.
+Use sealed `memfd` objects for the immutable coordinator configuration and seccomp bytes (`F_SEAL_WRITE | F_SEAL_GROW | F_SEAL_SHRINK | F_SEAL_SEAL`); verify seals and rewind before helper admission. These do not make the copied executable/input immutable by themselves. Copied-object protection depends on inaccessible staging plus retained descriptors and verified read-only mount binding. Native evidence must exercise replacement between copy, publication, bind and release. Section 19 retains full hostile-filesystem qualification as a production gap.
 
 ## 8. Pre-initialization release mechanism
 
-Select a small, separately built, static trusted exec coordinator launched as Bubblewrap's initial command. Bubblewrap remains the namespace/mount engine. The coordinator is independently pinned, has no target initialization code, performs no input reads, loads no target-controlled configuration and uses a dedicated bounded control protocol. Do not reuse the R2 `/gate` source, nonce-on-stdin protocol or target markers as the implementation.
+### 8.1 Selected coordinator and wire contract
 
-Proposed production protocol to review before native coding:
+Build a new small static `exec-coordinator.c`, separate from the AR-7 R2 gate. Bubblewrap execs this trusted binary inside the completed sandbox. It parses only immutable owner configuration, sets and reads back inherited rlimits, sets `PR_SET_DUMPABLE=0`, closes unneeded descriptors and emits HELD. It does not open `/input`, load target code, run target constructors, fork the target or invoke its hooks before a valid release. Do not use a barrier in target main, SIGSTOP after exec, an inherited environment switch or Bubblewrap `--block-fd` for release.
 
-1. The external owner creates anonymous release/status channels and the output pipes. Stdin for the eventual target is a prepared EOF source. A descriptor map identifies which trusted process may possess each endpoint and when it must close.
-2. Bubblewrap is born inside the target cgroup. It establishes the approved namespaces, capability ceiling, no_new_privs, mounts and explicitly installed seccomp filter, then starts only the trusted coordinator.
-3. The coordinator receives only a bounded immutable setup description bound to the execution and manifest digest. It checks its expected setup, closes setup-only authority, establishes its own protected control/status handling, and reports `Held` through the trusted channel. The external owner corroborates establishment. Target-controlled stdout cannot satisfy this step.
-4. The coordinator blocks before any target fork/exec. Its control parser accepts at most one valid release frame for this instance. EOF, timeout, abort, malformed/truncated/oversized data, wrong version/identity/digest and duplicate authorization fail closed. Channels are capability-bearing descriptors; an execution ID in a frame is binding, not a security secret or an authentication substitute.
-5. The external arbiter writes and flushes a bounded ReleaseIntent record, then rechecks expiry, stop and establishment at its sole commit point. A persisted intent can conservatively mean may-have-executed after a crash even if no frame was sent. This is safer than promising an atomic disk-write-plus-exec operation.
-6. The arbiter consumes the preparation and commits release once; delivery is bounded and coordinated with stop. It never awaits target output while holding the ordering lock. Cancellation arriving after commit is a post-release stop, even if exec is not yet observed. A frame-send failure is ambiguous and causes domain stop, not retry.
-7. After authorization, the coordinator starts the target using the bound executable and immutable argv/environment. Every release/status/setup FD is closed or close-on-exec in the target. The target gets only the permitted data descriptors; confinement inherits across fork/exec.
-8. To distinguish target result from wrapper result, the coordinator remains a minimal trusted direct-parent status reporter, waits/reaps its own target and reports raw wait status over a channel the target never inherits. It carries no host cgroup control and no post-release grant/release capability. Then it exits. Domain emptiness is still established externally.
+Wire version 1 uses a 96-byte header: magic `GGM1CTL\0` (8 bytes), version u16, kind u16, total-length u32, sequence u64, execution UUID bytes[16], preparation UUID bytes[16], manifest SHA-256 bytes[32], reserved zero bytes[8]. Integers are little endian; UUIDs are canonical RFC byte order. Each frame is at most 4096 bytes. Header lengths, identities, sequences, reserved bytes and kind-specific payload lengths must match before action. Configuration uses the canonical manifest plus a bounded fixed launch configuration in the sealed memfd; total ≤16 KiB. Protocol constants/layout live in `protocol.h` and mirrored managed codec tests, with golden byte vectors.
 
-Step 8 requires a concrete protection review: prevent the target from reopening coordinator FDs through proc/process APIs, altering the reporter, or forging messages. Use minimal descriptor ownership, explicit non-dumpable coordinator state and the approved process-access restrictions; validate compatibility with the frozen filter. Target destruction of the reporter must yield Unknown, never a forged successful root result. If this cannot be established without a broader launcher/security redesign, stop at review gate G2; do not implement an unreviewed guardian.
+The sole owner→coordinator RELEASE frame is exactly 128 bytes: header plus generation UUID bytes[16], overall deadline in CLOCK_MONOTONIC nanoseconds u64 and reserved zero bytes[8]. There is exactly one release attempt. The anonymous pipe is created with CLOEXEC, only its owner writer is nonblocking, and its atomic-write capacity must be ≥128 bytes. There is no retry queue or second release. Invalid/partial frame, premature EOF, identity mismatch, expiry, unexpected extra control input or poll/read error causes coordinator failure without target fork. After accepting RELEASE the coordinator closes its release reader permanently. It also checks the absolute overall deadline locally before fork/exec; this supplements the owner's authoritative final check.
 
-Exec observation also needs a source-reviewed chain. A close-on-exec error pipe can carry a positive exec failure; EOF alone may also mean pre-exec child death and cannot prove successful exec. Correlate trusted coordinator state, error reporting and owned-child status. Classify unresolved cases MayHaveExecuted. A root exit value equal to a wrapper signal convention is not enough to infer the target signal. A trusted setup coordinator is allowed by the ADR; it is not an additional confinement boundary.
+Use independent sequence counters starting at 1 for each direction; RELEASE is the sole owner control kind. Kind IDs are HELD=1, RELEASE=2, EXEC_FAILED=3, EXEC_CONFIRMED=4, ROOT_WAIT=5 and PROTOCOL_FAILED=6. EXEC_FAILED and ROOT_WAIT payloads are one little-endian u32 (errno/raw wait); EXEC_CONFIRMED has no payload; PROTOCOL_FAILED is one u32 closed reason code. HELD is a bounded versioned encoding of the Section 11 establishment report; refuse if it cannot fit one 4096-byte frame. The immutable configuration binds issuer/generation and both absolute deadlines in addition to the manifest digest.
 
-The coordinator must use a bounded wait/abort protocol and never make release depend on cooperative target code. Native helpers are small enough for a source/descriptor/state review. If the pinned Bubblewrap source already provides equivalent supported primitives, the implementation review may use them instead, documenting equivalent semantics and removing redundant coordinator work. That substitution must satisfy the same pre-init, identity, status and descriptor requirements.
+Coordinator→owner frames are HELD (bounded establishment payload), EXEC_FAILED (errno), EXEC_CONFIRMED, ROOT_WAIT (raw wait status), and PROTOCOL_FAILED (bounded reason enum). The valid status sequence is HELD, then either EXEC_FAILED followed by ROOT_WAIT, or optional EXEC_CONFIRMED followed by ROOT_WAIT; PROTOCOL_FAILED terminates the sequence at any stage. ROOT_WAIT without confirmation cannot establish a target result except through the reviewed normal-exit confirmation rule, in which case EXEC_CONFIRMED must precede it. The owner validates exact order and permits one root result. EOF before the expected terminal status is observation loss. No status comes from stdout/stderr. No caller-controlled strings are interpolated into the protocol. A full status pipe or failed write causes bounded coordinator failure; it must never block indefinitely while keeping the target alive.
+
+After RELEASE, the coordinator forks one child. That child closes the coordinator status writer and every setup/control FD, retaining only 0–2 and a CLOEXEC exec-error pipe writer, applies the final fixed invocation and calls `execve("/tool", fixed_argv, fixed_env)`. On failure it writes a fixed errno record then exits with a reserved coordinator failure code; the parent distinguishes that record from target status. The parent stays non-dumpable, is the sole reaper of this direct child and reports its raw wait status. It never sends target-controlled bytes as trusted status. The fixed protocol and filter must prevent target acquisition of coordinator controls via ptrace, proc-fd access, process_vm operations or inherited descriptors; a failing negative test blocks integration.
+
+**Exec confirmation rule:** CLOEXEC error-pipe EOF alone is insufficient because the child might have died before exec. For a live child the coordinator can confirm `/proc/<direct-child>/exe` against its retained `/tool` identity while the direct child is unreaped, using an opened object and fstat comparison; this PID is a non-reused direct-child observation during sole-reaper ownership, not kill/recovery authority. If this cannot be observed, defer confirmation. At reaping, a normal child exit plus complete error-pipe EOF and no exec-error record confirms exec only because the reviewed child path has no normal-exit path except a successfully reported exec failure. Any inability to deliver that failure record must terminate the child by signal, never by a normal exit. A signalled child without prior executable-object confirmation remains exec Unknown. A ROOT_WAIT without exec confirmation is retained as child diagnostic status and cannot become a known target root result. This intentionally sacrifices precision in ambiguous races. There is no fabricated early Running state.
+
+Coordinator exit closes the namespace's remaining wrapper path; Bubblewrap's default PID-namespace init remains in use (no `--as-pid-1`). Descendant lifetime after root exit is observed, not promised: wrappers may eliminate descendants, or the owner keeps the domain owned until it empties or the overall deadline requests stop. Neither branch substitutes for cgroup emptiness.
+
+### 8.2 Release versus stop linearization
+
+`ReleaseArbiter` owns one short synchronous gate shared by release and all accepted stop requests. Never await journal I/O or native setup while holding it.
+
+1. While still held, validate all Owned prerequisites and authorization against the live capability. Write and durably flush ReleaseIntent outside the gate. Stop is allowed to win during that write. A failed flush requests stop and forbids release.
+2. Enter the gate; reread the monotonic clock, setup/overall expiry, stop flag, caller/recovery liveness flags, immutable identity, prerequisite completion and capability state. Revalidate after the flush, not from an earlier cached boolean. Expiry is evaluated at this point even if the timer callback is delayed.
+3. If any check fails, consume/abort the capability without sending release. Otherwise change Owned→ReleaseCommitted and mark the capability consumed **inside this gate**. That state change is the linearization point. Attempt one nonblocking atomic RELEASE write before leaving the gate. Full delivery is success; EAGAIN, EPIPE, partial or unexpected return causes stop and a conservative delivery-failure disposition. No retry. Ignore SIGPIPE as a process-termination mechanism; handle its error explicitly.
+4. A stop accepted in the gate before that state change forbids every future release. A stop accepted after it closes the release writer and requests whole-domain stop, even if the child has not yet forked or execed. It does not revoke already-permitted effects or change history to CancelledBeforeRelease.
+5. Persist ReleaseDelivered/exec/root observations as they arrive. Those records improve knowledge but are not prerequisites that could delay or reopen the single release write. A crash after durable ReleaseIntent is MayHaveExecuted until independent trusted evidence proves more.
+
+Known no-delivery failures can retain live-owner NotStarted evidence; after owner loss the conservative durable ReleaseIntent rule wins. Duplicate calls return the original release decision without another write. The recovery process never calls release. A target deadline check immediately before exec is defense in depth, not a substitute for the gate.
 
 ## 9. Bubblewrap adapter
 
-Pin Bubblewrap 0.11.1, SHA-256 `523da3e7399044be5163aee6f57a77a6bef7454376e28f0a0627920bae1b76b6`, and initial AR-7 filter SHA-256 `30bfaf6b62030de8b105e1ac8de43f2a9884b2bd5de20e98aef81dce426c1aad`. Record the actual source/build provenance available; a matching hash does not complete the supply-chain gate. Require non-setuid/non-setgid mode and no file-capability elevation.
+The adapter pins Bubblewrap 0.11.1 SHA-256 `523da3e7399044be5163aee6f57a77a6bef7454376e28f0a0627920bae1b76b6` from ADR 0003. The filter is the exact `filter_bytes()` sequence in `spikes/Ar7Feasibility/p07.py` at sealed commit `cb511cd18ba25daeda76cf41a400d1136c6ba0f0`; extract that data into the new internal artifact and record/verify its SHA-256 without importing or running the probe harness. Both are verified from their actual opened objects. The [pinned upstream implementation](https://github.com/containers/bubblewrap/blob/v0.11.1/bubblewrap.c) supports `--ro-bind-fd`, consumes setup/filter descriptors, and leaves application descriptors for its command while its PID-namespace init closes unrelated FDs. Its `--block-fd` read does not require a successfully read authorization byte. Consequently M1 uses explicit inherited descriptors and the coordinator protocol; it must not invent a `--preserve-fds` option. These source observations require implementation-time native validation, not an AR-7 rerun.
 
-Before constructing argv, inspect the pinned helper source/options for descriptor preservation, seccomp installation, held coordination and status semantics. Do not infer an option's behavior from its name or pass an FD without an explicit installation option. This is implementation integration work, not a rerun of AR-7 feasibility.
+### 9.1 Fixed descriptor map
 
-Construct a vector, never shell text. Use a protected absolute helper identity and replacement-resistant execution binding. Clear ambient environment, set an explicit minimal map, disable nested-userns regain as in the approved baseline, drop all target capabilities, use private proc/dev views and expose no host cgroupfs, home, bus, agent or daemon paths. No broad `/usr`, `/run`, `/sys` or host library-tree grant. The static fixture requires no discovered loader closure.
+Use an adapter-specific atomic-cgroup `posix_spawn` path based on the existing glibc primitive. Refuse an unsupported libc/kernel combination; do not migrate an already executing process into the cgroup. Reserve destination FDs below 12; first move all source descriptors to unique temporary numbers ≥64 so dup ordering cannot overwrite a source. Add file actions for all destinations and closefrom(12) after those dups. Parent copies of child endpoints close immediately after successful spawn; unwind all copies on failure. FD_CLOEXEC and ownership of each endpoint are checked, not assumed.
 
-Maintain a descriptor ledger covering owner, spawn child, Bubblewrap setup, coordinator and target. The filter FD is consumed/closed after installation; it is not target data. Dedicated release and status channels are never aliases for stdout/stderr. Preserve only explicitly required setup FDs through helper launch, then close them before target exec. Do not weaken the legacy close-from behavior globally.
+| Child FD | Role in Bubblewrap launch | Coordinator / target fate |
+|---|---|---|
+| 0 | EOF-only read pipe, no writer retained anywhere | Coordinator and target stdin; never ambient terminal. |
+| 1 | stdout pipe writer | Target and required scaffolding share it; external reader owns capture. |
+| 2 | stderr pipe writer | Same; helper diagnostics consume the same declared bound. |
+| 3 | Sealed immutable coordinator configuration | Read/validate before HELD; close before target fork. |
+| 4 | RELEASE pipe reader | Coordinator only; close on release/abort; never target. |
+| 5 | Trusted coordinator status writer | Coordinator parent only; explicitly close in target child. |
+| 6 | Sealed seccomp program | Pass `--seccomp 6`; Bubblewrap consumes it. |
+| 7 | Copied static tool read-only FD | `--ro-bind-fd 7 /tool`; consumed by setup. |
+| 8 | Copied input read-only FD | `--ro-bind-fd 8 /input`; consumed by setup. |
+| 9 | Copied coordinator read-only FD | `--ro-bind-fd 9 /coordinator`; consumed by setup. |
+| 10 | Bubblewrap JSON status writer | `--json-status-fd 10`; independent bounded helper-status reader. Never interpreted as target status. |
+| 11 | Verified Bubblewrap executable FD | Spawn executable `/proc/self/fd/11`, binding launch against path replacement. Close any inherited copy in coordinator setup. |
 
-Return an `EstablishmentReport` only after checking domain membership, actual filter/NNP/capability state, namespace separation, mount plan and resource readbacks. Target self-reports may corroborate but cannot establish a required item. Missing interfaces produce Unsupported/FailedToEstablish, never a permissive fallback. A helper exiting zero with no trusted target status yields a wrapper observation only.
+No domain, staging-directory, journal, caller, recovery, owner release-writer or output-reader FD is in this map. The coordinator audits and closes every FD ≥6 that survived helper setup before HELD; retains an opened `/tool` identity only for trusted exec observation and closes it in the child. Its later error pipe must be CLOEXEC. Capture and control pipes are independent. Duplicate writer leaks anywhere, including harness/recovery, fail the FD-leak tests. The recovery scope does not retain an output writer merely to aid diagnostics.
+
+The adapter builds an argv array without a shell: unshare user/mount/PID/network/IPC/UTS namespaces, drop all capabilities, establish no_new_privs and seccomp, clear environment, set fixed work directory, create only the tree in Section 11, bind the three objects, and run `/coordinator`. Use `--die-with-parent` as defense in depth, keep the normal PID-namespace init, and do not use `--block-fd`. Kernel cgroup placement, lifecycle and release stay outside argument construction. Current host UID mapping is an installation detail; UID 65534 is not a contract.
+
+Exact argument order is emitted by `BubblewrapArguments.cs` and verified against a single checked-in golden vector for the Section 11 layout, including nonrecursive root remount-readonly after submount creation. If a pinned helper cannot create that exact topology or transport the fixed descriptors, refuse and stop that work package for review. Do not add a generic builder, privileged mount helper or alternate launcher.
+
+### 9.2 Separate observations
+
+The owner's sole `waitpid`/pidfd-associated reaper observes its direct child Bubblewrap and populates HelperResult. Bubblewrap JSON status supplies helper setup/namespace diagnostics only. Coordinator status supplies trusted establishment and target observations. EOF on one channel cannot complete another. A root result followed by wrapper failure keeps the root result and records the wrapper failure separately; wrapper success without trusted root status leaves root Unknown. Bound helper-status storage to 16 KiB total and 4096 bytes per record; overflow or malformed status requests stop. No unbounded diagnostic log is enabled in the execution path.
 
 ## 10. Lifecycle ownership and cgroup model
 
-Use the following M1 topology; all runtime roles are unprivileged:
+### 10.1 Selected M1 owner topology
 
-```text
-external test/recovery controller (outside target domain)
-  └─ per-execution Gagamba owner (separate control context)
-       └─ target cgroup: Bubblewrap → trusted coordinator → target → descendants
-```
+A dedicated M1 harness host process contains the internal `M1RecoveryScope` and outlives the separate per-execution owner and request client. Before creating either child, it sets and verifies PR_SET_CHILD_SUBREAPER; no unrelated application children run in this host. This lets it reap adopted execution descendants after owner death under the [Linux child-subreaper semantics](https://www.man7.org/linux/man-pages/man2/PR_SET_CHILD_SUBREAPER.2const.html). The ordinary live owner remains the sole wrapper reaper; after owner death, the scope becomes the sole reaper for adopted children. It receives a duplicate wrapper pidfd before Owned for observation/reaping, never as a substitute for whole-domain stop. Death before that transfer is handled by domain stop plus reaping adopted children of this dedicated host; no journal PID is used as authority. A request-client lifetime pipe is distinct from the recovery-scope lifetime pipe. This allows caller loss to be tested without killing recovery. No installed service is introduced. Before starting an owner, the scope obtains existing operator delegation, registers allocation intent and opens a fresh random domain beneath its trusted parent. It retains safe-handle duplicates and launches the owner with an explicit inherited bootstrap map. The owner acknowledges receipt; only then does it become the exclusive normal journal writer. The scope records the owner as its direct child, obtains a pidfd and retains a monotonic watchdog. Missing pidfd/delegation/subreaper support or bootstrap handle transfer refuses before helper admission.
 
-The external test controller supplies pre-existing delegated resources and retains emergency cleanup authority. It must not mask missing production behavior: separate tests measure owner-triggered stop from controller fallback, and any fallback needed to finish a claimed owner-death leg makes that leg failed/pending. A root safety observer, if used by a future native test environment, remains fixture infrastructure, not an implementation dependency.
+The owner remains outside the target leaf. Bubblewrap, its setup/init processes, the coordinator, target and descendants are admitted to that one leaf at creation via the existing atomic cgroup spawn mechanism. The owner/recovery are never in the target memory/tasks budget. The target cannot see delegated controls or create/migrate to another cgroup. No nested target-created subgroups are allowed. There is one M1 transaction at a time per scope; no scheduling framework.
 
-Create one fresh leaf with stable directory/control FDs. Configure finite limits before admitting setup helpers; retain a private mapping to execution/boot/object identity. Use the existing atomic placement mechanism only after checking its stated libc/kernel requirements and native behavior on the test host. No unowned launch followed by migration. A held alternative is acceptable only with a reviewed structural no-target-exec guarantee and complete recovery ownership.
+Before release the scope must acknowledge it holds the current domain handles and preparation cleanup handles. Anonymous inherited local pipes carry bounded bootstrap/acknowledgement and liveness, not a network service. Where handles must cross after owner creation, use one inherited Unix socketpair solely for `SCM_RIGHTS` transfer, with a fixed role/count allowlist and CLOEXEC-on-receive. It is never bound to a filesystem address or inherited by Bubblewrap. Bootstrap transfer includes recovery evidence identity, never release capability. A missing/invalid acknowledgement blocks Owned. The scope applies a setup-inclusive independent deadline and kills via its duplicate cgroup handle if the owner is lost or stops responding; external test-harness rescue beyond this scope is recorded as a failed recovery case, not a passing mechanism.
 
-The owner remains outside the target domain. Its output buffers and management allocations use separate bounded admission; a target-domain kill must not kill the readers or erase recovery records. The target cannot mount or recover parent/sibling controls. Fork, setsid, reparenting and root exit do not change ownership.
+### 10.2 Stable domain identity
 
-Primary stop is write to the owned `cgroup.kill` control, then verify `populated 0` and reap owned direct children. Do not enumerate numeric PIDs to implement termination. Direct-child wait operations are status observation under an exclusive reaper; they are not authority to kill an arbitrary process later.
+Identity is `{execution UUID, host boot ID, cgroup2 mount identity, delegated-parent identity, freshly created child name, child dev/inode, lease-generation UUID}` plus the **live handles** opened at creation. Mount identity comes from the actual cgroup2 mount (`statx` mount ID and filesystem type), not a supplied string. Parent and child handles use no-follow, beneath-only relative resolution. Pre-open `cgroup.kill`, `cgroup.events`, `memory.max`, `memory.swap.max`, `pids.max` and required readback files. Match every opened control's directory membership before acknowledging the lease.
 
-For M1, the owner monitors a dedicated caller-liveness channel outside the target. Caller disconnect latches stop. Manager and owner failure are separate fault cases. The ADR requires a qualified death path; M1 exercises the chosen helper parent-death/init chain and independently observes domain emptiness. It does not claim every production crash/restart/deployment case is solved. If owner loss can leave running work without the proposed automatic containment path, retain Unknown, clean through the independent controller and stop M1 acceptance for that case.
+Domain termination writes `1` through the retained `cgroup.kill` FD and polls `cgroup.events` for populated=0 through its retained FD, with bounded retry/deadline. Never issue kill to a PID from the journal, enumerate PIDs as stop authority, or re-resolve a path in order to kill a replacement domain. Owner termination/reaping may use its retained pidfd/direct-child relationship; that does not change target-domain authority.
 
-After losing the owner, a surviving external recovery controller may reconcile recorded objects. Production selection of a durable recovery host remains a qualification/deployment gate; this plan does not install a daemon to make it disappear. Preserve the distinction between surviving domain ownership, automatic timely stop and later cleanup.
+Before directory removal, compare the entry under the retained parent to the retained child identity; mismatch means refuse removal and report Unknown. If a control write/read loses its object or returns ambiguous state, do not reopen by name and continue on a potentially new object. Mark cleanup Failed/Unknown and preserve the record. A fresh process with only boot ID, dev/inode and a name has **no recovered authority**: those values can be reused. M1 restart-only reconciliation reports Unknown/quarantine and requires operator handling. Same-boot recovery is supported only while the registered external scope retains the original handles. Cross-boot records cannot authorize any action on current objects.
 
 ## 11. Resource installation and verification
 
-The integrated reference configuration is fixed, not caller-tunable in M1:
+These are exact **internal fixture-envelope** values, not public defaults or claims about minimum usable budgets:
 
-| Dimension | Initial M1 setting | Verification / refusal |
-|---|---|---|
-| Target-domain memory | 134217728 bytes, including helpers | Effective `memory.max` readback; finite touched-allocation test and event deltas. |
-| Swap | 0 bytes | Effective `memory.swap.max=0`; unavailable control refuses. Do not invent unmeasured usage. |
-| Tasks | 48 Linux tasks including helper threads/processes | `pids.max` readback; finite creation test and event deltas, never label as 48 processes. |
-| FDs | Hard and soft `RLIMIT_NOFILE=64` for target | Trusted establishment/readback and finite EMFILE test. Setup overhead must fit or report incompatibility. |
-| Scratch | 8388608-byte aggregate writable backing budget | Prefer one private bounded tmpfs with logical tmp/cache/shm subdirectories or explicitly partition the same total; confirm actual mount and accounting behavior. |
-| stdout / stderr | 65536 bytes each; combined retained cap 131072 bytes | Two owner-side drains; per-stream and total overflow triggers; exact byte accounting. |
-| stdin | Closed/EOF data source | No inherited terminal, socket, release pipe or caller stdin. |
-| Time | 10-second setup budget within a 30-second overall deadline | Monotonic clock active before preparation; boundary-injected expiry tests. |
-| Final stop / drain | 5-second healthy-host stop observation; 1-second final drain after domain stop | Expiry yields Failed/Unknown or DrainIncomplete, not fabricated completion. |
-| Staging | 16 MiB, <=128 objects; fixture/input limits in section 7 | Bounded copy and record processing outside target domain. |
-| Dumps | `RLIMIT_CORE=0`, no requested runtime dump facilities | Establish/read back; retain host sink exclusion as pending. |
+| Resource | M1 installation and release readback |
+|---|---|
+| Memory | `memory.max=134217728` (128 MiB); read same value before helper spawn and again before release. |
+| Swap | `memory.swap.max=0`; require file/controller and exact readback. |
+| Tasks | `pids.max=48`; read back exactly. Includes helper/coordinator/target threads and processes, not an independent thread/process quota. |
+| File descriptors | Coordinator installs RLIMIT_NOFILE soft=hard=64 and reports getrlimit; target inherits it. Not a domain-wide FD quota. |
+| Core dumps | RLIMIT_CORE soft=hard=0 for owner and coordinator, read back; fixture has no runtime dump facility. Record host core_pattern. A piped/external core sink without an established disabled configuration refuses the M1 fault run; never alter host configuration automatically. Ordinary-file core suppression must be checked in finite native fault cases. |
+| Writable filesystem bytes | `/tmp` private tmpfs 7 MiB (7340032), `/dev/shm` private tmpfs 1 MiB (1048576), aggregate 8 MiB. Both explicitly sized; no third writable file store. |
+| Inodes/metadata | PendingQualification; no independent production inode/object-limit claim. M1 uses only finite fixture modes and bounded test work. Memory and test caps are not substitutes for the later required bound. |
+| stdout/stderr | 65536 bytes each and 131072 combined; enforcement and retained storage per Section 12. |
+| Stdin | EOF, no retained writer. |
+| Setup / total duration | Setup 10 s, overall 30 s from request acceptance, measured with CLOCK_MONOTONIC; both include preparation and helper setup. |
+| Stop / final drain | Stop confirmation allowance 5 s after first stop; final pipe drain at most 1 s after domain-empty or stop allowance exhaustion, whichever comes first. These do not authorize extra target execution. |
+| Owner allocation/logs | Staging 16 MiB/128 objects; config 16 KiB; coordinator/helper status 16 KiB each; journal 64 KiB live snapshot plus 64 KiB replacement; receipt 32 KiB; fixed capture/drain buffers. Refuse overlarge records. |
 
-These chosen output/time/staging numbers are M1 test configuration, not measurements or new public promises. Record actual helper task overhead; do not add hidden task allowance. Stricter inherited limits must be exposed and accepted in a new fixed configuration or refused, not silently substituted.
+The root tree is built by Bubblewrap, then nonrecursively remounted read-only so its two child tmpfs mounts remain writable. `/tool`, `/input`, `/coordinator` are read-only FD binds. `/proc` is a new PID-namespace proc mount with read-only mount policy; failure to establish that policy refuses. `/dev` is a read-only empty directory except its private `/dev/shm` child: **no `--dev`, device nodes, devpts or inherited terminal** are needed by the static M1 fixture. `/run`, `/sys` and `/home` are empty read-only directories. No host home, runtime tree, service socket, cgroup filesystem, host `/tmp` or ambient resolver configuration is mounted. Set only `HOME=/tmp`, `TMPDIR=/tmp`, `LANG=C`; no PATH search. Invocations use absolute destinations.
 
-Reserve schema fields for inode/object ceilings, but record independent inode/metadata enforcement as PendingQualification. A pending production dimension cannot be reported Established by the production profile. M1's finite fixture file count and independent envelope bound test risk, not production inode enforcement. Do not implement a privileged tmpfs quota workaround. The ADR still makes explicit inode bounds mandatory before production qualification.
+Record the complete mount inventory from trusted coordinator setup and corroborate it with the launched namespace identity and fixed helper configuration. For each expected mount compare mount ID, parent relation, filesystem type, read/write/noexec policy where applicable, backing identity and observed tmpfs capacity. Reject unexpected writable mounts, aliases or unsupported readback. Read tmpfs capacity with statfs and parse the established size option; require the expected page-aligned ceilings, allowing no implicit default mount size. Anonymous memory, SysV/POSIX shared-memory usage within the private IPC namespace, pipe buffers, and pseudo-filesystem effects remain accounted by the memory/tasks limits and explicit authority inventory; they are not falsely reported as regular-file scratch or as independently metadata-qualified. The coordinator needs executable `/tool`/`/coordinator`; scratch is nodev/nosuid. M1 does not require or claim scratch noexec: the pinned helper tmpfs operation does not establish that flag. Record the actual executable-mount policy in the manifest; do not invent an unsupported option or add a mount implementation to obtain it. An inability to establish the selected required flags stops the package rather than silently dropping them.
 
-Inventory `/`, private `/dev`, `/proc`, `/tmp`, `/dev/shm`, `/run`, `/sys`, temporary mount staging, pipes, anonymous/SysV shared memory and manager-owned artifacts. Prefer read-only or absent unused writable paths. If a setup-created tmpfs remains writable, include its explicit byte/accounting budget or refuse. An 8 MiB `/tmp` mount does not bound all other writable mounts. Validate the actual configured view, not merely HOME/TMPDIR values. Inability to express bounded storage with the selected helper is a stop/review condition.
+`ResourceInstaller` performs cgroup writes/readbacks before spawning any helper. `EstablishmentVerifier` combines that external readback with HELD's trusted in-namespace namespace IDs, mount inventory, CapEff/CapPrm/CapAmb=0, no_new_privs=1, seccomp mode, rlimits and object identities. Installed seccomp mode plus the pinned program/config binding is establishment evidence, not proof of complete syscall-policy coverage. HELD is accepted only from the new source-bound coordinator before target code exists. Final release rechecks cgroup values, immutable prerequisite identity and both deadlines. A configured value without a required readback is FailedToEstablish. Inode qualification alone is an explicit allowed Pending for the internal fixture, never an exception to a production request.
 
-Resource installation is before Owned; package order does not postpone limits until after release. Earlier held-launch tests retain an outer finite safety envelope and cannot enable target release until WP06-WP09 are integrated. No RLIMIT_FSIZE-based substitute is required: P04 showed compatibility pressure, and M1 uses bounded backing stores. Exact CPU-rate and exhaustive kernel-resource accounting remain outside this milestone.
+Deadlines are armed at request acceptance in both owner and recovery scope, **before copying or synchronous native setup**. An async timeout around a blocking method is insufficient. Every copy loop, handshake and status wait observes the absolute deadline; a bounded worker may continue unwinding but cannot later publish/release. The independent recovery watchdog stops the domain if the owner is blocked. After ReleaseCommitted, the setup deadline ceases to be a runtime limit; release must have committed before it expires; overall remains active until the domain is empty. One timestamp origin is transferred in CLOCK_MONOTONIC nanoseconds; no wall-clock expiry or comparison of unconverted .NET Stopwatch ticks to native nanoseconds.
 
 ## 12. Bounded stdout/stderr enforcement
 
-The owner allocates two readers before release and starts concurrent byte drains independent of any user observer. Use bounded buffers and prefix retention. Decode for display only after byte enforcement. No `ReadToEnd`, `communicate`-equivalent full collection or unbounded diagnostic queue. No spill to an unbounded host file.
+The owner starts both asynchronous drains before admitting Bubblewrap and keeps them alive independently of callers and observers. Use a fixed ≤4096-byte buffer per stream and retained storage capped at the declared stream/aggregate budgets. Serialize aggregate reservation with checked/saturating counters; retain only the permitted prefix. At the first byte beyond any limit, set overflow/truncation and immediately invoke `ReleaseArbiter.RequestStop(OutputOverflow)` without awaiting observers, log writes, root exit or the other reader. A reader error similarly invokes `RequestStop(OutputReadFailure)` immediately. There is no target-supplied overflow signal.
 
-On the first byte beyond either limit or the combined limit, atomically latch the stream/cause and request whole-domain stop. Continue only bounded-buffer draining/discard while stop is in progress. Stop deadline, reader progress and result observation are independent tasks. Counters use overflow-safe arithmetic; saturation is recorded as a lower bound rather than wrapping.
+Output that arrives during helper/held setup is charged to the same budgets and can prevent release. An absent subscriber never blocks enforcement. Slow consumers can read a bounded snapshot after completion; no unbounded queue, per-line string accumulation or observer callback in the drain loop. After overflow the drains may discard into fixed buffers until stop/final-drain deadline to avoid a blocked writer preventing teardown. All pipe endpoints have one documented owner, and the target can inherit only its writer endpoints.
 
-On reader fault, immediately notify the owner and stop; do not wait for root completion to discover that a broken reader can deadlock a writer. Keep stderr drainage active when stdout fails and vice versa while safely possible. Returned prefixes never exceed their limits. Total bytes observed are not guaranteed to equal total bytes the target attempted to emit.
-
-M1 has no streaming delivery API. Its caller receives a finite result after capture. Tests can attach a stalled diagnostic subscriber to prove observer backpressure cannot stall the drains; implementation logging must be bounded and nonblocking or cause an explicit management failure. Closing a reader intentionally is capture failure/incompleteness, not clean EOF.
-
-A root may exit while descendants retain stdout/stderr. Observe the domain independently. Wait for genuine EOF within the overall lifecycle and final-drain bounds; stop the entire domain when required. If a writer remains after purported empty-domain cleanup, record an invariant failure/Unknown and investigate descriptor escape rather than infer success from the root status.
+Root exit does not complete capture or domain lifetime. Descendants can retain writers; continue under the overall deadline and stop policy. At final-drain expiry close readers, mark capture incomplete and preserve any root result. EOF is stream completion, not proof of domain emptiness. If the owner dies, M1's recovery scope stops the domain but does not reconstruct lost output; capture is incomplete/Unknown unless an already durable terminal capture record exists. A successful target exit plus output overflow is not overall Succeeded.
 
 ## 13. Failure, cancellation and Unknown-result semantics
 
-| Event | Execution disposition | Required action |
-|---|---|---|
-| Invalid request, missing helper/control, unsupported host | Refused before release | Reclaim any preparation; never call legacy launch. |
-| Preparation or held setup fails | FailedToEstablish; NotReleased | Abort control channel, kill allocated setup domain if necessary, reconcile. |
-| Stop wins before release | CancelledBeforeRelease; NotReleased | Consume/retire preparation, no release frame, teardown. |
-| Release wins then stop | Stop requested after commit; target may have executed | Whole-domain kill; preserve any valid root/exec observations. |
-| Crash after release intent/commit but before exec observation | Unknown with MayHaveExecuted | Never resend/replay; independent reconciliation. |
-| Helper exits without trustworthy target result | Wrapper result known; root Unknown | Stop remaining domain and report uncertainty. |
-| Normal target exit 0 or nonzero | Known root exit, subject to domain/capture completion | Preserve exact exit; nonzero is not automatically a policy violation. |
-| Target killed / resource event | Record raw root status if independently known, plus limit event/cause | Do not synthesize a signal solely from wrapper code 128+N. |
-| Output overflow/read fault/deadline | Known stop trigger, root possibly Unknown | Domain stop with bounded capture/cleanup; do not overwrite a previously known root result. |
-| Observer wait cancelled | No execution state change | Detach observer only. |
-| Cleanup observation unavailable | Cleanup Unknown, execution result unchanged | Retain debt and refuse reuse. |
+Apply this decision table without collapsing fields:
 
-Use an injected monotonic clock for portable ordering tests and native barrier events for integration ordering. Wall-clock timestamps are audit metadata, not release ordering authority. Persist one terminal execution observation; later cleanup reconciliation creates a linked cleanup update. Preserve the first accepted stop cause and bounded additional observations without racing to invent a definitive causal result.
+| Evidence/condition | Outcome, root and release disposition |
+|---|---|
+| Unsupported platform/ABI/helper/delegation/prerequisite before release | Unsupported or FailedToEstablish with structured reason; root NotStarted and NotCommitted if release was provably impossible. |
+| Caller stop, caller loss or expiry accepted before release linearization | CancelledBeforeRelease for cancellation/loss, FailedToEstablish for setup expiry; root NotStarted, capability permanently aborted. |
+| Trusted EXEC_FAILED errno, complete protocol, no confirmed target exec | FailedToEstablish, Exec FailedBeforeExec, target root NotStarted; child/wrapper exit remains separate. |
+| Confirmed exec and trusted normal root exit; domain empty and complete capture | Succeeded for exit 0 or TargetFailed for other exits, subject to separately reported stop/enforcement failures. |
+| Confirmed exec and trusted signalled root result | Known Signalled root; Stopped if an accepted stop caused teardown, otherwise TargetFailed with actual evidence. Do not invent causality from signal alone. |
+| Stop accepted after commit | Stopped, or Unknown where root/execution observation was lost; release remains Committed/MayHaveExecuted. Preserve known root status. |
+| Owner dies after durable ReleaseIntent and before a durable trusted result | MayHaveExecuted; exec/root/execution fields Unknown as appropriate, irrespective of later domain emptiness. |
+| RELEASE delivery uncertain or status channel lost/malformed/out of order after commit | Unknown execution/result fields not otherwise proven; request stop. A failed send is never automatically replayable. |
+| Child is signalled before trusted exec confirmation, with empty error pipe | Exec Unknown and target root Unknown; retain child raw wait only as diagnostic evidence. |
+| Wrapper exits 0, coordinator vanishes, no trusted target status | Helper Exited(0); target root Unknown. |
+| Known target result followed by lost helper/domain/capture observations | Preserve root; mark only missing observations Unknown; aggregate execution cannot claim successful completion. |
+| Output read error/final-drain cutoff with known target result | Preserve root; capture failed/incomplete, outcome not Succeeded. Lack of complete output alone does not erase known exec/root. |
+| Kill returns success without observed populated=0, stale domain identity, lost control handle or reconciliation from records alone | Cleanup Unknown (or Failed for a definite removal error); root stays whatever was known. |
+| Domain empty and all cleanup complete, but root status lost | Cleanup Confirmed; root and execution remain Unknown. |
+
+`Unknown` means insufficient trusted observation, not any nonzero exit or any cleanup failure. It is required by interrupted release, unresolved exec race, missing/corrupt trusted result, owner loss without durable result, or loss of the relevant lifetime observation. A known root result may coexist with execution/capture/cleanup Unknown. Known root plus a definite staging deletion error gives cleanup Failed, not root Unknown. Never map Unknown to exit code 0, -1 or 137. Store result variants explicitly.
+
+External cancellation is an explicit stop request; cancellation of a caller's `ObserveAsync` await is observation-only. Caller-channel EOF is a separate lifecycle signal and does stop. If a request is cancelled during a blocking preparation step, the eventual worker result is discarded and its allocations reconciled; it cannot publish a late capability. No retry of a whole transaction whose release may have happened; a new explicitly requested transaction is a distinct decision and identity.
 
 ## 14. Cleanup and reconciliation
 
-One owner coordinates teardown; concurrent stop/dispose/wait paths join it. Cleanup is idempotent for verified owned objects and retryable after a known removal failure. It must not consume the only control handle before proving the domain empty.
+### 14.1 Journal ordering and durability
 
-Order: forbid further release; close unused release writers; terminate the domain when required; verify emptiness; reap direct trusted children; finalize bounded capture; close held namespace/mount references; reclaim scratch and staging through retained trusted roots; remove verified empty cgroup leaves; close controls; persist component results and only then retire cleanup debt. Keep the record needed for uncertain components.
+Use one bounded versioned snapshot per execution, written in the protected recovery directory through exclusive temporary create, complete write, file fsync, atomic rename and directory fsync. Include a sequence number and checksum; retain the last complete version until replacement durability succeeds. Required durability failures prevent release. The snapshot holds allocated-object inventory and monotonic facts, not executable instructions or release credentials. Configuration/manifest digests and bounded trusted result frames are included; output payloads and secrets are excluded. No unbounded append-only transcript.
 
-Use descriptor-relative no-follow traversal with object-class checks for scratch deletion. Reject or quarantine unexpected mounts/aliases. Directory contents are hostile even after processes stop. No generic recursive deletion over target-provided absolute paths, and no reuse of `OwnedCgroup.Adopt(string)` as proof that a recovery record owns a path.
+| Durable record / acknowledgement | Must precede |
+|---|---|
+| AllocationIntent with execution ID, boot/parent identity, fixed random child names and cleanup intent | Creating staging/domain under those retained parents. If death occurs between intent and registration, only the surviving allocator/recovery scope can resolve the named child under its controlled parent; there is no arbitrary-path sweep. |
+| AllocationRegistered with actual object identities and retained recovery handles acknowledged | Any process admission or preparation publication using them. A creation-to-registration crash is reconciled under the exclusive pre-registered parent and never grants release authority. |
+| OwnerAccepted and recovery-scope lease acknowledgement | Transfer of exclusive normal journal writing from scope to owner; owner preparation/launch. |
+| Prepared snapshot | Publishing the preparation capability/description. |
+| HelperAdmissionIntent | Atomic spawn; an admitted process with missing post-spawn record is still contained by the already registered cgroup. |
+| HelperAdmitted / Held establishment / Owned | ReleaseIntent; include actual readbacks and scope liveness acknowledgement. |
+| ReleaseIntent with preparation/manifest identity and absolute deadlines | Entering the final release gate or attempting the release byte. |
+| ReleaseDelivered / ExecObserved / RootObserved / CaptureTerminal | Terminal publication that claims those observations; fsync results before treating them as recoverable. Owner memory can expose provisional observations explicitly, never durable ones. |
+| StopRequested / CleanupProgress | Record before destructive cleanup when possible. Journal failure never prevents an urgent kill through an existing live lease; report that persistence failed. |
+| Terminal with result + cleanup status | Stable terminal publication to observers. If final persistence fails, retain known live results but mark durable recovery evidence unavailable; recovery must not pretend it read a terminal result. |
 
-Reconciliation validates record version/size, execution identity, host boot identity, configured trusted root, and object identities before any stop/delete. Reopened path equality or inode number alone is not proof after possible replacement/reuse. M1 can use controller-retained handles for strong same-boot recovery. If all handles are lost and identity cannot be re-established safely, preserve Unknown and require an independently reviewed recovery action; never kill/delete the object currently occupying the old name.
+Parent directories are private, registered, and bounded; the scope never allows concurrent allocation into the same execution parent. The file system must support the stated durability operations or admission refuses. Checksums detect torn/malformed records, not authority forgery. Protect records by host ownership and access policy. One writer exists at a time: the scope writes allocation/bootstrap, then owner; recovery takeover requires stable proof the owner exited and exclusive journal lock acquisition. If ownership cannot be fenced, the scope may kill using its live domain lease but cannot concurrently rewrite the owner's result record.
 
-The journal uses atomic record replacement and the required file/directory durability ordering. A failed flush blocks release. Test a torn/truncated record, crash before/after object registration, failed unlink/removal, permission denial and replaced resources. Reboot changes process-lifetime assumptions but does not prove storage cleanup. Cross-reboot recovery is explicitly a later production qualification gate.
+### 14.2 Cleanup order
 
-Unknown root results never become success after a sweep. Retained failed/unknown debt blocks the single M1 execution slot until reconciled or explicitly quarantined under the reviewed recovery policy.
+Invalidate capability and close release first. Request whole-domain stop when required. Observe empty through retained events handle; reap the direct wrapper once and consume available trusted status. Bound final drain, dispose readers/status endpoints, and record incomplete observations. Only after domain emptiness and necessary reaping release namespace-associated bindings and remove owned staging/scratch resources by retained-parent-relative identity-checked operations. Do not recursively follow symlinks or traverse arbitrary paths. Private tmpfs state dies with the namespace; its disappearance must be corroborated by namespace/domain lifetime, not claimed because a mount command once succeeded. Remove the matching empty cgroup directory last, then finalize the journal/receipt. A cleanup error does not prevent attempts at other independently safe cleanup items.
+
+Reconciliation is idempotent and never resumes target work: acquire fenced ownership, validate boot and original live lease, read latest complete snapshot, kill the registered domain, observe emptiness/reap where authority exists, and clean only verified allocations. Repeated calls return the same result facts plus new cleanup observations. Identity mismatch, damaged journal or absent original handles means quarantine/Unknown rather than adopting an apparently matching directory. Preserve unresolved records for operator action; do not delete them to produce a clean run. After a terminal Confirmed cleanup retain the bounded semantic receipt and retire private recovery state according to the test run's retention policy.
 
 ## 15. Production evidence model
 
-Implement the bounded production concepts in the ADR, but keep M1 receipts marked internal/unqualified. Record execution/preparation IDs; package/source identity when available; helper/filter/coordinator/fixture/input digests; authority/resource manifest digests; host/delegation/boot context; establishment outcomes; release disposition; stop trigger; root and wrapper results; output counters/prefix status; domain observation; cleanup components and refusal reasons.
+The following is a production-designed schema exercised internally by M1; its existence is not production qualification.
 
-Separate three artifacts:
+| Evidence channel | Contents and authority | Retention/exposure |
+|---|---|---|
+| Semantic transaction receipt | Execution/preparation IDs, source/package/helper/filter/coordinator/closure hashes, requested and established manifests, qualification flags, release/exec disposition, first stop cause, separate root/helper/domain/capture/cleanup observations and structured refusal/failure reasons. Derived only from trusted establishment/lifecycle observers. | Bounded ≤32 KiB; immutable terminal record. Opaque domain ID only; no native handles, raw private paths or release credentials. |
+| Protected recovery snapshot | Boot/mount/parent/child identity, lease generation, allocation inventory, durable state/sequence, deadline and bounded trusted result observations. | Private ≤64 KiB snapshot, one bounded replacement; usable only with surviving authority under Section 10. Not a public result or serialized capability. |
+| Qualification record | Build command/toolchain, exact source commit, binary/filter hashes, host/kernel/libc/WSL/delegation/LSM facts or explicit unknowns, test names, failure barriers, timestamps, external observations, negative controls and cleanup. | Durable reviewed repository evidence with selected compact records; large logs/binaries in ignored artifacts. Never consumed as runtime authorization. |
 
-- A small semantic receipt safe for the trusted caller, with redacted environment/arguments and no native control handles or reusable authority secrets.
-- A protected operational ownership journal containing the identities necessary for cleanup.
-- Qualification evidence with source-bound fixture events, independent oracles, exact test counts and diagnostic observations. Target output is untrusted payload, never a receipt.
-
-Future evidence header fields follow the remediation standard: baseline/final SHA, clean/dirty state, branch, native host/kernel/libc/architecture/UID/delegation, toolchain versions, pins, exact scope and exclusions. Record tests as Passed/Failed/Skipped/Unsupported; portable green and emergency cleanup are not native enforcement passes. Preserve source-before-run identity and commit raw records needed to substantiate decisive transitions; large logs remain in ignored artifacts with durable hashes and retention notes.
-
-Each work package appends an entry to the future `docs/evidence/gagamba-linux-m1.md`, with supporting small records under `docs/evidence/linux-m1/wpNN/` when native claims begin. Do not create fictional evidence or success placeholders now. Link baseline source facts rather than inventing a failing baseline when a capability did not previously exist. Original F01 remains open.
+Application stdout, constructor markers, nonce files, traced syscalls, harness PID lists, root observers, helper process counts and probe leaf names are qualification diagnostics. They may corroborate a test, but cannot mint a preparation, establish runtime release success or replace trusted target status/domain emptiness. A source-bound HELD/status frame from the new trusted coordinator is semantic evidence; a similar string printed by the fixture is not. Keep configured, observed, inferred and unqualified facts distinct. Do not record secrets, raw input contents or unlimited output in receipts/journals. Native tests must say Executed/Passed/Failed/Skipped/Unavailable explicitly; a skip cannot satisfy a native completion gate.
 
 ## 16. Ordered implementation work packages
 
-The package order matches the requested sequence. Two dependencies run ahead of full implementation: WP01 defines minimal recovery/abort contracts because allocation needs them immediately, and WP03 supplies an emergency owned teardown path before WP04 can launch trusted setup. WP06-WP09 remain mandatory prerequisites for integrated target release. This avoids a runnable partial sandbox while preserving small reviewable commits.
+Execute WP01–WP12 in order. Each package is one bounded change and evidence checkpoint; no parallel implementation is required. All paths are repository-relative. Names below are the exact expected entry files; colocated private helpers are allowed only for the same responsibility and must be listed in the package evidence. Do not create empty scaffolding for later packages. Shared evidence locations are `docs/evidence/gagamba-linux-m1.md`, `docs/evidence/linux-m1/wpNN.md` and ignored `artifacts/linux-m1/wpNN/`; every package records its exact commit, commands, result summary and limitations. Independent review means a reviewer other than the implementation author, recorded against that exact revision. If unavailable, stop at that gate; self-review does not satisfy it.
 
-### WP01 — Internal contracts and state model
+Native target release is disabled in WP01–WP09. WP04 may execute trusted Bubblewrap/coordinator setup only. WP05 tests the actual RELEASE codec against a coordinator test build whose post-release branch records acceptance and exits before any target fork; such a binary is qualification-only and cannot pass integrated artifact pinning. WP10 enables the fixed fixture only after G3. There is no development flag that lets arbitrary commands bypass prerequisites.
 
-- **Objective:** freeze M1 semantics and an executable transition model without exposing a public restricted provider.
-- **Expected files/components:** internal `RestrictedManifest.cs`, `RestrictedTransaction.cs`; M1 project and tests only when populated with working model code; minimal ownership-journal interface.
-- **Contracts/invariants:** I01-I14 vocabulary; immutable issuer-bound preparation; one release/stop arbiter; independent execution/output/cleanup state; no replay.
-- **Dependencies:** ADR and this plan; inspect existing provider/capture contracts before choosing reuse.
-- **Unit tests:** mutation through caller collections; foreign/expired/replayed preparations; competing release/stop/discard calls; cancelled waiters; stable terminal observation; unknown plus confirmed cleanup remains unknown.
-- **Integration/fault tests:** no target launch yet; public runtime cannot select M1 and unsupported-platform construction refuses. Native enforcement explicitly not exercised.
-- **Retained evidence:** API/state decision table, passing portable test counts, legacy API surface comparison and exact source.
-- **Stop condition:** unresolved semantics, any public SPI change without justified review, or hidden route from M1 to legacy launch. Review G1 before native implementation.
+### WP01 — Internal contracts, capability identity and state model
 
-### WP02 — Protected preparation and copy-in
+- **Objective:** Encode the exact vocabulary and legal transitions before native mechanisms exist.
+- **Expected projects/files/components:** `src/Gagamba.Execution/Restricted/RestrictedManifest.cs`, `RestrictedTransaction.cs`; new non-packable `src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj`; `Preparation/PreparedTransaction.cs`, `PreparationStore.cs`; `Execution/TransactionStateModel.cs`; `tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj`, `Contracts/ManifestTests.cs`, `PreparationIdentityTests.cs`, `StateModelTests.cs`. Add only necessary project references, solution entries and specifically named InternalsVisibleTo entries. Match the existing .NET 10/xUnit v3 build conventions.
+- **Dependencies:** Accepted Sections 1–4, ADR 0003 and Sections 5–6 of this plan. No native availability required.
+- **Contracts/invariants introduced:** Every Section 5 field/enum and canonical digest; I02/I05/I06/I09; single-use reference identity; stable terminal observation; separate root/helper/cleanup; no native handles in semantic records.
+- **Implementation boundaries:** Implement immutable snapshots, canonical encoding, store skeleton and pure state transitions with injected fake clock/journal/transport. No filesystem copy, P/Invoke, process launch, real release transport or provider registration.
+- **Unit tests:** Mutation of original arrays cannot alter a digest; canonical golden bytes; missing vs unlimited vs Pending; foreign issuer/generation, fabricated identifier, duplicate consume, aborted capability and expiry; complete transition table; known-root/unknown-cleanup combinations; observer cancellation never stops the fake execution.
+- **Native/integration/fault tests:** None required or claimed. Build the new projects and affected existing contract tests; fault injection is purely fake time/transition ordering. Record native as NotApplicable for WP01, not Passed.
+- **Evidence retained:** Type/field mapping to Section 5; canonical test vectors; transition test results; API/project-reference diff; exact source revision and build commands in wp01 evidence.
+- **Must not change:** Sections 1–4, existing public SPI/result semantics, package versions, public provider registry, legacy orchestrator, AR-7 files or evidence.
+- **Completion/stop condition:** All contract tests/builds pass, no runtime/native path exists, and a fresh reviewer can trace each value/state to this plan. Stop for any need to expose a public type or choose an undefined authority/state semantics.
+- **Independent review before next package:** **Yes — G1.** Review contracts, state/Unknown semantics, immutable identity and scope before WP02.
 
-- **Objective:** produce the exact protected fixture/input snapshot accepted for release.
-- **Expected files/components:** `PreparedClosure`, `SafeCopyIn`, narrow native object-resolution helpers; fixture source/build identity definition; bounded preparation tests.
-- **Contracts/invariants:** I05/I13; destination identity defines the snapshot, no source hardlink reuse, no target execution during preparation, allocation intents recoverable.
-- **Dependencies:** WP01; supported local Linux filesystem resolution and staging-root ownership contract.
-- **Unit tests:** canonical manifest bytes/digest, object/byte admission counts, environment/argv copies, malformed paths and budget validation.
-- **Integration/fault tests:** regular-file positive; source mutation/replacement, symlink/FIFO/device refusal, hardlinked source copied to independent inode; injected interruption at create/copy/seal/publish and partial-resource reclamation.
-- **Retained evidence:** source/destination identity and digest observations, copy limits, barrier ordering, cleanup components; no general directory-import claim.
-- **Stop condition:** mutable published destination, changed fixture bytes accepted, path escape or incomplete resource registration. No held launch until copy-in binding passes focused review.
+### WP02 — Protected copy-in and atomic preparation publication
 
-### WP03 — Lifecycle-domain ownership
+- **Objective:** Produce exactly one bounded, immutable, FD-bound tool/input preparation.
+- **Expected projects/files/components:** M1 `Preparation/PreparedClosure.cs`, `SafeCopyIn.cs`, `PreparedTransaction.cs`, `PreparationStore.cs`, `Native/PreparationInterop.cs`; tests `Preparation/CopyInTests.cs`, `BindingTests.cs`, `PublicationTests.cs`; initial `tests/Fixtures/Gagamba.LinuxM1.Native/fixture.c` with finite useful-work/constructor-marker modes; `eng/linux-m1/build-native.sh` for reproducible static fixture build only.
+- **Dependencies:** WP01/G1; approved parent-directory/deadline/journal interfaces using fakes until WP03. Real native tests use bounded temporary parents owned by the harness.
+- **Contracts/invariants introduced:** I01/I05/I08/I13/I14; Section 7 copy/open rules, destination hashing, handle ownership, staging budgets, immutable manifest and atomic publication.
+- **Implementation boundaries:** Copy and bind objects; validate allowlist and pins; publish only after fake/real journal acknowledgement. Do not launch the fixture, cache closures, add exports, discover runtimes or implement general file-tree copying.
+- **Unit tests:** Copy budgets and length overflow; canonical snapshots; copy/read/digest failures at every boundary; cancellation before publication; handle disposal and no late publication; claimed digest mismatch; immutable request channels/environment.
+- **Native/integration/fault tests:** Symlink/magiclink rejection; hard-linked source produces an independent copy; pathname replacement at open/copy/publish; source truncation/growth; unsupported openat2; partially written copy cleanup; final writable-FD leak inspection. No target execution.
+- **Evidence retained:** Fixture source/build/hash identity, actual copied-object identities, each replacement test's source/copy/bound digest, allocation/cleanup record, portable/native outcome matrix.
+- **Must not change:** Public preparation types, production profile refusal, Hufu/workflow references, sealed probes or arbitrary input-tree/export support.
+- **Completion/stop condition:** Publication is all-or-nothing, every tested replacement either keeps exact copied bytes or refuses, all partial allocations are accounted. Stop if required protection needs a shared cache, privileged mount or unsupported filesystem fallback.
+- **Independent review before next package:** **No separate gate.** WP02's binding diff and evidence must pass G2 before WP04.
 
-- **Objective:** allocate an externally stoppable, identity-bound domain and establish atomic setup admission.
-- **Expected files/components:** `RestrictedDomain`, `DomainLease`, bounded journal implementation, owner-host skeleton with working allocate/abort behavior; atomic-spawn adapter.
-- **Contracts/invariants:** I03/I04/I11; controls never enter target descriptor set; kill/empty/reap separate from removal; recorded identities before target effects.
-- **Dependencies:** WP01-WP02 and real non-root cgroup v2 delegation. Missing delegation is Unsupported, not root fallback.
-- **Unit tests:** controller/readback parser failures; lease retirement/idempotency; ownership record bounds; no numeric-PID termination API.
-- **Integration/fault tests:** trusted finite setup child born in correct leaf; caller/controller separation; allocation/spawn/registration failure; kill denial, population-read failure and wrong-object recovery refusal. Keep workload synthetic and finite.
-- **Retained evidence:** native membership/readback, exact UID/delegation and libc path, independent empty-domain evidence, failure cleanup records.
-- **Stop condition:** post-exec migration needed, root-only enforcement dependency, unregistered child, path-only adoption or unproven cleanup. G2 topology review before WP04.
+### WP03 — Delegated domain lease, persistent allocation and external recovery scope
 
-### WP04 — Bubblewrap held launch
+- **Objective:** Establish recoverable ownership before any helper exists.
+- **Expected projects/files/components:** M1 `Lifecycle/RestrictedDomain.cs`, `DomainLease.cs`, `M1RecoveryScope.cs`; `Recovery/OwnershipJournal.cs`, `OwnershipRecord.cs`; `Native/CgroupInterop.cs`, `OwnerBootstrap.cs`, `RecoverySubreaper.cs`; new non-packable `src/Gagamba.Execution.Linux.M1.Owner/Gagamba.Execution.Linux.M1.Owner.csproj`, `Program.cs`; tests `Lifecycle/DomainLeaseTests.cs`, `Recovery/JournalTests.cs`, `Recovery/OwnerBootstrapTests.cs` and `Native/RecoveryHarness.cs`.
+- **Dependencies:** WP01–WP02; real existing delegation/pidfd/cgroup2 support for native cases. No automatic host provisioning.
+- **Contracts/invariants introduced:** I03/I04/I11; Section 10 live-handle identity, bootstrap descriptor allowlist, outside-domain owner, retained recovery duplicates, dedicated-host subreaping, one journal writer, Section 14 pre-allocation durability.
+- **Implementation boundaries:** Allocate/hand off/stop empty domains and recover preparation allocations; implement bounded snapshot durability. The owner executable accepts inherited private bootstrap only. No Bubblewrap or target launch yet; no path-only adoption or general service.
+- **Unit tests:** Identity mismatch and duplicate lease lifetime; control/readback errors; journal bounds, checksum/sequence, torn writes, rename/fsync failure; invalid bootstrap FD count/roles; writer-transfer failure.
+- **Native/integration/fault tests:** Missing delegation refuses; retained handle versus removed/replaced name; owner crash before/after allocation registration and acknowledgement; orphaned trusted bootstrap child is adopted/reaped by the dedicated scope; recovery scope survives and cleans originals; unrelated sibling stays unchanged; cross-boot/handle-loss record refuses destructive recovery. Inject kill/read errors on empty domains safely.
+- **Evidence retained:** Host boot/mount/delegation facts, privilege inventory, FD ownership diagram, ordered journal snapshots at barriers, unrelated-sibling identity before/after, cleanup evidence and explicit restart-only Unknown case.
+- **Must not change:** Host controllers/ACLs/sysctls, install privileges/services, existing `OwnedCgroup.Adopt` semantics, target PID-based stop, production registration or AR-7 qualification claims.
+- **Completion/stop condition:** Every allocated object is recoverable under the declared surviving-scope model and stale records never touch replacements. Stop if recovery needs a privileged daemon, numeric PID authority or resurrection of a preparation.
+- **Independent review before next package:** **Yes — G2.** Review WP02–WP03 plus planned coordinator/FD protocol against Sections 7–10 before trusted helper admission in WP04.
 
-- **Objective:** launch only the trusted held coordinator under the pinned composition with no target initialization.
-- **Expected files/components:** `IHeldLauncher`, `BubblewrapAdapter`, `LaunchDescriptorMap`, native coordinator/parser and native build script.
-- **Contracts/invariants:** I01/I03/I10/I14; actual filter installation; protected immutable setup; helper status distinct from target status.
-- **Dependencies:** WP02-WP03; G2 approval of pinned-helper source/options, descriptor ledger, coordinator status protection and abort behavior.
-- **Unit tests:** argv determinism and injection resistance; exact helper/filter pin rejection; bounded protocol framing, partial/duplicate/wrong-instance frames; descriptor map closure.
-- **Integration/fault tests:** Held reached with external namespace/domain/filter checks; target constructor has not run by structural launch path; absent/mismatched helper, omitted filter installation and owner EOF all refuse/abort. This package has no enabled target-release path.
-- **Retained evidence:** reviewed protocol, helper/coordinator sources and hashes, actual argv/FD roles, held-phase kernel observations and clean abort.
-- **Stop condition:** target code enters held setup, undeclared inherited FD, filter merely passed but uninstalled, target-forgeable control, or need to replace the namespace engine. Do not copy the AR-7 gate to bypass review.
+### WP04 — Held coordinator and pinned Bubblewrap adapter
 
-### WP05 — Release arbiter and pre-init boundary
+- **Objective:** Start trusted sandbox setup atomically inside its domain and prove that the target has not initialized.
+- **Expected projects/files/components:** `native/linux-m1/protocol.h`, `exec-coordinator.c`; M1 `Launch/IHeldLauncher.cs`, `HeldExecution.cs`, `BubblewrapAdapter.cs`, `BubblewrapArguments.cs`, `LaunchDescriptorMap.cs`, `CoordinatorProtocol.cs`, `HelperInstallation.cs`; `Native/AtomicCgroupSpawn.cs`; extend `eng/linux-m1/build-native.sh`; tests `Launch/ArgumentTests.cs`, `ProtocolTests.cs`, `DescriptorTests.cs`, `Native/HeldLaunchTests.cs`.
+- **Dependencies:** WP03/G2, pinned helper/filter, source-bound static coordinator, delegated native host. Scope/journal admission and output placeholder drains must already be bounded; no release capability is exposed.
+- **Contracts/invariants introduced:** I01/I03/I10/I14; exact Section 9 FD map and helper pinning; HELD/EOF protocol; default namespace init; separate helper status/reaper; no target fork before RELEASE.
+- **Implementation boundaries:** Implement only prepare-held and abort on live path. Coordinator may contain its reviewed post-release source branch but managed runtime cannot invoke it yet. Reuse/extract a private existing atomic-spawn primitive only if behavior-preserving; otherwise keep an M1-local adapter. No new mount engine.
+- **Unit tests:** Golden argv and FD actions; sealed config/filter; protocol malformed length/kind/sequence/identity; unknown helper/hash/privilege rejection; distinct wrapper/coordinator status types; map collision/closure failure.
+- **Native/integration/fault tests:** Start HELD and inspect namespace/mount/control inventory; absence of constructor marker; close release writer, partial/invalid frames and setup failure without target init; helper substitution by rename; missing filter; owner death while held, with wrapper adoption/reaping by the scope; descriptor audit proves no lifecycle/recovery handles reached sandbox. Abort and verify domain empty/reaped.
+- **Evidence retained:** Exact helper/filter/coordinator/source hashes, held report, FD map at each process boundary, externally observed no-init marker control and expected refusal, wrapper status, domain-empty and cleanup records.
+- **Must not change:** R2 gate code/protocol, existing legacy launch defaults, helper privilege, production registration, public abstractions, or allow a `--block-fd` substitute.
+- **Completion/stop condition:** Held setup is observable, all failure/EOF paths prevent target fork, and abort cleans the domain. Stop for descriptor leakage, pre-release target activity, helper/filter incompatibility requiring a policy/topology change or any post-exec cgroup migration.
+- **Independent review before next package:** **Yes — G2a.** Native protocol, helper source assumptions, no-init boundary and FD lifetime review before WP05.
 
-- **Objective:** implement the one-way authorization transaction and truthful exec/root status protocol.
-- **Expected files/components:** `ReleaseArbiter`, coordinator release/fork/exec/wait reporting, execution observation aggregator and deterministic test barriers.
-- **Contracts/invariants:** I01/I02/I05/I06/I09; flushed release intent, final recheck, single commit, no retry on ambiguous delivery, non-forgeable root status.
-- **Dependencies:** WP01-WP04 and G2 protocol approval. Production-path target release remains disabled until WP06-WP09 pass; test the arbiter first with a fake held endpoint.
-- **Unit tests:** all release/stop interleavings; expiry during intent flush; consumption after failed delivery; duplicate/late authorization; root status separate from helper; EOF alone never asserts successful exec.
-- **Integration/fault tests:** coordinator protocol with trusted synthetic endpoints; crash before commit/after intent/after commit/at exec-report delivery. Actual fixture release cases are queued for WP10 after all enforcement prerequisites exist.
-- **Retained evidence:** linearization trace, write-ahead record rules, source-reviewed only-exec path, status-forgery/FD analysis and pending native cases.
-- **Stop condition:** release after a stop accepted first, async commit path bypassing recheck, reauthorization/replay to resolve ambiguity, or inability to distinguish trusted target observation from wrapper output. G3 release review is mandatory.
+### WP05 — Single-use release and truthful target-status protocol
 
-### WP06 — Resource installation and readback
+- **Objective:** Implement the exact release/stop winner and exec/root observation rules without enabling integrated target release.
+- **Expected projects/files/components:** M1 `Execution/ReleaseArbiter.cs`, `Execution/ReleaseDecision.cs`, `Launch/CoordinatorProtocol.cs`, `Launch/CoordinatorStatusReader.cs`; `native/linux-m1/exec-coordinator.c`, `protocol.h`; tests `Execution/ReleaseRaceTests.cs`, `Launch/TargetStatusTests.cs`, `Native/ReleaseProtocolTests.cs`; explicit qualification-only coordinator build target in `eng/linux-m1/build-native.sh`.
+- **Dependencies:** WP04/G2a; durable journal, private capability, bounded transport and monotonic clock contracts. Resources/capture are fake prerequisite proofs until WP06–WP09.
+- **Contracts/invariants introduced:** I02/I05/I06/I09; gate linearization after durable intent; one atomic nonblocking 128-byte write; no retries; source-bound exec-error/confirmation rules; separate direct-child/helper/target status.
+- **Implementation boundaries:** Live integrated path still cannot release. Use fake transport/model tests and a separately hashed protocol-test coordinator that acknowledges then exits without forking target. Never compile a bypass into a production-selected artifact. Implement the post-release native branch and exercise its parsing/decision logic through a native unit harness with synthetic child observations. Do not execute the untrusted fixture or exercise a real post-release target exec until WP10.
+- **Unit tests:** Stop-before/after commit, expiry inside gate, journal flush race, duplicate/foreign/replayed capability, zero/partial/EAGAIN/EPIPE transport, observation loss, false EOF, malformed status, wrapper exit 0 with missing target status, normal/signalled child before/after exec confirmation.
+- **Native/integration/fault tests:** Barrier-controlled owner death before/after ReleaseIntent, commit and frame delivery using no-target protocol build; pipe capacity/write behavior; protocol-test process cannot execute fixture. Native unit status tests feed failed-exec, pre-exec-signal and immediate-normal-exit observations into the status logic without executing target code. Real exec/error-pipe/reaping confirmation cases are mandatory in WP10; model results cannot qualify them.
+- **Evidence retained:** Linearization traces with monotonic sequence/time, protocol vectors, every race's winner/number-of-writes, distinct production/test build hashes, source review of child normal-exit paths and non-dumpable status owner.
+- **Must not change:** Overall runtime refusal to release before G3, public cancellation semantics, unknown-to-success conversion, helper namespace engine or any retry/resume behavior.
+- **Completion/stop condition:** Exactly one winner and at most one release write in every schedule; ambiguous delivery/result stays Unknown. Stop for a need to hold the gate over blocking I/O, resend release, infer exec from pipe EOF alone or expose coordinator controls to target.
+- **Independent review before next package:** **Yes — G2b.** Review arbiter, native exec/status path and all race evidence before WP06.
 
-- **Objective:** enforce and verify the fixed M1 budgets before Owned.
-- **Expected files/components:** resource installer/readback in `RestrictedDomain` and adapter, writable-mount inventory, rlimit installation in trusted setup and manifest validation.
-- **Contracts/invariants:** I08/I13; explicit units/task accounting; swap zero; all configured writable backing finite; pending inode qualification never reported solved.
-- **Dependencies:** WP03-WP05, pinned helper's reviewed storage options, reference configuration in section 11.
-- **Unit tests:** malformed/missing/stricter-than-requested readbacks; unavailable controllers; aggregate storage accounting; hard-limit installation failure; helper overhead and no automatic uplift.
-- **Integration/fault tests:** held setup limit readbacks; deliberate omitted/incorrect limits prevent Owned; inspect all writable mounts. Finite native memory/task/FD/scratch exhaustion cases execute only in WP10 after the complete path exists.
-- **Retained evidence:** requested-versus-established table, mount inventory, exact limits, known inode/core/accounting gaps and refusal records.
-- **Stop condition:** unbounded writable location, missing control accepted, hidden extra storage or budget increase. No privileged provisioning or broader mounts to make it pass.
+### WP06 — Resource installation, readback and writable-state inventory
 
-### WP07 — Bounded stdout/stderr
+- **Objective:** Establish and verify the exact Section 11 envelope before release can be enabled.
+- **Expected projects/files/components:** M1 `Lifecycle/ResourceInstaller.cs`, `Launch/EstablishmentVerifier.cs`, `Launch/MountInventory.cs`, `Launch/BubblewrapArguments.cs`; coordinator HELD/rlimit reporting; tests `Resources/ResourceReadbackTests.cs`, `Resources/InventoryTests.cs`, `Native/HeldResourceTests.cs`.
+- **Dependencies:** WP05/G2b; domain/held setup and manifest contracts. No integrated target release.
+- **Contracts/invariants introduced:** I08/I13; exact memory/swap/tasks/rlimits, split 7+1 MiB tmpfs, root read-only, complete writable inventory, installed-versus-requested evidence, explicit inode PendingQualification.
+- **Implementation boundaries:** Implement current fixture envelope only. Do not create inode-quota machinery or claim object-limit qualification. Trusted held coordinator may perform bounded setup/readback probes without loading target input/code.
+- **Unit tests:** Missing controller/file; parse and unit errors; writes that appear successful but read back wrong; extra writable mount, alias, default shm, privilege/filter mismatch, unsupported flags; pending inode cannot be interpreted as Passed.
+- **Native/integration/fault tests:** Actual cgroup/rlimit/mount/namespace/capability/filter readbacks and core-sink preflight; force each required write/read failure; verify aggregate scratch backing and root/dev/run/sys read-only. Bounded trusted setup fault helpers can exhaust/test a limit under scope supervision; target behavior tests wait for WP10.
+- **Evidence retained:** Requested/observed table with raw bounded readbacks, mount identities/capacities, helper argument vector and explicit list of pending policy/inode qualifications.
+- **Must not change:** Budget values without a reviewed plan amendment, no-IP requirement, inode pending status, host configuration, arbitrary runtimes or full-profile admission.
+- **Completion/stop condition:** Every M1-mandatory constraint has a verified installation route and mismatches block Owned; only named production gaps remain pending. Stop for unaccounted writable state, unenforceable byte ceiling or material topology change.
+- **Independent review before next package:** **No separate gate.** Required input to G3.
 
-- **Objective:** install continuous bounded capture and prompt owner notification before any release.
-- **Expected files/components:** `RestrictedOutputCapture`, restricted pipe owner/descriptor mapping; narrowly reviewed shared capture changes only if needed.
-- **Contracts/invariants:** I07; independent concurrent drains; bounded prefix and queue memory; overflow/read-failure events independent of lifecycle completion.
-- **Dependencies:** WP01/WP03/WP05-WP06; capture readers ready is a mandatory Owned condition.
-- **Unit tests:** exact-limit and limit+1 per stream, simultaneous floods, total cap, binary data, integer saturation, reader fault before root completion, abort/final-drain races, blocked subscriber.
-- **Integration/fault tests:** owned finite pipe-writer helper for reader wiring; target flood/descriptor-retention scenarios scheduled in WP10. Verify no ambient stdin or extra writer in owner/helper paths.
-- **Retained evidence:** maximum retained allocations and bytes, overflow trigger/cause, bounded stop/drain behavior and legacy AR-5 regressions if shared code changes.
-- **Stop condition:** full-stream buffering, sequential stream drain, unbounded spill/logging, reader failure noticed only at completion, or overflow detached from domain stop.
+### WP07 — Bounded capture connected to whole-domain stop
 
-### WP08 — Cancellation, deadline and failure handling
+- **Objective:** Make output bounds enforceable outside target and caller lifetime.
+- **Expected projects/files/components:** M1 `Output/RestrictedOutputCapture.cs`, `Output/CaptureCounters.cs`; tests `Output/BoundedCaptureTests.cs`, `Output/StopNotificationTests.cs`, `Native/PipeCaptureTests.cs`. Touch existing `Gagamba.Execution/OutputCapture.cs` only for a separately justified private, behavior-preserving reuse, with its existing regressions.
+- **Dependencies:** WP05 arbiter and WP06 envelope; domain stop transport and fake observer/stream dependencies.
+- **Contracts/invariants introduced:** I07/I09; stream/aggregate reservation, fixed buffers, prompt first-excess/read-fault stop, caller-independent drains and finite final drain.
+- **Implementation boundaries:** Two pipes and bounded snapshots only; no streaming API expansion, export, line parser, unbounded diagnostics or generalized event bus. Trusted pipe-writer test processes are allowed; integrated target still held.
+- **Unit tests:** Exact limit and first extra byte, concurrent stream races, huge reads, count overflow, zero-byte EOF, read exception, slow/no observer, cancellation of waiter, truncation and final-drain expiry.
+- **Native/integration/fault tests:** Dual pipe flood and pipe backpressure; duplicate/retained writers; reader failure; stdout before HELD prevents release; recovery receives stop despite owner observer disconnection. Domain fixture writers must all be terminated, not just the root writer.
+- **Evidence retained:** Peak retained/buffer allocation bounds, counters/stop sequence, pipe FD inventory, first-excess-to-stop ordering, root/capture/cleanup independence and cleanup of all writers.
+- **Must not change:** Existing caller observer cancellation semantics, output budgets, introduce caller-dependent enforcement or make launcher the policy engine.
+- **Completion/stop condition:** Every overflow/read fault promptly requests domain stop and storage remains bounded with absent observers. Stop if any path awaits root exit/subscriber before enforcing a limit or retains an unbounded queue.
+- **Independent review before next package:** **No separate gate.** Required input to G3.
 
-- **Objective:** connect all stop sources to the arbiter and preserve truthful execution state during observation loss.
-- **Expected files/components:** `RestrictedExecutionOwner`, caller lease, monotonic deadline controller, bounded result aggregator and per-execution owner executable.
-- **Contracts/invariants:** I02/I03/I06/I09; setup-inclusive timer; stop request acceptance separate from confirmed emptiness; external enforcement outlives an observer.
-- **Dependencies:** WP01-WP07; early abort/cleanup path from WP03; no integrated release until WP09 complete.
-- **Unit tests:** setup timeout, final release expiry, cancellation-before/after commit, caller lease closure, helper/reader/journal failure, multiple waiters and stopped observer.
-- **Integration/fault tests:** held-owner/caller termination and independent retained domain controls; owner-host process fault boundaries. Post-release native cases execute in WP10; emergency controller actions are separately counted.
-- **Retained evidence:** stop-cause and phase matrix, independent authority ownership, failed/unknown paths and timing measured only on the declared healthy host.
-- **Stop condition:** loss of caller/manager loses all stop authority, deadline exists only after launch, or cleanup is inferred from cancellation/timeout. Do not create a new privileged watchdog service.
+### WP08 — Owner orchestration, setup-inclusive deadlines and caller loss
 
-### WP09 — Cleanup and reconciliation
+- **Objective:** Wire preparation/held setup/capture/stop into one execution-owned lifetime, with release still inhibited pending G3.
+- **Expected projects/files/components:** M1 `Execution/RestrictedExecutionOwner.cs`, `Execution/MonotonicDeadline.cs`, `Execution/StopCoordinator.cs`; owner `Program.cs`; `Lifecycle/M1RecoveryScope.cs`; tests `Execution/OwnerStateTests.cs`, `DeadlineTests.cs`, `CancellationTests.cs`, `Native/OwnerLossTests.cs`.
+- **Dependencies:** WP01–WP07; private owner bootstrap, actual capture and readback.
+- **Contracts/invariants introduced:** Setup-inclusive 10/30 s clocks before work, final gate recheck, caller/recovery liveness separation, stop coalescing, sole reapers and independent observation task.
+- **Implementation boundaries:** Wire only fixed request flow. No public orchestrator replacement, scheduler, retry policy, external service or integrated fixture release.
+- **Unit tests:** Expiry while copying, blocked setup, delayed timer callback, clock unit conversion, stop during journal I/O, owner/caller/recovery EOF, repeated stop, watcher cancellation, one stable terminal task.
+- **Native/integration/fault tests:** Stall copy/setup/HELD with external watchdog active; kill caller but retain scope; kill owner in each pre-release state; drop recovery lifetime channel; prove independent scope stops blocked owner's domain and fences journal takeover.
+- **Evidence retained:** Monotonic start/deadline/stop traces, actual process-role tree, recovery-vs-test-rescue classification, states reached and domain-empty/reaper outcomes.
+- **Must not change:** Setup-inclusive origin, observation-only wait cancellation, public runtime orchestrator, full-profile refusal, one-transaction scope or owner privilege.
+- **Completion/stop condition:** All setup work is bounded, late workers cannot publish/release, and declared owner/caller failures trigger the proper stop. Stop if cancellation depends on caller stack unwinding or timeout merely abandons live work.
+- **Independent review before next package:** **No separate gate.** Required input to G3.
 
-- **Objective:** make every partial allocation and released transaction safely terminable/reclaimable, with durable uncertainty.
-- **Expected files/components:** `OwnershipJournal`, `Reconciler`, object-safe scratch/staging cleanup and component reports; fault seams scoped to tests.
-- **Contracts/invariants:** I04/I06/I09/I13; idempotent owned cleanup; no name/PID-only action; immutable execution result with separate cleanup updates.
-- **Dependencies:** WP02-WP08; trusted root/identity and journal durability review.
-- **Unit tests:** journal version/size/torn records, phase monotonicity, partial component results, retry state, boot mismatch, stale IDs, execution Unknown surviving successful cleanup.
-- **Integration/fault tests:** crash after each recorded allocation; controller-held handle reconciliation after owner death; removal denial, swapped path/cgroup, hostile scratch links and unknown mount refusal; no unrelated fixture touched.
-- **Retained evidence:** exact residual identities, component transitions, independent absence/emptiness checks and conservative unknown outcomes.
-- **Stop condition:** deletion outside owned objects, replay/resume during recovery, stale identity action or debt discarded on error. G3 confirms cleanup readiness before integrated release.
+### WP09 — Reconciliation, semantic receipts and integration readiness
 
-### WP10 — Integrated native transaction
+- **Objective:** Close the transaction on every failure without replay or unsafe cleanup, and make its result auditable.
+- **Expected projects/files/components:** M1 `Recovery/Reconciler.cs`, `OwnershipJournal.cs`, `OwnershipRecord.cs`; `Evidence/TransactionReceipt.cs`, `ReceiptWriter.cs`; `Execution/RestrictedExecutionOwner.cs`; tests `Recovery/ReconciliationTests.cs`, `CrashBoundaryTests.cs`, `Evidence/ReceiptTests.cs`, `Native/RecoveryIdentityTests.cs`.
+- **Dependencies:** WP01–WP08; actual domain/capture/owner mechanisms and journal ordering.
+- **Contracts/invariants introduced:** I04/I06/I09; Section 14 idempotence and fencing; field-wise Unknown; semantic receipt distinct from private recovery and qualification diagnostics.
+- **Implementation boundaries:** Finalize existing cleanup and bounded evidence. No reboot recovery authority, path-only adoption, output reconstruction, exports or repair of historical AR-7 uncertainty.
+- **Unit tests:** Every Section 13 result row; corruption/oversize/torn terminal snapshot; repeated reconciliation; identity mismatch; known root with failed cleanup; Unknown with confirmed cleanup; journal persistence failure cannot suppress urgent kill.
+- **Native/integration/fault tests:** Crash at allocation, prepared, held, intent, stop and cleanup barriers with protocol-test coordinator; stale/replaced parent/child entries; retained-handle recovery versus restart-only records; interrupted cleanup resumes safely; unrelated sibling untouched. Full released-target crash coverage follows WP11.
+- **Evidence retained:** Schema samples for success/refusal/Unknown/cleanup failure, crash-state matrix, same-object verification, unresolved-resource records and bounded artifact inventory.
+- **Must not change:** Release inhibition before G3, Unknown history, private recovery exposure, no public registration, no unsolicited operator cleanup or host reconfiguration.
+- **Completion/stop condition:** All prerequisites for a live fixed-fixture transaction are implemented and negative tests pass; complete G3 checklist. Stop on any unresolved authority, output, storage, release or recovery correctness defect.
+- **Independent review before next package:** **Yes — G3.** Independent review of WP05–WP09 as composed, including the actual production-selected coordinator and protocol-test exclusion. Only accepted G3 permits WP10 target release.
 
-- **Objective:** run one complete useful static-native transaction through the implementation with all M1 prerequisites enabled.
-- **Expected files/components:** populated fixture modes, `run-m1.sh`, end-to-end tests and receipt writer; connect WP01-WP09 without public runtime registration.
-- **Contracts/invariants:** all I01-I14; no fixture shortcut through a legacy launch; full M1 establishment prior to release.
-- **Dependencies:** WP01-WP09 and G3 sign-off. One execution at a time in a finite independent test envelope.
-- **Unit tests:** receipt aggregation and never-launching/broken-adapter controls; state tests remain green.
-- **Integration/fault tests:** useful input digest and scratch work, exact exit 0/17, constructor-before-main boundary; deterministic stop-wins/release-wins; missing restriction refusal; bounded memory/task/FD/storage exhaustion; output floods/retained writers; target/helper/owner failures and live-descendant domain stop.
-- **Retained evidence:** exact clean source/build identities, limits/establishment, trusted phase ordering, root/helper results, output counters, cleanup components and independent oracle records for every claimed case.
-- **Stop condition:** unsafe boundary result, emergency fallback needed for a claimed automatic stop, misleading status or cleanup uncertainty. Preserve and resolve residue before further runs; no compatibility widening.
+### WP10 — One complete internal static-native transaction
 
-### WP11 — Focused P05/P06-style validation
+- **Objective:** Execute the exact prepared useful-work fixture through the real owned release path and retain truthful evidence.
+- **Expected projects/files/components:** Extend `tests/Fixtures/Gagamba.LinuxM1.Native/fixture.c` with bounded hash/echo, constructor marker, exit, bounded child/retained-writer, output and resource-stress modes; tests `Native/TransactionTests.cs`, `Native/FixtureEnvelope.cs`; `eng/linux-m1/run-m1.sh`; minimal owner integration wiring in `RestrictedExecutionOwner.cs`; complete `docs/evidence/gagamba-linux-m1.md` run index.
+- **Dependencies:** WP09/G3, exact reviewed native artifacts and supported delegated host. All prior native gates executed; skips do not authorize launch.
+- **Contracts/invariants introduced:** Composition of I01–I14 for one internal transaction; useful work bound to exact input/tool; actual separate target/helper/domain/capture results.
+- **Implementation boundaries:** Enable only the allowlisted source-bound fixture. Keep internal entry points and production profile refusal. No installed-package API, arbitrary command selector, export, new runtime or platform.
+- **Unit tests:** Integrated request allowlist, actual prerequisite aggregation, fixed budgets/channels, incompatible artifact/test-build rejection and public production-request refusal.
+- **Native/integration/fault tests:** Useful output matches copied input; normal zero/nonzero exit, failed exec, pre-exec signal and immediate exit with actual error-pipe/reaping observations; constructor cannot run while held; release after accepted stop fails; root exit with descendant/writer; output excess; memory/tasks/FD/scratch/shm limits and bounded ordinary-core suppression checks; failure readback prevents marker; wrapper-vs-target exit mismatch. Exercise final readback-to-release mutation barrier.
+- **Evidence retained:** Exact commit/host/artifact pins, prepared/established manifest and semantic receipt, durable release chronology, negative/positive control pair, root/helper raw status, output bounds and final empty/cleanup evidence.
+- **Must not change:** Freeze points, full-profile refusal, no export/API/provider registration, prior sealed evidence or production-gap statuses without independent qualification.
+- **Completion/stop condition:** One useful transaction and all listed bounded negative cases pass with confirmed cleanup, or accurately failed cleanup is treated as a failed test requiring repair. Stop immediately on pre-init violation, released-but-unowned work, wrong copied bytes or target access to controls.
+- **Independent review before next package:** **No separate gate.** WP10 evidence is mandatory input to G4 after fault coverage.
 
-- **Objective:** challenge this narrow implementation's immutable preparation, single-use release and object safety without claiming full P05/P06 completion.
-- **Expected files/components:** adversarial tests in the M1 project, finite replacement/link fixtures and durable evidence additions.
-- **Contracts/invariants:** I01/I02/I05/I06/I13; exact prepared snapshot runs once; cleanup remains in its owned scope.
-- **Dependencies:** WP10 useful control accepted and confirmed cleanup.
-- **Unit tests:** manifest/token mutations, wrong issuer/digest/profile, bounded parser and canonicalization negative cases; avoid implementation-mirroring assertions.
-- **Integration/fault tests:** swap fixture/input/parent paths at named preparation/release barriers; attempt re-release and foreign preparation; corrupt/truncate journal; malicious scratch links/aliases; invalid helper/filter pin; initialized target must never precede commit. No export tests imply an export API exists.
-- **Retained evidence:** claim-to-positive/negative-control matrix, exact unexecuted variants, source binding and cleanup proof; retained failures superseded explicitly, never overwritten.
-- **Stop condition:** useful-work control absent, missing native prerequisite counted as pass, changed bytes accepted or any claim exceeding the narrow tested object set. G4 scope review before final independent review.
+### WP11 — Focused P05/P06 races and whole-lifecycle fault matrix
 
-### WP12 — Independent review and handoff stop
+- **Objective:** Attack the new transaction's boundaries sufficiently for a bounded M1 review, without claiming full production qualification.
+- **Expected projects/files/components:** Tests `Native/ReleaseFaultMatrixTests.cs`, `Native/ReplacementTests.cs`, `Native/OwnerDeathMatrixTests.cs`, `Native/OutputFaultTests.cs`, `Native/ControlIsolationTests.cs`; bounded barrier support in the existing harness; fixes confined to implicated M1 components; `docs/evidence/linux-m1/wp11.md` and selected compact case records.
+- **Dependencies:** WP10 useful transaction with exact source binding. Any implementation fix invalidates affected earlier evidence until rerun on the fixed revision.
+- **Contracts/invariants introduced:** No new authority; evidence for the existing release, replacement, owner-loss, output and reconciliation guarantees. Qualification-only barriers never grant production release.
+- **Implementation boundaries:** Run Section 17 matrix on the selected host/envelope. No broad AR-7 feasibility rerun, new inode implementation, network-policy expansion, export corpus or runtime qualification project.
+- **Unit tests:** Regression for every discovered state/codec/identity/capture bug; pairwise ordering coverage and explicit expected Unknown fields at each crash boundary.
+- **Native/integration/fault tests:** Owner/caller death before and after every major transition; kill coordinator/wrapper/root separately; stop-vs-release races; partial/closed/status channels; tool/input/helper replacement; retained output writers; missing readbacks; source/config mutation; target ptrace/proc-fd/control acquisition attempts; recovery loses original handles; unrelated sibling remains intact.
+- **Evidence retained:** Per-case injection barrier, permitted effects, actual trusted observations, release winner, root/helper distinctions, cleanup status, rescue required/not required, exact host/commit/artifact identities and unexecuted cases. Repeated stress results supplement deterministic cases, not replace them.
+- **Must not change:** No-IP/inode/P08/P09 pending claims, production refusal, AR-7 historical records, use external rescue as a pass, or treat observed PID reuse checks as atomic authority.
+- **Completion/stop condition:** Every M1-mandatory matrix cell executes and passes; unresolved safety defect stops progress. Unavailable host operations stay Unavailable and block the corresponding M1 claim, not silently skip to completion. Production-only cells remain explicitly pending.
+- **Independent review before next package:** **Yes — G4.** Review source-bound fault evidence and remaining-gap ledger before final handoff.
 
-- **Objective:** obtain a read-only implementation/evidence review and decide the M1 disposition.
-- **Expected files/components:** `docs/reviews/<date>-gagamba-linux-m1-review.md`, final M1 evidence and bounded handoff/queue documentation. No automatic next feature.
-- **Contracts/invariants:** architecture is preserved; every M1 claim maps to code and native evidence; all production gaps remain explicit.
-- **Dependencies:** WP10-WP11 evidence at an exact source revision, relevant regressions complete and no unexplained cleanup residue.
-- **Unit tests:** none added merely for this documentation step; inspect recorded coverage and meaningful negative controls.
-- **Integration/fault tests:** reviewer executes none by default; targeted evidence corrections require explicit scope and new source binding. No blanket rerun of accepted AR-7.
-- **Retained evidence:** reviewer scope, material findings, accepted/rejected findings with rationale, required repairs and precise final disposition.
-- **Stop condition:** stop after review and any expressly scoped repairs. If native qualification is unavailable, record `IMPLEMENTED — NATIVE QUALIFICATION PENDING`; do not mark M1 native-complete. Do not add exports, .NET, Hufu/workflow or public support without the next reviewed slice.
+### WP12 — Independent M1 review and bounded handoff
+
+- **Objective:** Decide whether this internal milestone is complete and identify the next separately authorized slice.
+- **Expected projects/files/components:** `docs/reviews/gagamba-linux-m1-review.md`, `docs/evidence/gagamba-linux-m1.md`, `docs/handoff.md`, `docs/work-queue.md`; any necessary correction to this plan is explicitly identified, not silently rewritten. No implementation changes in the review-only package; findings return to the owning earlier package.
+- **Dependencies:** WP11/G4 and exact reviewed implementation/evidence revision.
+- **Contracts/invariants introduced:** No new runtime contracts. Review acceptance is scoped to the internal fixture and declared surviving-recovery-scope model.
+- **Implementation boundaries:** Independent source/evidence review and documentation only. Reviewer checks all Section 18 gates and traces every claim to code/native evidence. A further runtime/API/production task requires a new bounded authorization.
+- **Unit tests:** No new tests for documentation. Verify recorded required test results correspond to the reviewed revision; a changed implementation requires affected tests to be rerun in its package.
+- **Native/integration/fault tests:** No automatic rerun of sealed feasibility. Independently reproduce selected decisive M1 positive/negative/race/recovery cases if needed; record actual execution versus source-only review.
+- **Evidence retained:** Reviewer identity/date, exact reviewed commits, blocking/nonblocking findings, resolved findings with retest links, acceptance/refusal and explicit production-gap ledger.
+- **Must not change:** Production provider registration, packages/API, Hufu/workflow/platform scope, AR-7 verdicts, inode pending status or declare general Linux security/production readiness.
+- **Completion/stop condition:** G5 explicitly accepts the internal milestone with no unresolved M1 blocker, or records a stop and sends concrete findings back to their packages. Do not continue into a new feature merely because the plan's last package is reached.
+- **Independent review before next package:** **Yes — G5 is this package.** No next implementation package is authorized by this plan.
 
 ## 17. Test and fault-injection strategy
 
-Portable tests establish state/contract behavior only. Delegated Linux tests establish the actual implementation mechanisms on the measured host. Independent control processes observe effects outside the target; a target marker corroborates an action but never serves as installation or cleanup proof.
+Use deterministic barriers controlled by the trusted test harness at allocation intent/created/registered, copy completed, Prepared persisted/published, helper admitted, HELD, readback accepted, Owned persisted, ReleaseIntent durable, immediately before/after arbiter commit, frame delivered, child fork/before exec, exec observed, root observed, domain empty, capture terminal, removal and terminal persistence. Production code may expose internal dependency interfaces for faults; test hooks must not be enabled through target environment or an ordinary runtime option. Every native test has a finite watchdog outside the owner and recovery scope. If that outer watchdog rescues a run, mechanism recovery failed.
 
-The future native runner must validate its own environment, require explicit paths for the approved helper/delegation/staging root, and refuse unmet prerequisites without installing software or changing host security configuration. Do not automatically call old AR-7 drivers. Build the new source-bound finite fixture and coordinator in the implementation phase, commit their source before evidence runs, and record exact binary hashes/toolchain.
+| Test family | Required assertion and negative control |
+|---|---|
+| Pre-init | A fixture constructor writes a bounded marker only after valid release; missing marker in a known-working held/refused case. Pair with identical allowed transaction showing marker after trusted release chronology. A marker alone never proves semantic exec. |
+| Preparation | Copy/mutate/rename/hardlink/symlink at every binding barrier; prepared exact object remains or release refuses. Foreign/replayed capabilities and wrong generation cannot write RELEASE. |
+| Linearization | Stop first yields zero writes/zero init; release first permits effects but post-stop kills whole domain; durable-intent crash produces MayHaveExecuted without retry. Clock advances while journal flush/gate is delayed. |
+| FD/control isolation | Audit owner/helper/coordinator/target FD sets; target cannot read release/status/config/recovery/domain controls or impersonate owner via retained writer. Test proc-fd/ptrace access to trusted coordinator and inherited socket paths. |
+| Status | Distinguish exec errno, pre-exec death, immediate exit, signalled target, lost coordinator, wrapper success/failure, malformed/duplicate frames and helper exit 128+signal. Assert exact per-field Unknown cases. |
+| Resource/readback | One missing/wrong required limit per case prevents release. Actual bounded resource stress after G3 confirms observed ceilings within stated semantics; enumerate mounts and open-unlinked/sparse/mapped scratch cases within finite fixture limits. Inode production qualification remains Pending. |
+| Output | Exact/over limit independently and simultaneously; no/slow observer; huge writes; reader fault; root exit with retained writer; final-drain timeout. Counter/storage bound and whole-domain stop are both asserted. |
+| Ownership/recovery | Kill each role separately at each state; retained handles survive owner death; all-holders-lost record refuses destructive adoption; unrelated cgroup/staging sibling survives identity mismatch. Scope rescue and outer-harness rescue are reported separately. |
+| Cleanup | Kill/control/event/read/remove/fsync failures; timeout and partial teardown; repeated reconciliation; known root with cleanup failure and unknown root with confirmed cleanup. No target replay. |
+| Scope/regression | No production profile registration; non-Linux refused; arbitrary command/runtime/export request refused; existing lifecycle/output tests unchanged where touched. |
 
-| Test family | Positive control | Required negative/fault evidence |
-|---|---|---|
-| Preparation identity | Exact copied fixture reads expected copied bytes | Source/destination replacement, foreign/replayed preparation, expired/different manifest never releases altered target. |
-| Held phase | A later valid commit produces useful work | External held snapshot plus reviewed sole exec path; constructor/input access cannot start before commit. Silence alone is insufficient. |
-| Ordering | Release-first case executes under ownership | Stop-first and expired-setup cases send no release; ambiguous commit crash stops without retry. |
-| Status | Deliberate root exit 17 and separate wrapper status | Exec failure, coordinator death, lost status and wrapper-only exit never synthesize root success. |
-| Resources | Finite under-budget workload succeeds | Above-budget operations fail/stop with matching readbacks/events where applicable; task/FD/storage units are truthful. |
-| Capture | Exact finite bytes on both streams | Both-stream flood, blocked reader/subscriber and retained descriptors preserve bounded memory and trigger correct stop/incomplete status. |
-| Domain lifetime | Finite descendant demonstrably alive before stop | Fresh live-descendant and mid-spawn stop, caller/manager/owner loss, no numeric-PID sweep; actual domain emptiness independently observed. |
-| Recovery | Valid retained ownership record reconciles once | Torn/wrong-boot/replaced-object records cannot delete or kill an unrelated controlled sentinel; Unknown stays Unknown. |
-| Refusal | Valid internal fixture path can run | Wrong helper/filter, omitted installation, unsupported controllers and never-launching adapters fail the appropriate controls without legacy fallback. |
-
-Use named barriers at allocation intent/creation/identity persistence, copy completion/publication, held helper readiness, limit readback, release-intent durability, release commit/delivery, target exec/report, root exit, domain-empty observation and each cleanup component. Pause trusted test orchestration at those barriers; do not put the enforcement boundary in the target fixture. The static fixture should include constructor-side effects before main to challenge a late barrier, but the authoritative proof remains the source-bound launch structure plus external observations.
-
-Every native case has a fresh execution identity, bounded workload/output, an independent finite watchdog and cleanup controller. Kill only owned test processes using stable child handles or their test domains. Verify unrestricted positives inside the independent safety envelope are permitted, so outer denial cannot masquerade as enforcement. Do not access real credentials, services or metadata endpoints. Full transport campaign belongs to later production qualification.
-
-Run appropriate existing core/provider/AR-5 Linux/runtime regressions when shared code is affected; do not broaden legacy behavior as part of this milestone. No skips become passes. The M1 evidence table lists proposed tests that remain unexecuted separately from measured outcomes, including both release/stop orderings and crash-after-commit uncertainty.
+Portable tests run on ordinary .NET hosts using fakes. Native tests require the explicit delegated Linux environment and pinned artifacts, with preflight recorded as Supported/Unsupported/Unavailable. A missing prerequisite is a truthful refusal case but cannot stand in for a successful delegated transaction. Keep each probe finite in tasks, bytes, files and duration. The native fixture's stress limits are test safeguards, not production inode enforcement. Do not use privileged observers to satisfy an unprivileged mechanism claim. Record LSM state if observable, otherwise Unknown. No claims are inherited from old AR-7 hosts merely because the new command resembles a probe.
 
 ## 18. Review gates
 
-| Gate | When | Required review / exit |
+| Gate | Required before | Acceptance criteria |
 |---|---|---|
-| G1 — contract | After WP01 | Immutable preparation, state/result vocabulary, single linearization authority, no public fallback and no policy dependencies. |
-| G2 — native topology/protocol | Before WP04 target-capable code | Pinned helper option/source verification, descriptor ledger, coordinator only-exec path, protected root-status reporting, delegated ownership and crash authority. A material launcher/service redesign returns to architecture review. |
-| G3 — integrated release admission | After WP05-WP09, before WP10 | All M1 limits/readbacks installed, two readers active, deadline/stop/recovery armed, staging immutable, missing-item refusal and safe cleanup. No target release merely because helper launch works. |
-| G4 — evidence scope | After WP11 | Useful positives, actual phase proof, exact source/build identities, conservative result/cleanup and unclaimed production gaps. |
-| G5 — independent milestone decision | WP12 | Reviewer accepts the narrow native transaction or records blockers/pending qualification; authorizes no broader product automatically. |
+| G1 | WP02 | Internal value/capability shapes and pure states match ADR; immutable canonical identity; no public API/registration; WP01 has executable tests and no architectural placeholders. |
+| G2 | WP04 | Copy/FD binding, incremental durability, live cgroup identity, unprivileged recovery topology and the specified native protocol/FD map are coherent; no record-only destructive authority. |
+| G2a | WP05 | Actual pinned helper transport and held coordinator reviewed; target code cannot initialize; EOF/invalid control fails closed; admission atomic; descriptor exposure bounded. |
+| G2b | WP06 | Release-vs-stop proof, single-write behavior, crash-intent rule, child exec/error logic and truthful target-vs-wrapper status accepted. |
+| G3 | WP10 | Real resources/readbacks, bounded capture stop, caller/owner loss, setup-inclusive deadlines, journal ordering and reconciliation are composed; no missing mandatory prerequisite; test-only binaries/hooks cannot be selected by integrated path. |
+| G4 | WP12 | Useful transaction plus deterministic source-bound fault matrix; each claimed behavior actually executed; unknowns/nonclaims preserved; no outer-rescue case labelled success. |
+| G5 | Any later separately authorized milestone | Independent M1 review accepts this precise internal scope, records production gaps and proposes the next bounded decision. No implicit production readiness. |
 
-These gates are engineering reviews within the ADR's existing implementation authorization, not repeated requests for permission for ordinary edits. New privileged components, authority widening, a substantial namespace launcher replacement or profile weakening require a new architecture decision. A detected boundary failure halts affected execution work and triggers safe cleanup and review.
-
-Architecture ambiguities that require focused implementation decisions are bounded rather than silently assumed solved:
-
-1. The ADR fixes pre-init release semantics, but not the coordinator/status protocol. Section 8 proposes one; G2 must verify it against the pinned helper and process-access model. If a protected truthful reporter is infeasible without a broader topology, stop that package.
-2. The ADR requires external recovery authority without selecting a persistent deployment host. M1 uses an unprivileged per-execution owner and external test/recovery controller; production recovery integration stays pending, and emergency controller cleanup does not count as automatic owner-death enforcement.
-3. The precise byte-bounded writable mount layout depends on supported pinned-helper behavior. WP06 must establish a complete finite inventory; independent inode/metadata enforcement remains future qualification. Do not silently accept default writable tmpfs mounts.
-
-These points do not prevent precise initial contract/copy-in/domain work. They are explicit stop gates before the dependent integrated release, not permission to invent missing guarantees.
+The coordinator, FD layout, atomic admission, recovery topology and writable-store layout are selected in this document. Reviews verify those choices; they are not invitations for an implementation agent to choose a different architecture. If source/native evidence contradicts a choice, record the concrete contradiction and stop the affected package for a narrow plan amendment. Preserve accepted Sections 1–4 unless the contradiction actually concerns them. Do not solve a blocked package by weakening a required invariant, silently widening authority or installing privilege.
 
 ## 19. Remaining production-qualification gaps
 
-M1 does not close the following:
+M1 can be complete while the following remain pending. They must be present in the final review and must continue to prevent advertising or accepting `restricted-offline-closure-v1`:
 
-| Gap | Required future disposition |
-|---|---|
-| Full P05 | Complete production preparation/release authorization, mutation/replay/expiry and failure coverage beyond one internal fixed fixture. |
-| Full P06 | Complete supported filesystem/object/alias/mount matrix, writable-state qualification and safe export API. |
-| Inode/metadata enforcement | Independently configured and demonstrated finite bounds before production, as required by ADR 0003. Fixture file-count caps/memcg observations are not substitutes. |
-| Complete network/IPC and loopback | Full applicable direct/alternate syscall and inherited-channel matrix; private IP loopback prohibition remains unproved by AR-7. |
-| Complete owner-death | Qualified production recovery host, all crash windows, no leaked keepalive authority, restart/reboot identity handling and declared healthy-host stop behavior. |
-| P08 runtime | Complete useful runtime closure and supported-host compatibility evidence. A static fixture establishes no general runtime entitlement. |
-| P09 | Exact package/source/helper/filter/profile security manifest, negative gates and independently installed consumers. |
-| .NET closure | Complete published files/native dependencies, identity bindings, writable state, budget and diagnostic/core-sink qualification. |
-| Hufu/workflow | Later adapter and authority/revocation contract integration; no dependencies added in M1. |
-| Unsupported platforms | Windows native/macOS refusal remains; Windows VM and further native designs require their own decisions/qualification. |
-| Supply chain / hosts | Complete provenance and upgrade qualification; explicit kernel/libc/architecture/filesystem/delegation/LSM support conditions. |
+- **Inode/object ceilings and metadata accounting:** mandatory before production qualification; explicitly PendingQualification in M1. Neither 128 staging objects, finite fixture loops, memcg nor byte-sized tmpfs proves a general independent writable inode ceiling. Do not expand M1 to implement this unless a concrete ADR contradiction is found; the ADR expressly permits implementation to start first.
+- **Complete P05/P06:** M1 provides a narrow immutable preparation/release and protected-copy implementation with focused races. Full hostile-object/filesystem/storage/alias corpus, generalized closures and export are not qualified. Export remains unavailable, with no M1 API.
+- **Owner death and recovery deployment:** the surviving unprivileged recovery scope is real M1 machinery, but scope/owner simultaneous loss, all-handle loss, reboot/service restart, durable long-lived deployment and exhaustive death containment remain unqualified. Records alone never regain authority.
+- **Complete no-IP/IPC/syscall policy:** the frozen filter is a source-bound starting point, not evidence of complete loopback prohibition or all alternate ABI/transport paths. Namespace isolation and the tested finite fixture do not qualify the production offline bundle. Any later policy strengthening needs new reviewed evidence.
+- **Runtime P08:** one static native fixture only; no arbitrary native program or self-contained .NET closure qualification, runtime discovery or installed SDK.
+- **Package/security-manifest P09:** no public API/provider registration, installed-package consumer qualification, supply-chain release gate, publication or blanket support matrix. Dynamic Bubblewrap dependencies remain part of the TCB even if locally pinned.
+- **Core sinks and charging:** setting RLIMIT_CORE=0 is not exhaustive core-sink qualification. The selected M1 host preflight and finite fault cases do not qualify every host collector, runtime dump facility, helper-overhead charge or per-case swap behavior. Preserve the ADR's explicit residual accounting/core-dump limitations.
+- **Host breadth:** conclusions apply only to actually tested kernel/libc/filesystem/delegation/WSL arrangement. LSM unknowns, scheduler/resource residuals, same-UID host-owner trust and hostile multi-tenant availability remain explicitly bounded.
+- **Platforms/integration:** Windows/macOS remain refusal-only; VM, Hufu/Penghou/workflow and a privileged service are outside this plan. AR-7 is not reopened, and its chronology, PID-reuse and historical cleanup qualifications remain intact.
 
-Preserve every sealed non-claim: no general Linux security or production readiness; tested WSL2/pinned-helper/UID-delegation scope and unknown LSM state; incomplete syscall/IPC coverage; no independent inode bound or streaming-output enforcement demonstrated by AR-7; no measured minimum .NET budget; no exhaustive host core-sink exclusion; incomplete published-.NET closure; P03 manager-leaf placement exception; P04 charging/configuration qualifications; no general C7/C8 descendant-elimination guarantee; R5 chronology and R6 PID-reuse qualifications; Unknown results remain Unknown; unavailable `39d1` and superseded `a7d8` cleanup uncertainty are not rehabilitated. P01 does not prove native Windows impossible; P01B remains inconclusive; no P01C, Windows VM or macOS qualification. P05/P06/P08/P09 were unexecuted at the seal. R2 `/gate` is not a production release mechanism.
-
-New M1 measurements may establish narrow implementation-specific facts without retroactively upgrading AR-7. Original F01 stays open until production qualification and final independent security review.
+No skipped M1-mandatory native test is a production gap that can be waved through: it blocks that M1 work package. Conversely, the production-only gaps above must not be turned into an unbounded expansion of this first milestone.
 
 ## 20. Implementation-agent handoff
 
-Start in the Gagamba repository with this plan and the committed ADR above. Inspect current Git status and preserve unrelated changes. Do not rewrite the sealed evidence or frozen AR-6 refs. The planning commit contains documentation only; no component or test named here should be assumed to exist until verified.
+Start with **WP01 only**. Read `AGENTS.md`, the current handoff/queue, ADR 0003, this complete plan and the remediation evidence standard. Inspect repository status and preserve unrelated work. Confirm actual .NET/xUnit/project conventions from the existing projects; add the two named contract files, non-packable M1/test projects, capability/store skeleton and pure model/tests listed in WP01. Use the Section 5 fields, enum values, canonical encoding rules and Section 6 transitions; do not invent native mechanics or defer those contracts to a later agent. Build/run portable checks and retain the exact-revision evidence. Stop for G1 independent review before WP02.
 
-Begin WP01, then WP02 and WP03. Implement populated internal components in small ordered commits and record exact source identity. Keep the public lifecycle SPI and ordinary runtime behavior intact. Use the proposed non-packable internal project/owner arrangement, with no Hufu/workflow dependency and no public restricted-provider registration.
+For each later package, verify its dependency gate, implement only its listed boundary, run required portable/native/fault tests, record exact artifact/source/host identity and stop condition, and obtain the specified review. Review findings return to the owning package and invalidate affected evidence until retested. A native prerequisite unavailable on the current host must be recorded and blocks native completion; do not provision privilege or call a skip a pass. Do not merge a partially reviewed live-release path into public registration.
 
-Before WP04, resolve G2's coordinator/descriptor/status and delegated-ownership design using the pinned helper. Do not copy the test gate or mistake target stdout for readiness. Preserve the sole release/stop linearization point and never replay an ambiguous release. WP06-WP09 are prerequisites for integrated native target release, even though their implementation follows the contract/held-launch packages.
+The implementation handoff is complete only after WP12/G5 accepts the internal transaction and updates the gap ledger. Until then, report the last completed package, next gate and precise blockers. After that acceptance, stop for the next bounded authorization; do not proceed automatically to exports, .NET targets, production registration or Hufu/workflow work.
 
-Run only the new bounded M1 validation required by implemented work, with synthetic resources, meaningful controls, an independent cleanup controller and per-case retained evidence. Do not rerun accepted AR-7 feasibility or expand into .NET, exports, network qualification campaigns or alternative platforms. Unsupported hosts produce explicit pending/refusal evidence.
+### Planning-artifact consistency check
 
-At WP12, request an independent read-only review of exact implementation and retained evidence. Record findings and any separately scoped repairs. Stop when the narrow M1 disposition is recorded; the next slice requires that review's concrete handoff. No package publication, public API stabilization, merge into a release line, privileged service or additional architecture is authorized by this plan.
-
-Plan completion means this document is committed and ready for that handoff. It is not implementation completion, native qualification or permission to claim production restricted execution.
+This revision preserves Sections 1–4 verbatim and resolves Sections 5–20 against ADR 0003: internal single-use preparation and release authority; no target initialization before trusted release; externally retained stable domain controls; incremental durable recovery; field-wise Unknown; bounded external output; read-back resources; protected copied objects; separate wrapper/target status; no new privilege or registration. Section 16 assigns each mechanism, test, evidence requirement and gate to an ordered package. WP01 is executable from its named files/contracts without selecting a launcher, recovery or release architecture. Inode/object production qualification remains pending as the ADR requires. These are planning decisions and future test obligations, not claims that code or native tests have already run.
