@@ -1,0 +1,122 @@
+{
+  "leg": "live-r3",
+  "source_sha": "f9d19c5",
+  "nonce": "34746ae551d14f5a806eeea11d7c997e",
+  "date_utc": "2026-10-10T07:15:52Z",
+  "host": {
+    "kernel": "6.6.114.1-microsoft-standard-WSL2",
+    "arch": "x86_64"
+  },
+  "helper_sha256": "523da3e7399044be5163aee6f57a77a6bef7454376e28f0a0627920bae1b76b6",
+  "helper_mode": "0o755",
+  "source_hashes": {
+    "p07.c": "abbc5c1434102a7fa57a733c53ee8ab725ad3e94ea3577a09f77134d59d649e3",
+    "p07.py": "fc45272d9f024d3577e6b52c02e78d08f1216da5f29fc3bdc7ac261a6358ad82"
+  },
+  "paths": {
+    "root": "/tmp/gagamba-ar7-P07-34746ae551d14f5a806eeea11d7c997e",
+    "outer": "/sys/fs/cgroup/gagamba-ar7-P07-34746ae551d14f5a806eeea11d7c997e"
+  },
+  "observer_uid": 0,
+  "compile": {
+    "argv": [
+      "/usr/bin/gcc",
+      "-static",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-o",
+      "/tmp/gagamba-ar7-P07-34746ae551d14f5a806eeea11d7c997e/worker",
+      "/mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07.c"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "worker_sha256": "d0c8c1fa448cb8ebf49ba99e1537d112dcd457afc8a05ec9c7749f68ee9b405d",
+  "filter_note": "frozen P02/P03/P04 bytes; manager builds its own memfd (manager-owned)",
+  "manager_pid": 1104737,
+  "marker": {
+    "live": "ALIVE",
+    "descendant": {
+      "pid": 1104743,
+      "ns_pid": "3",
+      "state": "S (sleeping)",
+      "starttime": "151082665",
+      "cmdline": "/target holdchild /sys/fs/cgroup/gagamba-ar7-P07-34746ae551d14f5a806eeea11d7c997e/delegated /tmp/gagamba-ar7-P07-34746ae"
+    },
+    "root": {
+      "pid": 1104742,
+      "starttime": "151082664",
+      "cmdline": "/target holdchild /sys/fs/cgroup/gagamba-ar7-P07-34746ae551d14f5a806eeea11d7c997e/delegated /tmp/gagamba-ar7-P07-34746ae551d14f5a806eeea11d7c997e 34746ae551d14f"
+    }
+  },
+  "fresh_proof": {
+    "manager_alive": true,
+    "members": [
+      {
+        "pid": 1104743,
+        "live": true,
+        "state": "S (sleeping)"
+      }
+    ],
+    "root_present": true
+  },
+  "stop_issued": "target/cgroup.kill by root runner on proven-live domain",
+  "domain_empty": true,
+  "empty_after_s": 0.00047892890870571136,
+  "manager_survived_stop": true,
+  "strays_after": [],
+  "manager_rc": 0,
+  "manager_result": {
+    "case": "r3live",
+    "uid": 65534,
+    "cgroup": "0::/gagamba-ar7-P07-34746ae551d14f5a806eeea11d7c997e/delegated/manager",
+    "filter_sha256": "30bfaf6b62030de8b105e1ac8de43f2a9884b2bd5de20e98aef81dce426c1aad",
+    "record": {
+      "ready_seen": true,
+      "announced_identity": {
+        "uid": "0",
+        "gid": "0",
+        "pid": "2",
+        "ppid": "1",
+        "nnp": "1"
+      },
+      "ns_resolution": [
+        {
+          "pid": 1104742,
+          "starttime": "151082664",
+          "cmdline": "/target holdchild /sys/fs/cgroup/gagamba-ar7-P07-34746ae551d14f5a806eeea11d7c997e/delegated /tmp/gagamba-ar7-P07-34746ae551d14f5a806eeea11d7c997e 34746ae551d14f"
+        }
+      ],
+      "bwrap_host_pid": 1104740,
+      "state": "RELEASED-OWNED",
+      "descendants_alive_twice": [
+        {
+          "pid": 1104743,
+          "ns_pid": "3",
+          "state": "S (sleeping)",
+          "starttime": "151082665",
+          "cmdline": "/target holdchild /sys/fs/cgroup/gagamba-ar7-P07-34746ae551d14f5a806eeea11d7c997e/delegated /tmp/gagamba-ar7-P07-34746ae"
+        }
+      ],
+      "proceed": "P",
+      "candidate": {
+        "rc": -9,
+        "stdout_tail": "go_read rc=1 byte=71\nfork rc=3 errno=0\nchild 3 sleep 30 root_holding\nfork rc=0 errno=0\n",
+        "timeout": false
+      },
+      "domain_empty": true,
+      "empty_after_s": 0.00011547585017979145,
+      "leg": "SUPPORTED-leg (live descendant stopped by runner domain kill; see runner audit)"
+    }
+  },
+  "verdict": "SUPPORTED-leg (proven-live domain stopped via owned kill; manager survived; empty; no strays)",
+  "cleanup_events": "populated 0\nfrozen 0",
+  "cleanup_absence": {
+    "outer": true,
+    "workspace": true,
+    "manager": true
+  },
+  "cleanup_confirmed": true
+}

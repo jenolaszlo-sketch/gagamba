@@ -1,0 +1,20 @@
+{
+  "leg": "r5",
+  "binding": {
+    "source_sha": "f9d19c5",
+    "p07_py_sha256": "fc45272d9f024d3577e6b52c02e78d08f1216da5f29fc3bdc7ac261a6358ad82",
+    "p07_c_sha256": "abbc5c1434102a7fa57a733c53ee8ab725ad3e94ea3577a09f77134d59d649e3"
+  },
+  "nonce": "1908bffff54c44ef9ec8f5c22117a2ef",
+  "observer_killed": false,
+  "observer_rc": 0,
+  "outer_gone": true,
+  "workspace_gone": true,
+  "execution_result": "UNKNOWN (observer loss; never recovered or inferred)",
+  "verdict": "INCONCLUSIVE (R5 wrapper audit unmet)",
+  "transcript_tail": [
+    "NONCE 1908bffff54c44ef9ec8f5c22117a2ef\n",
+    "proven_phase=False",
+    "phase_read_error=FileNotFoundError(2, 'No such file or directory')"
+  ]
+}

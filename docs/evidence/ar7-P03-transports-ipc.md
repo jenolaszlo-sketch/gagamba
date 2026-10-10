@@ -13,7 +13,7 @@ Date: 2026-10-10. Slice: defensive feasibility only. **Conclusion: SUPPORTED BY 
 | Nonce (executed run) | `70edf2c2242e4aea905e61854775b4a9` |
 | Host | Ubuntu 26.04.1 LTS on WSL2, x86_64, kernel `6.6.114.1-microsoft-standard-WSL2`, glibc 2.43, GCC 15.2.0, Python 3.14.4 |
 | Helper | Bubblewrap `0.11.1`, SHA-256 `523da3e7…`, mode `0755` non-setuid (pin-gated before release) |
-| Filter | Frozen P02 cBPF bytes, SHA-256 `30bfaf6b…` (matches P02 record: composition byte-identical) |
+| Filter | Frozen P02 cBPF bytes, SHA-256 `30bfaf6b…` (filter bytes match the P02 record; correction per independent review M2/M6: cgroup placement did not — this run executed in `delegated/manager`, not `delegated/target`, so target-leaf lifecycle claims are withdrawn) |
 | Candidate identity | Host UID/GID 65534, zero caps, `NoNewPrivs:1`, `Seccomp:2/filters:1` (externally sampled) |
 | Worker (static) SHA-256 | `cd5db2cb…` |
 
@@ -24,15 +24,20 @@ Probe source is [p03.c](../../spikes/Ar7Feasibility/p03.c) with [driver](../../s
 Does the surviving (P02-frozen) Linux candidate prevent all unprepared IP
 networking and host-service IPC while preserving explicitly prepared data
 channels? The candidate invocation, namespaces, capability drop, mounts,
-cgroup leaves, and seccomp filter are byte-identical to P02; P03 adds no
-mechanism. The io_uring syscall family is deliberately **not** filtered, so
+and seccomp filter match P02; P03 adds no
+mechanism. Correction (independent review M2): cgroup placement did not
+match — the placement helper was never wired into the launch path, so
+Bubblewrap, the target, and its child ran in `delegated/manager`. The
+empty-target-leaf observation is therefore vacuous for this run; outer-domain
+containment and final cleanup still hold. The io_uring syscall family is deliberately **not** filtered, so
 the ring path tests whether the network namespace, zero-capability ceiling,
 and userns-disablement hold without filter help.
 
 ## Positive controls (ordinary worker, host netns, unrestricted; gate held)
 
-All ten oracle endpoints exchanged over **both** the direct-syscall path and
-the io_uring path (`SOCKET→CONNECT→SEND→RECV` with verified field layout):
+All ten oracle endpoints exchanged over the implemented paths
+(`SOCKET→CONNECT→SEND→RECV` direct, and via io_uring with verified field layout
+where implemented):
 IPv4/IPv6 TCP, UDP, DNS over UDP and TCP (ID match), proxy `CONNECT` (200),
 simulated metadata at provisioned `169.254.169.254` (200 + document),
 pathname/abstract Unix sockets with peer-credential gate, agent framing
@@ -61,8 +66,21 @@ control and gate condition rather than an oracle-log match:
 
 The positive gate required all of these markers alongside the 10 oracle
 matches, and the candidate log shows the same markers except where denial
-was the expected outcome. No designed entry went unexecuted; "10 oracle
-endpoints" was a counting shorthand, not a coverage gap. No rerun needed.
+was the expected outcome. Correction (independent review M4): this
+reconciliation does not establish every designed variant ran — agent framing
+and DNS-over-TCP have direct paths only, the designed io_uring netlink
+bring-up variant is absent, the gate checks any successful receipt per
+enabled category (not every direct/ring variant), positive listener events
+are reduced to booleans, and candidate events are snapshotted before
+listener shutdown — so the retained artifact is weaker than a complete
+phase-tagged oracle transcript. Ring failures should be read from negative
+CQE results (-111, -101, -2, -13), not the stale printed errno. `SOCK_RAW`
+fails in the ordinary control too (not candidate-specific denial); ping
+`EACCES` does not isolate a capability mechanism; refused connections to
+absent namespace-local listeners do not prove intra-execution loopback
+impossible. The implemented direct/ring attempts nevertheless show
+successful controls and meaningful candidate failures; no rerun is required
+for the narrowed disposition.
 
 ## Restricted results (candidate did useful work: input/scratch/echo, exit 0)
 
@@ -80,8 +98,9 @@ endpoints" was a counting shorthand, not a coverage gap. No rerun needed.
 | userns/netns/mount/setns | EPERM (or ENOENT visibility for `/sys`, init-root path) | n/a | Filter + namespaces; `setns` authorization comparison stays `INCONCLUSIVE` (positive also fails) |
 
 **Oracle: zero candidate-phase entries, zero anomalies, prepared stdio echo
-functional, FD inventory stdio-only, limits unchanged, target domain empty
-after return.** The ring path proves socket creation is reachable past the
+functional, FD inventory stdio-only, limits unchanged, outer domain empty
+after return (correction: target-leaf emptiness is withdrawn per M2; the
+containment claim rests on the outer domain).** The ring path proves socket creation is reachable past the
 frozen filter — the denial property comes from the composition (own network
 namespace with no host routes/listeners, empty mount view, zero capabilities),
 not from one syscall number. `ENETUNREACH`/`ECONNREFUSED`/`ENOENT` describe
@@ -99,10 +118,7 @@ nonces' workspaces/cgroups/endpoint names absent. Watchdog never fired.
 
 ## Review, consequence, and non-claims
 
-Independent review: pending. No independent reviewer — another model or a
-human in a separate session; Luna is one possible reviewer but qualification
-does not depend on any particular model — has yet covered this run; that
-absence is recorded here rather than treated as qualification or approval. The follow-up discipline from P02 (review-driven variants,
+Independent review completed 2026-10-10 ([review](../reviews/2026-10-10-ar7-independent-evidence-review.md)): P03 VERDICT SUPPORTED WITH QUALIFICATION — implemented direct/ring transport attempts support isolation from the tested host endpoints; unexecuted variants, intra-execution loopback guarantees, target-leaf placement/emptiness claims, and complete dual-path oracle coverage are excluded. The narrowings above record that disposition; no P03 rerun was performed. The follow-up discipline from P02 (review-driven variants,
 exact-source binding) was applied by construction. Independent review is a
 quality gate before final architectural acceptance, not a blocker for
 designing the next probe. Checklist for the future reviewer (all artifacts

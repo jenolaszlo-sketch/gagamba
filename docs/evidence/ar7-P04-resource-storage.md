@@ -53,23 +53,36 @@ exact enforcement arithmetic (2 bwrap scaffolding + 1 main + 45 = 48 = the
 limit, then `EAGAIN`).
 
 Storage: scratch stopped at exactly **8388608 bytes / 8 files** with
-`ENOSPC`; fd-consume stopped at exactly **61** (`EMFILE` under the 64-table
-minus stdio); SysV SHM (16 MiB lifecycle) and `/dev/shm` (1 MiB, host-
-invisible afterwards) accounted; `oom_score_adj` lowering denied `EPERM`
+`ENOSPC`; fd-consume stopped at exactly **61** (`EMFILE` under the shared
+inherited `RLIMIT_NOFILE=64` table minus stdio — this demonstrates that
+inherited limit, not an additional namespace restriction); SysV SHM (16 MiB
+lifecycle: created, touched, detached and removed with host-invisible
+afterwards observed; later `memory.peak` values are cumulative across the
+reused leaf and do not independently attribute SHM/slab charging) and
+`/dev/shm` (1 MiB, host-invisible afterwards) observed within those bounds;
+`oom_score_adj` lowering denied `EACCES` (measured on both modes, not the
+earlier `EPERM` wording — corrected against the committed record)
 while raising succeeds; null sinks bounded; ro-closure write-open denied
 (`EACCES`, measured on both modes — not the guessed `EROFS`, corrected in
 evidence); empty `/sys`+`/run` are writable private tmpfs (created+removed
 by the probe, memcg-bounded, destroyed at teardown — same class as `/tmp`).
 
 Output/crash: 1 MiB stdout + 64 KiB stderr delivered with exit code 17
-intact under 32 KiB capture caps; forced `abort()` delivered SIGABRT
+intact. Correction (independent review M3): the 32,768/8,192 character
+truncations are evidence-prefix limits applied after full `communicate()`
+collection, not bounded streaming capture — no stream bound or overflow
+handling is demonstrated; finite collection with exit-code preservation is.
+Forced `abort()` delivered SIGABRT
 (rc 134 = 128+SIGABRT convention) with no core artifact in any surviving
 location (`RLIMIT_CORE 0`) and an empty domain.
 
 .NET (self-contained, invariant globalization, workstation GC, no heap
-knobs): `hello` started with ~27 MiB working set and 7–8 tasks —
-**the measured startup minimum, returned as architecture input; the
-128 MiB profile was not raised**. `alloc64` completed (~100 MiB).
+knobs): `hello` started with ~27 MiB working set and 7–8 tasks — a
+successful startup observation (correction: not a measured minimum memory
+budget), returned as architecture input; the
+128 MiB profile was not raised. Artifact binding digests cover the apphost
+and loader libraries; no digest binding is retained for `P04Workload.dll`
+and the complete published closure (correction, independent review M5). `alloc64` completed (~100 MiB).
 `alloc160` (positive: ~200 MiB) was OOM-killed (`oom_kill` +1, rc 137).
 Host provides 2 GiB swap, yet every over-budget case OOM-killed with
 `swap.max=0` set — no swap escape (per-case `swap.current` sampling was
@@ -79,7 +92,10 @@ substantive proof).
 Mount inventory: the candidate's `/proc/self/mountinfo` was cross-cut
 against the expected set (`/`, `/proc`, `/dev` + six device nodes, 8 MiB
 `/tmp`, empty `/sys`+`/run`, ro `/target`+`/input`+`/app`+loader paths);
-zero unknown writable mounts. Writable locations are classified
+zero unknown writable mounts. Correction (independent review M5): this is
+the native-configuration inventory — it does not contain `/app` or the
+.NET loader mounts, so complete writable-closure qualification is not
+established. Writable locations are classified
 bounded (tmpfs, shm, pipes), visible-denied (`EROFS`/`EACCES`), or
 invisible (`ENOENT` — never presented as denial).
 
@@ -102,9 +118,7 @@ test was run for this question and the candidate was not changed.
 
 ## Review, consequence, and non-claims
 
-Independent review: pending. No independent reviewer — another model or a
-human in a separate session — has yet covered this run; that absence is
-recorded here rather than treated as qualification or approval. Checklist
+Independent review completed 2026-10-10 ([review](../reviews/2026-10-10-ar7-independent-evidence-review.md)): P04 VERDICT SUPPORTED WITH QUALIFICATION — touched-memory OOM evidence, task accounting, exact 8,388,608-byte scratch exhaustion, inherited FD ceiling, and useful native/.NET execution stand; independent inode bounds, bounded capture, complete charging measurements, and complete writable-closure qualification are not established. The narrowings above record that disposition; no P04 rerun was performed. Checklist
 for the future reviewer: per-case gate completeness; OOM attribution
 (event + 128+signo convention); thread arithmetic including bwrap
 scaffolding; byte-exact storage ceilings; the unmeasured inode ceiling

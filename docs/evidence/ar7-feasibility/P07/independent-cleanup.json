@@ -8,5 +8,77 @@
     "workspace_absent": true,
     "cgroup_absent": true,
     "observer_killed_by_wrapper": true
+  },
+  "af61e28e18204ac198bacfd3a78bcbfb": {
+    "workspace_absent": true,
+    "cgroup_absent": true,
+    "host_shm_clean": true,
+    "covers": [
+      "positives-r",
+      "r6stale",
+      "r2deadline"
+    ]
+  },
+  "8b69d4c3f7f047d69f3da5adee9f2479": {
+    "workspace_absent": true,
+    "cgroup_absent": true,
+    "host_shm_clean": true,
+    "covers": [
+      "c6-rerun-guarded",
+      "c10-rerun-guarded"
+    ]
+  },
+  "39c22a9de9854f62b503eea9065edb06": {
+    "workspace_absent": true,
+    "cgroup_absent": true,
+    "host_shm_clean": true,
+    "covers": [
+      "r3a-r3b-as-built-observation-only"
+    ]
+  },
+  "34746ae551d14f5a806eeea11d7c997e": {
+    "workspace_absent": true,
+    "cgroup_absent": true,
+    "host_shm_clean": true,
+    "covers": [
+      "live-r3"
+    ]
+  },
+  "fe62ec5bcb5f405a962f2f6a0c905f7a": {
+    "workspace_absent": true,
+    "cgroup_absent": true,
+    "host_shm_clean": true,
+    "covers": [
+      "live-r4"
+    ]
+  },
+  "a5b6eda32bc242f8983dfdce879494a3": {
+    "workspace_absent": true,
+    "cgroup_absent": true,
+    "manifest_removed": true,
+    "covers": [
+      "r1a"
+    ]
+  },
+  "b73148777cf647d0a2ed759675b6715a": {
+    "workspace_absent": true,
+    "cgroup_absent": true,
+    "manifest_removed": true,
+    "covers": [
+      "r1b"
+    ]
+  },
+  "e215e2d719414da7891db1df0c443384": {
+    "workspace_absent": true,
+    "cgroup_absent": true,
+    "observer_killed_by_wrapper": true,
+    "execution_result_unknown": true,
+    "covers": [
+      "r5"
+    ]
+  },
+  "host_tmp_mnt_p07": {
+    "pre_remediation_state": "existed, fixture-UID 65534 owned, mode 700, empty (positives mkdir leftover)",
+    "disposition": "rmdir removed after ownership verification; worker now removes it in both modes; verified absent"
   }
 }

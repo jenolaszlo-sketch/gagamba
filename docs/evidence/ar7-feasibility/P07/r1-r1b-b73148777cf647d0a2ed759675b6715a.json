@@ -1,0 +1,102 @@
+{
+  "leg": "r1r1b",
+  "source_sha": "f9d19c5",
+  "nonce": "b73148777cf647d0a2ed759675b6715a",
+  "date_utc": "2026-10-10T07:16:24Z",
+  "host": {
+    "kernel": "6.6.114.1-microsoft-standard-WSL2",
+    "arch": "x86_64"
+  },
+  "source_hashes": {
+    "p07.c": "abbc5c1434102a7fa57a733c53ee8ab725ad3e94ea3577a09f77134d59d649e3",
+    "p07.py": "fc45272d9f024d3577e6b52c02e78d08f1216da5f29fc3bdc7ac261a6358ad82"
+  },
+  "paths": {
+    "root": "/tmp/gagamba-ar7-P07-b73148777cf647d0a2ed759675b6715a",
+    "outer": "/sys/fs/cgroup/gagamba-ar7-P07-b73148777cf647d0a2ed759675b6715a"
+  },
+  "observer_uid": 0,
+  "provisioner_rc": -9,
+  "provisioner_signo": 9,
+  "provisioner_output": "",
+  "manifest_steps": [
+    {
+      "step": 0,
+      "action": "provisioner-start",
+      "nonce": "b73148777cf647d0a2ed759675b6715a",
+      "variant": "r1b"
+    },
+    {
+      "step": 1,
+      "action": "workspace+input",
+      "paths": [
+        "/tmp/gagamba-ar7-P07-b73148777cf647d0a2ed759675b6715a",
+        "/tmp/gagamba-ar7-P07-b73148777cf647d0a2ed759675b6715a/input"
+      ]
+    },
+    {
+      "step": 2,
+      "action": "cgroup-tree",
+      "paths": [
+        "/sys/fs/cgroup/gagamba-ar7-P07-b73148777cf647d0a2ed759675b6715a",
+        "/sys/fs/cgroup/gagamba-ar7-P07-b73148777cf647d0a2ed759675b6715a/delegated",
+        "/sys/fs/cgroup/gagamba-ar7-P07-b73148777cf647d0a2ed759675b6715a/delegated/manager",
+        "/sys/fs/cgroup/gagamba-ar7-P07-b73148777cf647d0a2ed759675b6715a/delegated/target",
+        "/sys/fs/cgroup/gagamba-ar7-P07-b73148777cf647d0a2ed759675b6715a/delegated/positive"
+      ]
+    },
+    {
+      "step": 3,
+      "action": "worker+capture",
+      "paths": [
+        "/tmp/gagamba-ar7-P07-b73148777cf647d0a2ed759675b6715a/worker",
+        "/tmp/gagamba-ar7-P07-b73148777cf647d0a2ed759675b6715a/r1b-capture.txt"
+      ],
+      "worker_sha256": "d0c8c1fa448cb8ebf49ba99e1537d112dcd457afc8a05ec9c7749f68ee9b405d"
+    },
+    {
+      "step": 4,
+      "action": "manager-spawned",
+      "manager_pid": 1104902
+    },
+    {
+      "step": 5,
+      "action": "barrier-release-observed",
+      "fault": "SIGKILL self post-manager-spawn"
+    }
+  ],
+  "capture": "EVT {\"r1\": \"SPAWNED\", \"marker\": true, \"validation\": {\"pid\": 1104905, \"starttime\": \"151085809\", \"cmdline\": \"/target hold /sys/fs/cgroup/gagamba-ar7-P07-b73148777cf647d0a2ed759675b6715a/delegated /tmp/gagamba-ar7-P07-b73148777cf647d0a2ed759675b6715a b73148777cf647d0a2e\"}}\n",
+  "manager_leaf": [
+    {
+      "pid": 1104902,
+      "leaf": "manager",
+      "cmdline": "/usr/bin/python3 /mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07.py --manager --case r1worker --root",
+      "starttime": "151085772",
+      "state": "S (sleeping)"
+    }
+  ],
+  "target_leaf_pre_kill": [
+    [
+      1104903,
+      "/usr/bin/bwrap --unshare-user --unshare-pid --unshare-net --"
+    ],
+    [
+      1104904,
+      "/usr/bin/bwrap --unshare-user --unshare-pid --unshare-net --"
+    ],
+    [
+      1104905,
+      "/target hold /sys/fs/cgroup/gagamba-ar7-P07-b73148777cf647d0"
+    ]
+  ],
+  "ownership_without_caller": true,
+  "outer_empty": true,
+  "outer_gone": true,
+  "capture_final": "EVT {\"r1\": \"SPAWNED\", \"marker\": true, \"validation\": {\"pid\": 1104905, \"starttime\": \"151085809\", \"cmdline\": \"/target hold /sys/fs/cgroup/gagamba-ar7-P07-b73148777cf647d0a2ed759675b6715a/delegated /tmp/gagamba-ar7-P07-b73148777cf647d0a2ed759675b6715a b73148777cf647d0a2e\"}}\n",
+  "cleanup_absence": {
+    "outer": true,
+    "workspace": true,
+    "manifest": true
+  },
+  "verdict": "SUPPORTED-leg (caller died post-spawn; release + domain population survived without the caller; observer-enforced domain kill emptied; all removed)"
+}

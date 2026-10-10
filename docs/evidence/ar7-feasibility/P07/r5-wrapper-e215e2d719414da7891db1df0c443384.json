@@ -1,0 +1,21 @@
+{
+  "leg": "r5",
+  "binding": {
+    "source_sha": "c628f3c",
+    "p07_py_sha256": "0dfec5b9c1175a9f3f66ae402e43412bb20be080e07060b45f42e953ad134a78",
+    "p07_c_sha256": "abbc5c1434102a7fa57a733c53ee8ab725ad3e94ea3577a09f77134d59d649e3"
+  },
+  "nonce": "e215e2d719414da7891db1df0c443384",
+  "observer_killed": true,
+  "observer_rc": -9,
+  "outer_empty": true,
+  "outer_gone": true,
+  "workspace_gone": true,
+  "execution_result": "UNKNOWN (observer loss; never recovered or inferred)",
+  "verdict": "SUPPORTED-leg (proven-phase observer loss; result Unknown; independent domain cleanup confirmed afterwards)",
+  "transcript_tail": [
+    "NONCE e215e2d719414da7891db1df0c443384\n",
+    "proven_phase=True",
+    "phase_content=RELEASED-EXECUTING monotonic=1511049.463107511 nonce=e215e2d719414da7891db1df0c443384"
+  ]
+}

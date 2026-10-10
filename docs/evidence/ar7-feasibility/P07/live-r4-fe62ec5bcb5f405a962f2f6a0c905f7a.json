@@ -1,0 +1,223 @@
+{
+  "leg": "live-r4",
+  "source_sha": "f9d19c5",
+  "nonce": "fe62ec5bcb5f405a962f2f6a0c905f7a",
+  "date_utc": "2026-10-10T07:16:06Z",
+  "host": {
+    "kernel": "6.6.114.1-microsoft-standard-WSL2",
+    "arch": "x86_64"
+  },
+  "helper_sha256": "523da3e7399044be5163aee6f57a77a6bef7454376e28f0a0627920bae1b76b6",
+  "helper_mode": "0o755",
+  "source_hashes": {
+    "p07.c": "abbc5c1434102a7fa57a733c53ee8ab725ad3e94ea3577a09f77134d59d649e3",
+    "p07.py": "fc45272d9f024d3577e6b52c02e78d08f1216da5f29fc3bdc7ac261a6358ad82"
+  },
+  "paths": {
+    "root": "/tmp/gagamba-ar7-P07-fe62ec5bcb5f405a962f2f6a0c905f7a",
+    "outer": "/sys/fs/cgroup/gagamba-ar7-P07-fe62ec5bcb5f405a962f2f6a0c905f7a"
+  },
+  "observer_uid": 0,
+  "compile": {
+    "argv": [
+      "/usr/bin/gcc",
+      "-static",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-o",
+      "/tmp/gagamba-ar7-P07-fe62ec5bcb5f405a962f2f6a0c905f7a/worker",
+      "/mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07.c"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "worker_sha256": "d0c8c1fa448cb8ebf49ba99e1537d112dcd457afc8a05ec9c7749f68ee9b405d",
+  "filter_note": "frozen P02/P03/P04 bytes; manager builds its own memfd (manager-owned)",
+  "manager_pid": 1104807,
+  "marker": {
+    "live": "SPAWNING",
+    "spawned": 8,
+    "sample_descendant": {
+      "pid": 1104812,
+      "ns_pid": "3",
+      "state": "S (sleeping)",
+      "starttime": "151084031",
+      "cmdline": "/target trickle /sys/fs/cgroup/gagamba-ar7-P07-fe62ec5bcb5f405a962f2f6a0c905f7a/delegated /tmp/gagamba-ar7-P07-fe62ec5bc"
+    }
+  },
+  "fresh_proof": {
+    "manager_alive": true,
+    "members": [],
+    "growth": {
+      "before": 11,
+      "after": 14
+    },
+    "live_target_members": [
+      [
+        1104809,
+        "S (sleeping)"
+      ],
+      [
+        1104810,
+        "S (sleeping)"
+      ],
+      [
+        1104811,
+        "S (sleeping)"
+      ],
+      [
+        1104812,
+        "S (sleeping)"
+      ],
+      [
+        1104813,
+        "S (sleeping)"
+      ],
+      [
+        1104815,
+        "S (sleeping)"
+      ],
+      [
+        1104817,
+        "S (sleeping)"
+      ],
+      [
+        1104818,
+        "S (sleeping)"
+      ],
+      [
+        1104819,
+        "S (sleeping)"
+      ],
+      [
+        1104820,
+        "S (sleeping)"
+      ],
+      [
+        1104821,
+        "S (sleeping)"
+      ],
+      [
+        1104822,
+        "S (sleeping)"
+      ],
+      [
+        1104823,
+        "S (sleeping)"
+      ],
+      [
+        1104825,
+        "S (sleeping)"
+      ]
+    ]
+  },
+  "stop_issued": "target/cgroup.kill by root runner on proven-live domain",
+  "domain_empty": true,
+  "empty_after_s": 0.0005747429095208645,
+  "manager_survived_stop": true,
+  "strays_after": [],
+  "manager_rc": 0,
+  "manager_result": {
+    "case": "r4live",
+    "uid": 65534,
+    "cgroup": "0::/gagamba-ar7-P07-fe62ec5bcb5f405a962f2f6a0c905f7a/delegated/manager",
+    "filter_sha256": "30bfaf6b62030de8b105e1ac8de43f2a9884b2bd5de20e98aef81dce426c1aad",
+    "record": {
+      "ready_seen": true,
+      "announced_identity": {
+        "uid": "0",
+        "gid": "0",
+        "pid": "2",
+        "ppid": "1",
+        "nnp": "1"
+      },
+      "ns_resolution": [
+        {
+          "pid": 1104811,
+          "starttime": "151084029",
+          "cmdline": "/target trickle /sys/fs/cgroup/gagamba-ar7-P07-fe62ec5bcb5f405a962f2f6a0c905f7a/delegated /tmp/gagamba-ar7-P07-fe62ec5bcb5f405a962f2f6a0c905f7a fe62ec5bcb5f405a"
+        }
+      ],
+      "bwrap_host_pid": 1104809,
+      "state": "RELEASED-OWNED",
+      "streamed_spawned_count": 8,
+      "leaf_live_descendants": [
+        {
+          "pid": 1104812,
+          "ns_pid": "3",
+          "state": "S (sleeping)",
+          "starttime": "151084031",
+          "cmdline": "/target trickle /sys/fs/cgroup/gagamba-ar7-P07-fe62ec5bcb5f405a962f2f6a0c905f7a/delegated /tmp/gagamba-ar7-P07-fe62ec5bc"
+        },
+        {
+          "pid": 1104813,
+          "ns_pid": "4",
+          "state": "S (sleeping)",
+          "starttime": "151084041",
+          "cmdline": "/target trickle /sys/fs/cgroup/gagamba-ar7-P07-fe62ec5bcb5f405a962f2f6a0c905f7a/delegated /tmp/gagamba-ar7-P07-fe62ec5bc"
+        },
+        {
+          "pid": 1104815,
+          "ns_pid": "5",
+          "state": "S (sleeping)",
+          "starttime": "151084051",
+          "cmdline": "/target trickle /sys/fs/cgroup/gagamba-ar7-P07-fe62ec5bcb5f405a962f2f6a0c905f7a/delegated /tmp/gagamba-ar7-P07-fe62ec5bc"
+        },
+        {
+          "pid": 1104817,
+          "ns_pid": "6",
+          "state": "S (sleeping)",
+          "starttime": "151084061",
+          "cmdline": "/target trickle /sys/fs/cgroup/gagamba-ar7-P07-fe62ec5bcb5f405a962f2f6a0c905f7a/delegated /tmp/gagamba-ar7-P07-fe62ec5bc"
+        },
+        {
+          "pid": 1104818,
+          "ns_pid": "7",
+          "state": "S (sleeping)",
+          "starttime": "151084071",
+          "cmdline": "/target trickle /sys/fs/cgroup/gagamba-ar7-P07-fe62ec5bcb5f405a962f2f6a0c905f7a/delegated /tmp/gagamba-ar7-P07-fe62ec5bc"
+        },
+        {
+          "pid": 1104819,
+          "ns_pid": "8",
+          "state": "S (sleeping)",
+          "starttime": "151084081",
+          "cmdline": "/target trickle /sys/fs/cgroup/gagamba-ar7-P07-fe62ec5bcb5f405a962f2f6a0c905f7a/delegated /tmp/gagamba-ar7-P07-fe62ec5bc"
+        },
+        {
+          "pid": 1104820,
+          "ns_pid": "9",
+          "state": "S (sleeping)",
+          "starttime": "151084091",
+          "cmdline": "/target trickle /sys/fs/cgroup/gagamba-ar7-P07-fe62ec5bcb5f405a962f2f6a0c905f7a/delegated /tmp/gagamba-ar7-P07-fe62ec5bc"
+        },
+        {
+          "pid": 1104821,
+          "ns_pid": "10",
+          "state": "S (sleeping)",
+          "starttime": "151084101",
+          "cmdline": "/target trickle /sys/fs/cgroup/gagamba-ar7-P07-fe62ec5bcb5f405a962f2f6a0c905f7a/delegated /tmp/gagamba-ar7-P07-fe62ec5bc"
+        }
+      ],
+      "proceed": "P",
+      "candidate": {
+        "rc": -9,
+        "stdout_tail": "spawned 9\nspawned 10\nspawned 11\n",
+        "timeout": false
+      },
+      "domain_empty": true,
+      "empty_after_s": 0.00012186099775135517,
+      "leg": "SUPPORTED-leg (mid-spawn domain stopped by runner kill; see runner audit)"
+    }
+  },
+  "verdict": "SUPPORTED-leg (proven-live domain stopped via owned kill; manager survived; empty; no strays)",
+  "cleanup_events": "populated 0\nfrozen 0",
+  "cleanup_absence": {
+    "outer": true,
+    "workspace": true,
+    "manager": true
+  },
+  "cleanup_confirmed": true
+}

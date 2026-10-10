@@ -1,0 +1,80 @@
+{
+  "leg": "r1r1a",
+  "source_sha": "f9d19c5",
+  "nonce": "a5b6eda32bc242f8983dfdce879494a3",
+  "date_utc": "2026-10-10T07:16:17Z",
+  "host": {
+    "kernel": "6.6.114.1-microsoft-standard-WSL2",
+    "arch": "x86_64"
+  },
+  "source_hashes": {
+    "p07.c": "abbc5c1434102a7fa57a733c53ee8ab725ad3e94ea3577a09f77134d59d649e3",
+    "p07.py": "fc45272d9f024d3577e6b52c02e78d08f1216da5f29fc3bdc7ac261a6358ad82"
+  },
+  "paths": {
+    "root": "/tmp/gagamba-ar7-P07-a5b6eda32bc242f8983dfdce879494a3",
+    "outer": "/sys/fs/cgroup/gagamba-ar7-P07-a5b6eda32bc242f8983dfdce879494a3"
+  },
+  "observer_uid": 0,
+  "provisioner_rc": -9,
+  "provisioner_signo": 9,
+  "provisioner_output": "",
+  "manifest_steps": [
+    {
+      "step": 0,
+      "action": "provisioner-start",
+      "nonce": "a5b6eda32bc242f8983dfdce879494a3",
+      "variant": "r1a"
+    },
+    {
+      "step": 1,
+      "action": "workspace+input",
+      "paths": [
+        "/tmp/gagamba-ar7-P07-a5b6eda32bc242f8983dfdce879494a3",
+        "/tmp/gagamba-ar7-P07-a5b6eda32bc242f8983dfdce879494a3/input"
+      ]
+    },
+    {
+      "step": 2,
+      "action": "cgroup-tree",
+      "paths": [
+        "/sys/fs/cgroup/gagamba-ar7-P07-a5b6eda32bc242f8983dfdce879494a3",
+        "/sys/fs/cgroup/gagamba-ar7-P07-a5b6eda32bc242f8983dfdce879494a3/delegated",
+        "/sys/fs/cgroup/gagamba-ar7-P07-a5b6eda32bc242f8983dfdce879494a3/delegated/manager",
+        "/sys/fs/cgroup/gagamba-ar7-P07-a5b6eda32bc242f8983dfdce879494a3/delegated/target",
+        "/sys/fs/cgroup/gagamba-ar7-P07-a5b6eda32bc242f8983dfdce879494a3/delegated/positive"
+      ]
+    },
+    {
+      "step": 3,
+      "action": "barrier-pre-manager-spawn",
+      "fault": "SIGKILL self mid-provisioning"
+    }
+  ],
+  "manifest_paths": [
+    "/tmp/gagamba-ar7-P07-a5b6eda32bc242f8983dfdce879494a3",
+    "/tmp/gagamba-ar7-P07-a5b6eda32bc242f8983dfdce879494a3/input",
+    "/sys/fs/cgroup/gagamba-ar7-P07-a5b6eda32bc242f8983dfdce879494a3",
+    "/sys/fs/cgroup/gagamba-ar7-P07-a5b6eda32bc242f8983dfdce879494a3/delegated",
+    "/sys/fs/cgroup/gagamba-ar7-P07-a5b6eda32bc242f8983dfdce879494a3/delegated/manager",
+    "/sys/fs/cgroup/gagamba-ar7-P07-a5b6eda32bc242f8983dfdce879494a3/delegated/target",
+    "/sys/fs/cgroup/gagamba-ar7-P07-a5b6eda32bc242f8983dfdce879494a3/delegated/positive"
+  ],
+  "paths_exist": {
+    "/tmp/gagamba-ar7-P07-a5b6eda32bc242f8983dfdce879494a3": true,
+    "/tmp/gagamba-ar7-P07-a5b6eda32bc242f8983dfdce879494a3/input": true,
+    "/sys/fs/cgroup/gagamba-ar7-P07-a5b6eda32bc242f8983dfdce879494a3": true,
+    "/sys/fs/cgroup/gagamba-ar7-P07-a5b6eda32bc242f8983dfdce879494a3/delegated": true,
+    "/sys/fs/cgroup/gagamba-ar7-P07-a5b6eda32bc242f8983dfdce879494a3/delegated/manager": true,
+    "/sys/fs/cgroup/gagamba-ar7-P07-a5b6eda32bc242f8983dfdce879494a3/delegated/target": true,
+    "/sys/fs/cgroup/gagamba-ar7-P07-a5b6eda32bc242f8983dfdce879494a3/delegated/positive": true
+  },
+  "domain_processes": [],
+  "target_released": false,
+  "cleanup_absence": {
+    "outer": true,
+    "workspace": true,
+    "manifest": true
+  },
+  "verdict": "SUPPORTED-leg (caller died mid-provisioning; manifest-driven audit: nothing released, no domain population, all listed state removed)"
+}
