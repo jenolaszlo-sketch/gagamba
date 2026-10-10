@@ -24,9 +24,14 @@ Probe source is [p04.c](../../spikes/Ar7Feasibility/p04.c) with [driver](../../s
 Can this candidate bound resource consumption and writable state honestly
 enough for `restricted-offline-closure-v1` while still running useful native
 and self-contained .NET workloads? The isolation mechanism (namespaces,
-cap-drop, filter, NNP) is byte-identical to P02/P03; the 128 MiB/48-task
+cap-drop, filter, NNP) matches P02; the 128 MiB/48-task
 bounds moved from inherited to explicit target-leaf limits (identical
 effective values; the delegated parent passes through outer's 256 MiB/64).
+Configuration exception (independent review §6): P03 historically executed
+in the manager leaf rather than the target leaf, and P04 expanded workload
+mounts/environment and removed the inherited file-size limit for .NET —
+relevant configuration differences, so no blanket identical-placement claim
+is made across probes even though the confinement mechanisms are comparable.
 Workload closure binds (`/target`, `/input`, `/app` + loader chain) and
 `HOME=/tmp` are workload preparation, not enforcement — stated here so they
 are never cited as boundary evidence.
@@ -74,7 +79,9 @@ collection, not bounded streaming capture — no stream bound or overflow
 handling is demonstrated; finite collection with exit-code preservation is.
 Forced `abort()` delivered SIGABRT
 (rc 134 = 128+SIGABRT convention) with no core artifact in any surviving
-location (`RLIMIT_CORE 0`) and an empty domain.
+location (`RLIMIT_CORE 0`) and an empty domain. This covers only the
+observed tested crash behavior; exhaustive absence of every possible host
+core-dump/core-sink path is explicitly not established.
 
 .NET (self-contained, invariant globalization, workstation GC, no heap
 knobs): `hello` started with ~27 MiB working set and 7–8 tasks — a
