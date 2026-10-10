@@ -112,5 +112,21 @@
     "covers": [
       "sgate-r2dead"
     ]
+  },
+  "ca9f1aea39bd43708504dccd1b80cf8a": {
+    "workspace_absent": true,
+    "cgroup_absent": true,
+    "host_shm_clean": true,
+    "covers": [
+      "sgate2-r2pos-frozen-filter"
+    ]
+  },
+  "ab19f84ebc96464d9ecd3971cb70c400": {
+    "workspace_absent": true,
+    "cgroup_absent": true,
+    "host_shm_clean": true,
+    "covers": [
+      "sgate2-r2dead-frozen-filter"
+    ]
   }
 }
