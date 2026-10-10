@@ -25,6 +25,7 @@ import os
 import pathlib
 import random
 import resource
+import select
 import signal
 import struct
 import subprocess
@@ -1912,7 +1913,17 @@ def run_live(a, kind):
                                  preexec_fn=drop, close_fds=True)
             data['manager_pid'] = m.pid
             marker = None; deadline = time.monotonic() + 90.0
+            # Bounded streaming read: a bare readline() can block past the
+            # deadline when an orphaned fixture process holds the pipe open,
+            # so every wait is select-bounded and manager death breaks the
+            # loop even without EOF.
             while time.monotonic() < deadline:
+                r, _, _ = select.select([m.stdout], [], [], 2.0)
+                if not r:
+                    if m.poll() is not None:
+                        data['stream_note'] = 'manager dead with no further output; breaking read loop'
+                        break
+                    continue
                 line = m.stdout.readline()
                 if not line:
                     break
