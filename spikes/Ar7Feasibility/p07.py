@@ -1297,7 +1297,8 @@ def do_r2sgate(ctx, outer_frag, positive):
     try:
         stdout, stderr = p.communicate(timeout=25)
         out = stdout.decode(errors='replace')
-        rec['candidate'] = dict(rc=p.returncode, stdout_tail=out[-3000:], timeout=False)
+        rec['candidate'] = dict(rc=p.returncode, out_len=len(out), stdout_tail=out[-3000:],
+                                stdout_full=out[:65536], timeout=False)
     except subprocess.TimeoutExpired:
         p.kill(); stdout, stderr = p.communicate()
         rec['candidate'] = dict(rc=p.returncode, timeout=True)
