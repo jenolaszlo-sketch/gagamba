@@ -133,8 +133,9 @@ def case_id(case):
 
 def launch(cmd, cwd=None, env=None, preexec=None, pass_fds=(), timeout=20,
            as_uid=False):
+    extra = dict(user=UID, group=UID, extra_groups=[]) if as_uid else {}
     p=subprocess.Popen(cmd,stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.PIPE,
-                       cwd=cwd,env=env,close_fds=True,pass_fds=pass_fds,preexec_fn=preexec)
+                       cwd=cwd,env=env,close_fds=True,pass_fds=pass_fds,preexec_fn=preexec,**extra)
     try:
         stdout,stderr=p.communicate(timeout=timeout)
         return dict(rc=p.returncode,out_len=len(stdout),err_len=len(stderr),
