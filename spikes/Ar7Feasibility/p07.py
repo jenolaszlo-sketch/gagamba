@@ -838,22 +838,37 @@ def observer(a):
 
 def c11_wrapper(a):
     """Minimal root surface for C11: run the observer for case c11 only as a
-    child, SIGKILL it after the RELEASED relay, then audit via the nonce
-    manifest. No guardian, no service: a bounded test driver."""
+    child, SIGKILL it shortly after the release is independently observed
+    (target leaf populated — read directly from cgroupfs, never relayed
+    through the victim), then audit via the nonce manifest. No guardian, no
+    service: a bounded test driver."""
     assert os.getuid() == 0
     cmd = [sys.executable, __file__, '--observer-only-c11', '--source-sha', a.source_sha or '', '--output', a.output]
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1, close_fds=True)
     nonce = None; killed = False; transcript = []
     try:
-        for line in p.stdout:
-            transcript.append(line[:500])
-            if line.startswith('NONCE '):
-                nonce = line.split()[1].strip()
-            if 'RELEASED' in line and nonce:
-                time.sleep(1.0)
-                p.send_signal(signal.SIGKILL)
-                killed = True
-                break
+        line = p.stdout.readline()
+        transcript.append(line[:500])
+        if line.startswith('NONCE '):
+            nonce = line.split()[1].strip()
+        else:
+            raise RuntimeError('no NONCE first line: ' + line[:200])
+        target_procs = pathlib.Path('/sys/fs/cgroup') / ('gagamba-ar7-P07-' + nonce) / 'delegated' / 'target' / 'cgroup.procs'
+        t0 = time.monotonic()
+        released = False
+        while time.monotonic() - t0 < 60.0:
+            try:
+                if target_procs.read_text().strip():
+                    released = True
+                    break
+            except OSError:
+                pass
+            time.sleep(0.05)
+        transcript.append('release_observed=%r' % released)
+        if released:
+            time.sleep(1.0)
+            p.send_signal(signal.SIGKILL)
+            killed = True
         p.wait(timeout=30)
     except Exception as e:
         transcript.append('wrapper-error: ' + repr(e))
