@@ -2119,6 +2119,17 @@ def run_r2(a, kind, pos_case='r2gate_pos', dead_case='r2gate_dead'):
         data['verdict'] = 'INCONCLUSIVE (helper pin changed)'
     else:
         m = None
+        # Global watchdog: bound the entire runner even if a child holds a
+        # pipe open past every local deadline. Firing raises into the try
+        # below, whose finally still runs full teardown and writes a record.
+        class Watchdog(Exception):
+            pass
+        def _wd(signum, frame):
+            import traceback
+            raise Watchdog('global 240s watchdog fired; runner stack: '
+                           + ''.join(traceback.format_stack(frame))[-3000:])
+        signal.signal(signal.SIGALRM, _wd)
+        signal.alarm(240)
         try:
             root.mkdir(mode=0o755)
             comp = run(['/usr/bin/gcc', '-static', '-O2', '-Wall', '-Wextra', '-o',
@@ -2321,6 +2332,7 @@ def run_r2(a, kind, pos_case='r2gate_pos', dead_case='r2gate_dead'):
             data['cleanup_absence'] = {'outer': not outer.exists(), 'workspace': not root.exists(),
                                        'manager': m is None or m.poll() is not None}
             data['cleanup_confirmed'] = all(data['cleanup_absence'].values()) and not data.get('cleanup_error')
+    signal.alarm(0)
     dest = pathlib.Path(a.output); dest.mkdir(parents=True, exist_ok=True)
     (dest / ('r2-' + kind + '-' + nonce + '.json')).write_text(json.dumps(data, indent=2))
     if not a.quiet:
