@@ -1219,7 +1219,7 @@ def spawn_sgate(ctx, outer_frag):
     /target). The documented fixture-preparation delta vs COMMON is exactly
     one extra --ro-bind of the gate binary; namespaces/caps/seccomp/cgroups
     are unchanged. No auth is ever written here."""
-    argv = (ctx.common + ['--ro-bind', str(ctx.root / 'gate'), '/gate', '--',
+    argv = (ctx.common + ['--ro-bind', str(ctx.root / 'gate'), '/gate', '--seccomp', str(ctx.secc()), '--',
                           '/gate', ctx.nonce, str(ctx.cg), str(ctx.root), '/input'])
     p = subprocess.Popen(argv, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                          close_fds=True, pass_fds=(ctx.seccomp_fd,),
@@ -1303,22 +1303,25 @@ def do_r2sgate(ctx, outer_frag, positive):
         rec['candidate'] = dict(rc=p.returncode, timeout=True)
     out = rec['candidate'].get('stdout_tail', '')
     rec['auth_received_echo'] = 'AUTH_RECEIVED' in out
+    rec['gate_seccomp_ok'] = 'gate seccomp=2 filters=1' in out
+    rec['target_seccomp_ok'] = 'target seccomp=2 filters=1' in out
     rec['target_markers'] = [m for m in ('GATE_AUTH_OK', 'spinwork_sum', 'complete')
                              if m in out]
     empty, dt = wait_empty(ctx.cg / 'target', 10.0)
     rec['domain_empty'] = empty; rec['empty_after_s'] = dt
     if positive:
         if (rec['auth_sent'] and rec['auth_received_echo'] and 'GATE_AUTH_OK' in out
-                and 'spinwork_sum' in out and 'complete' in out and p.returncode == 0 and empty):
+                and 'spinwork_sum' in out and 'complete' in out and p.returncode == 0 and empty
+                and rec['gate_seccomp_ok'] and rec['target_seccomp_ok']):
             rec['leg'] = ('SUPPORTED-leg (separate gate released the real target on exact-nonce auth; '
-                          'useful bounded work; empty)')
+                          'useful bounded work under the installed frozen filter; empty)')
         else:
             rec['leg'] = 'INCONCLUSIVE (separate-gate positive control failed)'
     else:
         if (not rec['auth_sent'] and not rec['auth_received_echo'] and 'GATE_AUTH_OK' not in out
-                and empty and not rec['candidate'].get('timeout')):
-            rec['leg'] = ('SUPPORTED-leg (barrier held, no auth, no target exec; '
-                          'see runner audit)')
+                and empty and not rec['candidate'].get('timeout') and rec['gate_seccomp_ok']):
+            rec['leg'] = ('SUPPORTED-leg (barrier held under the installed frozen filter, no auth, '
+                          'no target exec; see runner audit)')
         elif not empty:
             rec['leg'] = 'BLOCKED (domain survived the separate-gate deadline stop)'
         else:
@@ -2113,9 +2116,24 @@ def full_leaf_snapshot(cg, outer_frag):
                     ppid = line.split()[1] if len(line.split()) > 1 else None
                 if line.startswith('State:'):
                     state = line.split(':', 1)[1].strip()
+            seccomp = None
+            for line in st.splitlines():
+                if line.startswith('Seccomp:') and not line.startswith('Seccomp_filters:'):
+                    try:
+                        seccomp = int(line.split(':', 1)[1].strip())
+                    except ValueError:
+                        pass
+            seccomp_filters = None
+            for line in st.splitlines():
+                if line.startswith('Seccomp_filters:'):
+                    try:
+                        seccomp_filters = int(line.split(':', 1)[1].strip())
+                    except ValueError:
+                        pass
             found.append({'pid': ipid, 'ppid': ppid, 'leaf': leaf, 'state': state,
                           'starttime': starttime_of(ipid), 'cmdline': cmd[:200],
-                          'cgroup': member.strip()[:160]})
+                          'cgroup': member.strip()[:160],
+                          'seccomp': seccomp, 'seccomp_filters': seccomp_filters})
     return sorted(found, key=lambda d: d['pid'])
 
 def run_r2(a, kind, pos_case='r2gate_pos', dead_case='r2gate_dead'):
@@ -2135,7 +2153,7 @@ def run_r2(a, kind, pos_case='r2gate_pos', dead_case='r2gate_dead'):
             'host': {'kernel': os.uname().release, 'arch': os.uname().machine},
             'helper_sha256': sha('/usr/bin/bwrap'),
             'helper_mode': oct(os.stat('/usr/bin/bwrap').st_mode & 0o7777),
-            'source_hashes': {p.name: sha(p) for p in list(pathlib.Path(__file__).parent.glob('p07.*'))},
+            'source_hashes': {p.name: sha(p) for p in [pathlib.Path(__file__).parent / n for n in ('p07.py', 'p07.c', 'p07gate.c')]},
             'paths': {'root': str(root), 'outer': str(outer)}, 'observer_uid': 0}
     if data['helper_sha256'] != PIN or os.stat('/usr/bin/bwrap').st_mode & 0o6000:
         data['verdict'] = 'INCONCLUSIVE (helper pin changed)'
@@ -2260,12 +2278,14 @@ def run_r2(a, kind, pos_case='r2gate_pos', dead_case='r2gate_dead'):
                     'bwrap_processes': [(e['pid'], e['state']) for e in bwrap],
                     'non_gate_target_processes': others,
                     'gate_cmdline_still_gate': gate_ok,
+                    'gate_seccomp_observed': [(e['pid'], e['seccomp'], e['seccomp_filters']) for e in gate],
                     'auth_received_echo_in_output': any('AUTH_RECEIVED' in l for l in pre_lines),
                     'target_markers_in_output': [l for l in pre_lines
                                                  if 'GATE_AUTH_OK' in l or l.startswith('generation ')],
                 }
                 phase_ok = (len(gate) >= 1 and not others
                             and data['phase_proof']['gate_cmdline_still_gate']
+                            and all(e['seccomp'] == 2 and e['seccomp_filters'] == 1 for e in gate)
                             and not data['phase_proof']['auth_received_echo_in_output']
                             and not data['phase_proof']['target_markers_in_output'])
                 data['phase_ok'] = phase_ok
@@ -2292,7 +2312,9 @@ def run_r2(a, kind, pos_case='r2gate_pos', dead_case='r2gate_dead'):
                           and 'GATE_AUTH_OK' in str(rec.get('target_markers'))
                           and 'spinwork_sum' in str(rec.get('target_markers'))
                           and 'complete' in str(rec.get('target_markers'))
-                          and data.get('manager_rc') == 0 and rec.get('domain_empty'))
+                          and data.get('manager_rc') == 0 and rec.get('domain_empty')
+                          and (not separate or (rec.get('gate_seccomp_ok')
+                                                and rec.get('target_seccomp_ok'))))
                     data['verdict'] = ('SUPPORTED-leg (gate released the real target on exact-nonce auth; '
                                        'target initialized post-release; useful bounded work; empty)'
                                        if ok else 'INCONCLUSIVE (R2 positive control failed)')
@@ -2323,7 +2345,8 @@ def run_r2(a, kind, pos_case='r2gate_pos', dead_case='r2gate_dead'):
                     rec = (data.get('manager_result') or {}).get('record', {}) or {}
                     ok = (empty and not strays and data['manager_survived_stop']
                           and not rec.get('auth_sent') and not rec.get('auth_received_echo')
-                          and 'GATE_AUTH_OK' not in str(rec.get('target_markers', [])))
+                          and 'GATE_AUTH_OK' not in str(rec.get('target_markers', []))
+                          and (not separate or rec.get('gate_seccomp_ok')))
                     data['verdict'] = ('SUPPORTED-leg (barrier held; no auth; no target exec; '
                                        'owned domain stopped; empty; no strays)' if ok
                                        else 'INCONCLUSIVE (R2 deadline completion unmet: empty=%r strays=%r auth=%r)' % (

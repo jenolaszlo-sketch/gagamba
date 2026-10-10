@@ -201,6 +201,14 @@ int main(int argc, char **argv) {
             munmap(pg, 1 << 20);
         }
         printf("spinwork_sum %lu\n", sum);
+        { FILE *sf = fopen("/proc/self/status", "r");
+          int sm = -1, nf = -1;
+          if (sf) { char sl[256];
+            while (fgets(sl, sizeof sl, sf)) {
+              if (!strncmp(sl, "Seccomp:", 8)) sm = atoi(sl + 8);
+              else if (!strncmp(sl, "Seccomp_filters:", 16)) nf = atoi(sl + 16); }
+            fclose(sf); }
+          printf("target seccomp=%d filters=%d\n", sm, nf); }
         goto trailer;
     } else if (!strcmp(mode, "hang")) {
         sleep(30); // no READY by design: C9 setup-hang victim

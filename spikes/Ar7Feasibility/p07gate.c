@@ -8,6 +8,7 @@
  * are echoed as AUTH_RECEIVED first. argv: gate nonce cg root input.
  */
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -18,6 +19,14 @@ int main(int argc, char **argv) {
     const char *nonce = argv[1], *cg = argv[2], *root = argv[3], *input = argv[4];
     (void)cg; (void)root; (void)input;
     printf("PRETARGET_GATE_REACHED nonce=%s pid=%d\n", nonce, getpid());
+    { FILE *sf = fopen("/proc/self/status", "r");
+      int sm = -1, nf = -1;
+      if (sf) { char sl[256];
+        while (fgets(sl, sizeof sl, sf)) {
+          if (!strncmp(sl, "Seccomp:", 8)) sm = atoi(sl + 8);
+          else if (!strncmp(sl, "Seccomp_filters:", 16)) nf = atoi(sl + 16); }
+        fclose(sf); }
+      printf("gate seccomp=%d filters=%d\n", sm, nf); }
     char ab[128];
     size_t al = 0;
     int ch;
