@@ -166,6 +166,29 @@ int main(int argc, char **argv) {
         printf("pdeathsig_val %d\n", sig);
         result("pdeathsig_clear", prctl(PR_SET_PDEATHSIG, 0, 0, 0, 0));
         goto trailer;
+    } else if (!strcmp(mode, "gate")) {
+        // R2-replacement pre-target exec gate: test-only instrumentation, not
+        // a confinement mechanism. Bubblewrap execs THIS as the namespace
+        // root. It records PRETARGET_GATE_REACHED, blocks on the
+        // controller-owned stdin channel, performs no fork/spawn/exec while
+        // blocked, and execves the actual target ONLY on the exact expected
+        // nonce. Any received bytes are echoed as AUTH_RECEIVED first, so the
+        // absence of that marker proves no authorization ever arrived.
+        printf("PRETARGET_GATE_REACHED nonce=%s\n", nonce);
+        char ab[128]; size_t al = 0; int ch;
+        while (al + 1 < sizeof ab && (ch = getchar()) != EOF && ch != '\n') ab[al++] = (char)ch;
+        ab[al] = 0;
+        if (al > 0 || ch != EOF) printf("AUTH_RECEIVED bytes=%zu\n", al);
+        else { printf("GATE_REFUSED eof\n"); return 125; }
+        if (!strcmp(ab, nonce)) {
+            printf("GATE_AUTH_OK exec_target\n");
+            char *const av[] = { argv[0], "sleeper", argv[2], argv[3], argv[4], argv[5], "2", NULL };
+            execv("/target", av);
+            result("execv_target", -1);
+            return 3;
+        }
+        printf("GATE_REFUSED mismatch\n");
+        return 125;
     } else if (!strcmp(mode, "hang")) {
         sleep(30); // no READY by design: C9 setup-hang victim
         return 0;

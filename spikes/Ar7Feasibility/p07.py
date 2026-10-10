@@ -1115,6 +1115,103 @@ def do_r4live(ctx, outer_frag):
         rec['leg'] = 'INCONCLUSIVE (R4 live completion unmet)'
     return rec
 
+def spawn_gate(ctx, outer_frag):
+    """Release the R2 pre-target gate (no GO: the gate's own stdin channel is
+    the authorization path). Returns (Popen, record) after PRETARGET is seen
+    and the announced ns-PID is uniquely resolved. No auth is ever written
+    here — the runner authorizes release via the manager's stdin decision."""
+    argv = (ctx.common + ['--seccomp', str(ctx.secc()), '--', '/target', 'gate', str(ctx.cg),
+                          str(ctx.root), ctx.nonce, '/input', '0'])
+    p = subprocess.Popen(argv, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                         close_fds=True, pass_fds=(ctx.seccomp_fd,),
+                         preexec_fn=lambda: ctx.enter_target(None))
+    pretarget = False
+    ready = b''
+    for _ in range(20):
+        chunk = p.stdout.readline()
+        if not chunk:
+            break
+        ready += chunk
+        if b'PRETARGET_GATE_REACHED' in chunk:
+            pretarget = True
+            break
+    ident = {}
+    for line in ready.decode(errors='replace').splitlines():
+        if line.startswith('identity '):
+            for kv in line.split()[1:]:
+                k, _, v = kv.partition('=')
+                ident[k] = v
+    resolved = resolve_ns_root(outer_frag) if ident.get('pid', '').isdecimal() else []
+    rec = {'gate_reached': pretarget, 'announced_identity': ident,
+           'ns_resolution': resolved, 'bwrap_host_pid': p.pid,
+           'bwrap_argv_tail': argv[-8:]}
+    if not pretarget or len(resolved) != 1:
+        p.kill(); p.wait()
+        rec['leg'] = 'INCONCLUSIVE (gate unreached or unresolvable)'
+        return None, rec
+    rec['state'] = 'GATE-HELD'
+    return p, rec
+
+def do_r2gate(ctx, outer_frag, positive):
+    # R2 replacement releaser. Blocks for the runner's single-byte decision:
+    # 'A' = write the exact nonce authorization (positive only);
+    # anything else ('K') = never authorize (deadline).
+    p, rec = spawn_gate(ctx, outer_frag)
+    if p is None:
+        return rec
+    evt({'r2gate': 'GATE-READY', 'positive': positive,
+         'gate': rec['ns_resolution'][0]})
+    try:
+        decision = sys.stdin.read(1)
+    except OSError as e:
+        rec['decision_error'] = repr(e); decision = ''
+    rec['decision'] = decision
+    if positive and decision == 'A':
+        try:
+            p.stdin.write((ctx.nonce + '\n').encode()); p.stdin.flush()
+            rec['auth_sent'] = True
+            evt({'r2gate': 'AUTH_SENT'})
+        except OSError as e:
+            rec['auth_sent'] = False; rec['auth_error'] = repr(e)
+    else:
+        rec['auth_sent'] = False
+    try:
+        stdout, stderr = p.communicate(timeout=25)
+        out = stdout.decode(errors='replace')
+        rec['candidate'] = dict(rc=p.returncode, stdout_tail=out[-3000:], timeout=False)
+    except subprocess.TimeoutExpired:
+        p.kill(); stdout, stderr = p.communicate()
+        rec['candidate'] = dict(rc=p.returncode, timeout=True)
+    out = rec['candidate'].get('stdout_tail', '')
+    rec['auth_received_echo'] = 'AUTH_RECEIVED' in out
+    rec['target_markers'] = [m for m in ('GATE_AUTH_OK', 'generation second', 'complete')
+                             if m in out]
+    empty, dt = wait_empty(ctx.cg / 'target', 10.0)
+    rec['domain_empty'] = empty; rec['empty_after_s'] = dt
+    if positive:
+        if (rec['auth_sent'] and rec['auth_received_echo'] and 'GATE_AUTH_OK' in out
+                and 'complete' in out and p.returncode == 0 and empty):
+            rec['leg'] = ('SUPPORTED-leg (gate released the real target on exact-nonce auth; '
+                          'useful bounded work; empty)')
+        else:
+            rec['leg'] = 'INCONCLUSIVE (R2 positive control failed)'
+    else:
+        if (not rec['auth_sent'] and not rec['auth_received_echo'] and 'GATE_AUTH_OK' not in out
+                and empty and not rec['candidate'].get('timeout')):
+            rec['leg'] = ('SUPPORTED-leg (barrier held, no auth, no target exec; '
+                          'see runner audit)')
+        elif not empty:
+            rec['leg'] = 'BLOCKED (domain survived the R2 deadline stop)'
+        else:
+            rec['leg'] = 'INCONCLUSIVE (R2 deadline completion unmet)'
+    return rec
+
+def do_r2gate_pos(ctx, outer_frag):
+    return do_r2gate(ctx, outer_frag, True)
+
+def do_r2gate_dead(ctx, outer_frag):
+    return do_r2gate(ctx, outer_frag, False)
+
 CASES = {
     'positives': do_positives,
     'c1': do_c1, 'c2': do_c2, 'c3': do_c3, 'c4': do_c4, 'c5': do_c5,
@@ -1129,6 +1226,7 @@ CASES = {
     'r3a': do_r3a, 'r3b': do_r3b, 'r4a': do_r4a, 'r4b': do_r4b,
     'r5phase': do_r5phase, 'r6stale': do_r6stale,
     'r3live': do_r3live, 'r4live': do_r4live,
+    'r2gate_pos': do_r2gate_pos, 'r2gate_dead': do_r2gate_dead,
 }
 SUITE = ['positives', 'c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10',
          'cancel_det', 'cancel_race', 'bat_daemon', 'bat_fork', 'bat_reexec', 'bat_interfere', 'c11']
@@ -1858,6 +1956,246 @@ def run_live(a, kind):
         print(json.dumps(data, indent=2))
     return 0 if data.get('verdict', '').startswith('SUPPORTED') and data.get('cleanup_confirmed') else 2
 
+def full_leaf_snapshot(cg, outer_frag):
+    """Complete pre-decision process-state proof: every fixture-domain
+    process with pid/ppid/state/starttime/cmdline/cgroup. Preserved in full,
+    never reduced to a Boolean."""
+    found = []
+    for leaf in ('manager', 'target', 'sibling', 'positive'):
+        lp = cg / leaf
+        if not lp.exists():
+            continue
+        for pid in read(lp / 'cgroup.procs').split():
+            if not pid.isdecimal():
+                continue
+            ipid = int(pid)
+            try:
+                member = pathlib.Path('/proc/%d/cgroup' % ipid).read_text()
+                cmd = pathlib.Path('/proc/%d/cmdline' % ipid).read_bytes().replace(b'\0', b' ').decode(errors='replace')
+                st = pathlib.Path('/proc/%d/status' % ipid).read_text()
+            except OSError:
+                continue
+            if outer_frag not in member:
+                continue
+            ppid, state = None, None
+            for line in st.splitlines():
+                if line.startswith('PPid:'):
+                    ppid = line.split()[1] if len(line.split()) > 1 else None
+                if line.startswith('State:'):
+                    state = line.split(':', 1)[1].strip()
+            found.append({'pid': ipid, 'ppid': ppid, 'leaf': leaf, 'state': state,
+                          'starttime': starttime_of(ipid), 'cmdline': cmd[:200],
+                          'cgroup': member.strip()[:160]})
+    return sorted(found, key=lambda d: d['pid'])
+
+def run_r2(a, kind):
+    """R2 replacement runner (root): positive proves the gate releases the
+    real target; deadline proves the barrier held with no auth and no target
+    exec, then stops the owned domain. Manager stays alive across the stop."""
+    assert os.getuid() == 0
+    case = 'r2gate_pos' if kind == 'r2pos' else 'r2gate_dead'
+    nonce = uuid.uuid4().hex
+    root = pathlib.Path('/tmp') / ('gagamba-ar7-P07-' + nonce)
+    outer = pathlib.Path('/sys/fs/cgroup') / ('gagamba-ar7-P07-' + nonce)
+    cg = outer / 'delegated'
+    outer_frag = str(outer).removeprefix('/sys/fs/cgroup')
+    data = {'leg': 'r2-' + kind, 'source_sha': a.source_sha, 'nonce': nonce,
+            'date_utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
+            'host': {'kernel': os.uname().release, 'arch': os.uname().machine},
+            'helper_sha256': sha('/usr/bin/bwrap'),
+            'helper_mode': oct(os.stat('/usr/bin/bwrap').st_mode & 0o7777),
+            'source_hashes': {p.name: sha(p) for p in list(pathlib.Path(__file__).parent.glob('p07.*'))},
+            'paths': {'root': str(root), 'outer': str(outer)}, 'observer_uid': 0}
+    if data['helper_sha256'] != PIN or os.stat('/usr/bin/bwrap').st_mode & 0o6000:
+        data['verdict'] = 'INCONCLUSIVE (helper pin changed)'
+    else:
+        m = None
+        try:
+            root.mkdir(mode=0o755)
+            comp = run(['/usr/bin/gcc', '-static', '-O2', '-Wall', '-Wextra', '-o',
+                        str(root / 'worker'), str(pathlib.Path(__file__).with_suffix('.c'))])
+            data['compile'] = comp
+            if comp['rc']:
+                raise RuntimeError('compile failed before release')
+            data['worker_sha256'] = sha(root / 'worker')
+            (root / 'input').write_text(nonce); os.chmod(root / 'input', 0o444)
+            outer.mkdir(); write(outer / 'memory.max', 268435456); write(outer / 'pids.max', 64)
+            write(outer / 'memory.swap.max', 0); write(outer / 'cgroup.subtree_control', '+memory +pids')
+            cg.mkdir(); write(cg / 'memory.max', 268435456); write(cg / 'pids.max', 64)
+            write(cg / 'cgroup.subtree_control', '+memory +pids'); leaf_own(cg)
+            for name in ('manager', 'target', 'positive'):
+                (cg / name).mkdir(); leaf_own(cg / name)
+            write(cg / 'target/memory.max', 134217728); write(cg / 'target/pids.max', 48)
+            os.chown(root, UID, UID)
+            data['filter_note'] = 'frozen P02/P03/P04 bytes; manager builds its own memfd (manager-owned)'
+
+            def drop():
+                write(cg / 'manager/cgroup.procs', os.getpid()); os.setgroups([]); os.setgid(UID); os.setuid(UID)
+                bounds(fsize=False)
+            cmd = [sys.executable, __file__, '--manager', '--case', case, '--root', str(root),
+                   '--cg', str(cg), '--nonce', nonce, '--outer-frag', outer_frag]
+            m = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE, text=True, bufsize=1,
+                                 preexec_fn=drop, close_fds=True)
+            data['manager_pid'] = m.pid
+            pre_lines = []
+            marker = None; deadline = time.monotonic() + 90.0
+            while time.monotonic() < deadline:
+                line = m.stdout.readline()
+                if not line:
+                    break
+                pre_lines.append(line[:300])
+                if line.startswith('EVT '):
+                    try:
+                        obj = json.loads(line[4:])
+                    except ValueError:
+                        continue
+                    if obj.get('r2gate') == 'GATE-READY':
+                        marker = obj
+                        break
+            data['pre_decision_output'] = pre_lines
+            data['marker'] = marker
+            if marker is None:
+                m.kill(); m.wait()
+                data['verdict'] = 'INCONCLUSIVE (gate marker never arrived)'
+            else:
+                snap = full_leaf_snapshot(cg, outer_frag)
+                data['pre_decision_snapshot'] = snap
+                tgt = [e for e in snap if e['leaf'] == 'target']
+                bwrap = [e for e in tgt if e['cmdline'].startswith('/usr/bin/bwrap')]
+                gate = [e for e in tgt if e not in bwrap and '/target gate ' in e['cmdline']]
+                others = [e for e in tgt if e not in bwrap and e not in gate]
+                data['phase_proof'] = {
+                    'target_leaf_members': len(tgt),
+                    'gate_processes': [(e['pid'], e['state'], e['starttime']) for e in gate],
+                    'bwrap_processes': [(e['pid'], e['state']) for e in bwrap],
+                    'non_gate_target_processes': others,
+                    'gate_cmdline_still_gate': all('/target gate ' in e['cmdline'] for e in gate),
+                    'auth_received_echo_in_output': any('AUTH_RECEIVED' in l for l in pre_lines),
+                    'target_markers_in_output': [l for l in pre_lines
+                                                 if 'GATE_AUTH_OK' in l or l.startswith('generation ')],
+                }
+                phase_ok = (len(gate) >= 1 and not others
+                            and data['phase_proof']['gate_cmdline_still_gate']
+                            and not data['phase_proof']['auth_received_echo_in_output']
+                            and not data['phase_proof']['target_markers_in_output'])
+                data['phase_ok'] = phase_ok
+                if not phase_ok:
+                    m.kill(); m.wait()
+                    data['verdict'] = 'INCONCLUSIVE (pre-decision phase unproven)'
+                elif kind == 'r2pos':
+                    try:
+                        m.stdin.write('A'); m.stdin.flush()
+                    except OSError as e:
+                        data['authorize_error'] = repr(e)
+                    data['release_authorization'] = 'sent exact nonce after proven gate (positive control)'
+                    try:
+                        out, err = m.communicate(timeout=60)
+                        data['manager_rc'] = m.returncode
+                        res = [json.loads(l[7:]) for l in out.splitlines() if l.startswith('RESULT ')]
+                        data['manager_result'] = res[0] if res else None
+                        data['full_transcript_tail'] = out[-3000:]
+                    except subprocess.TimeoutExpired:
+                        m.kill(); m.communicate()
+                        data['manager_watchdog'] = True
+                    rec = (data.get('manager_result') or {}).get('record', {}) or {}
+                    ok = (rec.get('auth_sent') and rec.get('auth_received_echo')
+                          and 'GATE_AUTH_OK' in str(rec.get('target_markers'))
+                          and 'complete' in str(rec.get('target_markers'))
+                          and data.get('manager_rc') == 0 and rec.get('domain_empty'))
+                    data['verdict'] = ('SUPPORTED-leg (gate released the real target on exact-nonce auth; '
+                                       'target initialized post-release; useful bounded work; empty)'
+                                       if ok else 'INCONCLUSIVE (R2 positive control failed)')
+                else:
+                    data['deadline_decision'] = ('deadline wins at proven PRETARGET barrier; '
+                                                 'release authorization never sent')
+                    data['release_authorization'] = 'never sent (manager blocked; gate attests no AUTH_RECEIVED)'
+                    write(cg / 'target/cgroup.kill', 1)
+                    data['stop_issued'] = 'target/cgroup.kill by root runner on proven-held gate domain'
+                    empty, dt = wait_empty(cg / 'target', 10.0)
+                    data['domain_empty'] = empty; data['empty_after_s'] = dt
+                    mgr_leaf = read(cg / 'manager/cgroup.procs')
+                    data['manager_survived_stop'] = str(m.pid) in mgr_leaf.split()
+                    strays = [e for e in leaf_pids(cg, outer_frag, exclude=(m.pid,))]
+                    data['strays_after'] = strays
+                    try:
+                        m.stdin.write('K'); m.stdin.flush()
+                    except OSError as e:
+                        data['proceed_error'] = repr(e)
+                    try:
+                        out, err = m.communicate(timeout=60)
+                        data['manager_rc'] = m.returncode
+                        res = [json.loads(l[7:]) for l in out.splitlines() if l.startswith('RESULT ')]
+                        data['manager_result'] = res[0] if res else None
+                    except subprocess.TimeoutExpired:
+                        m.kill(); m.communicate()
+                        data['manager_watchdog'] = True
+                    rec = (data.get('manager_result') or {}).get('record', {}) or {}
+                    ok = (empty and not strays and data['manager_survived_stop']
+                          and not rec.get('auth_sent') and not rec.get('auth_received_echo')
+                          and 'GATE_AUTH_OK' not in str(rec.get('target_markers', [])))
+                    data['verdict'] = ('SUPPORTED-leg (barrier held; no auth; no target exec; '
+                                       'owned domain stopped; empty; no strays)' if ok
+                                       else 'INCONCLUSIVE (R2 deadline completion unmet: empty=%r strays=%r auth=%r)' % (
+                                           empty, strays, rec.get('auth_sent')))
+        except Exception as e:
+            data['setup_error'] = repr(e)
+        finally:
+            try:
+                if outer.exists():
+                    try:
+                        write(outer / 'cgroup.kill', 1)
+                    except OSError:
+                        pass
+                    if m is not None:
+                        try:
+                            m.wait(timeout=5)
+                        except Exception:
+                            pass
+                    for _ in range(30):
+                        if 'populated 0' in read(outer / 'cgroup.events'):
+                            break
+                        time.sleep(.1)
+                    data['cleanup_events'] = read(outer / 'cgroup.events')
+                    known = {'manager', 'target', 'positive', 'sibling'}
+                    for parent in (cg, outer):
+                        if parent.exists():
+                            for name in sorted(known):
+                                q = parent / name
+                                if q.exists():
+                                    try:
+                                        q.rmdir()
+                                    except OSError as e:
+                                        data.setdefault('cleanup_errors', []).append(name + ': ' + repr(e))
+                    for q in (cg, outer):
+                        if q.exists():
+                            try:
+                                q.rmdir()
+                            except OSError as e:
+                                data['cleanup_error'] = repr(e)
+            except Exception as e:
+                data['cleanup_error'] = repr(e)
+            if not outer.exists() and root.exists():
+                for name in ('input', 'worker', 'phase-r5'):
+                    q = root / name
+                    if q.exists() or q.is_symlink():
+                        try:
+                            q.unlink()
+                        except OSError:
+                            pass
+                try:
+                    root.rmdir()
+                except OSError as e:
+                    data['cleanup_error'] = repr(e)
+            data['cleanup_absence'] = {'outer': not outer.exists(), 'workspace': not root.exists(),
+                                       'manager': m is None or m.poll() is not None}
+            data['cleanup_confirmed'] = all(data['cleanup_absence'].values()) and not data.get('cleanup_error')
+    dest = pathlib.Path(a.output); dest.mkdir(parents=True, exist_ok=True)
+    (dest / ('r2-' + kind + '-' + nonce + '.json')).write_text(json.dumps(data, indent=2))
+    if not a.quiet:
+        print(json.dumps(data, indent=2))
+    return 0 if data.get('verdict', '').startswith('SUPPORTED') and data.get('cleanup_confirmed') else 2
+
 def r5_wrapper(a):
     """R5 observer loss at a proven phase (root). The manager persists a
     nonce phase file only after IT observes target execution; the wrapper
@@ -1965,6 +2303,7 @@ if __name__ == '__main__':
     ap.add_argument('--provisioner', action='store_true')
     ap.add_argument('--r1', action='store_true')
     ap.add_argument('--live-runner', action='store_true')
+    ap.add_argument('--r2-runner', action='store_true')
     ap.add_argument('--kind')
     ap.add_argument('--r5-wrapper', action='store_true')
     ap.add_argument('--observer-only-r5', action='store_true')
@@ -1987,6 +2326,8 @@ if __name__ == '__main__':
         sys.exit(run_r1(args))
     elif args.live_runner:
         sys.exit(run_live(args, args.kind))
+    elif args.r2_runner:
+        sys.exit(run_r2(args, args.kind))
     elif args.r5_wrapper:
         sys.exit(r5_wrapper(args))
     elif args.observer_only_r5:
