@@ -1,0 +1,174 @@
+{
+  "leg": "r2-r2pos",
+  "source_sha": "bd96d5f",
+  "nonce": "1b93ff6733ae4c60be664704b8cc4185",
+  "date_utc": "2026-10-10T09:41:13Z",
+  "host": {
+    "kernel": "6.6.114.1-microsoft-standard-WSL2",
+    "arch": "x86_64"
+  },
+  "helper_sha256": "523da3e7399044be5163aee6f57a77a6bef7454376e28f0a0627920bae1b76b6",
+  "helper_mode": "0o755",
+  "source_hashes": {
+    "p07.c": "ac6ee5bb2d1cab4a111df72181e004bc9290cf7b57316739b6d3db90d725c39d",
+    "p07.py": "5ead3a2f40ad565457d9017c40e79700147439b22c59928a270a9e25ff70e889"
+  },
+  "paths": {
+    "root": "/tmp/gagamba-ar7-P07-1b93ff6733ae4c60be664704b8cc4185",
+    "outer": "/sys/fs/cgroup/gagamba-ar7-P07-1b93ff6733ae4c60be664704b8cc4185"
+  },
+  "observer_uid": 0,
+  "compile": {
+    "argv": [
+      "/usr/bin/gcc",
+      "-static",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-o",
+      "/tmp/gagamba-ar7-P07-1b93ff6733ae4c60be664704b8cc4185/worker",
+      "/mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07.c"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "worker_sha256": "3424b08d6a140808c2990dbb6ae439b20cee6522c63f0ff348901636eb2429b5",
+  "filter_note": "frozen P02/P03/P04 bytes; manager builds its own memfd (manager-owned)",
+  "manager_pid": 1131891,
+  "pre_decision_output": [
+    "EVT {\"r2gate\": \"GATE-READY\", \"positive\": true, \"gate\": {\"pid\": 1131896, \"starttime\": \"151954803\", \"cmdline\": \"/target gate /sys/fs/cgroup/gagamba-ar7-P07-1b93ff6733ae4c60be664704b8cc4185/delegated /tmp/gagamba-ar7-P07-1b93ff6733ae4c60be664704b8cc4185 1b93ff6733ae4c60be6\"}}\n"
+  ],
+  "marker": {
+    "r2gate": "GATE-READY",
+    "positive": true,
+    "gate": {
+      "pid": 1131896,
+      "starttime": "151954803",
+      "cmdline": "/target gate /sys/fs/cgroup/gagamba-ar7-P07-1b93ff6733ae4c60be664704b8cc4185/delegated /tmp/gagamba-ar7-P07-1b93ff6733ae4c60be664704b8cc4185 1b93ff6733ae4c60be6"
+    }
+  },
+  "pre_decision_snapshot": [
+    {
+      "pid": 1131891,
+      "ppid": "1131882",
+      "leaf": "manager",
+      "state": "S (sleeping)",
+      "starttime": "151954755",
+      "cmdline": "/usr/bin/python3 /mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07.py --manager --case r2gate_pos --root /tmp/gagamba-ar7-P07-1b93ff6733ae4c60be664704b8cc4185 --cg /sys/fs/cgroup/gag",
+      "cgroup": "0::/gagamba-ar7-P07-1b93ff6733ae4c60be664704b8cc4185/delegated/manager"
+    },
+    {
+      "pid": 1131894,
+      "ppid": "1131891",
+      "leaf": "target",
+      "state": "S (sleeping)",
+      "starttime": "151954795",
+      "cmdline": "/usr/bin/bwrap --unshare-user --unshare-pid --unshare-net --unshare-ipc --unshare-uts --uid 0 --gid 0 --disable-userns --assert-userns-disabled --cap-drop ALL --die-with-parent --new-session --clearen",
+      "cgroup": "0::/gagamba-ar7-P07-1b93ff6733ae4c60be664704b8cc4185/delegated/target"
+    },
+    {
+      "pid": 1131895,
+      "ppid": "1131894",
+      "leaf": "target",
+      "state": "S (sleeping)",
+      "starttime": "151954800",
+      "cmdline": "/usr/bin/bwrap --unshare-user --unshare-pid --unshare-net --unshare-ipc --unshare-uts --uid 0 --gid 0 --disable-userns --assert-userns-disabled --cap-drop ALL --die-with-parent --new-session --clearen",
+      "cgroup": "0::/gagamba-ar7-P07-1b93ff6733ae4c60be664704b8cc4185/delegated/target"
+    },
+    {
+      "pid": 1131896,
+      "ppid": "1131895",
+      "leaf": "target",
+      "state": "S (sleeping)",
+      "starttime": "151954803",
+      "cmdline": "/target gate /sys/fs/cgroup/gagamba-ar7-P07-1b93ff6733ae4c60be664704b8cc4185/delegated /tmp/gagamba-ar7-P07-1b93ff6733ae4c60be664704b8cc4185 1b93ff6733ae4c60be664704b8cc4185 /input 0 ",
+      "cgroup": "0::/gagamba-ar7-P07-1b93ff6733ae4c60be664704b8cc4185/delegated/target"
+    }
+  ],
+  "phase_proof": {
+    "target_leaf_members": 3,
+    "gate_processes": [
+      [
+        1131896,
+        "S (sleeping)",
+        "151954803"
+      ]
+    ],
+    "bwrap_processes": [
+      [
+        1131894,
+        "S (sleeping)"
+      ],
+      [
+        1131895,
+        "S (sleeping)"
+      ]
+    ],
+    "non_gate_target_processes": [],
+    "gate_cmdline_still_gate": true,
+    "auth_received_echo_in_output": false,
+    "target_markers_in_output": []
+  },
+  "phase_ok": true,
+  "release_authorization": "sent exact nonce after proven gate (positive control)",
+  "manager_rc": 0,
+  "manager_result": {
+    "case": "r2gate_pos",
+    "uid": 65534,
+    "cgroup": "0::/gagamba-ar7-P07-1b93ff6733ae4c60be664704b8cc4185/delegated/manager",
+    "filter_sha256": "30bfaf6b62030de8b105e1ac8de43f2a9884b2bd5de20e98aef81dce426c1aad",
+    "record": {
+      "gate_reached": true,
+      "announced_identity": {
+        "uid": "0",
+        "gid": "0",
+        "pid": "2",
+        "ppid": "1",
+        "nnp": "1"
+      },
+      "ns_resolution": [
+        {
+          "pid": 1131896,
+          "starttime": "151954803",
+          "cmdline": "/target gate /sys/fs/cgroup/gagamba-ar7-P07-1b93ff6733ae4c60be664704b8cc4185/delegated /tmp/gagamba-ar7-P07-1b93ff6733ae4c60be664704b8cc4185 1b93ff6733ae4c60be6"
+        }
+      ],
+      "bwrap_host_pid": 1131894,
+      "bwrap_argv_tail": [
+        "--",
+        "/target",
+        "gate",
+        "/sys/fs/cgroup/gagamba-ar7-P07-1b93ff6733ae4c60be664704b8cc4185/delegated",
+        "/tmp/gagamba-ar7-P07-1b93ff6733ae4c60be664704b8cc4185",
+        "1b93ff6733ae4c60be664704b8cc4185",
+        "/input",
+        "0"
+      ],
+      "state": "GATE-HELD",
+      "decision": "A",
+      "auth_sent": true,
+      "candidate": {
+        "rc": 126,
+        "stdout_tail": "AUTH_RECEIVED bytes=32\nGATE_AUTH_OK exec_target\nidentity uid=0 gid=0 pid=2 ppid=1 nnp=1\ninput rc=3 errno=0\ninput_read rc=32 errno=0\nREADY\ngo_read rc=0 byte=0\n",
+        "timeout": false
+      },
+      "auth_received_echo": true,
+      "target_markers": [
+        "GATE_AUTH_OK"
+      ],
+      "domain_empty": true,
+      "empty_after_s": 0.0002231330145150423,
+      "leg": "INCONCLUSIVE (R2 positive control failed)"
+    }
+  },
+  "full_transcript_tail": "EVT {\"r2gate\": \"AUTH_SENT\"}\nRESULT {\"case\": \"r2gate_pos\", \"uid\": 65534, \"cgroup\": \"0::/gagamba-ar7-P07-1b93ff6733ae4c60be664704b8cc4185/delegated/manager\", \"filter_sha256\": \"30bfaf6b62030de8b105e1ac8de43f2a9884b2bd5de20e98aef81dce426c1aad\", \"record\": {\"gate_reached\": true, \"announced_identity\": {\"uid\": \"0\", \"gid\": \"0\", \"pid\": \"2\", \"ppid\": \"1\", \"nnp\": \"1\"}, \"ns_resolution\": [{\"pid\": 1131896, \"starttime\": \"151954803\", \"cmdline\": \"/target gate /sys/fs/cgroup/gagamba-ar7-P07-1b93ff6733ae4c60be664704b8cc4185/delegated /tmp/gagamba-ar7-P07-1b93ff6733ae4c60be664704b8cc4185 1b93ff6733ae4c60be6\"}], \"bwrap_host_pid\": 1131894, \"bwrap_argv_tail\": [\"--\", \"/target\", \"gate\", \"/sys/fs/cgroup/gagamba-ar7-P07-1b93ff6733ae4c60be664704b8cc4185/delegated\", \"/tmp/gagamba-ar7-P07-1b93ff6733ae4c60be664704b8cc4185\", \"1b93ff6733ae4c60be664704b8cc4185\", \"/input\", \"0\"], \"state\": \"GATE-HELD\", \"decision\": \"A\", \"auth_sent\": true, \"candidate\": {\"rc\": 126, \"stdout_tail\": \"AUTH_RECEIVED bytes=32\\nGATE_AUTH_OK exec_target\\nidentity uid=0 gid=0 pid=2 ppid=1 nnp=1\\ninput rc=3 errno=0\\ninput_read rc=32 errno=0\\nREADY\\ngo_read rc=0 byte=0\\n\", \"timeout\": false}, \"auth_received_echo\": true, \"target_markers\": [\"GATE_AUTH_OK\"], \"domain_empty\": true, \"empty_after_s\": 0.0002231330145150423, \"leg\": \"INCONCLUSIVE (R2 positive control failed)\"}}\n",
+  "verdict": "INCONCLUSIVE (R2 positive control failed)",
+  "cleanup_events": "populated 0\nfrozen 0",
+  "cleanup_absence": {
+    "outer": true,
+    "workspace": true,
+    "manager": true
+  },
+  "cleanup_confirmed": true
+}

@@ -1,0 +1,177 @@
+{
+  "leg": "r2-r2dead",
+  "source_sha": "bca5690",
+  "nonce": "b6e3f259db0c4f9e9d69eac3aab7c399",
+  "date_utc": "2026-10-10T09:42:25Z",
+  "host": {
+    "kernel": "6.6.114.1-microsoft-standard-WSL2",
+    "arch": "x86_64"
+  },
+  "helper_sha256": "523da3e7399044be5163aee6f57a77a6bef7454376e28f0a0627920bae1b76b6",
+  "helper_mode": "0o755",
+  "source_hashes": {
+    "p07.c": "e805c033cd5e60e067c10cdcb3753391cc4bd338e83ac65a60322d0fb36ae230",
+    "p07.py": "605803125137dfbe2a4e3dea71e7842caa154d58f4a352f1c832efef12052341"
+  },
+  "paths": {
+    "root": "/tmp/gagamba-ar7-P07-b6e3f259db0c4f9e9d69eac3aab7c399",
+    "outer": "/sys/fs/cgroup/gagamba-ar7-P07-b6e3f259db0c4f9e9d69eac3aab7c399"
+  },
+  "observer_uid": 0,
+  "compile": {
+    "argv": [
+      "/usr/bin/gcc",
+      "-static",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-o",
+      "/tmp/gagamba-ar7-P07-b6e3f259db0c4f9e9d69eac3aab7c399/worker",
+      "/mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07.c"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "worker_sha256": "fc238fd1e8575bcce1d338a37dbe6947106e2e9ed482e96a75361bf48f6dbc40",
+  "filter_note": "frozen P02/P03/P04 bytes; manager builds its own memfd (manager-owned)",
+  "manager_pid": 1132181,
+  "pre_decision_output": [
+    "EVT {\"r2gate\": \"GATE-READY\", \"positive\": false, \"gate\": {\"pid\": 1132185, \"starttime\": \"151962007\", \"cmdline\": \"/target gate /sys/fs/cgroup/gagamba-ar7-P07-b6e3f259db0c4f9e9d69eac3aab7c399/delegated /tmp/gagamba-ar7-P07-b6e3f259db0c4f9e9d69eac3aab7c399 b6e3f259db0c4f9e9d6\"}}\n"
+  ],
+  "marker": {
+    "r2gate": "GATE-READY",
+    "positive": false,
+    "gate": {
+      "pid": 1132185,
+      "starttime": "151962007",
+      "cmdline": "/target gate /sys/fs/cgroup/gagamba-ar7-P07-b6e3f259db0c4f9e9d69eac3aab7c399/delegated /tmp/gagamba-ar7-P07-b6e3f259db0c4f9e9d69eac3aab7c399 b6e3f259db0c4f9e9d6"
+    }
+  },
+  "pre_decision_snapshot": [
+    {
+      "pid": 1132181,
+      "ppid": "1132173",
+      "leaf": "manager",
+      "state": "S (sleeping)",
+      "starttime": "151961967",
+      "cmdline": "/usr/bin/python3 /mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07.py --manager --case r2gate_dead --root /tmp/gagamba-ar7-P07-b6e3f259db0c4f9e9d69eac3aab7c399 --cg /sys/fs/cgroup/ga",
+      "cgroup": "0::/gagamba-ar7-P07-b6e3f259db0c4f9e9d69eac3aab7c399/delegated/manager"
+    },
+    {
+      "pid": 1132183,
+      "ppid": "1132181",
+      "leaf": "target",
+      "state": "S (sleeping)",
+      "starttime": "151962004",
+      "cmdline": "/usr/bin/bwrap --unshare-user --unshare-pid --unshare-net --unshare-ipc --unshare-uts --uid 0 --gid 0 --disable-userns --assert-userns-disabled --cap-drop ALL --die-with-parent --new-session --clearen",
+      "cgroup": "0::/gagamba-ar7-P07-b6e3f259db0c4f9e9d69eac3aab7c399/delegated/target"
+    },
+    {
+      "pid": 1132184,
+      "ppid": "1132183",
+      "leaf": "target",
+      "state": "S (sleeping)",
+      "starttime": "151962006",
+      "cmdline": "/usr/bin/bwrap --unshare-user --unshare-pid --unshare-net --unshare-ipc --unshare-uts --uid 0 --gid 0 --disable-userns --assert-userns-disabled --cap-drop ALL --die-with-parent --new-session --clearen",
+      "cgroup": "0::/gagamba-ar7-P07-b6e3f259db0c4f9e9d69eac3aab7c399/delegated/target"
+    },
+    {
+      "pid": 1132185,
+      "ppid": "1132184",
+      "leaf": "target",
+      "state": "S (sleeping)",
+      "starttime": "151962007",
+      "cmdline": "/target gate /sys/fs/cgroup/gagamba-ar7-P07-b6e3f259db0c4f9e9d69eac3aab7c399/delegated /tmp/gagamba-ar7-P07-b6e3f259db0c4f9e9d69eac3aab7c399 b6e3f259db0c4f9e9d69eac3aab7c399 /input 0 ",
+      "cgroup": "0::/gagamba-ar7-P07-b6e3f259db0c4f9e9d69eac3aab7c399/delegated/target"
+    }
+  ],
+  "phase_proof": {
+    "target_leaf_members": 3,
+    "gate_processes": [
+      [
+        1132185,
+        "S (sleeping)",
+        "151962007"
+      ]
+    ],
+    "bwrap_processes": [
+      [
+        1132183,
+        "S (sleeping)"
+      ],
+      [
+        1132184,
+        "S (sleeping)"
+      ]
+    ],
+    "non_gate_target_processes": [],
+    "gate_cmdline_still_gate": true,
+    "auth_received_echo_in_output": false,
+    "target_markers_in_output": []
+  },
+  "phase_ok": true,
+  "deadline_decision": "deadline wins at proven PRETARGET barrier; release authorization never sent",
+  "release_authorization": "never sent (manager blocked; gate attests no AUTH_RECEIVED)",
+  "stop_issued": "target/cgroup.kill by root runner on proven-held gate domain",
+  "domain_empty": true,
+  "empty_after_s": 0.0005366848781704903,
+  "manager_survived_stop": true,
+  "strays_after": [],
+  "manager_rc": 0,
+  "manager_result": {
+    "case": "r2gate_dead",
+    "uid": 65534,
+    "cgroup": "0::/gagamba-ar7-P07-b6e3f259db0c4f9e9d69eac3aab7c399/delegated/manager",
+    "filter_sha256": "30bfaf6b62030de8b105e1ac8de43f2a9884b2bd5de20e98aef81dce426c1aad",
+    "record": {
+      "gate_reached": true,
+      "announced_identity": {
+        "uid": "0",
+        "gid": "0",
+        "pid": "2",
+        "ppid": "1",
+        "nnp": "1"
+      },
+      "ns_resolution": [
+        {
+          "pid": 1132185,
+          "starttime": "151962007",
+          "cmdline": "/target gate /sys/fs/cgroup/gagamba-ar7-P07-b6e3f259db0c4f9e9d69eac3aab7c399/delegated /tmp/gagamba-ar7-P07-b6e3f259db0c4f9e9d69eac3aab7c399 b6e3f259db0c4f9e9d6"
+        }
+      ],
+      "bwrap_host_pid": 1132183,
+      "bwrap_argv_tail": [
+        "--",
+        "/target",
+        "gate",
+        "/sys/fs/cgroup/gagamba-ar7-P07-b6e3f259db0c4f9e9d69eac3aab7c399/delegated",
+        "/tmp/gagamba-ar7-P07-b6e3f259db0c4f9e9d69eac3aab7c399",
+        "b6e3f259db0c4f9e9d69eac3aab7c399",
+        "/input",
+        "0"
+      ],
+      "state": "GATE-HELD",
+      "decision": "K",
+      "auth_sent": false,
+      "candidate": {
+        "rc": -9,
+        "stdout_tail": "",
+        "timeout": false
+      },
+      "auth_received_echo": false,
+      "target_markers": [],
+      "domain_empty": true,
+      "empty_after_s": 0.00021478603594005108,
+      "leg": "SUPPORTED-leg (barrier held, no auth, no target exec; see runner audit)"
+    }
+  },
+  "verdict": "SUPPORTED-leg (barrier held; no auth; no target exec; owned domain stopped; empty; no strays)",
+  "cleanup_events": "populated 0\nfrozen 0",
+  "cleanup_absence": {
+    "outer": true,
+    "workspace": true,
+    "manager": true
+  },
+  "cleanup_confirmed": true
+}

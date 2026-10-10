@@ -80,5 +80,21 @@
   "host_tmp_mnt_p07": {
     "pre_remediation_state": "existed, fixture-UID 65534 owned, mode 700, empty (positives mkdir leftover)",
     "disposition": "rmdir removed after ownership verification; worker now removes it in both modes; verified absent"
+  },
+  "787891a6a2a643e591a1a62c2705b8ee": {
+    "workspace_absent": true,
+    "cgroup_absent": true,
+    "host_shm_clean": true,
+    "covers": [
+      "r2pos-gate-positive"
+    ]
+  },
+  "b6e3f259db0c4f9e9d69eac3aab7c399": {
+    "workspace_absent": true,
+    "cgroup_absent": true,
+    "host_shm_clean": true,
+    "covers": [
+      "r2dead-gate-deadline"
+    ]
   }
 }
