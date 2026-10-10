@@ -299,6 +299,7 @@ def manager(a):
         out['positive_fd_bad']=check_fd(pos['stdout'])
         out['positive_gate']=(pos['rc']==0 and not pos['timeout']
             and 'input_read rc=32' in pos['stdout'] and 'stdio_echo rc=0' in pos['stdout']
+            and 'ping_echo_reply rc=0' in pos['stdout'] and 'uring_ping_reply rc=0' in pos['stdout']
             and pos['stdout'].rstrip().endswith('complete') and not out['positive_fd_bad']
             and all(out['positive_oracle'].values()))
         out['controls_after_positive']={n:read(cg/n) for n in ('memory.max','pids.max','cgroup.subtree_control')}

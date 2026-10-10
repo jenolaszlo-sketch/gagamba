@@ -288,9 +288,9 @@ int main(int argc, char **argv) {
                 long rc = sendto(s, q, ql, 0, (struct sockaddr *)&v4, sizeof v4); result("request", rc);
                 char b[512]; ssize_t n = recvfrom(s, b, sizeof b, 0, NULL, NULL); result("reply", n);
                 if (n >= 2) result("dns_id_match", (b[0] == (char)0xA9 && b[1] == (char)0x37) ? 0 : -1);
-                close(s);
-            }
+            close(s);
         }
+    }
         printf("== dns-tcp/direct ==\n");
         {
             int s = socket(AF_INET, SOCK_STREAM | SOCK_CLOEXEC, 0); result("socket", s);
@@ -439,6 +439,63 @@ int main(int argc, char **argv) {
                     && !memcmp(b + 8, echo + 8, sizeof echo - 8)) ? 0 : -1);
             }
             close(s);
+        }
+    }
+    // Raw sockets via io_uring: SOCK_RAW creation needs CAP_NET_RAW (expected
+    // EPERM in both modes: documented symmetry); unprivileged ping echo must
+    // complete in the positive control via the same path the candidate uses.
+    printf("== raw/uring ==\n");
+    if (!ur_ready && ur_setup() < 0) puts("raw uring unavailable");
+    else {
+        struct io_uring_sqe s;
+        memset(&s, 0, sizeof s);
+        s.opcode = IORING_OP_SOCKET; s.fd = AF_INET; s.len = IPPROTO_ICMP; s.off = SOCK_RAW;
+        if (ur_submit(&s) == 0) {
+            int fd = ur_wait(); result("uring_raw_socket", fd);
+            if (fd >= 0) close(fd);
+        }
+        memset(&s, 0, sizeof s);
+        s.opcode = IORING_OP_SOCKET; s.fd = AF_INET; s.len = IPPROTO_ICMP; s.off = SOCK_DGRAM;
+        if (ur_submit(&s) == 0) {
+            int fd = ur_wait(); result("uring_ping_socket", fd);
+            if (fd >= 0) {
+                struct timeval tv = {2, 0};
+                setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof tv);
+                struct sockaddr_in dst; memset(&dst, 0, sizeof dst);
+                dst.sin_family = AF_INET; dst.sin_addr.s_addr = htonl(0x7f000001);
+                memset(&s, 0, sizeof s);
+                s.opcode = IORING_OP_CONNECT; s.fd = fd;
+                s.addr = (uint64_t)(uintptr_t)&dst; s.off = sizeof dst;
+                if (ur_submit(&s) == 0) {
+                    long cr = ur_wait(); result("uring_ping_connect", cr);
+                    if (cr == 0) {
+                        uint8_t echo[40]; memset(echo, 0, sizeof echo);
+                        echo[0] = 8; echo[8] = 0; echo[9] = 1;
+                        echo[6] = getpid() >> 8; echo[7] = getpid() & 0xff;
+                        uint16_t c = cksum_be(echo, sizeof echo);
+                        echo[2] = c >> 8; echo[3] = c & 0xff;
+                        char rbuf[128];
+                        memset(&s, 0, sizeof s);
+                        s.opcode = IORING_OP_SEND; s.fd = fd;
+                        s.addr = (uint64_t)(uintptr_t)echo; s.len = sizeof echo;
+                        if (ur_submit(&s) == 0) {
+                            long wr = ur_wait(); result("uring_ping_send", wr);
+                            if (wr >= 0) {
+                                memset(&s, 0, sizeof s);
+                                s.opcode = IORING_OP_RECV; s.fd = fd;
+                                s.addr = (uint64_t)(uintptr_t)rbuf; s.len = sizeof rbuf;
+                                if (ur_submit(&s) == 0) {
+                                    long rr = ur_wait(); result("uring_ping_recv", rr);
+                                    if (rr >= 8) result("uring_ping_reply",
+                                        (rbuf[0] == 0 && rr == (long)sizeof echo &&
+                                         !memcmp(rbuf + 8, echo + 8, sizeof echo - 8)) ? 0 : -1);
+                                }
+                            }
+                        }
+                    }
+                }
+                close(fd);
+            }
         }
     }
     // Endpoint 4: namespace-local loopback inspection + netlink.
