@@ -393,7 +393,7 @@ def observer(a):
             except Exception as e:data['cleanup_error']=repr(e)
         if not outer.exists():
             if root.exists():
-                for name in ('input','worker','crash-marker'):
+                for name in ('input','worker','crash-marker','dotnetscratch'):
                     q=root/name
                     if q.exists() or q.is_symlink():q.unlink()
                 try:root.rmdir()
