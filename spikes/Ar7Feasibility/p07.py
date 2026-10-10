@@ -2220,6 +2220,22 @@ def run_r2(a, kind, pos_case='r2gate_pos', dead_case='r2gate_dead'):
             data['pre_decision_output'] = pre_lines
             data['marker'] = marker
             if marker is None:
+                # Drain whatever the manager left (nonblocking: a live silent
+                # fixture process may still hold the pipe) so a missed marker
+                # still preserves the manager's RESULT for diagnosis.
+                try:
+                    os.set_blocking(m.stdout.fileno(), False)
+                    try:
+                        rest = m.stdout.read() or ''
+                    except Exception:
+                        rest = ''
+                    if rest:
+                        data['manager_output_tail'] = rest[-3000:]
+                        res = [json.loads(l[7:]) for l in rest.splitlines() if l.startswith('RESULT ')]
+                        if res:
+                            data['manager_result'] = res[0]
+                except Exception as e:
+                    data['drain_error'] = repr(e)
                 m.kill(); m.wait()
                 data['verdict'] = 'INCONCLUSIVE (gate marker never arrived)'
             else:
