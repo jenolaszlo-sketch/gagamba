@@ -1602,15 +1602,15 @@ def run_r1(a):
                         break
                     time.sleep(.1)
                 data['outer_empty'] = 'populated 0' in read(outer / 'cgroup.events')
-                known = {'manager', 'target', 'positive'}
+                known = {'manager', 'target', 'positive', 'sibling'}
                 for parent in (outer / 'delegated', outer):
                     if parent.exists():
                         for q in sorted(parent.iterdir()):
                             if q.is_dir() and q.name in known:
                                 try:
                                     q.rmdir()
-                                except OSError:
-                                    pass
+                                except OSError as e:
+                                    data.setdefault('removal_errors', []).append(q.name + ': ' + repr(e))
                         try:
                             parent.rmdir()
                         except OSError:
@@ -1809,7 +1809,9 @@ def run_live(a, kind):
                             break
                         time.sleep(.1)
                     data['cleanup_events'] = read(outer / 'cgroup.events')
-                    known = {'manager', 'target', 'positive'}
+                    # The manager creates the sibling leaf itself (P02 pattern);
+                    # it must be in the known set or the parent rmdir fails.
+                    known = {'manager', 'target', 'positive', 'sibling'}
                     for parent in (cg, outer):
                         if parent.exists():
                             for name in sorted(known):
@@ -1817,8 +1819,8 @@ def run_live(a, kind):
                                 if q.exists():
                                     try:
                                         q.rmdir()
-                                    except OSError:
-                                        pass
+                                    except OSError as e:
+                                        data.setdefault('cleanup_errors', []).append(name + ': ' + repr(e))
                     for q in (cg, outer):
                         if q.exists():
                             try:
