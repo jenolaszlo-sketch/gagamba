@@ -692,7 +692,7 @@ def is_in_ns_desc(t):
 
 def leaf_pids(cg, outer_frag, exclude=()):
     """Every fixture-domain process across the four leaves (for stray scans).
-    Callers exclude themselves."""
+    Callers exclude themselves. Includes starttime + state for liveness."""
     found = []
     for leaf in ('manager', 'target', 'sibling', 'positive'):
         lp = cg / leaf
@@ -704,12 +704,52 @@ def leaf_pids(cg, outer_frag, exclude=()):
             try:
                 member = pathlib.Path('/proc/%s/cgroup' % pid).read_text()
                 cmd = pathlib.Path('/proc/%s/cmdline' % pid).read_bytes().replace(b'\0', b' ').decode(errors='replace')
+                st = pathlib.Path('/proc/%s/status' % pid).read_text()
             except OSError:
                 continue
             if outer_frag not in member:
                 continue
-            found.append({'pid': int(pid), 'leaf': leaf, 'cmdline': cmd[:120]})
+            state = None
+            for line in st.splitlines():
+                if line.startswith('State:'):
+                    state = line.split(':', 1)[1].strip()
+            found.append({'pid': int(pid), 'leaf': leaf, 'cmdline': cmd[:120],
+                          'starttime': starttime_of(int(pid)), 'state': state})
     return sorted(found, key=lambda d: d['pid'])
+
+def spawn_release(ctx, mode, N, outer_frag):
+    """Shared release leg for the live-stop cases: spawn + READY + unique
+    NSpid resolution + GO. Returns (Popen, record). Caller owns fault/wait."""
+    argv = (ctx.common + ['--seccomp', str(ctx.secc()), '--', '/target', mode, str(ctx.cg),
+                          str(ctx.root), ctx.nonce, '/input', str(N)])
+    p = subprocess.Popen(argv, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                         close_fds=True, pass_fds=(ctx.seccomp_fd,),
+                         preexec_fn=lambda: ctx.enter_target(None))
+    ready = b''
+    while b'READY' not in ready:
+        chunk = p.stdout.readline()
+        if not chunk:
+            break
+        ready += chunk
+    ident = {}
+    for line in ready.decode(errors='replace').splitlines():
+        if line.startswith('identity '):
+            for kv in line.split()[1:]:
+                k, _, v = kv.partition('=')
+                ident[k] = v
+    resolved = resolve_ns_root(outer_frag) if ident.get('pid', '').isdecimal() else []
+    rec = {'ready_seen': b'READY' in ready, 'announced_identity': ident,
+           'ns_resolution': resolved, 'bwrap_host_pid': p.pid}
+    if len(resolved) != 1:
+        p.kill(); p.wait()
+        rec['leg'] = 'INCONCLUSIVE (live-stop root unresolvable)'
+        return None, rec
+    try:
+        p.stdin.write(b'G'); p.stdin.flush()
+    except OSError:
+        pass
+    rec['state'] = 'RELEASED-OWNED'
+    return p, rec
 
 def do_positives_r(ctx, outer_frag):
     rec = {'legs': []}
@@ -975,6 +1015,98 @@ def do_r6stale(ctx, outer_frag):
                   if ok else 'BLOCKED (identity guard misbehaved)')
     return rec
 
+def do_r3live(ctx, outer_frag):
+    # Streaming R3 releaser: release root + descendant, prove the descendant
+    # alive twice, announce ALIVE, then BLOCK on stdin for the runner's
+    # PROCEED (the runner kills the domain while this manager lives).
+    p, rec = spawn_release(ctx, 'holdchild', 30, outer_frag)
+    if p is None:
+        return rec
+    time.sleep(1.0)
+    snap1 = scan_leaf_targets(outer_frag)
+    time.sleep(1.0)
+    snap2 = scan_leaf_targets(outer_frag)
+    d1 = [t for t in snap1 if is_in_ns_desc(t)]
+    d2 = [t for t in snap2 if is_in_ns_desc(t)]
+    alive = [t for t in d2 if t['state'] and t['state'][0] in 'RSD'
+             and any(o['pid'] == t['pid'] and o['starttime'] == t['starttime'] for o in d1)]
+    rec['descendants_alive_twice'] = alive
+    if not alive:
+        p.kill(); p.wait()
+        rec['leg'] = 'INCONCLUSIVE (no live descendant provable)'
+        return rec
+    evt({'live': 'ALIVE', 'descendant': alive[0], 'root': rec['ns_resolution'][0]})
+    try:
+        proceed = sys.stdin.read(1)
+    except OSError as e:
+        rec['proceed_error'] = repr(e); proceed = ''
+    rec['proceed'] = proceed
+    try:
+        stdout, stderr = p.communicate(timeout=20)
+        rec['candidate'] = dict(rc=p.returncode, stdout_tail=stdout.decode(errors='replace')[-1500:],
+                                timeout=False)
+    except subprocess.TimeoutExpired:
+        p.kill(); stdout, stderr = p.communicate()
+        rec['candidate'] = dict(rc=p.returncode, timeout=True)
+    empty, dt = wait_empty(ctx.cg / 'target', 10.0)
+    rec['domain_empty'] = empty; rec['empty_after_s'] = dt
+    if empty and not rec['candidate'].get('timeout'):
+        rec['leg'] = 'SUPPORTED-leg (live descendant stopped by runner domain kill; see runner audit)'
+    elif not empty:
+        rec['leg'] = 'BLOCKED (target domain survived the runner domain stop)'
+    else:
+        rec['leg'] = 'INCONCLUSIVE (R3 live completion unmet)'
+    return rec
+
+def do_r4live(ctx, outer_frag):
+    # Streaming R4 releaser: release the trickle spawner, prove active
+    # spawning, announce, then BLOCK for PROCEED mid-spawn.
+    p, rec = spawn_release(ctx, 'trickle', 30, outer_frag)
+    if p is None:
+        return rec
+    spawned = 0
+    for _ in range(300):
+        line = p.stdout.readline()
+        if not line:
+            break
+        if line.startswith(b'spawned '):
+            try:
+                spawned = int(line.split()[1])
+            except ValueError:
+                pass
+            if spawned >= 8:
+                break
+    snap = scan_leaf_targets(outer_frag)
+    desc = [t for t in snap if is_in_ns_desc(t) and t['state'] and t['state'][0] in 'RSD']
+    rec['streamed_spawned_count'] = spawned
+    rec['leaf_live_descendants'] = desc
+    if spawned < 8 or len(desc) < 8:
+        p.kill(); p.wait()
+        rec['leg'] = 'INCONCLUSIVE (spawn progress unprovable)'
+        return rec
+    evt({'live': 'SPAWNING', 'spawned': spawned, 'sample_descendant': desc[0]})
+    try:
+        proceed = sys.stdin.read(1)
+    except OSError as e:
+        rec['proceed_error'] = repr(e); proceed = ''
+    rec['proceed'] = proceed
+    try:
+        stdout, stderr = p.communicate(timeout=25)
+        rec['candidate'] = dict(rc=p.returncode, stdout_tail=stdout.decode(errors='replace')[-1500:],
+                                timeout=False)
+    except subprocess.TimeoutExpired:
+        p.kill(); stdout, stderr = p.communicate()
+        rec['candidate'] = dict(rc=p.returncode, timeout=True)
+    empty, dt = wait_empty(ctx.cg / 'target', 10.0)
+    rec['domain_empty'] = empty; rec['empty_after_s'] = dt
+    if empty and not rec['candidate'].get('timeout'):
+        rec['leg'] = 'SUPPORTED-leg (mid-spawn domain stopped by runner kill; see runner audit)'
+    elif not empty:
+        rec['leg'] = 'BLOCKED (target domain survived the runner mid-spawn stop)'
+    else:
+        rec['leg'] = 'INCONCLUSIVE (R4 live completion unmet)'
+    return rec
+
 CASES = {
     'positives': do_positives,
     'c1': do_c1, 'c2': do_c2, 'c3': do_c3, 'c4': do_c4, 'c5': do_c5,
@@ -988,6 +1120,7 @@ CASES = {
     'r1worker': do_r1worker, 'r2deadline': do_r2deadline,
     'r3a': do_r3a, 'r3b': do_r3b, 'r4a': do_r4a, 'r4b': do_r4b,
     'r5phase': do_r5phase, 'r6stale': do_r6stale,
+    'r3live': do_r3live, 'r4live': do_r4live,
 }
 SUITE = ['positives', 'c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10',
          'cancel_det', 'cancel_race', 'bat_daemon', 'bat_fork', 'bat_reexec', 'bat_interfere', 'c11']
@@ -1523,6 +1656,198 @@ def run_r1(a):
     print(json.dumps(data, indent=2))
     return 0 if data.get('verdict', '').startswith('SUPPORTED') else 2
 
+def run_live(a, kind):
+    """R3/R4 streaming runner (root): own domain; manager stays alive across
+    the stop. Marker (ALIVE/SPAWNING) -> FRESH pre-kill liveness proof ->
+    target-leaf kill -> PROCEED -> RESULT -> teardown. The kill lands on a
+    domain whose members were just proven live — no cascade ambiguity."""
+    assert os.getuid() == 0
+    case = 'r3live' if kind == 'r3' else 'r4live'
+    marker_key = 'ALIVE' if kind == 'r3' else 'SPAWNING'
+    nonce = uuid.uuid4().hex
+    root = pathlib.Path('/tmp') / ('gagamba-ar7-P07-' + nonce)
+    outer = pathlib.Path('/sys/fs/cgroup') / ('gagamba-ar7-P07-' + nonce)
+    cg = outer / 'delegated'
+    outer_frag = str(outer).removeprefix('/sys/fs/cgroup')
+    data = {'leg': 'live-' + kind, 'source_sha': a.source_sha, 'nonce': nonce,
+            'date_utc': time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime()),
+            'host': {'kernel': os.uname().release, 'arch': os.uname().machine},
+            'helper_sha256': sha('/usr/bin/bwrap'),
+            'helper_mode': oct(os.stat('/usr/bin/bwrap').st_mode & 0o7777),
+            'source_hashes': {p.name: sha(p) for p in list(pathlib.Path(__file__).parent.glob('p07.*'))},
+            'paths': {'root': str(root), 'outer': str(outer)}, 'observer_uid': 0}
+    if data['helper_sha256'] != PIN or os.stat('/usr/bin/bwrap').st_mode & 0o6000:
+        data['verdict'] = 'INCONCLUSIVE (helper pin changed)'
+    else:
+        m = None
+        try:
+            root.mkdir(mode=0o755)
+            comp = run(['/usr/bin/gcc', '-static', '-O2', '-Wall', '-Wextra', '-o',
+                        str(root / 'worker'), str(pathlib.Path(__file__).with_suffix('.c'))])
+            data['compile'] = comp
+            if comp['rc']:
+                raise RuntimeError('compile failed before release')
+            data['worker_sha256'] = sha(root / 'worker')
+            (root / 'input').write_text(nonce); os.chmod(root / 'input', 0o444)
+            outer.mkdir(); write(outer / 'memory.max', 268435456); write(outer / 'pids.max', 64)
+            write(outer / 'memory.swap.max', 0); write(outer / 'cgroup.subtree_control', '+memory +pids')
+            cg.mkdir(); write(cg / 'memory.max', 268435456); write(cg / 'pids.max', 64)
+            write(cg / 'cgroup.subtree_control', '+memory +pids'); leaf_own(cg)
+            for name in ('manager', 'target', 'positive'):
+                (cg / name).mkdir(); leaf_own(cg / name)
+            write(cg / 'target/memory.max', 134217728); write(cg / 'target/pids.max', 48)
+            os.chown(root, UID, UID)
+            data['filter_note'] = 'frozen P02/P03/P04 bytes; manager builds its own memfd (manager-owned)'
+
+            def drop():
+                write(cg / 'manager/cgroup.procs', os.getpid()); os.setgroups([]); os.setgid(UID); os.setuid(UID)
+                bounds(fsize=False)
+            cmd = [sys.executable, __file__, '--manager', '--case', case, '--root', str(root),
+                   '--cg', str(cg), '--nonce', nonce, '--outer-frag', outer_frag]
+            m = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE, text=True, bufsize=1,
+                                 preexec_fn=drop, close_fds=True)
+            data['manager_pid'] = m.pid
+            marker = None; deadline = time.monotonic() + 90.0
+            while time.monotonic() < deadline:
+                line = m.stdout.readline()
+                if not line:
+                    break
+                if line.startswith('EVT '):
+                    try:
+                        obj = json.loads(line[4:])
+                    except ValueError:
+                        continue
+                    if obj.get('live') == marker_key:
+                        marker = obj
+                        break
+            data['marker'] = marker
+            if marker is None:
+                m.kill(); m.wait()
+                data['verdict'] = 'INCONCLUSIVE (live marker never arrived)'
+            else:
+                # FRESH pre-kill liveness: re-read every claimed member NOW.
+                proof = {'manager_alive': False, 'members': []}
+                try:
+                    mst = pathlib.Path('/proc/%d/status' % m.pid).read_text()
+                    proof['manager_alive'] = 'State:' in mst
+                except OSError:
+                    pass
+                if kind == 'r3':
+                    want = [marker['descendant']['pid']]
+                    for pid in want:
+                        r = revalidate_pid(pid, outer_frag, 'target', '/target')
+                        live = (r is not None and r['starttime'] == marker['descendant']['starttime'])
+                        if r is not None:
+                            try:
+                                state = [l for l in pathlib.Path('/proc/%d/status' % pid).read_text().splitlines()
+                                         if l.startswith('State:')][0].split(':', 1)[1].strip()
+                            except (OSError, IndexError):
+                                state = None
+                        else:
+                            state = None
+                        proof['members'].append({'pid': pid, 'live': bool(live and state and state[0] in 'RSD'),
+                                                 'state': state})
+                    proof['root_present'] = len(resolve_ns_root(outer_frag)) == 1
+                    fresh = proof['manager_alive'] and all(x['live'] for x in proof['members']) and proof['root_present']
+                else:
+                    s1 = leaf_pids(cg, outer_frag)
+                    time.sleep(0.3)
+                    s2 = leaf_pids(cg, outer_frag)
+                    n1 = len([e for e in s1 if e['leaf'] == 'target'])
+                    n2 = len([e for e in s2 if e['leaf'] == 'target'])
+                    live2 = [e for e in s2 if e['leaf'] == 'target' and e['state'] and e['state'][0] in 'RSD']
+                    proof['growth'] = {'before': n1, 'after': n2}
+                    proof['live_target_members'] = [(e['pid'], e['state']) for e in live2]
+                    fresh = proof['manager_alive'] and n2 >= n1 and n2 >= 8 and len(live2) >= 8
+                data['fresh_proof'] = proof
+                if not fresh:
+                    m.kill(); m.wait()
+                    data['verdict'] = 'INCONCLUSIVE (pre-kill liveness unprovable)'
+                else:
+                    write(cg / 'target/cgroup.kill', 1)
+                    data['stop_issued'] = 'target/cgroup.kill by root runner on proven-live domain'
+                    empty, dt = wait_empty(cg / 'target', 10.0)
+                    data['domain_empty'] = empty; data['empty_after_s'] = dt
+                    mgr_leaf = read(cg / 'manager/cgroup.procs')
+                    data['manager_survived_stop'] = str(m.pid) in mgr_leaf.split()
+                    strays = [e for e in leaf_pids(cg, outer_frag, exclude=(m.pid,))]
+                    data['strays_after'] = strays
+                    try:
+                        m.stdin.write('P'); m.stdin.flush()
+                    except OSError as e:
+                        data['proceed_error'] = repr(e)
+                    try:
+                        out, err = m.communicate(timeout=60)
+                        data['manager_rc'] = m.returncode
+                        res = [json.loads(l[7:]) for l in out.splitlines() if l.startswith('RESULT ')]
+                        data['manager_result'] = res[0] if res else None
+                    except subprocess.TimeoutExpired:
+                        m.kill(); m.communicate()
+                        data['manager_watchdog'] = True
+                    ok = (empty and not strays and data['manager_survived_stop']
+                          and (data.get('manager_result') or {}).get('record', {}).get('domain_empty'))
+                    data['verdict'] = ('SUPPORTED-leg (proven-live domain stopped via owned kill; '
+                                       'manager survived; empty; no strays)' if ok
+                                       else 'INCONCLUSIVE (live-stop completion unmet: empty=%r strays=%r)' % (empty, strays))
+        except Exception as e:
+            data['setup_error'] = repr(e)
+        finally:
+            try:
+                if outer.exists():
+                    try:
+                        write(outer / 'cgroup.kill', 1)
+                    except OSError:
+                        pass
+                    if m is not None:
+                        try:
+                            m.wait(timeout=5)
+                        except Exception:
+                            pass
+                    for _ in range(30):
+                        if 'populated 0' in read(outer / 'cgroup.events'):
+                            break
+                        time.sleep(.1)
+                    data['cleanup_events'] = read(outer / 'cgroup.events')
+                    known = {'manager', 'target', 'positive'}
+                    for parent in (cg, outer):
+                        if parent.exists():
+                            for name in sorted(known):
+                                q = parent / name
+                                if q.exists():
+                                    try:
+                                        q.rmdir()
+                                    except OSError:
+                                        pass
+                    for q in (cg, outer):
+                        if q.exists():
+                            try:
+                                q.rmdir()
+                            except OSError as e:
+                                data['cleanup_error'] = repr(e)
+            except Exception as e:
+                data['cleanup_error'] = repr(e)
+            if not outer.exists() and root.exists():
+                for name in ('input', 'worker', 'phase-r5'):
+                    q = root / name
+                    if q.exists() or q.is_symlink():
+                        try:
+                            q.unlink()
+                        except OSError:
+                            pass
+                try:
+                    root.rmdir()
+                except OSError as e:
+                    data['cleanup_error'] = repr(e)
+            data['cleanup_absence'] = {'outer': not outer.exists(), 'workspace': not root.exists(),
+                                       'manager': m is None or m.poll() is not None}
+            data['cleanup_confirmed'] = all(data['cleanup_absence'].values()) and not data.get('cleanup_error')
+    dest = pathlib.Path(a.output); dest.mkdir(parents=True, exist_ok=True)
+    (dest / ('live-' + kind + '-' + nonce + '.json')).write_text(json.dumps(data, indent=2))
+    if not a.quiet:
+        print(json.dumps(data, indent=2))
+    return 0 if data.get('verdict', '').startswith('SUPPORTED') and data.get('cleanup_confirmed') else 2
+
 def r5_wrapper(a):
     """R5 observer loss at a proven phase (root). The manager persists a
     nonce phase file only after IT observes target execution; the wrapper
@@ -1629,6 +1954,8 @@ if __name__ == '__main__':
     ap.add_argument('--observer-only-c11', action='store_true')
     ap.add_argument('--provisioner', action='store_true')
     ap.add_argument('--r1', action='store_true')
+    ap.add_argument('--live-runner', action='store_true')
+    ap.add_argument('--kind')
     ap.add_argument('--r5-wrapper', action='store_true')
     ap.add_argument('--observer-only-r5', action='store_true')
     ap.add_argument('--variant'); ap.add_argument('--outer')
@@ -1648,6 +1975,8 @@ if __name__ == '__main__':
         provisioner(args)
     elif args.r1:
         sys.exit(run_r1(args))
+    elif args.live_runner:
+        sys.exit(run_live(args, args.kind))
     elif args.r5_wrapper:
         sys.exit(r5_wrapper(args))
     elif args.observer_only_r5:
