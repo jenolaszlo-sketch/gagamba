@@ -431,9 +431,12 @@ int main(int argc, char **argv) {
             result("ping_send", rc);
             char b[128]; ssize_t n = recvfrom(s, b, sizeof b, 0, NULL, NULL);
             result("ping_recv", n);
-            if (n >= 20 + 8) {
-                uint8_t *ip = (uint8_t *)b + ((b[0] & 0x0f) * 4);
-                result("ping_echo_reply", (ip[0] == 0 && !memcmp(ip + 4, echo + 4, 4)) ? 0 : -1);
+            if (n >= 8) {
+                // Ping sockets carry no IP header here and the kernel may
+                // rewrite identifier/sequence, so validate type + length +
+                // data payload only.
+                result("ping_echo_reply", (b[0] == 0 && n == (ssize_t)sizeof echo
+                    && !memcmp(b + 8, echo + 8, sizeof echo - 8)) ? 0 : -1);
             }
             close(s);
         }
@@ -529,7 +532,10 @@ int main(int argc, char **argv) {
         f = open("/proc/self/ns/net", O_RDONLY | O_CLOEXEC); result("self_net_reference", f);
         if (f >= 0) { result("setns_self", setns(f, 0)); close(f); }
     }
-    // Descriptor inventory: only prepared stdio may appear.
+    // Descriptor inventory: only prepared stdio may appear. The io_uring
+    // setup FD is closed first: it is harness scaffolding, not target
+    // authority, and must not pollute the inherited-descriptor check.
+    if (ur_ready) { close(UR); ur_ready = 0; }
     {
         DIR *d = opendir("/proc/self/fd");
         if (d) {
