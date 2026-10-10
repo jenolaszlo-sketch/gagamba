@@ -1,0 +1,17 @@
+{
+  "495ac440a3a441ed83992b9c25e8fb44": {
+    "workspace_absent": true,
+    "cgroup_absent": true,
+    "unix_nonce_absent": true
+  },
+  "90146f20d9244ef493a718742860b050": {
+    "workspace_absent": true,
+    "cgroup_absent": true,
+    "unix_nonce_absent": true
+  },
+  "f614e368bab845f68bdcccc453a656d6": {
+    "workspace_absent": true,
+    "cgroup_absent": true,
+    "unix_nonce_absent": true
+  }
+}

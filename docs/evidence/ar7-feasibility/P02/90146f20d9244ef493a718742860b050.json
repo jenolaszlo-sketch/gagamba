@@ -1,0 +1,242 @@
+{
+  "probe": "P02",
+  "source_sha": "c3a67eb0da3096ddbc277232f3ed7d7c29560a05",
+  "nonce": "90146f20d9244ef493a718742860b050",
+  "date_utc": "2026-10-10T00:04:15Z",
+  "host": {
+    "kernel": "6.6.114.1-microsoft-standard-WSL2",
+    "arch": "x86_64",
+    "distribution": "PRETTY_NAME=\"Ubuntu 26.04.1 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"26.04\"\nVERSION=\"26.04.1 LTS (Resolute Raccoon)\"\nVERSION_CODENAME=resolute\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=resolute\nLOGO=ubuntu-logo",
+    "glibc": "glibc 2.43",
+    "lsm": "UNKNOWN: [Errno 2] No such file or directory: '/sys/kernel/security/lsm'",
+    "yama": "1",
+    "userns_max": "30743",
+    "cgroup_mount": "none /usr/lib/modules/6.6.114.1-microsoft-standard-WSL2 overlay rw,nosuid,nodev,noatime,lowerdir=/modules,upperdir=/lib/modules/6.6.114.1-microsoft-standard-WSL2/rw/upper,workdir=/lib/modules/6.6.114.1-microsoft-standard-WSL2/rw/work,uuid=on 0 0\nnone /mnt/wsl tmpfs rw,relatime 0 0\ndrivers /usr/lib/wsl/drivers 9p ro,nosuid,nodev,noatime,aname=drivers;fmask=222;dmask=222,cache=5,access=client,msize=65536,trans=fd,rfd=8,wfd=8 0 0\n/dev/sdf / ext4 rw,relatime,discard,errors=remount-ro,data=ordered 0 0\nnone /mnt/wslg tmpfs rw,relatime 0 0\n/dev/sdf /mnt/wslg/distro ext4 ro,relatime,discard,errors=remount-ro,data=ordered 0 0\nnone /usr/lib/wsl/lib overlay rw,nosuid,nodev,noatime,lowerdir=/gpu_lib_packaged:/gpu_lib_inbox,upperdir=/gpu_lib/rw/upper,workdir=/gpu_lib/rw/work,uuid=on 0 0\nrootfs /init rootfs ro,size=3935116k,nr_inodes=983779 0 0\nnone /dev devtmpfs rw,nosuid,relatime,size=3935116k,nr_inodes=983779,mode=755 0 0\nsysfs /sys sysfs rw,nosuid,nodev,noexec,noatime 0 0\nproc /proc proc rw,nosuid,nodev,noexec,noatime 0 0\ndevpts /dev/pts devpts rw,nosuid,noexec,noatime,gid=5,mode=620,ptmxmode=000 0 0\nnone /run tmpfs rw,nosuid,nodev,mode=755 0 0\nnone /run/lock tmpfs rw,nosuid,nodev,noexec,noatime 0 0\nnone /run/shm tmpfs rw,nosuid,nodev,noatime 0 0\nnone /dev/shm tmpfs rw,nosuid,nodev,noatime 0 0\nnone /run/user tmpfs rw,nosuid,nodev,noexec,noatime,mode=755 0 0\nbinfmt_misc /proc/sys/fs/binfmt_misc binfmt_misc rw,relatime 0 0\ncgroup2 /sys/fs/cgroup cgroup2 rw,nosuid,nodev,noexec,relatime,nsdelegate 0 0\nnone /mnt/wslg/versions.txt overlay rw,relatime,lowerdir=/systemvhd,upperdir=/system/rw/upper,workdir=/system/rw/work,uuid=on 0 0\nnone /mnt/wslg/doc overlay rw,relatime,lowerdir=/systemvhd,upperdir=/system/rw/upper,workdir=/system/rw/work,uuid=on 0 0\nnone /tmp/.X11-unix tmpfs ro,relatime 0 0\nC:\\134 /mnt/c 9p rw,noatime,aname=drvfs;path=C:\\;uid=0;gid=0;symlinkroot=/mnt/,cache=5,access=client,msize=65536,trans=fd,rfd=6,wfd=6 0 0\nD:\\134 /mnt/d 9p rw,noatime,aname=drvfs;path=D:\\;uid=0;gid=0;symlinkroot=/mnt/,cache=5,access=client,msize=65536,trans=fd,rfd=6,wfd=6 0 0\nnone /run/user tmpfs rw,relatime 0 0\nnone /run/credentials/systemd-journald.service tmpfs ro,nosuid,nodev,noexec,relatime,nosymfollow,size=1024k,nr_inodes=1024,mode=700,noswap 0 0\nmqueue /dev/mqueue mqueue rw,nosuid,nodev,noexec,relatime 0 0\ntracefs /sys/kernel/tracing tracefs rw,nosuid,nodev,noexec,relatime 0 0\nhugetlbfs /dev/hugepages hugetlbfs rw,nosuid,nodev,relatime,pagesize=2M 0 0\ntmpfs /tmp tmpfs rw,nosuid,nodev,nr_inodes=1048576 0 0\ndebugfs /sys/kernel/debug debugfs rw,nosuid,nodev,noexec,relatime 0 0\nconfigfs /sys/kernel/config configfs rw,nosuid,nodev,noexec,relatime 0 0\nfusectl /sys/fs/fuse/connections fusectl rw,nosuid,nodev,noexec,relatime 0 0\nnone /run/credentials/systemd-resolved.service tmpfs ro,nosuid,nodev,noexec,relatime,nosymfollow,size=1024k,nr_inodes=1024,mode=700,noswap 0 0\nnone /tmp/.X11-unix tmpfs ro,relatime 0 0\nnone /run/credentials/getty@tty1.service tmpfs ro,nosuid,nodev,noexec,relatime,nosymfollow,size=1024k,nr_inodes=1024,mode=700,noswap 0 0\ntmpfs /run/user/0 tmpfs rw,nosuid,nodev,relatime,size=788024k,nr_inodes=197006,mode=700 0 0\ntmpfs /mnt/wslg/run/user/0 tmpfs rw,nosuid,nodev,relatime,size=788024k,nr_inodes=197006,mode=700 0 0",
+    "helper": {
+      "argv": [
+        "/usr/bin/bwrap",
+        "--version"
+      ],
+      "rc": 0,
+      "stdout": "bubblewrap 0.11.1\n",
+      "stderr": ""
+    },
+    "helper_sha256": "523da3e7399044be5163aee6f57a77a6bef7454376e28f0a0627920bae1b76b6",
+    "helper_mode": "0o755"
+  },
+  "paths": {
+    "root": "/tmp/gagamba-ar7-P02-90146f20d9244ef493a718742860b050",
+    "outer": "/sys/fs/cgroup/gagamba-ar7-P02-90146f20d9244ef493a718742860b050",
+    "delegated": "/sys/fs/cgroup/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/delegated"
+  },
+  "observer_uid": 0,
+  "source_hashes": {
+    "p02.c": "9f0deb23b223189c8c13e0df73527953d8b5d54d8f1759fed82b8449a343b0d0",
+    "p02.py": "321e83d867e69920827aa1316069e424ba3e4307fea6c5fd067e85099f0323da"
+  },
+  "compile": {
+    "argv": [
+      "/usr/bin/gcc",
+      "-static",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-o",
+      "/tmp/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/worker",
+      "/mnt/c/Users/Laszlos/source/repos/Solo/ar7-feasibility-worktree/spikes/Ar7Feasibility/p02.c"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "worker_sha256": "fe7dccb3ee9e70e60eebc6c4771e3ed4e1d373fa70cc9f491192fea519c753b6",
+  "manager_pid": 1023534,
+  "external_process_samples": {
+    "1023534": {
+      "cgroup": "0::/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/delegated/manager",
+      "status": "Name:\tpython3\nUmask:\t0022\nState:\tR (running)\nTgid:\t1023534\nNgid:\t0\nPid:\t1023534\nPPid:\t1023524\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1023534\nNSpid:\t1023534\nNSpgid:\t1023524\nNSsid:\t1023524\nKthread:\t0\nVmPeak:\t   18252 kB\nVmSize:\t   18080 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t   11260 kB\nVmRSS:\t   11260 kB\nRssAnon:\t    4588 kB\nRssFile:\t    6672 kB\nRssShmem:\t       0 kB\nVmData:\t    7008 kB\nVmStk:\t     140 kB\nVmExe:\t    3608 kB\nVmLib:\t    2668 kB\nVmPTE:\t      68 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000001001000\nSigCgt:\t0000000000000002\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t113\nnonvoluntary_ctxt_switches:\t1",
+      "command": "/usr/bin/python3\u0000/mnt/c/Users/Laszlos/source/repos/Solo/ar7-feasibility-worktree/spikes/Ar7Feasibility/p02.py\u0000--manager\u0000--root\u0000/tmp/gagamba-ar7-P02-90146f20d9244ef493a718742860b050\u0000--cg\u0000/sys/fs/cgroup/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/delegated\u0000--nonce\u000090146f20d9244ef493a718742860b050\u0000"
+    },
+    "1023537": {
+      "cgroup": "0::/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/delegated/sibling",
+      "status": "Name:\tworker\nUmask:\t0022\nState:\tS (sleeping)\nTgid:\t1023537\nNgid:\t0\nPid:\t1023537\nPPid:\t1023534\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1023537\nNSpid:\t1023537\nNSpgid:\t1023524\nNSsid:\t1023524\nKthread:\t0\nVmPeak:\t    1060 kB\nVmSize:\t    1060 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t     780 kB\nVmRSS:\t     780 kB\nRssAnon:\t      56 kB\nRssFile:\t       4 kB\nRssShmem:\t     720 kB\nVmData:\t     168 kB\nVmStk:\t     140 kB\nVmExe:\t     552 kB\nVmLib:\t       8 kB\nVmPTE:\t      28 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000000000000\nSigCgt:\t0000000000000000\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t1\nnonvoluntary_ctxt_switches:\t0",
+      "command": "/tmp/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/worker\u0000hold\u0000"
+    },
+    "1023540": {
+      "cgroup": "0::/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/delegated/sibling",
+      "status": "Name:\tworker\nUmask:\t0022\nState:\tS (sleeping)\nTgid:\t1023540\nNgid:\t0\nPid:\t1023540\nPPid:\t1023534\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1023540\nNSpid:\t1023540\nNSpgid:\t1023524\nNSsid:\t1023524\nKthread:\t0\nVmPeak:\t    1060 kB\nVmSize:\t    1060 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t     780 kB\nVmRSS:\t     780 kB\nRssAnon:\t      56 kB\nRssFile:\t       4 kB\nRssShmem:\t     720 kB\nVmData:\t     168 kB\nVmStk:\t     140 kB\nVmExe:\t     552 kB\nVmLib:\t       8 kB\nVmPTE:\t      32 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000000000000\nSigCgt:\t0000000000000000\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t2\nnonvoluntary_ctxt_switches:\t0",
+      "command": "/tmp/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/worker\u0000positive\u0000/sys/fs/cgroup/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/delegated\u00001023534\u00001023537\u0000/tmp/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/daemon.sock\u0000ar7-P02-90146f20d9244ef493a718742860b050\u000090146f20d9244ef493a718742860b050\u0000/tmp/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/input\u00000x4b60d0\u00007\u0000"
+    },
+    "1023541": {
+      "cgroup": "0::/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/delegated/sibling",
+      "status": "Name:\tworker\nUmask:\t0022\nState:\tS (sleeping)\nTgid:\t1023541\nNgid:\t0\nPid:\t1023541\nPPid:\t1023540\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1023541\nNSpid:\t1023541\nNSpgid:\t1023524\nNSsid:\t1023524\nKthread:\t0\nVmPeak:\t    1060 kB\nVmSize:\t    1060 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t     572 kB\nVmRSS:\t     572 kB\nRssAnon:\t      56 kB\nRssFile:\t       0 kB\nRssShmem:\t     516 kB\nVmData:\t     168 kB\nVmStk:\t     140 kB\nVmExe:\t     552 kB\nVmLib:\t       8 kB\nVmPTE:\t      32 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000000000000\nSigCgt:\t0000000000000000\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t1\nnonvoluntary_ctxt_switches:\t0",
+      "command": "/tmp/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/worker\u0000positive\u0000/sys/fs/cgroup/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/delegated\u00001023534\u00001023537\u0000/tmp/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/daemon.sock\u0000ar7-P02-90146f20d9244ef493a718742860b050\u000090146f20d9244ef493a718742860b050\u0000/tmp/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/input\u00000x4b60d0\u00007\u0000"
+    },
+    "1023548": {
+      "cgroup": "0::/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/delegated/target",
+      "status": "Name:\tpython3\nUmask:\t0022\nState:\tR (running)\nTgid:\t1023548\nNgid:\t0\nPid:\t1023548\nPPid:\t1023534\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1023548\nNSpid:\t1023548\nNSpgid:\t1023524\nNSsid:\t1023524\nKthread:\t0\nVmPeak:\t   31668 kB\nVmSize:\t   31668 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t   15484 kB\nVmRSS:\t   15484 kB\nRssAnon:\t   11060 kB\nRssFile:\t    4424 kB\nRssShmem:\t       0 kB\nVmData:\t   12828 kB\nVmStk:\t     140 kB\nVmExe:\t    3608 kB\nVmLib:\t    7480 kB\nVmPTE:\t      92 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000000000000\nSigCgt:\t0000000000000002\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t1\nnonvoluntary_ctxt_switches:\t0",
+      "command": "/usr/bin/python3\u0000/mnt/c/Users/Laszlos/source/repos/Solo/ar7-feasibility-worktree/spikes/Ar7Feasibility/p02.py\u0000--manager\u0000--root\u0000/tmp/gagamba-ar7-P02-90146f20d9244ef493a718742860b050\u0000--cg\u0000/sys/fs/cgroup/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/delegated\u0000--nonce\u000090146f20d9244ef493a718742860b050\u0000"
+    },
+    "1023549": {
+      "cgroup": "0::/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/delegated/target",
+      "status": "Name:\tbwrap\nUmask:\t0022\nState:\tS (sleeping)\nTgid:\t1023549\nNgid:\t0\nPid:\t1023549\nPPid:\t1023548\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1023549\t1\nNSpid:\t1023549\t1\nNSpgid:\t1023549\t1\nNSsid:\t1023549\t1\nKthread:\t0\nVmPeak:\t    3768 kB\nVmSize:\t    3768 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t    1388 kB\nVmRSS:\t    1388 kB\nRssAnon:\t     176 kB\nRssFile:\t    1212 kB\nRssShmem:\t       0 kB\nVmData:\t     240 kB\nVmStk:\t     140 kB\nVmExe:\t      40 kB\nVmLib:\t    2480 kB\nVmPTE:\t      44 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000010000\nSigIgn:\t0000000000000000\nSigCgt:\t0000000000000000\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t0000000000000000\nCapAmb:\t0000000000000000\nNoNewPrivs:\t1\nSeccomp:\t2\nSeccomp_filters:\t1\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t4\nnonvoluntary_ctxt_switches:\t2",
+      "command": "/usr/bin/bwrap\u0000--unshare-user\u0000--unshare-pid\u0000--unshare-net\u0000--unshare-ipc\u0000--unshare-uts\u0000--uid\u00000\u0000--gid\u00000\u0000--disable-userns\u0000--assert-userns-disabled\u0000--cap-drop\u0000ALL\u0000--die-with-parent\u0000--new-session\u0000--clearenv\u0000--ro-bind\u0000/tmp/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/worker\u0000/target\u0000--ro-bind\u0000/tmp/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/input\u0000/input\u0000--proc\u0000/proc\u0000--dev\u0000/dev\u0000--size\u00008388608\u0000--tmpfs\u0000/tmp\u0000--dir\u0000/sys\u0000--dir\u0000/run\u0000--chdir\u0000/tmp\u0000--seccomp\u00008\u0000--\u0000/target\u0000candidate\u0000/sys/fs/cgroup/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/delegated\u00001023534\u00001023537\u0000/tmp/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/daemon.sock\u0000ar7-P02-90146f20d9244ef493a718742860b050\u000090146f20d9244ef493a718742860b050\u0000/tmp/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/input\u00000x4b60d0\u00007\u0000"
+    },
+    "1023550": {
+      "cgroup": "0::/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/delegated/target",
+      "status": "Name:\ttarget\nUmask:\t0022\nState:\tS (sleeping)\nTgid:\t1023550\nNgid:\t0\nPid:\t1023550\nPPid:\t1023549\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1023550\t2\nNSpid:\t1023550\t2\nNSpgid:\t1023549\t1\nNSsid:\t1023549\t1\nKthread:\t0\nVmPeak:\t    1052 kB\nVmSize:\t    1052 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t     776 kB\nVmRSS:\t     776 kB\nRssAnon:\t      52 kB\nRssFile:\t       4 kB\nRssShmem:\t     720 kB\nVmData:\t     168 kB\nVmStk:\t     132 kB\nVmExe:\t     552 kB\nVmLib:\t       8 kB\nVmPTE:\t      28 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000000000000\nSigCgt:\t0000000000000000\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t0000000000000000\nCapAmb:\t0000000000000000\nNoNewPrivs:\t1\nSeccomp:\t2\nSeccomp_filters:\t1\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t1\nnonvoluntary_ctxt_switches:\t0",
+      "command": "/target\u0000candidate\u0000/sys/fs/cgroup/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/delegated\u00001023534\u00001023537\u0000/tmp/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/daemon.sock\u0000ar7-P02-90146f20d9244ef493a718742860b050\u000090146f20d9244ef493a718742860b050\u0000/tmp/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/input\u00000x4b60d0\u00007\u0000"
+    },
+    "1023551": {
+      "cgroup": "0::/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/delegated/target",
+      "status": "Name:\ttarget\nUmask:\t0022\nState:\tS (sleeping)\nTgid:\t1023551\nNgid:\t0\nPid:\t1023551\nPPid:\t1023550\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1023551\t3\nNSpid:\t1023551\t3\nNSpgid:\t1023549\t1\nNSsid:\t1023549\t1\nKthread:\t0\nVmPeak:\t    1052 kB\nVmSize:\t    1052 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t     568 kB\nVmRSS:\t     568 kB\nRssAnon:\t      52 kB\nRssFile:\t       0 kB\nRssShmem:\t     516 kB\nVmData:\t     168 kB\nVmStk:\t     132 kB\nVmExe:\t     552 kB\nVmLib:\t       8 kB\nVmPTE:\t      28 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000000000000\nSigCgt:\t0000000000000000\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t0000000000000000\nCapAmb:\t0000000000000000\nNoNewPrivs:\t1\nSeccomp:\t2\nSeccomp_filters:\t1\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t1\nnonvoluntary_ctxt_switches:\t0",
+      "command": "/target\u0000candidate\u0000/sys/fs/cgroup/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/delegated\u00001023534\u00001023537\u0000/tmp/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/daemon.sock\u0000ar7-P02-90146f20d9244ef493a718742860b050\u000090146f20d9244ef493a718742860b050\u0000/tmp/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/input\u00000x4b60d0\u00007\u0000"
+    }
+  },
+  "manager_rc": 0,
+  "manager_stderr": "",
+  "manager": {
+    "uid": 65534,
+    "gid": 65534,
+    "status": "Name:\tpython3\nUmask:\t0022\nState:\tR (running)\nTgid:\t1023534\nNgid:\t0\nPid:\t1023534\nPPid:\t1023524\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1023534\nNSpid:\t1023534\nNSpgid:\t1023524\nNSsid:\t1023524\nKthread:\t0\nVmPeak:\t   31284 kB\nVmSize:\t   31284 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t   22892 kB\nVmRSS:\t   22892 kB\nRssAnon:\t   11020 kB\nRssFile:\t   11872 kB\nRssShmem:\t       0 kB\nVmData:\t   12444 kB\nVmStk:\t     140 kB\nVmExe:\t    3608 kB\nVmLib:\t    7480 kB\nVmPTE:\t      96 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000001001000\nSigCgt:\t0000000000000002\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t789\nnonvoluntary_ctxt_switches:\t2",
+    "cgroup": "0::/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/delegated/manager",
+    "sibling_create": true,
+    "manager_limits": {
+      "memory.max": "67108864",
+      "pids.max": "16",
+      "cgroup.procs": ""
+    },
+    "control_pid": 1023537,
+    "control_membership": "0::/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/delegated/sibling",
+    "positive": {
+      "argv": [
+        "/tmp/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/worker",
+        "positive",
+        "/sys/fs/cgroup/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/delegated",
+        "1023534",
+        "1023537",
+        "/tmp/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/daemon.sock",
+        "ar7-P02-90146f20d9244ef493a718742860b050",
+        "90146f20d9244ef493a718742860b050",
+        "/tmp/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/input",
+        "0x4b60d0",
+        "7"
+      ],
+      "rc": 0,
+      "stdout": "identity uid=65534 gid=65534 pid=1023540 nnp=0\ninput rc=3 errno=0\ninput_read rc=32 errno=0\ncgroup.procs rc=3 errno=0\nwrite rc=7 errno=0\nfinite_fork rc=1023541 errno=0\nfinite_fork rc=0 errno=0\ncgroup.procs rc=3 errno=0\nwrite rc=7 errno=0\nmemory.max rc=3 errno=0\nwrite rc=8 errno=0\npids.max rc=3 errno=0\nwrite rc=2 errno=0\nmemory.max rc=3 errno=0\nwrite rc=9 errno=0\npids.max rc=3 errno=0\nwrite rc=2 errno=0\ncgroup.subtree_control rc=3 errno=0\nwrite rc=13 errno=0\nmkdir_cgroup rc=0 errno=0\ninspect_manager_cgroup rc=3 errno=0\nmanager_proc rc=3 errno=0\nmanager_fd rc=3 errno=0\nptrace_control rc=0 errno=0\nprocess_vm_readv rc=1 errno=0\npidfd_open rc=3 errno=0\npidfd_getfd rc=4 errno=0\nsignal_control_probe_zero rc=0 errno=0\nhost_namespace_reference rc=3 errno=0\nsetns rc=-1 errno=1\nfd 0 pipe:[7852911]\nfd 1 pipe:[7852926]\nfd 2 pipe:[7852927]\nfd 3 /proc/1023540/fd\nfd 4 pipe:[7852922]\npathname_socket rc=3 errno=0\nconnect rc=0 errno=0\nrequest rc=32 errno=0\nabstract_socket rc=3 errno=0\nconnect rc=0 errno=0\nrequest rc=32 errno=0\ncomplete\n",
+      "stderr": ""
+    },
+    "endpoint_requests_positive": [
+      {
+        "endpoint": 0,
+        "peer": [
+          1023540,
+          65534,
+          65534
+        ],
+        "request": "90146f20d9244ef493a718742860b050",
+        "time": 1791590658.665697
+      },
+      {
+        "endpoint": 1,
+        "peer": [
+          1023540,
+          65534,
+          65534
+        ],
+        "request": "90146f20d9244ef493a718742860b050",
+        "time": 1791590658.6658676
+      }
+    ],
+    "controls_after_positive": {
+      "memory.max": "134217728",
+      "pids.max": "48",
+      "cgroup.subtree_control": "memory pids"
+    },
+    "positive_gate": true,
+    "filter_sha256": "30bfaf6b62030de8b105e1ac8de43f2a9884b2bd5de20e98aef81dce426c1aad",
+    "candidate": {
+      "argv": [
+        "/usr/bin/bwrap",
+        "--unshare-user",
+        "--unshare-pid",
+        "--unshare-net",
+        "--unshare-ipc",
+        "--unshare-uts",
+        "--uid",
+        "0",
+        "--gid",
+        "0",
+        "--disable-userns",
+        "--assert-userns-disabled",
+        "--cap-drop",
+        "ALL",
+        "--die-with-parent",
+        "--new-session",
+        "--clearenv",
+        "--ro-bind",
+        "/tmp/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/worker",
+        "/target",
+        "--ro-bind",
+        "/tmp/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/input",
+        "/input",
+        "--proc",
+        "/proc",
+        "--dev",
+        "/dev",
+        "--size",
+        "8388608",
+        "--tmpfs",
+        "/tmp",
+        "--dir",
+        "/sys",
+        "--dir",
+        "/run",
+        "--chdir",
+        "/tmp",
+        "--seccomp",
+        "8",
+        "--",
+        "/target",
+        "candidate",
+        "/sys/fs/cgroup/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/delegated",
+        "1023534",
+        "1023537",
+        "/tmp/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/daemon.sock",
+        "ar7-P02-90146f20d9244ef493a718742860b050",
+        "90146f20d9244ef493a718742860b050",
+        "/tmp/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/input",
+        "0x4b60d0",
+        "7"
+      ],
+      "rc": 0,
+      "stdout": "identity uid=0 gid=0 pid=2 nnp=1\ninput rc=3 errno=0\ninput_read rc=32 errno=0\nscratch rc=3 errno=0\nscratch_write rc=32 errno=0\ncgroup.procs rc=-1 errno=2\nfinite_fork rc=3 errno=0\ncgroup.procs rc=-1 errno=2\nfinite_fork rc=0 errno=0\nmemory.max rc=-1 errno=2\npids.max rc=-1 errno=2\nmemory.max rc=-1 errno=2\npids.max rc=-1 errno=2\ncgroup.subtree_control rc=-1 errno=2\nmkdir_cgroup rc=-1 errno=2\ninspect_manager_cgroup rc=-1 errno=2\nmanager_proc rc=-1 errno=2\nmanager_fd rc=-1 errno=2\nptrace_control rc=-1 errno=1\nprocess_vm_readv rc=-1 errno=1\npidfd_open rc=-1 errno=1\nsignal_control_probe_zero rc=-1 errno=3\nhost_namespace_reference rc=-1 errno=2\nsetns_invalid_fd rc=-1 errno=1\nunshare_user rc=-1 errno=1\nunshare_mount rc=-1 errno=1\nnamespace_clone rc=-1 errno=1\ntime_namespace_clone rc=-1 errno=1\nclone3_namespace rc=-1 errno=38\nmount_cgroup rc=-1 errno=1\nmount_proc rc=-1 errno=1\nfd 0 pipe:[7852911]\nfd 1 pipe:[7852939]\nfd 2 pipe:[7852940]\nfd 3 /proc/2/fd\npathname_socket rc=-1 errno=1\nabstract_socket rc=-1 errno=1\ncomplete\n",
+      "stderr": ""
+    },
+    "endpoint_requests_candidate": [],
+    "controls_after_candidate": {
+      "memory.max": "134217728",
+      "pids.max": "48",
+      "cgroup.subtree_control": "memory pids",
+      "sibling/memory.max": "67108864",
+      "sibling/pids.max": "16"
+    },
+    "target_domain_after": "populated 0\nfrozen 0",
+    "manager_final_cgroup": "0::/gagamba-ar7-P02-90146f20d9244ef493a718742860b050/delegated/manager"
+  },
+  "observer_domains": {
+    ".": "",
+    "delegated": "",
+    "delegated/target": "",
+    "delegated/manager": "",
+    "delegated/new-positive": "",
+    "delegated/sibling": ""
+  },
+  "cleanup_events": "populated 0\nfrozen 0",
+  "cleanup_absence": {
+    "outer": true,
+    "workspace": true,
+    "manager": true
+  },
+  "cleanup_confirmed": true
+}
