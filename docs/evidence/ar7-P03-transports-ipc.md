@@ -99,10 +99,10 @@ nonces' workspaces/cgroups/endpoint names absent. Watchdog never fired.
 
 ## Review, consequence, and non-claims
 
-Independent review: pending / not performed in this session. No independent
-reviewer (another model or human in a separate session) has yet covered this
-run; that absence is recorded here rather than treated as qualification or
-approval. The follow-up discipline from P02 (review-driven variants,
+Independent review: pending. No independent reviewer — another model or a
+human in a separate session; Luna is one possible reviewer but qualification
+does not depend on any particular model — has yet covered this run; that
+absence is recorded here rather than treated as qualification or approval. The follow-up discipline from P02 (review-driven variants,
 exact-source binding) was applied by construction. Independent review is a
 quality gate before final architectural acceptance, not a blocker for
 designing the next probe. Checklist for the future reviewer (all artifacts
