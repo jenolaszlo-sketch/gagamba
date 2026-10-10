@@ -1,0 +1,14 @@
+{
+  "nonce": "2bb5adb292294908bc0f75ea20b7bf07",
+  "observer_killed": true,
+  "observer_rc": -9,
+  "manifest": "{\"nonce\": \"2bb5adb292294908bc0f75ea20b7bf07\", \"entries\": []}",
+  "outer_empty": true,
+  "outer_gone": true,
+  "workspace_gone": true,
+  "verdict": "SUPPORTED-leg (observer death survived by manifest audit; states stayed Unknown, never inferred)",
+  "transcript_tail": [
+    "NONCE 2bb5adb292294908bc0f75ea20b7bf07\n",
+    "release_observed=True"
+  ]
+}

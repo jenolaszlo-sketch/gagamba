@@ -1,0 +1,12 @@
+{
+  "70cf6e33690c4bd1b24ebec4824d2b08": {
+    "workspace_absent": true,
+    "cgroup_absent": true,
+    "host_shm_clean": true
+  },
+  "2bb5adb292294908bc0f75ea20b7bf07": {
+    "workspace_absent": true,
+    "cgroup_absent": true,
+    "observer_killed_by_wrapper": true
+  }
+}
