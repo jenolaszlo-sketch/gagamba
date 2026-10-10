@@ -125,6 +125,35 @@ def validate_pid(pid, outer_frag, expect_cmd=('bwrap', '/target', 'worker')):
         return None
     return {'pid': pid, 'cgroup_frag_ok': True, 'starttime': starttime_of(pid), 'cmdline': cmd[:200]}
 
+def resolve_ns_root(outer_frag, leaf_frag='delegated/target', ns_pid='2', cmd_frag='/target'):
+    """Resolve an announced namespace PID to its host PID: scan host /proc
+    for the process whose NSpid innermost value matches, cgroup is inside
+    the fixture leaf, and cmdline matches. The announced PID itself is a
+    namespace-local value and must never be addressed on the host."""
+    found = []
+    for entry in os.listdir('/proc'):
+        if not entry.isdecimal():
+            continue
+        pid = int(entry)
+        try:
+            st = pathlib.Path('/proc/%d/status' % pid).read_text()
+            cg = pathlib.Path('/proc/%d/cgroup' % pid).read_text()
+            cmd = pathlib.Path('/proc/%d/cmdline' % pid).read_bytes().replace(b'\0', b' ').decode(errors='replace')
+        except OSError:
+            continue
+        nspid = None
+        for line in st.splitlines():
+            if line.startswith('NSpid:'):
+                nspid = line.split()[-1]
+        if nspid != ns_pid:
+            continue
+        if outer_frag not in cg or leaf_frag not in cg:
+            continue
+        if cmd_frag not in cmd:
+            continue
+        found.append({'pid': pid, 'starttime': starttime_of(pid), 'cmdline': cmd[:160]})
+    return sorted(found, key=lambda d: d['pid'])
+
 def scan_bwrap_in_leaf(outer_frag, leaf_frag):
     """Enumerate host PIDs whose cgroup is inside the fixture leaf and whose
     cmdline is bwrap. Used once per fault case to find the ns-init process
@@ -164,13 +193,19 @@ def launch_hold_for_fault(ctx, mode, N, outer_frag):
             for kv in line.split()[1:]:
                 k, _, v = kv.partition('=')
                 ident[k] = v
-    validated = validate_pid(int(ident['pid']), outer_frag, expect_cmd=('worker', '/target')) if ident.get('pid', '').isdecimal() else None
-    if ready and validated:
+    rec = {'ready_seen': 'READY' in ready, 'announced_identity': ident}
+    # Validation is NSpid resolution to a unique host PID; the announced
+    # value is namespace-local and is never addressed on the host.
+    resolved = resolve_ns_root(outer_frag) if ident.get('pid', '').isdecimal() else []
+    rec['ns_resolution'] = resolved
+    validated = resolved[0] if len(resolved) == 1 else None
+    rec['external_validation'] = validated
+    if validated is not None:
         try:
             p.stdin.write(b'G'); p.stdin.flush()
         except OSError:
             pass
-    return p, ready.decode(errors='replace'), ident, validated
+    return p, rec, validated
 
 class Ctx:
     def __init__(self, a):
@@ -231,9 +266,11 @@ def spawn_worker(ctx, mode, N, outer_frag, go=True, timeout=20, flag=None, stdin
                 k, _, v = kv.partition('=')
                 ident[k] = v
     rec['announced_identity'] = ident
-    validated = None
-    if ident.get('pid', '').isdecimal():
-        validated = validate_pid(int(ident['pid']), outer_frag)
+    # Namespace-local PIDs are resolved to host PIDs via NSpid; exactly one
+    # match is required, else the release is unvalidated (never guessed).
+    resolved = resolve_ns_root(outer_frag) if ident.get('pid', '').isdecimal() else []
+    validated = resolved[0] if len(resolved) == 1 else None
+    rec['ns_resolution'] = resolved
     rec['external_validation'] = validated
     t_release = time.monotonic()
     rec['release_monotonic'] = t_release
@@ -255,16 +292,19 @@ def spawn_worker(ctx, mode, N, outer_frag, go=True, timeout=20, flag=None, stdin
         p.stdin.write(b'G' if stdin_go else b'X'); p.stdin.flush()
     except OSError as e:
         rec['go_error'] = repr(e)
+    t0 = time.monotonic()
     try:
         stdout, stderr = p.communicate(timeout=timeout)
         rec['candidate'] = dict(rc=p.returncode, out_len=len(stdout), err_len=len(stderr),
                                 stdout=stdout.decode(errors='replace')[:32768],
-                                stderr=stderr.decode(errors='replace')[:8192], timeout=False)
+                                stderr=stderr.decode(errors='replace')[:8192], timeout=False,
+                                elapsed_s=time.monotonic() - t0)
     except subprocess.TimeoutExpired:
         p.kill(); stdout, stderr = p.communicate()
         rec['candidate'] = dict(rc=p.returncode, out_len=len(stdout), err_len=len(stderr),
                                 stdout=stdout.decode(errors='replace')[:32768],
-                                stderr=stderr.decode(errors='replace')[:8192], timeout=True)
+                                stderr=stderr.decode(errors='replace')[:8192], timeout=True,
+                                elapsed_s=time.monotonic() - t0)
     return rec, p.pid
 
 def wait_empty(leaf, bound=15.0):
@@ -377,8 +417,7 @@ def do_c6(ctx, outer_frag):
     # Victim is a long-lived root (root-hold) so the ns-init is alive at
     # fault time. The ns-init is found by enumerating bwrap processes in the
     # target leaf: our known outer child plus exactly one more.
-    p, ready, ident, validated = launch_hold_for_fault(ctx, 'root-hold', 30, outer_frag)
-    rec = {'ready_seen': 'READY' in ready, 'announced_identity': ident, 'external_validation': validated}
+    p, rec, validated = launch_hold_for_fault(ctx, 'root-hold', 30, outer_frag)
     if not validated:
         p.kill(); p.wait()
         rec['leg'] = 'INCONCLUSIVE (no validated release to fault)'
@@ -424,13 +463,14 @@ def do_c7(ctx, outer_frag):
 def do_c8(ctx, outer_frag):
     rec, _ = spawn_worker(ctx, 'pipeholder', 5, outer_frag, timeout=25)
     cand = rec.get('candidate', {})
-    rec['holder_done'] = 'holder_done' in cand.get('stdout', '')
+    rec['holds_pipe'] = 'holds_pipe' in cand.get('stdout', '')
     rec['output_complete'] = 'complete' in cand.get('stdout', '')
     rec['exit_preserved'] = cand.get('rc') == 0
+    rec['held_at_least_4_5s'] = cand.get('elapsed_s', 0) >= 4.5
     empty, dt = wait_empty(ctx.cg / 'target', 10.0)
     rec['domain_empty'] = empty
-    rec['leg'] = ('SUPPORTED-leg' if rec['holder_done'] and rec['output_complete'] and rec['exit_preserved'] and empty
-                  else 'INCONCLUSIVE (C8 expectation unmet)')
+    rec['leg'] = ('SUPPORTED-leg' if rec['holds_pipe'] and rec['output_complete'] and rec['exit_preserved']
+                  and rec['held_at_least_4_5s'] and empty else 'INCONCLUSIVE (C8 expectation unmet)')
     return rec
 
 def do_c9(ctx, outer_frag):
@@ -455,15 +495,14 @@ def do_c10(ctx, outer_frag):
     # root PID is alive at fault time. Killing it must collapse the whole
     # chain by itself (ns-init waits the root); no domain kill is available
     # manager-side, and none is used.
-    p, ready, ident, validated = launch_hold_for_fault(ctx, 'root-hold', 30, outer_frag)
-    rec = {'ready_seen': 'READY' in ready, 'announced_identity': ident, 'target_validation': validated}
+    p, rec, validated = launch_hold_for_fault(ctx, 'root-hold', 30, outer_frag)
     if not validated:
         p.kill(); p.wait()
         rec['leg'] = 'INCONCLUSIVE (target root not validatable)'
         return rec
     time.sleep(0.5)
-    os.kill(int(ident['pid']), signal.SIGKILL)
-    evt({'case': 'c10', 'fault': 'SIGKILL validated target root %s' % ident['pid']})
+    os.kill(validated['pid'], signal.SIGKILL)
+    evt({'case': 'c10', 'fault': 'SIGKILL resolved target-root host-PID %d' % validated['pid']})
     try:
         stdout, stderr = p.communicate(timeout=15)
         rec['chain_collapsed'] = True

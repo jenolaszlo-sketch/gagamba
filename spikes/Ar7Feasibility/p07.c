@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
         pid_t c = fork(); result("fork", c);
         if (c == 0) { detach_stdout(); sleep((unsigned int)(N > 0 ? N : 1)); _exit(0); }
         printf("child %d sleep %ld\n", (int)c, N);
-        return 0; // root exits while child sleeps (C7 pattern)
+        goto trailer; // root exits while child sleeps (C7 pattern)
     } else if (!strcmp(mode, "root-hold")) {
         wait_go();
         printf("root_holding %ld\n", N);
@@ -73,7 +73,7 @@ int main(int argc, char **argv) {
         pid_t c = fork(); result("fork", c);
         if (c == 0) { sleep((unsigned int)(N > 0 ? N : 5)); printf("holder_done\n"); _exit(0); }
         printf("child %d holds_pipe %ld\n", (int)c, N);
-        return 0; // root exits; inherited stdout keeps manager draining (C8)
+        goto trailer; // root exits; inherited stdout keeps manager draining (C8)
     } else if (!strcmp(mode, "exit17")) {
         wait_go();
         return 17;
@@ -88,7 +88,7 @@ int main(int argc, char **argv) {
         }
         int st = 0; waitpid(c, &st, 0);
         printf("intermediate_reaped status=%d\n", st);
-        return 0;
+        goto trailer;
     } else if (!strcmp(mode, "forker")) {
         wait_go();
         long want = N > 0 ? N : 5;
@@ -104,7 +104,7 @@ int main(int argc, char **argv) {
         int st = 0; long reaped = 0;
         while (waitpid(-1, &st, 0) > 0) reaped++;
         printf("fork_reaped %ld\n", reaped);
-        return 0;
+        goto trailer;
     } else if (!strcmp(mode, "reexec")) {
         wait_go();
         printf("generation first exec_self\n");
@@ -114,7 +114,7 @@ int main(int argc, char **argv) {
         return 3;
     } else if (!strcmp(mode, "reexeced")) {
         printf("generation second running\n");
-        return 0;
+        goto trailer;
     } else if (!strcmp(mode, "interfere")) {
         wait_go();
         char path[1024];
@@ -128,22 +128,24 @@ int main(int argc, char **argv) {
         if (o >= 0) close(o);
         int ns = open("/proc/1/ns/pid", O_RDONLY | O_CLOEXEC); result("host_ns_open", ns);
         if (ns >= 0) { result("setns_host", setns(ns, CLONE_NEWPID)); close(ns); }
+        result("mkdir_mnt", mkdir("/tmp/mnt-p07", 0700));
         result("mount_tmpfs", mount("none", "/tmp/mnt-p07", "tmpfs", 0, ""));
         result("pdeathsig_set", prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0));
         int sig = 0; result("pdeathsig_get", prctl(PR_GET_PDEATHSIG, (unsigned long)&sig, 0, 0, 0));
         printf("pdeathsig_val %d\n", sig);
         result("pdeathsig_clear", prctl(PR_SET_PDEATHSIG, 0, 0, 0, 0));
-        return 0;
+        goto trailer;
     } else if (!strcmp(mode, "hang")) {
         sleep(30); // no READY by design: C9 setup-hang victim
         return 0;
     } else if (!strcmp(mode, "hold")) {
         printf("RELEASED\n"); // C4/C11 victim marker, no barrier by design
-        sleep(30);
-        return 0;
+        sleep(10); // stays under alarm(12): suite-mode C11 exits cleanly
+        goto trailer;
     } else { printf("unknown-mode\n"); return 2; }
 
     // Descriptor inventory: only prepared stdio may appear at case end.
+ trailer:
     {
         DIR *d = opendir("/proc/self/fd");
         if (d) {
