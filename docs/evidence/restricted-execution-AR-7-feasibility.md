@@ -42,7 +42,7 @@ Commits following the review start:
 | `c3a67eb0da3096ddbc277232f3ed7d7c29560a05` | Correct control-address shadowing; first executed P02 source |
 | `caadbee51d9e909b9aebfed5f6bce7581bcdab3d` | Follow-up P02 variants (init-FD, clone matrix, actual signal oracle); last executed probe source |
 | `0a3197f89552c9fcc81523240838dcdf022866c0` | Source-bound P02 observations and verified cleanup |
-| `c45dd75` (unexecuted gate) | Pre-release P01B token-composition gate committed; no target released under it |
+| P03 evidence checkpoint | Executed run `70edf2c2` at `229de9e`; setup observations `b70ec3f2`/`a0d51fae`/`522d7d8f` (no target released); raw observations `ar7-feasibility/P03/` + `independent-cleanup.json` |
 
 ## Probe disposition
 
@@ -51,19 +51,19 @@ Commits following the review start:
 | P01 | **BLOCKED BY THIS PROBE**; Windows 26200 x64, SDK 26100; non-elevated filtered administrator token; documented zero-capability LPAC + Job | Same unrestricted native program reached all eight brokers/read all seven sentinels. Candidate read input/wrote scratch, denied owner-only/AAP files, but read ARAP file and invoked global ARAP broker. External child PID 32372: outside candidate, inside outer Job, marker exists, exit 0. | **WINDOWS NATIVE PATH BLOCKED**, narrowly for this composition. [P01](ar7-P01-windows-lpac.md), [durable observations](ar7-feasibility/P01-observations.json) |
 | P01B construction gate | **INCONCLUSIVE, unsupported in this execution context**; same host/caller as P01 (26200 x64, medium integrity, elevation 0, session 1); full-restriction token + distinct package SID + narrow owned DACLs all established | Fixture-owned window-station creation denied (`ERROR_ACCESS_DENIED`) before Jobs/target/authority tests; one bounded SACL correction changed nothing (hypothesis falsified). No candidate ever ran: not a composition verdict. Windows native track ends; no P01C. [P01B](ar7-P01B-windows-restricting-sid.md), [raw observations](ar7-feasibility/P01B/) |
 | P02 | **SUPPORTED BY THIS PROBE**; Ubuntu 26.04.1 LTS on WSL2 (kernel 6.6.114.1, glibc 2.43), same host UID/GID 65534, pinned non-setuid Bubblewrap 0.11.1 + user/mount/PID/net/IPC/UTS namespaces + cap-drop ALL + cBPF filter, root-owned outer cgroup oracle | Gated same-UID positive control performed every permitted operation (cgroup create/write, ptrace, process-memory, pidfd, signal effect, both Unix endpoints with exact nonce). Restricted candidate did useful work (input read, scratch write, exit 0) while all tested control-plane interactions were denied (ENOENT/EPERM/ESRCH/ENOSYS), zero endpoint requests observed, limits unchanged, target domain empty after return. setns authorization stays INCONCLUSIVE. | Linux control-plane candidate survives for P03/P04/P07; harness frozen. Narrow scope only: no general sandbox claim. [P02](ar7-P02-linux-control-plane.md), [raw observations](ar7-feasibility/P02/) |
-| P03 | **NOT RUN** for all candidates | P01 is already a host-IPC counterexample, but no full transport matrix or surviving Linux candidate was established | Network authority pending; unaugmented Windows candidate does not advance. [P03](ar7-P03-transports-ipc.md) |
+| P03 | **SUPPORTED BY THIS PROBE**; same host/candidate as P02 (WSL2 Ubuntu 26.04, UID 65534, frozen bwrap composition + filter `30bfaf6b…`); 10 synthetic endpoints × direct + io_uring paths | Gated positive completed every exchange on both paths with matching oracle entries. Restricted candidate did useful work while all direct `socket()` calls died EPERM and every io_uring-built channel died at connect/send on namespace/capability barriers (refused/unreachable/ENOENT/EACCES); zero oracle requests, limits unchanged, domain empty. Prepared stdio stayed functional. | Linux transport candidate survives for P04/P07. Narrow scope only. [P03](ar7-P03-transports-ipc.md), [raw observations](ar7-feasibility/P03/) |
 | P04 | **NOT RUN** for all candidates | No quotas, all-writable-storage accounting or .NET budget controls exercised | Resource/storage viability pending; no silent 128 MiB budget increase. [P04](ar7-P04-resource-storage.md) |
 | P07 | **NOT RUN** for all topologies | P01 normal completion/Job association is not a crash/root-status test | Atomic release/crash/death-detection/root-versus-wrapper status pending. [P07](ar7-P07-crash-ownership.md) |
 
-## Interim checkpoint at early stop (updated 2026-10-10 for P02 only)
+## Interim checkpoint at early stop (updated 2026-10-10 for P02, P01B, P03)
 
-The planned checkpoint after P01 and P02 was not reached at the section-24 stop: section 24 stopped work earlier. That stop record is preserved above. Under the later post-P01 continuation decision, P02 ran independently: Windows unaugmented LPAC + Job stays **Blocked**; Linux control-plane is **Supported by this probe** within its narrow scope. P01B then ran once as the single permitted Windows composition: **Inconclusive** without a candidate (fixture-owned station creation denied in this execution context; one bounded correction spent; no P01C), so the Windows native track ends and Windows keeps refusing. No candidate was advanced to P03/P04 yet. No platform alternative was implemented.
+The planned checkpoint after P01 and P02 was not reached at the section-24 stop: section 24 stopped work earlier. That stop record is preserved above. Under the later post-P01 continuation decision, P02 ran independently: Windows unaugmented LPAC + Job stays **Blocked**; Linux control-plane is **Supported by this probe** within its narrow scope. P01B then ran once as the single permitted Windows composition: **Inconclusive** without a candidate (fixture-owned station creation denied in this execution context; one bounded correction spent; no P01C), so the Windows native track ends and Windows keeps refusing. P03 then ran for the surviving Linux candidate only: **Supported by this probe** within its narrow scope (all direct `socket()` EPERM; io_uring-built channels die on namespace/capability barriers; zero oracle requests; prepared stdio functional). No candidate was advanced to P04/P07 yet. No platform alternative was implemented.
 
-## Platform checkpoint 2026-10-10 (first architectural split)
+## Platform checkpoint 2026-10-10 (first architectural split; P03 recorded)
 
 | Candidate | Disposition | Next |
 | --- | --- | --- |
-| Linux rootless pinned helper/namespaces/cgroup | P02 survived (narrow) | P03/P04/P07 per spec |
+| Linux rootless pinned helper/namespaces/cgroup | P02+P03 survived (narrow) | P04/P07 per spec |
 | Windows unaugmented LPAC + Job | Blocked (P01) | Refusal; eliminated |
 | Windows restricting-SID + LPAC | Inconclusive, unsupported in this context (P01B); no candidate ran | Native track ends; no P01C; refusal stands |
 | Windows VM-backed | Pending (preferred fallback direction, not approved implementation) | Separate design decision |
@@ -74,7 +74,7 @@ The planned checkpoint after P01 and P02 was not reached at the section-24 stop:
 | Windows ordinary AppContainer + Job comparison | Observed pass | Observed fail | Pending | Observed fail | Pending | Pending | Pending | Observed fail |
 | Windows documented LPAC opt-out + Job | Observed pass* | Observed fail | Pending | Observed fail | Pending | Pending | Pending | Observed fail |
 | Windows stronger native composition or VM | Pending | Pending | Pending | Pending | Pending | Pending | Pending | P01B restricting-SID+LPAC ended INCONCLUSIVE without a candidate (fixture setup denied in this context; no P01C); VM pending |
-| Linux rootless pinned helper/namespaces/cgroup | Pending | Pending | Pending | Pending | Supported by P02 probe (narrow) | Pending | Pending | Candidate survives P02; P03/P04/P07 pending |
+| Linux rootless pinned helper/namespaces/cgroup | Pending | Pending | Supported by P03 probe (narrow; prepared stdio only) | Pending | Supported by P02 probe (narrow) | Pending | Pending | Candidate survives P02+P03; P04/P07 pending |
 | macOS restricted profile (proposed refusal-only; no candidate qualified) | Pending | Pending | Pending | Pending | Pending | Pending | Pending | Unsupported |
 
 *Identity means externally observed low-integrity, zero-capability AppContainer token plus successful documented opt-out creation and AAP behavioral distinction. Direct LPAC boolean query was unavailable. It does not prove a separately provisioned normal non-admin account. FS failure means ARAP read authority remained; tested owner-only file denial still succeeded. macOS property cells are Pending because no experiment occurred; Unsupported status means no qualified restricted candidate and proposed refusal, not measured OS inability.
@@ -101,6 +101,6 @@ Luna read-only reviewed the documented recipe, pre-release safety and final P01 
 
 Final Luna documentation challenge accepted the immediate-stop precedence and exact-source/not-run/cleanup records. Its two editorial findings were accepted: distinguish profile-ungranted authority from deliberately broad object ACLs, and leave untested macOS property cells Pending with explicit proposed-refusal status. No variant was identified that would reverse the scoped global ARAP request result. Source/binary/driver hashes, eight ordinary endpoint controls, external broker ownership, empty Jobs, relative evidence links and unchanged production/release paths were checked before the final documentation commit.
 
-**AR-7 FEASIBILITY UPDATE 2026-10-10 — P01 BLOCKS WINDOWS LPAC+JOB; P02 SUPPORTS LINUX CONTROL-PLANE NARROWLY; P01B INCONCLUSIVE WITHOUT CANDIDATE; CHECKPOINT REACHED, LINUX ONLY ADVANCES**
+**AR-7 FEASIBILITY UPDATE 2026-10-10 — P01 BLOCKS WINDOWS LPAC+JOB; P02+P03 SUPPORT LINUX CANDIDATE NARROWLY; P01B INCONCLUSIVE WITHOUT CANDIDATE; LINUX ONLY ADVANCES TO P04/P07**
 
 Prior stop line preserved: AR-7 FEASIBILITY PROBES BLOCKED - USER DECISION REQUIRED (2026-10-09; superseded for P02/P01B scheduling only by the post-P01 decision and user continuation, not for the P01 finding).
