@@ -42,6 +42,28 @@ dump). stdin/stdout nonce echo completed with stdio-only FDs. Manager limits
 unchanged. Every oracle entry matched; gate `true`; only then was the
 candidate released.
 
+### Coverage reconciliation: 12 design entries vs 10 listener oracles
+
+The design lists 12 entries; 10 have external listener responders (IPv4/IPv6
+TCP, UDP, DNS, proxy, metadata, pathname, abstract, agent, daemon). The other
+entries have no external listener by nature, each with its own positive
+control and gate condition rather than an oracle-log match:
+
+- Namespace-local loopback is self-inspection of the candidate's own net
+  context (`/proc/net/dev`, netlink `GETLINK` dump, bring-up attempt) —
+  there is no peer to log. Positive: host `lo` UP at index 1 through the
+  same code path.
+- The prepared/inherited channel is the in-band stdio nonce echo plus the
+  `/proc/self/fd` inventory — the "oracle" is the manager reading the reply
+  line directly and parsing fd targets (stdio-only required).
+- Raw-socket legs use kernel-generated replies (ICMP echo, errnos) rather
+  than a userspace responder.
+
+The positive gate required all of these markers alongside the 10 oracle
+matches, and the candidate log shows the same markers except where denial
+was the expected outcome. No designed entry went unexecuted; "10 oracle
+endpoints" was a counting shorthand, not a coverage gap. No rerun needed.
+
 ## Restricted results (candidate did useful work: input/scratch/echo, exit 0)
 
 | Endpoint | Direct path | io_uring path | Barrier that held |
@@ -80,7 +102,13 @@ nonces' workspaces/cgroups/endpoint names absent. Watchdog never fired.
 No Luna read-only challenge has yet covered this run; that review is pending
 and its absence is recorded here rather than treated as qualification. The
 follow-up discipline from P02 (review-driven variants, exact-source binding)
-was applied by construction.
+was applied by construction. Suggested review checklist (all artifacts cited
+above): positive-gate completeness for both syscall paths; io_uring field
+layout provenance (liburing-mapped, empirically verified pre-harness);
+barrier attribution per errno (filter vs namespace vs capability); phase-tag
+race audit in listener threads; abstract-socket netns scoping claim; EACCES
+ping-socket interpretation; cleanup independence; any variant that would
+reverse the zero-oracle-request result.
 
 This candidate survives P03 for P04/P07 on this host. It does not establish
 general Linux sandbox security, complete profile qualification, `.NET`/
