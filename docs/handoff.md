@@ -1,8 +1,10 @@
 # Gagamba handoff
 
-## Current action — resume independent AR-7 feasibility under the post-P01 decision
+## Current action — AR-7 P02 supported narrowly; P01B next, then checkpoint
 
-The [post-P01 architecture decision and exact Sol handoff](reviews/2026-10-09-ar7-post-p01-decision.md) eliminates unaugmented LPAC + Job, retains Windows refusal for the common restricted profile, and makes Linux P02 the next independent probe. One distinct Windows P01B full restricting-SID + LPAC composition is permitted as a bounded feasibility question, followed by P03/P04/P07 only on surviving candidates. VM-backed execution is the fallback direction, not approved implementation. No profile relaxation, production code, privileged service or new experiment was performed in the decision review. The prior global probe stop was observed; the new decision changes scheduling and gates, not the P01 evidence or frozen baseline.
+Update 2026-10-10: Linux P02 executed with a narrow **SUPPORTED BY THIS PROBE** outcome ([evidence](evidence/ar7-P02-linux-control-plane.md)); its harness is frozen. Branch ownership moved to this checkout after a clean-status check (Solo worktree retired, branch unaltered). Next is exactly one bounded Windows P01B full restricting-SID + LPAC run as specified, then the platform checkpoint; P03/P04/P07 follow only surviving candidates. No P01C.
+
+The [post-P01 architecture decision and exact Sol handoff](reviews/2026-10-09-ar7-post-p01-decision.md) eliminates unaugmented LPAC + Job, retains Windows refusal for the common restricted profile, and ordered P02 before P01B. One distinct Windows P01B full restricting-SID + LPAC composition is permitted as a bounded feasibility question, followed by P03/P04/P07 only on surviving candidates. VM-backed execution is the fallback direction, not approved implementation. No profile relaxation, production code, privileged service or new experiment was performed in the decision review. The prior global probe stop was observed; the new decision changes scheduling and gates, not the P01 evidence or frozen baseline.
 
 ## Prior action — AR-7 P01 blocked; mandatory probe stop observed
 
