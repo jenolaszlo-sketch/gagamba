@@ -1,0 +1,65 @@
+{
+  "leg": "r2-r2pos",
+  "source_sha": "e154c46",
+  "nonce": "a7d87c0b7a294a149131b54c76cf9c1c",
+  "date_utc": "2026-10-10T12:17:45Z",
+  "host": {
+    "kernel": "6.6.114.1-microsoft-standard-WSL2",
+    "arch": "x86_64"
+  },
+  "helper_sha256": "523da3e7399044be5163aee6f57a77a6bef7454376e28f0a0627920bae1b76b6",
+  "helper_mode": "0o755",
+  "source_hashes": {
+    "p07.c": "e805c033cd5e60e067c10cdcb3753391cc4bd338e83ac65a60322d0fb36ae230",
+    "p07.py": "2e0b8af319f773a34931ef525b773677a279fd185571db685a3af2b9c3dc402c"
+  },
+  "paths": {
+    "root": "/tmp/gagamba-ar7-P07-a7d87c0b7a294a149131b54c76cf9c1c",
+    "outer": "/sys/fs/cgroup/gagamba-ar7-P07-a7d87c0b7a294a149131b54c76cf9c1c"
+  },
+  "observer_uid": 0,
+  "compile": {
+    "argv": [
+      "/usr/bin/gcc",
+      "-static",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-o",
+      "/tmp/gagamba-ar7-P07-a7d87c0b7a294a149131b54c76cf9c1c/worker",
+      "/mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07.c"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "worker_sha256": "fc238fd1e8575bcce1d338a37dbe6947106e2e9ed482e96a75361bf48f6dbc40",
+  "gate_compile": {
+    "argv": [
+      "/usr/bin/gcc",
+      "-static",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-o",
+      "/tmp/gagamba-ar7-P07-a7d87c0b7a294a149131b54c76cf9c1c/gate",
+      "/mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07gate.c"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "gate_source": "/mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07gate.c",
+  "gate_sha256": "3924ca6a623f0e5872f09396c7d4bece6ae40b9f7a5ae2be6d12e678243fb4c0",
+  "filter_note": "frozen P02/P03/P04 bytes; manager builds its own memfd (manager-owned)",
+  "manager_pid": 1150217,
+  "setup_error": "Watchdog('global 240s watchdog fired; runner stack:   File \"/mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07.py\", line 2475, in <module>\\n    sys.exit(run_r2(args, args.kind, args.pos_case, args.dead_case))\\n  File \"/mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07.py\", line 2176, in run_r2\\n    line = m.stdout.readline()\\n')",
+  "cleanup_events": "populated 0\nfrozen 0",
+  "cleanup_error": "OSError(39, 'Directory not empty')",
+  "cleanup_absence": {
+    "outer": true,
+    "workspace": false,
+    "manager": true
+  },
+  "cleanup_confirmed": false
+}

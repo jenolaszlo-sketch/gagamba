@@ -96,5 +96,21 @@
     "covers": [
       "r2dead-gate-deadline"
     ]
+  },
+  "169dd00ba2714e97b92c7d44406fa64d": {
+    "workspace_absent": true,
+    "cgroup_absent": true,
+    "host_shm_clean": true,
+    "covers": [
+      "sgate-r2pos"
+    ]
+  },
+  "d1d52ed3047e487a971b27849ffde81a": {
+    "workspace_absent": true,
+    "cgroup_absent": true,
+    "host_shm_clean": true,
+    "covers": [
+      "sgate-r2dead"
+    ]
   }
 }

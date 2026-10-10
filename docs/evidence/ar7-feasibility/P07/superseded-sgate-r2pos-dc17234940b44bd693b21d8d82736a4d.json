@@ -1,0 +1,68 @@
+{
+  "leg": "r2-r2pos",
+  "source_sha": "c9f6c81",
+  "nonce": "dc17234940b44bd693b21d8d82736a4d",
+  "date_utc": "2026-10-10T12:26:05Z",
+  "host": {
+    "kernel": "6.6.114.1-microsoft-standard-WSL2",
+    "arch": "x86_64"
+  },
+  "helper_sha256": "523da3e7399044be5163aee6f57a77a6bef7454376e28f0a0627920bae1b76b6",
+  "helper_mode": "0o755",
+  "source_hashes": {
+    "p07.c": "e805c033cd5e60e067c10cdcb3753391cc4bd338e83ac65a60322d0fb36ae230",
+    "p07.py": "2fd20f7e3f737e11f8d4aad9c27f2eff55283403e5d702aa3fb1cc58d7f73d18"
+  },
+  "paths": {
+    "root": "/tmp/gagamba-ar7-P07-dc17234940b44bd693b21d8d82736a4d",
+    "outer": "/sys/fs/cgroup/gagamba-ar7-P07-dc17234940b44bd693b21d8d82736a4d"
+  },
+  "observer_uid": 0,
+  "compile": {
+    "argv": [
+      "/usr/bin/gcc",
+      "-static",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-o",
+      "/tmp/gagamba-ar7-P07-dc17234940b44bd693b21d8d82736a4d/worker",
+      "/mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07.c"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "worker_sha256": "fc238fd1e8575bcce1d338a37dbe6947106e2e9ed482e96a75361bf48f6dbc40",
+  "gate_compile": {
+    "argv": [
+      "/usr/bin/gcc",
+      "-static",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-o",
+      "/tmp/gagamba-ar7-P07-dc17234940b44bd693b21d8d82736a4d/gate",
+      "/mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07gate.c"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "gate_source": "/mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07gate.c",
+  "gate_sha256": "3924ca6a623f0e5872f09396c7d4bece6ae40b9f7a5ae2be6d12e678243fb4c0",
+  "filter_note": "frozen P02/P03/P04 bytes; manager builds its own memfd (manager-owned)",
+  "manager_pid": 1151885,
+  "pre_decision_output": [
+    "EVT {\"r2sgate\": \"GATE-READY\", \"positive\": true, \"gate\": {\"pid\": 1151890, \"starttime\": \"152578811\", \"cmdline\": \"/gate dc17234940b44bd693b21d8d82736a4d /sys/fs/cgroup/gagamba-ar7-P07-dc17234940b44bd693b21d8d82736a4d/delegated /tmp/gagamba-ar7-P07-dc17234940b44bd693b21d8d82\"}}\n"
+  ],
+  "marker": null,
+  "verdict": "INCONCLUSIVE (gate marker never arrived)",
+  "cleanup_events": "populated 0\nfrozen 0",
+  "cleanup_absence": {
+    "outer": true,
+    "workspace": true,
+    "manager": true
+  },
+  "cleanup_confirmed": true
+}

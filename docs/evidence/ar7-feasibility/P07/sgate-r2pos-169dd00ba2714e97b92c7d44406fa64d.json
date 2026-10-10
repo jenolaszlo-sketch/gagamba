@@ -1,0 +1,191 @@
+{
+  "leg": "r2-r2pos",
+  "source_sha": "5315211",
+  "nonce": "169dd00ba2714e97b92c7d44406fa64d",
+  "date_utc": "2026-10-10T12:36:50Z",
+  "host": {
+    "kernel": "6.6.114.1-microsoft-standard-WSL2",
+    "arch": "x86_64"
+  },
+  "helper_sha256": "523da3e7399044be5163aee6f57a77a6bef7454376e28f0a0627920bae1b76b6",
+  "helper_mode": "0o755",
+  "source_hashes": {
+    "p07.c": "e805c033cd5e60e067c10cdcb3753391cc4bd338e83ac65a60322d0fb36ae230",
+    "p07.py": "d05de42d8a55a7250c1f4c5a93cbde1a5f156ccbe38a9cd27d27ece72dfa694d"
+  },
+  "paths": {
+    "root": "/tmp/gagamba-ar7-P07-169dd00ba2714e97b92c7d44406fa64d",
+    "outer": "/sys/fs/cgroup/gagamba-ar7-P07-169dd00ba2714e97b92c7d44406fa64d"
+  },
+  "observer_uid": 0,
+  "compile": {
+    "argv": [
+      "/usr/bin/gcc",
+      "-static",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-o",
+      "/tmp/gagamba-ar7-P07-169dd00ba2714e97b92c7d44406fa64d/worker",
+      "/mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07.c"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "worker_sha256": "fc238fd1e8575bcce1d338a37dbe6947106e2e9ed482e96a75361bf48f6dbc40",
+  "gate_compile": {
+    "argv": [
+      "/usr/bin/gcc",
+      "-static",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-o",
+      "/tmp/gagamba-ar7-P07-169dd00ba2714e97b92c7d44406fa64d/gate",
+      "/mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07gate.c"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "gate_source": "/mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07gate.c",
+  "gate_sha256": "3924ca6a623f0e5872f09396c7d4bece6ae40b9f7a5ae2be6d12e678243fb4c0",
+  "filter_note": "frozen P02/P03/P04 bytes; manager builds its own memfd (manager-owned)",
+  "manager_pid": 1154037,
+  "pre_decision_output": [
+    "EVT {\"r2gate\": \"GATE-READY\", \"positive\": true, \"gate\": {\"pid\": 1154041, \"starttime\": \"152643316\", \"cmdline\": \"/gate 169dd00ba2714e97b92c7d44406fa64d /sys/fs/cgroup/gagamba-ar7-P07-169dd00ba2714e97b92c7d44406fa64d/delegated /tmp/gagamba-ar7-P07-169dd00ba2714e97b92c7d4440\"}}\n"
+  ],
+  "marker": {
+    "r2gate": "GATE-READY",
+    "positive": true,
+    "gate": {
+      "pid": 1154041,
+      "starttime": "152643316",
+      "cmdline": "/gate 169dd00ba2714e97b92c7d44406fa64d /sys/fs/cgroup/gagamba-ar7-P07-169dd00ba2714e97b92c7d44406fa64d/delegated /tmp/gagamba-ar7-P07-169dd00ba2714e97b92c7d4440"
+    }
+  },
+  "pre_decision_snapshot": [
+    {
+      "pid": 1154037,
+      "ppid": "1154023",
+      "leaf": "manager",
+      "state": "S (sleeping)",
+      "starttime": "152643281",
+      "cmdline": "/usr/bin/python3 /mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07.py --manager --case r2sgate_pos --root /tmp/gagamba-ar7-P07-169dd00ba2714e97b92c7d44406fa64d --cg /sys/fs/cgroup/ga",
+      "cgroup": "0::/gagamba-ar7-P07-169dd00ba2714e97b92c7d44406fa64d/delegated/manager"
+    },
+    {
+      "pid": 1154038,
+      "ppid": "1154037",
+      "leaf": "target",
+      "state": "S (sleeping)",
+      "starttime": "152643310",
+      "cmdline": "/usr/bin/bwrap --unshare-user --unshare-pid --unshare-net --unshare-ipc --unshare-uts --uid 0 --gid 0 --disable-userns --assert-userns-disabled --cap-drop ALL --die-with-parent --new-session --clearen",
+      "cgroup": "0::/gagamba-ar7-P07-169dd00ba2714e97b92c7d44406fa64d/delegated/target"
+    },
+    {
+      "pid": 1154039,
+      "ppid": "1154038",
+      "leaf": "target",
+      "state": "S (sleeping)",
+      "starttime": "152643314",
+      "cmdline": "/usr/bin/bwrap --unshare-user --unshare-pid --unshare-net --unshare-ipc --unshare-uts --uid 0 --gid 0 --disable-userns --assert-userns-disabled --cap-drop ALL --die-with-parent --new-session --clearen",
+      "cgroup": "0::/gagamba-ar7-P07-169dd00ba2714e97b92c7d44406fa64d/delegated/target"
+    },
+    {
+      "pid": 1154041,
+      "ppid": "1154039",
+      "leaf": "target",
+      "state": "S (sleeping)",
+      "starttime": "152643316",
+      "cmdline": "/gate 169dd00ba2714e97b92c7d44406fa64d /sys/fs/cgroup/gagamba-ar7-P07-169dd00ba2714e97b92c7d44406fa64d/delegated /tmp/gagamba-ar7-P07-169dd00ba2714e97b92c7d44406fa64d /input ",
+      "cgroup": "0::/gagamba-ar7-P07-169dd00ba2714e97b92c7d44406fa64d/delegated/target"
+    }
+  ],
+  "phase_proof": {
+    "target_leaf_members": 3,
+    "gate_processes": [
+      [
+        1154041,
+        "S (sleeping)",
+        "152643316"
+      ]
+    ],
+    "bwrap_processes": [
+      [
+        1154038,
+        "S (sleeping)"
+      ],
+      [
+        1154039,
+        "S (sleeping)"
+      ]
+    ],
+    "non_gate_target_processes": [],
+    "gate_cmdline_still_gate": true,
+    "auth_received_echo_in_output": false,
+    "target_markers_in_output": []
+  },
+  "phase_ok": true,
+  "release_authorization": "sent exact nonce after proven gate (positive control)",
+  "manager_rc": 0,
+  "manager_result": {
+    "case": "r2sgate_pos",
+    "uid": 65534,
+    "cgroup": "0::/gagamba-ar7-P07-169dd00ba2714e97b92c7d44406fa64d/delegated/manager",
+    "filter_sha256": "30bfaf6b62030de8b105e1ac8de43f2a9884b2bd5de20e98aef81dce426c1aad",
+    "record": {
+      "gate_reached": true,
+      "preamble_free": true,
+      "pre_marker_output": "PRETARGET_GATE_REACHED nonce=169dd00ba2714e97b92c7d44406fa64d pid=2\n",
+      "ns_resolution": [
+        {
+          "pid": 1154041,
+          "starttime": "152643316",
+          "cmdline": "/gate 169dd00ba2714e97b92c7d44406fa64d /sys/fs/cgroup/gagamba-ar7-P07-169dd00ba2714e97b92c7d44406fa64d/delegated /tmp/gagamba-ar7-P07-169dd00ba2714e97b92c7d4440"
+        }
+      ],
+      "bwrap_host_pid": 1154038,
+      "bwrap_argv_tail": [
+        "--chdir",
+        "/tmp",
+        "--ro-bind",
+        "/tmp/gagamba-ar7-P07-169dd00ba2714e97b92c7d44406fa64d/gate",
+        "/gate",
+        "--",
+        "/gate",
+        "169dd00ba2714e97b92c7d44406fa64d",
+        "/sys/fs/cgroup/gagamba-ar7-P07-169dd00ba2714e97b92c7d44406fa64d/delegated",
+        "/tmp/gagamba-ar7-P07-169dd00ba2714e97b92c7d44406fa64d",
+        "/input"
+      ],
+      "state": "GATE-HELD",
+      "decision": "A",
+      "auth_sent": true,
+      "candidate": {
+        "rc": 0,
+        "stdout_tail": "AUTH_RECEIVED bytes=32\nGATE_AUTH_OK exec_target\nidentity uid=0 gid=0 pid=2 ppid=1 nnp=1\ninput rc=4 errno=0\ninput_read rc=32 errno=0\nspinwork_sum 522240\nfd 0 pipe:[8319407]\nfd 1 pipe:[8319408]\nfd 2 pipe:[8319409]\nfd 3 /memfd:ar7-P07-seccomp (deleted)\nfd 4 /proc/2/fd\nsibling_visible rc=-1 errno=2\ncomplete\n",
+        "timeout": false
+      },
+      "auth_received_echo": true,
+      "target_markers": [
+        "GATE_AUTH_OK",
+        "spinwork_sum",
+        "complete"
+      ],
+      "domain_empty": true,
+      "empty_after_s": 0.00025132508017122746,
+      "leg": "SUPPORTED-leg (separate gate released the real target on exact-nonce auth; useful bounded work; empty)"
+    }
+  },
+  "full_transcript_tail": "EVT {\"r2sgate\": \"AUTH_SENT\"}\nRESULT {\"case\": \"r2sgate_pos\", \"uid\": 65534, \"cgroup\": \"0::/gagamba-ar7-P07-169dd00ba2714e97b92c7d44406fa64d/delegated/manager\", \"filter_sha256\": \"30bfaf6b62030de8b105e1ac8de43f2a9884b2bd5de20e98aef81dce426c1aad\", \"record\": {\"gate_reached\": true, \"preamble_free\": true, \"pre_marker_output\": \"PRETARGET_GATE_REACHED nonce=169dd00ba2714e97b92c7d44406fa64d pid=2\\n\", \"ns_resolution\": [{\"pid\": 1154041, \"starttime\": \"152643316\", \"cmdline\": \"/gate 169dd00ba2714e97b92c7d44406fa64d /sys/fs/cgroup/gagamba-ar7-P07-169dd00ba2714e97b92c7d44406fa64d/delegated /tmp/gagamba-ar7-P07-169dd00ba2714e97b92c7d4440\"}], \"bwrap_host_pid\": 1154038, \"bwrap_argv_tail\": [\"--chdir\", \"/tmp\", \"--ro-bind\", \"/tmp/gagamba-ar7-P07-169dd00ba2714e97b92c7d44406fa64d/gate\", \"/gate\", \"--\", \"/gate\", \"169dd00ba2714e97b92c7d44406fa64d\", \"/sys/fs/cgroup/gagamba-ar7-P07-169dd00ba2714e97b92c7d44406fa64d/delegated\", \"/tmp/gagamba-ar7-P07-169dd00ba2714e97b92c7d44406fa64d\", \"/input\"], \"state\": \"GATE-HELD\", \"decision\": \"A\", \"auth_sent\": true, \"candidate\": {\"rc\": 0, \"stdout_tail\": \"AUTH_RECEIVED bytes=32\\nGATE_AUTH_OK exec_target\\nidentity uid=0 gid=0 pid=2 ppid=1 nnp=1\\ninput rc=4 errno=0\\ninput_read rc=32 errno=0\\nspinwork_sum 522240\\nfd 0 pipe:[8319407]\\nfd 1 pipe:[8319408]\\nfd 2 pipe:[8319409]\\nfd 3 /memfd:ar7-P07-seccomp (deleted)\\nfd 4 /proc/2/fd\\nsibling_visible rc=-1 errno=2\\ncomplete\\n\", \"timeout\": false}, \"auth_received_echo\": true, \"target_markers\": [\"GATE_AUTH_OK\", \"spinwork_sum\", \"complete\"], \"domain_empty\": true, \"empty_after_s\": 0.00025132508017122746, \"leg\": \"SUPPORTED-leg (separate gate released the real target on exact-nonce auth; useful bounded work; empty)\"}}\n",
+  "verdict": "SUPPORTED-leg (gate released the real target on exact-nonce auth; target initialized post-release; useful bounded work; empty)",
+  "cleanup_events": "populated 0\nfrozen 0",
+  "cleanup_absence": {
+    "outer": true,
+    "workspace": true,
+    "manager": true
+  },
+  "cleanup_confirmed": true
+}

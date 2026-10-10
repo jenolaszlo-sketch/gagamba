@@ -1,0 +1,51 @@
+{
+  "leg": "r2-r2pos",
+  "source_sha": "3d5f709",
+  "nonce": "c0b9c76eb76242f2b72147dc3e72820c",
+  "date_utc": "2026-10-10T11:47:25Z",
+  "host": {
+    "kernel": "6.6.114.1-microsoft-standard-WSL2",
+    "arch": "x86_64"
+  },
+  "helper_sha256": "523da3e7399044be5163aee6f57a77a6bef7454376e28f0a0627920bae1b76b6",
+  "helper_mode": "0o755",
+  "source_hashes": {
+    "p07.c": "e805c033cd5e60e067c10cdcb3753391cc4bd338e83ac65a60322d0fb36ae230",
+    "p07.py": "d3a0a89f4af0d9e2f25959e53394469763d0b53a04625b9901ee8c1e1f544949"
+  },
+  "paths": {
+    "root": "/tmp/gagamba-ar7-P07-c0b9c76eb76242f2b72147dc3e72820c",
+    "outer": "/sys/fs/cgroup/gagamba-ar7-P07-c0b9c76eb76242f2b72147dc3e72820c"
+  },
+  "observer_uid": 0,
+  "compile": {
+    "argv": [
+      "/usr/bin/gcc",
+      "-static",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-o",
+      "/tmp/gagamba-ar7-P07-c0b9c76eb76242f2b72147dc3e72820c/worker",
+      "/mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07.c"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "worker_sha256": "fc238fd1e8575bcce1d338a37dbe6947106e2e9ed482e96a75361bf48f6dbc40",
+  "filter_note": "frozen P02/P03/P04 bytes; manager builds its own memfd (manager-owned)",
+  "manager_pid": 1144266,
+  "pre_decision_output": [
+    "RESULT {\"case\": \"r2sgate_pos\", \"uid\": 65534, \"cgroup\": \"0::/gagamba-ar7-P07-c0b9c76eb76242f2b72147dc3e72820c/delegated/manager\", \"filter_sha256\": \"30bfaf6b62030de8b105e1ac8de43f2a9884b2bd5de20e98aef81dce426c1aad\", \"record\": {\"gate_reached\": false, \"preamble_free\": true, \"pre_marker_output\": \"\", \"ns_"
+  ],
+  "marker": null,
+  "verdict": "INCONCLUSIVE (gate marker never arrived)",
+  "cleanup_events": "populated 0\nfrozen 0",
+  "cleanup_absence": {
+    "outer": true,
+    "workspace": true,
+    "manager": true
+  },
+  "cleanup_confirmed": true
+}
