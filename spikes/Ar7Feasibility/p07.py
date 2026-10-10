@@ -1226,15 +1226,37 @@ def spawn_sgate(ctx, outer_frag):
                          preexec_fn=lambda: ctx.enter_target(None))
     pretarget = False
     ready = b''
-    for _ in range(20):
+    # Bounded: a silent-but-live Bubblewrap (or a wedged setup) must surface
+    # as a stalled spawn with evidence, never as a hang.
+    t0 = time.monotonic()
+    stalled = False
+    while time.monotonic() - t0 < 30.0:
+        r, _, _ = select.select([p.stdout], [], [], 2.0)
+        if not r:
+            if p.poll() is not None:
+                break
+            continue
         chunk = p.stdout.readline()
         if not chunk:
             break
         ready += chunk
+        if len(ready) > 65536:
+            break
         if b'PRETARGET_GATE_REACHED' in chunk:
             pretarget = True
             break
+    else:
+        stalled = True
     text = ready.decode(errors='replace')
+    if stalled:
+        p.kill()
+        try:
+            p.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            pass
+        return None, {'gate_reached': False, 'stalled_spawn': True,
+                      'partial_output': text[:2000], 'bwrap_host_pid': p.pid,
+                      'leg': 'INCONCLUSIVE (gate spawn stalled with live silent setup)'}
     # Structural corroboration (not proof): a separate gate emits no worker
     # preamble — identity/input lines must be absent pre-marker.
     preamble_free = ('identity ' not in text and 'input rc=' not in text)
@@ -2172,7 +2194,17 @@ def run_r2(a, kind, pos_case='r2gate_pos', dead_case='r2gate_dead'):
             data['manager_pid'] = m.pid
             pre_lines = []
             marker = None; deadline = time.monotonic() + 90.0
+            # Bounded streaming read: a bare readline() can block past every
+            # deadline when a live process holds the pipe without emitting a
+            # newline, so each wait is select-bounded and a dead manager
+            # breaks the loop even without EOF.
             while time.monotonic() < deadline:
+                r, _, _ = select.select([m.stdout], [], [], 2.0)
+                if not r:
+                    if m.poll() is not None:
+                        data['stream_note'] = 'manager dead with no further output; breaking read loop'
+                        break
+                    continue
                 line = m.stdout.readline()
                 if not line:
                     break
@@ -2318,7 +2350,7 @@ def run_r2(a, kind, pos_case='r2gate_pos', dead_case='r2gate_dead'):
             except Exception as e:
                 data['cleanup_error'] = repr(e)
             if not outer.exists() and root.exists():
-                for name in ('input', 'worker', 'phase-r5'):
+                for name in ('input', 'worker', 'gate', 'phase-r5'):
                     q = root / name
                     if q.exists() or q.is_symlink():
                         try:
@@ -2332,7 +2364,6 @@ def run_r2(a, kind, pos_case='r2gate_pos', dead_case='r2gate_dead'):
             data['cleanup_absence'] = {'outer': not outer.exists(), 'workspace': not root.exists(),
                                        'manager': m is None or m.poll() is not None}
             data['cleanup_confirmed'] = all(data['cleanup_absence'].values()) and not data.get('cleanup_error')
-    signal.alarm(0)
     dest = pathlib.Path(a.output); dest.mkdir(parents=True, exist_ok=True)
     (dest / ('r2-' + kind + '-' + nonce + '.json')).write_text(json.dumps(data, indent=2))
     if not a.quiet:
