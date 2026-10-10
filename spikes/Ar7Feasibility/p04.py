@@ -285,13 +285,11 @@ def observer(a):
         (outer/'unbounded').mkdir();leaf_own(outer/'unbounded')
         os.chown(root,UID,UID)
         unbounded=outer/'unbounded'
-        def bind_into_tmp(src, dstname):
-            dst = '/tmp/' + dstname
-            fd = os.open(dst, os.O_CREAT | os.O_WRONLY, 0o600)
-            os.close(fd)
-            if _libc.mount(src.encode(), dst.encode(), None, MS_BIND, None) != 0:
-                raise OSError(ctypes.get_errno(), 'bind-' + dstname)
         def place_pos(dotnet):
+            # Read workload files BEFORE the private /tmp hides the fixture
+            # dir; write them into the fresh tmpfs after mounting.
+            wdata = None if dotnet else open(str(root/'worker'),'rb').read()
+            idata = open(str(root/'input'),'rb').read()
             if hasattr(os,'unshare'):
                 os.unshare(CLONE_NEWNS)
             elif _libc.unshare(CLONE_NEWNS)!=0:
@@ -300,13 +298,13 @@ def observer(a):
                 raise OSError(ctypes.get_errno(),'remount-private')
             if _libc.mount(b'tmpfs',b'/tmp',b'tmpfs',0,b'size=8388608')!=0:
                 raise OSError(ctypes.get_errno(),'mount-tmpfs')
-            # The fresh /tmp hides the fixture dir: bind the workload files
-            # into it (measured setup requirement, not a sandbox property).
-            if dotnet:
-                bind_into_tmp(str(root/'input'), 'pos-input')
-            else:
-                bind_into_tmp(str(root/'worker'), 'pos-worker')
-                bind_into_tmp(str(root/'input'), 'pos-input')
+            with open('/tmp/pos-input','wb') as fh:
+                fh.write(idata)
+            os.chmod('/tmp/pos-input',0o444)
+            if not dotnet:
+                with open('/tmp/pos-worker','wb') as fh:
+                    fh.write(wdata)
+                os.chmod('/tmp/pos-worker',0o755)
             write(unbounded/'cgroup.procs',os.getpid())
             os.setgroups([]);os.setgid(UID);os.setuid(UID);bounds(fsize=not dotnet)
         dotnet_ok=data['dotnet_staging']['present']
