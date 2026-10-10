@@ -1363,20 +1363,8 @@ def observer(a):
                                str(root / 'worker'), str(pathlib.Path(__file__).with_suffix('.c'))])
         if data['compile']['rc']:
             raise RuntimeError('compile failed before release')
-            data['worker_sha256'] = sha(root / 'worker')
-            if separate:
-                gsrc = str(pathlib.Path(__file__).parent / 'p07gate.c')
-                gcomp = run(['/usr/bin/gcc', '-static', '-O2', '-Wall', '-Wextra', '-o',
-                             str(root / 'gate'), gsrc])
-                data['gate_compile'] = gcomp
-                data['gate_source'] = gsrc
-                if gcomp['rc']:
-                    raise RuntimeError('gate compile failed before release')
-                data['gate_sha256'] = sha(root / 'gate')
-                os.chmod(root / 'gate', 0o755)
-            else:
-                data['gate_sha256'] = 'not-requested (in-worker gate case)'
-            (root / 'input').write_text(nonce); os.chmod(root / 'input', 0o444)
+        data['worker_sha256'] = sha(root / 'worker')
+        (root / 'input').write_text(nonce); os.chmod(root / 'input', 0o444)
         outer.mkdir(); write(outer / 'memory.max', 268435456); write(outer / 'pids.max', 64)
         write(outer / 'memory.swap.max', 0); write(outer / 'cgroup.subtree_control', '+memory +pids')
         cg.mkdir(); write(cg / 'memory.max', 268435456); write(cg / 'pids.max', 64)
@@ -2128,6 +2116,18 @@ def run_r2(a, kind, pos_case='r2gate_pos', dead_case='r2gate_dead'):
             if comp['rc']:
                 raise RuntimeError('compile failed before release')
             data['worker_sha256'] = sha(root / 'worker')
+            if separate:
+                gsrc = str(pathlib.Path(__file__).parent / 'p07gate.c')
+                gcomp = run(['/usr/bin/gcc', '-static', '-O2', '-Wall', '-Wextra', '-o',
+                             str(root / 'gate'), gsrc])
+                data['gate_compile'] = gcomp
+                data['gate_source'] = gsrc
+                if gcomp['rc']:
+                    raise RuntimeError('gate compile failed before release')
+                data['gate_sha256'] = sha(root / 'gate')
+                os.chmod(root / 'gate', 0o755)
+            else:
+                data['gate_sha256'] = 'not-requested (in-worker gate case)'
             (root / 'input').write_text(nonce); os.chmod(root / 'input', 0o444)
             outer.mkdir(); write(outer / 'memory.max', 268435456); write(outer / 'pids.max', 64)
             write(outer / 'memory.swap.max', 0); write(outer / 'cgroup.subtree_control', '+memory +pids')
