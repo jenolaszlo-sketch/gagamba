@@ -66,6 +66,7 @@ def manager(a):
         time.sleep(.1)
         out['positive']=run([str(root/'worker'),'positive',*args],preexec_fn=bounds)
         out['endpoint_requests_positive']=drain(listeners)
+        out['control_signal_positive']=control.stdout.readline().strip() if select.select([control.stdout],[],[],.5)[0] else 'NO EVENT'
         out['controls_after_positive']={n:read(cg/n) for n in ('memory.max','pids.max','cgroup.subtree_control')}
         positive=out['positive']
         out['positive_gate']=(positive['rc']==0 and 'ptrace_control rc=0' in positive['stdout']
@@ -74,7 +75,8 @@ def manager(a):
             and out['controls_after_positive']['memory.max']=='134217728'
             and out['controls_after_positive']['pids.max']=='48'
             and {r['endpoint'] for r in out['endpoint_requests_positive']}=={0,1}
-            and all(r['request']==a.nonce for r in out['endpoint_requests_positive']))
+            and all(r['request']==a.nonce for r in out['endpoint_requests_positive'])
+            and out['control_signal_positive']=='signal-observed')
         if not out['positive_gate']:raise RuntimeError('positive gate failed: INCONCLUSIVE, no target release')
         # Useful rootless helper startup is a prerequisite, not a denial result.
         common=['/usr/bin/bwrap','--unshare-user','--unshare-pid','--unshare-net','--unshare-ipc','--unshare-uts',
@@ -89,6 +91,7 @@ def manager(a):
         out['candidate']=run(common+['--seccomp',str(f),'--','/target','candidate',*args],pass_fds=(f,),preexec_fn=enter_target)
         os.close(f);os.close(authority)
         out['endpoint_requests_candidate']=drain(listeners)
+        out['control_signal_candidate']=control.stdout.readline().strip() if select.select([control.stdout],[],[],.1)[0] else 'NO EVENT'
         out['controls_after_candidate']={str(p.relative_to(cg)):read(p) for p in
             (cg/'memory.max',cg/'pids.max',cg/'cgroup.subtree_control',cg/'sibling/memory.max',cg/'sibling/pids.max')}
         out['target_domain_after']=read(cg/'target/cgroup.events')
