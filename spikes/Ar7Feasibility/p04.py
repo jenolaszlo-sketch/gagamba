@@ -100,7 +100,7 @@ def check_mounts(stdout):
                 bad.append(ln)
     return bad
 def created_threads(stdout):
-    m=re.search(r'^threads_created (\d+)$',stdout,flags=re.M)
+    m=re.search(r'^threads_created (\d+)',stdout,flags=re.M)
     return int(m.group(1)) if m else None
 
 COMMON=['/usr/bin/bwrap','--unshare-user','--unshare-pid','--unshare-net','--unshare-ipc','--unshare-uts',
@@ -200,6 +200,10 @@ def manager(a):
                 cases.append(rec);continue
             files_before=sorted(p.name for p in root.iterdir())
             bt_before=leaf_counters(cg/'target')
+            # The pass_fds dup shares the memfd offset: every bwrap consumes
+            # the filter bytes, so rewind before each launch or later
+            # candidates read an empty program (measured EINVAL cause).
+            os.lseek(seccomp_fd,0,os.SEEK_SET)
             if kind=='native':
                 argv=(common+['--seccomp',str(seccomp_fd),'--','/target',mode,str(cg),str(root),a.nonce,'/input',str(N)])
                 cand=launch(argv,preexec=enter_target_native,pass_fds=(seccomp_fd,))

@@ -1,0 +1,804 @@
+{
+  "probe": "P04",
+  "source_sha": "922c5780aea88cd02dfcd1e25c8ad4671470fee0",
+  "nonce": "2961113bd08a410da019e7c079d90e3c",
+  "date_utc": "2026-10-10T02:26:33Z",
+  "host": {
+    "kernel": "6.6.114.1-microsoft-standard-WSL2",
+    "arch": "x86_64",
+    "distribution": "PRETTY_NAME=\"Ubuntu 26.04.1 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"26.04\"\nVERSION=\"26.04.1 LTS (Resolute Raccoon)\"\nVERSION_CODENAME=resolute\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=resolute\nLOGO=ubuntu-logo",
+    "glibc": "glibc 2.43",
+    "lsm": "UNKNOWN: [Errno 2] No such file or directory: '/sys/kernel/security/lsm'",
+    "yama": "1",
+    "userns_max": "30743",
+    "cgroup_mount": "none /usr/lib/modules/6.6.114.1-microsoft-standard-WSL2 overlay rw,nosuid,nodev,noatime,lowerdir=/modules,upperdir=/lib/modules/6.6.114.1-microsoft-standard-WSL2/rw/upper,workdir=/lib/modules/6.6.114.1-microsoft-standard-WSL2/rw/work,uuid=on 0 0\nnone /mnt/wsl tmpfs rw,relatime 0 0\ndrivers /usr/lib/wsl/drivers 9p ro,nosuid,nodev,noatime,aname=drivers;fmask=222;dmask=222,cache=5,access=client,msize=65536,trans=fd,rfd=8,wfd=8 0 0\n/dev/sdf / ext4 rw,relatime,discard,errors=remount-ro,data=ordered 0 0\nnone /mnt/wslg tmpfs rw,relatime 0 0\n/dev/sdf /mnt/wslg/distro ext4 ro,relatime,discard,errors=remount-ro,data=ordered 0 0\nnone /usr/lib/wsl/lib overlay rw,nosuid,nodev,noatime,lowerdir=/gpu_lib_packaged:/gpu_lib_inbox,upperdir=/gpu_lib/rw/upper,workdir=/gpu_lib/rw/work,uuid=on 0 0\nrootfs /init rootfs ro,size=3935116k,nr_inodes=983779 0 0\nnone /dev devtmpfs rw,nosuid,relatime,size=3935116k,nr_inodes=983779,mode=755 0 0\nsysfs /sys sysfs rw,nosuid,nodev,noexec,noatime 0 0\nproc /proc proc rw,nosuid,nodev,noexec,noatime 0 0\ndevpts /dev/pts devpts rw,nosuid,noexec,noatime,gid=5,mode=620,ptmxmode=000 0 0\nnone /run tmpfs rw,nosuid,nodev,mode=755 0 0\nnone /run/lock tmpfs rw,nosuid,nodev,noexec,noatime 0 0\nnone /run/shm tmpfs rw,nosuid,nodev,noatime 0 0\nnone /dev/shm tmpfs rw,nosuid,nodev,noatime 0 0\nnone /run/user tmpfs rw,nosuid,nodev,noexec,noatime,mode=755 0 0\nbinfmt_misc /proc/sys/fs/binfmt_misc binfmt_misc rw,relatime 0 0\ncgroup2 /sys/fs/cgroup cgroup2 rw,nosuid,nodev,noexec,relatime,nsdelegate 0 0\nnone /mnt/wslg/versions.txt overlay rw,relatime,lowerdir=/systemvhd,upperdir=/system/rw/upper,workdir=/system/rw/work,uuid=on 0 0\nnone /mnt/wslg/doc overlay rw,relatime,lowerdir=/systemvhd,upperdir=/system/rw/upper,workdir=/system/rw/work,uuid=on 0 0\nnone /tmp/.X11-unix tmpfs ro,relatime 0 0\nC:\\134 /mnt/c 9p rw,noatime,aname=drvfs;path=C:\\;uid=0;gid=0;symlinkroot=/mnt/,cache=5,access=client,msize=65536,trans=fd,rfd=6,wfd=6 0 0\nD:\\134 /mnt/d 9p rw,noatime,aname=drvfs;path=D:\\;uid=0;gid=0;symlinkroot=/mnt/,cache=5,access=client,msize=65536,trans=fd,rfd=6,wfd=6 0 0\nnone /run/user tmpfs rw,relatime 0 0\nnone /run/credentials/systemd-journald.service tmpfs ro,nosuid,nodev,noexec,relatime,nosymfollow,size=1024k,nr_inodes=1024,mode=700,noswap 0 0\nmqueue /dev/mqueue mqueue rw,nosuid,nodev,noexec,relatime 0 0\ntracefs /sys/kernel/tracing tracefs rw,nosuid,nodev,noexec,relatime 0 0\nhugetlbfs /dev/hugepages hugetlbfs rw,nosuid,nodev,relatime,pagesize=2M 0 0\ntmpfs /tmp tmpfs rw,nosuid,nodev,nr_inodes=1048576 0 0\ndebugfs /sys/kernel/debug debugfs rw,nosuid,nodev,noexec,relatime 0 0\nconfigfs /sys/kernel/config configfs rw,nosuid,nodev,noexec,relatime 0 0\nfusectl /sys/fs/fuse/connections fusectl rw,nosuid,nodev,noexec,relatime 0 0\nnone /run/credentials/systemd-resolved.service tmpfs ro,nosuid,nodev,noexec,relatime,nosymfollow,size=1024k,nr_inodes=1024,mode=700,noswap 0 0\nnone /tmp/.X11-unix tmpfs ro,relatime 0 0\nnone /run/credentials/getty@tty1.service tmpfs ro,nosuid,nodev,noexec,relatime,nosymfollow,size=1024k,nr_inodes=1024,mode=700,noswap 0 0\ntmpfs /run/user/0 tmpfs rw,nosuid,nodev,relatime,size=788024k,nr_inodes=197006,mode=700 0 0\ntmpfs /mnt/wslg/run/user/0 tmpfs rw,nosuid,nodev,relatime,size=788024k,nr_inodes=197006,mode=700 0 0",
+    "helper": {
+      "argv": [
+        "/usr/bin/bwrap",
+        "--version"
+      ],
+      "rc": 0,
+      "stdout": "bubblewrap 0.11.1\n",
+      "stderr": ""
+    },
+    "helper_sha256": "523da3e7399044be5163aee6f57a77a6bef7454376e28f0a0627920bae1b76b6",
+    "helper_mode": "0o755"
+  },
+  "paths": {
+    "root": "/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c",
+    "outer": "/sys/fs/cgroup/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c",
+    "delegated": "/sys/fs/cgroup/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/delegated"
+  },
+  "observer_uid": 0,
+  "source_hashes": {
+    "p04.c": "950cfe4d906aaf5c7cfb6c9f2bcc4ef109faa5e7e2da53ec08b7add1c4b0c33f",
+    "p04.py": "f7281498a40babaa36eae05605b1702ef7635a5f6cdf34439d80e66456fb4f7d",
+    "Program.cs": "9bbdda26f94ec07979fd91822d55f476f5ad160c586c70bd4b2428c5910ddd03",
+    "P04Workload.csproj": "44994dac618cc6c29bd9ec3882c4b5506dd2794e20ce783b40acd5a5f40906d5"
+  },
+  "dotnet_staging": {
+    "dir": "/mnt/c/Users/Laszlos/source/repos/Gagamba/artifacts/ar7/P04/dotnet",
+    "present": true,
+    "binary_sha256": "2c7bd57ed811ccf800a8587523c273661ddf8e8f350aed496a2aa0f37a190e3c"
+  },
+  "compile": {
+    "argv": [
+      "/usr/bin/gcc",
+      "-static",
+      "-O2",
+      "-pthread",
+      "-Wall",
+      "-Wextra",
+      "-o",
+      "/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/worker",
+      "/mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p04.c"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": "/mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p04.c: In function \u2018main\u2019:\n/mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p04.c:197:23: warning: ignoring return value of \u2018write\u2019 declared with attribute \u2018warn_unused_result\u2019 [-Wunused-result]\n  197 |         if (f >= 0) { write(f, nonce, strlen(nonce)); close(f); }\n      |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
+  },
+  "worker_sha256": "9b48c132b557541c90438734c23c1e6107db6f9adc876405a7331bf932c424dc",
+  "positives": {
+    "count": 19,
+    "gates_passed": 16
+  },
+  "manager_pid": 1045877,
+  "external_process_samples": {
+    "1045877": {
+      "cgroup": "0::/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/delegated/manager",
+      "status": "Name:\tpython3\nUmask:\t0022\nState:\tR (running)\nTgid:\t1045877\nNgid:\t0\nPid:\t1045877\nPPid:\t1045695\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1045877\nNSpid:\t1045877\nNSpgid:\t1045695\nNSsid:\t1045695\nKthread:\t0\nVmPeak:\t   19112 kB\nVmSize:\t   19112 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t   12740 kB\nVmRSS:\t   12740 kB\nRssAnon:\t    5980 kB\nRssFile:\t    6760 kB\nRssShmem:\t       0 kB\nVmData:\t    8048 kB\nVmStk:\t     132 kB\nVmExe:\t    3608 kB\nVmLib:\t    2668 kB\nVmPTE:\t      76 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000001001000\nSigCgt:\t0000000000000002\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t88\nnonvoluntary_ctxt_switches:\t1",
+      "command": "/usr/bin/python3\u0000/mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p04.py\u0000--manager\u0000--root\u0000/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c\u0000--cg\u0000/sys/fs/cgroup/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/delegated\u0000--nonce\u00002961113bd08a410da019e7c079d90e3c\u0000--app-dir\u0000/mnt/c/Users/Laszlos/source/repos/Gagamba/artifacts/ar7/P04/dotnet\u0000"
+    },
+    "1045879": {
+      "cgroup": "0::/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/delegated/target",
+      "status": "Name:\tbwrap\nUmask:\t0022\nState:\tS (sleeping)\nTgid:\t1045879\nNgid:\t0\nPid:\t1045879\nPPid:\t1045877\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1045879\nNSpid:\t1045879\nNSpgid:\t1045695\nNSsid:\t1045695\nKthread:\t0\nVmPeak:\t    3760 kB\nVmSize:\t    3760 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t    2332 kB\nVmRSS:\t    2332 kB\nRssAnon:\t     144 kB\nRssFile:\t    2188 kB\nRssShmem:\t       0 kB\nVmData:\t     240 kB\nVmStk:\t     132 kB\nVmExe:\t      40 kB\nVmLib:\t    2480 kB\nVmPTE:\t      52 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000010000\nSigIgn:\t0000000000000000\nSigCgt:\t0000000000000000\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t1\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t2\nnonvoluntary_ctxt_switches:\t1",
+      "command": "/usr/bin/bwrap\u0000--unshare-user\u0000--unshare-pid\u0000--unshare-net\u0000--unshare-ipc\u0000--unshare-uts\u0000--uid\u00000\u0000--gid\u00000\u0000--disable-userns\u0000--assert-userns-disabled\u0000--cap-drop\u0000ALL\u0000--die-with-parent\u0000--new-session\u0000--clearenv\u0000--ro-bind\u0000/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/worker\u0000/target\u0000--ro-bind\u0000/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/input\u0000/input\u0000--proc\u0000/proc\u0000--dev\u0000/dev\u0000--size\u00008388608\u0000--tmpfs\u0000/tmp\u0000--dir\u0000/sys\u0000--dir\u0000/run\u0000--chdir\u0000/tmp\u0000--seccomp\u00004\u0000--\u0000/target\u0000mem\u0000/sys/fs/cgroup/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/delegated\u0000/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c\u00002961113bd08a410da019e7c079d90e3c\u0000/input\u000064\u0000"
+    },
+    "1045880": {
+      "cgroup": "0::/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/delegated/target",
+      "status": "Name:\tbwrap\nUmask:\t0022\nState:\tS (sleeping)\nTgid:\t1045880\nNgid:\t0\nPid:\t1045880\nPPid:\t1045879\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1045880\t1\nNSpid:\t1045880\t1\nNSpgid:\t1045880\t1\nNSsid:\t1045880\t1\nKthread:\t0\nVmPeak:\t    3760 kB\nVmSize:\t    3760 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t    1384 kB\nVmRSS:\t    1384 kB\nRssAnon:\t     172 kB\nRssFile:\t    1212 kB\nRssShmem:\t       0 kB\nVmData:\t     240 kB\nVmStk:\t     132 kB\nVmExe:\t      40 kB\nVmLib:\t    2480 kB\nVmPTE:\t      52 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000010000\nSigIgn:\t0000000000000000\nSigCgt:\t0000000000000000\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t0000000000000000\nCapAmb:\t0000000000000000\nNoNewPrivs:\t1\nSeccomp:\t2\nSeccomp_filters:\t1\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t4\nnonvoluntary_ctxt_switches:\t1",
+      "command": "/usr/bin/bwrap\u0000--unshare-user\u0000--unshare-pid\u0000--unshare-net\u0000--unshare-ipc\u0000--unshare-uts\u0000--uid\u00000\u0000--gid\u00000\u0000--disable-userns\u0000--assert-userns-disabled\u0000--cap-drop\u0000ALL\u0000--die-with-parent\u0000--new-session\u0000--clearenv\u0000--ro-bind\u0000/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/worker\u0000/target\u0000--ro-bind\u0000/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/input\u0000/input\u0000--proc\u0000/proc\u0000--dev\u0000/dev\u0000--size\u00008388608\u0000--tmpfs\u0000/tmp\u0000--dir\u0000/sys\u0000--dir\u0000/run\u0000--chdir\u0000/tmp\u0000--seccomp\u00004\u0000--\u0000/target\u0000mem\u0000/sys/fs/cgroup/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/delegated\u0000/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c\u00002961113bd08a410da019e7c079d90e3c\u0000/input\u000064\u0000"
+    },
+    "1045881": {
+      "cgroup": "0::/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/delegated/target",
+      "status": "Name:\ttarget\nUmask:\t0022\nState:\tR (running)\nTgid:\t1045881\nNgid:\t0\nPid:\t1045881\nPPid:\t1045880\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1045881\t2\nNSpid:\t1045881\t2\nNSpgid:\t1045880\t1\nNSsid:\t1045880\t1\nKthread:\t0\nVmPeak:\t   66700 kB\nVmSize:\t   66700 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t    1164 kB\nVmRSS:\t    1164 kB\nRssAnon:\t     392 kB\nRssFile:\t       4 kB\nRssShmem:\t     768 kB\nVmData:\t   65704 kB\nVmStk:\t     132 kB\nVmExe:\t     648 kB\nVmLib:\t       8 kB\nVmPTE:\t      40 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000000000000\nSigCgt:\t0000000000000000\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t0000000000000000\nCapAmb:\t0000000000000000\nNoNewPrivs:\t1\nSeccomp:\t2\nSeccomp_filters:\t1\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t0\nnonvoluntary_ctxt_switches:\t0",
+      "command": "/target\u0000mem\u0000/sys/fs/cgroup/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/delegated\u0000/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c\u00002961113bd08a410da019e7c079d90e3c\u0000/input\u000064\u0000"
+    },
+    "1045885": {
+      "cgroup": "0::/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/delegated/target",
+      "status": "Name:\tpython3\nUmask:\t0022\nState:\tR (running)\nTgid:\t1045885\nNgid:\t0\nPid:\t1045885\nPPid:\t1045877\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1045885\nNSpid:\t1045885\nNSpgid:\t1045695\nNSsid:\t1045695\nKthread:\t0\nVmPeak:\t   32344 kB\nVmSize:\t   32344 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t   16240 kB\nVmRSS:\t   16240 kB\nRssAnon:\t   11896 kB\nRssFile:\t    4344 kB\nRssShmem:\t       0 kB\nVmData:\t   13512 kB\nVmStk:\t     132 kB\nVmExe:\t    3608 kB\nVmLib:\t    7480 kB\nVmPTE:\t      96 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000000000000\nSigCgt:\t0000000000000002\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t1\nnonvoluntary_ctxt_switches:\t1",
+      "command": "/usr/bin/python3\u0000/mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p04.py\u0000--manager\u0000--root\u0000/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c\u0000--cg\u0000/sys/fs/cgroup/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/delegated\u0000--nonce\u00002961113bd08a410da019e7c079d90e3c\u0000--app-dir\u0000/mnt/c/Users/Laszlos/source/repos/Gagamba/artifacts/ar7/P04/dotnet\u0000"
+    },
+    "1045891": {
+      "cgroup": "0::/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/delegated/target",
+      "status": "Name:\tbwrap\nUmask:\t0022\nState:\tS (sleeping)\nTgid:\t1045891\nNgid:\t0\nPid:\t1045891\nPPid:\t1045877\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1045891\nNSpid:\t1045891\nNSpgid:\t1045695\nNSsid:\t1045695\nKthread:\t0\nVmPeak:\t    3760 kB\nVmSize:\t    3760 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t    2332 kB\nVmRSS:\t    2332 kB\nRssAnon:\t     144 kB\nRssFile:\t    2188 kB\nRssShmem:\t       0 kB\nVmData:\t     240 kB\nVmStk:\t     132 kB\nVmExe:\t      40 kB\nVmLib:\t    2480 kB\nVmPTE:\t      52 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000010000\nSigIgn:\t0000000000000000\nSigCgt:\t0000000000000000\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t1\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t1\nnonvoluntary_ctxt_switches:\t0",
+      "command": "/usr/bin/bwrap\u0000--unshare-user\u0000--unshare-pid\u0000--unshare-net\u0000--unshare-ipc\u0000--unshare-uts\u0000--uid\u00000\u0000--gid\u00000\u0000--disable-userns\u0000--assert-userns-disabled\u0000--cap-drop\u0000ALL\u0000--die-with-parent\u0000--new-session\u0000--clearenv\u0000--ro-bind\u0000/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/worker\u0000/target\u0000--ro-bind\u0000/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/input\u0000/input\u0000--proc\u0000/proc\u0000--dev\u0000/dev\u0000--size\u00008388608\u0000--tmpfs\u0000/tmp\u0000--dir\u0000/sys\u0000--dir\u0000/run\u0000--chdir\u0000/tmp\u0000--seccomp\u00004\u0000--\u0000/target\u0000inode-fill\u0000/sys/fs/cgroup/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/delegated\u0000/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c\u00002961113bd08a410da019e7c079d90e3c\u0000/input\u00000\u0000"
+    },
+    "1045892": {
+      "cgroup": "0::/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/delegated/target",
+      "status": "Name:\tbwrap\nUmask:\t0000\nState:\tR (running)\nTgid:\t1045892\nNgid:\t0\nPid:\t1045892\nPPid:\t1045891\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1045892\t1\nNSpid:\t1045892\t1\nNSpgid:\t1045695\t0\nNSsid:\t1045695\t0\nKthread:\t0\nVmPeak:\t    3760 kB\nVmSize:\t    3760 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t    1248 kB\nVmRSS:\t    1248 kB\nRssAnon:\t     164 kB\nRssFile:\t    1084 kB\nRssShmem:\t       0 kB\nVmData:\t     240 kB\nVmStk:\t     132 kB\nVmExe:\t      40 kB\nVmLib:\t    2480 kB\nVmPTE:\t      52 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000010000\nSigIgn:\t0000000000000000\nSigCgt:\t0000000000000000\nCapInh:\t0000000000000000\nCapPrm:\t000001ffffffffff\nCapEff:\t000001ffffffffff\nCapBnd:\t0000018000000000\nCapAmb:\t0000000000000000\nNoNewPrivs:\t1\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t3\nnonvoluntary_ctxt_switches:\t0",
+      "command": "/usr/bin/bwrap\u0000--unshare-user\u0000--unshare-pid\u0000--unshare-net\u0000--unshare-ipc\u0000--unshare-uts\u0000--uid\u00000\u0000--gid\u00000\u0000--disable-userns\u0000--assert-userns-disabled\u0000--cap-drop\u0000ALL\u0000--die-with-parent\u0000--new-session\u0000--clearenv\u0000--ro-bind\u0000/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/worker\u0000/target\u0000--ro-bind\u0000/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/input\u0000/input\u0000--proc\u0000/proc\u0000--dev\u0000/dev\u0000--size\u00008388608\u0000--tmpfs\u0000/tmp\u0000--dir\u0000/sys\u0000--dir\u0000/run\u0000--chdir\u0000/tmp\u0000--seccomp\u00004\u0000--\u0000/target\u0000inode-fill\u0000/sys/fs/cgroup/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/delegated\u0000/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c\u00002961113bd08a410da019e7c079d90e3c\u0000/input\u00000\u0000"
+    },
+    "1045902": {
+      "cgroup": "0::/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/delegated/target",
+      "status": "Name:\tbwrap\nUmask:\t0022\nState:\tS (sleeping)\nTgid:\t1045902\nNgid:\t0\nPid:\t1045902\nPPid:\t1045877\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1045902\nNSpid:\t1045902\nNSpgid:\t1045695\nNSsid:\t1045695\nKthread:\t0\nVmPeak:\t    3760 kB\nVmSize:\t    3760 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t    2288 kB\nVmRSS:\t    2288 kB\nRssAnon:\t     144 kB\nRssFile:\t    2144 kB\nRssShmem:\t       0 kB\nVmData:\t     240 kB\nVmStk:\t     132 kB\nVmExe:\t      40 kB\nVmLib:\t    2480 kB\nVmPTE:\t      52 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000010000\nSigIgn:\t0000000000000000\nSigCgt:\t0000000000000000\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t1\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t1\nnonvoluntary_ctxt_switches:\t0",
+      "command": "/usr/bin/bwrap\u0000--unshare-user\u0000--unshare-pid\u0000--unshare-net\u0000--unshare-ipc\u0000--unshare-uts\u0000--uid\u00000\u0000--gid\u00000\u0000--disable-userns\u0000--assert-userns-disabled\u0000--cap-drop\u0000ALL\u0000--die-with-parent\u0000--new-session\u0000--clearenv\u0000--ro-bind\u0000/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/worker\u0000/target\u0000--ro-bind\u0000/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/input\u0000/input\u0000--proc\u0000/proc\u0000--dev\u0000/dev\u0000--size\u00008388608\u0000--tmpfs\u0000/tmp\u0000--dir\u0000/sys\u0000--dir\u0000/run\u0000--chdir\u0000/tmp\u0000--seccomp\u00004\u0000--\u0000/target\u0000shm-path\u0000/sys/fs/cgroup/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/delegated\u0000/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c\u00002961113bd08a410da019e7c079d90e3c\u0000/input\u00000\u0000"
+    },
+    "1045903": {
+      "cgroup": "0::/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/delegated/target",
+      "status": "Name:\tbwrap\nState:\tZ (zombie)\nTgid:\t1045903\nNgid:\t0\nPid:\t1045903\nPPid:\t1045902\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t0\nGroups:\t \nNStgid:\t1045903\t1\nNSpid:\t1045903\t1\nNSpgid:\t1045903\t1\nNSsid:\t1045903\t1\nKthread:\t0\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000010000\nSigIgn:\t0000000000010000\nSigCgt:\t0000000000000000\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t0000000000000000\nCapAmb:\t0000000000000000\nNoNewPrivs:\t1\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t5\nnonvoluntary_ctxt_switches:\t2",
+      "command": "UNKNOWN: [Errno 2] No such file or directory: '/proc/1045903/cmdline'"
+    },
+    "1045914": {
+      "cgroup": "0::/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/delegated/target",
+      "status": "Name:\tbwrap\nUmask:\t0022\nState:\tR (running)\nTgid:\t1045914\nNgid:\t0\nPid:\t1045914\nPPid:\t1045877\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1045914\nNSpid:\t1045914\nNSpgid:\t1045695\nNSsid:\t1045695\nKthread:\t0\nVmPeak:\t    3760 kB\nVmSize:\t    3760 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t    2220 kB\nVmRSS:\t    2220 kB\nRssAnon:\t     136 kB\nRssFile:\t    2084 kB\nRssShmem:\t       0 kB\nVmData:\t     240 kB\nVmStk:\t     132 kB\nVmExe:\t      40 kB\nVmLib:\t    2480 kB\nVmPTE:\t      48 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000010000\nSigIgn:\t0000000000000000\nSigCgt:\t0000000000000000\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t1\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t0\nnonvoluntary_ctxt_switches:\t1",
+      "command": "/usr/bin/bwrap\u0000--unshare-user\u0000--unshare-pid\u0000--unshare-net\u0000--unshare-ipc\u0000--unshare-uts\u0000--uid\u00000\u0000--gid\u00000\u0000--disable-userns\u0000--assert-userns-disabled\u0000--cap-drop\u0000ALL\u0000--die-with-parent\u0000--new-session\u0000--clearenv\u0000--ro-bind\u0000/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/worker\u0000/target\u0000--ro-bind\u0000/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/input\u0000/input\u0000--proc\u0000/proc\u0000--dev\u0000/dev\u0000--size\u00008388608\u0000--tmpfs\u0000/tmp\u0000--dir\u0000/sys\u0000--dir\u0000/run\u0000--chdir\u0000/tmp\u0000--seccomp\u00004\u0000--\u0000/target\u0000big-output\u0000/sys/fs/cgroup/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/delegated\u0000/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c\u00002961113bd08a410da019e7c079d90e3c\u0000/input\u00000\u0000"
+    },
+    "1045923": {
+      "cgroup": "0::/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/delegated/target",
+      "status": "Name:\tbwrap\nUmask:\t0022\nState:\tR (running)\nTgid:\t1045923\nNgid:\t0\nPid:\t1045923\nPPid:\t1045877\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1045923\nNSpid:\t1045923\nNSpgid:\t1045695\nNSsid:\t1045695\nKthread:\t0\nVmPeak:\t    3760 kB\nVmSize:\t    3760 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t    2260 kB\nVmRSS:\t    2260 kB\nRssAnon:\t     136 kB\nRssFile:\t    2124 kB\nRssShmem:\t       0 kB\nVmData:\t     240 kB\nVmStk:\t     132 kB\nVmExe:\t      40 kB\nVmLib:\t    2480 kB\nVmPTE:\t      52 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000010000\nSigIgn:\t0000000000000000\nSigCgt:\t0000000000000000\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t1\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t0\nnonvoluntary_ctxt_switches:\t0",
+      "command": "/usr/bin/bwrap\u0000--unshare-user\u0000--unshare-pid\u0000--unshare-net\u0000--unshare-ipc\u0000--unshare-uts\u0000--uid\u00000\u0000--gid\u00000\u0000--disable-userns\u0000--assert-userns-disabled\u0000--cap-drop\u0000ALL\u0000--die-with-parent\u0000--new-session\u0000--clearenv\u0000--ro-bind\u0000/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/worker\u0000/target\u0000--ro-bind\u0000/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/input\u0000/input\u0000--proc\u0000/proc\u0000--dev\u0000/dev\u0000--size\u00008388608\u0000--tmpfs\u0000/tmp\u0000--dir\u0000/sys\u0000--dir\u0000/run\u0000--chdir\u0000/tmp\u0000--ro-bind\u0000/mnt/c/Users/Laszlos/source/repos/Gagamba/artifacts/ar7/P04/dotnet\u0000/app\u0000--setenv\u0000HOME\u0000/tmp\u0000--setenv\u0000DOTNET_GCServer\u00000\u0000--seccomp\u00004\u0000--\u0000/app/P04Workload\u00000\u00000\u0000/input\u0000/tmp\u0000"
+    },
+    "1045926": {
+      "cgroup": "0::/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/delegated/target",
+      "status": "Name:\tpython3\nUmask:\t0022\nState:\tR (running)\nTgid:\t1045926\nNgid:\t0\nPid:\t1045926\nPPid:\t1045877\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1045926\nNSpid:\t1045926\nNSpgid:\t1045695\nNSsid:\t1045695\nKthread:\t0\nVmPeak:\t   32344 kB\nVmSize:\t   32344 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t   16248 kB\nVmRSS:\t   16248 kB\nRssAnon:\t   11904 kB\nRssFile:\t    4344 kB\nRssShmem:\t       0 kB\nVmData:\t   13512 kB\nVmStk:\t     132 kB\nVmExe:\t    3608 kB\nVmLib:\t    7480 kB\nVmPTE:\t      96 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000000000000\nSigCgt:\t0000000000000002\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t1\nnonvoluntary_ctxt_switches:\t1",
+      "command": ""
+    },
+    "1045929": {
+      "cgroup": "0::/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/delegated/target",
+      "status": "Name:\tpython3\nUmask:\t0022\nState:\tR (running)\nTgid:\t1045929\nNgid:\t0\nPid:\t1045929\nPPid:\t1045877\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1045929\nNSpid:\t1045929\nNSpgid:\t1045695\nNSsid:\t1045695\nKthread:\t0\nVmPeak:\t   32344 kB\nVmSize:\t   32344 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t   16248 kB\nVmRSS:\t   16248 kB\nRssAnon:\t   11904 kB\nRssFile:\t    4344 kB\nRssShmem:\t       0 kB\nVmData:\t   13512 kB\nVmStk:\t     132 kB\nVmExe:\t    3608 kB\nVmLib:\t    7480 kB\nVmPTE:\t      96 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000000000000\nSigCgt:\t0000000000000002\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t1\nnonvoluntary_ctxt_switches:\t1",
+      "command": "/usr/bin/python3\u0000/mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p04.py\u0000--manager\u0000--root\u0000/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c\u0000--cg\u0000/sys/fs/cgroup/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/delegated\u0000--nonce\u00002961113bd08a410da019e7c079d90e3c\u0000--app-dir\u0000/mnt/c/Users/Laszlos/source/repos/Gagamba/artifacts/ar7/P04/dotnet\u0000"
+    }
+  },
+  "manager_rc": 0,
+  "manager_stderr": "",
+  "manager": {
+    "uid": 65534,
+    "gid": 65534,
+    "status": "Name:\tpython3\nUmask:\t0022\nState:\tR (running)\nTgid:\t1045877\nNgid:\t0\nPid:\t1045877\nPPid:\t1045695\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1045877\nNSpid:\t1045877\nNSpgid:\t1045695\nNSsid:\t1045695\nKthread:\t0\nVmPeak:\t   32184 kB\nVmSize:\t   32184 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t   23644 kB\nVmRSS:\t   23644 kB\nRssAnon:\t   11728 kB\nRssFile:\t   11916 kB\nRssShmem:\t       0 kB\nVmData:\t   13352 kB\nVmStk:\t     132 kB\nVmExe:\t    3608 kB\nVmLib:\t    7480 kB\nVmPTE:\t     104 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000001001000\nSigCgt:\t0000000000000002\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t556\nnonvoluntary_ctxt_switches:\t3",
+    "cgroup": "0::/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/delegated/manager",
+    "dotnet_staging": {
+      "dir": "/mnt/c/Users/Laszlos/source/repos/Gagamba/artifacts/ar7/P04/dotnet",
+      "present": true,
+      "binary_sha256": "2c7bd57ed811ccf800a8587523c273661ddf8e8f350aed496a2aa0f37a190e3c"
+    },
+    "input_sha256_before": "ef0212c0fce05ec27198d09b804714d65d4a640ca8fc8e71d214cf88a8b9662f",
+    "positives_embedded": [
+      "alloc160",
+      "alloc64",
+      "hello",
+      "native-big-output-0",
+      "native-crash-abort-0",
+      "native-emptydir-probe-0",
+      "native-fd-consume-0",
+      "native-inode-fill-0",
+      "native-mem-192",
+      "native-mem-64",
+      "native-mountinfo-0",
+      "native-null-writes-0",
+      "native-oomscore-0",
+      "native-scratch-fill-0",
+      "native-shm-path-0",
+      "native-shm-probe-0",
+      "native-threads-40",
+      "native-threads-60",
+      "native-threads-8"
+    ],
+    "positives": {
+      "alloc160": {
+        "case": "alloc160",
+        "positive": {
+          "rc": 0,
+          "out_len": 272,
+          "err_len": 0,
+          "stdout": "dotnet 10.0.12\nservergc False\nenv HOME=/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c\nenv DOTNET_GCServer=0\nenv DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=\ninput_read 32\nscratch_write ok\ntouched_sum 10444800\ngc_total 167844704\ntask_count 8 workingset 200544256\ncomplete\n",
+          "stderr": "",
+          "timeout": false
+        },
+        "unbounded_oom_delta": 0,
+        "gate": true
+      },
+      "alloc64": {
+        "case": "alloc64",
+        "positive": {
+          "rc": 0,
+          "out_len": 269,
+          "err_len": 0,
+          "stdout": "dotnet 10.0.12\nservergc False\nenv HOME=/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c\nenv DOTNET_GCServer=0\nenv DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=\ninput_read 32\nscratch_write ok\ntouched_sum 4177920\ngc_total 67181408\ntask_count 8 workingset 99663872\ncomplete\n",
+          "stderr": "",
+          "timeout": false
+        },
+        "unbounded_oom_delta": 0,
+        "gate": true
+      },
+      "hello": {
+        "case": "hello",
+        "positive": {
+          "rc": 0,
+          "out_len": 246,
+          "err_len": 0,
+          "stdout": "dotnet 10.0.12\nservergc False\nenv HOME=/tmp/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c\nenv DOTNET_GCServer=0\nenv DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=\ninput_read 32\nscratch_write ok\ngc_total 72512\ntask_count 8 workingset 26902528\ncomplete\n",
+          "stderr": "",
+          "timeout": false
+        },
+        "unbounded_oom_delta": 0,
+        "gate": true
+      },
+      "native-big-output-0": {
+        "case": "native-big-output-0",
+        "positive": {
+          "rc": 17,
+          "out_len": 1048946,
+          "err_len": 65536,
+          "stdout": "identity uid=65534 gid=65534 pid=1045844 nnp=0\ninput rc=3 errno=0\ninput_read rc=32 errno=0\nQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ",
+          "stderr": "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ",
+          "timeout": false
+        },
+        "unbounded_oom_delta": 0,
+        "gate": true
+      },
+      "native-crash-abort-0": {
+        "case": "native-crash-abort-0",
+        "positive": {
+          "rc": -6,
+          "out_len": 117,
+          "err_len": 0,
+          "stdout": "identity uid=65534 gid=65534 pid=1045845 nnp=0\ninput rc=3 errno=0\ninput_read rc=32 errno=0\nmarker_write rc=3 errno=0\n",
+          "stderr": "",
+          "timeout": false
+        },
+        "unbounded_oom_delta": 0,
+        "gate": true
+      },
+      "native-emptydir-probe-0": {
+        "case": "native-emptydir-probe-0",
+        "positive": {
+          "rc": 0,
+          "out_len": 259,
+          "err_len": 0,
+          "stdout": "identity uid=65534 gid=65534 pid=1045843 nnp=0\ninput rc=3 errno=0\ninput_read rc=32 errno=0\nsys_create rc=-1 errno=13\nrun_create rc=-1 errno=13\nfd 0 /dev/null\nfd 1 pipe:[7923207]\nfd 2 pipe:[7923208]\nfd 3 /proc/1045843/fd\nsibling_visible rc=-1 errno=2\ncomplete\n",
+          "stderr": "",
+          "timeout": false
+        },
+        "unbounded_oom_delta": 0,
+        "gate": true
+      },
+      "native-fd-consume-0": {
+        "case": "native-fd-consume-0",
+        "positive": {
+          "rc": 0,
+          "out_len": 242,
+          "err_len": 0,
+          "stdout": "identity uid=65534 gid=65534 pid=1045838 nnp=0\ninput rc=3 errno=0\ninput_read rc=32 errno=0\nfd_open rc=-1 errno=24\nfd_count 61\nfd 0 /dev/null\nfd 1 pipe:[7923192]\nfd 2 pipe:[7923193]\nfd 3 /proc/1045838/fd\nsibling_visible rc=-1 errno=2\ncomplete\n",
+          "stderr": "",
+          "timeout": false
+        },
+        "unbounded_oom_delta": 0,
+        "gate": true
+      },
+      "native-inode-fill-0": {
+        "case": "native-inode-fill-0",
+        "positive": {
+          "rc": 0,
+          "out_len": 252,
+          "err_len": 0,
+          "stdout": "identity uid=65534 gid=65534 pid=1045834 nnp=0\ninput rc=3 errno=0\ninput_read rc=32 errno=0\ninode_count 20000\ninode_cleanup rc=0 errno=0\nfd 0 /dev/null\nfd 1 pipe:[7923189]\nfd 2 pipe:[7923190]\nfd 3 /proc/1045834/fd\nsibling_visible rc=-1 errno=2\ncomplete\n",
+          "stderr": "",
+          "timeout": false
+        },
+        "unbounded_oom_delta": 0,
+        "gate": true
+      },
+      "native-mem-192": {
+        "case": "native-mem-192",
+        "positive": {
+          "rc": 0,
+          "out_len": 259,
+          "err_len": 0,
+          "stdout": "identity uid=65534 gid=65534 pid=1045709 nnp=0\ninput rc=3 errno=0\ninput_read rc=32 errno=0\nmmap rc=0 errno=0\ntouched_sum 6266880 rss_kb 197440\nfd 0 /dev/null\nfd 1 pipe:[7942244]\nfd 2 pipe:[7942245]\nfd 3 /proc/1045709/fd\nsibling_visible rc=-1 errno=2\ncomplete\n",
+          "stderr": "",
+          "timeout": false
+        },
+        "unbounded_oom_delta": 0,
+        "gate": true
+      },
+      "native-mem-64": {
+        "case": "native-mem-64",
+        "positive": {
+          "rc": 0,
+          "out_len": 258,
+          "err_len": 0,
+          "stdout": "identity uid=65534 gid=65534 pid=1045705 nnp=0\ninput rc=3 errno=0\ninput_read rc=32 errno=0\nmmap rc=0 errno=0\ntouched_sum 2088960 rss_kb 66368\nfd 0 /dev/null\nfd 1 pipe:[7942241]\nfd 2 pipe:[7942242]\nfd 3 /proc/1045705/fd\nsibling_visible rc=-1 errno=2\ncomplete\n",
+          "stderr": "",
+          "timeout": false
+        },
+        "unbounded_oom_delta": 0,
+        "gate": true
+      },
+      "native-mountinfo-0": {
+        "case": "native-mountinfo-0",
+        "positive": {
+          "rc": 0,
+          "out_len": 4279,
+          "err_len": 0,
+          "stdout": "identity uid=65534 gid=65534 pid=1045842 nnp=0\ninput rc=3 errno=0\ninput_read rc=32 errno=0\nmountinfo rc=3 errno=0\nmountinfo_read rc=4005 errno=0\nmounts<<\n509 495 8:80 / / rw,relatime - ext4 /dev/sdf rw,discard,errors=remount-ro,data=ordered\n510 509 0:2 /init /init ro - rootfs rootfs rw,size=3935116k,nr_inodes=983779\n511 509 0:5 / /dev rw,nosuid,relatime - devtmpfs none rw,size=3935116k,nr_inodes=983779,mode=755\n523 511 0:108 / /dev/pts rw,nosuid,noexec,noatime - devpts devpts rw,gid=5,mode=620,ptmxmode=000\n564 511 0:111 / /dev/shm rw,nosuid,nodev,noatime - tmpfs none rw\n566 511 0:85 / /dev/mqueue rw,nosuid,nodev,noexec,relatime - mqueue mqueue rw\n569 511 0:118 / /dev/hugepages rw,nosuid,nodev,relatime - hugetlbfs hugetlbfs rw,pagesize=2M\n572 509 0:22 / /sys rw,nosuid,nodev,noexec,noatime - sysfs sysfs rw\n573 572 0:23 / /sys/fs/cgroup rw,nosuid,nodev,noexec,relatime - cgroup2 cgroup2 rw,nsdelegate\n574 572 0:12 / /sys/kernel/tracing rw,nosuid,nodev,noexec,relatime - tracefs tracefs rw\n575 572 0:7 / /sys/kernel/debug rw,nosuid,nodev,noexec,relatime - debugfs debugfs rw\n576 572 0:120 / /sys/kernel/config rw,nosuid,nodev,noexec,relatime - configfs configfs rw\n577 572 0:80 / /sys/fs/fuse/connections rw,nosuid,nodev,noexec,relatime - fusectl fusectl rw\n578 509 0:107 / /proc rw,nosuid,nodev,noexec,noatime - proc proc rw\n579 578 0:33 / /proc/sys/fs/binfmt_misc rw,relatime - binfmt_misc binfmt_misc rw\n588 509 0:109 / /run rw,nosuid,nodev - tmpfs none rw,mode=755\n589 588 0:110 / /run/lock rw,nosuid,nodev,noexec,noatime - tmpfs none rw\n590 588 0:111 / /run/shm rw,nosuid,nodev,noatime - tmpfs none rw\n591 588 0:112 / /run/user rw,nosuid,nodev,noexec,noatime - tmpfs none rw,mode=755\n592 591 0:86 /run/user /run/user rw,relatime - tmpfs none rw\n593 592 0:132 / /run/user/0 rw,nosuid,nodev,relatime - tmpfs tmpfs rw,size=788024k,nr_inodes=197006,mode=700\n594 588 0:117 / /run/credentials/systemd-journald.service rw,nosuid,nodev,noexec,relatime,nosymfollow - tmpfs none ro,size=1024k,nr_inodes=1024,mode=700,noswap\n595 588 0:122 / /run/credentials/systemd-resolved.service rw,nosuid,nodev,noexec,relatime,nosymfollow - tmpfs none ro,size=1024k,nr_inodes=1024,mode=700,noswap\n702 588 0:131 / /run/credentials/getty@tty1.service rw,nosuid,nodev,noexec,relatime,nosymfollow - tmpfs none ro,size=1024k,nr_inodes=1024,mode=700,noswap\n703 509 0:34 / /usr/lib/wsl/drivers ro,nosuid,nodev,noatime - 9p drivers ro,aname=drivers;fmask=222;dmask=222,cache=5,access=client,msize=65536,trans=fd,rfd=8,wfd=8\n704 509 0:103 / /usr/lib/wsl/lib rw,nosuid,nodev,noatime - overlay none rw,lowerdir=/gpu_lib_packaged:/gpu_lib_inbox,upperdir=/gpu_lib/rw/upper,workdir=/gpu_lib/rw/work,uuid=on\n705 509 0:32 / /mnt/wsl rw,relatime - tmpfs none rw\n706 509 0:86 / /mnt/wslg rw,relatime - tmpfs none rw\n707 706 8:80 / /mnt/wslg/distro ro,relatime - ext4 /dev/sdf rw,discard,errors=remount-ro,data=ordered\n708 706 0:88 /etc/versions.txt /mnt/wslg/versions.txt rw,relatime - overlay none rw,lowerdir=/systemvhd,upperdir=/system/rw/upper,workdir=/system/rw/work,uuid=on\n709 706 0:88 /usr/share/doc /mnt/wslg/doc rw,relatime - overlay none rw,lowerdir=/systemvhd,upperdir=/system/rw/upper,workdir=/system/rw/work,uuid=on\n710 706 0:132 / /mnt/wslg/run/user/0 rw,nosuid,nodev,relatime - tmpfs tmpfs rw,size=788024k,nr_inodes=197006,mode=700\n711 509 0:86 /.X11-unix /tmp/.X11-unix ro,relatime - tmpfs none rw\n712 509 0:29 / /usr/lib/modules/6.6.114.1-microsoft-standard-WSL2 rw,nosuid,nodev,noatime - overlay none rw,lowerdir=/modules,upperdir=/lib/modules/6.6.114.1-microsoft-standard-WSL2/rw/upper,workdir=/lib/modules/6.6.114.1-microsoft-standard-WSL2/rw/work,uuid=on\n713 509 0:115 / /mnt/c rw,noatime - 9p C:\\134 rw,aname=drvfs;path=C:\\;uid=0;gid=0;symlinkroot=/mnt/,cache=5,access=client,msize=65536,trans=fd,rfd=6,wfd=6\n714 509 0:116 / /mnt/d rw,noatime - 9p D:\\134 rw,aname=drvfs;path=D:\\;uid=0;gid=0;symlinkroot=/mnt/,cache=5,access=client,msize=65536,trans=fd,rfd=6,wfd=6\n715 509 0:119 / /tmp rw,nosuid,nodev - tmpfs tmpfs rw,nr_inodes=1048576\n716 715 0:86 /.X11-unix /tmp/.X11-unix ro,relatime - tmpfs none rw\n735 715 0:133 / /tmp rw,relatime - tmpfs tmpfs rw,size=8192k\n\n>>\nfd 0 /dev/null\nfd 1 pipe:[7923204]\nfd 2 pipe:[7923205]\nfd 3 /proc/1045842/fd\nsibling_visible rc=-1 errno=2\ncomplete\n",
+          "stderr": "",
+          "timeout": false
+        },
+        "unbounded_oom_delta": 0,
+        "gate": true
+      },
+      "native-null-writes-0": {
+        "case": "native-null-writes-0",
+        "positive": {
+          "rc": 0,
+          "out_len": 343,
+          "err_len": 0,
+          "stdout": "identity uid=65534 gid=65534 pid=1045846 nnp=0\ninput rc=3 errno=0\ninput_read rc=32 errno=0\nnull_open rc=3 errno=0\nnull_bytes 1048576\nzero_open rc=3 errno=0\nzero_bytes 1048576\ntarget_write rc=-1 errno=2\nsys_write rc=-1 errno=13\nfd 0 /dev/null\nfd 1 pipe:[7923216]\nfd 2 pipe:[7923217]\nfd 3 /proc/1045846/fd\nsibling_visible rc=-1 errno=2\ncomplete\n",
+          "stderr": "",
+          "timeout": false
+        },
+        "unbounded_oom_delta": 0,
+        "gate": true
+      },
+      "native-oomscore-0": {
+        "case": "native-oomscore-0",
+        "positive": {
+          "rc": 0,
+          "out_len": 326,
+          "err_len": 0,
+          "stdout": "identity uid=65534 gid=65534 pid=1045841 nnp=0\ninput rc=3 errno=0\ninput_read rc=32 errno=0\noom_read rc=3 errno=0\noom_readval rc=2 errno=0\noom_open_w rc=3 errno=0\noom_lower rc=-1 errno=13\noom_raise rc=3 errno=0\nfd 0 /dev/null\nfd 1 pipe:[7923201]\nfd 2 pipe:[7923202]\nfd 3 /proc/1045841/fd\nsibling_visible rc=-1 errno=2\ncomplete\n",
+          "stderr": "",
+          "timeout": false
+        },
+        "unbounded_oom_delta": 0,
+        "gate": true
+      },
+      "native-scratch-fill-0": {
+        "case": "native-scratch-fill-0",
+        "positive": {
+          "rc": 0,
+          "out_len": 302,
+          "err_len": 0,
+          "stdout": "identity uid=65534 gid=65534 pid=1045833 nnp=0\ninput rc=3 errno=0\ninput_read rc=32 errno=0\nfill_write rc=73728 errno=0\nscratch_bytes 7340032 scratch_files 7\nscratch_cleanup rc=0 errno=0\nfd 0 /dev/null\nfd 1 pipe:[7923186]\nfd 2 pipe:[7923187]\nfd 3 /proc/1045833/fd\nsibling_visible rc=-1 errno=2\ncomplete\n",
+          "stderr": "",
+          "timeout": false
+        },
+        "unbounded_oom_delta": 0,
+        "gate": true
+      },
+      "native-shm-path-0": {
+        "case": "native-shm-path-0",
+        "positive": {
+          "rc": 0,
+          "out_len": 273,
+          "err_len": 0,
+          "stdout": "identity uid=65534 gid=65534 pid=1045840 nnp=0\ninput rc=3 errno=0\ninput_read rc=32 errno=0\nshm_open rc=3 errno=0\nshm_bytes 1048576 path /dev/shm/p04-1045840\nfd 0 /dev/null\nfd 1 pipe:[7923198]\nfd 2 pipe:[7923199]\nfd 3 /proc/1045840/fd\nsibling_visible rc=-1 errno=2\ncomplete\n",
+          "stderr": "",
+          "timeout": false
+        },
+        "unbounded_oom_delta": 0,
+        "gate": true,
+        "positive_shm_left": [
+          "p04-1045840"
+        ]
+      },
+      "native-shm-probe-0": {
+        "case": "native-shm-probe-0",
+        "positive": {
+          "rc": 0,
+          "out_len": 300,
+          "err_len": 0,
+          "stdout": "identity uid=65534 gid=65534 pid=1045839 nnp=0\ninput rc=3 errno=0\ninput_read rc=32 errno=0\nshmget rc=0 errno=0\nshmat rc=0 errno=0\nshm_touched 522240 rss_kb 17216\nshm_rmid rc=0 errno=0\nfd 0 /dev/null\nfd 1 pipe:[7923195]\nfd 2 pipe:[7923196]\nfd 3 /proc/1045839/fd\nsibling_visible rc=-1 errno=2\ncomplete\n",
+          "stderr": "",
+          "timeout": false
+        },
+        "unbounded_oom_delta": 0,
+        "gate": true
+      },
+      "native-threads-40": {
+        "case": "native-threads-40",
+        "positive": {
+          "rc": 0,
+          "out_len": 1093,
+          "err_len": 0,
+          "stdout": "identity uid=65534 gid=65534 pid=1045725 nnp=0\ninput rc=3 errno=0\ninput_read rc=32 errno=0\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthreads_created 40 fail_errno 0 task_count 41\nfd 0 /dev/null\nfd 1 pipe:[7943363]\nfd 2 pipe:[7943364]\nfd 3 /proc/1045725/fd\nsibling_visible rc=-1 errno=2\ncomplete\n",
+          "stderr": "",
+          "timeout": false
+        },
+        "unbounded_oom_delta": 0,
+        "gate": false
+      },
+      "native-threads-60": {
+        "case": "native-threads-60",
+        "positive": {
+          "rc": 0,
+          "out_len": 1513,
+          "err_len": 0,
+          "stdout": "identity uid=65534 gid=65534 pid=1045769 nnp=0\ninput rc=3 errno=0\ninput_read rc=32 errno=0\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthreads_created 60 fail_errno 0 task_count 61\nfd 0 /dev/null\nfd 1 pipe:[7940404]\nfd 2 pipe:[7940405]\nfd 3 /proc/1045769/fd\nsibling_visible rc=-1 errno=2\ncomplete\n",
+          "stderr": "",
+          "timeout": false
+        },
+        "unbounded_oom_delta": 0,
+        "gate": false
+      },
+      "native-threads-8": {
+        "case": "native-threads-8",
+        "positive": {
+          "rc": 0,
+          "out_len": 419,
+          "err_len": 0,
+          "stdout": "identity uid=65534 gid=65534 pid=1045713 nnp=0\ninput rc=3 errno=0\ninput_read rc=32 errno=0\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthread_touched 32640\nthreads_created 8 fail_errno 0 task_count 9\nthread_touched 32640\nthread_touched 32640\nfd 0 /dev/null\nfd 1 pipe:[7942247]\nfd 2 pipe:[7942248]\nfd 3 /proc/1045713/fd\nsibling_visible rc=-1 errno=2\ncomplete\n",
+          "stderr": "",
+          "timeout": false
+        },
+        "unbounded_oom_delta": 0,
+        "gate": false
+      }
+    },
+    "sibling_create": true,
+    "filter_sha256": "30bfaf6b62030de8b105e1ac8de43f2a9884b2bd5de20e98aef81dce426c1aad",
+    "cases": [
+      {
+        "case": "native-mem-64",
+        "N": 64,
+        "candidate": {
+          "rc": 0,
+          "out_len": 238,
+          "err_len": 0,
+          "stdout": "identity uid=0 gid=0 pid=2 nnp=1\ninput rc=3 errno=0\ninput_read rc=32 errno=0\nmmap rc=0 errno=0\ntouched_sum 2088960 rss_kb 66368\nfd 0 /dev/null\nfd 1 pipe:[7946307]\nfd 2 pipe:[7946308]\nfd 3 /proc/2/fd\nsibling_visible rc=-1 errno=2\ncomplete\n",
+          "stderr": "",
+          "timeout": false
+        },
+        "counter_deltas": {
+          "oom_kill": 0,
+          "pids_max": 0,
+          "target_peak": "68628480"
+        },
+        "candidate_fd_bad": [],
+        "candidate_mounts_bad": [],
+        "leg": "SUPPORTED-leg",
+        "workspace_delta": []
+      },
+      {
+        "case": "native-mem-192",
+        "N": 192,
+        "candidate": {
+          "rc": 1,
+          "out_len": 0,
+          "err_len": 376,
+          "stdout": "",
+          "stderr": "bwrap: Unable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\nbwrap: Unable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\n",
+          "timeout": false
+        },
+        "counter_deltas": {
+          "oom_kill": 0,
+          "pids_max": 0,
+          "target_peak": "68628480"
+        },
+        "candidate_fd_bad": [],
+        "candidate_mounts_bad": [],
+        "leg": "INCONCLUSIVE (candidate mismatch; under review)",
+        "workspace_delta": []
+      },
+      {
+        "case": "native-threads-8",
+        "N": 8,
+        "leg": "INCONCLUSIVE (positive gate failed; candidate not released)"
+      },
+      {
+        "case": "native-threads-40",
+        "N": 40,
+        "leg": "INCONCLUSIVE (positive gate failed; candidate not released)"
+      },
+      {
+        "case": "native-threads-60",
+        "N": 60,
+        "leg": "INCONCLUSIVE (positive gate failed; candidate not released)"
+      },
+      {
+        "case": "native-scratch-fill-0",
+        "N": 0,
+        "candidate": {
+          "rc": 1,
+          "out_len": 0,
+          "err_len": 376,
+          "stdout": "",
+          "stderr": "bwrap: bwrap: Unable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\nUnable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\n",
+          "timeout": false
+        },
+        "counter_deltas": {
+          "oom_kill": 0,
+          "pids_max": 0,
+          "target_peak": "68628480"
+        },
+        "candidate_fd_bad": [],
+        "candidate_mounts_bad": [],
+        "leg": "INCONCLUSIVE (candidate mismatch; under review)",
+        "workspace_delta": []
+      },
+      {
+        "case": "native-inode-fill-0",
+        "N": 0,
+        "candidate": {
+          "rc": 1,
+          "out_len": 0,
+          "err_len": 376,
+          "stdout": "",
+          "stderr": "bwrap: bwrap: Unable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\nUnable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\n",
+          "timeout": false
+        },
+        "counter_deltas": {
+          "oom_kill": 0,
+          "pids_max": 0,
+          "target_peak": "68628480"
+        },
+        "candidate_fd_bad": [],
+        "candidate_mounts_bad": [],
+        "leg": "INCONCLUSIVE (candidate mismatch; under review)",
+        "workspace_delta": []
+      },
+      {
+        "case": "native-fd-consume-0",
+        "N": 0,
+        "candidate": {
+          "rc": 1,
+          "out_len": 0,
+          "err_len": 376,
+          "stdout": "",
+          "stderr": "bwrap: bwrap: Unable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\nUnable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\n",
+          "timeout": false
+        },
+        "counter_deltas": {
+          "oom_kill": 0,
+          "pids_max": 0,
+          "target_peak": "68628480"
+        },
+        "candidate_fd_bad": [],
+        "candidate_mounts_bad": [],
+        "leg": "INCONCLUSIVE (candidate mismatch; under review)",
+        "workspace_delta": []
+      },
+      {
+        "case": "native-shm-probe-0",
+        "N": 0,
+        "candidate": {
+          "rc": 1,
+          "out_len": 0,
+          "err_len": 376,
+          "stdout": "",
+          "stderr": "bwrap: Unable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\nbwrap: Unable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\n",
+          "timeout": false
+        },
+        "counter_deltas": {
+          "oom_kill": 0,
+          "pids_max": 0,
+          "target_peak": "68628480"
+        },
+        "candidate_fd_bad": [],
+        "candidate_mounts_bad": [],
+        "leg": "INCONCLUSIVE (candidate mismatch; under review)",
+        "workspace_delta": []
+      },
+      {
+        "case": "native-shm-path-0",
+        "N": 0,
+        "candidate": {
+          "rc": 1,
+          "out_len": 0,
+          "err_len": 376,
+          "stdout": "",
+          "stderr": "bwrap: bwrap: Unable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\nUnable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\n",
+          "timeout": false
+        },
+        "counter_deltas": {
+          "oom_kill": 0,
+          "pids_max": 0,
+          "target_peak": "68628480"
+        },
+        "candidate_fd_bad": [],
+        "candidate_mounts_bad": [],
+        "leg": "INCONCLUSIVE (candidate mismatch; under review)",
+        "workspace_delta": []
+      },
+      {
+        "case": "native-oomscore-0",
+        "N": 0,
+        "candidate": {
+          "rc": 1,
+          "out_len": 0,
+          "err_len": 376,
+          "stdout": "",
+          "stderr": "bwrap: bwrap: Unable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\nUnable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\n",
+          "timeout": false
+        },
+        "counter_deltas": {
+          "oom_kill": 0,
+          "pids_max": 0,
+          "target_peak": "68628480"
+        },
+        "candidate_fd_bad": [],
+        "candidate_mounts_bad": [],
+        "leg": "INCONCLUSIVE (candidate mismatch; under review)",
+        "workspace_delta": []
+      },
+      {
+        "case": "native-mountinfo-0",
+        "N": 0,
+        "candidate": {
+          "rc": 1,
+          "out_len": 0,
+          "err_len": 323,
+          "stdout": "",
+          "stderr": "bwrap: Unable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\nbwrap: Unable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel config",
+          "timeout": false
+        },
+        "counter_deltas": {
+          "oom_kill": 0,
+          "pids_max": 0,
+          "target_peak": "68628480"
+        },
+        "candidate_fd_bad": [],
+        "candidate_mounts_bad": [],
+        "leg": "INCONCLUSIVE (candidate mismatch; under review)",
+        "workspace_delta": []
+      },
+      {
+        "case": "native-emptydir-probe-0",
+        "N": 0,
+        "candidate": {
+          "rc": 1,
+          "out_len": 0,
+          "err_len": 376,
+          "stdout": "",
+          "stderr": "bwrap: Unable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\nbwrap: Unable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\n",
+          "timeout": false
+        },
+        "counter_deltas": {
+          "oom_kill": 0,
+          "pids_max": 0,
+          "target_peak": "68628480"
+        },
+        "candidate_fd_bad": [],
+        "candidate_mounts_bad": [],
+        "leg": "INCONCLUSIVE (candidate mismatch; under review)",
+        "workspace_delta": []
+      },
+      {
+        "case": "native-big-output-0",
+        "N": 0,
+        "candidate": {
+          "rc": 1,
+          "out_len": 0,
+          "err_len": 376,
+          "stdout": "",
+          "stderr": "bwrap: Unable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\nbwrap: Unable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\n",
+          "timeout": false
+        },
+        "counter_deltas": {
+          "oom_kill": 0,
+          "pids_max": 0,
+          "target_peak": "68628480"
+        },
+        "candidate_fd_bad": [],
+        "candidate_mounts_bad": [],
+        "leg": "INCONCLUSIVE (candidate mismatch; under review)",
+        "workspace_delta": []
+      },
+      {
+        "case": "native-crash-abort-0",
+        "N": 0,
+        "candidate": {
+          "rc": 1,
+          "out_len": 0,
+          "err_len": 376,
+          "stdout": "",
+          "stderr": "bwrap: bwrap: Unable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\nUnable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\n",
+          "timeout": false
+        },
+        "counter_deltas": {
+          "oom_kill": 0,
+          "pids_max": 0,
+          "target_peak": "68628480"
+        },
+        "candidate_fd_bad": [],
+        "candidate_mounts_bad": [],
+        "leg": "INCONCLUSIVE (candidate mismatch; under review)",
+        "workspace_delta": []
+      },
+      {
+        "case": "native-null-writes-0",
+        "N": 0,
+        "candidate": {
+          "rc": 1,
+          "out_len": 0,
+          "err_len": 376,
+          "stdout": "",
+          "stderr": "bwrap: bwrap: Unable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\nUnable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\n",
+          "timeout": false
+        },
+        "counter_deltas": {
+          "oom_kill": 0,
+          "pids_max": 0,
+          "target_peak": "68628480"
+        },
+        "candidate_fd_bad": [],
+        "candidate_mounts_bad": [],
+        "leg": "INCONCLUSIVE (candidate mismatch; under review)",
+        "workspace_delta": []
+      },
+      {
+        "case": "hello",
+        "N": [
+          0,
+          0
+        ],
+        "candidate": {
+          "rc": 1,
+          "out_len": 0,
+          "err_len": 376,
+          "stdout": "",
+          "stderr": "bwrap: Unable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\nbwrap: Unable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\n",
+          "timeout": false
+        },
+        "counter_deltas": {
+          "oom_kill": 0,
+          "pids_max": 0,
+          "target_peak": "68628480"
+        },
+        "candidate_fd_bad": [],
+        "candidate_mounts_bad": [],
+        "leg": "INCONCLUSIVE (candidate mismatch; under review)",
+        "workspace_delta": []
+      },
+      {
+        "case": "alloc64",
+        "N": [
+          64,
+          0
+        ],
+        "candidate": {
+          "rc": 1,
+          "out_len": 0,
+          "err_len": 376,
+          "stdout": "",
+          "stderr": "bwrap: bwrap: Unable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\nUnable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\n",
+          "timeout": false
+        },
+        "counter_deltas": {
+          "oom_kill": 0,
+          "pids_max": 0,
+          "target_peak": "68628480"
+        },
+        "candidate_fd_bad": [],
+        "candidate_mounts_bad": [],
+        "leg": "INCONCLUSIVE (candidate mismatch; under review)",
+        "workspace_delta": []
+      },
+      {
+        "case": "alloc160",
+        "N": [
+          160,
+          0
+        ],
+        "candidate": {
+          "rc": 1,
+          "out_len": 0,
+          "err_len": 376,
+          "stdout": "",
+          "stderr": "bwrap: Unable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\nbwrap: Unable to set up system call filtering as requested: prctl(PR_SET_SECCOMP) reported EINVAL. (Hint: this requires a kernel configured with CONFIG_SECCOMP and CONFIG_SECCOMP_FILTER.)\n",
+          "timeout": false
+        },
+        "counter_deltas": {
+          "oom_kill": 0,
+          "pids_max": 0,
+          "target_peak": "68628480"
+        },
+        "candidate_fd_bad": [],
+        "candidate_mounts_bad": [],
+        "leg": "INCONCLUSIVE (candidate mismatch; under review)",
+        "workspace_delta": []
+      }
+    ],
+    "halted": false,
+    "input_sha256_after": "ef0212c0fce05ec27198d09b804714d65d4a640ca8fc8e71d214cf88a8b9662f",
+    "manager_final_cgroup": "0::/gagamba-ar7-P04-2961113bd08a410da019e7c079d90e3c/delegated/manager"
+  },
+  "host_shm_p04_left": [],
+  "observer_domains": {
+    ".": "",
+    "delegated": "",
+    "delegated/target": "",
+    "delegated/manager": "",
+    "delegated/sibling": "",
+    "unbounded": ""
+  },
+  "cleanup_events": "populated 0\nfrozen 0",
+  "cleanup_absence": {
+    "outer": true,
+    "workspace": true,
+    "manager": true,
+    "host_shm_clean": true
+  },
+  "cleanup_confirmed": true
+}
