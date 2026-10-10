@@ -27,6 +27,7 @@ PIN = '523da3e7399044be5163aee6f57a77a6bef7454376e28f0a0627920bae1b76b6'
 CLONE_NEWNS = 0x00020000
 MS_PRIVATE = 1 << 18
 MS_REC = 1 << 14
+MS_BIND = 4096
 
 def sha(path): return hashlib.sha256(pathlib.Path(path).read_bytes()).hexdigest()
 def read(path):
@@ -40,8 +41,13 @@ def leaf_own(path):
     os.chown(path, UID, UID)
     for p in path.iterdir():
         if p.is_file(): os.chown(p, UID, UID)
-def bounds():
-    resource.setrlimit(resource.RLIMIT_FSIZE, (1048576,1048576))
+def bounds(fsize=True):
+    # RLIMIT_FSIZE is harness-side safety only. Measured 2026-10-10: a 1 MiB
+    # file-size limit breaks CoreCLR startup immediately (0x8007000E), so
+    # .NET cases run without it; their storage bound stays the 8 MiB tmpfs
+    # plus manager capture caps. Native cases keep the 1 MiB backstop.
+    if fsize:
+        resource.setrlimit(resource.RLIMIT_FSIZE, (1048576,1048576))
     resource.setrlimit(resource.RLIMIT_NOFILE,(64,64))
     resource.setrlimit(resource.RLIMIT_CORE,(0,0))
     resource.setrlimit(resource.RLIMIT_CPU,(12,12))
@@ -165,8 +171,10 @@ def manager(a):
     try:
         (cg/'sibling').mkdir();out['sibling_create']=True
         write(cg/'sibling/memory.max',67108864);write(cg/'sibling/pids.max',16)
-        def enter_target():
+        def enter_target_native():
             write(cg/'target/cgroup.procs',os.getpid());bounds()
+        def enter_target_dotnet():
+            write(cg/'target/cgroup.procs',os.getpid());bounds(fsize=False)
         seccomp_fd=os.memfd_create('ar7-P04-seccomp',os.MFD_CLOEXEC)
         os.write(seccomp_fd,filter_bytes());os.lseek(seccomp_fd,0,0)
         out['filter_sha256']=hashlib.sha256(filter_bytes()).hexdigest()
@@ -194,11 +202,11 @@ def manager(a):
             bt_before=leaf_counters(cg/'target')
             if kind=='native':
                 argv=(common+['--seccomp',str(seccomp_fd),'--','/target',mode,str(cg),str(root),a.nonce,'/input',str(N)])
-                cand=launch(argv,preexec=enter_target,pass_fds=(seccomp_fd,))
+                cand=launch(argv,preexec=enter_target_native,pass_fds=(seccomp_fd,))
             else:
                 argv=(common+['--ro-bind',str(app),'/app','--setenv','HOME','/tmp','--setenv','DOTNET_GCServer','0',
                               '--seccomp',str(seccomp_fd),'--','/app/P04Workload',str(alloc),str(threads),'/input','/tmp'])
-                cand=launch(argv,preexec=enter_target,pass_fds=(seccomp_fd,))
+                cand=launch(argv,preexec=enter_target_dotnet,pass_fds=(seccomp_fd,))
             rec['candidate']=cand
             bt_after=leaf_counters(cg/'target')
             oom_delta=ev_get(bt_after['events'],'oom_kill')-ev_get(bt_before['events'],'oom_kill')
@@ -277,7 +285,13 @@ def observer(a):
         (outer/'unbounded').mkdir();leaf_own(outer/'unbounded')
         os.chown(root,UID,UID)
         unbounded=outer/'unbounded'
-        def place_pos():
+        def bind_into_tmp(src, dstname):
+            dst = '/tmp/' + dstname
+            fd = os.open(dst, os.O_CREAT | os.O_WRONLY, 0o600)
+            os.close(fd)
+            if _libc.mount(src.encode(), dst.encode(), None, MS_BIND, None) != 0:
+                raise OSError(ctypes.get_errno(), 'bind-' + dstname)
+        def place_pos(dotnet):
             if hasattr(os,'unshare'):
                 os.unshare(CLONE_NEWNS)
             elif _libc.unshare(CLONE_NEWNS)!=0:
@@ -286,8 +300,15 @@ def observer(a):
                 raise OSError(ctypes.get_errno(),'remount-private')
             if _libc.mount(b'tmpfs',b'/tmp',b'tmpfs',0,b'size=8388608')!=0:
                 raise OSError(ctypes.get_errno(),'mount-tmpfs')
+            # The fresh /tmp hides the fixture dir: bind the workload files
+            # into it (measured setup requirement, not a sandbox property).
+            if dotnet:
+                bind_into_tmp(str(root/'input'), 'pos-input')
+            else:
+                bind_into_tmp(str(root/'worker'), 'pos-worker')
+                bind_into_tmp(str(root/'input'), 'pos-input')
             write(unbounded/'cgroup.procs',os.getpid())
-            os.setgroups([]);os.setgid(UID);os.setuid(UID);bounds()
+            os.setgroups([]);os.setgid(UID);os.setuid(UID);bounds(fsize=not dotnet)
         dotnet_ok=data['dotnet_staging']['present']
         positives={};gates={}
         all_cases=NATIVE_CASES+([c for c in DOTNET_CASES] if dotnet_ok else [])
@@ -296,16 +317,20 @@ def observer(a):
             if kind=='native':
                 _,mode,N,pos_rc,_,pos_markers,_,_,_,crule,extra=case
                 dname=case_id(case)
-                cmd=[str(root/'worker'),mode,str(cg),str(root),nonce,str(root/'input'),str(N)]
-                kw=dict(cwd=str(root),env=None)
+                cmd=['/tmp/pos-worker',mode,str(cg),str(root),nonce,'/tmp/pos-input',str(N)]
+                kw=dict(cwd='/tmp',env=None)
+                def pre():
+                    place_pos(False)
             else:
                 _,dname,alloc,threads,pos_rc,_,pos_markers,_,_=case
-                cmd=[str(staging/'P04Workload'),str(alloc),str(threads),str(root/'input'),str(root)]
-                kw=dict(cwd=str(root),env={'HOME':str(root),'DOTNET_GCServer':'0','PATH':os.environ.get('PATH','')})
+                cmd=[str(staging/'P04Workload'),str(alloc),str(threads),'/tmp/pos-input','/tmp']
+                kw=dict(cwd='/tmp',env={'HOME':str(root),'DOTNET_GCServer':'0','PATH':os.environ.get('PATH','')})
+                def pre():
+                    place_pos(True)
             rec={'case':dname}
             bu_before=leaf_counters(unbounded)
             try:
-                pos=launch(cmd,preexec=place_pos,**kw)
+                pos=launch(cmd,preexec=pre,**kw)
             except Exception as e:
                 rec['positive']={'launch_error':repr(e)};rec['gate']=False
                 positives[dname]=rec;gates[dname]={'ok':False,'reason':'launch failed'};continue
