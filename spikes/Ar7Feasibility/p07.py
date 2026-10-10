@@ -975,8 +975,16 @@ def do_r5phase(ctx, outer_frag):
                           str(ctx.root), ctx.nonce, '/input', '0'])
     p = subprocess.Popen(argv, stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                          close_fds=True, pass_fds=(ctx.seccomp_fd,), preexec_fn=lambda: ctx.enter_target(None))
-    line = p.stdout.readline()
-    marker = b'RELEASED' in line
+    # NOTE (m1): the worker preamble (identity/input lines) precedes RELEASED;
+    # the marker is awaited by draining, never by assuming the first line.
+    marker = False
+    for _ in range(10):
+        line = p.stdout.readline()
+        if not line:
+            break
+        if b'RELEASED' in line:
+            marker = True
+            break
     phase = ctx.root / 'phase-r5'
     if marker:
         phase.write_text('RELEASED-EXECUTING monotonic=%r nonce=%s' % (time.monotonic(), ctx.nonce))
