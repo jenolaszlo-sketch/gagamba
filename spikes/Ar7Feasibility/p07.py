@@ -1212,6 +1212,102 @@ def do_r2gate_pos(ctx, outer_frag):
 def do_r2gate_dead(ctx, outer_frag):
     return do_r2gate(ctx, outer_frag, False)
 
+def spawn_sgate(ctx, outer_frag):
+    """Release the SEPARATE pre-target gate: Bubblewrap launches /gate
+    directly (a distinct static binary sharing no initialization code with
+    /target). The documented fixture-preparation delta vs COMMON is exactly
+    one extra --ro-bind of the gate binary; namespaces/caps/seccomp/cgroups
+    are unchanged. No auth is ever written here."""
+    argv = (ctx.common + ['--ro-bind', str(ctx.root / 'gate'), '/gate', '--',
+                          '/gate', ctx.nonce, str(ctx.cg), str(ctx.root), '/input'])
+    p = subprocess.Popen(argv, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                         close_fds=True, pass_fds=(ctx.seccomp_fd,),
+                         preexec_fn=lambda: ctx.enter_target(None))
+    pretarget = False
+    ready = b''
+    for _ in range(20):
+        chunk = p.stdout.readline()
+        if not chunk:
+            break
+        ready += chunk
+        if b'PRETARGET_GATE_REACHED' in chunk:
+            pretarget = True
+            break
+    text = ready.decode(errors='replace')
+    # Structural corroboration (not proof): a separate gate emits no worker
+    # preamble — identity/input lines must be absent pre-marker.
+    preamble_free = ('identity ' not in text and 'input rc=' not in text)
+    resolved = resolve_ns_root(outer_frag, 'delegated/target', '2', '/gate')
+    rec = {'gate_reached': pretarget, 'preamble_free': preamble_free,
+           'pre_marker_output': text[:2000],
+           'ns_resolution': resolved, 'bwrap_host_pid': p.pid,
+           'bwrap_argv_tail': argv[-11:]}
+    if not pretarget or len(resolved) != 1:
+        p.kill(); p.wait()
+        rec['leg'] = 'INCONCLUSIVE (separate gate unreached or unresolvable)'
+        return None, rec
+    rec['state'] = 'GATE-HELD'
+    return p, rec
+
+def do_r2sgate(ctx, outer_frag, positive):
+    # Separate-gate R2 releaser. Same decision protocol as the in-worker
+    # gate ('A' authorizes with the exact nonce; anything else never does).
+    p, rec = spawn_sgate(ctx, outer_frag)
+    if p is None:
+        return rec
+    evt({'r2sgate': 'GATE-READY', 'positive': positive,
+         'gate': rec['ns_resolution'][0]})
+    try:
+        decision = sys.stdin.read(1)
+    except OSError as e:
+        rec['decision_error'] = repr(e); decision = ''
+    rec['decision'] = decision
+    if positive and decision == 'A':
+        try:
+            p.stdin.write((ctx.nonce + '\n').encode()); p.stdin.flush()
+            rec['auth_sent'] = True
+            evt({'r2sgate': 'AUTH_SENT'})
+        except OSError as e:
+            rec['auth_sent'] = False; rec['auth_error'] = repr(e)
+    else:
+        rec['auth_sent'] = False
+    try:
+        stdout, stderr = p.communicate(timeout=25)
+        out = stdout.decode(errors='replace')
+        rec['candidate'] = dict(rc=p.returncode, stdout_tail=out[-3000:], timeout=False)
+    except subprocess.TimeoutExpired:
+        p.kill(); stdout, stderr = p.communicate()
+        rec['candidate'] = dict(rc=p.returncode, timeout=True)
+    out = rec['candidate'].get('stdout_tail', '')
+    rec['auth_received_echo'] = 'AUTH_RECEIVED' in out
+    rec['target_markers'] = [m for m in ('GATE_AUTH_OK', 'spinwork_sum', 'complete')
+                             if m in out]
+    empty, dt = wait_empty(ctx.cg / 'target', 10.0)
+    rec['domain_empty'] = empty; rec['empty_after_s'] = dt
+    if positive:
+        if (rec['auth_sent'] and rec['auth_received_echo'] and 'GATE_AUTH_OK' in out
+                and 'spinwork_sum' in out and 'complete' in out and p.returncode == 0 and empty):
+            rec['leg'] = ('SUPPORTED-leg (separate gate released the real target on exact-nonce auth; '
+                          'useful bounded work; empty)')
+        else:
+            rec['leg'] = 'INCONCLUSIVE (separate-gate positive control failed)'
+    else:
+        if (not rec['auth_sent'] and not rec['auth_received_echo'] and 'GATE_AUTH_OK' not in out
+                and empty and not rec['candidate'].get('timeout')):
+            rec['leg'] = ('SUPPORTED-leg (barrier held, no auth, no target exec; '
+                          'see runner audit)')
+        elif not empty:
+            rec['leg'] = 'BLOCKED (domain survived the separate-gate deadline stop)'
+        else:
+            rec['leg'] = 'INCONCLUSIVE (separate-gate deadline completion unmet)'
+    return rec
+
+def do_r2sgate_pos(ctx, outer_frag):
+    return do_r2sgate(ctx, outer_frag, True)
+
+def do_r2sgate_dead(ctx, outer_frag):
+    return do_r2sgate(ctx, outer_frag, False)
+
 CASES = {
     'positives': do_positives,
     'c1': do_c1, 'c2': do_c2, 'c3': do_c3, 'c4': do_c4, 'c5': do_c5,
@@ -1227,6 +1323,7 @@ CASES = {
     'r5phase': do_r5phase, 'r6stale': do_r6stale,
     'r3live': do_r3live, 'r4live': do_r4live,
     'r2gate_pos': do_r2gate_pos, 'r2gate_dead': do_r2gate_dead,
+    'r2sgate_pos': do_r2sgate_pos, 'r2sgate_dead': do_r2sgate_dead,
 }
 SUITE = ['positives', 'c1', 'c2', 'c3', 'c4', 'c5', 'c6', 'c7', 'c8', 'c9', 'c10',
          'cancel_det', 'cancel_race', 'bat_daemon', 'bat_fork', 'bat_reexec', 'bat_interfere', 'c11']
@@ -1266,8 +1363,20 @@ def observer(a):
                                str(root / 'worker'), str(pathlib.Path(__file__).with_suffix('.c'))])
         if data['compile']['rc']:
             raise RuntimeError('compile failed before release')
-        data['worker_sha256'] = sha(root / 'worker')
-        (root / 'input').write_text(nonce); os.chmod(root / 'input', 0o444)
+            data['worker_sha256'] = sha(root / 'worker')
+            if separate:
+                gsrc = str(pathlib.Path(__file__).parent / 'p07gate.c')
+                gcomp = run(['/usr/bin/gcc', '-static', '-O2', '-Wall', '-Wextra', '-o',
+                             str(root / 'gate'), gsrc])
+                data['gate_compile'] = gcomp
+                data['gate_source'] = gsrc
+                if gcomp['rc']:
+                    raise RuntimeError('gate compile failed before release')
+                data['gate_sha256'] = sha(root / 'gate')
+                os.chmod(root / 'gate', 0o755)
+            else:
+                data['gate_sha256'] = 'not-requested (in-worker gate case)'
+            (root / 'input').write_text(nonce); os.chmod(root / 'input', 0o444)
         outer.mkdir(); write(outer / 'memory.max', 268435456); write(outer / 'pids.max', 64)
         write(outer / 'memory.swap.max', 0); write(outer / 'cgroup.subtree_control', '+memory +pids')
         cg.mkdir(); write(cg / 'memory.max', 268435456); write(cg / 'pids.max', 64)
@@ -1988,12 +2097,13 @@ def full_leaf_snapshot(cg, outer_frag):
                           'cgroup': member.strip()[:160]})
     return sorted(found, key=lambda d: d['pid'])
 
-def run_r2(a, kind):
+def run_r2(a, kind, pos_case='r2gate_pos', dead_case='r2gate_dead'):
     """R2 replacement runner (root): positive proves the gate releases the
     real target; deadline proves the barrier held with no auth and no target
     exec, then stops the owned domain. Manager stays alive across the stop."""
     assert os.getuid() == 0
-    case = 'r2gate_pos' if kind == 'r2pos' else 'r2gate_dead'
+    case = pos_case if kind == 'r2pos' else dead_case
+    separate = 'sgate' in case
     nonce = uuid.uuid4().hex
     root = pathlib.Path('/tmp') / ('gagamba-ar7-P07-' + nonce)
     outer = pathlib.Path('/sys/fs/cgroup') / ('gagamba-ar7-P07-' + nonce)
@@ -2063,14 +2173,23 @@ def run_r2(a, kind):
                 data['pre_decision_snapshot'] = snap
                 tgt = [e for e in snap if e['leaf'] == 'target']
                 bwrap = [e for e in tgt if e['cmdline'].startswith('/usr/bin/bwrap')]
-                gate = [e for e in tgt if e not in bwrap and '/target gate ' in e['cmdline']]
-                others = [e for e in tgt if e not in bwrap and e not in gate]
+                if separate:
+                    # Separate gate: its cmdline starts with /gate (never
+                    # /target); ANY non-bwrap /target process is a failure.
+                    gate = [e for e in tgt if e not in bwrap and e['cmdline'].startswith('/gate ')]
+                    others = [e for e in tgt if e not in bwrap and e not in gate
+                              and '/target' in e['cmdline']]
+                    gate_ok = all(e['cmdline'].startswith('/gate ') for e in gate)
+                else:
+                    gate = [e for e in tgt if e not in bwrap and '/target gate ' in e['cmdline']]
+                    others = [e for e in tgt if e not in bwrap and e not in gate]
+                    gate_ok = all('/target gate ' in e['cmdline'] for e in gate)
                 data['phase_proof'] = {
                     'target_leaf_members': len(tgt),
                     'gate_processes': [(e['pid'], e['state'], e['starttime']) for e in gate],
                     'bwrap_processes': [(e['pid'], e['state']) for e in bwrap],
                     'non_gate_target_processes': others,
-                    'gate_cmdline_still_gate': all('/target gate ' in e['cmdline'] for e in gate),
+                    'gate_cmdline_still_gate': gate_ok,
                     'auth_received_echo_in_output': any('AUTH_RECEIVED' in l for l in pre_lines),
                     'target_markers_in_output': [l for l in pre_lines
                                                  if 'GATE_AUTH_OK' in l or l.startswith('generation ')],
@@ -2305,6 +2424,8 @@ if __name__ == '__main__':
     ap.add_argument('--r1', action='store_true')
     ap.add_argument('--live-runner', action='store_true')
     ap.add_argument('--r2-runner', action='store_true')
+    ap.add_argument('--pos-case', default='r2gate_pos')
+    ap.add_argument('--dead-case', default='r2gate_dead')
     ap.add_argument('--kind')
     ap.add_argument('--r5-wrapper', action='store_true')
     ap.add_argument('--observer-only-r5', action='store_true')
@@ -2328,7 +2449,7 @@ if __name__ == '__main__':
     elif args.live_runner:
         sys.exit(run_live(args, args.kind))
     elif args.r2_runner:
-        sys.exit(run_r2(args, args.kind))
+        sys.exit(run_r2(args, args.kind, args.pos_case, args.dead_case))
     elif args.r5_wrapper:
         sys.exit(r5_wrapper(args))
     elif args.observer_only_r5:
