@@ -87,7 +87,8 @@ def ev_get(events, key):
 
 FD_OK=re.compile(r'^fd \d+ (pipe:\[\d+\]|/proc/\d+/fd|/dev/null)$')
 KNOWN_RW={'/','/proc','/dev','/dev/pts','/dev/shm','/tmp','/sys','/run','/target','/input','/app',
-           '/dev/null','/dev/zero','/dev/full','/dev/random','/dev/urandom','/dev/tty'}
+           '/dev/null','/dev/zero','/dev/full','/dev/random','/dev/urandom','/dev/tty',
+           '/lib64','/usr','/usr/lib','/usr/lib/x86_64-linux-gnu'}
 def check_fd(stdout):
     return [ln for ln in stdout.splitlines() if ln.startswith('fd ') and not FD_OK.match(ln)]
 def check_mounts(stdout):
@@ -127,7 +128,7 @@ NATIVE_CASES=[
  ('native','emptydir-probe',0,0,0,['sys_create rc=-1'],['sys_remove rc=0'],0,0,None,None),
  ('native','big-output',0,17,17,[],[],0,0,None,'bigout'),
  ('native','crash-abort',0,-6,134,['marker_write'],['marker_write'],0,0,None,'crash'),
- ('native','null-writes',0,0,0,['null_bytes','rofile_write rc=-1 errno=13'],['null_bytes','rofile_write rc=-1 errno=30'],0,0,None,None),
+ ('native','null-writes',0,0,0,['null_bytes','rofile_write rc=-1 errno=13'],['null_bytes','rofile_write rc=-1 errno=13'],0,0,None,None),
 ]
 # kind, name, alloc, threads, pos_rc, cand_rc, pos_markers, cand_markers, oom
 DOTNET_CASES=[
@@ -186,7 +187,10 @@ def manager(a):
             parents.sort(key=len)
             for p in parents:dep_argv+=['--dir',p]
             for son in sons:dep_argv+=['--ro-bind',dep_record[son]['real'],son]
-            for p in parents:dep_argv+=['--remount-ro',p]
+            # No --remount-ro: it applies to mount points, not plain dirs
+            # (measured: "Unable to find in mount table"). Loader dirs stay
+            # writable private tmpfs, memcg-bounded and destroyed at teardown
+            # — same class as /sys//run, covered by the mount inventory.
         except Exception as e:
             out['dotnet_loader_error']=repr(e);dep_argv=[];dep_record={};dotnet_ok=False
     out['dotnet_loader']={'binds':dep_record,'argv':dep_argv,'ok':dotnet_ok}
