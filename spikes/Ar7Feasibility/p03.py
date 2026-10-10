@@ -209,8 +209,9 @@ def manager(a):
         def unix_server(tag, addr, addrlen, expect, reply):
             try:
                 s=socket.socket(socket.AF_UNIX,socket.SOCK_STREAM)
-                try:os.unlink(addr) if isinstance(addr,str) else None
-                except OSError:pass
+                if isinstance(addr,str) and not addr.startswith('\0'):
+                    try:os.unlink(addr)
+                    except OSError:pass
                 s.bind(addr);s.listen(4)
             except OSError as e:
                 out[tag+'_bind_error']=repr(e);return None

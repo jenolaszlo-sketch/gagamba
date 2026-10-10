@@ -1,0 +1,117 @@
+{
+  "probe": "P03",
+  "source_sha": "24a769df36853243de0a67d78740e66d3fe0170d",
+  "nonce": "b70ec3f2cdf9410d9659a4829e64cb2f",
+  "date_utc": "2026-10-10T01:46:10Z",
+  "host": {
+    "kernel": "6.6.114.1-microsoft-standard-WSL2",
+    "arch": "x86_64",
+    "distribution": "PRETTY_NAME=\"Ubuntu 26.04.1 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"26.04\"\nVERSION=\"26.04.1 LTS (Resolute Raccoon)\"\nVERSION_CODENAME=resolute\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=resolute\nLOGO=ubuntu-logo",
+    "glibc": "glibc 2.43",
+    "lsm": "UNKNOWN: [Errno 2] No such file or directory: '/sys/kernel/security/lsm'",
+    "yama": "1",
+    "userns_max": "30743",
+    "cgroup_mount": "none /usr/lib/modules/6.6.114.1-microsoft-standard-WSL2 overlay rw,nosuid,nodev,noatime,lowerdir=/modules,upperdir=/lib/modules/6.6.114.1-microsoft-standard-WSL2/rw/upper,workdir=/lib/modules/6.6.114.1-microsoft-standard-WSL2/rw/work,uuid=on 0 0\nnone /mnt/wsl tmpfs rw,relatime 0 0\ndrivers /usr/lib/wsl/drivers 9p ro,nosuid,nodev,noatime,aname=drivers;fmask=222;dmask=222,cache=5,access=client,msize=65536,trans=fd,rfd=8,wfd=8 0 0\n/dev/sdf / ext4 rw,relatime,discard,errors=remount-ro,data=ordered 0 0\nnone /mnt/wslg tmpfs rw,relatime 0 0\n/dev/sdf /mnt/wslg/distro ext4 ro,relatime,discard,errors=remount-ro,data=ordered 0 0\nnone /usr/lib/wsl/lib overlay rw,nosuid,nodev,noatime,lowerdir=/gpu_lib_packaged:/gpu_lib_inbox,upperdir=/gpu_lib/rw/upper,workdir=/gpu_lib/rw/work,uuid=on 0 0\nrootfs /init rootfs ro,size=3935116k,nr_inodes=983779 0 0\nnone /dev devtmpfs rw,nosuid,relatime,size=3935116k,nr_inodes=983779,mode=755 0 0\nsysfs /sys sysfs rw,nosuid,nodev,noexec,noatime 0 0\nproc /proc proc rw,nosuid,nodev,noexec,noatime 0 0\ndevpts /dev/pts devpts rw,nosuid,noexec,noatime,gid=5,mode=620,ptmxmode=000 0 0\nnone /run tmpfs rw,nosuid,nodev,mode=755 0 0\nnone /run/lock tmpfs rw,nosuid,nodev,noexec,noatime 0 0\nnone /run/shm tmpfs rw,nosuid,nodev,noatime 0 0\nnone /dev/shm tmpfs rw,nosuid,nodev,noatime 0 0\nnone /run/user tmpfs rw,nosuid,nodev,noexec,noatime,mode=755 0 0\nbinfmt_misc /proc/sys/fs/binfmt_misc binfmt_misc rw,relatime 0 0\ncgroup2 /sys/fs/cgroup cgroup2 rw,nosuid,nodev,noexec,relatime,nsdelegate 0 0\nnone /mnt/wslg/versions.txt overlay rw,relatime,lowerdir=/systemvhd,upperdir=/system/rw/upper,workdir=/system/rw/work,uuid=on 0 0\nnone /mnt/wslg/doc overlay rw,relatime,lowerdir=/systemvhd,upperdir=/system/rw/upper,workdir=/system/rw/work,uuid=on 0 0\nnone /tmp/.X11-unix tmpfs ro,relatime 0 0\nC:\\134 /mnt/c 9p rw,noatime,aname=drvfs;path=C:\\;uid=0;gid=0;symlinkroot=/mnt/,cache=5,access=client,msize=65536,trans=fd,rfd=6,wfd=6 0 0\nD:\\134 /mnt/d 9p rw,noatime,aname=drvfs;path=D:\\;uid=0;gid=0;symlinkroot=/mnt/,cache=5,access=client,msize=65536,trans=fd,rfd=6,wfd=6 0 0\nnone /run/user tmpfs rw,relatime 0 0\nnone /run/credentials/systemd-journald.service tmpfs ro,nosuid,nodev,noexec,relatime,nosymfollow,size=1024k,nr_inodes=1024,mode=700,noswap 0 0\nmqueue /dev/mqueue mqueue rw,nosuid,nodev,noexec,relatime 0 0\ntracefs /sys/kernel/tracing tracefs rw,nosuid,nodev,noexec,relatime 0 0\nhugetlbfs /dev/hugepages hugetlbfs rw,nosuid,nodev,relatime,pagesize=2M 0 0\ntmpfs /tmp tmpfs rw,nosuid,nodev,nr_inodes=1048576 0 0\ndebugfs /sys/kernel/debug debugfs rw,nosuid,nodev,noexec,relatime 0 0\nconfigfs /sys/kernel/config configfs rw,nosuid,nodev,noexec,relatime 0 0\nfusectl /sys/fs/fuse/connections fusectl rw,nosuid,nodev,noexec,relatime 0 0\nnone /run/credentials/systemd-resolved.service tmpfs ro,nosuid,nodev,noexec,relatime,nosymfollow,size=1024k,nr_inodes=1024,mode=700,noswap 0 0\nnone /tmp/.X11-unix tmpfs ro,relatime 0 0\nnone /run/credentials/getty@tty1.service tmpfs ro,nosuid,nodev,noexec,relatime,nosymfollow,size=1024k,nr_inodes=1024,mode=700,noswap 0 0\ntmpfs /run/user/0 tmpfs rw,nosuid,nodev,relatime,size=788024k,nr_inodes=197006,mode=700 0 0\ntmpfs /mnt/wslg/run/user/0 tmpfs rw,nosuid,nodev,relatime,size=788024k,nr_inodes=197006,mode=700 0 0",
+    "helper": {
+      "argv": [
+        "/usr/bin/bwrap",
+        "--version"
+      ],
+      "rc": 0,
+      "stdout": "bubblewrap 0.11.1\n",
+      "stderr": ""
+    },
+    "helper_sha256": "523da3e7399044be5163aee6f57a77a6bef7454376e28f0a0627920bae1b76b6",
+    "helper_mode": "0o755"
+  },
+  "paths": {
+    "root": "/tmp/gagamba-ar7-P03-b70ec3f2cdf9410d9659a4829e64cb2f",
+    "outer": "/sys/fs/cgroup/gagamba-ar7-P03-b70ec3f2cdf9410d9659a4829e64cb2f",
+    "delegated": "/sys/fs/cgroup/gagamba-ar7-P03-b70ec3f2cdf9410d9659a4829e64cb2f/delegated"
+  },
+  "observer_uid": 0,
+  "source_hashes": {
+    "p03.c": "3b09c90edbcc42b0ee1b2e4cb61851714e1843f1f8f0f884efca0047988cb66d",
+    "p03.py": "f1a7ca030d4eb3aaf15cd08027deadbd9e69f9af522b8682be65a0681242e94e"
+  },
+  "compile": {
+    "argv": [
+      "/usr/bin/gcc",
+      "-static",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-o",
+      "/tmp/gagamba-ar7-P03-b70ec3f2cdf9410d9659a4829e64cb2f/worker",
+      "/mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p03.c"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "worker_sha256": "819209af30cf9d8f33ee2edf4c38e2d1d71efdb9acf2b3b3a2b692f946bfb5c2",
+  "metadata_provision": {
+    "argv": [
+      "/usr/sbin/ip",
+      "addr",
+      "add",
+      "169.254.169.254/32",
+      "dev",
+      "lo"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "manager_pid": 1037505,
+  "external_process_samples": {
+    "1037505": {
+      "cgroup": "0::/gagamba-ar7-P03-b70ec3f2cdf9410d9659a4829e64cb2f/delegated/manager",
+      "status": "Name:\tpython3\nUmask:\t0022\nState:\tR (running)\nTgid:\t1037505\nNgid:\t0\nPid:\t1037505\nPPid:\t1037494\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1037505\nNSpid:\t1037505\nNSpgid:\t1037494\nNSsid:\t1037494\nKthread:\t0\nVmPeak:\t   19032 kB\nVmSize:\t   19032 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t   12468 kB\nVmRSS:\t   12468 kB\nRssAnon:\t    5792 kB\nRssFile:\t    6676 kB\nRssShmem:\t       0 kB\nVmData:\t    7968 kB\nVmStk:\t     132 kB\nVmExe:\t    3608 kB\nVmLib:\t    2668 kB\nVmPTE:\t      76 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000001001000\nSigCgt:\t0000000000000002\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t88\nnonvoluntary_ctxt_switches:\t1",
+      "command": "/usr/bin/python3\u0000/mnt/c/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p03.py\u0000--manager\u0000--root\u0000/tmp/gagamba-ar7-P03-b70ec3f2cdf9410d9659a4829e64cb2f\u0000--cg\u0000/sys/fs/cgroup/gagamba-ar7-P03-b70ec3f2cdf9410d9659a4829e64cb2f/delegated\u0000--nonce\u0000b70ec3f2cdf9410d9659a4829e64cb2f\u0000"
+    }
+  },
+  "manager_rc": 0,
+  "manager_stderr": "",
+  "manager": {
+    "uid": 65534,
+    "gid": 65534,
+    "status": "Name:\tpython3\nUmask:\t0022\nState:\tR (running)\nTgid:\t1037505\nNgid:\t0\nPid:\t1037505\nPPid:\t1037494\nTracerPid:\t0\nUid:\t65534\t65534\t65534\t65534\nGid:\t65534\t65534\t65534\t65534\nFDSize:\t64\nGroups:\t \nNStgid:\t1037505\nNSpid:\t1037505\nNSpgid:\t1037494\nNSsid:\t1037494\nKthread:\t0\nVmPeak:\t   32164 kB\nVmSize:\t   32164 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t   23756 kB\nVmRSS:\t   23756 kB\nRssAnon:\t   11928 kB\nRssFile:\t   11828 kB\nRssShmem:\t       0 kB\nVmData:\t   13332 kB\nVmStk:\t     132 kB\nVmExe:\t    3608 kB\nVmLib:\t    7480 kB\nVmPTE:\t      96 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t1\nSigQ:\t0/30743\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000001001000\nSigCgt:\t0000000000000002\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t000001ffffffffff\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t0\nSeccomp_filters:\t0\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t3ffff\nCpus_allowed_list:\t0-17\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t563\nnonvoluntary_ctxt_switches:\t1",
+    "cgroup": "0::/gagamba-ar7-P03-b70ec3f2cdf9410d9659a4829e64cb2f/delegated/manager",
+    "sibling_create": true,
+    "manager_limits": {
+      "memory.max": "67108864",
+      "pids.max": "16",
+      "cgroup.procs": ""
+    },
+    "error": "ValueError('unlink: embedded null character in path')",
+    "manager_final_cgroup": "0::/gagamba-ar7-P03-b70ec3f2cdf9410d9659a4829e64cb2f/delegated/manager"
+  },
+  "observer_domains": {
+    ".": "",
+    "delegated": "",
+    "delegated/target": "",
+    "delegated/manager": "",
+    "delegated/sibling": ""
+  },
+  "cleanup_events": "populated 0\nfrozen 0",
+  "metadata_removal": {
+    "argv": [
+      "/usr/sbin/ip",
+      "addr",
+      "del",
+      "169.254.169.254/32",
+      "dev",
+      "lo"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "cleanup_absence": {
+    "outer": true,
+    "workspace": true,
+    "manager": true
+  },
+  "cleanup_confirmed": true
+}
