@@ -1,6 +1,10 @@
 # Gagamba handoff
 
-## Current action — AR-7 EVIDENCE SEALED - READY FOR ARCHITECTURE DECISION
+## Current action — AR-7 architecture approved; first implementation milestone authorized
+
+Update 2026-10-10: [ADR 0003: Linux-first restricted execution](adr/0003-ar7-linux-first-restricted-execution.md) records the architecture decision against sealed evidence checkpoint cb511cd18ba25daeda76cf41a400d1136c6ba0f0. Implement the bounded internal Linux prepared-execution transaction specified there, using pinned non-setuid Bubblewrap behind a launcher abstraction. Stop for independent review at the milestone boundary. Production qualification remains pending; Windows native and macOS remain refusal-only, and Windows VM is deferred. This documentation save runs no probes, builds or tests and begins no implementation. The ADR supersedes prior implementation holds only within its express authorization; preserve all sealed evidence and non-claims.
+
+## Prior action — AR-7 EVIDENCE SEALED - READY FOR ARCHITECTURE DECISION
 
 Update 2026-10-10: Linux P02, P03, P04 and P07 all executed with narrow **SUPPORTED BY THIS PROBE** outcomes ([P02](evidence/ar7-P02-linux-control-plane.md), [P03](evidence/ar7-P03-transports-ipc.md), [P04](evidence/ar7-P04-resource-storage.md), [P07](evidence/ar7-P07-crash-ownership.md)); P02/P03 harnesses frozen, P07 harness at `b8861bf`/`826438d`. P07 ran 18/18 legs green under the approved design plus three review clarifications (controller-owned cancel/commit barrier, observer ownership with C11 observer-death, corrected C7/C8 cascade expectations); host swept clean, evidence committed, suite stopped per instruction — no production implementation, no deferred probes started. Windows P01B ran once and ended **INCONCLUSIVE without a candidate** ([evidence](evidence/ar7-P01B-windows-restricting-sid.md)); no P01C, Windows native track ends, refusal stands. Branch ownership moved to this checkout after a clean-status check (Solo worktree retired, branch unaltered). Platform checkpoint recorded in the [aggregate disposition](evidence/restricted-execution-AR-7-feasibility.md): Linux candidate survives P02+P03+P04+P07; VM remains a pending fallback direction; macOS remains refusal-only. Independent reviews of the P03/P04/P07 runs are pending / not performed in this session.
 
