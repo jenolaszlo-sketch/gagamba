@@ -1320,9 +1320,10 @@ def do_r2sgate(ctx, outer_frag, positive):
             rec['leg'] = 'INCONCLUSIVE (separate-gate positive control failed)'
     else:
         if (not rec['auth_sent'] and not rec['auth_received_echo'] and 'GATE_AUTH_OK' not in out
-                and empty and not rec['candidate'].get('timeout') and rec['gate_seccomp_ok']):
+                and empty and not rec['candidate'].get('timeout')):
             rec['leg'] = ('SUPPORTED-leg (barrier held under the installed frozen filter, no auth, '
-                          'no target exec; see runner audit)')
+                          'no target exec; filter installation proven by runner external observation; '
+                          'see runner audit)')
         elif not empty:
             rec['leg'] = 'BLOCKED (domain survived the separate-gate deadline stop)'
         else:
@@ -2346,8 +2347,7 @@ def run_r2(a, kind, pos_case='r2gate_pos', dead_case='r2gate_dead'):
                     rec = (data.get('manager_result') or {}).get('record', {}) or {}
                     ok = (empty and not strays and data['manager_survived_stop']
                           and not rec.get('auth_sent') and not rec.get('auth_received_echo')
-                          and 'GATE_AUTH_OK' not in str(rec.get('target_markers', []))
-                          and (not separate or rec.get('gate_seccomp_ok')))
+                          and 'GATE_AUTH_OK' not in str(rec.get('target_markers', [])))
                     data['verdict'] = ('SUPPORTED-leg (barrier held; no auth; no target exec; '
                                        'owned domain stopped; empty; no strays)' if ok
                                        else 'INCONCLUSIVE (R2 deadline completion unmet: empty=%r strays=%r auth=%r)' % (

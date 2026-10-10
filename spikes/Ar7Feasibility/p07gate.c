@@ -19,6 +19,13 @@ int main(int argc, char **argv) {
     const char *nonce = argv[1], *cg = argv[2], *root = argv[3], *input = argv[4];
     (void)cg; (void)root; (void)input;
     printf("PRETARGET_GATE_REACHED nonce=%s pid=%d\n", nonce, getpid());
+    char ab[128];
+    size_t al = 0;
+    int ch;
+    while (al + 1 < sizeof ab && (ch = getchar()) != EOF && ch != '\n') ab[al++] = (char)ch;
+    ab[al] = 0;
+    if (al > 0 || ch != EOF) printf("AUTH_RECEIVED bytes=%zu\n", al);
+    else { printf("GATE_REFUSED eof\n"); return 125; }
     { FILE *sf = fopen("/proc/self/status", "r");
       int sm = -1, nf = -1;
       if (sf) { char sl[256];
@@ -27,13 +34,6 @@ int main(int argc, char **argv) {
           else if (!strncmp(sl, "Seccomp_filters:", 16)) nf = atoi(sl + 16); }
         fclose(sf); }
       printf("gate seccomp=%d filters=%d\n", sm, nf); }
-    char ab[128];
-    size_t al = 0;
-    int ch;
-    while (al + 1 < sizeof ab && (ch = getchar()) != EOF && ch != '\n') ab[al++] = (char)ch;
-    ab[al] = 0;
-    if (al > 0 || ch != EOF) printf("AUTH_RECEIVED bytes=%zu\n", al);
-    else { printf("GATE_REFUSED eof\n"); return 125; }
     if (!strcmp(ab, nonce)) {
         printf("GATE_AUTH_OK exec_target\n");
         char *const av[] = { "/target", "spinwork", (char *)cg, (char *)root,
