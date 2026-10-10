@@ -275,8 +275,8 @@ def manager(a):
                     g('tcp4'),g('tcp6'),g('udp'),g('dns'),g('proxy'),g('metadata'),
                     '1' if 'tcp6' in enabled else '0','1' if 'metadata' in enabled else '0','1' if 'dns' in enabled else '0',
                     paths['agent.sock'],paths['daemon.sock'],paths['chan.sock'],abstract]
-        def launch(cmd):
-            p=subprocess.Popen(cmd,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,close_fds=True,preexec_fn=bounds)
+        def launch(cmd, pass_fds=()):
+            p=subprocess.Popen(cmd,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,close_fds=True,pass_fds=pass_fds,preexec_fn=bounds)
             try:
                 stdout,stderr=p.communicate(('P03-REQ '+nonce+'\n').encode(),timeout=25)
                 return dict(rc=p.returncode,stdout=stdout.decode(errors='replace')[:32768],stderr=stderr.decode(errors='replace')[:8192],timeout=False)
@@ -313,7 +313,7 @@ def manager(a):
         def enter_target():
             write(cg/'target/cgroup.procs',os.getpid());bounds()
         PH[0]='candidate'
-        out['candidate']=launch(common+['--seccomp',str(f),'--','/target','candidate',*wargs('candidate')[1:]])
+        out['candidate']=launch(common+['--seccomp',str(f),'--','/target',*wargs('candidate')[1:]],pass_fds=(f,))
         os.close(f)
         out['endpoint_requests_candidate']=[e for e in log.items if e['phase']=='candidate']
         out['controls_after_candidate']={str(p.relative_to(cg)):read(p) for p in
