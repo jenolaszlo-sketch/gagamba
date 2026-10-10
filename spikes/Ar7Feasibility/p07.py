@@ -1278,7 +1278,7 @@ def do_r2sgate(ctx, outer_frag, positive):
     p, rec = spawn_sgate(ctx, outer_frag)
     if p is None:
         return rec
-    evt({'r2sgate': 'GATE-READY', 'positive': positive,
+    evt({'r2gate': 'GATE-READY', 'positive': positive,
          'gate': rec['ns_resolution'][0]})
     try:
         decision = sys.stdin.read(1)
