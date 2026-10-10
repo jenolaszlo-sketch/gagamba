@@ -62,8 +62,11 @@ int wmain(int argc,wchar_t**argv){
   check(CreateDirectoryW(root.c_str(),nullptr),"owned root");rootMade=true;acl(root,owner,grant,false);
   WCHAR exe[32768];check(GetModuleFileNameW(nullptr,exe,32768)>0,"module path");staged=root+L"\\fixture.exe";
   check(CopyFileW(exe,staged.c_str(),TRUE),"stage");acl(staged,owner,grant,false);
-  // Private noninteractive window station/desktop, never grants on existing host objects.
-  S security=L"D:P(A;;GA;;;"+owner+L")(A;;GA;;;SY)(A;;GA;;;"+sidstr(package)+L")(A;;GA;;;"+es+L")S:(ML;;NW;;;LW)";
+ // Private noninteractive window station/desktop, never grants on existing host objects.
+ // No SACL is assigned at creation: specifying one requires SeSecurityPrivilege,
+ // which the non-elevated caller token does not hold (first gate failed with
+ // ERROR_ACCESS_DENIED on the mandatory-label SACL). DACL stays owned-only.
+ S security=L"D:P(A;;GA;;;"+owner+L")(A;;GA;;;SY)(A;;GA;;;"+sidstr(package)+L")(A;;GA;;;"+es+L")";
   PSECURITY_DESCRIPTOR sd=nullptr;check(ConvertStringSecurityDescriptorToSecurityDescriptorW(security.c_str(),1,&sd,nullptr),"desktop ACL");
   SECURITY_ATTRIBUTES attr{sizeof(attr),sd,FALSE};S wn=L"AR7B"+nonce;
   station=CreateWindowStationW(wn.c_str(),0,WINSTA_ALL_ACCESS,&attr);check(station!=nullptr,"owned station");
