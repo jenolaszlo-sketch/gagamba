@@ -185,6 +185,8 @@ def manager(a):
     out['input_sha256_before']=sha(root/'input')
     cases=[]; halted=False; seccomp_fd=None
     try:
+        # Sibling leaf is created here (P02 pattern); observer owns
+        # manager/target/positive only, so a leftover sibling fails loud.
         (cg/'sibling').mkdir();out['sibling_create']=True
         write(cg/'sibling/memory.max',67108864);write(cg/'sibling/pids.max',16)
         def enter_positive(native_dotnet):
@@ -331,7 +333,7 @@ def observer(a):
         write(outer/'memory.swap.max',0);write(outer/'cgroup.subtree_control','+memory +pids')
         cg.mkdir();write(cg/'memory.max',268435456);write(cg/'pids.max',64)
         write(cg/'cgroup.subtree_control','+memory +pids');leaf_own(cg)
-        for name in ('manager','target','sibling','positive'):
+        for name in ('manager','target','positive'):
             (cg/name).mkdir();leaf_own(cg/name)
         write(cg/'target/memory.max',134217728);write(cg/'target/pids.max',48)
         os.chown(root,UID,UID)
