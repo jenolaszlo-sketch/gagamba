@@ -1,14 +1,16 @@
 """Disposable P04 only. Root provisions, runs all positive controls, and
 observes; manager (UID 65534) runs restricted candidates only. Only root can
 place processes across delegation scopes (measured kernel rule), so positives
-are root-spawned into the outer-bounded leaf with a private identically-sized
-/tmp; candidates self-place inside the delegated subtree as in P02/P03.
-Candidate composition is otherwise byte-identical to frozen P02/P03. No
-production code. Every case is bounded by the outer cgroup and the observer
-watchdog. Never remove target-provided paths.
+are root-spawned into the outer-bounded leaf with the documented UID handover
+(Popen user=/group=); the observer context cannot create namespaces (measured
+unshare EPERM despite full capabilities), so positives share the host /tmp
+with worker self-cleanup plus root sweeps. Candidates self-place inside the
+delegated subtree as in P02/P03. Candidate composition is otherwise
+byte-identical to frozen P02/P03. No production code. Every case is bounded
+by the outer cgroup and the observer watchdog. Never remove
+target-provided paths.
 """
 import argparse
-import ctypes
 import hashlib
 import json
 import os
@@ -24,10 +26,6 @@ import uuid
 
 UID = 65534
 PIN = '523da3e7399044be5163aee6f57a77a6bef7454376e28f0a0627920bae1b76b6'
-CLONE_NEWNS = 0x00020000
-MS_PRIVATE = 1 << 18
-MS_REC = 1 << 14
-MS_BIND = 4096
 
 def sha(path): return hashlib.sha256(pathlib.Path(path).read_bytes()).hexdigest()
 def read(path):
@@ -63,12 +61,6 @@ def filter_bytes():
     emit(0x15,0,3,56);emit(0x20,0,0,16);emit(0x45,0,1,0x7e020080);emit(0x06,0,0,0x00050001)
     emit(0x06,0,0,0x7fff0000)
     return b''.join(ins)
-
-_libc = ctypes.CDLL(None, use_errno=True)
-_libc.mount.argtypes = [ctypes.c_char_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_ulong, ctypes.c_char_p]
-_libc.mount.restype = ctypes.c_int
-_libc.unshare.argtypes = [ctypes.c_int]
-_libc.unshare.restype = ctypes.c_int
 
 def parse_events(text):
     out={}
@@ -139,7 +131,8 @@ DOTNET_CASES=[
 def case_id(case):
     return (case[0]+'-'+case[1]+'-'+str(case[2])) if case[0]=='native' else case[1]
 
-def launch(cmd, cwd=None, env=None, preexec=None, pass_fds=(), timeout=20):
+def launch(cmd, cwd=None, env=None, preexec=None, pass_fds=(), timeout=20,
+           as_uid=False):
     p=subprocess.Popen(cmd,stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.PIPE,
                        cwd=cwd,env=env,close_fds=True,pass_fds=pass_fds,preexec_fn=preexec)
     try:
@@ -328,27 +321,14 @@ def observer(a):
         os.chown(root,UID,UID)
         unbounded=outer/'unbounded'
         def place_pos(dotnet):
-            # Read workload files BEFORE the private /tmp hides the fixture
-            # dir; write them into the fresh tmpfs after mounting.
-            wdata = None if dotnet else open(str(root/'worker'),'rb').read()
-            idata = open(str(root/'input'),'rb').read()
-            if hasattr(os,'unshare'):
-                os.unshare(CLONE_NEWNS)
-            elif _libc.unshare(CLONE_NEWNS)!=0:
-                raise OSError(ctypes.get_errno(),'unshare')
-            if _libc.mount(None,b'/',None,MS_REC|MS_PRIVATE,None)!=0:
-                raise OSError(ctypes.get_errno(),'remount-private')
-            if _libc.mount(b'tmpfs',b'/tmp',b'tmpfs',0,b'size=8388608')!=0:
-                raise OSError(ctypes.get_errno(),'mount-tmpfs')
-            with open('/tmp/pos-input','wb') as fh:
-                fh.write(idata)
-            os.chmod('/tmp/pos-input',0o444)
-            if not dotnet:
-                with open('/tmp/pos-worker','wb') as fh:
-                    fh.write(wdata)
-                os.chmod('/tmp/pos-worker',0o755)
+            # No namespaces here: this observer context cannot invoke
+            # unshare (measured EPERM despite full capabilities), while the
+            # bwrap-launched candidates can (clone3 path). Positives therefore
+            # share the host /tmp; workers self-clean and the sweeps below
+            # verify. Placement + bounds run as root; UID handover is via
+            # Popen user=/group= (manual preexec setuid breaks 3.14 Popen).
             write(unbounded/'cgroup.procs',os.getpid())
-            os.setgroups([]);os.setgid(UID);os.setuid(UID);bounds(fsize=not dotnet)
+            bounds(fsize=not dotnet)
         dotnet_ok=data['dotnet_staging']['present']
         positives={};gates={}
         all_cases=NATIVE_CASES+([c for c in DOTNET_CASES] if dotnet_ok else [])
@@ -357,20 +337,20 @@ def observer(a):
             if kind=='native':
                 _,mode,N,pos_rc,_,pos_markers,_,_,_,crule,extra=case
                 dname=case_id(case)
-                cmd=['/tmp/pos-worker',mode,str(cg),str(root),nonce,'/tmp/pos-input',str(N)]
-                kw=dict(cwd='/tmp',env=None)
+                cmd=[str(root/'worker'),mode,str(cg),str(root),nonce,str(root/'input'),str(N)]
+                kw=dict(cwd=str(root),env=None)
                 def pre():
                     place_pos(False)
             else:
                 _,dname,alloc,threads,pos_rc,_,pos_markers,_,_=case
-                cmd=[str(staging/'P04Workload'),str(alloc),str(threads),'/tmp/pos-input','/tmp']
-                kw=dict(cwd='/tmp',env={'HOME':str(root),'DOTNET_GCServer':'0','PATH':os.environ.get('PATH','')})
+                cmd=[str(staging/'P04Workload'),str(alloc),str(threads),str(root/'input'),str(root)]
+                kw=dict(cwd=str(root),env={'HOME':str(root),'DOTNET_GCServer':'0','PATH':os.environ.get('PATH','')})
                 def pre():
                     place_pos(True)
             rec={'case':dname}
             bu_before=leaf_counters(unbounded)
             try:
-                pos=launch(cmd,preexec=pre,**kw)
+                pos=launch(cmd,preexec=pre,as_uid=True,**kw)
             except Exception as e:
                 rec['positive']={'launch_error':repr(e)};rec['gate']=False
                 positives[dname]=rec;gates[dname]={'ok':False,'reason':'launch failed'};continue
@@ -395,10 +375,19 @@ def observer(a):
                 rec['positive_shm_left']=left
                 for x in pathlib.Path('/dev/shm').iterdir():
                     if x.name.startswith('p04-'):x.unlink()
+            # Host /tmp is shared with positives: sweep worker scratch names
+            # (workers self-clean on success paths; this covers violent ends).
+            swept=[]
+            for pat in ('fill-*','inode-*'):
+                for x in pathlib.Path('/tmp').glob(pat):
+                    swept.append(x.name);x.unlink()
+            rec['host_tmp_swept']=swept
             positives[dname]=rec
-        # defense-in-depth sweeps (private tmpfs should already contain these)
-        for pat,parent in (('fill-*','/tmp'),('inode-*','/tmp')):
-            for x in pathlib.Path(parent).glob(pat):
+        # Host /tmp is shared with positives: the per-case sweep above is the
+        # primary cleanup for worker scratch names; this final sweep is the
+        # backstop. Candidate /tmp stays private per run (bwrap tmpfs).
+        for pat in ('fill-*','inode-*'):
+            for x in pathlib.Path('/tmp').glob(pat):
                 x.unlink()
         data['positives']={'count':len(positives),'gates_passed':sum(1 for g in gates.values() if g.get('ok'))}
         (root/'positives.json').write_text(json.dumps(positives))
