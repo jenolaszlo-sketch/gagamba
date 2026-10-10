@@ -83,6 +83,23 @@ zero unknown writable mounts. Writable locations are classified
 bounded (tmpfs, shm, pipes), visible-denied (`EROFS`/`EACCES`), or
 invisible (`ENOENT` — never presented as denial).
 
+### Inode/metadata ceiling: reconciliation (from the committed record only)
+
+Verdict for an *independently bounded* inode/metadata ceiling: **not
+configured** — and therefore enforcement unobserved. The 8 MiB scratch
+tmpfs was created with a byte `size=` only; no separate `nr_inodes=` was
+ever configured, so the kernel default (host-RAM scale, millions) applied
+implicitly. The `inode-fill` case stopped at the 20000-file harness safety
+cap without `ENOSPC` — the cap prevented reaching either the byte ceiling
+or any inode limit, so no inode-denial was observed. What *was*
+configured + observed: the byte ceiling (exactly 8388608 B to `ENOSPC`)
+and the memcg ceiling (dentry/slab consumption stays inside the 128 MiB
+accounting — no OOM across 20000 files). Those bound total consumption but
+are not an inode-specific claim. The independent inode ceiling remains an
+**unresolved P04 qualification limit for the final architecture decision**;
+it is preserved here as a limit, not converted into success. No further
+test was run for this question and the candidate was not changed.
+
 ## Review, consequence, and non-claims
 
 Independent review: pending. No independent reviewer — another model or a
