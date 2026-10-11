@@ -255,6 +255,8 @@ public sealed class ManifestTests
         Assert.Equal(2, (int)RootResultKind.Exited);
         Assert.Equal(3, (int)RootResultKind.Signalled);
         Assert.Equal(0, (int)HelperResultKind.Unknown);
+        Assert.Equal(1, (int)HelperResultKind.NotStarted);
+        Assert.Equal(2, (int)HelperResultKind.Exited);
         Assert.Equal(3, (int)HelperResultKind.Signalled);
         Assert.Equal(0, (int)ExecutionOutcome.Unsupported);
         Assert.Equal(1, (int)ExecutionOutcome.FailedToEstablish);
@@ -264,15 +266,36 @@ public sealed class ManifestTests
         Assert.Equal(5, (int)ExecutionOutcome.Stopped);
         Assert.Equal(6, (int)ExecutionOutcome.Unknown);
         Assert.Equal(0, (int)StopCauseKind.CallerStop);
+        Assert.Equal(1, (int)StopCauseKind.CallerLoss);
+        Assert.Equal(2, (int)StopCauseKind.SetupExpired);
+        Assert.Equal(3, (int)StopCauseKind.SetupFault);
+        Assert.Equal(4, (int)StopCauseKind.OutputOverflow);
+        Assert.Equal(5, (int)StopCauseKind.OutputReadFailure);
+        Assert.Equal(6, (int)StopCauseKind.RecoveryTakeover);
         Assert.Equal(7, (int)StopCauseKind.TransportFailure);
         Assert.Equal(0, (int)FinalDrainDisposition.Complete);
+        Assert.Equal(1, (int)FinalDrainDisposition.Incomplete);
+        Assert.Equal(2, (int)FinalDrainDisposition.Expired);
         Assert.Equal(0, (int)CleanupState.Confirmed);
         Assert.Equal(1, (int)CleanupState.Failed);
         Assert.Equal(2, (int)CleanupState.Unknown);
         Assert.Equal(0, (int)TransactionState.Preparing);
+        Assert.Equal(1, (int)TransactionState.Prepared);
+        Assert.Equal(2, (int)TransactionState.Owned);
         Assert.Equal(3, (int)TransactionState.ReleaseCommitted);
+        Assert.Equal(4, (int)TransactionState.Running);
+        Assert.Equal(5, (int)TransactionState.Stopping);
+        Assert.Equal(6, (int)TransactionState.Completed);
+        Assert.Equal(7, (int)TransactionState.Failed);
+        Assert.Equal(8, (int)TransactionState.Cancelled);
         Assert.Equal(9, (int)TransactionState.Unknown);
         Assert.Equal(0, (int)InvariantViolation.None);
+        Assert.Equal(1, (int)InvariantViolation.InvalidStateOrder);
+        Assert.Equal(2, (int)InvariantViolation.Expired);
+        Assert.Equal(3, (int)InvariantViolation.Foreign);
+        Assert.Equal(4, (int)InvariantViolation.Consumed);
+        Assert.Equal(5, (int)InvariantViolation.Aborted);
+        Assert.Equal(6, (int)InvariantViolation.StoppedFirst);
         Assert.Equal(7, (int)InvariantViolation.TransportFailed);
     }
 
