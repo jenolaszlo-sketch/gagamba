@@ -1,10 +1,12 @@
 # Gagamba handoff
 
-## Current action — AR-7 architecture approved; first implementation milestone authorized
+## Current action — WP01 implemented but G1 rejected pending correction; WP02 blocked
 
 Update 2026-10-10: [ADR 0003: Linux-first restricted execution](adr/0003-ar7-linux-first-restricted-execution.md) records the architecture decision against sealed evidence checkpoint cb511cd18ba25daeda76cf41a400d1136c6ba0f0. Implement the bounded internal Linux prepared-execution transaction specified there, using pinned non-setuid Bubblewrap behind a launcher abstraction. Stop for independent review at the milestone boundary. Production qualification remains pending; Windows native and macOS remain refusal-only, and Windows VM is deferred. This documentation save runs no probes, builds or tests and begins no implementation. The ADR supersedes prior implementation holds only within its express authorization; preserve all sealed evidence and non-claims.
 
 Implementation handoff: [Linux M1 implementation plan](plans/gagamba-linux-m1-implementation-plan.md), bound to ADR commit 4d09452172caf232c209ae5c6d1031ef3f6feaa8. Follow its 12 ordered work packages and review gates; this plan is documentation only and does not mark implementation or qualification complete.
+
+Update: WP01 implementation is committed and G1 independent review has completed against e2c2f119d260eccf8f2b10b2c3d983f2c6da0eeb, preserved verbatim as [G1 independent review](reviews/gagamba-linux-m1-g1-review.md). Disposition: G1 NOT ACCEPTED - WP01 CORRECTION REQUIRED (findings G1-01 through G1-09, including two blockers on observation/result semantics). WP01 is implemented but rejected pending correction; WP02 remains blocked; no native implementation has begun. The findings are authoritative for the next correction pass.
 
 ## Prior action — AR-7 EVIDENCE SEALED - READY FOR ARCHITECTURE DECISION
 

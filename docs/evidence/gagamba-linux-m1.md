@@ -12,7 +12,7 @@ until all mandatory gates pass.
 
 | Package | Evidence | Status |
 |---|---|---|
-| WP01 — Internal contracts, capability identity and state model | [wp01](linux-m1/wp01.md) | Implemented, locally tested (portable); native NotApplicable; stopped for G1 independent review |
+| WP01 — Internal contracts, capability identity and state model | [wp01](linux-m1/wp01.md) | Implemented but G1 NOT ACCEPTED - correction required ([G1 review](../reviews/gagamba-linux-m1-g1-review.md)); WP02 blocked; no native implementation begun |
 | WP02 — Protected copy-in and atomic preparation publication | — | Not started; requires G1 |
 | WP03 — Delegated domain lease, persistent allocation and external recovery scope | — | Not started; requires G1/G2 chain per plan |
 | WP04–WP12 | — | Not started |

@@ -2,9 +2,11 @@
 
 Updated 2026-10-09. Status definitions: Complete = stated artifact exists; Ready = dependencies sufficient to start; Held = named prerequisite missing; Pending = later delivery. Slice-specific historical entries retain their original tested SHAs; the later AR-6 SHA has separate three-host native and package evidence. Complete lifecycle qualification does not imply restricted-execution security qualification.
 
-## Current priority: AR-7 first implementation milestone
+## Current priority: AR-7 first implementation milestone (WP01 in G1 correction)
 
 Update 2026-10-10: [ADR 0003: Linux-first restricted execution](adr/0003-ar7-linux-first-restricted-execution.md) approves the Linux-first architecture and authorizes only the bounded internal prepared-execution milestone described there. The architecture decision is complete; implementation has not begun in this documentation save. P05/P06 preparation and closure work belongs to the milestone; full resource, output, lifecycle, runtime and package qualification remains required before production restricted execution. No accepted feasibility rerun is required. Stop for independent review before expanding the slice; Hufu/workflow integration, privileged services, Windows/macOS enforcement and VM implementation remain deferred.
+
+Update: WP01 is implemented and its G1 independent review completed against e2c2f119d260eccf8f2b10b2c3d983f2c6da0eeb ([G1 review](reviews/gagamba-linux-m1-g1-review.md)): G1 NOT ACCEPTED - WP01 CORRECTION REQUIRED. WP02 remains blocked and no native implementation has begun; the G1 findings are authoritative for the correction pass.
 
 Implementation handoff: [Linux M1 implementation plan](plans/gagamba-linux-m1-implementation-plan.md), bound to ADR commit 4d09452172caf232c209ae5c6d1031ef3f6feaa8. Follow its 12 ordered work packages and review gates; this plan is documentation only and does not mark implementation or qualification complete.
 
