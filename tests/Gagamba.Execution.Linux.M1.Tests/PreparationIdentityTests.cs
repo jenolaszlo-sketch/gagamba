@@ -126,22 +126,33 @@ public sealed class PreparationIdentityTests
     [Fact]
     public void FabricatedIdentifierRefused()
     {
-        var (firstStore, _, _) = MintValid();
-        var secondClock = new FakeClock();
-        var secondStore = new PreparedTransaction.PreparationStore(
-            new Guid("55555555-5555-5555-5555-555555555555"),
-            new Guid("66666666-6666-6666-6666-666666666666"),
-            secondClock);
+        var clock = new FakeClock { NowNanoseconds = 0 };
+        var firstStore = NewStore(clock);
         var manifest = SampleManifest();
-        var identity = new PreparationIdentity(
-            Guid.NewGuid(),
-            new Guid("55555555-5555-5555-5555-555555555555"),
-            new Guid("66666666-6666-6666-6666-666666666666"),
-            Guid.NewGuid(),
-            ManifestCodec.ComputeDigestBytes(manifest));
-        var foreign = secondStore.Mint(manifest, identity, 1_000_000_000);
-        Assert.False(firstStore.TryConsume(foreign, out var violation));
+        var execution = new Guid("77777777-7777-7777-7777-777777777777");
+        var preparation = new Guid("88888888-8888-8888-8888-888888888888");
+        var digest = ManifestCodec.ComputeDigestBytes(manifest);
+        var first = firstStore.Mint(
+            manifest,
+            new PreparationIdentity(execution, Issuer, Generation, preparation, (byte[])digest.Clone()),
+            1_000_000_000);
+        Assert.True(firstStore.TryConsume(first, out _));
+
+        // A different object carrying identical identifiers and copied
+        // digest bytes is still not the stored capability.
+        var secondStore = NewStore(new FakeClock());
+        var twin = secondStore.Mint(
+            manifest,
+            new PreparationIdentity(execution, Issuer, Generation, preparation, (byte[])digest.Clone()),
+            1_000_000_000);
+        Assert.False(firstStore.TryConsume(twin, out var violation));
         Assert.Equal(InvariantViolation.Foreign, violation);
+
+        // The same preparation ID cannot be minted twice in one store.
+        Assert.Throws<ArgumentException>(() => firstStore.Mint(
+            manifest,
+            new PreparationIdentity(execution, Issuer, Generation, preparation, (byte[])digest.Clone()),
+            1_000_000_000));
     }
 
     [Fact]

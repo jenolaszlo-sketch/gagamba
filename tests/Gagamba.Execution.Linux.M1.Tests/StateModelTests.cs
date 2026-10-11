@@ -178,8 +178,14 @@ public sealed class StateModelTests
         Assert.Equal(32, h.Transport.LastFrame.Length);
         var kinds = h.Journal.Entries.Select(e => e.Kind).ToArray();
         Assert.True(Array.IndexOf(kinds, "release-intent") < Array.IndexOf(kinds, "release-delivered"));
-        Assert.False(h.Model.TryCommitRelease(h.Capability.Identity, digest).Applied);
+        // G1-04: an identical duplicate returns the recorded decision
+        // without re-driving the transport.
+        var journalCount = h.Journal.Entries.Count;
+        Assert.True(h.Model.TryCommitRelease(h.Capability.Identity, digest).Applied);
         Assert.Equal(1, h.Transport.Attempts);
+        Assert.Equal(journalCount, h.Journal.Entries.Count);
+        Assert.Equal(TransactionState.ReleaseCommitted, h.Model.State);
+        Assert.Equal(ReleaseDisposition.Committed, h.Model.Release);
     }
 
     [Fact]
@@ -416,6 +422,159 @@ public sealed class StateModelTests
     }
 
     [Fact]
+    public void UnsatisfiedPrerequisitesRefused()
+    {
+        var variants = new[]
+        {
+            new OwnedPrerequisites(false, true, true, true),
+            new OwnedPrerequisites(true, false, true, true),
+            new OwnedPrerequisites(true, true, false, true),
+            new OwnedPrerequisites(true, true, true, false),
+        };
+        foreach (var prerequisites in variants)
+        {
+            var h = new Harness();
+            Assert.True(h.Model.PublishPrepared(h.Capability).Applied);
+            var attempt = h.Model.MarkOwned(prerequisites);
+            Assert.False(attempt.Applied);
+            Assert.Equal(InvariantViolation.InvalidStateOrder, attempt.Violation);
+            Assert.Equal(TransactionState.Prepared, h.Model.State);
+        }
+    }
+
+    [Fact]
+    public void RecordedRootExitCannotBeOverwritten()
+    {
+        var h = new Harness();
+        h.DriveToCommitted();
+        Assert.True(h.Model.ObserveExec(ExecDisposition.Confirmed).Applied);
+        Assert.True(h.Model.ObserveRoot(Exited(17)).Applied);
+        var overwrite = h.Model.ObserveRoot(Exited(0));
+        Assert.False(overwrite.Applied);
+        Assert.Equal(InvariantViolation.Conflict, overwrite.Violation);
+        Assert.Equal(17, h.Model.Root.ExitCode);
+        var duplicate = h.Model.ObserveRoot(Exited(17));
+        Assert.True(duplicate.Applied);
+        Assert.Equal(17, h.Model.Root.ExitCode);
+    }
+
+    [Fact]
+    public void KnownRootCannotRegressToUnknown()
+    {
+        var h = new Harness();
+        h.DriveToCommitted();
+        Assert.True(h.Model.ObserveExec(ExecDisposition.Confirmed).Applied);
+        Assert.True(h.Model.ObserveRoot(Exited(0)).Applied);
+        var regress = h.Model.ObserveRoot(new RootResult(RootResultKind.Unknown, 0, 0, false, 0));
+        Assert.False(regress.Applied);
+        Assert.Equal(InvariantViolation.Conflict, regress.Violation);
+        Assert.Equal(RootResultKind.Exited, h.Model.Root.Kind);
+    }
+
+    [Fact]
+    public void OverflowStopThenCleanExitYieldsStoppedWithRootPreserved()
+    {
+        var h = new Harness();
+        h.DriveToCommitted();
+        Assert.True(h.Model.ObserveExec(ExecDisposition.Confirmed).Applied);
+        Assert.True(h.Model.AcceptStop(StopCauseKind.OutputOverflow).Applied);
+        Assert.True(h.Model.ObserveRoot(Exited(0)).Applied);
+        Assert.True(h.Model.ObserveDomainEmpty(true).Applied);
+        Assert.True(h.Model.ObserveCaptureTerminal(CompleteCapture()).Applied);
+        Assert.True(h.Model.PublishTerminal().Applied);
+        Assert.Equal(TransactionState.Failed, h.Model.State);
+        Assert.Equal(ExecutionOutcome.Stopped, h.Model.TerminalOutcome);
+        Assert.Equal(RootResultKind.Exited, h.Model.TerminalObservation!.Root.Kind);
+        Assert.Equal(0, h.Model.TerminalObservation.Root.ExitCode);
+    }
+
+    [Fact]
+    public void HelperAndCaptureObservedPreRelease()
+    {
+        var h = new Harness();
+        h.DriveToOwned();
+        var helper = new HelperResult(HelperResultKind.Exited, 0, 0, false, 0);
+        Assert.True(h.Model.ObserveHelper(helper).Applied);
+        Assert.True(h.Model.ObserveCaptureTerminal(CompleteCapture()).Applied);
+        Assert.Equal(TransactionState.Owned, h.Model.State);
+        Assert.Equal(ReleaseDisposition.NotCommitted, h.Model.Release);
+    }
+
+    [Fact]
+    public void HelperAndCaptureObservedDuringPreReleaseTeardown()
+    {
+        var h = new Harness();
+        h.DriveToOwned();
+        Assert.True(h.Model.AcceptStop(StopCauseKind.SetupFault).Applied);
+        var helper = new HelperResult(HelperResultKind.Signalled, 0, 9, false, 9);
+        Assert.True(h.Model.ObserveHelper(helper).Applied);
+        Assert.True(h.Model.ObserveCaptureTerminal(CompleteCapture()).Applied);
+        Assert.True(h.Model.PublishTerminal().Applied);
+        Assert.Equal(TransactionState.Failed, h.Model.State);
+        Assert.Equal(ExecutionOutcome.FailedToEstablish, h.Model.TerminalOutcome);
+        Assert.Equal(HelperResultKind.Signalled, h.Model.TerminalObservation!.Helper.Kind);
+    }
+
+    [Fact]
+    public void TerminalCollectionsAreImmutable()
+    {
+        var h = new Harness();
+        h.DriveToCommitted();
+        Assert.True(h.Model.ObserveExec(ExecDisposition.Confirmed).Applied);
+        Assert.True(h.Model.ObserveRoot(Exited(0)).Applied);
+        Assert.True(h.Model.ObserveDomainEmpty(true).Applied);
+        Assert.True(h.Model.ObserveCaptureTerminal(CompleteCapture()).Applied);
+        Assert.True(h.Model.PublishTerminal().Applied);
+        var terminal = h.Model.TerminalObservation!;
+        var asList = (System.Collections.Generic.IList<string>)terminal.TransitionNames;
+        Assert.True(asList.IsReadOnly);
+        Assert.Throws<System.NotSupportedException>(() => asList.Add("ForgedTransition"));
+        var namesBefore = terminal.TransitionNames.Length;
+        Assert.False(h.Model.ObserveRoot(Exited(1)).Applied);
+        Assert.Equal(namesBefore, terminal.TransitionNames.Length);
+        Assert.Equal("PublishTerminal", terminal.TransitionNames[terminal.TransitionNames.Length - 1]);
+    }
+
+    [Fact]
+    public void TerminalRetainsMetadataAfterInvalidation()
+    {
+        var h = new Harness();
+        h.DriveToOwned();
+        Assert.True(h.Model.AcceptStop(StopCauseKind.CallerLoss).Applied);
+        Assert.True(h.Model.ObserveDomainEmpty(true).Applied);
+        Assert.True(h.Model.PublishTerminal().Applied);
+        var terminal = h.Model.TerminalObservation!;
+        Assert.Equal(h.Capability.Identity, terminal.Identity);
+        Assert.Same(h.Capability.Manifest, terminal.RequestedManifest);
+        Assert.Equal(
+            Convert.ToHexString(h.Capability.Identity.ManifestDigest.ToArray()).ToLowerInvariant(),
+            ManifestCodec.ComputeDigestHex(h.Capability.Manifest));
+        Assert.Equal(StopCauseKind.CallerLoss, terminal.FirstStopCause);
+        Assert.Equal(TransactionState.Cancelled, terminal.State);
+        Assert.Equal(ExecutionOutcome.CancelledBeforeRelease, terminal.Outcome);
+    }
+
+    [Fact]
+    public void DuplicateReleaseReturnsRetainedDecision()
+    {
+        var h = new Harness();
+        h.DriveToCommitted();
+        var digest = h.Capability.Identity.ManifestDigest.ToArray();
+        var duplicate = h.Model.TryCommitRelease(h.Capability.Identity, digest);
+        Assert.True(duplicate.Applied);
+        Assert.Equal(1, h.Transport.Attempts);
+        Assert.Equal(TransactionState.ReleaseCommitted, h.Model.State);
+        Assert.Equal(ReleaseDisposition.Committed, h.Model.Release);
+        var foreign = new PreparationIdentity(
+            Guid.NewGuid(), h.Capability.Identity.IssuerId, h.Capability.Identity.GenerationId,
+            Guid.NewGuid(), digest);
+        var conflicting = h.Model.TryCommitRelease(foreign, digest);
+        Assert.False(conflicting.Applied);
+        Assert.Equal(InvariantViolation.Foreign, conflicting.Violation);
+        Assert.Equal(1, h.Transport.Attempts);
+    }
+
+    [Fact]
     public void ExecConfirmedMovesToRunning()
     {
         var h = new Harness();
@@ -444,8 +603,8 @@ public sealed class StateModelTests
         Assert.Equal(
             new[] { "PublishPrepared", "MarkOwned", "ReleaseCommitted", "ReleaseDelivered", "ObserveExec", "ObserveRoot", "ObserveDomainEmpty", "ObserveCaptureTerminal", "PublishTerminal" },
             terminal.TransitionNames.ToArray());
-        Assert.Equal(terminal.TransitionNames.Count, terminal.TransitionAtNs.Count);
-        for (var i = 1; i < terminal.TransitionAtNs.Count; i++)
+        Assert.Equal(terminal.TransitionNames.Length, terminal.TransitionAtNs.Length);
+        for (var i = 1; i < terminal.TransitionAtNs.Length; i++)
         {
             Assert.True(terminal.TransitionAtNs[i] >= terminal.TransitionAtNs[i - 1]);
         }

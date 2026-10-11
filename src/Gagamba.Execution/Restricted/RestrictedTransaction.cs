@@ -4,6 +4,7 @@
 // Sections 6/8/13 exactly. Unknown means insufficient trusted observation,
 // never a zero exit or a cleanup result.
 using System.Collections.Generic;
+using System.Collections.Immutable;
 
 namespace Gagamba.Execution.Restricted;
 
@@ -185,7 +186,10 @@ internal enum CleanupState : byte
 }
 
 /// <summary>Cleanup report with separate component results. Null components
-/// are unknown, never false.</summary>
+/// are unknown, never false. The aggregate state is validated against the
+/// components: Confirmed requires every required item, Failed requires a
+/// definite located failure, and Unknown accepts any combination. A
+/// confirmed aggregate with unknown components cannot be represented.</summary>
 internal sealed record CleanupReport
 {
     public CleanupReport(
@@ -195,6 +199,21 @@ internal sealed record CleanupReport
         bool? stagingRemoved,
         bool? journalFinalized)
     {
+        if (state == CleanupState.Confirmed
+            && (!domainEmpty.HasValue || !domainEmpty.Value
+                || !reaped.HasValue || !reaped.Value
+                || !stagingRemoved.HasValue || !stagingRemoved.Value
+                || !journalFinalized.HasValue || !journalFinalized.Value))
+        {
+            throw new ArgumentException("Confirmed cleanup requires every component to be confirmed.", nameof(state));
+        }
+
+        if (state == CleanupState.Failed
+            && domainEmpty != false && reaped != false && stagingRemoved != false && journalFinalized != false)
+        {
+            throw new ArgumentException("Failed cleanup requires at least one definite component failure.", nameof(state));
+        }
+
         State = state;
         DomainEmpty = domainEmpty;
         Reaped = reaped;
@@ -226,7 +245,8 @@ internal enum TransactionState : byte
 }
 
 /// <summary>Refusal vocabulary for invalid transition attempts. A refusal
-/// never mutates model state.</summary>
+/// never mutates model state. Conflict records a second observation that
+/// contradicts already recorded knowledge without replacing it.</summary>
 internal enum InvariantViolation : byte
 {
     None = 0,
@@ -237,35 +257,42 @@ internal enum InvariantViolation : byte
     Aborted = 5,
     StoppedFirst = 6,
     TransportFailed = 7,
+    Conflict = 8,
 }
 
 /// <summary>Immutable terminal observation: identities, states and the
-/// distinct result fields above, requested/established manifests, evidence
-/// version and monotonic transition sequence.</summary>
+/// distinct result fields above, requested and established manifests,
+/// evidence version and monotonic transition sequence. Collections are
+/// defensively copied to immutable snapshots, so later mutation of source
+/// or model-owned collections cannot change a published observation.</summary>
 internal sealed record TransactionObservation
 {
     public TransactionObservation(
         PreparationIdentity? identity,
         RestrictedManifest? requestedManifest,
-        RestrictedManifest? establishedManifest,
+        EstablishedManifest establishedManifest,
         TransactionState state,
         ExecutionOutcome? outcome,
         RootResult root,
         HelperResult helper,
         ExecDisposition exec,
+        int execErrno,
         CaptureResult? capture,
         CleanupReport cleanup,
         ReleaseDisposition release,
         StopCauseKind? firstStopCause,
-        IReadOnlyList<string> transitionNames,
-        IReadOnlyList<long> transitionAtNs,
+        IEnumerable<StopCauseKind> laterStopCauses,
+        IEnumerable<string> transitionNames,
+        IEnumerable<long> transitionAtNs,
         int evidenceVersion)
     {
         ArgumentNullException.ThrowIfNull(root);
         ArgumentNullException.ThrowIfNull(helper);
         ArgumentNullException.ThrowIfNull(cleanup);
+        ArgumentNullException.ThrowIfNull(establishedManifest);
         ArgumentNullException.ThrowIfNull(transitionNames);
         ArgumentNullException.ThrowIfNull(transitionAtNs);
+        ArgumentNullException.ThrowIfNull(laterStopCauses);
         Identity = identity;
         RequestedManifest = requestedManifest;
         EstablishedManifest = establishedManifest;
@@ -274,28 +301,32 @@ internal sealed record TransactionObservation
         Root = root;
         Helper = helper;
         Exec = exec;
+        ExecErrno = execErrno;
         Capture = capture;
         Cleanup = cleanup;
         Release = release;
         FirstStopCause = firstStopCause;
-        TransitionNames = transitionNames;
-        TransitionAtNs = transitionAtNs;
+        LaterStopCauses = laterStopCauses.ToImmutableArray();
+        TransitionNames = transitionNames.ToImmutableArray();
+        TransitionAtNs = transitionAtNs.ToImmutableArray();
         EvidenceVersion = evidenceVersion;
     }
 
     public PreparationIdentity? Identity { get; }
     public RestrictedManifest? RequestedManifest { get; }
-    public RestrictedManifest? EstablishedManifest { get; }
+    public EstablishedManifest EstablishedManifest { get; }
     public TransactionState State { get; }
     public ExecutionOutcome? Outcome { get; }
     public RootResult Root { get; }
     public HelperResult Helper { get; }
     public ExecDisposition Exec { get; }
+    public int ExecErrno { get; }
     public CaptureResult? Capture { get; }
     public CleanupReport Cleanup { get; }
     public ReleaseDisposition Release { get; }
     public StopCauseKind? FirstStopCause { get; }
-    public IReadOnlyList<string> TransitionNames { get; }
-    public IReadOnlyList<long> TransitionAtNs { get; }
+    public ImmutableArray<StopCauseKind> LaterStopCauses { get; }
+    public ImmutableArray<string> TransitionNames { get; }
+    public ImmutableArray<long> TransitionAtNs { get; }
     public int EvidenceVersion { get; }
 }

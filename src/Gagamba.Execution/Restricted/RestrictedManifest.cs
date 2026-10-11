@@ -76,11 +76,32 @@ internal sealed record WritableStore
     public ulong InodeBudget { get; }
 }
 
+/// <summary>Executable-mount policy: the tool must be executable for any
+/// execution to occur; scratch noexec is recorded as observed, never
+/// required or claimed by M1.</summary>
+internal sealed record ExecutableMountPolicy
+{
+    public ExecutableMountPolicy(bool toolExecutable, bool scratchNoexec)
+    {
+        if (!toolExecutable)
+        {
+            throw new ArgumentException("The tool must be executable.", nameof(toolExecutable));
+        }
+
+        ToolExecutable = toolExecutable;
+        ScratchNoexec = scratchNoexec;
+    }
+
+    public bool ToolExecutable { get; }
+    public bool ScratchNoexec { get; }
+}
+
 /// <summary>Authority manifest: required namespaces, empty capability set,
 /// no-new-privs, filter identity, read-only destinations, writable-store
-/// inventory and denied ambient authority. The capability set must be empty
-/// and the three denial flags must hold; a violating manifest cannot be
-/// constructed.</summary>
+/// inventory, executable-mount policy, network qualification and denied
+/// ambient authority. The capability set must be empty, network qualification
+/// must remain pending, and the three denial flags must hold; a violating
+/// manifest cannot be constructed.</summary>
 internal sealed record AuthorityManifest
 {
     public AuthorityManifest(
@@ -93,7 +114,9 @@ internal sealed record AuthorityManifest
         IEnumerable<WritableStore> writableStores,
         bool noAmbientEnvironment,
         bool noIpcEndpoints,
-        bool noExtraInheritedFds)
+        bool noExtraInheritedFds,
+        ExecutableMountPolicy mountPolicy,
+        QualificationDisposition networkQualification)
     {
         Namespaces = ManifestCodec.SortedUnique(namespaces, nameof(namespaces));
         Capabilities = (capabilities ?? throw new ArgumentNullException(nameof(capabilities))).ToImmutableArray();
@@ -115,6 +138,13 @@ internal sealed record AuthorityManifest
         NoAmbientEnvironment = noAmbientEnvironment;
         NoIpcEndpoints = noIpcEndpoints;
         NoExtraInheritedFds = noExtraInheritedFds;
+        MountPolicy = mountPolicy ?? throw new ArgumentNullException(nameof(mountPolicy));
+        if (networkQualification != QualificationDisposition.PendingQualification)
+        {
+            throw new ArgumentException("Production no-IP qualification must remain PendingQualification in M1.", nameof(networkQualification));
+        }
+
+        NetworkQualification = networkQualification;
     }
 
     public ImmutableArray<string> Namespaces { get; }
@@ -127,6 +157,8 @@ internal sealed record AuthorityManifest
     public bool NoAmbientEnvironment { get; }
     public bool NoIpcEndpoints { get; }
     public bool NoExtraInheritedFds { get; }
+    public ExecutableMountPolicy MountPolicy { get; }
+    public QualificationDisposition NetworkQualification { get; }
 }
 
 /// <summary>One bound closure object: role, SHA-256, length, fixed
@@ -160,7 +192,7 @@ internal sealed record ClosureIdentity
     {
         ArgumentNullException.ThrowIfNull(objects);
         ArgumentNullException.ThrowIfNull(helperDependencies);
-        var sorted = objects.OrderBy(o => o.Role, StringComparer.Ordinal).ToArray();
+        var sorted = objects.OrderBy(o => o.Role, Utf8BytewiseComparer.Instance).ToArray();
         for (var i = 1; i < sorted.Length; i++)
         {
             if (string.Equals(sorted[i - 1].Role, sorted[i].Role, StringComparison.Ordinal))
@@ -170,7 +202,7 @@ internal sealed record ClosureIdentity
         }
 
         Objects = sorted.ToImmutableArray();
-        HelperDependencies = helperDependencies.ToImmutableArray();
+        HelperDependencies = ManifestCodec.SortedUnique(helperDependencies, nameof(helperDependencies));
     }
 
     public ImmutableArray<ClosureObject> Objects { get; }
@@ -218,7 +250,7 @@ internal sealed record InvocationManifest
             throw new ArgumentException("Work directory must be exactly /tmp.", nameof(workDirectory));
         }
 
-        var sortedEnvironment = environment.OrderBy(kv => kv.Key, StringComparer.Ordinal).ToArray();
+        var sortedEnvironment = environment.OrderBy(kv => kv.Key, Utf8BytewiseComparer.Instance).ToArray();
         for (var i = 1; i < sortedEnvironment.Length; i++)
         {
             if (string.Equals(sortedEnvironment[i - 1].Key, sortedEnvironment[i].Key, StringComparison.Ordinal))
@@ -327,6 +359,65 @@ internal sealed record PreparationIdentity
     public ImmutableArray<byte> ManifestDigest { get; }
 }
 
+/// <summary>Core-dump policy: dumps disabled via zero rlimits (required),
+/// runtime dump facilities disabled where applicable, and an optional
+/// observed host core pattern. This covers only the observed tested crash
+/// behavior, never exhaustive host core-sink exclusion.</summary>
+internal sealed record CoreDumpPolicy
+{
+    public CoreDumpPolicy(bool coreDisabled, bool runtimeDumpsDisabled, string? corePatternObserved)
+    {
+        if (!coreDisabled)
+        {
+            throw new ArgumentException("Core dumps must be disabled.", nameof(coreDisabled));
+        }
+
+        if (corePatternObserved is not null && corePatternObserved.Length == 0)
+        {
+            throw new ArgumentException("An observed core pattern must be non-empty.", nameof(corePatternObserved));
+        }
+
+        CoreDisabled = coreDisabled;
+        RuntimeDumpsDisabled = runtimeDumpsDisabled;
+        CorePatternObserved = corePatternObserved;
+    }
+
+    public bool CoreDisabled { get; }
+    public bool RuntimeDumpsDisabled { get; }
+    public string? CorePatternObserved { get; }
+}
+
+/// <summary>Owner allocation/log bounded-resource semantics: staging bytes
+/// and object counts plus fixed config/status/journal/receipt budgets.</summary>
+internal sealed record OwnerAllocationLimits
+{
+    public OwnerAllocationLimits(
+        ulong stagingBytes,
+        uint stagingObjects,
+        ulong configBytes,
+        ulong coordinatorStatusBytes,
+        ulong helperStatusBytes,
+        ulong journalBytes,
+        ulong receiptBytes)
+    {
+        StagingBytes = stagingBytes;
+        StagingObjects = stagingObjects;
+        ConfigBytes = configBytes;
+        CoordinatorStatusBytes = coordinatorStatusBytes;
+        HelperStatusBytes = helperStatusBytes;
+        JournalBytes = journalBytes;
+        ReceiptBytes = receiptBytes;
+    }
+
+    public ulong StagingBytes { get; }
+    public uint StagingObjects { get; }
+    public ulong ConfigBytes { get; }
+    public ulong CoordinatorStatusBytes { get; }
+    public ulong HelperStatusBytes { get; }
+    public ulong JournalBytes { get; }
+    public ulong ReceiptBytes { get; }
+}
+
 /// <summary>Resource manifest: exact budgets with units and per-constraint
 /// disposition. Inode/object qualification is always PendingQualification
 /// in M1; it is never an exception for other constraints.</summary>
@@ -346,7 +437,9 @@ internal sealed record ResourceManifest
         ResourceBudget overallTimeoutNs,
         ResourceBudget stopAllowanceNs,
         ResourceBudget finalDrainNs,
-        QualificationDisposition inodeQualification)
+        QualificationDisposition inodeQualification,
+        CoreDumpPolicy coreDumps,
+        OwnerAllocationLimits ownerAllocation)
     {
         Memory = memory ?? throw new ArgumentNullException(nameof(memory));
         Swap = swap ?? throw new ArgumentNullException(nameof(swap));
@@ -367,6 +460,8 @@ internal sealed record ResourceManifest
         }
 
         InodeQualification = inodeQualification;
+        CoreDumps = coreDumps ?? throw new ArgumentNullException(nameof(coreDumps));
+        OwnerAllocation = ownerAllocation ?? throw new ArgumentNullException(nameof(ownerAllocation));
     }
 
     public ResourceBudget Memory { get; }
@@ -383,6 +478,54 @@ internal sealed record ResourceManifest
     public ResourceBudget StopAllowanceNs { get; }
     public ResourceBudget FinalDrainNs { get; }
     public QualificationDisposition InodeQualification { get; }
+    public CoreDumpPolicy CoreDumps { get; }
+    public OwnerAllocationLimits OwnerAllocation { get; }
+}
+
+/// <summary>Establishment status: absent until trusted observation exists,
+/// observed once a distinct immutable report supplies it, unknown when a
+/// previously observed establishment can no longer be confirmed.</summary>
+internal enum EstablishmentStatus : byte
+{
+    Absent = 0,
+    Observed = 1,
+    Unknown = 2,
+}
+
+/// <summary>Distinct immutable establishment representation for later work
+/// packages. An immutable requested manifest is never establishment
+/// evidence. WP01 produces only <see cref="Absent"/>; native readback
+/// implementation remains outside WP01.</summary>
+internal sealed record EstablishedManifest
+{
+    public static EstablishedManifest Absent { get; } = new(EstablishmentStatus.Absent, null);
+
+    public static EstablishedManifest Unknown() => new(EstablishmentStatus.Unknown, null);
+
+    public static EstablishedManifest Observed(RestrictedManifest manifest)
+    {
+        ArgumentNullException.ThrowIfNull(manifest);
+        return new EstablishedManifest(EstablishmentStatus.Observed, manifest);
+    }
+
+    private EstablishedManifest(EstablishmentStatus status, RestrictedManifest? manifest)
+    {
+        if (status == EstablishmentStatus.Observed && manifest is null)
+        {
+            throw new ArgumentException("Observed establishment requires a manifest.", nameof(manifest));
+        }
+
+        if (status != EstablishmentStatus.Observed && manifest is not null)
+        {
+            throw new ArgumentException("Only observed establishment carries a manifest.", nameof(manifest));
+        }
+
+        Status = status;
+        Manifest = manifest;
+    }
+
+    public EstablishmentStatus Status { get; }
+    public RestrictedManifest? Manifest { get; }
 }
 
 /// <summary>Top-level immutable preparation manifest, schema version 1.</summary>
@@ -429,6 +572,53 @@ internal sealed record RestrictedManifest
     public ChannelManifest Channels { get; }
 }
 
+/// <summary>Compares strings by unsigned UTF-8 byte sequence. This
+/// differs from UTF-16 ordinal comparison for supplementary-plane
+/// characters (whose surrogate lead units sort before BMP characters
+/// above U+DFFF that their UTF-8 four-byte forms sort after).</summary>
+internal sealed class Utf8BytewiseComparer : IComparer<string>
+{
+    internal static readonly Utf8BytewiseComparer Instance = new();
+
+    private static readonly Encoding StrictOrderEncoding =
+        new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
+
+    private Utf8BytewiseComparer()
+    {
+    }
+
+    public int Compare(string? x, string? y)
+    {
+        if (ReferenceEquals(x, y))
+        {
+            return 0;
+        }
+
+        if (x is null)
+        {
+            return -1;
+        }
+
+        if (y is null)
+        {
+            return 1;
+        }
+
+        var xb = StrictOrderEncoding.GetBytes(x);
+        var yb = StrictOrderEncoding.GetBytes(y);
+        var length = Math.Min(xb.Length, yb.Length);
+        for (var i = 0; i < length; i++)
+        {
+            if (xb[i] != yb[i])
+            {
+                return xb[i] < yb[i] ? -1 : 1;
+            }
+        }
+
+        return xb.Length.CompareTo(yb.Length);
+    }
+}
+
 /// <summary>Canonical codec for <see cref="RestrictedManifest"/>: versioned
 /// field order, fixed-width little-endian integers, one-byte kind tags, u32
 /// lengths/counts, strict UTF-8 without normalization, raw 32-byte digests
@@ -444,7 +634,7 @@ internal static class ManifestCodec
     internal static ImmutableArray<string> SortedUnique(IEnumerable<string> values, string parameterName)
     {
         ArgumentNullException.ThrowIfNull(values);
-        var sorted = values.OrderBy(v => v, StringComparer.Ordinal).ToArray();
+        var sorted = values.OrderBy(v => v, Utf8BytewiseComparer.Instance).ToArray();
         foreach (var v in sorted)
         {
             ArgumentException.ThrowIfNullOrEmpty(v);
@@ -464,7 +654,7 @@ internal static class ManifestCodec
     internal static ImmutableArray<WritableStore> SortedStores(IEnumerable<WritableStore> values, string parameterName)
     {
         ArgumentNullException.ThrowIfNull(values);
-        var sorted = values.OrderBy(s => s.Path, StringComparer.Ordinal).ToArray();
+        var sorted = values.OrderBy(s => s.Path, Utf8BytewiseComparer.Instance).ToArray();
         for (var i = 1; i < sorted.Length; i++)
         {
             if (string.Equals(sorted[i - 1].Path, sorted[i].Path, StringComparison.Ordinal))
@@ -488,9 +678,8 @@ internal static class ManifestCodec
     }
 
     /// <summary>Converts a .NET Guid (mixed-endian fields) to RFC 4122 byte
-    /// order (big-endian first three fields). UTF-8 byte order already
-    /// preserves code-point order, so ordinal string sorting elsewhere in
-    /// this codec is exactly UTF-8 byte sorting.</summary>
+    /// order (big-endian first three fields). Collection ordering uses
+    /// <see cref="Utf8BytewiseComparer"/>, never UTF-16 ordinal order.</summary>
     internal static byte[] GuidToRfc4122Bytes(Guid value)
     {
         var raw = value.ToByteArray();
@@ -612,6 +801,9 @@ internal static class ManifestCodec
         stream.WriteByte(authority.NoAmbientEnvironment ? (byte)1 : (byte)0);
         stream.WriteByte(authority.NoIpcEndpoints ? (byte)1 : (byte)0);
         stream.WriteByte(authority.NoExtraInheritedFds ? (byte)1 : (byte)0);
+        stream.WriteByte(authority.MountPolicy.ToolExecutable ? (byte)1 : (byte)0);
+        stream.WriteByte(authority.MountPolicy.ScratchNoexec ? (byte)1 : (byte)0);
+        stream.WriteByte((byte)authority.NetworkQualification);
     }
 
     private static void WriteResources(MemoryStream stream, ResourceManifest resources)
@@ -630,6 +822,21 @@ internal static class ManifestCodec
         WriteBudget(stream, resources.StopAllowanceNs);
         WriteBudget(stream, resources.FinalDrainNs);
         stream.WriteByte((byte)resources.InodeQualification);
+        stream.WriteByte(resources.CoreDumps.CoreDisabled ? (byte)1 : (byte)0);
+        stream.WriteByte(resources.CoreDumps.RuntimeDumpsDisabled ? (byte)1 : (byte)0);
+        stream.WriteByte(resources.CoreDumps.CorePatternObserved is null ? (byte)0 : (byte)1);
+        if (resources.CoreDumps.CorePatternObserved is not null)
+        {
+            WriteString(stream, resources.CoreDumps.CorePatternObserved);
+        }
+
+        WriteU64(stream, resources.OwnerAllocation.StagingBytes);
+        WriteU32(stream, resources.OwnerAllocation.StagingObjects);
+        WriteU64(stream, resources.OwnerAllocation.ConfigBytes);
+        WriteU64(stream, resources.OwnerAllocation.CoordinatorStatusBytes);
+        WriteU64(stream, resources.OwnerAllocation.HelperStatusBytes);
+        WriteU64(stream, resources.OwnerAllocation.JournalBytes);
+        WriteU64(stream, resources.OwnerAllocation.ReceiptBytes);
     }
 
     private static void WriteClosure(MemoryStream stream, ClosureIdentity closure)

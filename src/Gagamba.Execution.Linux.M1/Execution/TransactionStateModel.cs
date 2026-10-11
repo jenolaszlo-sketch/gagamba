@@ -3,7 +3,8 @@
 // publication. No filesystem copy, P/Invoke, process launch, real release
 // transport or provider registration. Outcome semantics follow plan
 // Sections 6/8/13: a refused transition never mutates model state, a stop
-// that wins forbids release, and Unknown is never reconstructed.
+// that wins forbids release, knowledge never regresses once recorded, and
+// Unknown is never reconstructed.
 using System.Collections.Immutable;
 using Gagamba.Execution.Restricted;
 
@@ -93,6 +94,13 @@ internal sealed class TransactionStateModel
     private readonly List<string> _transitionNames = new();
     private readonly List<long> _transitionAtNs = new();
     private readonly List<StopCauseKind> _laterStopCauses = new();
+    private bool _execObserved;
+    private bool _rootObserved;
+    private bool _helperObserved;
+    private bool _captureObserved;
+    private bool _domainObserved;
+    private PreparationIdentity? _lastIdentity;
+    private RestrictedManifest? _lastManifest;
 
     public TransactionStateModel(
         Preparation.PreparedTransaction.PreparationStore store,
@@ -159,6 +167,8 @@ internal sealed class TransactionStateModel
         }
 
         CurrentCapability = capability;
+        _lastIdentity = capability.Identity;
+        _lastManifest = capability.Manifest;
         State = TransactionState.Prepared;
         _journal.Append("prepared", capability.Identity.PreparationId.ToString(), _clock.NowNanoseconds);
         RecordTransition("PublishPrepared");
@@ -201,12 +211,25 @@ internal sealed class TransactionStateModel
             return TransitionAttempt.Refused(InvariantViolation.StoppedFirst, "A stop already won before release.");
         }
 
+        if (State == TransactionState.ReleaseCommitted && CurrentCapability is not null)
+        {
+            // Duplicate release call: return the retained original decision
+            // without another release action. A conflicting identity still
+            // cannot cause a second decision or write.
+            if (AuthorizesSamePreparation(identity, manifestDigest))
+            {
+                return TransitionAttempt.Ok("Duplicate release call; original committed decision stands, no further write.");
+            }
+
+            return TransitionAttempt.Refused(InvariantViolation.Foreign, "Conflicting authorization cannot cause another decision.");
+        }
+
         if (State != TransactionState.Owned)
         {
             return TransitionAttempt.Refused(InvariantViolation.InvalidStateOrder, "TryCommitRelease requires Owned.");
         }
 
-        if (CurrentCapability is null || !identity.Equals(CurrentCapability.Identity))
+        if (CurrentCapability is null || !AuthorizesIdentity(identity))
         {
             return TransitionAttempt.Refused(InvariantViolation.Foreign, "Authorization identity does not match the prepared capability.");
         }
@@ -295,13 +318,30 @@ internal sealed class TransactionStateModel
 
     public TransitionAttempt ObserveExec(ExecDisposition disposition, int errno = 0)
     {
-        if (!AllowsObservations())
+        if (IsTerminal(State))
+        {
+            return TransitionAttempt.Refused(InvariantViolation.InvalidStateOrder, "Terminal observation is immutable.");
+        }
+
+        if (Release == ReleaseDisposition.NotCommitted
+            || State is not (TransactionState.ReleaseCommitted or TransactionState.Running or TransactionState.Stopping))
         {
             return TransitionAttempt.Refused(InvariantViolation.InvalidStateOrder, "Exec cannot be observed in this state.");
         }
 
+        if (_execObserved)
+        {
+            if (Exec == disposition && ExecErrno == errno)
+            {
+                return TransitionAttempt.Ok("Exec already recorded; duplicate is idempotent.");
+            }
+
+            return TransitionAttempt.Refused(InvariantViolation.Conflict, "Conflicting exec observation cannot replace recorded knowledge.");
+        }
+
         Exec = disposition;
         ExecErrno = errno;
+        _execObserved = true;
         if (disposition == ExecDisposition.Confirmed && State == TransactionState.ReleaseCommitted)
         {
             State = TransactionState.Running;
@@ -314,12 +354,29 @@ internal sealed class TransactionStateModel
     public TransitionAttempt ObserveRoot(RootResult root)
     {
         ArgumentNullException.ThrowIfNull(root);
-        if (!AllowsObservations())
+        if (IsTerminal(State))
+        {
+            return TransitionAttempt.Refused(InvariantViolation.InvalidStateOrder, "Terminal observation is immutable.");
+        }
+
+        if (Release == ReleaseDisposition.NotCommitted
+            || State is not (TransactionState.ReleaseCommitted or TransactionState.Running or TransactionState.Stopping))
         {
             return TransitionAttempt.Refused(InvariantViolation.InvalidStateOrder, "Root cannot be observed in this state.");
         }
 
+        if (_rootObserved)
+        {
+            if (Root.Equals(root))
+            {
+                return TransitionAttempt.Ok("Root already recorded; duplicate is idempotent.");
+            }
+
+            return TransitionAttempt.Refused(InvariantViolation.Conflict, "Conflicting root observation cannot replace recorded knowledge.");
+        }
+
         Root = root;
+        _rootObserved = true;
         RecordTransition("ObserveRoot");
         return TransitionAttempt.Ok("Root recorded.");
     }
@@ -327,12 +384,31 @@ internal sealed class TransactionStateModel
     public TransitionAttempt ObserveHelper(HelperResult helper)
     {
         ArgumentNullException.ThrowIfNull(helper);
-        if (!AllowsObservations())
+        if (IsTerminal(State))
+        {
+            return TransitionAttempt.Refused(InvariantViolation.InvalidStateOrder, "Terminal observation is immutable.");
+        }
+
+        // Helper observations exist independently of target execution, so
+        // held and pre-release teardown states admit them without any
+        // release having occurred.
+        if (State is not (TransactionState.Owned or TransactionState.ReleaseCommitted or TransactionState.Running or TransactionState.Stopping))
         {
             return TransitionAttempt.Refused(InvariantViolation.InvalidStateOrder, "Helper cannot be observed in this state.");
         }
 
+        if (_helperObserved)
+        {
+            if (Helper.Equals(helper))
+            {
+                return TransitionAttempt.Ok("Helper already recorded; duplicate is idempotent.");
+            }
+
+            return TransitionAttempt.Refused(InvariantViolation.Conflict, "Conflicting helper observation cannot replace recorded knowledge.");
+        }
+
         Helper = helper;
+        _helperObserved = true;
         RecordTransition("ObserveHelper");
         return TransitionAttempt.Ok("Helper recorded.");
     }
@@ -340,24 +416,58 @@ internal sealed class TransactionStateModel
     public TransitionAttempt ObserveCaptureTerminal(CaptureResult capture)
     {
         ArgumentNullException.ThrowIfNull(capture);
-        if (!AllowsObservations())
+        if (IsTerminal(State))
+        {
+            return TransitionAttempt.Refused(InvariantViolation.InvalidStateOrder, "Terminal observation is immutable.");
+        }
+
+        // Capture termination can legitimately arrive during held and
+        // pre-release teardown; it never implies target release.
+        if (State is not (TransactionState.Owned or TransactionState.ReleaseCommitted or TransactionState.Running or TransactionState.Stopping))
         {
             return TransitionAttempt.Refused(InvariantViolation.InvalidStateOrder, "Capture cannot be observed in this state.");
         }
 
+        if (_captureObserved)
+        {
+            if (Capture is not null && Capture.Equals(capture))
+            {
+                return TransitionAttempt.Ok("Capture already recorded; duplicate is idempotent.");
+            }
+
+            return TransitionAttempt.Refused(InvariantViolation.Conflict, "Conflicting capture observation cannot replace recorded knowledge.");
+        }
+
         Capture = capture;
+        _captureObserved = true;
         RecordTransition("ObserveCaptureTerminal");
         return TransitionAttempt.Ok("Capture recorded.");
     }
 
     public TransitionAttempt ObserveDomainEmpty(bool empty)
     {
+        if (IsTerminal(State))
+        {
+            return TransitionAttempt.Refused(InvariantViolation.InvalidStateOrder, "Terminal observation is immutable.");
+        }
+
         if (State is not (TransactionState.Owned or TransactionState.ReleaseCommitted or TransactionState.Running or TransactionState.Stopping))
         {
             return TransitionAttempt.Refused(InvariantViolation.InvalidStateOrder, "Domain emptiness cannot be observed in this state.");
         }
 
+        if (_domainObserved)
+        {
+            if (DomainEmpty == empty)
+            {
+                return TransitionAttempt.Ok("Domain observation already recorded; duplicate is idempotent.");
+            }
+
+            return TransitionAttempt.Refused(InvariantViolation.Conflict, "Conflicting domain observation cannot replace recorded knowledge.");
+        }
+
         DomainEmpty = empty;
+        _domainObserved = true;
         RecordTransition("ObserveDomainEmpty");
         return TransitionAttempt.Ok("Domain observation recorded.");
     }
@@ -404,7 +514,15 @@ internal sealed class TransactionStateModel
             && DomainEmpty == true
             && Capture is { Complete: true })
         {
-            if (root.Kind == RootResultKind.Exited && root.ExitCode == 0)
+            // An accepted stop forbids aggregate success even when the root
+            // later exits cleanly; the known root result is preserved while
+            // the outcome records the stop.
+            if (FirstStopCause is not null)
+            {
+                terminal = TransactionState.Failed;
+                outcome = ExecutionOutcome.Stopped;
+            }
+            else if (root.Kind == RootResultKind.Exited && root.ExitCode == 0)
             {
                 terminal = TransactionState.Completed;
                 outcome = ExecutionOutcome.Succeeded;
@@ -413,11 +531,6 @@ internal sealed class TransactionStateModel
             {
                 terminal = TransactionState.Completed;
                 outcome = ExecutionOutcome.TargetFailed;
-            }
-            else if (FirstStopCause is not null)
-            {
-                terminal = TransactionState.Failed;
-                outcome = ExecutionOutcome.Stopped;
             }
             else
             {
@@ -440,27 +553,38 @@ internal sealed class TransactionStateModel
         _journal.Append("terminal", $"{terminal}/{outcome}", _clock.NowNanoseconds);
         RecordTransition("PublishTerminal");
         TerminalObservation = new TransactionObservation(
-            CurrentCapability?.Identity,
-            CurrentCapability?.Manifest,
-            CurrentCapability?.Manifest,
+            _lastIdentity,
+            _lastManifest,
+            EstablishedManifest.Absent,
             terminal,
             outcome,
             root,
             Helper,
             Exec,
+            ExecErrno,
             Capture,
             cleanup,
             Release,
             FirstStopCause,
+            _laterStopCauses.ToArray(),
             _transitionNames.ToArray(),
             _transitionAtNs.ToArray(),
             EvidenceVersion);
         return TransitionAttempt.Ok("Terminal published.");
     }
 
-    private bool AllowsObservations() =>
-        Release != ReleaseDisposition.NotCommitted
-        && State is TransactionState.ReleaseCommitted or TransactionState.Running or TransactionState.Stopping;
+    private bool AuthorizesIdentity(PreparationIdentity identity) =>
+        CurrentCapability is not null
+        && identity.ExecutionId.Equals(CurrentCapability.Identity.ExecutionId)
+        && identity.IssuerId.Equals(CurrentCapability.Identity.IssuerId)
+        && identity.GenerationId.Equals(CurrentCapability.Identity.GenerationId)
+        && identity.PreparationId.Equals(CurrentCapability.Identity.PreparationId)
+        && identity.ManifestDigest.SequenceEqual(CurrentCapability.Identity.ManifestDigest);
+
+    private bool AuthorizesSamePreparation(PreparationIdentity identity, byte[] manifestDigest) =>
+        AuthorizesIdentity(identity)
+        && CurrentCapability is not null
+        && manifestDigest.SequenceEqual(ManifestCodec.ComputeDigestBytes(CurrentCapability.Manifest));
 
     private static bool IsTerminal(TransactionState state) =>
         state is TransactionState.Completed or TransactionState.Failed or TransactionState.Cancelled or TransactionState.Unknown;
