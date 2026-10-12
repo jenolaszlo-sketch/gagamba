@@ -42,7 +42,12 @@ public sealed class BindingTests
         Assert.False(result.Succeeded);
         Assert.Equal(CopyFailureKind.ObjectReplaced, result.Failure);
         Assert.Null(result.Closure);
-        Assert.Empty(host.StagingFileNames());
+        // G2-07: the replaced entry is NOT the created object, so checked
+        // cleanup must preserve it and report debt rather than delete it.
+        Assert.NotNull(result.Cleanup);
+        Assert.False(result.Cleanup!.Confirmed);
+        Assert.Contains(result.Cleanup.Items, i => i.Outcome == CleanupItemOutcome.IdentityMismatch);
+        Assert.True(host.StagingFileExists("tool-000.staged"));
         Assert.Empty(host.LiveHandles);
     }
 

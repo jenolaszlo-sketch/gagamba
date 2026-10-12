@@ -1,7 +1,11 @@
-// WP01 capability skeleton: single-use preparation identity with a private
-// constructor. Only the nested PreparationStore can mint it; only a release
-// arbiter may consume it (WP05). Disposal/abort invalidates permanently.
-// No native handles exist in WP01; those arrive with later packages.
+// WP01/WP02 capability: single-use preparation identity with a private
+// constructor. Only the nested PreparationStore can mint it; only a
+// release arbiter may consume it (WP05). G2-06: the exact verified
+// PreparedClosure and its retained read-only object handles are owned by
+// the store entry for the capability's whole lifetime, so the future
+// PrepareHeldAsync(PreparedTransaction, DomainLease, ...) boundary can
+// borrow the exact copied FDs. Disposal/abort invalidates permanently and
+// releases closure authority exactly once.
 using Gagamba.Execution.Restricted;
 
 namespace Gagamba.Execution.Linux.M1.Preparation;
@@ -30,6 +34,17 @@ internal sealed partial class PreparedTransaction : IDisposable
     public PreparationIdentity Identity { get; }
 
     public long ExpiresAtNs { get; }
+
+    /// <summary>Controlled internal borrow of the exact store-owned bound
+    /// closure for the future held-launch binding path. Ownership remains
+    /// with the store; the caller must not dispose it and must not use it
+    /// after the capability is invalidated/disposed. Fails once the
+    /// capability is no longer live.</summary>
+    internal bool TryBorrowClosure(out PreparedClosure? closure)
+    {
+        closure = null;
+        return _store is not null && _store.TryBorrowClosure(this, out closure);
+    }
 
     public void Dispose()
     {

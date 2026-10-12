@@ -68,6 +68,7 @@ internal sealed class StagedObject
 internal sealed class PreparedClosure : IDisposable
 {
     private bool _disposed;
+    private bool _storeOwned;
 
     public PreparedClosure(
         IReadOnlyList<StagedObject> objects,
@@ -91,24 +92,72 @@ internal sealed class PreparedClosure : IDisposable
 
     public IReadOnlyList<KeyValuePair<string, string>> Environment { get; }
 
-    /// <summary>Explicit accounted cleanup: unlinks every staged object
-    /// through the retained staging directory, then disposes. Never
-    /// invoked implicitly by the engine on accounted objects.</summary>
-    public void DiscardAccounted(ICopyHost host)
+    /// <summary>Transfers ownership to the preparation store on successful
+    /// publication. After transfer, disposing through a stale builder
+    /// reference is a no-op; only the store releases the handles.</summary>
+    internal void TransferToStore() => _storeOwned = true;
+
+    internal bool StoreOwned => _storeOwned;
+
+    /// <summary>Identity-checked accounted cleanup (G2-07): removes each
+    /// staged object only if the current directory entry still is the exact
+    /// object this preparation created. Refuses once ownership has moved to
+    /// the store (the store releases handles on invalidation). Disposes on
+    /// full confirmation; otherwise retains handle authority and returns
+    /// cleanup debt. Never invoked implicitly by the engine on accounted
+    /// objects.</summary>
+    public StagingCleanupReport DiscardAccounted(ICopyHost host)
     {
         ArgumentNullException.ThrowIfNull(host);
-        if (StagingDirectory is not null)
+        if (_storeOwned || _disposed)
         {
-            foreach (var staged in Objects)
-            {
-                host.Unlink(StagingDirectory, staged.StagingName);
-            }
+            var refused = Objects
+                .Select(s => new CleanupItemResult(CleanupItemOutcome.IdentityMismatch, s.StagingName, "closure ownership has moved to the store"))
+                .ToArray();
+            return new StagingCleanupReport(refused);
         }
 
-        Dispose();
+        StagingCleanupReport report;
+        if (StagingDirectory is null)
+        {
+            var debt = Objects
+                .Select(s => new CleanupItemResult(CleanupItemOutcome.InspectionFailed, s.StagingName, "no retained staging directory"))
+                .ToArray();
+            report = new StagingCleanupReport(debt);
+        }
+        else
+        {
+            var entries = Objects
+                .Select(s => (s.StagingName, s.Device, s.Inode))
+                .ToArray();
+            report = StagingCleanup.CleanAll(host, StagingDirectory, entries);
+        }
+
+        if (report.Confirmed)
+        {
+            Dispose();
+        }
+
+        return report;
     }
 
+    /// <summary>Releases handle authority. No-op if already disposed or if
+    /// ownership has moved to the store; callers holding a stale builder
+    /// reference cannot close store-owned handles.</summary>
     public void Dispose()
+    {
+        if (_disposed || _storeOwned)
+        {
+            return;
+        }
+
+        _disposed = true;
+        DisposeHandles();
+    }
+
+    /// <summary>Store-side release on invalidation/abort. Disposes handles
+    /// exactly once regardless of stale builder references.</summary>
+    internal void ReleaseFromStore()
     {
         if (_disposed)
         {
@@ -116,6 +165,11 @@ internal sealed class PreparedClosure : IDisposable
         }
 
         _disposed = true;
+        DisposeHandles();
+    }
+
+    private void DisposeHandles()
+    {
         foreach (var staged in Objects)
         {
             staged.Handle.Dispose();
@@ -126,15 +180,17 @@ internal sealed class PreparedClosure : IDisposable
     }
 }
 
-/// <summary>Publication outcome. A null capability means none exists;
-/// a non-null closure on failure carries accounted objects for explicit
-/// cleanup, never a usable capability.</summary>
+/// <summary>Publication outcome. On success the capability owns the exact
+/// closure and <see cref="Closure"/> is null (ownership transferred into
+/// the store). On failure <see cref="Capability"/> is null and
+/// <see cref="Closure"/> carries the accounted objects for explicit
+/// checked cleanup, never a usable capability.</summary>
 internal sealed record PublicationResult(
     bool Published,
     CopyFailureKind Failure,
     string Detail,
     PreparedTransaction? Capability,
-    PreparedClosure Closure);
+    PreparedClosure? Closure);
 
 /// <summary>Atomic publication through the WP01 store: binding check,
 /// durable acknowledgement, then Mint. No early publication.</summary>
@@ -211,8 +267,11 @@ internal static class PreparationPublisher
 
         try
         {
-            var capability = store.Mint(manifest, identity, expiresAtNs);
-            return new PublicationResult(true, CopyFailureKind.None, "Preparation published.", capability, closure);
+            // Ownership of the verified closure transfers exactly once
+            // into the capability/store entry; the caller no longer owns it
+            // on success.
+            var capability = store.Mint(manifest, identity, expiresAtNs, closure);
+            return new PublicationResult(true, CopyFailureKind.None, "Preparation published.", capability, null);
         }
         catch (OperationCanceledException)
         {

@@ -32,7 +32,7 @@ public sealed class PreparationIdentityTests
             Generation,
             new Guid("44444444-4444-4444-4444-444444444444"),
             ManifestCodec.ComputeDigestBytes(manifest));
-        return (store, clock, store.Mint(manifest, identity, expiryNs));
+        return (store, clock, store.Mint(manifest, identity, expiryNs, TestClosure.Empty()));
     }
 
     [Fact]
@@ -55,7 +55,7 @@ public sealed class PreparationIdentityTests
         var identity = new PreparationIdentity(
             Guid.NewGuid(), Guid.NewGuid(), Generation, Guid.NewGuid(),
             ManifestCodec.ComputeDigestBytes(manifest));
-        Assert.Throws<ArgumentException>(() => store.Mint(manifest, identity, 1_000_000_000));
+        Assert.Throws<ArgumentException>(() => store.Mint(manifest, identity, 1_000_000_000, TestClosure.Empty()));
     }
 
     [Fact]
@@ -67,7 +67,7 @@ public sealed class PreparationIdentityTests
         var identity = new PreparationIdentity(
             Guid.NewGuid(), Issuer, Guid.NewGuid(), Guid.NewGuid(),
             ManifestCodec.ComputeDigestBytes(manifest));
-        Assert.Throws<ArgumentException>(() => store.Mint(manifest, identity, 1_000_000_000));
+        Assert.Throws<ArgumentException>(() => store.Mint(manifest, identity, 1_000_000_000, TestClosure.Empty()));
     }
 
     [Fact]
@@ -77,7 +77,7 @@ public sealed class PreparationIdentityTests
         var store = NewStore(clock);
         var identity = new PreparationIdentity(
             Guid.NewGuid(), Issuer, Generation, Guid.NewGuid(), Bytes32(0xAA));
-        Assert.Throws<ArgumentException>(() => store.Mint(SampleManifest(), identity, 1_000_000_000));
+        Assert.Throws<ArgumentException>(() => store.Mint(SampleManifest(), identity, 1_000_000_000, TestClosure.Empty()));
     }
 
     [Fact]
@@ -89,8 +89,8 @@ public sealed class PreparationIdentityTests
         var identity = new PreparationIdentity(
             Guid.NewGuid(), Issuer, Generation, Guid.NewGuid(),
             ManifestCodec.ComputeDigestBytes(manifest));
-        Assert.Throws<ArgumentException>(() => store.Mint(manifest, identity, 5_000));
-        Assert.Throws<ArgumentException>(() => store.Mint(manifest, identity, 1_000));
+        Assert.Throws<ArgumentException>(() => store.Mint(manifest, identity, 5_000, TestClosure.Empty()));
+        Assert.Throws<ArgumentException>(() => store.Mint(manifest, identity, 1_000, TestClosure.Empty()));
     }
 
     [Fact]
@@ -135,7 +135,8 @@ public sealed class PreparationIdentityTests
         var first = firstStore.Mint(
             manifest,
             new PreparationIdentity(execution, Issuer, Generation, preparation, (byte[])digest.Clone()),
-            1_000_000_000);
+            1_000_000_000,
+            TestClosure.Empty());
         Assert.True(firstStore.TryConsume(first, out _));
 
         // A different object carrying identical identifiers and copied
@@ -144,7 +145,8 @@ public sealed class PreparationIdentityTests
         var twin = secondStore.Mint(
             manifest,
             new PreparationIdentity(execution, Issuer, Generation, preparation, (byte[])digest.Clone()),
-            1_000_000_000);
+            1_000_000_000,
+            TestClosure.Empty());
         Assert.False(firstStore.TryConsume(twin, out var violation));
         Assert.Equal(InvariantViolation.Foreign, violation);
 
@@ -152,7 +154,8 @@ public sealed class PreparationIdentityTests
         Assert.Throws<ArgumentException>(() => firstStore.Mint(
             manifest,
             new PreparationIdentity(execution, Issuer, Generation, preparation, (byte[])digest.Clone()),
-            1_000_000_000));
+            1_000_000_000,
+            TestClosure.Empty()));
     }
 
     [Fact]
@@ -166,7 +169,7 @@ public sealed class PreparationIdentityTests
             var identity = new PreparationIdentity(
                 Guid.NewGuid(), Issuer, Generation, Guid.NewGuid(),
                 ManifestCodec.ComputeDigestBytes(manifest));
-            return store.Mint(manifest, identity, expiry);
+            return store.Mint(manifest, identity, expiry, TestClosure.Empty());
         }
 
         var capability = Mint(1_000);

@@ -71,7 +71,7 @@ public sealed class StateModelTests
                 Generation,
                 new Guid("44444444-4444-4444-4444-444444444444"),
                 ManifestCodec.ComputeDigestBytes(manifest));
-            Capability = Store.Mint(manifest, identity, 1_000_000_000);
+            Capability = Store.Mint(manifest, identity, 1_000_000_000, TestClosure.Empty());
         }
 
         public FakeClock Clock { get; }

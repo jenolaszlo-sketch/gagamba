@@ -71,6 +71,8 @@ internal sealed class FakeCopyHost : ICopyHost
 
     public Func<string, int>? OpenSourceErrno { get; set; }
 
+    public Func<string, int>? UnlinkErrno { get; set; }
+
     public Func<string, int>? CreateStagingErrno { get; set; }
 
     public int FailReadsAfterChunks { get; set; } = -1;
@@ -176,6 +178,13 @@ internal sealed class FakeCopyHost : ICopyHost
         var subdir = FindSubdir();
         ArgumentNullException.ThrowIfNull(subdir);
         subdir.Files[name].Content = (byte[])content.Clone();
+    }
+
+    public void ReplaceStagedWithSymlink(string name)
+    {
+        var subdir = FindSubdir();
+        ArgumentNullException.ThrowIfNull(subdir);
+        subdir.Files[name] = new Node { IsSymlink = true, Ino = _nextIno++ };
     }
 
     public void ChmodStaged(string name, uint mode)
@@ -388,6 +397,15 @@ internal sealed class FakeCopyHost : ICopyHost
 
     public int Unlink(SafeHandle parent, string name)
     {
+        if (UnlinkErrno is not null)
+        {
+            var injected = UnlinkErrno(name);
+            if (injected != 0)
+            {
+                return injected;
+            }
+        }
+
         var desc = _open[((FakeFdHandle)parent).Id];
         var dir = (Directory)desc.Target;
         if (dir.Files.Remove(name))

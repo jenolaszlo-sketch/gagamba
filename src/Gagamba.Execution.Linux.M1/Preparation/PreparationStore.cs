@@ -22,8 +22,23 @@ internal sealed partial class PreparedTransaction
         private sealed class Entry
         {
             public required PreparedTransaction Capability;
+            public PreparedClosure? Closure;
             public bool Consumed;
             public bool Aborted;
+            private bool _closureReleased;
+
+            /// <summary>Releases store-owned closure authority exactly once.</summary>
+            public void ReleaseClosure()
+            {
+                if (_closureReleased)
+                {
+                    return;
+                }
+
+                _closureReleased = true;
+                Closure?.ReleaseFromStore();
+                Closure = null;
+            }
         }
 
         public PreparationStore(Guid issuerId, Guid generationId, Execution.ITransactionClock clock)
@@ -43,10 +58,15 @@ internal sealed partial class PreparedTransaction
             _clock = clock ?? throw new ArgumentNullException(nameof(clock));
         }
 
-        public PreparedTransaction Mint(RestrictedManifest manifest, PreparationIdentity identity, long expiresAtNs)
+        public PreparedTransaction Mint(
+            RestrictedManifest manifest,
+            PreparationIdentity identity,
+            long expiresAtNs,
+            PreparedClosure closure)
         {
             ArgumentNullException.ThrowIfNull(manifest);
             ArgumentNullException.ThrowIfNull(identity);
+            ArgumentNullException.ThrowIfNull(closure);
             if (!identity.IssuerId.Equals(_issuerId))
             {
                 throw new ArgumentException("Identity issuer does not match this store.", nameof(identity));
@@ -72,9 +92,30 @@ internal sealed partial class PreparedTransaction
                 throw new ArgumentException("Preparation ID already minted.", nameof(identity));
             }
 
+            // The store entry owns the exact verified closure for the
+            // capability's lifetime; ownership transfers here exactly once.
+            closure.TransferToStore();
             var capability = new PreparedTransaction(manifest, identity, expiresAtNs, this);
-            _entries.Add(identity.PreparationId, new Entry { Capability = capability });
+            _entries.Add(identity.PreparationId, new Entry { Capability = capability, Closure = closure });
             return capability;
+        }
+
+        /// <summary>Borrows the store-owned closure for a live capability.
+        /// Never transfers ownership; a fabricated or disposed capability
+        /// gets nothing.</summary>
+        public bool TryBorrowClosure(PreparedTransaction candidate, out PreparedClosure? closure)
+        {
+            closure = null;
+            if (_entries.TryGetValue(candidate.Identity.PreparationId, out var entry)
+                && ReferenceEquals(entry.Capability, candidate)
+                && !entry.Aborted
+                && entry.Closure is not null)
+            {
+                closure = entry.Closure;
+                return true;
+            }
+
+            return false;
         }
 
         public bool TryLookup(Guid preparationId, out PreparedTransaction? capability)
@@ -145,6 +186,7 @@ internal sealed partial class PreparedTransaction
                 && ReferenceEquals(entry.Capability, candidate))
             {
                 entry.Aborted = true;
+                entry.ReleaseClosure();
                 return true;
             }
 
@@ -156,6 +198,7 @@ internal sealed partial class PreparedTransaction
             if (_entries.TryGetValue(preparationId, out var entry))
             {
                 entry.Aborted = true;
+                entry.ReleaseClosure();
                 return true;
             }
 

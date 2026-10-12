@@ -64,12 +64,15 @@ internal sealed record CopyPlan(
 
 /// <summary>Prepare outcome. A null closure means nothing is retained;
 /// a non-null closure on a failed outcome carries accounted staged
-/// objects for explicit cleanup/reconciliation, never a capability.</summary>
+/// objects for explicit cleanup/reconciliation, never a capability.
+/// <see cref="Cleanup"/> reports identity-checked partial-cleanup results
+/// (G2-07); a non-confirmed report retains cleanup debt.</summary>
 internal sealed record PreparationResult(
     bool Succeeded,
     CopyFailureKind Failure,
     string Detail,
-    PreparedClosure? Closure);
+    PreparedClosure? Closure,
+    StagingCleanupReport? Cleanup = null);
 
 /// <summary>Protected copy-in engine. Implements the Section 7
 /// acquisition/copy/bind sequence with partial-vs-accounted cleanup.</summary>
@@ -117,7 +120,7 @@ internal static class SafeCopyIn
         SafeHandle? sourceRoot = null;
         SafeHandle? stagingParent = null;
         SafeHandle? stagingDir = null;
-        var createdNames = new List<string>();
+        var created = new List<CreatedEntry>();
         var bound = new List<StagedObject>();
         ulong totalBytes = 0;
         try
@@ -136,10 +139,10 @@ internal static class SafeCopyIn
                 var staged = CopyOneObject(
                     host, sourceRoot!, stagingDir!, plan.Objects[index], index,
                     plan.TotalBudgetBytes, ref totalBytes,
-                    plan.Hooks, cancellationToken, createdNames);
+                    plan.Hooks, cancellationToken, created);
                 if (!staged.Succeeded)
                 {
-                    return FinishFailed(host, ref stagingDir, createdNames, bound, totalBytes, environment, staged.Failure, staged.Detail);
+                    return FinishFailed(host, ref stagingDir, created, bound, totalBytes, environment, staged.Failure, staged.Detail);
                 }
 
                 bound.Add(staged.Bound!);
@@ -148,7 +151,7 @@ internal static class SafeCopyIn
             var syncErrno = host.SyncDirectory(stagingDir!);
             if (syncErrno != 0)
             {
-                return FinishFailed(host, ref stagingDir, createdNames, bound, totalBytes, environment,
+                return FinishFailed(host, ref stagingDir, created, bound, totalBytes, environment,
                     CopyFailureKind.StagingFailure, $"Staging directory sync failed with errno {syncErrno}.");
             }
 
@@ -162,12 +165,12 @@ internal static class SafeCopyIn
         }
         catch (OperationCanceledException)
         {
-            return FinishFailed(host, ref stagingDir, createdNames, bound, totalBytes, environment,
+            return FinishFailed(host, ref stagingDir, created, bound, totalBytes, environment,
                 CopyFailureKind.Cancelled, "Cancelled during preparation.");
         }
         catch (Exception ex)
         {
-            return FinishFailed(host, ref stagingDir, createdNames, bound, totalBytes, environment,
+            return FinishFailed(host, ref stagingDir, created, bound, totalBytes, environment,
                 CopyFailureKind.InvariantFailure, $"Internal preparation failure: {ex.GetType().Name}.");
         }
         finally
@@ -178,45 +181,66 @@ internal static class SafeCopyIn
         }
     }
 
-    private static PreparationResult Fail(CopyFailureKind failure, string detail, PreparedClosure? retained) =>
-        new(false, failure, detail, retained);
+    private static PreparationResult Fail(
+        CopyFailureKind failure, string detail, PreparedClosure? retained, StagingCleanupReport? cleanup = null) =>
+        new(false, failure, detail, retained, cleanup);
+
+    /// <summary>A staging entry created by this preparation, with the exact
+    /// creation identity captured while its writable FD was open.</summary>
+    private readonly record struct CreatedEntry(string Name, ulong Device, ulong Inode, bool IdentityKnown);
 
     private static PreparationResult FinishFailed(
         ICopyHost host,
         ref SafeHandle? stagingDir,
-        List<string> createdNames,
+        List<CreatedEntry> created,
         List<StagedObject> bound,
         ulong totalBytes,
         IReadOnlyList<KeyValuePair<string, string>> environment,
         CopyFailureKind failure,
         string detail)
     {
-        // Partial (never bound) objects are closed and unlinked through
-        // the retained staging directory. Bound objects are already
-        // accounted: the staging directory transfers into a retained
-        // closure for explicit cleanup, never silent deletion.
+        // Partial (never bound) objects are removed only through the
+        // retained staging directory and only when their current entry
+        // still matches the captured creation identity (G2-07). Bound
+        // objects are accounted: the staging directory transfers into a
+        // retained closure for explicit cleanup, never silent deletion.
         var boundNames = new HashSet<string>(StringComparer.Ordinal);
         foreach (var staged in bound)
         {
             boundNames.Add(staged.StagingName);
         }
 
-        foreach (var name in createdNames)
+        var partialResults = new List<CleanupItemResult>();
+        if (stagingDir is not null)
         {
-            if (!boundNames.Contains(name) && stagingDir is not null)
+            foreach (var entry in created)
             {
-                host.Unlink(stagingDir, name);
+                if (boundNames.Contains(entry.Name))
+                {
+                    continue;
+                }
+
+                if (!entry.IdentityKnown)
+                {
+                    partialResults.Add(new CleanupItemResult(
+                        CleanupItemOutcome.InspectionFailed, entry.Name, "creation identity was not captured"));
+                    continue;
+                }
+
+                partialResults.Add(StagingCleanup.CleanOne(host, stagingDir, entry.Name, entry.Device, entry.Inode));
             }
         }
 
+        var report = new StagingCleanupReport(partialResults);
+
         if (bound.Count == 0)
         {
-            return Fail(failure, detail, null);
+            return Fail(failure, detail, null, report);
         }
 
         var retained = new PreparedClosure(bound, stagingDir, totalBytes, environment);
         stagingDir = null;
-        return Fail(failure, detail, retained);
+        return Fail(failure, detail, retained, report);
     }
 
     private static PreparationResult? OpenAuthority(
@@ -300,7 +324,7 @@ internal static class SafeCopyIn
         ref ulong totalBytes,
         CopyTestHooks? hooks,
         CancellationToken cancellationToken,
-        List<string> createdNames)
+        List<CreatedEntry> created)
     {
         if (!IsSingleComponentName(request.SourceName) || !IsRoleName(request.Role))
         {
@@ -357,7 +381,7 @@ internal static class SafeCopyIn
                 return new ObjectStage(false, CopyFailureKind.StagingFailure, $"Staging create failed with errno {errno}.", null);
             }
 
-            createdNames.Add(stagingName);
+            created.Add(new CreatedEntry(stagingName, 0, 0, IdentityKnown: false));
             Native.FileIdentity createdIdentity = default;
             byte[] digest = Array.Empty<byte>();
             ulong count = 0;
@@ -367,6 +391,8 @@ internal static class SafeCopyIn
                 {
                     return new ObjectStage(false, CopyFailureKind.StagingFailure, "Staging stat failed.", null);
                 }
+
+                created[^1] = new CreatedEntry(stagingName, createdIdentity.Device, createdIdentity.Inode, IdentityKnown: true);
 
                 CopyFailureKind streamFailure;
                 string streamDetail;

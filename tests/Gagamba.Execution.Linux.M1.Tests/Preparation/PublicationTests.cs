@@ -70,7 +70,7 @@ public sealed class PublicationTests
         Assert.Null(published.Capability);
         Assert.Same(closure, published.Closure);
         Assert.Equal(2, host.StagingFileNames().Count);
-        published.Closure.DiscardAccounted(host);
+        Assert.True(published.Closure!.DiscardAccounted(host).Confirmed);
         Assert.Empty(host.StagingFileNames());
         Assert.Empty(host.LiveHandles);
     }
@@ -92,7 +92,7 @@ public sealed class PublicationTests
         Assert.Null(published.Capability);
         Assert.Same(closure, published.Closure);
         Assert.Equal(2, host.StagingFileNames().Count);
-        published.Closure.DiscardAccounted(host);
+        Assert.True(published.Closure!.DiscardAccounted(host).Confirmed);
         Assert.Empty(host.StagingFileNames());
     }
 

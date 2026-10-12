@@ -1,6 +1,6 @@
 # Gagamba handoff
 
-## Current action — G2 NOT ACCEPTED at 1e117e0: WP04 blocked; remediation not begun
+## Current action — G2 R1 done: WP02 G2-06/G2-07 corrected; G2 still NOT ACCEPTED, WP03 blockers remain
 
 Update 2026-10-10: [ADR 0003: Linux-first restricted execution](adr/0003-ar7-linux-first-restricted-execution.md) records the architecture decision against sealed evidence checkpoint cb511cd18ba25daeda76cf41a400d1136c6ba0f0. Implement the bounded internal Linux prepared-execution transaction specified there, using pinned non-setuid Bubblewrap behind a launcher abstraction. Stop for independent review at the milestone boundary. Production qualification remains pending; Windows native and macOS remain refusal-only, and Windows VM is deferred. This documentation save runs no probes, builds or tests and begins no implementation. The ADR supersedes prior implementation holds only within its express authorization; preserve all sealed evidence and non-claims.
 
@@ -31,6 +31,8 @@ Update: WP03 (delegated domain lease, persistent allocation, external recovery s
 Update: WP03 pre-G2 plan-conformance correction complete (bounded; evidence [WP03 evidence](evidence/linux-m1/wp03.md), commit SHA there). Owner DomainLease topology corrected to the approved model: the per-execution **owner** now holds the primary `DomainLease` (received over one inherited Unix socketpair via SCM_RIGHTS) and the recovery scope holds separately owned duplicates; only owner and recovery scope may stop. Native qualification extended to the plan-required cases: owner primary-lease stop, owner death before/after AllocationRegistered around writer transfer (kernel-released flock, fenced takeover), orphaned trusted child adopted and reaped by the subreaper scope, and staged-preparation cleanup through retained authority. M1 186/186 Linux (42 portable + 14 native WP03, 0 skipped); Windows solution 0 failures (M1 150+36 native-skipped); WP01 vector unchanged. Ready for G2 independent review; WP04 not begun.
 
 Update: independent G2 review completed against 1e117e0a64ee473f2ba251818761afc315c8e283, preserved as [G2 review](reviews/gagamba-linux-m1-g2-review.md) (header facts recorded; verbatim body pending supply, nothing fabricated). Disposition: G2 NOT ACCEPTED - CORRECTION REQUIRED. Blocking owners: WP02 (G2-06, G2-07); WP03 (G2-01, G2-02, G2-03, G2-04, G2-05, G2-08, G2-09, G2-10); G2-11 is nonblocking evidence maintenance. WP04 remains blocked; no remediation has begun. This turn is documentation-only: no source or tests changed.
+
+Update: G2 remediation R1 (WP02 only) complete: G2-06 (the published capability now owns the exact verified PreparedClosure; controlled internal borrow; builder disposal after transfer is a no-op; invalidation releases exactly once) and G2-07 (identity-checked `StagingCleanup` refusing replacements and reporting truthful outcomes; partial and accounted cleanup retain debt instead of deleting replacements or swallowing errors). Evidence in [WP02 evidence](evidence/linux-m1/wp02.md) section 15. M1 212/212 Linux (0 skipped); Windows solution 0 failures (M1 168+44 native-skipped); WP01 canonical vector unchanged. G2 remains NOT ACCEPTED; WP03 blockers G2-01..G2-05/G2-08..G2-10 and G2-11 remain open; WP04 still blocked; no WP04 work begun.
 
 ## Prior action — AR-7 EVIDENCE SEALED - READY FOR ARCHITECTURE DECISION
 
