@@ -305,9 +305,22 @@ internal static class PreparationInterop
     }
 
     internal const int F_DUPFD_CLOEXEC = 1030;
+    internal const int F_GETFD = 1;
+    internal const int F_GETFL = 3;
+    internal const int FD_CLOEXEC = 1;
+    internal const int O_ACCMODE = 3;
+    internal const int AT_EMPTY_PATH = 0x1000;
+    internal const uint STATX_MNT_ID = 0x1000;
+    internal const long CGROUP2_SUPER_MAGIC = 0x63677270;
 
     [DllImport("libc", EntryPoint = "fcntl", SetLastError = true)]
     private static extern int LibcFcntl(int fd, int cmd, int arg);
+
+    [DllImport("libc", EntryPoint = "statx", SetLastError = true)]
+    private static extern int LibcStatx(int dirfd, string pathname, int flags, uint mask, byte[] statxbuf);
+
+    [DllImport("libc", EntryPoint = "fstatfs", SetLastError = true)]
+    private static extern int LibcFstatFs(int fd, byte[] buf);
 
     /// <summary>Duplicates a descriptor with CLOEXEC. Returns -1 on error.</summary>
     internal static int Dup(int fd)
@@ -320,6 +333,93 @@ internal static class PreparationInterop
         {
             return -1;
         }
+    }
+
+    /// <summary>True if the descriptor has FD_CLOEXEC set.</summary>
+    internal static bool HasCloexec(int fd)
+    {
+        var flags = LibcFcntl(fd, F_GETFD, 0);
+        return flags >= 0 && (flags & FD_CLOEXEC) != 0;
+    }
+
+    /// <summary>True if the descriptor number currently names a valid open
+    /// descriptor (F_GETFD succeeds). Qualification/diagnostic only.</summary>
+    internal static bool IsValidFd(int fd)
+    {
+        try
+        {
+            return fd >= 0 && LibcFcntl(fd, F_GETFD, 0) >= 0;
+        }
+        catch (DllNotFoundException)
+        {
+            return false;
+        }
+    }
+
+    /// <summary>Access mode of a descriptor: 0 read, 1 write, 2 read/write.</summary>
+    internal static int AccessMode(int fd)
+    {
+        var flags = LibcFcntl(fd, F_GETFL, 0);
+        return flags < 0 ? -1 : flags & O_ACCMODE;
+    }
+
+    /// <summary>Reads the mount ID of the object referenced by a descriptor
+    /// via statx(AT_EMPTY_PATH, STATX_MNT_ID). Returns false if unsupported.</summary>
+    internal static bool TryStatxMountId(int fd, out ulong mountId, out string error)
+    {
+        mountId = 0;
+        error = string.Empty;
+        var buffer = new byte[256];
+        try
+        {
+            if (LibcStatx(fd, string.Empty, AT_EMPTY_PATH, STATX_MNT_ID, buffer) != 0)
+            {
+                error = $"statx errno {Marshal.GetLastWin32Error()}";
+                return false;
+            }
+        }
+        catch (EntryPointNotFoundException)
+        {
+            error = "Unsupported: statx unavailable";
+            return false;
+        }
+        catch (DllNotFoundException)
+        {
+            error = "Unsupported: statx unavailable";
+            return false;
+        }
+
+        mountId = BitConverter.ToUInt64(buffer, 144);
+        return true;
+    }
+
+    /// <summary>Reads the filesystem type magic of a descriptor via fstatfs.</summary>
+    internal static bool TryFsType(int fd, out long fsType, out string error)
+    {
+        fsType = 0;
+        error = string.Empty;
+        var buffer = new byte[128];
+        try
+        {
+            if (LibcFstatFs(fd, buffer) != 0)
+            {
+                error = $"fstatfs errno {Marshal.GetLastWin32Error()}";
+                return false;
+            }
+        }
+        catch (EntryPointNotFoundException)
+        {
+            error = "Unsupported: fstatfs unavailable";
+            return false;
+        }
+        catch (DllNotFoundException)
+        {
+            error = "Unsupported: fstatfs unavailable";
+            return false;
+        }
+
+        fsType = BitConverter.ToInt64(buffer, 0);
+        return true;
     }
 
     /// <summary>Source acquisition: O_RDONLY, O_NOFOLLOW, O_CLOEXEC with

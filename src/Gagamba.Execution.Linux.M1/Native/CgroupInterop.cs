@@ -1,8 +1,9 @@
-// WP03 narrow cgroup v2 interop: locate the real cgroup2 mount, read the
-// host boot id, create a delegated child domain under a retained parent
-// descriptor, and open the required controls. Every primitive is
+// WP03 narrow cgroup v2 interop: derive the real cgroup2 mount identity
+// from retained descriptors, create a delegated child domain under a
+// retained parent, and validate every primary handle's role, membership
+// and access mode before a lease is accepted. Every primitive is
 // descriptor-relative with beneath-only, no-follow resolution. The
-// resulting backend holds live authority handles; records are never
+// resulting backend owns its own descriptors; records are never
 // authority. Non-Linux callers fail closed with Unsupported.
 using System.Globalization;
 using Gagamba.Execution.Linux.M1.Lifecycle;
@@ -14,10 +15,17 @@ internal sealed record CgroupMountInfo(ulong MountId, string FileSystemType, str
 
 internal sealed record CgroupBootInfo(string BootId);
 
-/// <summary>Native IDomainBackend over real cgroup descriptors. Holds the
-/// parent descriptor plus the domain directory and control descriptors.
-/// Dispose closes every owned descriptor; nothing here re-resolves by
-/// path after creation.</summary>
+internal enum ControlAccess : byte
+{
+    Read = 0,
+    Write = 1,
+    ReadWrite = 2,
+}
+
+/// <summary>Native IDomainBackend over real cgroup descriptors. It owns the
+/// parent descriptor plus the domain directory and control descriptors;
+/// each descriptor has exactly one owning backend. Dispose closes every
+/// owned descriptor exactly once.</summary>
 internal sealed class CgroupBackend : IDomainBackend
 {
     private readonly int _parentFd;
@@ -43,36 +51,18 @@ internal sealed class CgroupBackend : IDomainBackend
 
     internal IReadOnlyDictionary<string, int> ReadbackFds => _readbackFds;
 
-    /// <summary>Primary handles in fixed order for SCM_RIGHTS transfer to
-    /// the owner: parent, domain dir, kill, events, memory.max,
-    /// memory.swap.max, pids.max.</summary>
+    /// <summary>Primary handles in the fixed role order for SCM_RIGHTS
+    /// transfer to the owner: parent, domain dir, kill, events,
+    /// memory.max, memory.swap.max, pids.max.</summary>
     internal int[] OrderedFds()
     {
         var list = new List<int> { _parentFd, _domainFd, _killFd, _eventsFd };
-        foreach (var name in new[] { "memory.max", "memory.swap.max", "pids.max" })
+        foreach (var role in new[] { "memory.max", "memory.swap.max", "pids.max" })
         {
-            list.Add(_readbackFds[name]);
+            list.Add(_readbackFds[role]);
         }
 
         return list.ToArray();
-    }
-
-    /// <summary>Rebuilds a backend from received descriptors in the same
-    /// fixed order used by <see cref="OrderedFds"/>.</summary>
-    internal static CgroupBackend FromOrderedFds(int[] fds)
-    {
-        if (fds.Length != 7)
-        {
-            throw new ArgumentException("expected 7 ordered descriptors", nameof(fds));
-        }
-
-        var readbacks = new Dictionary<string, int>(StringComparer.Ordinal)
-        {
-            ["memory.max"] = fds[4],
-            ["memory.swap.max"] = fds[5],
-            ["pids.max"] = fds[6],
-        };
-        return new CgroupBackend(fds[0], fds[1], fds[2], fds[3], readbacks);
     }
 
     public bool HandlesAlive => !_disposed && _domainFd >= 0 && _killFd >= 0 && _eventsFd >= 0;
@@ -261,8 +251,6 @@ internal sealed class CgroupBackend : IDomainBackend
             }
         }
 
-        // Reading advances the cgroup.events cursor; re-open is not used.
-        // Seek back to the start through the retained descriptor.
         PreparationInterop.SeekStart(fd);
         return System.Text.Encoding.UTF8.GetString(buffer.ToArray());
     }
@@ -272,8 +260,11 @@ internal static class CgroupInterop
 {
     internal static bool IsLinux => PreparationInterop.IsLinux;
 
-    /// <summary>Parses cgroup2 mount identity from /proc/self/mountinfo.
-    /// Mount identity comes from the real mount, never a supplied string.</summary>
+    internal static readonly string[] ControlNames = { "cgroup.kill", "cgroup.events", "memory.max", "memory.swap.max", "pids.max" };
+
+    /// <summary>Parses cgroup2 mount info from /proc/self/mountinfo. Used
+    /// only for informational/expected comparison; lease identity derives
+    /// its mount ID from the actual retained descriptors.</summary>
     internal static bool TryReadCgroupMount(out CgroupMountInfo? info, out string error)
     {
         info = null;
@@ -306,7 +297,6 @@ internal static class CgroupInterop
                     continue;
                 }
 
-                // Mount point is field 5 (index 4) in the left section.
                 var mountPoint = left.Length >= 5 ? left[4] : string.Empty;
                 info = new CgroupMountInfo(mountId, "cgroup2", mountPoint);
                 return true;
@@ -350,15 +340,249 @@ internal static class CgroupInterop
         }
     }
 
+    /// <summary>Derives mount identity from a retained descriptor: the
+    /// actual cgroup2 mount ID via statx(STATX_MNT_ID) and filesystem type
+    /// via fstatfs. Fails closed if the primitive is unavailable.</summary>
+    internal static bool TryDeriveMount(int fd, out ulong mountId, out string fsType, out string error)
+    {
+        mountId = 0;
+        fsType = string.Empty;
+        error = string.Empty;
+        if (!PreparationInterop.TryStatxMountId(fd, out mountId, out var statxError))
+        {
+            error = statxError;
+            return false;
+        }
+
+        if (!PreparationInterop.TryFsType(fd, out var magic, out var fsError))
+        {
+            error = fsError;
+            return false;
+        }
+
+        if (magic != PreparationInterop.CGROUP2_SUPER_MAGIC)
+        {
+            error = $"descriptor is not on cgroup2 (f_type 0x{magic:X})";
+            return false;
+        }
+
+        fsType = "cgroup2";
+        return true;
+    }
+
+    private static bool TryValidateControl(
+        int domainFd, long domainDevice, string controlName, int fd, ControlAccess required, out string error)
+    {
+        error = string.Empty;
+        var openErrno = PreparationInterop.OpenRelative(
+            domainFd, controlName,
+            PreparationInterop.O_RDONLY | PreparationInterop.O_CLOEXEC,
+            PreparationInterop.RequiredResolve, out var probe);
+        if (openErrno != 0)
+        {
+            error = $"{controlName} probe open errno {openErrno}";
+            return false;
+        }
+
+        try
+        {
+            if (PreparationInterop.StatFd(probe, out var probeIdentity) != 0
+                || PreparationInterop.StatFd(fd, out var received) != 0)
+            {
+                error = $"{controlName} stat failed";
+                return false;
+            }
+
+            if (probeIdentity.Device != received.Device || probeIdentity.Inode != received.Inode)
+            {
+                error = $"{controlName} is not the child domain's control";
+                return false;
+            }
+
+            if (received.Device != (ulong)domainDevice)
+            {
+                error = $"{controlName} is on a different device than the child domain";
+                return false;
+            }
+        }
+        finally
+        {
+            PreparationInterop.CloseFd(probe);
+        }
+
+        var access = PreparationInterop.AccessMode(fd);
+        var ok = required switch
+        {
+            ControlAccess.Read => access is 0 or 2,
+            ControlAccess.Write => access is 1 or 2,
+            ControlAccess.ReadWrite => access == 2,
+            _ => false,
+        };
+        if (!ok)
+        {
+            error = $"{controlName} access mode {access} incompatible with required {required}";
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>Validates the seven ordered primary descriptors against
+    /// their roles, membership and the expected child locator, and builds
+    /// the owning backend plus the derived identity. Any failure leaves the
+    /// caller the descriptors to close; a success transfers ownership to
+    /// the returned backend.</summary>
+    internal static bool TryValidateDomainHandles(
+        int[] fds,
+        string childName,
+        Guid executionId,
+        Guid leaseGeneration,
+        string bootId,
+        out CgroupBackend? backend,
+        out DomainIdentity? identity,
+        out string error)
+    {
+        backend = null;
+        identity = null;
+        error = string.Empty;
+        if (fds.Length != DomainHandleTransfer.ExactDescriptorCount)
+        {
+            error = $"expected {DomainHandleTransfer.ExactDescriptorCount} descriptors, got {fds.Length}";
+            return false;
+        }
+
+        foreach (var fd in fds)
+        {
+            if (!PreparationInterop.HasCloexec(fd))
+            {
+                error = $"descriptor {fd} lacks FD_CLOEXEC";
+                return false;
+            }
+        }
+
+        var parentFd = fds[(int)DomainTransferRole.Parent];
+        var domainFd = fds[(int)DomainTransferRole.DomainDirectory];
+        var killFd = fds[(int)DomainTransferRole.Kill];
+        var eventsFd = fds[(int)DomainTransferRole.Events];
+
+        if (PreparationInterop.StatFd(parentFd, out var parentStat) != 0 || !PreparationInterop.IsDirectory(parentStat.Mode))
+        {
+            error = "parent descriptor is not a directory";
+            return false;
+        }
+
+        if (PreparationInterop.StatFd(domainFd, out var domainStat) != 0 || !PreparationInterop.IsDirectory(domainStat.Mode))
+        {
+            error = "domain descriptor is not a directory";
+            return false;
+        }
+
+        if (parentStat.Device != domainStat.Device)
+        {
+            error = "parent and child are on different devices";
+            return false;
+        }
+
+        if (parentStat.Inode == domainStat.Inode)
+        {
+            error = "parent and child alias the same object";
+            return false;
+        }
+
+        // Mount identity derived from the retained parent descriptor.
+        if (!TryDeriveMount(parentFd, out var mountId, out var fsType, out var mountError))
+        {
+            error = $"parent mount derivation failed: {mountError}";
+            return false;
+        }
+
+        if (!TryDeriveMount(domainFd, out var childMountId, out _, out var childMountError))
+        {
+            error = $"child mount derivation failed: {childMountError}";
+            return false;
+        }
+
+        if (childMountId != mountId)
+        {
+            error = "parent and child are on different cgroup2 mounts";
+            return false;
+        }
+
+        // Child name is a locator under the retained parent; the retained
+        // child identity must match it exactly.
+        if (!string.IsNullOrEmpty(childName))
+        {
+            var locatorErrno = PreparationInterop.OpenRelative(
+                parentFd, childName,
+                PreparationInterop.O_RDONLY | PreparationInterop.O_DIRECTORY
+                    | PreparationInterop.O_NOFOLLOW | PreparationInterop.O_CLOEXEC,
+                PreparationInterop.RequiredResolve, out var locator);
+            if (locatorErrno != 0)
+            {
+                error = $"child locator open errno {locatorErrno}";
+                return false;
+            }
+
+            try
+            {
+                if (PreparationInterop.StatFd(locator, out var locatorIdentity) != 0
+                    || locatorIdentity.Device != domainStat.Device
+                    || locatorIdentity.Inode != domainStat.Inode)
+                {
+                    error = "child name does not resolve to the retained child identity";
+                    return false;
+                }
+            }
+            finally
+            {
+                PreparationInterop.CloseFd(locator);
+            }
+        }
+
+        if (!TryValidateControl(domainFd, (long)domainStat.Device, "cgroup.kill", killFd, ControlAccess.Write, out error))
+        {
+            return false;
+        }
+
+        if (!TryValidateControl(domainFd, (long)domainStat.Device, "cgroup.events", eventsFd, ControlAccess.Read, out error))
+        {
+            return false;
+        }
+
+        var readbacks = new Dictionary<string, int>(StringComparer.Ordinal);
+        var resourceRoles = new[]
+        {
+            ("memory.max", fds[(int)DomainTransferRole.MemoryMax]),
+            ("memory.swap.max", fds[(int)DomainTransferRole.MemorySwapMax]),
+            ("pids.max", fds[(int)DomainTransferRole.PidsMax]),
+        };
+        foreach (var (name, fd) in resourceRoles)
+        {
+            if (!TryValidateControl(domainFd, (long)domainStat.Device, name, fd, ControlAccess.ReadWrite, out error))
+            {
+                return false;
+            }
+
+            readbacks[name] = fd;
+        }
+
+        identity = new DomainIdentity(
+            executionId, bootId, mountId, fsType,
+            parentStat.Device, parentStat.Inode,
+            childName ?? string.Empty, domainStat.Device, domainStat.Inode, leaseGeneration);
+        backend = new CgroupBackend(parentFd, domainFd, killFd, eventsFd, readbacks);
+        return true;
+    }
+
     /// <summary>Creates a delegated child domain beneath the retained parent
-    /// descriptor and opens its required controls. Fails closed if any
-    /// primitive or control is unavailable.</summary>
+    /// descriptor, opens its required controls, derives mount identity from
+    /// the retained descriptors, and validates every handle's role and
+    /// membership. Fails closed if any primitive or control is unavailable.</summary>
     internal static bool TryCreateDomain(
         int parentFd,
         string childName,
         Guid executionId,
         Guid leaseGeneration,
-        CgroupMountInfo mount,
         string bootId,
         out CgroupBackend? backend,
         out DomainIdentity? identity,
@@ -386,8 +610,6 @@ internal static class CgroupInterop
             return false;
         }
 
-        // Bootstrap the domain name under the retained parent. EEXIST means
-        // a same-name object exists: refuse rather than adopt.
         var makeErrno = PreparationInterop.MakeDirectory(parentFd, childName, 0x1ED /*0755*/);
         if (makeErrno != 0)
         {
@@ -397,9 +619,20 @@ internal static class CgroupInterop
             return false;
         }
 
+        // The backend owns its own parent descriptor; the caller's retained
+        // parent FD is never handed to, or closed by, the backend.
         var opened = new List<int>();
         try
         {
+            var backendParentFd = PreparationInterop.Dup(parentFd);
+            if (backendParentFd < 0)
+            {
+                error = "parent descriptor duplication failed";
+                return false;
+            }
+
+            opened.Add(backendParentFd);
+
             var dirErrno = PreparationInterop.OpenRelative(
                 parentFd, childName,
                 PreparationInterop.O_RDONLY | PreparationInterop.O_DIRECTORY
@@ -412,13 +645,6 @@ internal static class CgroupInterop
             }
 
             opened.Add(domainFd);
-            if (PreparationInterop.StatFd(domainFd, out var domainIdentity) != 0
-                || !PreparationInterop.IsDirectory(domainIdentity.Mode)
-                || domainIdentity.Device != parentIdentity.Device)
-            {
-                error = "domain identity/type mismatch after creation";
-                return false;
-            }
 
             var killErrno = PreparationInterop.OpenRelative(
                 domainFd, "cgroup.kill",
@@ -431,6 +657,7 @@ internal static class CgroupInterop
             }
 
             opened.Add(killFd);
+
             var eventsErrno = PreparationInterop.OpenRelative(
                 domainFd, "cgroup.events",
                 PreparationInterop.O_RDONLY | PreparationInterop.O_CLOEXEC,
@@ -442,36 +669,41 @@ internal static class CgroupInterop
             }
 
             opened.Add(eventsFd);
-            var readbacks = new Dictionary<string, int>(StringComparer.Ordinal);
-            foreach (var control in new[] { "memory.max", "memory.swap.max", "pids.max" })
+
+            var ordered = new int[DomainHandleTransfer.ExactDescriptorCount];
+            ordered[(int)DomainTransferRole.Parent] = backendParentFd;
+            ordered[(int)DomainTransferRole.DomainDirectory] = domainFd;
+            ordered[(int)DomainTransferRole.Kill] = killFd;
+            ordered[(int)DomainTransferRole.Events] = eventsFd;
+            foreach (var (name, role) in new[]
+            {
+                ("memory.max", DomainTransferRole.MemoryMax),
+                ("memory.swap.max", DomainTransferRole.MemorySwapMax),
+                ("pids.max", DomainTransferRole.PidsMax),
+            })
             {
                 var errno = PreparationInterop.OpenRelative(
-                    domainFd, control,
+                    domainFd, name,
                     PreparationInterop.O_RDWR | PreparationInterop.O_CLOEXEC,
                     PreparationInterop.RequiredResolve, out var fd);
                 if (errno != 0)
                 {
-                    error = $"{control} open errno {errno}";
+                    error = $"{name} open errno {errno}";
                     return false;
                 }
 
                 opened.Add(fd);
-                if (PreparationInterop.StatFd(fd, out var controlIdentity) != 0
-                    || PreparationInterop.IsDirectory(controlIdentity.Mode)
-                    || controlIdentity.Device != domainIdentity.Device)
-                {
-                    error = $"{control} membership check failed";
-                    return false;
-                }
-
-                readbacks[control] = fd;
+                ordered[(int)role] = fd;
             }
 
-            identity = new DomainIdentity(
-                executionId, bootId, mount.MountId, mount.FileSystemType,
-                parentIdentity.Device, parentIdentity.Inode,
-                childName, domainIdentity.Device, domainIdentity.Inode, leaseGeneration);
-            backend = new CgroupBackend(parentFd, domainFd, killFd, eventsFd, readbacks);
+            if (!TryValidateDomainHandles(ordered, childName, executionId, leaseGeneration, bootId, out var built, out var derived, out var validateError))
+            {
+                error = $"domain handle validation failed: {validateError}";
+                return false;
+            }
+
+            backend = built;
+            identity = derived;
             // Ownership of every opened descriptor transfers to the backend.
             opened.Clear();
             return true;

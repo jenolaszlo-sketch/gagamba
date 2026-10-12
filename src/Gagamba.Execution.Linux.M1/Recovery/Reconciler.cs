@@ -1,20 +1,15 @@
 // WP03 recovery planning and reconciliation. Records are evidence, never
-// authority: a plan can authorize destructive cleanup only when the scope
-// holds live, corroborated domain handles for the same boot and mount.
-// Restart-only (no live handles), cross-boot and mismatched records yield
-// Unknown/quarantine with no destructive adoption. Reconciliation is
-// idempotent and never resumes work or resurrects a capability.
+// authority. Recovery eligibility is derived from the durable record, the
+// current boot context and the actual retained live lease — never from a
+// caller-supplied "identity matches" boolean. A plan can authorize
+// destructive cleanup only when a live, complete-identity-corroborating
+// lease exists for the same boot. Restart-only (no live handles),
+// cross-boot and mismatched records yield Unknown/quarantine with no
+// destructive adoption. Reconciliation is idempotent and never resumes
+// work or resurrects a capability.
 using Gagamba.Execution.Linux.M1.Lifecycle;
 
 namespace Gagamba.Execution.Linux.M1.Recovery;
-
-/// <summary>What live authority the recovery scope actually holds.</summary>
-internal sealed record RecoveryAuthority(
-    bool BootMatches,
-    bool MountMatches,
-    bool HasLiveDomainLease,
-    bool LiveLeaseCorroborates,
-    bool HasCleanupAuthority);
 
 internal enum RecoveryPlanKind : byte
 {
@@ -45,34 +40,43 @@ internal interface IAllocationCleaner
 
 internal static class RecoveryPlanner
 {
-    internal static RecoveryPlan Plan(OwnershipSnapshot record, RecoveryAuthority authority)
+    /// <summary>Builds the identity the durable record asserts, used only
+    /// for corroboration against a live lease.</summary>
+    internal static DomainIdentity DeriveIdentity(OwnershipSnapshot record) =>
+        new(
+            record.ExecutionId,
+            record.BootId,
+            record.CgroupMountId,
+            record.CgroupMountFsType,
+            record.ParentDevice,
+            record.ParentInode,
+            record.DomainName,
+            record.DomainDevice,
+            record.DomainInode,
+            record.LeaseGeneration);
+
+    /// <summary>Eligibility is derived from the record, the current boot
+    /// and the actual live lease. Caller-supplied identity assertions never
+    /// grant authority.</summary>
+    internal static RecoveryPlan Plan(OwnershipSnapshot record, string currentBootId, DomainLease? liveLease)
     {
         ArgumentNullException.ThrowIfNull(record);
-        ArgumentNullException.ThrowIfNull(authority);
+        ArgumentNullException.ThrowIfNull(currentBootId);
 
-        // Cross-boot records cannot authorize any action on current objects.
-        if (!authority.BootMatches)
+        if (!string.Equals(record.BootId, currentBootId, StringComparison.Ordinal))
         {
             return new RecoveryPlan(RecoveryPlanKind.RefuseCrossBoot, "boot identity mismatch; records are non-authority across boots");
         }
 
-        if (!authority.MountMatches)
-        {
-            return new RecoveryPlan(RecoveryPlanKind.RefuseCrossBoot, "cgroup mount identity mismatch; refusing destructive recovery");
-        }
-
-        // No surviving live handles: restart-only. Quarantine; never adopt
-        // an apparently matching current resource.
-        if (!authority.HasLiveDomainLease)
+        if (liveLease is null || !liveLease.AuthorityAlive)
         {
             return new RecoveryPlan(RecoveryPlanKind.QuarantineUnknown, "no surviving live authority; restart-only quarantine");
         }
 
-        // Live handles present but they do not corroborate the record
-        // identity: a possible replacement. Refuse.
-        if (!authority.LiveLeaseCorroborates)
+        var derived = DeriveIdentity(record);
+        if (!liveLease.Identity.Corroborates(derived))
         {
-            return new RecoveryPlan(RecoveryPlanKind.RefuseMismatch, "live lease does not corroborate the record identity");
+            return new RecoveryPlan(RecoveryPlanKind.RefuseMismatch, "live lease identity does not corroborate the record");
         }
 
         return new RecoveryPlan(RecoveryPlanKind.KillAndClean, "live corroborated authority; proceed with stop and identity-checked cleanup");
@@ -94,14 +98,14 @@ internal sealed class Reconciler
     /// same facts plus any new cleanup observations.</summary>
     internal ReconcileResult Reconcile(
         OwnershipSnapshot record,
-        RecoveryAuthority authority,
-        DomainLease? lease,
+        string currentBootId,
+        DomainLease? liveLease,
         IAllocationCleaner? cleaner)
     {
         ArgumentNullException.ThrowIfNull(record);
-        ArgumentNullException.ThrowIfNull(authority);
+        ArgumentNullException.ThrowIfNull(currentBootId);
 
-        var plan = RecoveryPlanner.Plan(record, authority);
+        var plan = RecoveryPlanner.Plan(record, currentBootId, liveLease);
         switch (plan.Kind)
         {
             case RecoveryPlanKind.RefuseCrossBoot:
@@ -111,25 +115,20 @@ internal sealed class Reconciler
                 return new ReconcileResult(ReconcileOutcome.QuarantinedUnknown, plan.Reason, DestructiveActionTaken: false);
         }
 
-        // KillAndClean.
-        if (lease is null)
-        {
-            return new ReconcileResult(ReconcileOutcome.QuarantinedUnknown, "plan requires live lease but none supplied", false);
-        }
-
-        var verify = lease.VerifyIdentity();
+        // KillAndClean: re-verify the retained handle still refers to the
+        // captured object, then stop/observe/clean by retained authority.
+        var verify = liveLease!.VerifyIdentity();
         if (!verify.Match)
         {
             return new ReconcileResult(ReconcileOutcome.Refused, verify.Error, false);
         }
 
-        var stop = lease.StopAndAwaitEmpty(_stopAllowance, _clock);
+        var stop = liveLease.StopAndAwaitEmpty(_stopAllowance, _clock);
         if (!stop.Stopped)
         {
             return new ReconcileResult(ReconcileOutcome.Failed, stop.Error, DestructiveActionTaken: true);
         }
 
-        // Cleanup accounted allocations by identity through retained handles.
         if (cleaner is not null)
         {
             foreach (var allocation in record.Allocations)
@@ -142,7 +141,7 @@ internal sealed class Reconciler
             }
         }
 
-        var removal = lease.RemoveIfIdentityMatches();
+        var removal = liveLease.RemoveIfIdentityMatches();
         if (removal.Refused)
         {
             return new ReconcileResult(ReconcileOutcome.QuarantinedUnknown, removal.Error, DestructiveActionTaken: true);

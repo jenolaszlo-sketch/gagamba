@@ -72,16 +72,16 @@ internal sealed class M1RecoveryScope : IDisposable
     }
 
     /// <summary>Allocates the domain, transfers the primary handles to the
-    /// owner over one inherited Unix socketpair (SCM_RIGHTS), and retains a
-    /// separately owned recovery duplicate for this scope. The returned
-    /// recovery lease is the scope's authority; the child socket end must
-    /// be handed to <see cref="SpawnOwner"/> (which closes it) or closed by
-    /// the caller.</summary>
+    /// owner over one inherited Unix socketpair (SCM_RIGHTS with the strict
+    /// versioned metadata message), and retains a separately owned recovery
+    /// duplicate for this scope. The scope's delegated-parent descriptor is
+    /// retained by the scope; the backend owns its own duplicated parent
+    /// descriptor. The returned child socket end must be handed to
+    /// <see cref="SpawnOwner"/> (which closes it) or closed by the caller.</summary>
     internal DomainAllocationResult AllocateDomain(
         string childName,
         Guid executionId,
         Guid leaseGeneration,
-        CgroupMountInfo mount,
         string bootId)
     {
         if (_parentFd < 0)
@@ -90,7 +90,7 @@ internal sealed class M1RecoveryScope : IDisposable
         }
 
         if (!CgroupInterop.TryCreateDomain(
-            _parentFd, childName, executionId, leaseGeneration, mount, bootId,
+            _parentFd, childName, executionId, leaseGeneration, bootId,
             out var backend, out var identity, out var error))
         {
             return new DomainAllocationResult(false, null, -1, error);
@@ -100,8 +100,6 @@ internal sealed class M1RecoveryScope : IDisposable
         var recoveryBackend = backend!.DuplicateForRecovery();
         var recoveryLease = new DomainLease(recoveryBackend, identity!);
 
-        // Transfer the primary handles to the owner over an inherited
-        // socketpair. The owner becomes the primary DomainLease holder.
         if (!FdPassing.TryCreateInheritableSocketPair(out var parentEnd, out var childEnd, out var socketError))
         {
             recoveryLease.Dispose();
@@ -109,25 +107,31 @@ internal sealed class M1RecoveryScope : IDisposable
             return new DomainAllocationResult(false, null, -1, socketError);
         }
 
+        var payload = DomainHandleTransfer.Encode(executionId, leaseGeneration);
+        bool sent;
+        string sendError;
         try
         {
-            if (!FdPassing.TrySendFds(parentEnd, backend.OrderedFds(), out var sendError))
-            {
-                recoveryLease.Dispose();
-                backend.Dispose();
-                PreparationInterop.CloseFd(parentEnd);
-                PreparationInterop.CloseFd(childEnd);
-                return new DomainAllocationResult(false, null, -1, sendError);
-            }
+            sent = FdPassing.TrySendTransfer(parentEnd, backend.OrderedFds(), payload, out sendError);
         }
         finally
         {
+            // The parent end is this scope's and is closed exactly once.
             PreparationInterop.CloseFd(parentEnd);
         }
 
-        // The owner now owns the primary descriptors; the scope keeps only
-        // its recovery duplicate.
+        // The primary descriptors were duplicated into the owner via
+        // SCM_RIGHTS; the scope's primary copies are no longer needed.
         backend.Dispose();
+
+        if (!sent)
+        {
+            recoveryLease.Dispose();
+            // The child end was never handed off; close it exactly once.
+            PreparationInterop.CloseFd(childEnd);
+            return new DomainAllocationResult(false, null, -1, sendError);
+        }
+
         return new DomainAllocationResult(true, recoveryLease, childEnd, string.Empty);
     }
 

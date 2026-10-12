@@ -74,8 +74,9 @@ internal sealed record DomainIdentity(
     ulong ChildInode,
     Guid LeaseGeneration)
 {
-    /// <summary>True when the record fields agree on every identity
-    /// component (all but the live handles).</summary>
+    /// <summary>True when every security-relevant identity component
+    /// agrees (all record fields; live handles are separate). Changing any
+    /// single component — including child device/inode — yields false.</summary>
     internal bool Corroborates(DomainIdentity other) =>
         ExecutionId.Equals(other.ExecutionId)
         && string.Equals(BootId, other.BootId, StringComparison.Ordinal)
@@ -84,6 +85,8 @@ internal sealed record DomainIdentity(
         && ParentDevice == other.ParentDevice
         && ParentInode == other.ParentInode
         && string.Equals(ChildName, other.ChildName, StringComparison.Ordinal)
+        && ChildDevice == other.ChildDevice
+        && ChildInode == other.ChildInode
         && LeaseGeneration.Equals(other.LeaseGeneration);
 
     /// <summary>Detects a same-name replacement: the record fields agree

@@ -1,9 +1,13 @@
 // WP03 SCM_RIGHTS descriptor transfer over one inherited Unix socketpair.
-// This is the plan-selected mechanism for crossing the primary domain
-// handles from the scope to the owner ("one inherited Unix socketpair
-// solely for SCM_RIGHTS transfer, with a fixed role/count allowlist and
-// CLOEXEC-on-receive"). Never filesystem-bound; never a service.
+// The plan-selected mechanism for crossing the primary domain handles
+// from the scope to the owner ("one inherited Unix socketpair solely for
+// SCM_RIGHTS transfer, with a fixed role/count allowlist and
+// CLOEXEC-on-receive"). Never filesystem-bound; never a service. Receive
+// uses MSG_CMSG_CLOEXEC, inspects msg_flags, validates the exact control
+// layout and payload, verifies every received descriptor has FD_CLOEXEC,
+// and closes every received descriptor on any rejection path.
 using System.Runtime.InteropServices;
+using Gagamba.Execution.Linux.M1.Preparation.Native;
 
 namespace Gagamba.Execution.Linux.M1.Native;
 
@@ -13,7 +17,13 @@ internal static class FdPassing
     private const int SOCK_STREAM = 1;
     private const int SOL_SOCKET = 1;
     private const int SCM_RIGHTS = 1;
-    private const int SOCK_CLOEXEC = 0x80000;
+
+    private const int F_SETFD = 2;
+    private const int FD_CLOEXEC = 1;
+
+    private const int MSG_CMSG_CLOEXEC = 0x40000000;
+    private const int MSG_CTRUNC = 0x8;
+    private const int MSG_TRUNC = 0x20;
 
     [DllImport("libc", EntryPoint = "socketpair", SetLastError = true)]
     private static extern int SocketPair(int domain, int type, int protocol, int[] sv);
@@ -27,11 +37,9 @@ internal static class FdPassing
     [DllImport("libc", EntryPoint = "fcntl", SetLastError = true)]
     private static extern int Fcntl(int fd, int cmd, int arg);
 
-    private const int F_SETFD = 2;
-    private const int FD_CLOEXEC = 1;
-
-    /// <summary>Creates a stream socketpair without CLOEXEC so the child end
-    /// survives exec (the owner inherits it at a known fd number).</summary>
+    /// <summary>Creates a stream socketpair without CLOEXEC on the child end
+    /// so the owner inherits it at a known fd number; the parent end stays
+    /// CLOEXEC.</summary>
     internal static bool TryCreateInheritableSocketPair(out int parentEnd, out int childEnd, out string error)
     {
         parentEnd = -1;
@@ -52,7 +60,6 @@ internal static class FdPassing
             return false;
         }
 
-        // Child end must be inherited across exec; parent end stays CLOEXEC.
         Fcntl(sv[1], F_SETFD, 0);
         Fcntl(sv[0], F_SETFD, FD_CLOEXEC);
         parentEnd = sv[0];
@@ -60,11 +67,10 @@ internal static class FdPassing
         return true;
     }
 
-    /// <summary>Sends descriptors with a one-byte payload.</summary>
-    internal static bool TrySendFds(int sock, int[] fds, out string error)
+    /// <summary>Sends descriptors with the exact metadata payload.</summary>
+    internal static bool TrySendTransfer(int sock, int[] fds, byte[] payload, out string error)
     {
         error = string.Empty;
-        var payload = new byte[] { 0x01 };
         var cmsgLen = 16 + (4 * fds.Length);
         var ctrlSize = 16 + Align4(4 * fds.Length);
         var ctrl = Marshal.AllocHGlobal(ctrlSize);
@@ -97,6 +103,12 @@ internal static class FdPassing
                 return false;
             }
 
+            if (rc != payload.Length)
+            {
+                error = $"partial send {rc}/{payload.Length}";
+                return false;
+            }
+
             return true;
         }
         catch (DllNotFoundException)
@@ -113,22 +125,33 @@ internal static class FdPassing
         }
     }
 
-    /// <summary>Receives up to maxFds descriptors.</summary>
-    internal static bool TryReceiveFds(int sock, int maxFds, out int[] fds, out string error)
+    /// <summary>Receives descriptors with MSG_CMSG_CLOEXEC, validates the
+    /// exact payload length and control layout, and verifies FD_CLOEXEC on
+    /// every received descriptor. Any rejection closes all received FDs.</summary>
+    internal static bool TryReceiveTransfer(
+        int sock,
+        int expectedDescriptorCount,
+        int expectedPayloadLength,
+        out int[] fds,
+        out byte[] payload,
+        out string error)
     {
         fds = Array.Empty<int>();
+        payload = Array.Empty<byte>();
         error = string.Empty;
-        var payload = new byte[1];
-        var ctrlSize = 16 + Align4(4 * maxFds);
+
+        var payloadBuffer = new byte[expectedPayloadLength];
+        var ctrlSize = 16 + Align4(4 * expectedDescriptorCount);
         var ctrl = Marshal.AllocHGlobal(ctrlSize);
         var iov = Marshal.AllocHGlobal(16);
         var msg = Marshal.AllocHGlobal(56);
-        var pinned = GCHandle.Alloc(payload, GCHandleType.Pinned);
+        var pinned = GCHandle.Alloc(payloadBuffer, GCHandleType.Pinned);
+        var received = new List<int>();
         try
         {
             Zero(ctrl, ctrlSize);
             Marshal.WriteIntPtr(iov, 0, pinned.AddrOfPinnedObject());
-            Marshal.WriteIntPtr(iov, 8, (IntPtr)payload.Length);
+            Marshal.WriteIntPtr(iov, 8, (IntPtr)payloadBuffer.Length);
 
             Zero(msg, 56);
             Marshal.WriteIntPtr(msg, 16, iov);
@@ -136,7 +159,7 @@ internal static class FdPassing
             Marshal.WriteIntPtr(msg, 32, ctrl);
             Marshal.WriteIntPtr(msg, 40, (IntPtr)ctrlSize);
 
-            var rc = RecvMsg(sock, msg, 0);
+            var rc = RecvMsg(sock, msg, MSG_CMSG_CLOEXEC);
             if (rc < 0)
             {
                 error = $"recvmsg errno {Marshal.GetLastWin32Error()}";
@@ -149,33 +172,76 @@ internal static class FdPassing
                 return false;
             }
 
+            var msgFlags = Marshal.ReadInt32(msg, 48);
+            if ((msgFlags & MSG_CTRUNC) != 0)
+            {
+                // Control data truncated: parse whatever arrived so we can
+                // close it, then refuse.
+                CloseControlFds(ctrl, received);
+                error = "MSG_CTRUNC: control data truncated";
+                return false;
+            }
+
+            if ((msgFlags & MSG_TRUNC) != 0 || rc != expectedPayloadLength)
+            {
+                CloseControlFds(ctrl, received);
+                error = $"payload length {rc} != {expectedPayloadLength}";
+                return false;
+            }
+
+            var cmsgLen = Marshal.ReadInt64(ctrl, 0);
             var level = Marshal.ReadInt32(ctrl, 8);
             var type = Marshal.ReadInt32(ctrl, 12);
+            var controllen = Marshal.ReadInt64(msg, 40);
             if (level != SOL_SOCKET || type != SCM_RIGHTS)
             {
                 error = "no SCM_RIGHTS control message";
                 return false;
             }
 
-            var len = Marshal.ReadInt64(ctrl, 0);
-            var count = (int)((len - 16) / 4);
-            if (count <= 0 || count > maxFds)
+            var count = (int)((cmsgLen - 16) / 4);
+            // Exactly one control message, no padding ambiguity, no extra
+            // ancillary data.
+            if (count != expectedDescriptorCount || cmsgLen != 16 + (4 * count) || controllen != 16 + Align4(4 * count))
             {
-                error = $"unexpected descriptor count {count}";
+                CloseControlFds(ctrl, received);
+                error = $"descriptor count/layout mismatch (count={count}, controllen={controllen})";
                 return false;
             }
 
-            var received = new int[count];
             for (var i = 0; i < count; i++)
             {
-                received[i] = Marshal.ReadInt32(ctrl, 16 + (4 * i));
+                var fd = Marshal.ReadInt32(ctrl, 16 + (4 * i));
+                received.Add(fd);
             }
 
-            fds = received;
+            // Verify the kernel actually produced CLOEXEC descriptors.
+            foreach (var fd in received)
+            {
+                var flags = Fcntl(fd, 1 /*F_GETFD*/, 0);
+                if (flags < 0 || (flags & FD_CLOEXEC) == 0)
+                {
+                    foreach (var open in received)
+                    {
+                        CloseFdChecked(open);
+                    }
+
+                    error = $"received descriptor {fd} lacks FD_CLOEXEC";
+                    return false;
+                }
+            }
+
+            fds = received.ToArray();
+            payload = payloadBuffer;
             return true;
         }
         catch (DllNotFoundException)
         {
+            foreach (var fd in received)
+            {
+                CloseFdChecked(fd);
+            }
+
             error = "Unsupported: recvmsg unavailable";
             return false;
         }
@@ -185,6 +251,37 @@ internal static class FdPassing
             Marshal.FreeHGlobal(ctrl);
             Marshal.FreeHGlobal(iov);
             Marshal.FreeHGlobal(msg);
+        }
+    }
+
+    private static void CloseControlFds(IntPtr ctrl, List<int> received)
+    {
+        // Best-effort: read the count from the (possibly truncated) control
+        // buffer and close what the kernel delivered.
+        try
+        {
+            var cmsgLen = Marshal.ReadInt64(ctrl, 0);
+            var count = (int)((cmsgLen - 16) / 4);
+            for (var i = 0; i < count && i < 64; i++)
+            {
+                var fd = Marshal.ReadInt32(ctrl, 16 + (4 * i));
+                if (fd >= 0)
+                {
+                    CloseFdChecked(fd);
+                    received.Add(fd);
+                }
+            }
+        }
+        catch
+        {
+        }
+    }
+
+    private static void CloseFdChecked(int fd)
+    {
+        if (fd >= 0)
+        {
+            PreparationInterop.CloseFd(fd);
         }
     }
 

@@ -139,7 +139,7 @@ public sealed class RecoveryHarness
         var name = "d-" + Guid.NewGuid().ToString("N");
         var execution = Guid.NewGuid();
         var leaseGen = Guid.NewGuid();
-        var allocation = scope.AllocateDomain(name, execution, leaseGen, Mount(), Boot());
+        var allocation = scope.AllocateDomain(name, execution, leaseGen, Boot());
         Assert.True(allocation.Ok, allocation.Error);
         var recovery = allocation.RecoveryLease!;
         var ownerDll = LocateOwnerDll()!;
@@ -206,7 +206,7 @@ public sealed class RecoveryHarness
         using var scope = new M1RecoveryScope();
         Assert.True(scope.TryInitialize().Ok);
         Assert.True(scope.TryOpenDelegatedParent(temp.Path).Ok);
-        var allocation = scope.AllocateDomain("d-" + Guid.NewGuid().ToString("N"), Guid.NewGuid(), Guid.NewGuid(), Mount(), Boot());
+        var allocation = scope.AllocateDomain("d-" + Guid.NewGuid().ToString("N"), Guid.NewGuid(), Guid.NewGuid(), Boot());
         Assert.True(allocation.Ok, allocation.Error);
         // The primary handles were transferred to the (unspawned) owner over
         // the socketpair; close that end and use the scope's recovery lease.
@@ -229,7 +229,7 @@ public sealed class RecoveryHarness
         Assert.True(scope.TryInitialize().Ok);
         Assert.True(scope.TryOpenDelegatedParent(temp.Path).Ok);
         var name = "d-" + Guid.NewGuid().ToString("N");
-        var allocation = scope.AllocateDomain(name, Guid.NewGuid(), Guid.NewGuid(), Mount(), Boot());
+        var allocation = scope.AllocateDomain(name, Guid.NewGuid(), Guid.NewGuid(), Boot());
         Assert.True(allocation.Ok, allocation.Error);
         PreparationInterop.CloseFd(allocation.OwnerSocketFd);
         using var recovery = allocation.RecoveryLease!;
@@ -250,7 +250,7 @@ public sealed class RecoveryHarness
         using var scope = new M1RecoveryScope();
         Assert.True(scope.TryInitialize().Ok);
         Assert.True(scope.TryOpenDelegatedParent(temp.Path).Ok);
-        var allocation = scope.AllocateDomain("d-" + Guid.NewGuid().ToString("N"), Guid.NewGuid(), Guid.NewGuid(), Mount(), Boot());
+        var allocation = scope.AllocateDomain("d-" + Guid.NewGuid().ToString("N"), Guid.NewGuid(), Guid.NewGuid(), Boot());
         Assert.True(allocation.Ok, allocation.Error);
         PreparationInterop.CloseFd(allocation.OwnerSocketFd);
         using var recovery = allocation.RecoveryLease!;
@@ -342,19 +342,22 @@ public sealed class RecoveryHarness
             Assert.False(new JournalFileStorage().IsLockHeld(journal.Path, OwnershipJournal.DefaultLockName));
 
             var reconciler = new Reconciler(new RealClock(), TimeSpan.FromSeconds(5));
-            var authority = new RecoveryAuthority(true, true, true, true, true);
-            var record = RecoveryTestSupport.Snapshot() with
-            {
-                DomainName = identity.ChildName,
-                DomainInode = identity.ChildInode,
-                DomainDevice = identity.ChildDevice,
-            };
-            var result = reconciler.Reconcile(record, authority, recovery, null);
+            // Record built from the actual live identity; eligibility is
+            // derived from the live lease and boot, not caller booleans.
+            var record = RecordFrom(identity, new AllocationEntry(AllocationKind.Domain, identity.ChildName, 0, Array.Empty<byte>()));
+            var result = reconciler.Reconcile(record, Boot(), recovery, null);
             Assert.Equal(ReconcileOutcome.CleanupConfirmed, result.Outcome);
             Assert.Empty(Directory.GetDirectories(temp.Path, "d-*"));
             Assert.True(Directory.Exists(sibling));
         }
     }
+
+    private static OwnershipSnapshot RecordFrom(DomainIdentity id, params AllocationEntry[] allocations) =>
+        new(
+            OwnershipSnapshotCodec.CurrentVersion, 0, id.ExecutionId, id.BootId, id.CgroupMountId, id.CgroupMountFsType,
+            id.ParentDevice, id.ParentInode, id.ChildName, id.ChildDevice, id.ChildInode, id.LeaseGeneration,
+            OwnershipWriterKind.Owner, OwnershipCleanupState.NotStarted, PreparationStage.AllocationRegistered,
+            allocations, null);
 
     [Fact]
     public void OwnerDeathAfterRegisteredRecoversOriginalAllocation()
@@ -388,8 +391,8 @@ public sealed class RecoveryHarness
             Assert.Equal(identity.ChildInode, durable.Snapshot.DomainInode);
 
             var reconciler = new Reconciler(new RealClock(), TimeSpan.FromSeconds(5));
-            var authority = new RecoveryAuthority(true, true, true, true, true);
-            var result = reconciler.Reconcile(durable.Snapshot, authority, recovery, null);
+            // Eligibility derived from the live recovery lease and boot (G2-09).
+            var result = reconciler.Reconcile(durable.Snapshot, Boot(), recovery, null);
             Assert.Equal(ReconcileOutcome.CleanupConfirmed, result.Outcome);
             Assert.Empty(Directory.GetDirectories(temp.Path, "d-*"));
             Assert.True(Directory.Exists(sibling));

@@ -67,47 +67,67 @@ Emit("BOOTSTRAP_OK");
 var barrier = parsed.GetValueOrDefault("--barrier", "none");
 if (barrier == "before-receive")
 {
+    PreparationInterop.CloseFd(bootstrapFd);
     Emit("BARRIER before-receive");
     return 0;
 }
 
-if (!FdPassing.TryReceiveFds(bootstrapFd, 7, out var primaryFds, out var recvError))
+var execution = Guid.Parse(parsed["--exec"]);
+var leaseGen = Guid.Parse(parsed["--lease"]);
+var domainName = parsed["--domain"];
+
+// Receive the strict transfer, then close the bootstrap-only endpoint.
+var received = FdPassing.TryReceiveTransfer(
+    bootstrapFd,
+    DomainHandleTransfer.ExactDescriptorCount,
+    DomainHandleTransfer.ExactPayloadBytes,
+    out var primaryFds,
+    out var transferPayload,
+    out var recvError);
+PreparationInterop.CloseFd(bootstrapFd);
+if (!received)
 {
     Emit($"ERR receive {recvError}");
     return 4;
 }
 
-CgroupBackend backend;
-try
+if (!DomainHandleTransfer.TryDecode(transferPayload, execution, leaseGen, out _, out var decodeError))
 {
-    backend = CgroupBackend.FromOrderedFds(primaryFds);
-}
-catch (Exception ex)
-{
-    Emit($"ERR backend {ex.GetType().Name}");
+    foreach (var fd in primaryFds)
+    {
+        PreparationInterop.CloseFd(fd);
+    }
+
+    Emit($"ERR transfer {decodeError}");
     return 4;
 }
 
-var execution = Guid.Parse(parsed["--exec"]);
-var leaseGen = Guid.Parse(parsed["--lease"]);
-var mountId = ulong.Parse(parsed["--mount-id"]);
-var bootId = parsed["--boot"];
-var domainName = parsed["--domain"];
-
-// Capture parent/child identity from the received descriptors.
-if (PreparationInterop.StatFd(primaryFds[0], out var parentStat) != 0
-    || PreparationInterop.StatFd(primaryFds[1], out var childStat) != 0)
+if (!CgroupInterop.TryReadBootId(out var bootId, out var bootError))
 {
-    Emit("ERR stat");
+    foreach (var fd in primaryFds)
+    {
+        PreparationInterop.CloseFd(fd);
+    }
+
+    Emit($"ERR boot-id {bootError}");
     return 5;
 }
 
-var identity = new DomainIdentity(
-    execution, bootId, mountId, "cgroup2",
-    parentStat.Device, parentStat.Inode,
-    domainName, childStat.Device, childStat.Inode, leaseGen);
-var lease = new DomainLease(backend, identity);
-Emit($"PRIMARY dev={childStat.Device} ino={childStat.Inode}");
+if (!CgroupInterop.TryValidateDomainHandles(
+    primaryFds, domainName, execution, leaseGen, bootId,
+    out var backend, out var identity, out var validateError))
+{
+    foreach (var fd in primaryFds)
+    {
+        PreparationInterop.CloseFd(fd);
+    }
+
+    Emit($"ERR validate {validateError}");
+    return 5;
+}
+
+var lease = new DomainLease(backend!, identity!);
+Emit($"PRIMARY dev={identity!.ChildDevice} ino={identity.ChildInode} mount={identity.CgroupMountId}");
 
 if (barrier == "after-receive")
 {
@@ -139,8 +159,8 @@ if (barrier == "before-registered")
 }
 
 var registered = new OwnershipSnapshot(
-    OwnershipSnapshotCodec.CurrentVersion, 0, execution, bootId, mountId, "cgroup2",
-    parentStat.Device, parentStat.Inode, domainName, childStat.Device, childStat.Inode, leaseGen,
+    OwnershipSnapshotCodec.CurrentVersion, 0, execution, bootId, identity.CgroupMountId, identity.CgroupMountFsType,
+    identity.ParentDevice, identity.ParentInode, domainName, identity.ChildDevice, identity.ChildInode, leaseGen,
     OwnershipWriterKind.Owner, OwnershipCleanupState.NotStarted, PreparationStage.AllocationRegistered,
     new[] { new AllocationEntry(AllocationKind.Domain, domainName, 0, Array.Empty<byte>()) }, null);
 var registeredWrite = journal.WriteNext(registered);
