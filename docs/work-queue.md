@@ -2,7 +2,7 @@
 
 Updated 2026-10-09. Status definitions: Complete = stated artifact exists; Ready = dependencies sufficient to start; Held = named prerequisite missing; Pending = later delivery. Slice-specific historical entries retain their original tested SHAs; the later AR-6 SHA has separate three-host native and package evidence. Complete lifecycle qualification does not imply restricted-execution security qualification.
 
-## Current priority: AR-7 first implementation milestone (WP01 G1-R1/G1-R2 corrected; re-review awaited)
+## Current priority: AR-7 first implementation milestone (WP01 final G1-R2 identity correction)
 
 Update 2026-10-10: [ADR 0003: Linux-first restricted execution](adr/0003-ar7-linux-first-restricted-execution.md) approves the Linux-first architecture and authorizes only the bounded internal prepared-execution milestone described there. The architecture decision is complete; implementation has not begun in this documentation save. P05/P06 preparation and closure work belongs to the milestone; full resource, output, lifecycle, runtime and package qualification remains required before production restricted execution. No accepted feasibility rerun is required. Stop for independent review before expanding the slice; Hufu/workflow integration, privileged services, Windows/macOS enforcement and VM implementation remain deferred.
 
@@ -14,6 +14,8 @@ Update: WP01 G1 correction is implemented, tested and committed (see evidence co
 Update: the second independent G1 review completed against 7599ecb0eb537670b2b5dbcff102198a1cbe091c, preserved verbatim as [G1 independent re-review](reviews/gagamba-linux-m1-g1-rereview.md): G1 NOT ACCEPTED — WP01 CORRECTION REQUIRED. Original G1 findings substantially corrected; remaining WP01 defects are G1-R1 (populated domain cannot become empty) and G1-R2 (release decision not retained after subsequent state changes). WP02 remains blocked; no native implementation has begun.
 
 Update: G1-R1/G1-R2 corrected inside WP01 (evidence [WP01 evidence](evidence/linux-m1/wp01.md) section 9, commit SHA there): monotonic domain progression, state-independent retained release decision, 8 focused regressions. M1 64/64 green, full solution 0 failures, canonical vector unchanged. Stopped for independent G1 re-review; WP02 remains blocked.
+
+Update: final G1 re-review of 2d5ce6e completed ([header](reviews/gagamba-linux-m1-g1-final-rereview.md); reviewer body pending supply): G1 NOT ACCEPTED - WP01 CORRECTION REQUIRED. G1-R1 resolved; one WP01 defect remains in G1-R2 (retained-decision retries compare identity by record equality, rejecting value-equivalent copied-digest identities). WP02 remains blocked.
 
 Implementation handoff: [Linux M1 implementation plan](plans/gagamba-linux-m1-implementation-plan.md), bound to ADR commit 4d09452172caf232c209ae5c6d1031ef3f6feaa8. Follow its 12 ordered work packages and review gates; this plan is documentation only and does not mark implementation or qualification complete.
 
