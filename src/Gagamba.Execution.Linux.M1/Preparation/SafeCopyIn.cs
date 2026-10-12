@@ -27,6 +27,7 @@ internal enum CopyFailureKind : byte
     PublicationFailure = 9,
     Cancelled = 10,
     InvariantFailure = 11,
+    SparseRefused = 12,
 }
 
 /// <summary>One object to stage: logical role, single-component source
@@ -335,6 +336,15 @@ internal static class SafeCopyIn
                 return new ObjectStage(false, CopyFailureKind.InvalidSource, "Source is not a regular file.", null);
             }
 
+            // Plan Section 7: reject sparse objects instead of allocating
+            // from attacker-controlled lengths. Streamed-byte accounting
+            // stays authoritative for budgets; this is the separate
+            // admission check on filesystem allocation facts.
+            if (!HasDenseAccounting(preIdentity, out var densityReason))
+            {
+                return new ObjectStage(false, CopyFailureKind.SparseRefused, $"Source block accounting is not dense: {densityReason}.", null);
+            }
+
             if (preIdentity.Size < 0 || (ulong)preIdentity.Size > request.MaxBytes)
             {
                 return new ObjectStage(false, CopyFailureKind.BoundsExceeded, "Source exceeds the per-object budget.", null);
@@ -374,6 +384,16 @@ internal static class SafeCopyIn
                     || postIdentity.Size != (long)count)
                 {
                     return new ObjectStage(false, CopyFailureKind.ObjectReplaced, "Source changed during copy.", null);
+                }
+
+                if (host.StatHandle(destination, out var postDestIdentity) != 0)
+                {
+                    return new ObjectStage(false, CopyFailureKind.StagingFailure, "Staging stat failed after copy.", null);
+                }
+
+                if (!HasDenseAccounting(postDestIdentity, out var destDensityReason))
+                {
+                    return new ObjectStage(false, CopyFailureKind.SparseRefused, $"Staged block accounting is not dense: {destDensityReason}.", null);
                 }
 
                 if (request.ClaimedDigest is not null && !digest.SequenceEqual(request.ClaimedDigest))
@@ -505,7 +525,8 @@ internal static class SafeCopyIn
                 || identity.Inode != createdIdentity.Inode
                 || (identity.Mode & 0x1FFu) != finalMode
                 || identity.Size != (long)count
-                || identity.LinkCount != 1)
+                || identity.LinkCount != 1
+                || !HasDenseAccounting(identity, out _))
             {
                 return new ObjectStage(false, CopyFailureKind.ObjectReplaced, "Reopened staging identity does not match the created object.", null);
             }
@@ -613,4 +634,43 @@ internal static class SafeCopyIn
             Native.PreparationInterop.EINVAL => CopyFailureKind.ResolutionRefused,
             _ => CopyFailureKind.InvalidSource,
         };
+
+    /// <summary>Fail-closed density admission: st_blocks counts 512-byte
+    /// units, so fewer allocated bytes than the logical size means a
+    /// sparse object. Absent block accounting for a non-empty file cannot
+    /// prove density and is refused rather than trusted. Empty files are
+    /// trivially dense.</summary>
+    internal static bool HasDenseAccounting(Native.FileIdentity identity, out string reason)
+    {
+        reason = string.Empty;
+        if (identity.Size < 0)
+        {
+            reason = "negative logical size";
+            return false;
+        }
+
+        if (identity.Size == 0)
+        {
+            return true;
+        }
+
+        if (identity.Blocks512 <= 0)
+        {
+            reason = "block accounting absent for a non-empty file";
+            return false;
+        }
+
+        if ((ulong)identity.Blocks512 > ((ulong)long.MaxValue / 512UL))
+        {
+            return true;
+        }
+
+        if ((ulong)identity.Blocks512 * 512UL < (ulong)identity.Size)
+        {
+            reason = "fewer bytes allocated than the logical size";
+            return false;
+        }
+
+        return true;
+    }
 }

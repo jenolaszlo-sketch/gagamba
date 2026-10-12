@@ -41,6 +41,8 @@ internal sealed class FakeCopyHost : ICopyHost
         public ulong Ino;
         public int Nlink = 1;
         public bool IsSymlink;
+        public bool Sparse;
+        public bool UnreliableBlocks;
     }
 
     private sealed class Directory
@@ -95,6 +97,18 @@ internal sealed class FakeCopyHost : ICopyHost
     {
         RequireRoot();
         _roots[RootPath!].Files[name] = new Node { IsSymlink = true, Ino = _nextIno++ };
+    }
+
+    public void AddSparseSourceFile(string name, byte[] content)
+    {
+        RequireRoot();
+        _roots[RootPath!].Files[name] = new Node { Content = (byte[])content.Clone(), Mode = 0x100, Ino = _nextIno++, Sparse = true };
+    }
+
+    public void AddUnreliableSourceFile(string name, byte[] content)
+    {
+        RequireRoot();
+        _roots[RootPath!].Files[name] = new Node { Content = (byte[])content.Clone(), Mode = 0x100, Ino = _nextIno++, UnreliableBlocks = true };
     }
 
     public void AddSourceDirectory(string name)
@@ -256,9 +270,14 @@ internal sealed class FakeCopyHost : ICopyHost
         }
 
         var node = (Node)desc.Target;
+        long blocks = node.UnreliableBlocks
+            ? 0
+            : node.Sparse
+                ? node.Content.Length / 1024
+                : (node.Content.Length + 511) / 512;
         identity = new FileIdentity(
             FakeDevice, node.Ino, node.Mode | PreparationInterop.S_IFREG,
-            (ulong)node.Nlink, node.Content.Length, (node.Content.Length + 511) / 512);
+            (ulong)node.Nlink, node.Content.Length, blocks);
         return 0;
     }
 

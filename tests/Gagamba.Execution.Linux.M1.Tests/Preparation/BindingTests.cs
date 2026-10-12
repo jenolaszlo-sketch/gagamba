@@ -147,4 +147,38 @@ public sealed class BindingTests
         Assert.Equal(PreparationInterop.Mode0400, result.Closure!.Objects[0].Mode & 0x1FFu);
         result.Closure.Dispose();
     }
+
+    [Fact]
+    public void RetainedDescriptorSurvivesPathnameRemoval()
+    {
+        // Binding-time reopen is the only pathname resolution after the
+        // exclusive create, and it happens before binding. Afterwards all
+        // authority is the retained read-only FD plus bound identity: even
+        // removing the staging pathname leaves the bound object usable and
+        // verifiable, and no reopen mechanism remains to reacquire by name.
+        var host = NewHost();
+        var content = Bytes(0x13, 1024);
+        host.AddSourceFile("tool", content);
+        var result = SafeCopyIn.Prepare(Plan(host, Tool("tool", ToolBudget, Digest(content))), host, CancellationToken.None);
+        Assert.True(result.Succeeded);
+        var staged = result.Closure!.Objects[0];
+        Assert.Equal(0, host.Unlink(result.Closure.StagingDirectory!, staged.StagingName));
+        Assert.False(host.StagingFileExists(staged.StagingName));
+        Assert.Equal(0, host.StatHandle(staged.Handle, out var identity));
+        Assert.Equal(staged.Device, identity.Device);
+        Assert.Equal(staged.Inode, identity.Inode);
+        using var reader = host.OpenRead(staged.Handle);
+        var reread = new byte[content.Length];
+        var total = 0;
+        int read;
+        while ((read = reader.Read(reread, total, reread.Length - total)) > 0)
+        {
+            total += read;
+        }
+
+        Assert.Equal(content.Length, total);
+        Assert.Equal(content, reread);
+        result.Closure.Dispose();
+        Assert.Empty(host.LiveHandles);
+    }
 }

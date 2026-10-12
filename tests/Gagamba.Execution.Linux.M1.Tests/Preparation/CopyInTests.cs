@@ -305,6 +305,44 @@ public sealed class CopyInTests
     }
 
     [Fact]
+    public void SparseSourceRefused()
+    {
+        var host = NewHost();
+        host.AddSparseSourceFile("tool", Bytes(0x23, 4096));
+        var result = SafeCopyIn.Prepare(Plan(host, Tool()), host, CancellationToken.None);
+        Assert.False(result.Succeeded);
+        Assert.Equal(CopyFailureKind.SparseRefused, result.Failure);
+        Assert.Null(result.Closure);
+        Assert.Empty(host.StagingFileNames());
+        Assert.Empty(host.LiveHandles);
+    }
+
+    [Fact]
+    public void SparseBelowBudgetStillRefused()
+    {
+        var host = NewHost();
+        host.AddSparseSourceFile("input", Bytes(0x24, 1024));
+        var result = SafeCopyIn.Prepare(Plan(host, Input()), host, CancellationToken.None);
+        Assert.False(result.Succeeded);
+        Assert.Equal(CopyFailureKind.SparseRefused, result.Failure);
+        Assert.Null(result.Closure);
+        Assert.Empty(host.StagingFileNames());
+    }
+
+    [Fact]
+    public void UnreliableBlockAccountingRefused()
+    {
+        var host = NewHost();
+        host.AddUnreliableSourceFile("tool", Bytes(0x25, 512));
+        var result = SafeCopyIn.Prepare(Plan(host, Tool()), host, CancellationToken.None);
+        Assert.False(result.Succeeded);
+        Assert.Equal(CopyFailureKind.SparseRefused, result.Failure);
+        Assert.Null(result.Closure);
+        Assert.Empty(host.StagingFileNames());
+        Assert.Empty(host.LiveHandles);
+    }
+
+    [Fact]
     public void UnsupportedPrimitivePropagates()
     {
         var host = NewHost();

@@ -492,6 +492,63 @@ public sealed class NativeCopyInTests
     }
 
     [Fact]
+    public void DenseRegularFileAccepted()
+    {
+        SkipUnlessUsable(out _);
+        using var dirs = new NativeDirs();
+        var content = Bytes(0x64, 8192);
+        File.WriteAllBytes(Path.Combine(dirs.Root, "tool"), content);
+        var result = SafeCopyIn.Prepare(
+            NativePlan(dirs, Tool("tool", ToolBudget, Digest(content))),
+            LibcCopyHost.Instance, CancellationToken.None);
+        Assert.True(result.Succeeded, result.Detail);
+        try
+        {
+            Assert.Equal(Digest(content), result.Closure!.Objects[0].Sha256);
+        }
+        finally
+        {
+            result.Closure!.Dispose();
+        }
+    }
+
+    private static void CreateSparse(string path, long logicalBytes)
+    {
+        using var stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
+        stream.SetLength(logicalBytes);
+    }
+
+    [Fact]
+    public void SparseFileRejected()
+    {
+        SkipUnlessUsable(out _);
+        using var dirs = new NativeDirs();
+        var path = Path.Combine(dirs.Root, "tool");
+        CreateSparse(path, 1048576);
+        var result = SafeCopyIn.Prepare(
+            NativePlan(dirs, Tool()), LibcCopyHost.Instance, CancellationToken.None);
+        Assert.False(result.Succeeded);
+        Assert.Equal(CopyFailureKind.SparseRefused, result.Failure);
+        Assert.Null(result.Closure);
+        Assert.Empty(Directory.GetFiles(Path.Combine(dirs.Parent, "prep-native")));
+    }
+
+    [Fact]
+    public void SparseBelowBudgetStillRejected()
+    {
+        SkipUnlessUsable(out _);
+        using var dirs = new NativeDirs();
+        var path = Path.Combine(dirs.Root, "input");
+        CreateSparse(path, 102400);
+        var result = SafeCopyIn.Prepare(
+            NativePlan(dirs, Input()), LibcCopyHost.Instance, CancellationToken.None);
+        Assert.False(result.Succeeded);
+        Assert.Equal(CopyFailureKind.SparseRefused, result.Failure);
+        Assert.Null(result.Closure);
+        Assert.Empty(Directory.GetFiles(Path.Combine(dirs.Parent, "prep-native")));
+    }
+
+    [Fact]
     public void NativeDigestMismatchRefused()
     {
         SkipUnlessUsable(out _);
