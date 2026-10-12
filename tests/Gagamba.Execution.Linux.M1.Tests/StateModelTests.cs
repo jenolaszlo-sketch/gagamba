@@ -574,6 +574,149 @@ public sealed class StateModelTests
         Assert.Equal(1, h.Transport.Attempts);
     }
 
+    private static PreparationIdentity ForeignIdentity(Harness h, byte[] digest) =>
+        new(
+            Guid.NewGuid(), h.Capability.Identity.IssuerId, h.Capability.Identity.GenerationId,
+            Guid.NewGuid(), digest);
+
+    [Fact]
+    public void DuplicateReleaseAfterRunningReturnsRetainedDecision()
+    {
+        var h = new Harness();
+        h.DriveToCommitted();
+        Assert.True(h.Model.ObserveExec(ExecDisposition.Confirmed).Applied);
+        Assert.Equal(TransactionState.Running, h.Model.State);
+        var digest = h.Capability.Identity.ManifestDigest.ToArray();
+        var journalCount = h.Journal.Entries.Count;
+        var duplicate = h.Model.TryCommitRelease(h.Capability.Identity, (byte[])digest.Clone());
+        Assert.True(duplicate.Applied);
+        Assert.Equal("Release committed and delivered.", duplicate.Detail);
+        Assert.Equal(1, h.Transport.Attempts);
+        Assert.Equal(journalCount, h.Journal.Entries.Count);
+        Assert.Equal(TransactionState.Running, h.Model.State);
+        var conflicting = h.Model.TryCommitRelease(ForeignIdentity(h, digest), digest);
+        Assert.False(conflicting.Applied);
+        Assert.Equal(InvariantViolation.Foreign, conflicting.Violation);
+        Assert.Equal(1, h.Transport.Attempts);
+    }
+
+    [Fact]
+    public void DuplicateReleaseAfterPostCommitStopReturnsRetainedDecision()
+    {
+        var h = new Harness();
+        h.DriveToCommitted();
+        Assert.True(h.Model.AcceptStop(StopCauseKind.CallerStop).Applied);
+        Assert.Equal(TransactionState.Stopping, h.Model.State);
+        Assert.Null(h.Model.CurrentCapability);
+        var digest = h.Capability.Identity.ManifestDigest.ToArray();
+        var duplicate = h.Model.TryCommitRelease(h.Capability.Identity, (byte[])digest.Clone());
+        Assert.True(duplicate.Applied);
+        Assert.Equal("Release committed and delivered.", duplicate.Detail);
+        Assert.DoesNotContain("already won before release", duplicate.Detail);
+        Assert.Equal(1, h.Transport.Attempts);
+        Assert.Equal(TransactionState.Stopping, h.Model.State);
+        var conflicting = h.Model.TryCommitRelease(ForeignIdentity(h, digest), digest);
+        Assert.False(conflicting.Applied);
+        Assert.Equal(InvariantViolation.Foreign, conflicting.Violation);
+        Assert.Equal(1, h.Transport.Attempts);
+    }
+
+    [Fact]
+    public void DuplicateReleaseAfterTerminalReturnsRetainedDecision()
+    {
+        var h = new Harness();
+        h.DriveToCommitted();
+        Assert.True(h.Model.ObserveExec(ExecDisposition.Confirmed).Applied);
+        Assert.True(h.Model.ObserveRoot(Exited(0)).Applied);
+        Assert.True(h.Model.ObserveDomainEmpty(true).Applied);
+        Assert.True(h.Model.ObserveCaptureTerminal(CompleteCapture()).Applied);
+        Assert.True(h.Model.PublishTerminal().Applied);
+        Assert.Equal(TransactionState.Completed, h.Model.State);
+        var digest = h.Capability.Identity.ManifestDigest.ToArray();
+        var journalCount = h.Journal.Entries.Count;
+        var duplicate = h.Model.TryCommitRelease(h.Capability.Identity, (byte[])digest.Clone());
+        Assert.True(duplicate.Applied);
+        Assert.Equal("Release committed and delivered.", duplicate.Detail);
+        Assert.Equal(1, h.Transport.Attempts);
+        Assert.Equal(journalCount, h.Journal.Entries.Count);
+        Assert.Equal(TransactionState.Completed, h.Model.State);
+        var conflicting = h.Model.TryCommitRelease(ForeignIdentity(h, digest), digest);
+        Assert.False(conflicting.Applied);
+        Assert.Equal(InvariantViolation.Foreign, conflicting.Violation);
+        Assert.Equal(1, h.Transport.Attempts);
+    }
+
+    [Fact]
+    public void StopBeforeReleaseWinsWithoutRetainedDecision()
+    {
+        var h = new Harness();
+        h.DriveToOwned();
+        Assert.True(h.Model.AcceptStop(StopCauseKind.CallerStop).Applied);
+        var digest = h.Capability.Identity.ManifestDigest.ToArray();
+        var attempt = h.Model.TryCommitRelease(h.Capability.Identity, (byte[])digest.Clone());
+        Assert.False(attempt.Applied);
+        Assert.Equal(InvariantViolation.StoppedFirst, attempt.Violation);
+        Assert.Equal("A stop already won before release.", attempt.Detail);
+        var retry = h.Model.TryCommitRelease(h.Capability.Identity, (byte[])digest.Clone());
+        Assert.False(retry.Applied);
+        Assert.Equal(InvariantViolation.StoppedFirst, retry.Violation);
+        Assert.Equal(ReleaseDisposition.NotCommitted, h.Model.Release);
+        Assert.Equal(0, h.Transport.Attempts);
+    }
+
+    [Fact]
+    public void DomainPopulatedCanBecomeEmpty()
+    {
+        var h = new Harness();
+        h.DriveToCommitted();
+        Assert.True(h.Model.ObserveDomainEmpty(false).Applied);
+        Assert.Equal(false, h.Model.DomainEmpty);
+        var progressed = h.Model.ObserveDomainEmpty(true);
+        Assert.True(progressed.Applied);
+        Assert.Equal(true, h.Model.DomainEmpty);
+    }
+
+    [Fact]
+    public void DomainDuplicatesAreIdempotent()
+    {
+        var h = new Harness();
+        h.DriveToCommitted();
+        Assert.True(h.Model.ObserveDomainEmpty(false).Applied);
+        Assert.True(h.Model.ObserveDomainEmpty(false).Applied);
+        Assert.Equal(false, h.Model.DomainEmpty);
+        Assert.True(h.Model.ObserveDomainEmpty(true).Applied);
+        Assert.True(h.Model.ObserveDomainEmpty(true).Applied);
+        Assert.Equal(true, h.Model.DomainEmpty);
+    }
+
+    [Fact]
+    public void DomainEmptyCannotRegressToPopulated()
+    {
+        var h = new Harness();
+        h.DriveToCommitted();
+        Assert.True(h.Model.ObserveDomainEmpty(true).Applied);
+        var regress = h.Model.ObserveDomainEmpty(false);
+        Assert.False(regress.Applied);
+        Assert.Equal(InvariantViolation.Conflict, regress.Violation);
+        Assert.Equal(true, h.Model.DomainEmpty);
+    }
+
+    [Fact]
+    public void RootExitWhilePopulatedThenEmptyReachesCompleted()
+    {
+        var h = new Harness();
+        h.DriveToCommitted();
+        Assert.True(h.Model.ObserveExec(ExecDisposition.Confirmed).Applied);
+        Assert.True(h.Model.ObserveRoot(Exited(0)).Applied);
+        Assert.True(h.Model.ObserveDomainEmpty(false).Applied);
+        Assert.True(h.Model.ObserveDomainEmpty(true).Applied);
+        Assert.True(h.Model.ObserveCaptureTerminal(CompleteCapture()).Applied);
+        Assert.True(h.Model.PublishTerminal().Applied);
+        Assert.Equal(TransactionState.Completed, h.Model.State);
+        Assert.Equal(ExecutionOutcome.Succeeded, h.Model.TerminalOutcome);
+        Assert.Equal(true, h.Model.TerminalObservation!.Cleanup.DomainEmpty);
+    }
+
     [Fact]
     public void ExecConfirmedMovesToRunning()
     {

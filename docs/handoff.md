@@ -1,6 +1,6 @@
 # Gagamba handoff
 
-## Current action — G1 re-review preserved: WP01 correction substantially accepted, G1-R1/G1-R2 remain, WP02 blocked
+## Current action — G1-R1/G1-R2 corrected and tested; stopped for independent G1 re-review, WP02 blocked
 
 Update 2026-10-10: [ADR 0003: Linux-first restricted execution](adr/0003-ar7-linux-first-restricted-execution.md) records the architecture decision against sealed evidence checkpoint cb511cd18ba25daeda76cf41a400d1136c6ba0f0. Implement the bounded internal Linux prepared-execution transaction specified there, using pinned non-setuid Bubblewrap behind a launcher abstraction. Stop for independent review at the milestone boundary. Production qualification remains pending; Windows native and macOS remain refusal-only, and Windows VM is deferred. This documentation save runs no probes, builds or tests and begins no implementation. The ADR supersedes prior implementation holds only within its express authorization; preserve all sealed evidence and non-claims.
 
@@ -11,6 +11,8 @@ Update: WP01 implementation is committed and G1 independent review has completed
 Update: the WP01 G1 correction pass is implemented, tested and committed (correction evidence in [WP01 evidence](evidence/linux-m1/wp01.md) section 8; commit SHA recorded there): all G1-01 through G1-09 findings addressed inside WP01 boundaries — UTF-8 bytewise canonical sorts, mount/network/inode/core/owner manifest fields, intent-write stop recheck, retained-decision duplicate release, Conflict=8 observation semantics with frozen terminal collections, retained terminal metadata, in-repo reference-encoder cross-check with permuted and non-ASCII vectors. Corrected golden 873 bytes (`82161029…`); M1 suite 56/56 green; full solution 0 failures. No review of the correction has run in this session; G1 re-review is awaited. WP02 remains blocked until the correction is accepted; no native implementation has begun.
 
 Update: the second independent G1 review completed against 7599ecb0eb537670b2b5dbcff102198a1cbe091c, preserved verbatim as [G1 independent re-review](reviews/gagamba-linux-m1-g1-rereview.md). Disposition: G1 NOT ACCEPTED — WP01 CORRECTION REQUIRED. Original G1 findings are substantially corrected; two remaining WP01 defects are G1-R1 (populated domain cannot become empty) and G1-R2 (release decision not retained after subsequent state changes). WP02 remains blocked; no native implementation has begun. This turn is documentation-only: no source or tests changed.
+
+Update: G1-R1 (monotonic domain populated→empty progression) and G1-R2 (state-independent retained release decision) are corrected inside WP01 with 8 focused regressions and evidence in [WP01 evidence](evidence/linux-m1/wp01.md) section 9 (commit SHA recorded there). M1 suite 64/64 green; full solution 0 failures; canonical vector unchanged (873 bytes). Stopped for independent G1 re-review; WP02 remains blocked; no native implementation has begun.
 
 ## Prior action — AR-7 EVIDENCE SEALED - READY FOR ARCHITECTURE DECISION
 

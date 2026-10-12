@@ -101,6 +101,10 @@ internal sealed class TransactionStateModel
     private bool _domainObserved;
     private PreparationIdentity? _lastIdentity;
     private RestrictedManifest? _lastManifest;
+    private bool _releaseDecisionRetained;
+    private PreparationIdentity? _releaseIdentity;
+    private byte[]? _releaseDigest;
+    private string _releaseDecisionDetail = string.Empty;
 
     public TransactionStateModel(
         Preparation.PreparedTransaction.PreparationStore store,
@@ -206,22 +210,27 @@ internal sealed class TransactionStateModel
     {
         ArgumentNullException.ThrowIfNull(identity);
         ArgumentNullException.ThrowIfNull(manifestDigest);
-        if (State == TransactionState.Stopping)
+        // G1-R2: the committed release decision is retained independently
+        // of current state and live capability. An identical retry in any
+        // post-commit state returns the original decision with no further
+        // transport, journal or state action; a conflicting identity
+        // cannot cause another decision.
+        if (_releaseDecisionRetained)
         {
-            return TransitionAttempt.Refused(InvariantViolation.StoppedFirst, "A stop already won before release.");
-        }
-
-        if (State == TransactionState.ReleaseCommitted && CurrentCapability is not null)
-        {
-            // Duplicate release call: return the retained original decision
-            // without another release action. A conflicting identity still
-            // cannot cause a second decision or write.
-            if (AuthorizesSamePreparation(identity, manifestDigest))
+            if (_releaseIdentity is not null
+                && _releaseIdentity.Equals(identity)
+                && _releaseDigest is not null
+                && _releaseDigest.SequenceEqual(manifestDigest))
             {
-                return TransitionAttempt.Ok("Duplicate release call; original committed decision stands, no further write.");
+                return TransitionAttempt.Ok(_releaseDecisionDetail);
             }
 
             return TransitionAttempt.Refused(InvariantViolation.Foreign, "Conflicting authorization cannot cause another decision.");
+        }
+
+        if (State == TransactionState.Stopping)
+        {
+            return TransitionAttempt.Refused(InvariantViolation.StoppedFirst, "A stop already won before release.");
         }
 
         if (State != TransactionState.Owned)
@@ -270,6 +279,7 @@ internal sealed class TransactionStateModel
         if (send == ReleaseSendResult.Delivered)
         {
             RecordTransition("ReleaseDelivered");
+            RetainReleaseDecision(CurrentCapability.Identity, manifestDigest, "Release committed and delivered.");
             return TransitionAttempt.Ok("Release committed and delivered.");
         }
 
@@ -279,6 +289,7 @@ internal sealed class TransactionStateModel
         RecordStopCause(StopCauseKind.TransportFailure);
         _journal.Append("release-failed", send.ToString(), _clock.NowNanoseconds);
         RecordTransition("ReleaseSendFailed");
+        RetainReleaseDecision(CurrentCapability.Identity, manifestDigest, "Release write failed; stopping with MayHaveExecuted.");
         return TransitionAttempt.Ok("Release write failed; stopping with MayHaveExecuted.");
     }
 
@@ -463,7 +474,17 @@ internal sealed class TransactionStateModel
                 return TransitionAttempt.Ok("Domain observation already recorded; duplicate is idempotent.");
             }
 
-            return TransitionAttempt.Refused(InvariantViolation.Conflict, "Conflicting domain observation cannot replace recorded knowledge.");
+            // G1-R1: domain emptiness is a progressive lifecycle observation,
+            // not a single-assignment result. A populated domain may later
+            // become empty; an established empty domain cannot regress.
+            if (empty)
+            {
+                DomainEmpty = true;
+                RecordTransition("ObserveDomainEmpty");
+                return TransitionAttempt.Ok("Domain became empty; progression accepted.");
+            }
+
+            return TransitionAttempt.Refused(InvariantViolation.Conflict, "Established empty domain cannot regress to populated.");
         }
 
         DomainEmpty = empty;
@@ -581,10 +602,13 @@ internal sealed class TransactionStateModel
         && identity.PreparationId.Equals(CurrentCapability.Identity.PreparationId)
         && identity.ManifestDigest.SequenceEqual(CurrentCapability.Identity.ManifestDigest);
 
-    private bool AuthorizesSamePreparation(PreparationIdentity identity, byte[] manifestDigest) =>
-        AuthorizesIdentity(identity)
-        && CurrentCapability is not null
-        && manifestDigest.SequenceEqual(ManifestCodec.ComputeDigestBytes(CurrentCapability.Manifest));
+    private void RetainReleaseDecision(PreparationIdentity identity, byte[] manifestDigest, string detail)
+    {
+        _releaseDecisionRetained = true;
+        _releaseIdentity = identity;
+        _releaseDigest = (byte[])manifestDigest.Clone();
+        _releaseDecisionDetail = detail;
+    }
 
     private static bool IsTerminal(TransactionState state) =>
         state is TransactionState.Completed or TransactionState.Failed or TransactionState.Cancelled or TransactionState.Unknown;
