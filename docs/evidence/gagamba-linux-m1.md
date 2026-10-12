@@ -13,9 +13,8 @@ until all mandatory gates pass.
 | Package | Evidence | Status |
 |---|---|---|
 | WP01 — Internal contracts, capability identity and state model | [wp01](linux-m1/wp01.md) | Complete, G1 ACCEPTED ([acceptance](../reviews/gagamba-linux-m1-g1-acceptance.md); M1 70/70, probes 13/13, native NotApplicable) |
-| WP02 — Protected copy-in and atomic preparation publication | [wp02](linux-m1/wp02.md) | Complete, no separate gate (M1 123/123 Linux with 19 native; fixture built/bound, never executed; G2 after WP02+WP03 per plan) |
-| WP03 — Delegated domain lease, persistent allocation and external recovery scope | — | Not started; requires WP02 handoff then G2 chain per plan |
-| WP03 — Delegated domain lease, persistent allocation and external recovery scope | [wp03](linux-m1/wp03.md) | Implemented; native-tested on WSL2, not independently reviewed (G2 after WP02+WP03) |
-| WP04–WP12 | — | Not started |
+| WP02 — Protected copy-in and atomic preparation publication | [wp02](linux-m1/wp02.md) | Complete, no separate gate (M1 123/123 Linux with 19 native; fixture built/bound, never executed); G2 NOT ACCEPTED at 1e117e0 — correction required (G2-06, G2-07) |
+| WP03 — Delegated domain lease, persistent allocation and external recovery scope | [wp03](linux-m1/wp03.md) | Implemented and native-tested on WSL2; G2 NOT ACCEPTED at 1e117e0 — correction required (G2-01, G2-02, G2-03, G2-04, G2-05, G2-08, G2-09, G2-10) |
+| WP04–WP12 | — | Not started; WP04 blocked pending G2 correction |
 
-Production gaps from the plan (inode/object ceilings, complete P05/P06, owner-death deployment, complete no-IP policy, P08 runtime, P09 packaging, core sinks, host breadth, Windows/macOS/VM) remain pending and are restated in each package record. They are not expanded by WP01.
+Production gaps from the plan (inode/object ceilings, complete P05/P06, owner-death deployment, complete no-IP policy, P08 runtime, P09 packaging, core sinks, host breadth, Windows/macOS/VM) remain pending and are restated in each package record. They are not expanded by WP01. G2 review preserved at [gagamba-linux-m1-g2-review.md](../reviews/gagamba-linux-m1-g2-review.md): disposition G2 NOT ACCEPTED - CORRECTION REQUIRED at 1e117e0a64ee473f2ba251818761afc315c8e283; WP04 remains blocked; no remediation begun.
