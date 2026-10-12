@@ -14,6 +14,7 @@ internal enum BootstrapRole : byte
     DomainKill = 3,
     DomainEvents = 4,
     RecoveryEvidence = 5,
+    HandleChannel = 6,
 }
 
 internal sealed record BootstrapDescriptor(int Fd, BootstrapRole Role);
@@ -25,14 +26,16 @@ internal static class OwnerBootstrap
     internal const ushort CurrentVersion = 1;
 
     /// <summary>Roles a valid WP03 owner bootstrap must contain, exactly
-    /// once each, and nothing else. WP03 transfers no domain or release
-    /// authority to the owner: only inherited local pipes are required.
-    /// Release authority is deliberately absent.</summary>
+    /// once each, and nothing else. The owner receives its primary
+    /// DomainLease handles over one inherited Unix socketpair
+    /// (<see cref="BootstrapRole.HandleChannel"/>); no release authority is
+    /// ever transferred.</summary>
     internal static readonly BootstrapRole[] RequiredRoles =
     {
         BootstrapRole.ControlRead,
         BootstrapRole.ControlWrite,
         BootstrapRole.RecoveryEvidence,
+        BootstrapRole.HandleChannel,
     };
 
     internal static bool TryValidate(BootstrapMap? map, out string error)

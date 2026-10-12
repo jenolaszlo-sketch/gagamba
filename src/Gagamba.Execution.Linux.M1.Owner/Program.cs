@@ -1,9 +1,12 @@
 // WP03 per-execution owner process. It accepts only an inherited private
-// bootstrap (mapped to inherited stdio pipes), verifies the supplied
-// domain identity beneath the retained parent, acquires the exclusive
-// journal writer lock, and records OwnerAccepted. It never receives
-// release authority, never launches a target, and can be terminated at a
-// named barrier to exercise owner-death recovery.
+// bootstrap (inherited stdio pipes plus one SCM_RIGHTS handle channel),
+// receives the primary DomainLease descriptors from the recovery scope,
+// verifies the domain identity, acquires the exclusive journal writer
+// lock, and can be commanded or terminated at a named barrier to exercise
+// owner-death and orphan-adoption recovery. It never receives release
+// authority and never launches a target.
+using System.Diagnostics;
+using Gagamba.Execution.Linux.M1.Lifecycle;
 using Gagamba.Execution.Linux.M1.Native;
 using Gagamba.Execution.Linux.M1.Preparation.Native;
 using Gagamba.Execution.Linux.M1.Recovery;
@@ -37,7 +40,13 @@ if (!OperatingSystem.IsLinux())
     return 2;
 }
 
-// Bootstrap: the owner accepts exactly the inherited stdio roles.
+var bootstrapFdText = Environment.GetEnvironmentVariable("GAGAMBA_BOOTSTRAP_FD");
+if (bootstrapFdText is null || !int.TryParse(bootstrapFdText, out var bootstrapFd))
+{
+    Emit("ERR missing-handle-channel");
+    return 3;
+}
+
 var map = new BootstrapMap(
     OwnerBootstrap.CurrentVersion,
     new[]
@@ -45,6 +54,7 @@ var map = new BootstrapMap(
         new BootstrapDescriptor(0, BootstrapRole.ControlRead),
         new BootstrapDescriptor(1, BootstrapRole.ControlWrite),
         new BootstrapDescriptor(2, BootstrapRole.RecoveryEvidence),
+        new BootstrapDescriptor(bootstrapFd, BootstrapRole.HandleChannel),
     });
 if (!OwnerBootstrap.TryValidate(map, out var bootstrapError))
 {
@@ -55,88 +65,131 @@ if (!OwnerBootstrap.TryValidate(map, out var bootstrapError))
 Emit("BOOTSTRAP_OK");
 
 var barrier = parsed.GetValueOrDefault("--barrier", "none");
-if (barrier == "before-open")
+if (barrier == "before-receive")
 {
-    Emit("BARRIER before-open");
+    Emit("BARRIER before-receive");
     return 0;
 }
 
-var parent = parsed["--parent"];
-var journalDir = parsed["--journal-dir"];
-var domainName = parsed["--domain"];
-var leaseGen = Guid.Parse(parsed["--lease"]);
-
-if (PreparationInterop.OpenDirectory(parent, out var parentFd) != 0)
+if (!FdPassing.TryReceiveFds(bootstrapFd, 7, out var primaryFds, out var recvError))
 {
-    Emit("ERR parent-open");
+    Emit($"ERR receive {recvError}");
     return 4;
 }
 
+CgroupBackend backend;
 try
 {
-    var openErrno = PreparationInterop.OpenRelative(
-        parentFd, domainName,
-        PreparationInterop.O_RDONLY | PreparationInterop.O_DIRECTORY
-            | PreparationInterop.O_NOFOLLOW | PreparationInterop.O_CLOEXEC,
-        PreparationInterop.RequiredResolve, out var domainFd);
-    if (openErrno != 0)
-    {
-        Emit($"ERR domain-open {openErrno}");
-        return 5;
-    }
+    backend = CgroupBackend.FromOrderedFds(primaryFds);
+}
+catch (Exception ex)
+{
+    Emit($"ERR backend {ex.GetType().Name}");
+    return 4;
+}
 
-    try
-    {
-        if (PreparationInterop.StatFd(domainFd, out var stat) != 0)
-        {
-            Emit("ERR domain-stat");
-            return 6;
-        }
+var execution = Guid.Parse(parsed["--exec"]);
+var leaseGen = Guid.Parse(parsed["--lease"]);
+var mountId = ulong.Parse(parsed["--mount-id"]);
+var bootId = parsed["--boot"];
+var domainName = parsed["--domain"];
 
-        Emit($"DOMAIN dev={stat.Device} ino={stat.Inode} lease={leaseGen:D}");
-        if (barrier == "after-open")
-        {
-            Emit("BARRIER after-open");
+// Capture parent/child identity from the received descriptors.
+if (PreparationInterop.StatFd(primaryFds[0], out var parentStat) != 0
+    || PreparationInterop.StatFd(primaryFds[1], out var childStat) != 0)
+{
+    Emit("ERR stat");
+    return 5;
+}
+
+var identity = new DomainIdentity(
+    execution, bootId, mountId, "cgroup2",
+    parentStat.Device, parentStat.Inode,
+    domainName, childStat.Device, childStat.Inode, leaseGen);
+var lease = new DomainLease(backend, identity);
+Emit($"PRIMARY dev={childStat.Device} ino={childStat.Inode}");
+
+if (barrier == "after-receive")
+{
+    Emit("BARRIER after-receive");
+    return 0;
+}
+
+var journalDir = parsed["--journal-dir"];
+var storage = new JournalFileStorage();
+var journal = new OwnershipJournal(storage, journalDir);
+var lockResult = journal.TryAcquireExclusiveWriter();
+if (!lockResult.Ok)
+{
+    Emit($"ERR writer-lock {lockResult.Error}");
+    return 6;
+}
+
+Emit("WRITER_LOCKED");
+if (barrier == "after-lock")
+{
+    Emit("BARRIER after-lock");
+    return 0;
+}
+
+if (barrier == "before-registered")
+{
+    Emit("BARRIER before-registered");
+    return 0;
+}
+
+var registered = new OwnershipSnapshot(
+    OwnershipSnapshotCodec.CurrentVersion, 0, execution, bootId, mountId, "cgroup2",
+    parentStat.Device, parentStat.Inode, domainName, childStat.Device, childStat.Inode, leaseGen,
+    OwnershipWriterKind.Owner, OwnershipCleanupState.NotStarted, PreparationStage.AllocationRegistered,
+    new[] { new AllocationEntry(AllocationKind.Domain, domainName, 0, Array.Empty<byte>()) }, null);
+var registeredWrite = journal.WriteNext(registered);
+Emit($"REGISTERED ok={registeredWrite.Ok} err={registeredWrite.Error}");
+
+if (barrier == "after-registered")
+{
+    Emit("BARRIER after-registered");
+    return 0;
+}
+
+string? line;
+while ((line = Console.In.ReadLine()) is not null)
+{
+    var parts = line.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+    switch (parts[0])
+    {
+        case "stop":
+            var stop = lease.StopAndAwaitEmpty(TimeSpan.FromSeconds(5), new OwnerClock());
+            Emit($"STOPPED ok={stop.Stopped} err={stop.Error}");
+            break;
+        case "empty":
+            var pop = lease.ObservePopulation();
+            Emit($"POPULATION known={pop.Known} empty={pop.Empty}");
+            break;
+        case "identity":
+            Emit($"IDENTITY match={lease.VerifyIdentity().Match}");
+            break;
+        case "orphan":
+            // Spawn a finite trusted child, report it, then exit so it is
+            // orphaned to the subreaper scope.
+            var seconds = parts.Length > 1 ? parts[1] : "2";
+            var child = Process.Start("/bin/sleep", seconds);
+            Emit($"ORPHAN_PID {child!.Id}");
             return 0;
-        }
-
-        var storage = new JournalFileStorage();
-        var journal = new OwnershipJournal(storage, journalDir);
-        var lockResult = journal.TryAcquireExclusiveWriter();
-        if (!lockResult.Ok)
-        {
-            Emit($"ERR writer-lock {lockResult.Error}");
-            return 7;
-        }
-
-        Emit("WRITER_LOCKED");
-        if (barrier == "after-lock")
-        {
-            Emit("BARRIER after-lock");
+        case "die":
+            Emit("DYING");
             return 0;
-        }
-
-        // Block until the control channel closes, then exit normally. This
-        // keeps the owner alive as the scope's direct child.
-        string? line;
-        while ((line = Console.In.ReadLine()) is not null)
-        {
-            if (line == "die")
-            {
-                Emit("DYING");
-                return 0;
-            }
-        }
-
-        Emit("CONTROL_EOF");
-        return 0;
-    }
-    finally
-    {
-        PreparationInterop.CloseFd(domainFd);
     }
 }
-finally
+
+Emit("CONTROL_EOF");
+return 0;
+
+internal sealed class OwnerClock : IDomainClock
 {
-    PreparationInterop.CloseFd(parentFd);
+    private readonly Stopwatch _watch = Stopwatch.StartNew();
+
+    public long NowNanoseconds => _watch.ElapsedTicks * (1_000_000_000L / Stopwatch.Frequency);
+
+    public void Delay(TimeSpan duration) => Thread.Sleep(duration);
 }

@@ -2,7 +2,7 @@
 
 Updated 2026-10-09. Status definitions: Complete = stated artifact exists; Ready = dependencies sufficient to start; Held = named prerequisite missing; Pending = later delivery. Slice-specific historical entries retain their original tested SHAs; the later AR-6 SHA has separate three-host native and package evidence. Complete lifecycle qualification does not imply restricted-execution security qualification.
 
-## Current priority: AR-7 first implementation milestone (WP03 complete; stopped for G2 independent review)
+## Current priority: AR-7 first implementation milestone (WP03 qualification complete; ready for G2 independent review)
 
 Update 2026-10-10: [ADR 0003: Linux-first restricted execution](adr/0003-ar7-linux-first-restricted-execution.md) approves the Linux-first architecture and authorizes only the bounded internal prepared-execution milestone described there. The architecture decision is complete; implementation has not begun in this documentation save. P05/P06 preparation and closure work belongs to the milestone; full resource, output, lifecycle, runtime and package qualification remains required before production restricted execution. No accepted feasibility rerun is required. Stop for independent review before expanding the slice; Hufu/workflow integration, privileged services, Windows/macOS enforcement and VM implementation remain deferred.
 
@@ -26,6 +26,8 @@ Update: WP02 complete inside its boundaries (evidence [WP02 evidence](evidence/l
 Update: WP02 plan-conformance correction complete (evidence [WP02 evidence](evidence/linux-m1/wp02.md), commit SHA there): Section 7 sparse-object refusal now fail-closed on block accounting at admission/staged/reopen; binding-time reopen confirmed pre-binding only with no post-binding pathname reacquisition. M1 130/130 Linux, Windows solution 0 failures, WP01 vector unchanged. Stopped after WP02; WP03 not begun; no G2 decision.
 
 Update: WP03 complete inside its boundaries (evidence [WP03 evidence](evidence/linux-m1/wp03.md), commit SHA there): live-handle cgroup domain authority, DomainLease stop/identity-checked removal, durable checksummed ownership journal with flock fencing, bootstrap allowlist, subreaper recovery scope with real owner-death recovery, WP02↔WP03 durable-order seam. M1 183/183 Linux (42 portable + 11 native WP03), Windows solution 0 failures, WP01 vector unchanged. Stopped for G2 independent review (WP02+WP03 plus planned WP04 coordinator/FD boundary); WP04 not begun.
+
+Update: WP03 pre-G2 plan-conformance correction: owner now holds the primary DomainLease (SCM_RIGHTS transfer over an inherited socketpair) with the scope holding separately owned duplicates; native coverage extended to owner primary-lease stop, owner death before/after AllocationRegistered around writer transfer with kernel-released fenced lock, subreaper orphan adoption/reaping, and staged-preparation cleanup through retained authority. M1 186/186 Linux (42 portable + 14 native), Windows 0 failures, WP01 vector unchanged. Ready for G2; WP04 not begun.
 
 Implementation handoff: [Linux M1 implementation plan](plans/gagamba-linux-m1-implementation-plan.md), bound to ADR commit 4d09452172caf232c209ae5c6d1031ef3f6feaa8. Follow its 12 ordered work packages and review gates; this plan is documentation only and does not mark implementation or qualification complete.
 

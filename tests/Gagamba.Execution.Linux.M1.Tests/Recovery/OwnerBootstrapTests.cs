@@ -13,6 +13,7 @@ public sealed class OwnerBootstrapTests
             new BootstrapDescriptor(0, BootstrapRole.ControlRead),
             new BootstrapDescriptor(1, BootstrapRole.ControlWrite),
             new BootstrapDescriptor(2, BootstrapRole.RecoveryEvidence),
+            new BootstrapDescriptor(3, BootstrapRole.HandleChannel),
         });
 
     [Fact]
@@ -53,7 +54,8 @@ public sealed class OwnerBootstrapTests
                 new BootstrapDescriptor(0, BootstrapRole.ControlRead),
                 new BootstrapDescriptor(1, BootstrapRole.ControlWrite),
                 new BootstrapDescriptor(2, BootstrapRole.RecoveryEvidence),
-                new BootstrapDescriptor(3, BootstrapRole.RecoveryEvidence),
+                new BootstrapDescriptor(3, BootstrapRole.HandleChannel),
+                new BootstrapDescriptor(4, BootstrapRole.RecoveryEvidence),
             });
         Assert.False(OwnerBootstrap.TryValidate(map, out _));
     }
@@ -82,6 +84,7 @@ public sealed class OwnerBootstrapTests
                 new BootstrapDescriptor(-1, BootstrapRole.ControlRead),
                 new BootstrapDescriptor(1, BootstrapRole.ControlWrite),
                 new BootstrapDescriptor(2, BootstrapRole.RecoveryEvidence),
+                new BootstrapDescriptor(3, BootstrapRole.HandleChannel),
             });
         Assert.False(OwnerBootstrap.TryValidate(map, out _));
     }

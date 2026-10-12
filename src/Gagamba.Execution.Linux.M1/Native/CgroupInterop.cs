@@ -43,6 +43,38 @@ internal sealed class CgroupBackend : IDomainBackend
 
     internal IReadOnlyDictionary<string, int> ReadbackFds => _readbackFds;
 
+    /// <summary>Primary handles in fixed order for SCM_RIGHTS transfer to
+    /// the owner: parent, domain dir, kill, events, memory.max,
+    /// memory.swap.max, pids.max.</summary>
+    internal int[] OrderedFds()
+    {
+        var list = new List<int> { _parentFd, _domainFd, _killFd, _eventsFd };
+        foreach (var name in new[] { "memory.max", "memory.swap.max", "pids.max" })
+        {
+            list.Add(_readbackFds[name]);
+        }
+
+        return list.ToArray();
+    }
+
+    /// <summary>Rebuilds a backend from received descriptors in the same
+    /// fixed order used by <see cref="OrderedFds"/>.</summary>
+    internal static CgroupBackend FromOrderedFds(int[] fds)
+    {
+        if (fds.Length != 7)
+        {
+            throw new ArgumentException("expected 7 ordered descriptors", nameof(fds));
+        }
+
+        var readbacks = new Dictionary<string, int>(StringComparer.Ordinal)
+        {
+            ["memory.max"] = fds[4],
+            ["memory.swap.max"] = fds[5],
+            ["pids.max"] = fds[6],
+        };
+        return new CgroupBackend(fds[0], fds[1], fds[2], fds[3], readbacks);
+    }
+
     public bool HandlesAlive => !_disposed && _domainFd >= 0 && _killFd >= 0 && _eventsFd >= 0;
 
     public DomainIoResult WriteKill()

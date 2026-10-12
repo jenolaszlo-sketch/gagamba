@@ -15,7 +15,7 @@ namespace Gagamba.Execution.Linux.M1.Lifecycle;
 
 internal sealed record ScopeInitResult(bool Ok, string Error);
 
-internal sealed record DomainAllocationResult(bool Ok, DomainLease? Lease, string Error);
+internal sealed record DomainAllocationResult(bool Ok, DomainLease? RecoveryLease, int OwnerSocketFd, string Error);
 
 internal sealed record OwnerExitResult(bool Exited, int ExitCode, bool Crashed, string Error);
 
@@ -71,35 +71,67 @@ internal sealed class M1RecoveryScope : IDisposable
         return new ScopeInitResult(true, string.Empty);
     }
 
-    /// <summary>Allocates the domain and returns the owner lease plus its
-    /// independent recovery duplicate held by the scope.</summary>
+    /// <summary>Allocates the domain, transfers the primary handles to the
+    /// owner over one inherited Unix socketpair (SCM_RIGHTS), and retains a
+    /// separately owned recovery duplicate for this scope. The returned
+    /// recovery lease is the scope's authority; the child socket end must
+    /// be handed to <see cref="SpawnOwner"/> (which closes it) or closed by
+    /// the caller.</summary>
     internal DomainAllocationResult AllocateDomain(
         string childName,
         Guid executionId,
         Guid leaseGeneration,
         CgroupMountInfo mount,
-        string bootId,
-        out DomainLease? recoveryLease)
+        string bootId)
     {
-        recoveryLease = null;
         if (_parentFd < 0)
         {
-            return new DomainAllocationResult(false, null, "no retained delegated parent");
+            return new DomainAllocationResult(false, null, -1, "no retained delegated parent");
         }
 
         if (!CgroupInterop.TryCreateDomain(
             _parentFd, childName, executionId, leaseGeneration, mount, bootId,
             out var backend, out var identity, out var error))
         {
-            return new DomainAllocationResult(false, null, error);
+            return new DomainAllocationResult(false, null, -1, error);
         }
 
-        var lease = new DomainLease(backend!, identity!);
-        recoveryLease = lease.DuplicateForRecovery();
-        return new DomainAllocationResult(true, lease, string.Empty);
+        // Separately owned recovery duplicate retained by this scope.
+        var recoveryBackend = backend!.DuplicateForRecovery();
+        var recoveryLease = new DomainLease(recoveryBackend, identity!);
+
+        // Transfer the primary handles to the owner over an inherited
+        // socketpair. The owner becomes the primary DomainLease holder.
+        if (!FdPassing.TryCreateInheritableSocketPair(out var parentEnd, out var childEnd, out var socketError))
+        {
+            recoveryLease.Dispose();
+            backend.Dispose();
+            return new DomainAllocationResult(false, null, -1, socketError);
+        }
+
+        try
+        {
+            if (!FdPassing.TrySendFds(parentEnd, backend.OrderedFds(), out var sendError))
+            {
+                recoveryLease.Dispose();
+                backend.Dispose();
+                PreparationInterop.CloseFd(parentEnd);
+                PreparationInterop.CloseFd(childEnd);
+                return new DomainAllocationResult(false, null, -1, sendError);
+            }
+        }
+        finally
+        {
+            PreparationInterop.CloseFd(parentEnd);
+        }
+
+        // The owner now owns the primary descriptors; the scope keeps only
+        // its recovery duplicate.
+        backend.Dispose();
+        return new DomainAllocationResult(true, recoveryLease, childEnd, string.Empty);
     }
 
-    internal Process SpawnOwner(string ownerDll, string[] arguments, out string error)
+    internal Process SpawnOwner(string ownerDll, string[] arguments, int ownerSocketFd, out string error)
     {
         error = string.Empty;
         var psi = new ProcessStartInfo
@@ -116,6 +148,8 @@ internal sealed class M1RecoveryScope : IDisposable
             psi.ArgumentList.Add(argument);
         }
 
+        psi.Environment["GAGAMBA_BOOTSTRAP_FD"] = ownerSocketFd.ToString();
+
         try
         {
             var process = Process.Start(psi);
@@ -131,6 +165,15 @@ internal sealed class M1RecoveryScope : IDisposable
         {
             error = $"owner start failed: {ex.GetType().Name}";
             throw;
+        }
+        finally
+        {
+            // The child end was inherited at spawn; the scope no longer
+            // needs it.
+            if (ownerSocketFd >= 0)
+            {
+                PreparationInterop.CloseFd(ownerSocketFd);
+            }
         }
     }
 

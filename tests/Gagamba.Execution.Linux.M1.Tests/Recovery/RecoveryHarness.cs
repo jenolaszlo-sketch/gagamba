@@ -1,13 +1,18 @@
 // WP03 Linux-native qualification harness: real cgroup v2 delegation,
 // retained-handle identity, whole-domain stop, identity-checked removal,
-// unrelated-sibling isolation, subreaper, and owner-death recovery against
-// a real per-execution owner process. Every case is finite and skipped
-// honestly off Linux or without delegation. No target fixture runs.
+// unrelated-sibling isolation, owner primary DomainLease ownership via
+// SCM_RIGHTS, owner-death barriers (before/after registration and writer
+// transfer), subreaper orphan adoption/reaping, and staged-preparation
+// cleanup through retained authority. Every case is finite and externally
+// watchdog-bounded. No target fixture runs.
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using Gagamba.Execution.Linux.M1.Lifecycle;
 using Gagamba.Execution.Linux.M1.Native;
+using Gagamba.Execution.Linux.M1.Preparation;
 using Gagamba.Execution.Linux.M1.Recovery;
 using Xunit;
+using PreparationInterop = Gagamba.Execution.Linux.M1.Preparation.Native.PreparationInterop;
 
 namespace Gagamba.Execution.Linux.M1.Tests.Recovery;
 
@@ -16,6 +21,9 @@ public sealed class RecoveryHarness
 {
     private const string CgroupRoot = "/sys/fs/cgroup";
 
+    [DllImport("libc", SetLastError = true)]
+    private static extern int waitpid(int pid, out int status, int options);
+
     private sealed class TempParent : IDisposable
     {
         public string Path { get; } = System.IO.Path.Combine(CgroupRoot, "gagamba-wp03-" + Guid.NewGuid().ToString("N"));
@@ -23,9 +31,6 @@ public sealed class RecoveryHarness
         public TempParent()
         {
             Directory.CreateDirectory(Path);
-            // Operator-provided delegation: enable the controllers the
-            // domain needs on its delegated parent. WP03 itself never
-            // configures host delegation; the harness plays operator.
             try
             {
                 File.WriteAllText(System.IO.Path.Combine(Path, "cgroup.subtree_control"), "+memory +pids");
@@ -53,6 +58,19 @@ public sealed class RecoveryHarness
             {
             }
 
+            GC.SuppressFinalize(this);
+        }
+    }
+
+    private sealed class TempDir : IDisposable
+    {
+        public string Path { get; } = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "gagamba-wp03-fs-" + Guid.NewGuid().ToString("N"));
+
+        public TempDir() => Directory.CreateDirectory(Path);
+
+        public void Dispose()
+        {
+            try { Directory.Delete(Path, true); } catch { }
             GC.SuppressFinalize(this);
         }
     }
@@ -93,298 +111,6 @@ public sealed class RecoveryHarness
     private static string Boot() =>
         CgroupInterop.TryReadBootId(out var id, out _) ? id : "unknown";
 
-    [Fact]
-    public void CgroupMountAndBootIdentityAreReadable()
-    {
-        SkipUnlessUsable();
-        Assert.True(CgroupInterop.TryReadCgroupMount(out var mount, out var error), error);
-        Assert.Equal("cgroup2", mount!.FileSystemType);
-        Assert.True(mount.MountId > 0);
-        Assert.True(CgroupInterop.TryReadBootId(out var boot, out var bootError), bootError);
-        Assert.NotEqual(string.Empty, boot);
-    }
-
-    [Fact]
-    public void MissingDelegationRefused()
-    {
-        SkipUnlessUsable();
-        var errno = Gagamba.Execution.Linux.M1.Preparation.Native.PreparationInterop.OpenDirectory(
-            "/nonexistent-gagamba-parent", out _);
-        Assert.NotEqual(0, errno);
-    }
-
-    [Fact]
-    public void SuccessfulDomainAllocateStopRemove()
-    {
-        SkipUnlessUsable();
-        using var temp = new TempParent();
-        using var scope = new M1RecoveryScope();
-        Assert.True(scope.TryInitialize().Ok);
-        Assert.True(scope.TryOpenDelegatedParent(temp.Path).Ok);
-        var mount = Mount();
-        var allocation = scope.AllocateDomain("d-" + Guid.NewGuid().ToString("N"), Guid.NewGuid(), Guid.NewGuid(), mount, Boot(), out var recovery);
-        Assert.True(allocation.Ok, allocation.Error);
-        using var lease = allocation.Lease!;
-        using var recover = recovery!;
-        Assert.True(lease.VerifyIdentity().Match);
-        var stop = lease.StopAndAwaitEmpty(TimeSpan.FromSeconds(5), new RealClock());
-        Assert.True(stop.Stopped, stop.Error);
-        var removal = lease.RemoveIfIdentityMatches();
-        Assert.True(removal.Removed, removal.Error);
-        Assert.Empty(Directory.GetDirectories(temp.Path));
-    }
-
-    [Fact]
-    public void RetainedControlHandleIdentityIsStable()
-    {
-        SkipUnlessUsable();
-        using var temp = new TempParent();
-        using var scope = new M1RecoveryScope();
-        Assert.True(scope.TryInitialize().Ok);
-        Assert.True(scope.TryOpenDelegatedParent(temp.Path).Ok);
-        var allocation = scope.AllocateDomain("d-" + Guid.NewGuid().ToString("N"), Guid.NewGuid(), Guid.NewGuid(), Mount(), Boot(), out var recovery);
-        Assert.True(allocation.Ok, allocation.Error);
-        using var lease = allocation.Lease!;
-        using var recover = recovery!;
-        var first = lease.VerifyIdentity();
-        var second = lease.VerifyIdentity();
-        Assert.True(first.Match && second.Match);
-        Assert.Equal(lease.Identity.ChildInode, lease.Identity.ChildInode);
-    }
-
-    [Fact]
-    public void ReplacementBlocksRemoval()
-    {
-        SkipUnlessUsable();
-        using var temp = new TempParent();
-        using var scope = new M1RecoveryScope();
-        Assert.True(scope.TryInitialize().Ok);
-        Assert.True(scope.TryOpenDelegatedParent(temp.Path).Ok);
-        var name = "d-" + Guid.NewGuid().ToString("N");
-        var allocation = scope.AllocateDomain(name, Guid.NewGuid(), Guid.NewGuid(), Mount(), Boot(), out var recovery);
-        Assert.True(allocation.Ok, allocation.Error);
-        using var lease = allocation.Lease!;
-        using var recover = recovery!;
-        // Replace the directory with a same-name sibling of a different inode.
-        Directory.Delete(System.IO.Path.Combine(temp.Path, name));
-        Directory.CreateDirectory(System.IO.Path.Combine(temp.Path, name));
-        var removal = lease.RemoveIfIdentityMatches();
-        Assert.True(removal.Refused, removal.Error);
-        Assert.Single(Directory.GetDirectories(temp.Path));
-    }
-
-    [Fact]
-    public void UnrelatedSiblingUntouched()
-    {
-        SkipUnlessUsable();
-        using var temp = new TempParent();
-        var sibling = System.IO.Path.Combine(temp.Path, "sibling-" + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(sibling);
-        using var scope = new M1RecoveryScope();
-        Assert.True(scope.TryInitialize().Ok);
-        Assert.True(scope.TryOpenDelegatedParent(temp.Path).Ok);
-        var allocation = scope.AllocateDomain("d-" + Guid.NewGuid().ToString("N"), Guid.NewGuid(), Guid.NewGuid(), Mount(), Boot(), out var recovery);
-        Assert.True(allocation.Ok, allocation.Error);
-        using var lease = allocation.Lease!;
-        using var recover = recovery!;
-        lease.StopAndAwaitEmpty(TimeSpan.FromSeconds(5), new RealClock());
-        lease.RemoveIfIdentityMatches();
-        Assert.True(Directory.Exists(sibling));
-    }
-
-    [Fact]
-    public void SubreaperEnabledAndVerified()
-    {
-        if (!OperatingSystem.IsLinux())
-        {
-            Assert.Skip("linux only");
-        }
-
-        Assert.True(RecoverySubreaper.TryEnableAndVerify(out var error), error);
-    }
-
-    [Fact]
-    public void OwnerBootstrapsAcquiresLockThenDiesAndScopeRecovers()
-    {
-        SkipUnlessUsable();
-        var ownerDll = LocateOwnerDll();
-        if (ownerDll is null)
-        {
-            Assert.Skip("owner executable not built");
-            return;
-        }
-
-        using var temp = new TempParent();
-        var journalDir = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "gagamba-wp03-journal-" + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(journalDir);
-        try
-        {
-            using var scope = new M1RecoveryScope();
-            Assert.True(scope.TryInitialize().Ok);
-            Assert.True(scope.TryOpenDelegatedParent(temp.Path).Ok);
-            var name = "d-" + Guid.NewGuid().ToString("N");
-            var leaseGen = Guid.NewGuid();
-            var allocation = scope.AllocateDomain(name, Guid.NewGuid(), leaseGen, Mount(), Boot(), out var recovery);
-            Assert.True(allocation.Ok, allocation.Error);
-            using var lease = allocation.Lease!;
-            using var recover = recovery!;
-
-            var owner = scope.SpawnOwner(ownerDll, new[]
-            {
-                "--journal-dir", journalDir,
-                "--parent", temp.Path,
-                "--domain", name,
-                "--lease", leaseGen.ToString("D"),
-                "--barrier", "after-lock",
-            }, out var spawnError);
-            using (owner)
-            {
-                var seenBootstrap = false;
-                var seenLocked = false;
-                string? line;
-                while ((line = owner.StandardOutput.ReadLine()) is not null)
-                {
-                    if (line.StartsWith("BOOTSTRAP_OK", StringComparison.Ordinal)) { seenBootstrap = true; }
-                    if (line.StartsWith("WRITER_LOCKED", StringComparison.Ordinal)) { seenLocked = true; }
-                    if (line.StartsWith("BARRIER", StringComparison.Ordinal)) { break; }
-                }
-
-                Assert.True(seenBootstrap, "owner did not validate bootstrap");
-                Assert.True(seenLocked, "owner did not acquire the writer lock");
-                var exit = scope.WaitForOwner(owner, TimeSpan.FromSeconds(10));
-                Assert.True(exit.Exited, exit.Error);
-            }
-
-            // Owner is dead; the scope's recovery duplicate still has
-            // authority and cleans the domain.
-            var reconciler = new Reconciler(new RealClock(), TimeSpan.FromSeconds(5));
-            var authority = new RecoveryAuthority(true, true, true, lease.Identity.Corroborates(lease.Identity), true);
-            var record = RecoveryTestSupport.Snapshot() with
-            {
-                DomainName = name,
-                DomainInode = lease.Identity.ChildInode,
-                DomainDevice = lease.Identity.ChildDevice,
-                Stage = PreparationStage.AllocationRegistered,
-            };
-            var result = reconciler.Reconcile(record, authority, recover, null);
-            Assert.Equal(ReconcileOutcome.CleanupConfirmed, result.Outcome);
-            Assert.Empty(Directory.GetDirectories(temp.Path));
-        }
-        finally
-        {
-            try { Directory.Delete(journalDir, true); } catch { }
-        }
-    }
-
-    [Fact]
-    public void OwnerDeathBeforeOpenLeavesDomainForScopeRecovery()
-    {
-        SkipUnlessUsable();
-        var ownerDll = LocateOwnerDll();
-        if (ownerDll is null)
-        {
-            Assert.Skip("owner executable not built");
-            return;
-        }
-
-        using var temp = new TempParent();
-        var journalDir = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "gagamba-wp03-journal-" + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(journalDir);
-        try
-        {
-            using var scope = new M1RecoveryScope();
-            Assert.True(scope.TryInitialize().Ok);
-            Assert.True(scope.TryOpenDelegatedParent(temp.Path).Ok);
-            var name = "d-" + Guid.NewGuid().ToString("N");
-            var leaseGen = Guid.NewGuid();
-            var allocation = scope.AllocateDomain(name, Guid.NewGuid(), leaseGen, Mount(), Boot(), out var recovery);
-            Assert.True(allocation.Ok, allocation.Error);
-            using var lease = allocation.Lease!;
-            using var recover = recovery!;
-
-            var owner = scope.SpawnOwner(ownerDll, new[]
-            {
-                "--journal-dir", journalDir,
-                "--parent", temp.Path,
-                "--domain", name,
-                "--lease", leaseGen.ToString("D"),
-                "--barrier", "before-open",
-            }, out _);
-            using (owner)
-            {
-                var exit = scope.WaitForOwner(owner, TimeSpan.FromSeconds(10));
-                Assert.True(exit.Exited, exit.Error);
-            }
-
-            var reconciler = new Reconciler(new RealClock(), TimeSpan.FromSeconds(5));
-            var authority = new RecoveryAuthority(true, true, true, true, true);
-            var record = RecoveryTestSupport.Snapshot() with
-            {
-                DomainName = name,
-                DomainInode = lease.Identity.ChildInode,
-                DomainDevice = lease.Identity.ChildDevice,
-            };
-            var result = reconciler.Reconcile(record, authority, recover, null);
-            Assert.Equal(ReconcileOutcome.CleanupConfirmed, result.Outcome);
-            Assert.Empty(Directory.GetDirectories(temp.Path));
-        }
-        finally
-        {
-            try { Directory.Delete(journalDir, true); } catch { }
-        }
-    }
-
-    [Fact]
-    public void NativeJournalDurableThenTornDetected()
-    {
-        if (!OperatingSystem.IsLinux())
-        {
-            Assert.Skip("linux only");
-        }
-
-        var dir = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "gagamba-wp03-journal-" + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(dir);
-        try
-        {
-            using var storage = new JournalFileStorage();
-            var journal = new OwnershipJournal(storage, dir);
-            var write = journal.WriteNext(RecoveryTestSupport.Snapshot());
-            Assert.True(write.Ok, write.Error);
-            var read = journal.ReadLatest();
-            Assert.True(read.Ok, read.Error);
-            File.WriteAllBytes(System.IO.Path.Combine(dir, OwnershipJournal.DefaultSnapshotName), new byte[] { 1, 2, 3, 4, 5 });
-            var torn = journal.ReadLatest();
-            Assert.False(torn.Ok);
-        }
-        finally
-        {
-            try { Directory.Delete(dir, true); } catch { }
-        }
-    }
-
-    [Fact]
-    public void NativeWriterLockIsExclusiveAcrossProcesses()
-    {
-        if (!OperatingSystem.IsLinux())
-        {
-            Assert.Skip("linux only");
-        }
-
-        var dir = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "gagamba-wp03-lock-" + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(dir);
-        try
-        {
-            using var storage = new JournalFileStorage();
-            Assert.True(storage.TryAcquireExclusiveLock(dir, OwnershipJournal.DefaultLockName).Ok);
-            using var other = new JournalFileStorage();
-            Assert.False(other.TryAcquireExclusiveLock(dir, OwnershipJournal.DefaultLockName).Ok);
-        }
-        finally
-        {
-            try { Directory.Delete(dir, true); } catch { }
-        }
-    }
-
     private static string? LocateOwnerDll()
     {
         var dir = new DirectoryInfo(AppContext.BaseDirectory);
@@ -402,6 +128,444 @@ public sealed class RecoveryHarness
             dir.FullName, "src", "Gagamba.Execution.Linux.M1.Owner", "bin", "Debug", "net10.0",
             "Gagamba.Execution.Linux.M1.Owner.dll");
         return File.Exists(candidate) ? candidate : null;
+    }
+
+    private static (Process Owner, DomainLease Recovery, DomainIdentity Identity) StartOwner(
+        M1RecoveryScope scope,
+        TempParent temp,
+        string journalDir,
+        string barrier)
+    {
+        var name = "d-" + Guid.NewGuid().ToString("N");
+        var execution = Guid.NewGuid();
+        var leaseGen = Guid.NewGuid();
+        var allocation = scope.AllocateDomain(name, execution, leaseGen, Mount(), Boot());
+        Assert.True(allocation.Ok, allocation.Error);
+        var recovery = allocation.RecoveryLease!;
+        var ownerDll = LocateOwnerDll()!;
+        var owner = scope.SpawnOwner(ownerDll, new[]
+        {
+            "--journal-dir", journalDir,
+            "--exec", execution.ToString("D"),
+            "--lease", leaseGen.ToString("D"),
+            "--mount-id", Mount().MountId.ToString(),
+            "--boot", Boot(),
+            "--domain", name,
+            "--barrier", barrier,
+        }, allocation.OwnerSocketFd, out var spawnError);
+        Assert.True(spawnError.Length == 0, spawnError);
+        return (owner, recovery, recovery.Identity);
+    }
+
+    private static string ReadUntil(Process owner, Func<string, bool> stop, TimeSpan timeout)
+    {
+        var output = new System.Text.StringBuilder();
+        var deadline = DateTime.UtcNow + timeout;
+        string? line;
+        while ((line = owner.StandardOutput.ReadLine()) is not null)
+        {
+            output.AppendLine(line);
+            if (stop(line))
+            {
+                break;
+            }
+
+            if (DateTime.UtcNow > deadline)
+            {
+                break;
+            }
+        }
+
+        return output.ToString();
+    }
+
+    [Fact]
+    public void CgroupMountAndBootIdentityAreReadable()
+    {
+        SkipUnlessUsable();
+        Assert.True(CgroupInterop.TryReadCgroupMount(out var mount, out var error), error);
+        Assert.Equal("cgroup2", mount!.FileSystemType);
+        Assert.True(mount.MountId > 0);
+        Assert.True(CgroupInterop.TryReadBootId(out var boot, out var bootError), bootError);
+        Assert.NotEqual(string.Empty, boot);
+    }
+
+    [Fact]
+    public void MissingDelegationRefused()
+    {
+        SkipUnlessUsable();
+        var errno = PreparationInterop.OpenDirectory("/nonexistent-gagamba-parent", out _);
+        Assert.NotEqual(0, errno);
+    }
+
+    [Fact]
+    public void SuccessfulDomainAllocateStopRemove()
+    {
+        SkipUnlessUsable();
+        using var temp = new TempParent();
+        using var scope = new M1RecoveryScope();
+        Assert.True(scope.TryInitialize().Ok);
+        Assert.True(scope.TryOpenDelegatedParent(temp.Path).Ok);
+        var allocation = scope.AllocateDomain("d-" + Guid.NewGuid().ToString("N"), Guid.NewGuid(), Guid.NewGuid(), Mount(), Boot());
+        Assert.True(allocation.Ok, allocation.Error);
+        // The primary handles were transferred to the (unspawned) owner over
+        // the socketpair; close that end and use the scope's recovery lease.
+        PreparationInterop.CloseFd(allocation.OwnerSocketFd);
+        using var recovery = allocation.RecoveryLease!;
+        Assert.True(recovery.VerifyIdentity().Match);
+        var stop = recovery.StopAndAwaitEmpty(TimeSpan.FromSeconds(5), new RealClock());
+        Assert.True(stop.Stopped, stop.Error);
+        var removal = recovery.RemoveIfIdentityMatches();
+        Assert.True(removal.Removed, removal.Error);
+        Assert.Empty(Directory.GetDirectories(temp.Path));
+    }
+
+    [Fact]
+    public void ReplacementBlocksRemoval()
+    {
+        SkipUnlessUsable();
+        using var temp = new TempParent();
+        using var scope = new M1RecoveryScope();
+        Assert.True(scope.TryInitialize().Ok);
+        Assert.True(scope.TryOpenDelegatedParent(temp.Path).Ok);
+        var name = "d-" + Guid.NewGuid().ToString("N");
+        var allocation = scope.AllocateDomain(name, Guid.NewGuid(), Guid.NewGuid(), Mount(), Boot());
+        Assert.True(allocation.Ok, allocation.Error);
+        PreparationInterop.CloseFd(allocation.OwnerSocketFd);
+        using var recovery = allocation.RecoveryLease!;
+        Directory.Delete(System.IO.Path.Combine(temp.Path, name));
+        Directory.CreateDirectory(System.IO.Path.Combine(temp.Path, name));
+        var removal = recovery.RemoveIfIdentityMatches();
+        Assert.True(removal.Refused, removal.Error);
+        Assert.Single(Directory.GetDirectories(temp.Path));
+    }
+
+    [Fact]
+    public void UnrelatedSiblingUntouched()
+    {
+        SkipUnlessUsable();
+        using var temp = new TempParent();
+        var sibling = System.IO.Path.Combine(temp.Path, "sibling-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(sibling);
+        using var scope = new M1RecoveryScope();
+        Assert.True(scope.TryInitialize().Ok);
+        Assert.True(scope.TryOpenDelegatedParent(temp.Path).Ok);
+        var allocation = scope.AllocateDomain("d-" + Guid.NewGuid().ToString("N"), Guid.NewGuid(), Guid.NewGuid(), Mount(), Boot());
+        Assert.True(allocation.Ok, allocation.Error);
+        PreparationInterop.CloseFd(allocation.OwnerSocketFd);
+        using var recovery = allocation.RecoveryLease!;
+        recovery.StopAndAwaitEmpty(TimeSpan.FromSeconds(5), new RealClock());
+        recovery.RemoveIfIdentityMatches();
+        Assert.True(Directory.Exists(sibling));
+    }
+
+    [Fact]
+    public void SubreaperEnabledAndVerified()
+    {
+        if (!OperatingSystem.IsLinux())
+        {
+            Assert.Skip("linux only");
+        }
+
+        Assert.True(RecoverySubreaper.TryEnableAndVerify(out var error), error);
+    }
+
+    [Fact]
+    public void OwnerHoldsPrimaryLeaseAndStopsDomain()
+    {
+        SkipUnlessUsable();
+        var ownerDll = LocateOwnerDll();
+        if (ownerDll is null)
+        {
+            Assert.Skip("owner executable not built");
+            return;
+        }
+
+        using var temp = new TempParent();
+        using var journal = new TempDir();
+        using var scope = new M1RecoveryScope();
+        Assert.True(scope.TryInitialize().Ok);
+        Assert.True(scope.TryOpenDelegatedParent(temp.Path).Ok);
+        var (owner, recovery, _) = StartOwner(scope, temp, journal.Path, "none");
+        using (owner)
+        using (recovery)
+        {
+            var ready = ReadUntil(owner, l => l.StartsWith("REGISTERED", StringComparison.Ordinal), TimeSpan.FromSeconds(10));
+            Assert.Contains("PRIMARY", ready);
+            Assert.Contains("WRITER_LOCKED", ready);
+            Assert.Contains("REGISTERED ok=True", ready);
+
+            owner.StandardInput.WriteLine("identity");
+            owner.StandardInput.Flush();
+            var identityLine = owner.StandardOutput.ReadLine();
+            Assert.Equal("IDENTITY match=True", identityLine);
+
+            // The owner (primary DomainLease holder) stops the domain; the
+            // scope's independently-owned duplicate observes emptiness.
+            owner.StandardInput.WriteLine("stop");
+            owner.StandardInput.Flush();
+            var stopped = owner.StandardOutput.ReadLine();
+            Assert.Equal("STOPPED ok=True err=", stopped);
+
+            owner.StandardInput.WriteLine("die");
+            owner.StandardInput.Flush();
+            Assert.True(scope.WaitForOwner(owner, TimeSpan.FromSeconds(5)).Exited);
+            Assert.True(recovery.ObservePopulation().Empty);
+        }
+    }
+
+    [Fact]
+    public void OwnerDeathBeforeRegisteredRecoversWithoutCapability()
+    {
+        SkipUnlessUsable();
+        if (LocateOwnerDll() is null)
+        {
+            Assert.Skip("owner executable not built");
+            return;
+        }
+
+        using var temp = new TempParent();
+        using var journal = new TempDir();
+        using var scope = new M1RecoveryScope();
+        Assert.True(scope.TryInitialize().Ok);
+        Assert.True(scope.TryOpenDelegatedParent(temp.Path).Ok);
+        var sibling = System.IO.Path.Combine(temp.Path, "sibling-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(sibling);
+        var (owner, recovery, identity) = StartOwner(scope, temp, journal.Path, "after-lock");
+        using (owner)
+        using (recovery)
+        {
+            var output = ReadUntil(owner, l => l.StartsWith("BARRIER", StringComparison.Ordinal), TimeSpan.FromSeconds(10));
+            Assert.Contains("WRITER_LOCKED", output);
+            Assert.True(scope.WaitForOwner(owner, TimeSpan.FromSeconds(5)).Exited);
+            // Kernel released the owner's writer lock on death.
+            Assert.False(new JournalFileStorage().IsLockHeld(journal.Path, OwnershipJournal.DefaultLockName));
+
+            var reconciler = new Reconciler(new RealClock(), TimeSpan.FromSeconds(5));
+            var authority = new RecoveryAuthority(true, true, true, true, true);
+            var record = RecoveryTestSupport.Snapshot() with
+            {
+                DomainName = identity.ChildName,
+                DomainInode = identity.ChildInode,
+                DomainDevice = identity.ChildDevice,
+            };
+            var result = reconciler.Reconcile(record, authority, recovery, null);
+            Assert.Equal(ReconcileOutcome.CleanupConfirmed, result.Outcome);
+            Assert.Empty(Directory.GetDirectories(temp.Path, "d-*"));
+            Assert.True(Directory.Exists(sibling));
+        }
+    }
+
+    [Fact]
+    public void OwnerDeathAfterRegisteredRecoversOriginalAllocation()
+    {
+        SkipUnlessUsable();
+        if (LocateOwnerDll() is null)
+        {
+            Assert.Skip("owner executable not built");
+            return;
+        }
+
+        using var temp = new TempParent();
+        using var journal = new TempDir();
+        using var scope = new M1RecoveryScope();
+        Assert.True(scope.TryInitialize().Ok);
+        Assert.True(scope.TryOpenDelegatedParent(temp.Path).Ok);
+        var sibling = System.IO.Path.Combine(temp.Path, "sibling-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(sibling);
+        var (owner, recovery, identity) = StartOwner(scope, temp, journal.Path, "after-registered");
+        using (owner)
+        using (recovery)
+        {
+            var output = ReadUntil(owner, l => l.StartsWith("BARRIER", StringComparison.Ordinal), TimeSpan.FromSeconds(10));
+            Assert.Contains("REGISTERED ok=True", output);
+            Assert.True(scope.WaitForOwner(owner, TimeSpan.FromSeconds(5)).Exited);
+
+            // The durable registered snapshot names the real identity.
+            var durable = new OwnershipJournal(new JournalFileStorage(), journal.Path).ReadLatest();
+            Assert.True(durable.Ok, durable.Error);
+            Assert.Equal(PreparationStage.AllocationRegistered, durable.Snapshot!.Stage);
+            Assert.Equal(identity.ChildInode, durable.Snapshot.DomainInode);
+
+            var reconciler = new Reconciler(new RealClock(), TimeSpan.FromSeconds(5));
+            var authority = new RecoveryAuthority(true, true, true, true, true);
+            var result = reconciler.Reconcile(durable.Snapshot, authority, recovery, null);
+            Assert.Equal(ReconcileOutcome.CleanupConfirmed, result.Outcome);
+            Assert.Empty(Directory.GetDirectories(temp.Path, "d-*"));
+            Assert.True(Directory.Exists(sibling));
+        }
+    }
+
+    [Fact]
+    public void WriterLockTakeoverIsFencedAfterOwnerDeath()
+    {
+        SkipUnlessUsable();
+        if (LocateOwnerDll() is null)
+        {
+            Assert.Skip("owner executable not built");
+            return;
+        }
+
+        using var temp = new TempParent();
+        using var journal = new TempDir();
+        using var scope = new M1RecoveryScope();
+        Assert.True(scope.TryInitialize().Ok);
+        Assert.True(scope.TryOpenDelegatedParent(temp.Path).Ok);
+        var (owner, recovery, _) = StartOwner(scope, temp, journal.Path, "after-lock");
+        using (owner)
+        using (recovery)
+        {
+            ReadUntil(owner, l => l.StartsWith("BARRIER", StringComparison.Ordinal), TimeSpan.FromSeconds(10));
+            Assert.True(scope.WaitForOwner(owner, TimeSpan.FromSeconds(5)).Exited);
+
+            // One writer at a time; the scope can acquire the fence only
+            // after the owner died.
+            using var takeover = new JournalFileStorage();
+            var acquire = takeover.TryAcquireExclusiveLock(journal.Path, OwnershipJournal.DefaultLockName);
+            Assert.True(acquire.Ok, acquire.Error);
+            recovery.StopAndAwaitEmpty(TimeSpan.FromSeconds(5), new RealClock());
+            recovery.RemoveIfIdentityMatches();
+        }
+    }
+
+    [Fact]
+    public void OrphanTrustedChildAdoptedAndReapedByScope()
+    {
+        SkipUnlessUsable();
+        if (LocateOwnerDll() is null)
+        {
+            Assert.Skip("owner executable not built");
+            return;
+        }
+
+        using var temp = new TempParent();
+        using var journal = new TempDir();
+        using var scope = new M1RecoveryScope();
+        Assert.True(scope.TryInitialize().Ok);
+        Assert.True(scope.TryOpenDelegatedParent(temp.Path).Ok);
+        var (owner, recovery, _) = StartOwner(scope, temp, journal.Path, "none");
+        int orphanPid;
+        using (owner)
+        using (recovery)
+        {
+            ReadUntil(owner, l => l.StartsWith("REGISTERED", StringComparison.Ordinal), TimeSpan.FromSeconds(10));
+            owner.StandardInput.WriteLine("orphan 3");
+            owner.StandardInput.Flush();
+            var orphanLine = owner.StandardOutput.ReadLine();
+            Assert.StartsWith("ORPHAN_PID ", orphanLine);
+            orphanPid = int.Parse(orphanLine!.Substring("ORPHAN_PID ".Length).Trim());
+            Assert.True(scope.WaitForOwner(owner, TimeSpan.FromSeconds(5)).Exited);
+
+            // The orphan was reparented to the subreaper scope (ppid == our pid).
+            var ppid = ReadPpid(orphanPid);
+            Assert.Equal(Environment.ProcessId, ppid);
+
+            // The recovery host reaps the adopted child.
+            var reaped = waitpid(orphanPid, out _, 0);
+            Assert.Equal(orphanPid, reaped);
+
+            recovery.StopAndAwaitEmpty(TimeSpan.FromSeconds(5), new RealClock());
+            recovery.RemoveIfIdentityMatches();
+        }
+    }
+
+    [Fact]
+    public void StagedPreparationCleanedThroughRetainedAuthority()
+    {
+        SkipUnlessUsable();
+        using var source = new TempDir();
+        using var staging = new TempDir();
+        var content = new byte[4096];
+        new Random(11).NextBytes(content);
+        File.WriteAllBytes(System.IO.Path.Combine(source.Path, "tool"), content);
+
+        var plan = new CopyPlan(
+            source.Path, staging.Path, "prep-001",
+            new[] { new CopyObjectPlan("tool", "tool", 4UL * 1024 * 1024, null) },
+            16UL * 1024 * 1024, 128,
+            Array.Empty<KeyValuePair<string, string>>(), _ => true, null);
+        var prepared = SafeCopyIn.Prepare(plan, LibcCopyHost.Instance, CancellationToken.None);
+        Assert.True(prepared.Succeeded, prepared.Detail);
+        var closure = prepared.Closure!;
+        var stagedPath = System.IO.Path.Combine(staging.Path, "prep-001", closure.Objects[0].StagingName);
+        Assert.True(File.Exists(stagedPath));
+
+        // The durable record names the exact staged allocation.
+        using var journalDir = new TempDir();
+        var journal = new OwnershipJournal(new JournalFileStorage(), journalDir.Path);
+        var record = RecoveryTestSupport.Snapshot(
+            allocations: new[]
+            {
+                new AllocationEntry(AllocationKind.Staging, closure.Objects[0].StagingName, closure.Objects[0].Length, closure.Objects[0].Sha256),
+            });
+        Assert.True(journal.WriteNext(record).Ok);
+
+        // The scope retains a duplicate of the staging-directory handle and
+        // cleans the exact registered original through it. No
+        // PreparationStore exists here, so no capability can be resurrected
+        // or published late.
+        var stagingDirFd = PreparationInterop.Dup(
+            ((Microsoft.Win32.SafeHandles.SafeFileHandle)closure.StagingDirectory!).DangerousGetHandle().ToInt32());
+        Assert.True(stagingDirFd >= 0);
+        var cleaner = new RetainedStagingCleaner(stagingDirFd);
+        Assert.True(cleaner.CleanOne(record.Allocations[0]).Ok);
+        Assert.False(File.Exists(stagedPath));
+        PreparationInterop.CloseFd(stagingDirFd);
+        closure.Dispose();
+    }
+
+    [Fact]
+    public void NativeJournalDurableThenTornDetected()
+    {
+        if (!OperatingSystem.IsLinux())
+        {
+            Assert.Skip("linux only");
+        }
+
+        using var dir = new TempDir();
+        using var storage = new JournalFileStorage();
+        var journal = new OwnershipJournal(storage, dir.Path);
+        Assert.True(journal.WriteNext(RecoveryTestSupport.Snapshot()).Ok);
+        Assert.True(journal.ReadLatest().Ok);
+        File.WriteAllBytes(System.IO.Path.Combine(dir.Path, OwnershipJournal.DefaultSnapshotName), new byte[] { 1, 2, 3, 4, 5 });
+        Assert.False(journal.ReadLatest().Ok);
+    }
+
+    [Fact]
+    public void NativeWriterLockIsExclusiveAcrossProcesses()
+    {
+        if (!OperatingSystem.IsLinux())
+        {
+            Assert.Skip("linux only");
+        }
+
+        using var dir = new TempDir();
+        using var storage = new JournalFileStorage();
+        Assert.True(storage.TryAcquireExclusiveLock(dir.Path, OwnershipJournal.DefaultLockName).Ok);
+        using var other = new JournalFileStorage();
+        Assert.False(other.TryAcquireExclusiveLock(dir.Path, OwnershipJournal.DefaultLockName).Ok);
+    }
+
+    private static int ReadPpid(int pid)
+    {
+        var stat = File.ReadAllText($"/proc/{pid}/stat");
+        var close = stat.LastIndexOf(')');
+        var rest = stat[(close + 2)..].Split(' ');
+        // Field 4 overall is ppid; after (comm), rest[0]=state, rest[1]=ppid.
+        return int.Parse(rest[1]);
+    }
+
+    private sealed class RetainedStagingCleaner : IAllocationCleaner
+    {
+        private readonly int _stagingDirFd;
+
+        public RetainedStagingCleaner(int stagingDirFd) => _stagingDirFd = stagingDirFd;
+
+        public DomainIoResult CleanOne(AllocationEntry entry)
+        {
+            var errno = PreparationInterop.Unlink(_stagingDirFd, entry.Name);
+            return errno == 0 ? DomainIoResult.Success : DomainIoResult.Failure($"unlink errno {errno}");
+        }
     }
 
     private sealed class RealClock : IDomainClock
