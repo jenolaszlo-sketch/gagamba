@@ -664,6 +664,113 @@ public sealed class StateModelTests
         Assert.Equal(0, h.Transport.Attempts);
     }
 
+    // Final G1-R2 identity correction: the reconstruction deliberately
+    // allocates fresh digest buffers so these tests cannot accidentally
+    // regress to reusing the original instance or backing store.
+    private static (PreparationIdentity Identity, byte[] Frame) ReconstructedAuthorization(Harness h)
+    {
+        var source = h.Capability.Identity;
+        var digestCopy = source.ManifestDigest.ToArray();
+        var frameCopy = source.ManifestDigest.ToArray();
+        var reconstructed = new PreparationIdentity(
+            source.ExecutionId, source.IssuerId, source.GenerationId, source.PreparationId, digestCopy);
+        Assert.NotSame(source, reconstructed);
+        return (reconstructed, frameCopy);
+    }
+
+    [Fact]
+    public void ReconstructedIdentityRetryInReleaseCommittedReturnsRetainedDecision()
+    {
+        var h = new Harness();
+        h.DriveToCommitted();
+        var (identity, frame) = ReconstructedAuthorization(h);
+        var journalCount = h.Journal.Entries.Count;
+        var duplicate = h.Model.TryCommitRelease(identity, frame);
+        Assert.True(duplicate.Applied);
+        Assert.Equal("Release committed and delivered.", duplicate.Detail);
+        Assert.Equal(1, h.Transport.Attempts);
+        Assert.Equal(journalCount, h.Journal.Entries.Count);
+        Assert.Equal(TransactionState.ReleaseCommitted, h.Model.State);
+    }
+
+    [Fact]
+    public void ReconstructedIdentityRetryInRunningReturnsRetainedDecision()
+    {
+        var h = new Harness();
+        h.DriveToCommitted();
+        Assert.True(h.Model.ObserveExec(ExecDisposition.Confirmed).Applied);
+        var (identity, frame) = ReconstructedAuthorization(h);
+        var duplicate = h.Model.TryCommitRelease(identity, frame);
+        Assert.True(duplicate.Applied);
+        Assert.Equal("Release committed and delivered.", duplicate.Detail);
+        Assert.Equal(1, h.Transport.Attempts);
+        Assert.Equal(TransactionState.Running, h.Model.State);
+    }
+
+    [Fact]
+    public void ReconstructedIdentityRetryAfterPostCommitStopReturnsRetainedDecision()
+    {
+        var h = new Harness();
+        h.DriveToCommitted();
+        Assert.True(h.Model.AcceptStop(StopCauseKind.CallerStop).Applied);
+        var (identity, frame) = ReconstructedAuthorization(h);
+        var duplicate = h.Model.TryCommitRelease(identity, frame);
+        Assert.True(duplicate.Applied);
+        Assert.Equal("Release committed and delivered.", duplicate.Detail);
+        Assert.Equal(1, h.Transport.Attempts);
+        Assert.Equal(TransactionState.Stopping, h.Model.State);
+    }
+
+    [Fact]
+    public void ReconstructedIdentityRetryAfterTerminalReturnsRetainedDecision()
+    {
+        var h = new Harness();
+        h.DriveToCommitted();
+        Assert.True(h.Model.ObserveExec(ExecDisposition.Confirmed).Applied);
+        Assert.True(h.Model.ObserveRoot(Exited(0)).Applied);
+        Assert.True(h.Model.ObserveDomainEmpty(true).Applied);
+        Assert.True(h.Model.ObserveCaptureTerminal(CompleteCapture()).Applied);
+        Assert.True(h.Model.PublishTerminal().Applied);
+        var (identity, frame) = ReconstructedAuthorization(h);
+        var journalCount = h.Journal.Entries.Count;
+        var duplicate = h.Model.TryCommitRelease(identity, frame);
+        Assert.True(duplicate.Applied);
+        Assert.Equal("Release committed and delivered.", duplicate.Detail);
+        Assert.Equal(1, h.Transport.Attempts);
+        Assert.Equal(journalCount, h.Journal.Entries.Count);
+        Assert.Equal(TransactionState.Completed, h.Model.State);
+    }
+
+    [Fact]
+    public void ReconstructedIdentityWithDifferentDigestRefused()
+    {
+        var h = new Harness();
+        h.DriveToCommitted();
+        var (identity, frame) = ReconstructedAuthorization(h);
+        frame[0] ^= 0xFF;
+        var attempt = h.Model.TryCommitRelease(identity, frame);
+        Assert.False(attempt.Applied);
+        Assert.Equal(InvariantViolation.Foreign, attempt.Violation);
+        Assert.Equal(1, h.Transport.Attempts);
+        Assert.Equal(TransactionState.ReleaseCommitted, h.Model.State);
+    }
+
+    [Fact]
+    public void ReconstructedIdentityWithDifferentUuidRefused()
+    {
+        var h = new Harness();
+        h.DriveToCommitted();
+        var source = h.Capability.Identity;
+        var altered = new PreparationIdentity(
+            Guid.NewGuid(), source.IssuerId, source.GenerationId, source.PreparationId,
+            source.ManifestDigest.ToArray());
+        var attempt = h.Model.TryCommitRelease(altered, source.ManifestDigest.ToArray());
+        Assert.False(attempt.Applied);
+        Assert.Equal(InvariantViolation.Foreign, attempt.Violation);
+        Assert.Equal(1, h.Transport.Attempts);
+        Assert.Equal(TransactionState.ReleaseCommitted, h.Model.State);
+    }
+
     [Fact]
     public void DomainPopulatedCanBecomeEmpty()
     {

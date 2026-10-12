@@ -217,8 +217,12 @@ internal sealed class TransactionStateModel
         // cannot cause another decision.
         if (_releaseDecisionRetained)
         {
+            // Final G1-R2 identity correction: record equality on
+            // PreparationIdentity compares the digest backing store, so a
+            // value-equivalent reconstructed identity must be recognized
+            // with the same structural semantics as initial authorization.
             if (_releaseIdentity is not null
-                && _releaseIdentity.Equals(identity)
+                && IdentityValuesEqual(_releaseIdentity, identity)
                 && _releaseDigest is not null
                 && _releaseDigest.SequenceEqual(manifestDigest))
             {
@@ -595,12 +599,18 @@ internal sealed class TransactionStateModel
     }
 
     private bool AuthorizesIdentity(PreparationIdentity identity) =>
-        CurrentCapability is not null
-        && identity.ExecutionId.Equals(CurrentCapability.Identity.ExecutionId)
-        && identity.IssuerId.Equals(CurrentCapability.Identity.IssuerId)
-        && identity.GenerationId.Equals(CurrentCapability.Identity.GenerationId)
-        && identity.PreparationId.Equals(CurrentCapability.Identity.PreparationId)
-        && identity.ManifestDigest.SequenceEqual(CurrentCapability.Identity.ManifestDigest);
+        CurrentCapability is not null && IdentityValuesEqual(CurrentCapability.Identity, identity);
+
+    // Shared structural authorization semantics for initial authorization
+    // and retained-decision retries: UUID fields by value, digest contents
+    // byte-for-byte, never ImmutableArray backing-store identity. Store
+    // consumption still requires reference identity on the capability.
+    private static bool IdentityValuesEqual(PreparationIdentity expected, PreparationIdentity presented) =>
+        presented.ExecutionId.Equals(expected.ExecutionId)
+        && presented.IssuerId.Equals(expected.IssuerId)
+        && presented.GenerationId.Equals(expected.GenerationId)
+        && presented.PreparationId.Equals(expected.PreparationId)
+        && presented.ManifestDigest.SequenceEqual(expected.ManifestDigest);
 
     private void RetainReleaseDecision(PreparationIdentity identity, byte[] manifestDigest, string detail)
     {

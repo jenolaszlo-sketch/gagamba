@@ -15,6 +15,8 @@ Update: the second independent G1 review completed against 7599ecb0eb537670b2b5d
 
 Update: G1-R1/G1-R2 corrected inside WP01 (evidence [WP01 evidence](evidence/linux-m1/wp01.md) section 9, commit SHA there): monotonic domain progression, state-independent retained release decision, 8 focused regressions. M1 64/64 green, full solution 0 failures, canonical vector unchanged. Stopped for independent G1 re-review; WP02 remains blocked.
 
+Update: final G1-R2 identity defect corrected inside WP01 (evidence [WP01 evidence](evidence/linux-m1/wp01.md) section 10, commit SHA there): shared structural comparison for initial and retained authorization, 6 cloned-identity regressions. M1 70/70 green, full solution 0 failures, canonical vector unchanged. Stopped for one final independent G1 verification; WP02 remains blocked.
+
 Update: final G1 re-review of 2d5ce6e completed ([header](reviews/gagamba-linux-m1-g1-final-rereview.md); reviewer body pending supply): G1 NOT ACCEPTED - WP01 CORRECTION REQUIRED. G1-R1 resolved; one WP01 defect remains in G1-R2 (retained-decision retries compare identity by record equality, rejecting value-equivalent copied-digest identities). WP02 remains blocked.
 
 Implementation handoff: [Linux M1 implementation plan](plans/gagamba-linux-m1-implementation-plan.md), bound to ADR commit 4d09452172caf232c209ae5c6d1031ef3f6feaa8. Follow its 12 ordered work packages and review gates; this plan is documentation only and does not mark implementation or qualification complete.
