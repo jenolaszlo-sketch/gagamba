@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>Gagamba.Execution.Linux.M1.Owner</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj" />
+    <ProjectReference Include="..\Gagamba.Execution\Gagamba.Execution.csproj" />
+  </ItemGroup>
+
+</Project>

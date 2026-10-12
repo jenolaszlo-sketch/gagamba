@@ -28,9 +28,11 @@ internal readonly record struct FileIdentity(
 internal static class PreparationInterop
 {
     internal const int AT_FDCWD = -100;
+    internal const int AT_REMOVEDIR = 0x200;
 
     internal const int O_RDONLY = 0;
     internal const int O_WRONLY = 1;
+    internal const int O_RDWR = 2;
     internal const int O_CREAT = 0x40;
     internal const int O_EXCL = 0x80;
     internal const int O_NOFOLLOW = 0x20000;
@@ -286,6 +288,40 @@ internal static class PreparationInterop
     [DllImport("libc", EntryPoint = "close")]
     private static extern int LibcClose(int fd);
 
+    [DllImport("libc", EntryPoint = "lseek", SetLastError = true)]
+    private static extern long LibcLseek(int fd, long offset, int whence);
+
+    /// <summary>Rewinds a retained descriptor to offset 0. Used to re-read
+    /// pseudo-files such as cgroup.events through the same handle.</summary>
+    internal static void SeekStart(int fd)
+    {
+        try
+        {
+            LibcLseek(fd, 0, 0);
+        }
+        catch (DllNotFoundException)
+        {
+        }
+    }
+
+    internal const int F_DUPFD_CLOEXEC = 1030;
+
+    [DllImport("libc", EntryPoint = "fcntl", SetLastError = true)]
+    private static extern int LibcFcntl(int fd, int cmd, int arg);
+
+    /// <summary>Duplicates a descriptor with CLOEXEC. Returns -1 on error.</summary>
+    internal static int Dup(int fd)
+    {
+        try
+        {
+            return LibcFcntl(fd, F_DUPFD_CLOEXEC, 0);
+        }
+        catch (DllNotFoundException)
+        {
+            return -1;
+        }
+    }
+
     /// <summary>Source acquisition: O_RDONLY, O_NOFOLLOW, O_CLOEXEC with
     /// the required resolve policy. No O_CREAT, no write, no truncation,
     /// no fallback: ENOSYS (or an unavailable path) is reported, never
@@ -320,6 +356,80 @@ internal static class PreparationInterop
         catch (DllNotFoundException)
         {
             return ENOSYS;
+        }
+    }
+
+    /// <summary>Generic relative open with explicit flags under the required
+    /// resolve policy. Used for cgroup directory/control handles. No
+    /// O_CREAT path here: callers pass exact flags.</summary>
+    internal static int OpenRelative(int dirfd, string name, int flags, ulong resolve, out int fd)
+    {
+        fd = -1;
+        var how = new OpenHow
+        {
+            Flags = (ulong)flags,
+            Mode = 0,
+            Resolve = resolve,
+        };
+        try
+        {
+            var result = LibcOpenat2(dirfd, name, ref how, (IntPtr)24);
+            if (result < 0)
+            {
+                return Marshal.GetLastWin32Error();
+            }
+
+            fd = result;
+            return 0;
+        }
+        catch (EntryPointNotFoundException)
+        {
+            return OpenRelativeRaw(dirfd, name, flags, resolve, out fd);
+        }
+        catch (DllNotFoundException)
+        {
+            return ENOSYS;
+        }
+    }
+
+    private static int OpenRelativeRaw(int dirfd, string name, int flags, ulong resolve, out int fd)
+    {
+        fd = -1;
+        var number = SysOpenat2ForCurrentArchitecture();
+        if (number < 0)
+        {
+            return ENOSYS;
+        }
+
+        var pathBytes = System.Text.Encoding.UTF8.GetBytes(name + "\0");
+        var how = new OpenHow { Flags = (ulong)flags, Mode = 0, Resolve = resolve };
+        var pathHandle = GCHandle.Alloc(pathBytes, GCHandleType.Pinned);
+        var howHandle = GCHandle.Alloc(how, GCHandleType.Pinned);
+        try
+        {
+            var result = LibcSyscall(
+                number, (IntPtr)dirfd, pathHandle.AddrOfPinnedObject(),
+                howHandle.AddrOfPinnedObject(), (IntPtr)24);
+            if (result >= 0)
+            {
+                fd = (int)result;
+                return 0;
+            }
+
+            return result >= -4095 ? -(int)result : EINVAL;
+        }
+        catch (EntryPointNotFoundException)
+        {
+            return ENOSYS;
+        }
+        catch (DllNotFoundException)
+        {
+            return ENOSYS;
+        }
+        finally
+        {
+            pathHandle.Free();
+            howHandle.Free();
         }
     }
 
@@ -514,6 +624,29 @@ internal static class PreparationInterop
         catch (DllNotFoundException)
         {
             return ENOSYS;
+        }
+    }
+
+    internal static int RemoveDirectory(int dirfd, string name)
+    {
+        try
+        {
+            return LibcUnlinkat(dirfd, name, AT_REMOVEDIR) == 0 ? 0 : Marshal.GetLastWin32Error();
+        }
+        catch (DllNotFoundException)
+        {
+            return ENOSYS;
+        }
+    }
+
+    internal static void CloseFd(int fd)
+    {
+        try
+        {
+            LibcClose(fd);
+        }
+        catch (DllNotFoundException)
+        {
         }
     }
 

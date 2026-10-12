@@ -9,6 +9,7 @@ using System.Collections.Immutable;
 using Gagamba.Execution.Restricted;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Gagamba.Execution.Linux.M1.Tests")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Gagamba.Execution.Linux.M1.Owner")]
 
 namespace Gagamba.Execution.Linux.M1.Execution;
 
