@@ -2,7 +2,7 @@
 
 Updated 2026-10-09. Status definitions: Complete = stated artifact exists; Ready = dependencies sufficient to start; Held = named prerequisite missing; Pending = later delivery. Slice-specific historical entries retain their original tested SHAs; the later AR-6 SHA has separate three-host native and package evidence. Complete lifecycle qualification does not imply restricted-execution security qualification.
 
-## Current priority: AR-7 first implementation milestone (WP01 complete, G1 accepted; WP02 authorized, not begun)
+## Current priority: AR-7 first implementation milestone (WP02 complete; stopped before WP03, no G2 decision)
 
 Update 2026-10-10: [ADR 0003: Linux-first restricted execution](adr/0003-ar7-linux-first-restricted-execution.md) approves the Linux-first architecture and authorizes only the bounded internal prepared-execution milestone described there. The architecture decision is complete; implementation has not begun in this documentation save. P05/P06 preparation and closure work belongs to the milestone; full resource, output, lifecycle, runtime and package qualification remains required before production restricted execution. No accepted feasibility rerun is required. Stop for independent review before expanding the slice; Hufu/workflow integration, privileged services, Windows/macOS enforcement and VM implementation remain deferred.
 
@@ -20,6 +20,8 @@ Update: final G1-R2 identity defect corrected inside WP01 (evidence [WP01 eviden
 Update: final G1 re-review of 2d5ce6e completed ([header](reviews/gagamba-linux-m1-g1-final-rereview.md); reviewer body pending supply): G1 NOT ACCEPTED - WP01 CORRECTION REQUIRED. G1-R1 resolved; one WP01 defect remains in G1-R2 (retained-decision retries compare identity by record equality, rejecting value-equivalent copied-digest identities). WP02 remains blocked.
 
 Update: final independent G1 verification of 287426b completed ([acceptance](reviews/gagamba-linux-m1-g1-acceptance.md); reviewer body pending supply): G1 ACCEPTED - WP02 MAY BEGIN (M1 70/70, Execution 20/20, probes 13/13, native NotApplicable). WP01 complete; WP02 authorized; WP03+ still blocked by their normal plan gates; no native WP02 work has begun yet.
+
+Update: WP02 complete inside its boundaries (evidence [WP02 evidence](evidence/linux-m1/wp02.md), commit SHA there): protected copy-in, bound staged-object identity, Mint-boundary publication, partial-vs-accounted cleanup, portable + Linux-native tests, fixture built/bound never executed. M1 123/123 Linux, Windows solution 0 failures, WP01 vector unchanged. Stopped after WP02; WP03 not begun; no G2 decision (G2 after WP02+WP03).
 
 Implementation handoff: [Linux M1 implementation plan](plans/gagamba-linux-m1-implementation-plan.md), bound to ADR commit 4d09452172caf232c209ae5c6d1031ef3f6feaa8. Follow its 12 ordered work packages and review gates; this plan is documentation only and does not mark implementation or qualification complete.
 

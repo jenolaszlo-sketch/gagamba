@@ -5,3 +5,4 @@ artifacts/
 .idea/
 *.user
 *.suo
+tests/Fixtures/Gagamba.LinuxM1.Native/out/

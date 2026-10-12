@@ -1,6 +1,6 @@
 # Gagamba handoff
 
-## Current action — G1 ACCEPTED: WP01 complete, WP02 authorized (not begun), WP03+ gated
+## Current action — WP02 complete (M1 123/123 Linux, 19 native); stopped before WP03, no G2 decision
 
 Update 2026-10-10: [ADR 0003: Linux-first restricted execution](adr/0003-ar7-linux-first-restricted-execution.md) records the architecture decision against sealed evidence checkpoint cb511cd18ba25daeda76cf41a400d1136c6ba0f0. Implement the bounded internal Linux prepared-execution transaction specified there, using pinned non-setuid Bubblewrap behind a launcher abstraction. Stop for independent review at the milestone boundary. Production qualification remains pending; Windows native and macOS remain refusal-only, and Windows VM is deferred. This documentation save runs no probes, builds or tests and begins no implementation. The ADR supersedes prior implementation holds only within its express authorization; preserve all sealed evidence and non-claims.
 
@@ -21,6 +21,8 @@ Update: the remaining G1-R2 identity defect is corrected inside WP01 with eviden
 Update: final independent G1 re-review of 2d5ce6e1796fa2bef9d46d3ef19a094a3e5a0cae completed, header preserved as [final G1 re-review](reviews/gagamba-linux-m1-g1-final-rereview.md) (reviewer body not supplied in the authoring turn; placeholder marked pending, nothing fabricated). Disposition: G1 NOT ACCEPTED - WP01 CORRECTION REQUIRED. G1-R1 resolved; one WP01 defect remains in G1-R2 (retained release retries use record equality, so equivalent identities with copied digest storage return Foreign). WP02 remains blocked.
 
 Update: final independent G1 verification of 287426bc4af3378b9d3c4e59a9670df7296940fc completed, preserved as [G1 acceptance](reviews/gagamba-linux-m1-g1-acceptance.md) (M1 70/70, Execution contracts 20/20, independent probes 13/13, native NotApplicable; reviewer body pending supply, nothing fabricated). Disposition: G1 ACCEPTED - WP02 MAY BEGIN. WP01 is complete; WP02 is authorized; WP03+ remain blocked by their normal plan gates; no native WP02 work has begun. This turn is documentation-only: no source or tests changed, WP02 not begun.
+
+Update: WP02 (protected copy-in and atomic preparation publication) is implemented, tested and committed with evidence in [WP02 evidence](evidence/linux-m1/wp02.md) (commit SHA recorded there): descriptor-relative openat2 acquisition, exclusive staging, bounded streaming copy with digesting, read-only reopen binding, Mint-boundary publication with partial-vs-accounted cleanup. M1 123/123 on Linux (70 WP01 + 34 portable + 19 native, 0 skipped); Windows full solution 0 failures (M1 104+19 native-skipped); fixture built/bound, never executed; canonical WP01 vector unchanged. Stopped after WP02; WP03 not begun; no G2 decision (G2 follows WP02+WP03 per plan).
 
 ## Prior action — AR-7 EVIDENCE SEALED - READY FOR ARCHITECTURE DECISION
 
