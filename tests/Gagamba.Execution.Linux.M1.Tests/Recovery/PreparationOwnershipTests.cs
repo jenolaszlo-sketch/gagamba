@@ -135,13 +135,15 @@ public sealed class PreparationOwnershipTests
 
         var (coordinator, journal, storage) = NewCoordinator();
         // Succeed the first write (intent) then fail the registered write.
+        // Each sealed write creates three files (seal + two staged temps),
+        // so the registered write's seal creation is the fourth create.
         var writes = 0;
         storage.Fault = step =>
         {
             if (step == "create")
             {
                 writes++;
-                if (writes == 2)
+                if (writes == 4)
                 {
                     return JournalIoResult.Failure("registered not durable");
                 }

@@ -20,7 +20,15 @@ internal sealed class JournalFileStorage : IJournalStorage, IDisposable
     [DllImport("libc", EntryPoint = "flock", SetLastError = true)]
     private static extern int Flock(int fd, int operation);
 
-    private readonly Dictionary<string, FileStream> _heldLocks = new(StringComparer.Ordinal);
+    // Lock ownership is keyed to the actual lock identity
+    // (directory + name): one entry per real exclusive fence held by this
+    // storage instance. A second acquisition of a held fence refuses instead
+    // of manufacturing another independently disposable handle over the
+    // same kernel lock. Cross-process and cross-object exclusion inside one
+    // process additionally rests on flock itself (a separate open of a
+    // locked file denies LOCK_EX|LOCK_NB with EWOULDBLOCK, verified on the
+    // native host), so no second usable fence can exist while one is held.
+    private readonly Dictionary<(string Directory, string Name), FileStream> _heldLocks = new();
     private bool _disposed;
 
     public JournalIoResult CreateExclusive(string directory, string name)
@@ -152,9 +160,10 @@ internal sealed class JournalFileStorage : IJournalStorage, IDisposable
 
     public JournalIoResult TryAcquireExclusiveLock(string directory, string name)
     {
-        if (_heldLocks.ContainsKey(name))
+        var key = (directory, name);
+        if (_heldLocks.ContainsKey(key))
         {
-            return JournalIoResult.Success;
+            return JournalIoResult.Failure($"lock {name} already held by this storage: one active fence only");
         }
 
         var path = Path.Combine(directory, name);
@@ -170,7 +179,7 @@ internal sealed class JournalFileStorage : IJournalStorage, IDisposable
 
             // Keep the stream alive for the lock's lifetime; the kernel
             // releases the flock automatically when this process dies.
-            _heldLocks[name] = stream;
+            _heldLocks[key] = stream;
             return JournalIoResult.Success;
         }
         catch (Exception ex)
@@ -181,20 +190,20 @@ internal sealed class JournalFileStorage : IJournalStorage, IDisposable
 
     public JournalIoResult ReleaseExclusiveLock(string directory, string name)
     {
-        if (!_heldLocks.TryGetValue(name, out var stream))
+        if (!_heldLocks.TryGetValue((directory, name), out var stream))
         {
             return JournalIoResult.Success;
         }
 
         Flock((int)stream.SafeFileHandle.DangerousGetHandle(), LOCK_UN);
         stream.Dispose();
-        _heldLocks.Remove(name);
+        _heldLocks.Remove((directory, name));
         return JournalIoResult.Success;
     }
 
     public bool IsLockHeld(string directory, string name)
     {
-        if (_heldLocks.ContainsKey(name))
+        if (_heldLocks.ContainsKey((directory, name)))
         {
             return true;
         }

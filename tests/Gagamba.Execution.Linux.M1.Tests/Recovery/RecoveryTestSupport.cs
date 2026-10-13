@@ -9,16 +9,43 @@ internal sealed class FakeJournalStorage : IJournalStorage
 {
     private readonly Dictionary<string, byte[]> _files = new(StringComparer.Ordinal);
     private readonly Dictionary<string, bool> _locks = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, int> _calls = new(StringComparer.Ordinal);
 
     /// <summary>Fault hook keyed by step name; non-null result fails that step.</summary>
     public Func<string, JournalIoResult?>? Fault { get; set; }
+
+    /// <summary>Occurrence-counted faults: fail exactly the Nth invocation
+    /// of a step (1-indexed) counted from arming time, so multi-phase
+    /// protocols can fault one precise durability operation after any
+    /// seeding writes have completed.</summary>
+    public HashSet<(string Step, int Occurrence)> FailAtOccurrences { get; } = new();
+
+    public void FailAt(string step, int occurrence)
+    {
+        _calls.TryGetValue(step, out var consumed);
+        FailAtOccurrences.Add((step, consumed + occurrence));
+    }
+
+    private JournalIoResult? CheckFault(string step)
+    {
+        var fault = Fault?.Invoke(step);
+        if (fault is { } f) { return f; }
+        _calls.TryGetValue(step, out var count);
+        _calls[step] = count + 1;
+        if (FailAtOccurrences.Contains((step, count + 1)))
+        {
+            return JournalIoResult.Failure($"{step} fault at occurrence {count + 1}");
+        }
+
+        return null;
+    }
 
     public void DirectPut(string directory, string name, byte[] content) =>
         _files[directory + "/" + name] = (byte[])content.Clone();
 
     public JournalIoResult CreateExclusive(string directory, string name)
     {
-        var fault = Fault?.Invoke("create");
+        var fault = CheckFault("create");
         if (fault is { } f) { return f; }
         var key = directory + "/" + name;
         if (_files.ContainsKey(key)) { return JournalIoResult.Failure("EEXIST"); }
@@ -28,7 +55,7 @@ internal sealed class FakeJournalStorage : IJournalStorage
 
     public JournalIoResult WriteAll(string directory, string name, byte[] content)
     {
-        var fault = Fault?.Invoke("write");
+        var fault = CheckFault("write");
         if (fault is { } f) { return f; }
         _files[directory + "/" + name] = (byte[])content.Clone();
         return JournalIoResult.Success;
@@ -36,14 +63,14 @@ internal sealed class FakeJournalStorage : IJournalStorage
 
     public JournalIoResult FsyncFile(string directory, string name)
     {
-        var fault = Fault?.Invoke("fsyncfile");
+        var fault = CheckFault("fsyncfile");
         if (fault is { } f) { return f; }
         return JournalIoResult.Success;
     }
 
     public JournalIoResult Rename(string directory, string sourceName, string targetName)
     {
-        var fault = Fault?.Invoke("rename");
+        var fault = CheckFault("rename");
         if (fault is { } f) { return f; }
         var source = directory + "/" + sourceName;
         if (!_files.ContainsKey(source)) { return JournalIoResult.Failure("ENOENT source"); }
@@ -54,14 +81,14 @@ internal sealed class FakeJournalStorage : IJournalStorage
 
     public JournalIoResult FsyncDirectory(string directory)
     {
-        var fault = Fault?.Invoke("fsyncdir");
+        var fault = CheckFault("fsyncdir");
         if (fault is { } f) { return f; }
         return JournalIoResult.Success;
     }
 
     public JournalIoResult Unlink(string directory, string name)
     {
-        var fault = Fault?.Invoke("unlink");
+        var fault = CheckFault("unlink");
         if (fault is { } f) { return f; }
         _files.Remove(directory + "/" + name);
         return JournalIoResult.Success;
