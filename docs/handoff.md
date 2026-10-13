@@ -1,6 +1,8 @@
 # Gagamba handoff
 
-## Current action — G2 R5 done: WP03 G2-10 qualified (unprivileged delegated) + G2-11 evidence reconciled; G2 still NOT ACCEPTED, ready for independent rereview
+## Current action — Independent G2 rereview preserved: G2 NOT ACCEPTED - CORRECTION REQUIRED; G2-01/G2-07/G2-09 resolved, G2-02/G2-03/G2-04/G2-05/G2-06/G2-08/G2-10 still blocking; WP04 blocked
+
+Update: independent G2 rereview of implementation `121c644f2aa774119149f598a935a181fc71e137` completed, preserved verbatim as [G2 rereview](reviews/gagamba-linux-m1-g2-rereview.md). Disposition: G2 NOT ACCEPTED - CORRECTION REQUIRED. Resolved: G2-01, G2-07, G2-09. Still blocking: G2-02, G2-03, G2-04, G2-05, G2-06, G2-08, G2-10. Evidence maintenance: G2-11. WP04 remains blocked; no correction has begun. The original G2 review remains unchanged; this rereview supersedes prior local claims that all blockers were remediated. This turn is documentation-only: no source or tests changed.
 
 Update 2026-10-10: [ADR 0003: Linux-first restricted execution](adr/0003-ar7-linux-first-restricted-execution.md) records the architecture decision against sealed evidence checkpoint cb511cd18ba25daeda76cf41a400d1136c6ba0f0. Implement the bounded internal Linux prepared-execution transaction specified there, using pinned non-setuid Bubblewrap behind a launcher abstraction. Stop for independent review at the milestone boundary. Production qualification remains pending; Windows native and macOS remain refusal-only, and Windows VM is deferred. This documentation save runs no probes, builds or tests and begins no implementation. The ADR supersedes prior implementation holds only within its express authorization; preserve all sealed evidence and non-claims.
 

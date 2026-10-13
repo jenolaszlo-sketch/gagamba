@@ -21,10 +21,16 @@ The original independent G2 review is preserved verbatim at
 [gagamba-linux-m1-g2-review.md](../reviews/gagamba-linux-m1-g2-review.md):
 disposition `G2 NOT ACCEPTED - CORRECTION REQUIRED` at
 `1e117e0a64ee473f2ba251818761afc315c8e283`, blocking G2-01…G2-10 and
-nonblocking G2-11. All blocking findings have since been remediated **locally**
-and are regression-protected; that remediation has **not** been independently
-accepted. G2 remains NOT ACCEPTED and WP04 remains blocked until an
-independent G2 rereview accepts the corrected revision. Author runs and the
+nonblocking G2-11. That review is unchanged.
+
+The independent G2 rereview of implementation
+`121c644f2aa774119149f598a935a181fc71e137` is preserved verbatim at
+[gagamba-linux-m1-g2-rereview.md](../reviews/gagamba-linux-m1-g2-rereview.md):
+disposition `G2 NOT ACCEPTED - CORRECTION REQUIRED`. Resolved: G2-01, G2-07,
+G2-09. Still blocking: G2-02, G2-03, G2-04, G2-05, G2-06, G2-08, G2-10.
+Evidence maintenance: G2-11. This rereview supersedes prior local claims
+that all blockers were remediated. G2 remains NOT ACCEPTED and WP04 remains
+blocked; no correction has begun. Author runs and the
 original reviewer runs are distinguished per package; root-native and
 unprivileged-delegated evidence are classified separately in WP03 Section 18.
 

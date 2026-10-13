@@ -2,7 +2,9 @@
 
 Updated 2026-10-09. Status definitions: Complete = stated artifact exists; Ready = dependencies sufficient to start; Held = named prerequisite missing; Pending = later delivery. Slice-specific historical entries retain their original tested SHAs; the later AR-6 SHA has separate three-host native and package evidence. Complete lifecycle qualification does not imply restricted-execution security qualification.
 
-## Current priority: AR-7 first implementation milestone (G2 R5 done: WP03 G2-10 qualified + G2-11 evidence reconciled; G2 not accepted; WP04 blocked)
+## Current priority: AR-7 first implementation milestone (independent G2 rereview preserved: G2 NOT ACCEPTED; G2-01/G2-07/G2-09 resolved, G2-02/G2-03/G2-04/G2-05/G2-06/G2-08/G2-10 still blocking; WP04 blocked)
+
+Update: independent G2 rereview of implementation `121c644f2aa774119149f598a935a181fc71e137` completed ([rereview](reviews/gagamba-linux-m1-g2-rereview.md)): G2 NOT ACCEPTED - CORRECTION REQUIRED. Resolved: G2-01, G2-07, G2-09. Still blocking: G2-02, G2-03, G2-04, G2-05, G2-06, G2-08, G2-10. Evidence maintenance: G2-11. WP04 remains blocked; no correction has begun. The original G2 review remains unchanged; this rereview supersedes prior local claims that all blockers were remediated.
 
 Update 2026-10-10: [ADR 0003: Linux-first restricted execution](adr/0003-ar7-linux-first-restricted-execution.md) approves the Linux-first architecture and authorizes only the bounded internal prepared-execution milestone described there. The architecture decision is complete; implementation has not begun in this documentation save. P05/P06 preparation and closure work belongs to the milestone; full resource, output, lifecycle, runtime and package qualification remains required before production restricted execution. No accepted feasibility rerun is required. Stop for independent review before expanding the slice; Hufu/workflow integration, privileged services, Windows/macOS enforcement and VM implementation remain deferred.
 
