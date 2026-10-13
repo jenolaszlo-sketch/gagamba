@@ -144,14 +144,20 @@ internal sealed class M1RecoveryScope : IDisposable
         return new ScopeInitResult(true, string.Empty);
     }
 
-    /// <summary>Allocates the domain, transfers the primary handles to the
-    /// owner over one inherited Unix socketpair (SCM_RIGHTS with the strict
-    /// versioned metadata message), and retains a separately owned recovery
-    /// duplicate for this scope. The scope's delegated-parent descriptor is
-    /// retained by the scope; the backend owns its own duplicated parent
-    /// descriptor. The returned child socket end must be handed to
-    /// <see cref="SpawnOwner"/> (which closes it) or closed by the caller.</summary>
-    internal DomainAllocationResult AllocateDomain(
+    /// <summary>Intent-first domain allocation used by the scoped
+    /// transaction and its qualification seams. A durable, unconfirmed
+    /// AllocationIntent is written under the supplied live writer FIRST;
+    /// only then is an unforgeable scoped context created, the real domain
+    /// created, the recovery duplicate retained, the actual identity
+    /// durably registered, and the primary handles transferred over the
+    /// inherited socketpair. There is no journal-free allocation path; a
+    /// missing journal, a dead writer or an unacknowledged intent refuses
+    /// before any domain is created. The returned child socket end must be
+    /// handed to <see cref="TrySpawnOwner"/> (which closes it) or closed by
+    /// the caller.</summary>
+    internal DomainAllocationResult AllocateDomainUnderTransaction(
+        OwnershipJournal journal,
+        JournalWriterLease writer,
         string childName,
         Guid executionId,
         Guid leaseGeneration,
@@ -162,9 +168,26 @@ internal sealed class M1RecoveryScope : IDisposable
             return new DomainAllocationResult(false, null, -1, "no retained delegated parent");
         }
 
-        if (!CgroupInterop.TryCreateDomain(
-            _parentFd, childName, executionId, leaseGeneration, bootId,
-            out var backend, out var identity, out var error))
+        if (journal is null || writer is null)
+        {
+            return new DomainAllocationResult(false, null, -1, "domain allocation requires a journal and a live writer lease");
+        }
+
+        var intent = BuildDomainIntent(childName, executionId, bootId, leaseGeneration);
+        var intentWrite = journal.WriteNext(writer, intent);
+        if (!intentWrite.Ok)
+        {
+            return new DomainAllocationResult(false, null, -1, $"AllocationIntent not durable: {intentWrite.Error}");
+        }
+
+        if (!ScopedAllocationContext.TryCreate(
+                _parentFd, journal, writer, executionId, leaseGeneration, bootId,
+                out var context, out var contextError))
+        {
+            return new DomainAllocationResult(false, null, -1, contextError);
+        }
+
+        if (!CgroupInterop.TryCreateDomain(context!, childName, out var backend, out var identity, out var error))
         {
             return new DomainAllocationResult(false, null, -1, error);
         }
@@ -172,6 +195,15 @@ internal sealed class M1RecoveryScope : IDisposable
         // Separately owned recovery duplicate retained by this scope.
         var recoveryBackend = backend!.DuplicateForRecovery();
         var recoveryLease = new DomainLease(recoveryBackend, identity!);
+        _retainedRecoveryLeases.Add(recoveryLease);
+
+        // Durable registration with the actual created identity.
+        var registered = BuildDomainRegistered(childName, executionId, bootId, leaseGeneration, identity!);
+        var registeredWrite = journal.WriteNext(writer, registered);
+        if (!registeredWrite.Ok)
+        {
+            return new DomainAllocationResult(false, recoveryLease, -1, $"AllocationRegistered not durable: {registeredWrite.Error}");
+        }
 
         if (!FdPassing.TryCreateInheritableSocketPair(out var parentEnd, out var childEnd, out var socketError))
         {
@@ -207,6 +239,27 @@ internal sealed class M1RecoveryScope : IDisposable
 
         return new DomainAllocationResult(true, recoveryLease, childEnd, string.Empty);
     }
+
+    private static OwnershipSnapshot BuildDomainIntent(
+        string childName, Guid executionId, string bootId, Guid leaseGeneration) =>
+        new(
+            OwnershipSnapshotCodec.CurrentVersion, 0, executionId, bootId, 0, string.Empty,
+            0, 0, childName, 0, 0, leaseGeneration,
+            OwnershipWriterKind.Owner, OwnershipCleanupState.NotStarted, PreparationStage.AllocationIntent,
+            StagingParentDevice: 0, StagingParentInode: 0,
+            Allocations: new[] { new AllocationEntry(AllocationKind.Domain, childName, 0, Array.Empty<byte>(), 0, 0, Confirmed: false) },
+            Preparation: null);
+
+    private static OwnershipSnapshot BuildDomainRegistered(
+        string childName, Guid executionId, string bootId, Guid leaseGeneration, DomainIdentity domain) =>
+        new(
+            OwnershipSnapshotCodec.CurrentVersion, 0, executionId, bootId,
+            domain.CgroupMountId, domain.CgroupMountFsType, domain.ParentDevice, domain.ParentInode,
+            childName, domain.ChildDevice, domain.ChildInode, leaseGeneration,
+            OwnershipWriterKind.Owner, OwnershipCleanupState.NotStarted, PreparationStage.AllocationRegistered,
+            StagingParentDevice: 0, StagingParentInode: 0,
+            Allocations: new[] { new AllocationEntry(AllocationKind.Domain, childName, 0, Array.Empty<byte>(), domain.ChildDevice, domain.ChildInode, Confirmed: true) },
+            Preparation: null);
 
     /// <summary>Spawns the per-execution owner as this scope's direct child,
     /// then immediately acquires and retains a CLOEXEC pidfd for that exact
@@ -376,11 +429,21 @@ internal sealed class M1RecoveryScope : IDisposable
                 return IntegratedPreparationOutcome.Failed(CopyFailureKind.PublicationFailure, $"AllocationIntent not durable: {intentWrite.Error}");
             }
 
+            // The only entry to real domain creation: an unforgeable scoped
+            // context proving writer authority plus an acknowledged durable
+            // intent. A missing journal or dead writer cannot create a domain.
+            if (!ScopedAllocationContext.TryCreate(
+                    _parentFd, request.Journal, request.Writer, request.ExecutionId, request.LeaseGeneration, request.BootId,
+                    out var allocationContext, out var contextError))
+            {
+                return IntegratedPreparationOutcome.Failed(CopyFailureKind.PublicationFailure, contextError);
+            }
+
             request.DeathBarrier?.Invoke("after-intent");
 
             // Create the domain and retain the recovery duplicate.
             if (!CgroupInterop.TryCreateDomain(
-                _parentFd, request.DomainChildName, request.ExecutionId, request.LeaseGeneration, request.BootId,
+                allocationContext!, request.DomainChildName,
                 out var backend, out var identity, out var domainError))
             {
                 return IntegratedPreparationOutcome.Failed(CopyFailureKind.StagingFailure, $"domain creation failed: {domainError}");
@@ -413,9 +476,21 @@ internal sealed class M1RecoveryScope : IDisposable
 
             request.DeathBarrier?.Invoke("after-registered");
 
-            // Copy with incremental per-object durable accounting.
+            // Copy with incremental per-object durable accounting. The
+            // staging directory is retained and durably accounted the moment
+            // it is created (before any object copy); the death barrier
+            // fires at that boundary so a real actor death there is
+            // composable with the surviving scope.
             var accounted = new IntegratedAccounting(this, request.Journal, request.Writer, registered);
-            var plan = request.Plan with { OnObjectAccounted = accounted.OnObject };
+            var plan = request.Plan with
+            {
+                OnStagingDirectoryCreated = stagingDir =>
+                {
+                    accounted.OnStagingDirectory(stagingDir);
+                    request.DeathBarrier?.Invoke("after-staging-dir");
+                },
+                OnObjectAccounted = accounted.OnObject,
+            };
             var prepared = SafeCopyIn.Prepare(plan, request.CopyHost, cancellationToken);
             if (!prepared.Succeeded)
             {
@@ -594,35 +669,70 @@ internal sealed class M1RecoveryScope : IDisposable
 
         internal OwnershipSnapshot Current => _current;
 
-        internal void OnObject(SafeHandle stagingDir, StagedObject staged)
+        /// <summary>Captures the staging directory's actual identity,
+        /// retains an independent live descriptor in the scope, and makes
+        /// the identity durable at creation, before any dependent object
+        /// content is copied. Any failure refuses further preparation
+        /// (thrown, no unwind deletion): the caller sees a failure outcome,
+        /// and the durable record plus retained parent let recovery
+        /// classify the directory truthfully.</summary>
+        internal void OnStagingDirectory(SafeHandle stagingDir)
         {
-            var allocations = _current.Allocations.ToList();
-            if (!_subdirRecorded)
+            if (_subdirRecorded)
             {
-                var subdirFd = ((SafeFileHandle)stagingDir).DangerousGetHandle().ToInt32();
-                PreparationInterop.StatFd(subdirFd, out var subdirStat);
-                var dup = PreparationInterop.Dup(subdirFd);
-                if (dup >= 0)
-                {
-                    _scope._retainedStagingDirs.Add(new SafeFileHandle(new IntPtr(dup), ownsHandle: true));
-                }
-
-                for (var i = 0; i < allocations.Count; i++)
-                {
-                    if (allocations[i].Kind == AllocationKind.StagingDirectory)
-                    {
-                        allocations[i] = allocations[i] with
-                        {
-                            Device = subdirStat.Device,
-                            Inode = subdirStat.Inode,
-                            Confirmed = true,
-                        };
-                    }
-                }
-
-                _subdirRecorded = true;
+                return;
             }
 
+            var subdirFd = ((SafeFileHandle)stagingDir).DangerousGetHandle().ToInt32();
+            if (PreparationInterop.StatFd(subdirFd, out var subdirStat) != 0)
+            {
+                throw new InvalidOperationException("staging directory stat failed after creation");
+            }
+
+            var dup = PreparationInterop.Dup(subdirFd);
+            if (dup < 0)
+            {
+                throw new InvalidOperationException("staging directory recovery retention failed");
+            }
+
+            _scope._retainedStagingDirs.Add(new SafeFileHandle(new IntPtr(dup), ownsHandle: true));
+
+            var allocations = _current.Allocations.ToList();
+            for (var i = 0; i < allocations.Count; i++)
+            {
+                if (allocations[i].Kind == AllocationKind.StagingDirectory)
+                {
+                    allocations[i] = allocations[i] with
+                    {
+                        Device = subdirStat.Device,
+                        Inode = subdirStat.Inode,
+                        Confirmed = true,
+                    };
+                }
+            }
+
+            var updated = _current with { Allocations = allocations };
+            var written = _journal.WriteNext(_writer, updated);
+            if (!written.Ok)
+            {
+                throw new InvalidOperationException($"staging directory accounting not durable: {written.Error}");
+            }
+
+            _current = updated;
+            _subdirRecorded = true;
+        }
+
+        internal void OnObject(SafeHandle stagingDir, StagedObject staged)
+        {
+            // Defense in depth: if a plan did not surface the creation-time
+            // callback, retain/account the directory now rather than waiting
+            // for later objects.
+            if (!_subdirRecorded)
+            {
+                OnStagingDirectory(stagingDir);
+            }
+
+            var allocations = _current.Allocations.ToList();
             for (var i = 0; i < allocations.Count; i++)
             {
                 if (allocations[i].Kind == AllocationKind.Staging

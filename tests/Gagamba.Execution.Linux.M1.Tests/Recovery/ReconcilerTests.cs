@@ -103,6 +103,105 @@ public sealed class ReconcilerTests
         }
     }
 
+    private static OwnershipSnapshot DirectoryRecord(bool confirmed) => RecoveryTestSupport.Snapshot(
+        allocations: new[]
+        {
+            new AllocationEntry(
+                AllocationKind.StagingDirectory, "prep-001", 0, Array.Empty<byte>(),
+                confirmed ? 0xABCDUL : 0UL, confirmed ? 201UL : 0UL, confirmed),
+        });
+
+    // G2-08 exact preserved counterexample: an unconfirmed StagingDirectory
+    // component must not be filtered out and must not confirm the verdict.
+    [Fact]
+    public void UnconfirmedStagingDirectoryIsUnknownNotConfirmed()
+    {
+        var backend = new FakeDomainBackend { Populated = true, KillAccepted = true };
+        var lease = new DomainLease(backend, RecoveryTestSupport.Identity());
+        var (journal, writer) = NewWriter();
+        using (writer)
+        {
+            var result = NewReconciler().Reconcile(DirectoryRecord(false), Boot, lease, null, journal, writer);
+            Assert.NotEqual(ReconcileOutcome.CleanupConfirmed, result.Outcome);
+            Assert.Equal(ReconcileOutcome.QuarantinedUnknown, result.Outcome);
+            var staging = Assert.Single(result.Components!, c => c.Component == CleanupComponents.Staging);
+            Assert.Equal(ComponentState.Unknown, staging.State);
+        }
+    }
+
+    // An unconfirmed directory still contributes: when live authority cannot
+    // corroborate it (mismatch) the replacement is preserved and the verdict
+    // stays Unknown rather than being filtered into success.
+    [Fact]
+    public void UnconfirmedStagingDirectoryWithCleanerMismatchStaysUnknown()
+    {
+        var backend = new FakeDomainBackend { Populated = true, KillAccepted = true };
+        var lease = new DomainLease(backend, RecoveryTestSupport.Identity());
+        var cleaner = new FakeCleaner { Outcome = AllocationCleanOutcome.Mismatch };
+        var (journal, writer) = NewWriter();
+        using (writer)
+        {
+            var result = NewReconciler().Reconcile(DirectoryRecord(false), Boot, lease, cleaner, journal, writer);
+            Assert.Equal(ReconcileOutcome.QuarantinedUnknown, result.Outcome);
+            Assert.Equal(1, cleaner.Calls);
+        }
+    }
+
+    // A confirmed directory with live authority still confirms.
+    [Fact]
+    public void ConfirmedStagingDirectoryWithAuthorityConfirms()
+    {
+        var backend = new FakeDomainBackend { Populated = true, KillAccepted = true };
+        var lease = new DomainLease(backend, RecoveryTestSupport.Identity());
+        var cleaner = new FakeCleaner();
+        var (journal, writer) = NewWriter();
+        using (writer)
+        {
+            var result = NewReconciler().Reconcile(DirectoryRecord(true), Boot, lease, cleaner, journal, writer);
+            Assert.Equal(ReconcileOutcome.CleanupConfirmed, result.Outcome);
+            Assert.Equal(1, cleaner.Calls);
+        }
+    }
+
+    // Unresolved object debt prevents container confirmation: an object
+    // failure stops before the directory is touched and the verdict fails.
+    [Fact]
+    public void ObjectFailurePreventsDirectoryConfirmation()
+    {
+        var record = RecoveryTestSupport.Snapshot(allocations: new[]
+        {
+            new AllocationEntry(AllocationKind.Staging, "tool-000.staged", 10, new byte[32], 0xABCD, 200, true),
+            new AllocationEntry(AllocationKind.StagingDirectory, "prep-001", 0, Array.Empty<byte>(), 0xABCD, 201, true),
+        });
+        var backend = new FakeDomainBackend { Populated = true, KillAccepted = true };
+        var lease = new DomainLease(backend, RecoveryTestSupport.Identity());
+        var cleaner = new FakeCleaner { Outcome = AllocationCleanOutcome.Failed };
+        var (journal, writer) = NewWriter();
+        using (writer)
+        {
+            var result = NewReconciler().Reconcile(record, Boot, lease, cleaner, journal, writer);
+            Assert.Equal(ReconcileOutcome.Failed, result.Outcome);
+            Assert.Equal(ComponentState.Failed, Assert.Single(result.Components!, c => c.Component == CleanupComponents.Staging).State);
+            Assert.Equal(1, cleaner.Calls);
+        }
+    }
+
+    // Domain cleanup can complete while staging stays Unknown; the aggregate
+    // must remain not Confirmed.
+    [Fact]
+    public void DomainConfirmedButStagingUnknownIsNotConfirmed()
+    {
+        var backend = new FakeDomainBackend { Populated = true, KillAccepted = true };
+        var lease = new DomainLease(backend, RecoveryTestSupport.Identity());
+        var (journal, writer) = NewWriter();
+        using (writer)
+        {
+            var result = NewReconciler().Reconcile(DirectoryRecord(false), Boot, lease, null, journal, writer);
+            Assert.Equal(ReconcileOutcome.QuarantinedUnknown, result.Outcome);
+            Assert.Equal(ComponentState.Confirmed, Assert.Single(result.Components!, c => c.Component == CleanupComponents.DomainStop).State);
+        }
+    }
+
     [Fact]
     public void StagingMismatchPreservesReplacementAndStaysUnknown()
     {

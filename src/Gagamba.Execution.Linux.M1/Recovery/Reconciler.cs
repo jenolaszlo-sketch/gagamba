@@ -257,17 +257,17 @@ internal sealed class Reconciler
             }
         }
 
-        // Staging: every Staging-kind allocation must be cleaned through
-        // live authority, then confirmed StagingDirectory containers; a
-        // missing cleaner is debt, never success. Unconfirmed directory
-        // entries are skipped (their objects still resolve individually);
-        // Domain-kind entries are covered by domain removal, not the
-        // cleaner.
+        // Staging: every recorded staging component must contribute to the
+        // verdict. Absence of confirmed ownership is not evidence of absence:
+        // an unconfirmed StagingDirectory entry must never be filtered out
+        // (G2-08). Components are resolved only through live authority (the
+        // identity-checked cleaner, which refuses destructive removal
+        // without a matching identity) or genuine absence; a missing cleaner
+        // is debt, never success. Domain-kind entries are covered by domain
+        // removal, not the staging cleaner.
         var stagingState = ComponentState.Pending;
         var stagingObjects = record.Allocations.Where(a => a.Kind == AllocationKind.Staging).ToArray();
-        var stagingDirs = record.Allocations
-            .Where(a => a.Kind == AllocationKind.StagingDirectory && a.Confirmed)
-            .ToArray();
+        var stagingDirs = record.Allocations.Where(a => a.Kind == AllocationKind.StagingDirectory).ToArray();
         if (stagingObjects.Length == 0 && stagingDirs.Length == 0)
         {
             stagingState = ComponentState.Confirmed;
@@ -310,7 +310,8 @@ internal sealed class Reconciler
             }
 
             // Containers are removed only when every object inside them is
-            // already gone; a pending object debt keeps its directory.
+            // already resolved; any unresolved object debt keeps its
+            // directory.
             if (!sawFailure && !sawMismatch)
             {
                 foreach (var directory in stagingDirs)

@@ -6,6 +6,7 @@
 // authority. Process-death itself is covered by the owner-death tests;
 // Mint is in-process by necessity. No target execution.
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 using Gagamba.Execution.Linux.M1.Lifecycle;
@@ -332,6 +333,98 @@ public sealed class IntegratedBarrierTests
         Assert.NotNull(outcome.Capability);
         Assert.NotNull(outcome.PrimaryLease);
         outcome.PrimaryLease!.Dispose();
+    }
+
+    // G2-03 1B: the staging directory's identity is retained and durably
+    // accounted at creation, before any object content is copied.
+    [Fact]
+    public void BarrierAfterStagingDirectoryRetainsAuthority()
+    {
+        SkipUnlessUsable();
+        using var fx = new Fixture(Bytes(0x80, 1024), null, null);
+        Assert.Throws<BarrierDeathException>(() =>
+            fx.Scope.AllocatePreparation(fx.Request(DieAt("after-staging-dir")), CancellationToken.None));
+
+        var read = fx.Journal.ReadLatest();
+        Assert.True(read.Ok, read.Error);
+        var subdir = Assert.Single(read.Snapshot!.Allocations, a => a.Kind == AllocationKind.StagingDirectory);
+        Assert.True(subdir.Confirmed);
+        Assert.NotEqual(0UL, subdir.Inode);
+        Assert.NotEmpty(fx.Scope.RetainedStagingDirectories);
+        Assert.Empty(Directory.GetFiles(System.IO.Path.Combine(fx.Staging.Path, "prep-001")));
+
+        var recovery = Assert.Single(fx.Scope.RetainedRecoveryLeases);
+        Assert.Equal(0, PreparationInterop.OpenDirectory(fx.Staging.Path, out var parentFd));
+        Assert.Equal(0, PreparationInterop.OpenSubdirectory(parentFd, "prep-001", out var subdirFd));
+        var cleaner = new ScopeCleaner(parentFd, subdirFd);
+        var result = new Reconciler(new BarrierClock(), TimeSpan.FromSeconds(5))
+            .Reconcile(read.Snapshot, Boot(), recovery, cleaner, fx.Journal, fx.Writer);
+        Assert.Equal(ReconcileOutcome.CleanupConfirmed, result.Outcome);
+        Assert.False(Directory.Exists(System.IO.Path.Combine(fx.Staging.Path, "prep-001")));
+        PreparationInterop.CloseFd(subdirFd);
+        PreparationInterop.CloseFd(parentFd);
+    }
+
+    // G2-03 1A: no journal-free production allocation path exists.
+    [Fact]
+    public void RawDomainAllocationRequiresScopedIntent()
+    {
+        var scopeType = typeof(M1RecoveryScope);
+        Assert.Null(scopeType.GetMethod("AllocateDomain", BindingFlags.NonPublic | BindingFlags.Instance));
+        Assert.NotNull(scopeType.GetMethod("AllocateDomainUnderTransaction", BindingFlags.NonPublic | BindingFlags.Instance));
+
+        var create = typeof(CgroupInterop).GetMethod(
+            "TryCreateDomain", BindingFlags.NonPublic | BindingFlags.Static);
+        Assert.NotNull(create);
+        Assert.Equal(typeof(ScopedAllocationContext), create!.GetParameters()[0].ParameterType);
+
+        // No context without a live writer and an acknowledged durable intent.
+        Assert.False(ScopedAllocationContext.TryCreate(
+            0, null, null, RecoveryTestSupport.Execution, RecoveryTestSupport.Lease, Boot(), out var none, out _));
+        Assert.Null(none);
+
+        var journal = new OwnershipJournal(new FakeJournalStorage(), "/intent");
+        Assert.True(journal.TryAcquireWriter(out var writer, out var error), error);
+        Assert.False(ScopedAllocationContext.TryCreate(
+            0, journal, writer, RecoveryTestSupport.Execution, RecoveryTestSupport.Lease, Boot(), out _, out _));
+        Assert.True(journal.WriteNext(writer!, RecoveryTestSupport.Snapshot()).Ok);
+        Assert.True(ScopedAllocationContext.TryCreate(
+            0, journal, writer, RecoveryTestSupport.Execution, RecoveryTestSupport.Lease, Boot(), out var ctx, out _));
+        writer!.Dispose();
+        Assert.False(ctx!.IsLive);
+    }
+
+    // G2-08: a real unconfirmed staging directory stays untouched debt and
+    // reconciliation does not improve to Confirmed without new evidence.
+    [Fact]
+    public void UnconfirmedDirectoryRemainsUntouchedAndDebtIsIdempotent()
+    {
+        SkipUnlessUsable();
+        using var staging = new TempDir();
+        var dirPath = System.IO.Path.Combine(staging.Path, "prep-001");
+        Directory.CreateDirectory(dirPath);
+        File.WriteAllBytes(System.IO.Path.Combine(dirPath, "tool-000.staged"), Bytes(0x11, 100));
+        var record = RecoveryTestSupport.Snapshot(allocations: new[]
+        {
+            new AllocationEntry(AllocationKind.StagingDirectory, "prep-001", 0, Array.Empty<byte>(), 0, 0, false),
+        });
+        var lease = new DomainLease(new FakeDomainBackend { Populated = true, KillAccepted = true }, RecoveryTestSupport.Identity());
+        using var journalDir = new TempDir();
+        var journal = new OwnershipJournal(new JournalFileStorage(), journalDir.Path);
+        Assert.True(journal.TryAcquireWriter(out var writer, out var error), error);
+        using (writer)
+        {
+            var reconciler = new Reconciler(new BarrierClock(), TimeSpan.FromSeconds(5));
+            var first = reconciler.Reconcile(record, "boot-1", lease, null, journal, writer);
+            Assert.NotEqual(ReconcileOutcome.CleanupConfirmed, first.Outcome);
+            Assert.Equal(ComponentState.Unknown, Assert.Single(first.Components!, c => c.Component == CleanupComponents.Staging).State);
+            Assert.True(Directory.Exists(dirPath));
+            Assert.True(File.Exists(System.IO.Path.Combine(dirPath, "tool-000.staged")));
+
+            var second = reconciler.Reconcile(journal.ReadLatest().Snapshot!, "boot-1", lease, null, journal, writer);
+            Assert.NotEqual(ReconcileOutcome.CleanupConfirmed, second.Outcome);
+            Assert.True(Directory.Exists(dirPath));
+        }
     }
 
     private sealed class ScopeCleaner : IAllocationCleaner

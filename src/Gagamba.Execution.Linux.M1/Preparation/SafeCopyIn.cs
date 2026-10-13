@@ -79,7 +79,8 @@ internal sealed record CopyPlan(
     IReadOnlyList<KeyValuePair<string, string>>? Environment,
     Func<CancellationToken, bool>? Acknowledge,
     CopyTestHooks? Hooks,
-    Action<SafeHandle, StagedObject>? OnObjectAccounted = null)
+    Action<SafeHandle, StagedObject>? OnObjectAccounted = null,
+    Action<SafeHandle>? OnStagingDirectoryCreated = null)
 {
     internal const ulong EnvironmentBudgetBytes = 16384;
     internal const int CopyChunkBytes = 65536;
@@ -155,6 +156,14 @@ internal static class SafeCopyIn
             {
                 return opened;
             }
+
+            // G2-03: the staging directory now exists. Recovery ownership
+            // must be established here, before any dependent object copy,
+            // so a death between creation and the first completed object
+            // still leaves retained recovery authority plus a durable
+            // identity. A refusal from this callback (or a barrier death)
+            // aborts preparation before any object content is copied.
+            plan.OnStagingDirectoryCreated?.Invoke(stagingDir!);
 
             for (var index = 0; index < plan.Objects.Count; index++)
             {

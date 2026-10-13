@@ -683,11 +683,8 @@ internal static class CgroupInterop
     /// the retained descriptors, and validates every handle's role and
     /// membership. Fails closed if any primitive or control is unavailable.</summary>
     internal static bool TryCreateDomain(
-        int parentFd,
+        ScopedAllocationContext context,
         string childName,
-        Guid executionId,
-        Guid leaseGeneration,
-        string bootId,
         out CgroupBackend? backend,
         out DomainIdentity? identity,
         out string error)
@@ -695,11 +692,28 @@ internal static class CgroupInterop
         backend = null;
         identity = null;
         error = string.Empty;
+        if (context is null)
+        {
+            error = "domain creation requires a scoped allocation context";
+            return false;
+        }
+
+        if (!context.IsLive)
+        {
+            error = "scoped allocation context is no longer live";
+            return false;
+        }
+
         if (!IsLinux)
         {
             error = "Unsupported: not Linux";
             return false;
         }
+
+        var parentFd = context.ParentFd;
+        var executionId = context.ExecutionId;
+        var leaseGeneration = context.LeaseGeneration;
+        var bootId = context.BootId;
 
         if (!PreparationInterop.IsSupportedArchitecture())
         {
