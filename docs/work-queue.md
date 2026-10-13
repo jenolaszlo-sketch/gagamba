@@ -2,7 +2,9 @@
 
 Updated 2026-10-09. Status definitions: Complete = stated artifact exists; Ready = dependencies sufficient to start; Held = named prerequisite missing; Pending = later delivery. Slice-specific historical entries retain their original tested SHAs; the later AR-6 SHA has separate three-host native and package evidence. Complete lifecycle qualification does not imply restricted-execution security qualification.
 
-## Current priority: AR-7 first implementation milestone (independent G2 rereview preserved: G2 NOT ACCEPTED; G2-01/G2-07/G2-09 resolved, G2-02/G2-03/G2-04/G2-05/G2-06/G2-08/G2-10 still blocking; WP04 blocked)
+## Current priority: AR-7 first implementation milestone (G2 R6A done: WP02 G2-06 corrected pending rereview; G2 not accepted; WP03 blockers remain; WP04 blocked)
+
+Update: G2 remediation R6A (WP02: G2-06) complete at `e5f90ce4c3c6a239775b4af72e26e077b292e6d5` (evidence [WP02 evidence](evidence/linux-m1/wp02.md) section 16): exclusive once-only closure ownership enforced by the closure object; atomic Mint with validate-first transfer; refused second publication leaves the first capability untouched; sole-owner invalidation closes handles exactly once; 32 concurrent Mints yield exactly one success. Results: Linux M1 269 passed + 16 skipped; Windows M1 203 passed + 82 skipped; full solution 0 failures; WP01 vector unchanged. G2 remains NOT ACCEPTED; G2-06 corrected pending independent rereview; G2-02/G2-03/G2-04/G2-05/G2-08/G2-10 remain open; G2-11 remains pending; WP04 blocked.
 
 Update: independent G2 rereview of implementation `121c644f2aa774119149f598a935a181fc71e137` completed ([rereview](reviews/gagamba-linux-m1-g2-rereview.md)): G2 NOT ACCEPTED - CORRECTION REQUIRED. Resolved: G2-01, G2-07, G2-09. Still blocking: G2-02, G2-03, G2-04, G2-05, G2-06, G2-08, G2-10. Evidence maintenance: G2-11. WP04 remains blocked; no correction has begun. The original G2 review remains unchanged; this rereview supersedes prior local claims that all blockers were remediated.
 
