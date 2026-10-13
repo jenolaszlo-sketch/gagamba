@@ -350,14 +350,21 @@ public sealed class RecoveryHarness
             "--mount-id", Mount().MountId.ToString(),
             "--boot", Boot(),
             "--domain", name,
-            "--barrier", "after-registered",
+            "--barrier", "none",
         }, allocation.OwnerSocketFd);
         Assert.True(spawned.Ok, spawned.Error);
         using var owner = spawned.Process!;
 
-        var ready = ReadUntil(owner, l => l.StartsWith("BARRIER", StringComparison.Ordinal), TimeSpan.FromSeconds(10));
+        // Deterministic post-handoff/post-registration point where the owner
+        // is alive and blocked on its control channel: it keeps living while
+        // we inspect its descriptors. Enumeration must happen before any
+        // termination, so a vanished /proc entry can never masquerade as the
+        // endpoint being closed.
+        var ready = ReadUntil(owner, l => l.StartsWith("REGISTERED", StringComparison.Ordinal), TimeSpan.FromSeconds(10));
         Assert.Contains("PRIMARY", ready);
-        Assert.Contains("BARRIER after-registered", ready);
+        Assert.Contains("WRITER_LOCKED", ready);
+        Assert.Contains("REGISTERED ok=True", ready);
+        Assert.False(owner.HasExited, "owner exited before the live endpoint observation");
         var openFds = Directory.EnumerateFileSystemEntries($"/proc/{owner.Id}/fd")
             .Select(System.IO.Path.GetFileName)
             .ToHashSet(StringComparer.Ordinal);

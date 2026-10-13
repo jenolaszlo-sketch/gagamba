@@ -486,6 +486,43 @@ public sealed class DomainAuthorityTests
         PreparationInterop.CloseFd(childEnd);
     }
 
+    // R6B.1 F1: a zero-length record that still carries SCM_RIGHTS
+    // descriptors is refused, and the descriptors the kernel already
+    // installed are closed (fd-neutral; no authority published).
+    [Fact]
+    public void ZeroLengthRecordWithDescriptorsRefusedWithoutLeak()
+    {
+        SkipUnlessUsable();
+        using var temp = new TempParent();
+        using var domain = BuildDomain(temp);
+        Assert.True(FdPassing.TryCreateInheritableSocketPair(out var parentEnd, out var childEnd, out _));
+        var baseline = CountFdsUnder(domain.ChildPath);
+        Assert.True(FdPassing.TrySendTransfer(parentEnd, domain.Ordered, Array.Empty<byte>(), out var sendError), sendError);
+        Assert.False(FdPassing.TryReceiveTransfer(
+            childEnd, DomainHandleTransfer.ExactDescriptorCount, DomainHandleTransfer.ExactPayloadBytes,
+            out var received, out _, out var error), "zero-length record with descriptors was accepted");
+        Assert.Empty(received);
+        Assert.Contains("peer closed", error);
+        Assert.Equal(baseline, CountFdsUnder(domain.ChildPath));
+        PreparationInterop.CloseFd(parentEnd);
+        PreparationInterop.CloseFd(childEnd);
+    }
+
+    // R6B.1 F1: a genuine peer close with no descriptors remains harmless.
+    [Fact]
+    public void PeerCloseWithoutDescriptorsRefusedHarmlessly()
+    {
+        SkipUnlessLinux();
+        Assert.True(FdPassing.TryCreateInheritableSocketPair(out var parentEnd, out var childEnd, out _));
+        PreparationInterop.CloseFd(parentEnd);
+        Assert.False(FdPassing.TryReceiveTransfer(
+            childEnd, DomainHandleTransfer.ExactDescriptorCount, DomainHandleTransfer.ExactPayloadBytes,
+            out var received, out _, out var error));
+        Assert.Empty(received);
+        Assert.Contains("peer closed", error);
+        PreparationInterop.CloseFd(childEnd);
+    }
+
     [Fact]
     public void ExecProbeProvesReceivedDescriptorsDoNotSurvive()
     {

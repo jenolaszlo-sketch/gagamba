@@ -184,6 +184,12 @@ internal static class FdPassing
 
             if (rc == 0)
             {
+                // A zero-length record can still carry SCM_RIGHTS control
+                // data (the kernel installs the descriptors with rc == 0).
+                // Parse and close anything delivered before refusing. On a
+                // genuine peer close the zeroed control buffer yields no
+                // usable count and nothing is closed.
+                CloseControlFds(ctrl, received);
                 error = "peer closed before descriptors were received";
                 return false;
             }
