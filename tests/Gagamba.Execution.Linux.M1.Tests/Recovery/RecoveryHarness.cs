@@ -143,7 +143,7 @@ public sealed class RecoveryHarness
         Assert.True(allocation.Ok, allocation.Error);
         var recovery = allocation.RecoveryLease!;
         var ownerDll = LocateOwnerDll()!;
-        var owner = scope.SpawnOwner(ownerDll, new[]
+        var spawned = scope.TrySpawnOwner(ownerDll, new[]
         {
             "--journal-dir", journalDir,
             "--exec", execution.ToString("D"),
@@ -152,9 +152,9 @@ public sealed class RecoveryHarness
             "--boot", Boot(),
             "--domain", name,
             "--barrier", barrier,
-        }, allocation.OwnerSocketFd, out var spawnError);
-        Assert.True(spawnError.Length == 0, spawnError);
-        return (owner, recovery, recovery.Identity);
+        }, allocation.OwnerSocketFd);
+        Assert.True(spawned.Ok, spawned.Error);
+        return (spawned.Process!, recovery, recovery.Identity);
     }
 
     private static string ReadUntil(Process owner, Func<string, bool> stop, TimeSpan timeout)

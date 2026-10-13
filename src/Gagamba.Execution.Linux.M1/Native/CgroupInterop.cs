@@ -370,13 +370,117 @@ internal static class CgroupInterop
         return true;
     }
 
+    /// <summary>Reads a cgroup control file relative to a retained directory
+    /// descriptor (bounded, no path re-resolution).</summary>
+    internal static bool TryReadControlText(int dirFd, string name, out string text, out string error)
+    {
+        text = string.Empty;
+        error = string.Empty;
+        var errno = PreparationInterop.OpenRelative(
+            dirFd, name,
+            PreparationInterop.O_RDONLY | PreparationInterop.O_CLOEXEC,
+            PreparationInterop.RequiredResolve, out var fd);
+        if (errno != 0)
+        {
+            error = $"{name} open errno {errno}";
+            return false;
+        }
+
+        try
+        {
+            var buffer = new byte[4096];
+            var total = 0;
+            while (total < buffer.Length)
+            {
+                var rc = PreparationInterop.ReadChunk(fd, buffer, total, buffer.Length - total, out var read);
+                if (rc != 0)
+                {
+                    error = $"{name} read errno {rc}";
+                    return false;
+                }
+
+                if (read == 0)
+                {
+                    break;
+                }
+
+                total += read;
+            }
+
+            text = System.Text.Encoding.ASCII.GetString(buffer, 0, total).Trim();
+            return true;
+        }
+        finally
+        {
+            PreparationInterop.CloseFd(fd);
+        }
+    }
+
+    /// <summary>Verifies an operator-delegated parent: it is on the cgroup2
+    /// filesystem and has already delegated the controllers the M1 domain
+    /// requires (memory and pids). Missing controller/delegation support is
+    /// an explicit refusal; Gagamba never repairs or provisions it.</summary>
+    internal static bool TryVerifyDelegatedParent(int parentFd, out string error)
+    {
+        error = string.Empty;
+        if (!TryDeriveMount(parentFd, out _, out _, out var mountError))
+        {
+            error = $"delegated parent is not on cgroup2: {mountError}";
+            return false;
+        }
+
+        if (!TryReadControlText(parentFd, "cgroup.controllers", out var controllers, out var controllersError))
+        {
+            error = $"delegated parent controllers unreadable: {controllersError}";
+            return false;
+        }
+
+        if (!TryReadControlText(parentFd, "cgroup.subtree_control", out var subtree, out var subtreeError))
+        {
+            error = $"delegated parent subtree_control unreadable: {subtreeError}";
+            return false;
+        }
+
+        var available = Tokens(controllers);
+        var delegated = Tokens(subtree);
+        foreach (var required in new[] { "memory", "pids" })
+        {
+            if (!available.Contains(required))
+            {
+                error = $"delegated parent does not offer controller '{required}'";
+                return false;
+            }
+
+            if (!delegated.Contains(required))
+            {
+                error = $"delegated parent has not delegated controller '{required}' to its children";
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static HashSet<string> Tokens(string text) =>
+        new(text.Split(new[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries), StringComparer.Ordinal);
+
     private static bool TryValidateControl(
         int domainFd, long domainDevice, string controlName, int fd, ControlAccess required, out string error)
     {
         error = string.Empty;
+        // Probe the control with an access mode compatible with its role.
+        // cgroup.kill is write-only for an unprivileged delegate, so a
+        // read-only probe (which only root could satisfy) would falsely
+        // reject a valid delegated domain.
+        var probeAccess = required switch
+        {
+            ControlAccess.Read => PreparationInterop.O_RDONLY,
+            ControlAccess.Write => PreparationInterop.O_WRONLY,
+            _ => PreparationInterop.O_RDWR,
+        };
         var openErrno = PreparationInterop.OpenRelative(
             domainFd, controlName,
-            PreparationInterop.O_RDONLY | PreparationInterop.O_CLOEXEC,
+            probeAccess | PreparationInterop.O_CLOEXEC,
             PreparationInterop.RequiredResolve, out var probe);
         if (openErrno != 0)
         {

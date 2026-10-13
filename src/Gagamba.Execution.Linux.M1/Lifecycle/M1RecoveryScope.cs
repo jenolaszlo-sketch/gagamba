@@ -22,6 +22,16 @@ internal sealed record DomainAllocationResult(bool Ok, DomainLease? RecoveryLeas
 
 internal sealed record OwnerExitResult(bool Exited, int ExitCode, bool Crashed, string Error);
 
+/// <summary>Spawn outcome carrying the retained owner pidfd. <see cref="Ok"/>
+/// requires both a live owner direct child and a retained CLOEXEC pidfd; a
+/// failed pidfd acquisition terminates the owner and refuses so the native
+/// path never reaches a state whose owner-loss recovery would depend on a
+/// missing pidfd.</summary>
+internal sealed record OwnerSpawnResult(Process? Process, int PidFd, string Error)
+{
+    internal bool Ok => Process is not null && Error.Length == 0;
+}
+
 /// <summary>Real integrated preparation request. The manifest is built by
 /// the caller from staged bindings after copy (never predicted); the death
 /// barrier is test-only deterministic death injection (null in production).</summary>
@@ -59,9 +69,16 @@ internal sealed class M1RecoveryScope : IDisposable
     private int _parentFd = -1;
     private bool _subreaperEnabled;
     private bool _disposed;
+    private readonly IPidFdProvider _pidFdProvider;
     private readonly List<DomainLease> _retainedRecoveryLeases = new();
     private readonly List<SafeHandle> _retainedStagingParents = new();
     private readonly List<SafeHandle> _retainedStagingDirs = new();
+    private readonly Dictionary<int, SafeHandle> _retainedOwnerPidFds = new();
+
+    internal M1RecoveryScope(IPidFdProvider? pidFdProvider = null)
+    {
+        _pidFdProvider = pidFdProvider ?? RealPidFdProvider.Instance;
+    }
 
     internal bool SubreaperEnabled => _subreaperEnabled;
 
@@ -113,6 +130,14 @@ internal sealed class M1RecoveryScope : IDisposable
         {
             PreparationInterop.CloseFd(fd);
             return new ScopeInitResult(false, "delegated parent is not a directory");
+        }
+
+        // Verify the operator-delegated prerequisites (cgroup2 + memory/pids
+        // already delegated). Gagamba refuses rather than provisioning.
+        if (!CgroupInterop.TryVerifyDelegatedParent(fd, out var delegationError))
+        {
+            PreparationInterop.CloseFd(fd);
+            return new ScopeInitResult(false, $"delegation unqualified: {delegationError}");
         }
 
         _parentFd = fd;
@@ -183,9 +208,13 @@ internal sealed class M1RecoveryScope : IDisposable
         return new DomainAllocationResult(true, recoveryLease, childEnd, string.Empty);
     }
 
-    internal Process SpawnOwner(string ownerDll, string[] arguments, int ownerSocketFd, out string error)
+    /// <summary>Spawns the per-execution owner as this scope's direct child,
+    /// then immediately acquires and retains a CLOEXEC pidfd for that exact
+    /// PID before any owner-loss-dependent state exists. A missing or
+    /// non-CLOEXEC pidfd terminates the owner and refuses (missing-pidfd
+    /// refusal); no PID/`/proc`/journal fallback exists.</summary>
+    internal OwnerSpawnResult TrySpawnOwner(string ownerDll, string[] arguments, int ownerSocketFd)
     {
-        error = string.Empty;
         var psi = new ProcessStartInfo
         {
             FileName = "dotnet",
@@ -202,21 +231,40 @@ internal sealed class M1RecoveryScope : IDisposable
 
         psi.Environment["GAGAMBA_BOOTSTRAP_FD"] = ownerSocketFd.ToString();
 
+        Process? process = null;
         try
         {
-            var process = Process.Start(psi);
+            process = Process.Start(psi);
             if (process is null)
             {
-                error = "owner process start returned null";
-                throw new InvalidOperationException(error);
+                return new OwnerSpawnResult(null, -1, "owner process start returned null");
             }
 
-            return process;
+            if (!_pidFdProvider.TryOpen(process.Id, out var pidFd, out var pidError))
+            {
+                TerminateOwner(process);
+                return new OwnerSpawnResult(null, -1, $"owner pidfd unavailable: {pidError}");
+            }
+
+            if (!PreparationInterop.HasCloexec(pidFd))
+            {
+                PreparationInterop.CloseFd(pidFd);
+                TerminateOwner(process);
+                return new OwnerSpawnResult(null, -1, "owner pidfd is missing FD_CLOEXEC");
+            }
+
+            var handle = new SafeFileHandle(new IntPtr(pidFd), ownsHandle: true);
+            _retainedOwnerPidFds[process.Id] = handle;
+            return new OwnerSpawnResult(process, pidFd, string.Empty);
         }
         catch (Exception ex)
         {
-            error = $"owner start failed: {ex.GetType().Name}";
-            throw;
+            if (process is not null)
+            {
+                TerminateOwner(process);
+            }
+
+            return new OwnerSpawnResult(null, -1, $"owner start failed: {ex.GetType().Name}");
         }
         finally
         {
@@ -229,12 +277,64 @@ internal sealed class M1RecoveryScope : IDisposable
         }
     }
 
-    /// <summary>Waits for the direct-child owner to exit within a bound.</summary>
+    private static void TerminateOwner(Process process)
+    {
+        try
+        {
+            if (!process.HasExited)
+            {
+                process.Kill(entireProcessTree: false);
+                process.WaitForExit(5000);
+            }
+        }
+        catch
+        {
+            // Best-effort containment; the pidfd refusal is already the
+            // reported outcome.
+        }
+    }
+
+    /// <summary>Polls the retained pidfd for the owner without reaping.
+    /// True only with a retained pidfd; a missing pidfd is a refusal, never
+    /// an assumed exit.</summary>
+    internal bool TryOwnerPidFdExited(Process owner, int timeoutMilliseconds, out bool exited, out string error)
+    {
+        exited = false;
+        error = string.Empty;
+        if (!_retainedOwnerPidFds.TryGetValue(owner.Id, out var handle) || handle.IsClosed)
+        {
+            error = "no retained owner pidfd";
+            return false;
+        }
+
+        return PidFd.TryExited(
+            handle.DangerousGetHandle().ToInt32(), timeoutMilliseconds, out exited, out error);
+    }
+
+    /// <summary>Waits for the direct-child owner to exit within a bound.
+    /// Exit is established via the retained pidfd and then the direct child
+    /// is reaped exactly once. A missing pidfd refuses owner-loss takeover.</summary>
     internal OwnerExitResult WaitForOwner(Process owner, TimeSpan timeout)
     {
-        if (!owner.WaitForExit((int)timeout.TotalMilliseconds))
+        if (!_retainedOwnerPidFds.TryGetValue(owner.Id, out var handle) || handle.IsClosed)
         {
-            return new OwnerExitResult(false, -1, false, "owner did not exit within the bound");
+            return new OwnerExitResult(false, -1, false, "no retained owner pidfd; owner-loss recovery not permitted");
+        }
+
+        var timeoutMs = (int)timeout.TotalMilliseconds;
+        if (!PidFd.TryExited(handle.DangerousGetHandle().ToInt32(), timeoutMs, out var exited, out var pollError))
+        {
+            return new OwnerExitResult(false, -1, false, pollError);
+        }
+
+        if (!exited)
+        {
+            return new OwnerExitResult(false, -1, false, "owner pidfd did not signal exit within the bound");
+        }
+
+        if (!owner.WaitForExit(timeoutMs))
+        {
+            return new OwnerExitResult(false, -1, false, "owner was not reapable within the bound");
         }
 
         var crashed = owner.ExitCode != 0;
@@ -643,6 +743,12 @@ internal sealed class M1RecoveryScope : IDisposable
         }
 
         _retainedStagingDirs.Clear();
+        foreach (var handle in _retainedOwnerPidFds.Values)
+        {
+            handle.Dispose();
+        }
+
+        _retainedOwnerPidFds.Clear();
         if (_parentFd >= 0)
         {
             PreparationInterop.CloseFd(_parentFd);
