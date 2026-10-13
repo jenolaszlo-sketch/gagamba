@@ -2,10 +2,16 @@
 // The plan-selected mechanism for crossing the primary domain handles
 // from the scope to the owner ("one inherited Unix socketpair solely for
 // SCM_RIGHTS transfer, with a fixed role/count allowlist and
-// CLOEXEC-on-receive"). Never filesystem-bound; never a service. Receive
-// uses MSG_CMSG_CLOEXEC, inspects msg_flags, validates the exact control
-// layout and payload, verifies every received descriptor has FD_CLOEXEC,
-// and closes every received descriptor on any rejection path.
+// CLOEXEC-on-receive"). The socket is SOCK_SEQPACKET so the kernel
+// preserves the logical message boundary: one sendmsg is exactly one
+// recvmsg record. A SOCK_STREAM endpoint would silently split an overlong
+// send, letting a valid 51-byte prefix pass as the whole message; a
+// message-preserving endpoint instead reports MSG_TRUNC for an overlong
+// record and refuses any second queued record. Never filesystem-bound;
+// never a service. Receive uses MSG_CMSG_CLOEXEC, inspects msg_flags,
+// validates the exact control layout and payload, requires exactly one
+// record, verifies every received descriptor has FD_CLOEXEC, and closes
+// every received descriptor on any rejection path.
 using System.Runtime.InteropServices;
 using Gagamba.Execution.Linux.M1.Preparation.Native;
 
@@ -14,7 +20,7 @@ namespace Gagamba.Execution.Linux.M1.Native;
 internal static class FdPassing
 {
     private const int AF_UNIX = 1;
-    private const int SOCK_STREAM = 1;
+    private const int SOCK_SEQPACKET = 5;
     private const int SOL_SOCKET = 1;
     private const int SCM_RIGHTS = 1;
 
@@ -24,6 +30,11 @@ internal static class FdPassing
     private const int MSG_CMSG_CLOEXEC = 0x40000000;
     private const int MSG_CTRUNC = 0x8;
     private const int MSG_TRUNC = 0x20;
+
+    // FIONREAD reports the byte length of the next queued record without
+    // consuming it or installing any SCM_RIGHTS descriptors (unlike
+    // MSG_PEEK, which duplicates them). 0 means no record is queued.
+    private const ulong FIONREAD = 0x541B;
 
     [DllImport("libc", EntryPoint = "socketpair", SetLastError = true)]
     private static extern int SocketPair(int domain, int type, int protocol, int[] sv);
@@ -37,9 +48,14 @@ internal static class FdPassing
     [DllImport("libc", EntryPoint = "fcntl", SetLastError = true)]
     private static extern int Fcntl(int fd, int cmd, int arg);
 
-    /// <summary>Creates a stream socketpair without CLOEXEC on the child end
-    /// so the owner inherits it at a known fd number; the parent end stays
-    /// CLOEXEC.</summary>
+    [DllImport("libc", EntryPoint = "ioctl", SetLastError = true)]
+    private static extern int Ioctl(int fd, ulong request, out int value);
+
+    /// <summary>Creates a message-preserving (SOCK_SEQPACKET) socketpair
+    /// without CLOEXEC on the child end so the owner inherits it at a known
+    /// fd number; the parent end stays CLOEXEC. Fails closed if a
+    /// message-preserving socket cannot be created; it never falls back to
+    /// a stream endpoint.</summary>
     internal static bool TryCreateInheritableSocketPair(out int parentEnd, out int childEnd, out string error)
     {
         parentEnd = -1;
@@ -48,7 +64,7 @@ internal static class FdPassing
         var sv = new int[2];
         try
         {
-            if (SocketPair(AF_UNIX, SOCK_STREAM, 0, sv) != 0)
+            if (SocketPair(AF_UNIX, SOCK_SEQPACKET, 0, sv) != 0)
             {
                 error = $"socketpair errno {Marshal.GetLastWin32Error()}";
                 return false;
@@ -185,7 +201,9 @@ internal static class FdPassing
             if ((msgFlags & MSG_TRUNC) != 0 || rc != expectedPayloadLength)
             {
                 CloseControlFds(ctrl, received);
-                error = $"payload length {rc} != {expectedPayloadLength}";
+                error = (msgFlags & MSG_TRUNC) != 0
+                    ? $"overlong message: record exceeds the exact {expectedPayloadLength}-byte payload"
+                    : $"payload length {rc} != {expectedPayloadLength}";
                 return false;
             }
 
@@ -229,6 +247,25 @@ internal static class FdPassing
                     error = $"received descriptor {fd} lacks FD_CLOEXEC";
                     return false;
                 }
+            }
+
+            // A message-preserving endpoint delivers exactly one record per
+            // recvmsg. A second queued record means the peer sent more than
+            // one logical frame; refuse rather than accept the first as the
+            // whole transfer. FIONREAD reports the next record's length
+            // without installing its descriptors.
+            var ioctlResult = Ioctl(sock, FIONREAD, out var pendingRecord);
+            if (ioctlResult != 0 || pendingRecord > 0)
+            {
+                foreach (var open in received)
+                {
+                    CloseFdChecked(open);
+                }
+
+                error = ioctlResult != 0
+                    ? "socket state unavailable for frame-boundary check"
+                    : $"extra queued frame ({pendingRecord} bytes)";
+                return false;
             }
 
             fds = received.ToArray();

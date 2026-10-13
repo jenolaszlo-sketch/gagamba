@@ -17,7 +17,44 @@ public sealed class DomainAuthorityTests
     [DllImport("libc", SetLastError = true)]
     private static extern int open(string path, int flags);
 
+    [DllImport("libc", SetLastError = true)]
+    private static extern int getsockopt(int sockfd, int level, int optname, out int optval, ref int optlen);
+
     private const string CgroupRoot = "/sys/fs/cgroup";
+    private const int SolSocket = 1;
+    private const int SoType = 3;
+    private const int SockSeqPacket = 5;
+
+    private static void SkipUnlessLinux()
+    {
+        if (!OperatingSystem.IsLinux())
+        {
+            Assert.Skip("requires Linux");
+        }
+    }
+
+    // Counts open descriptors whose resolved target is the unique domain
+    // path, so unrelated parallel test fd activity cannot affect the check.
+    private static int CountFdsUnder(string realPrefix)
+    {
+        var count = 0;
+        foreach (var link in Directory.EnumerateFileSystemEntries("/proc/self/fd"))
+        {
+            try
+            {
+                var target = File.ResolveLinkTarget(link, returnFinalTarget: true);
+                if (target is not null && target.FullName.StartsWith(realPrefix, StringComparison.Ordinal))
+                {
+                    count++;
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        return count;
+    }
 
     private sealed class TempParent : IDisposable
     {
@@ -349,6 +386,102 @@ public sealed class DomainAuthorityTests
         Assert.False(FdPassing.TryReceiveTransfer(
             childEnd, DomainHandleTransfer.ExactDescriptorCount, DomainHandleTransfer.ExactPayloadBytes,
             out _, out _, out _));
+        PreparationInterop.CloseFd(parentEnd);
+        PreparationInterop.CloseFd(childEnd);
+    }
+
+    // G2-02 R6B: the bootstrap transport must be message-preserving so an
+    // overlong send cannot leave a valid prefix to be read as the whole
+    // message.
+    [Fact]
+    public void BootstrapSocketPairIsMessagePreserving()
+    {
+        SkipUnlessLinux();
+        Assert.True(FdPassing.TryCreateInheritableSocketPair(out var parentEnd, out var childEnd, out var error), error);
+        var length = sizeof(int);
+        Assert.Equal(0, getsockopt(childEnd, SolSocket, SoType, out var type, ref length));
+        Assert.Equal(SockSeqPacket, type);
+        PreparationInterop.CloseFd(parentEnd);
+        PreparationInterop.CloseFd(childEnd);
+    }
+
+    // G2-02 R6B: expected length + N bytes refuses (N = 1 and several).
+    [Theory]
+    [InlineData(1)]
+    [InlineData(9)]
+    public void OverlongPayloadRefused(int extraBytes)
+    {
+        SkipUnlessUsable();
+        using var temp = new TempParent();
+        using var domain = BuildDomain(temp);
+        var overlong = DomainHandleTransfer.Encode(Guid.NewGuid(), Guid.NewGuid())
+            .Concat(Enumerable.Repeat((byte)0x55, extraBytes)).ToArray();
+        Assert.True(FdPassing.TryCreateInheritableSocketPair(out var parentEnd, out var childEnd, out _));
+        Assert.True(FdPassing.TrySendTransfer(parentEnd, domain.Ordered, overlong, out var sendError), sendError);
+        Assert.False(FdPassing.TryReceiveTransfer(
+            childEnd, DomainHandleTransfer.ExactDescriptorCount, DomainHandleTransfer.ExactPayloadBytes,
+            out _, out _, out var receiveError), $"overlong +{extraBytes} accepted");
+        Assert.Contains("overlong", receiveError);
+        PreparationInterop.CloseFd(parentEnd);
+        PreparationInterop.CloseFd(childEnd);
+    }
+
+    // G2-02 R6B: the exact independent counterexample — seven correct real
+    // cgroup descriptors + the valid 51-byte payload + one 0x55 byte — must
+    // be refused, so no DomainLease can be constructed from the prefix.
+    [Fact]
+    public void ReviewerTrailingByteReproductionRefused()
+    {
+        SkipUnlessUsable();
+        using var temp = new TempParent();
+        using var domain = BuildDomain(temp);
+        var valid = DomainHandleTransfer.Encode(Guid.NewGuid(), Guid.NewGuid());
+        Assert.Equal(DomainHandleTransfer.ExactPayloadBytes, valid.Length);
+        var overlong = valid.Concat(new byte[] { 0x55 }).ToArray();
+        Assert.True(FdPassing.TryCreateInheritableSocketPair(out var parentEnd, out var childEnd, out _));
+        Assert.True(FdPassing.TrySendTransfer(parentEnd, domain.Ordered, overlong, out _));
+        Assert.False(FdPassing.TryReceiveTransfer(
+            childEnd, DomainHandleTransfer.ExactDescriptorCount, DomainHandleTransfer.ExactPayloadBytes,
+            out _, out _, out _), "52-byte transfer accepted as a 51-byte message");
+        PreparationInterop.CloseFd(parentEnd);
+        PreparationInterop.CloseFd(childEnd);
+    }
+
+    // G2-02 R6B: two logical frames cannot be mistaken for one.
+    [Fact]
+    public void TwoLogicalMessagesRefused()
+    {
+        SkipUnlessUsable();
+        using var temp = new TempParent();
+        using var domain = BuildDomain(temp);
+        var payload = DomainHandleTransfer.Encode(Guid.NewGuid(), Guid.NewGuid());
+        Assert.True(FdPassing.TryCreateInheritableSocketPair(out var parentEnd, out var childEnd, out _));
+        Assert.True(FdPassing.TrySendTransfer(parentEnd, domain.Ordered, payload, out _));
+        Assert.True(FdPassing.TrySendTransfer(parentEnd, domain.Ordered, payload, out _));
+        Assert.False(FdPassing.TryReceiveTransfer(
+            childEnd, DomainHandleTransfer.ExactDescriptorCount, DomainHandleTransfer.ExactPayloadBytes,
+            out _, out _, out var error), "two frames accepted as one");
+        Assert.Contains("extra", error);
+        PreparationInterop.CloseFd(parentEnd);
+        PreparationInterop.CloseFd(childEnd);
+    }
+
+    // G2-02 R6B: every received descriptor is closed on a rejection path.
+    [Fact]
+    public void RejectionClosesReceivedDescriptors()
+    {
+        SkipUnlessUsable();
+        using var temp = new TempParent();
+        using var domain = BuildDomain(temp);
+        var overlong = DomainHandleTransfer.Encode(Guid.NewGuid(), Guid.NewGuid())
+            .Concat(new byte[] { 0x55 }).ToArray();
+        Assert.True(FdPassing.TryCreateInheritableSocketPair(out var parentEnd, out var childEnd, out _));
+        var baseline = CountFdsUnder(domain.ChildPath);
+        Assert.True(FdPassing.TrySendTransfer(parentEnd, domain.Ordered, overlong, out _));
+        Assert.False(FdPassing.TryReceiveTransfer(
+            childEnd, DomainHandleTransfer.ExactDescriptorCount, DomainHandleTransfer.ExactPayloadBytes,
+            out _, out _, out _));
+        Assert.Equal(baseline, CountFdsUnder(domain.ChildPath));
         PreparationInterop.CloseFd(parentEnd);
         PreparationInterop.CloseFd(childEnd);
     }

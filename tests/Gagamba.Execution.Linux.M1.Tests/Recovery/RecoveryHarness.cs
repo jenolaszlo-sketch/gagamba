@@ -24,6 +24,9 @@ public sealed class RecoveryHarness
     [DllImport("libc", SetLastError = true)]
     private static extern int waitpid(int pid, out int status, int options);
 
+    [DllImport("libc", SetLastError = true)]
+    private static extern int open(string path, int flags);
+
     private sealed class TempParent : IDisposable
     {
         public string Path { get; } = System.IO.Path.Combine(CgroupRoot, "gagamba-wp03-" + Guid.NewGuid().ToString("N"));
@@ -311,6 +314,108 @@ public sealed class RecoveryHarness
             owner.StandardInput.Flush();
             Assert.True(scope.WaitForOwner(owner, TimeSpan.FromSeconds(5)).Exited);
             Assert.True(recovery.ObservePopulation().Empty);
+        }
+    }
+
+    // G2-02 R6B: after a successful handoff the owner has closed its
+    // inherited bootstrap handle channel.
+    [Fact]
+    public void BootstrapEndpointClosedAfterSuccessfulHandoff()
+    {
+        SkipUnlessUsable();
+        if (LocateOwnerDll() is null)
+        {
+            Assert.Skip("owner executable not built");
+            return;
+        }
+
+        using var temp = new TempParent();
+        using var journal = new TempDir();
+        using var scope = new M1RecoveryScope();
+        Assert.True(scope.TryInitialize().Ok);
+        Assert.True(scope.TryOpenDelegatedParent(temp.Path).Ok);
+
+        var name = "d-" + Guid.NewGuid().ToString("N");
+        var execution = Guid.NewGuid();
+        var leaseGen = Guid.NewGuid();
+        var allocation = scope.AllocateDomain(name, execution, leaseGen, Boot());
+        Assert.True(allocation.Ok, allocation.Error);
+        using var recovery = allocation.RecoveryLease!;
+        var socketFd = allocation.OwnerSocketFd;
+        var spawned = scope.TrySpawnOwner(LocateOwnerDll()!, new[]
+        {
+            "--journal-dir", journal.Path,
+            "--exec", execution.ToString("D"),
+            "--lease", leaseGen.ToString("D"),
+            "--mount-id", Mount().MountId.ToString(),
+            "--boot", Boot(),
+            "--domain", name,
+            "--barrier", "after-registered",
+        }, allocation.OwnerSocketFd);
+        Assert.True(spawned.Ok, spawned.Error);
+        using var owner = spawned.Process!;
+
+        var ready = ReadUntil(owner, l => l.StartsWith("BARRIER", StringComparison.Ordinal), TimeSpan.FromSeconds(10));
+        Assert.Contains("PRIMARY", ready);
+        Assert.Contains("BARRIER after-registered", ready);
+        var openFds = Directory.EnumerateFileSystemEntries($"/proc/{owner.Id}/fd")
+            .Select(System.IO.Path.GetFileName)
+            .ToHashSet(StringComparer.Ordinal);
+        Assert.DoesNotContain(socketFd.ToString(), openFds);
+
+        owner.StandardInput.WriteLine("die");
+        owner.StandardInput.Flush();
+        Assert.True(scope.WaitForOwner(owner, TimeSpan.FromSeconds(5)).Exited);
+    }
+
+    // G2-02 R6B: after a refused handoff the owner closes its inherited
+    // bootstrap handle channel and exits with the receive error.
+    [Fact]
+    public void BootstrapEndpointClosedAfterFailedHandoff()
+    {
+        SkipUnlessUsable();
+        if (LocateOwnerDll() is null)
+        {
+            Assert.Skip("owner executable not built");
+            return;
+        }
+
+        using var temp = new TempParent();
+        using var journal = new TempDir();
+        using var scope = new M1RecoveryScope();
+        Assert.True(scope.TryInitialize().Ok);
+        Assert.True(scope.TryOpenDelegatedParent(temp.Path).Ok);
+
+        var execution = Guid.NewGuid();
+        var leaseGen = Guid.NewGuid();
+        var name = "d-" + Guid.NewGuid().ToString("N");
+        var fds = Enumerable.Range(0, DomainHandleTransfer.ExactDescriptorCount)
+            .Select(_ => open("/dev/null", 0)).ToArray();
+        Assert.All(fds, fd => Assert.True(fd >= 0));
+        var overlong = DomainHandleTransfer.Encode(execution, leaseGen)
+            .Concat(new byte[] { 0x55 }).ToArray();
+        Assert.True(FdPassing.TryCreateInheritableSocketPair(out var parentEnd, out var childEnd, out _));
+        Assert.True(FdPassing.TrySendTransfer(parentEnd, fds, overlong, out _));
+        PreparationInterop.CloseFd(parentEnd);
+
+        var spawned = scope.TrySpawnOwner(LocateOwnerDll()!, new[]
+        {
+            "--journal-dir", journal.Path,
+            "--exec", execution.ToString("D"),
+            "--lease", leaseGen.ToString("D"),
+            "--domain", name,
+            "--barrier", "none",
+        }, childEnd);
+        Assert.True(spawned.Ok, spawned.Error);
+        using var owner = spawned.Process!;
+
+        var output = owner.StandardOutput.ReadToEnd();
+        Assert.True(owner.WaitForExit(10000), "owner did not exit after a refused handoff");
+        Assert.Contains("ERR receive", output);
+        Assert.Equal(4, owner.ExitCode);
+        foreach (var fd in fds)
+        {
+            PreparationInterop.CloseFd(fd);
         }
     }
 
