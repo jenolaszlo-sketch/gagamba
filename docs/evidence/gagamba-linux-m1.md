@@ -14,7 +14,7 @@ until all mandatory gates pass.
 |---|---|---|
 | WP01 — Internal contracts, capability identity and state model | [wp01](linux-m1/wp01.md) | Complete, G1 ACCEPTED ([acceptance](../reviews/gagamba-linux-m1-g1-acceptance.md); M1 70/70, probes 13/13, native NotApplicable) |
 | WP02 — Protected copy-in and atomic preparation publication | [wp02](linux-m1/wp02.md) | Implemented and remediated for G2-06/G2-07 (`a1b8e3a2da44d781b996ccc5cbe604a863611368`); G2-06 R6A `e5f90ce4c3c6a239775b4af72e26e077b292e6d5` independently resolved, G2-07 resolved |
-| WP03 — Delegated domain lease, persistent allocation and external recovery scope | [wp03](linux-m1/wp03.md) | Implemented/remediated for G2-01…G2-05, G2-08…G2-10 (R2 `8a11e145e5c3fe06258a074acc13f0709630214a`, R3 `5c5a0b2243416e1602299360cda0115ac0cfc254`, R4 `0f91cc9c5433ce592fccfd45019c5b7171737e9c`, R5 `121c644f2aa774119149f598a935a181fc71e137`); G2-02 R6B `b80e9c28b462e2aa392313ff5dc58063478b955c` corrected pending independent rereview; unprivileged delegated qualification passed; G2-01/06/07/09 resolved |
+| WP03 — Delegated domain lease, persistent allocation and external recovery scope | [wp03](linux-m1/wp03.md) | Implemented/remediated for G2-01…G2-05, G2-08…G2-10 (R2 `8a11e145e5c3fe06258a074acc13f0709630214a`, R3 `5c5a0b2243416e1602299360cda0115ac0cfc254`, R4 `0f91cc9c5433ce592fccfd45019c5b7171737e9c`, R5 `121c644f2aa774119149f598a935a181fc71e137`); G2-02 R6B `b80e9c28b462e2aa392313ff5dc58063478b955c` independently resolved; unprivileged delegated qualification passed; G2-01/02/06/07/09 resolved |
 | WP04–WP12 | — | Not started; WP04 blocked pending independent G2 rereview |
 
 The original independent G2 review is preserved verbatim at
@@ -44,13 +44,20 @@ blocking: G2-02, G2-03, G2-04, G2-05, G2-08 and G2-10. Evidence maintenance:
 G2-11. G2 overall remains NOT ACCEPTED and WP04 remains blocked; no correction
 has begun.
 
-G2-02 is corrected at implementation
-`b80e9c28b462e2aa392313ff5dc58063478b955c` (WP03 R6B): the bootstrap
-SCM_RIGHTS endpoint is message-preserving (`SOCK_SEQPACKET`), so an overlong
-record refuses via `MSG_TRUNC`, a second queued record refuses, and a valid
-51-byte prefix can no longer pass as the whole message; every rejection
-closes all received descriptors. G2-02 is pending independent rereview. The
-independently resolved set remains G2-01, G2-06, G2-07 and G2-09; still
+The independent G2-02 R6B rereview of implementation
+`b80e9c28b462e2aa392313ff5dc58063478b955c` (docs-only HEAD `d8edd3b`) is
+preserved verbatim at
+[gagamba-linux-m1-g2-02-r6b-rereview.md](../reviews/gagamba-linux-m1-g2-02-r6b-rereview.md):
+disposition `G2-02 RESOLVED - R6B ACCEPTED`. The exact independent
+`51 bytes + 0x55` counterexample with seven real cgroup descriptors refuses
+via `MSG_TRUNC` before any `DomainLease` (root and uid-1000/gaga-delegated,
+fd-neutral); framing, `MSG_CTRUNC`, descriptor, `CLOEXEC`, extra-record and
+endpoint-lifecycle behavior were verified through the production path. Two
+nonblocking findings: F1 hygiene debt (zero-length `SCM_RIGHTS` rejection
+leaks received descriptors; pre-existing, fail-closed) and F2 test race
+(`BootstrapEndpointClosedAfterSuccessfulHandoff` observes `/proc` after owner
+exit; product property verified deterministically with a live owner). The
+independently resolved set is now G2-01, G2-02, G2-06, G2-07 and G2-09; still
 blocking are G2-03, G2-04, G2-05, G2-08 and G2-10; G2-11 remains evidence
 maintenance; G2 overall remains NOT ACCEPTED and WP04 remains blocked.
 
