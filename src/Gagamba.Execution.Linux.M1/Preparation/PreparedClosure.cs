@@ -62,13 +62,32 @@ internal sealed class StagedObject
     public SafeHandle Handle { get; }
 }
 
+/// <summary>Closure ownership state (G2-06 R6A). A concrete closure may be
+/// transferred into preparation authority exactly once. The single
+/// builder-owned → store-owned transition is enforced by the closure object
+/// itself under its own lock — never by caller convention — and Released is
+/// terminal, so no second Mint can claim the same authority and no two
+/// entries can share or independently release it.</summary>
+internal enum ClosureOwnership : byte
+{
+    /// <summary>Live and builder-owned. Builder Dispose/DiscardAccounted act.</summary>
+    BuilderOwned = 0,
+
+    /// <summary>Live and owned by exactly one store entry. Builder-side
+    /// disposal is a no-op; only the owning entry may release.</summary>
+    StoreOwned = 1,
+
+    /// <summary>Handles closed. Terminal; no further transfer or release.</summary>
+    Released = 2,
+}
+
 /// <summary>Accounted staged allocation: bound objects plus the retained
 /// staging-directory handle that keeps descriptor-relative cleanup
 /// possible. Disposal closes every retained descriptor.</summary>
 internal sealed class PreparedClosure : IDisposable
 {
-    private bool _disposed;
-    private bool _storeOwned;
+    private readonly object _gate = new();
+    private ClosureOwnership _ownership = ClosureOwnership.BuilderOwned;
 
     public PreparedClosure(
         IReadOnlyList<StagedObject> objects,
@@ -92,12 +111,42 @@ internal sealed class PreparedClosure : IDisposable
 
     public IReadOnlyList<KeyValuePair<string, string>> Environment { get; }
 
-    /// <summary>Transfers ownership to the preparation store on successful
-    /// publication. After transfer, disposing through a stale builder
-    /// reference is a no-op; only the store releases the handles.</summary>
-    internal void TransferToStore() => _storeOwned = true;
+    /// <summary>Atomically claims this closure for exactly one store entry.
+    /// Succeeds only for a live builder-owned closure; refuses an already
+    /// store-owned or released closure. Synchronized so concurrent claims
+    /// yield exactly one success.</summary>
+    internal bool TryTransferToStore()
+    {
+        lock (_gate)
+        {
+            if (_ownership != ClosureOwnership.BuilderOwned)
+            {
+                return false;
+            }
 
-    internal bool StoreOwned => _storeOwned;
+            _ownership = ClosureOwnership.StoreOwned;
+            return true;
+        }
+    }
+
+    internal ClosureOwnership Ownership
+    {
+        get
+        {
+            lock (_gate)
+            {
+                return _ownership;
+            }
+        }
+    }
+
+    internal bool StoreOwned => Ownership == ClosureOwnership.StoreOwned;
+
+    /// <summary>True while this closure still holds live authoritative
+    /// handles. Defense in depth: exclusive ownership already guarantees a
+    /// live entry's closure is live, but the store re-checks before
+    /// exposing it.</summary>
+    internal bool AuthorityLive => Ownership != ClosureOwnership.Released;
 
     /// <summary>Identity-checked accounted cleanup (G2-07): removes each
     /// staged object only if the current directory entry still is the exact
@@ -109,7 +158,7 @@ internal sealed class PreparedClosure : IDisposable
     public StagingCleanupReport DiscardAccounted(ICopyHost host)
     {
         ArgumentNullException.ThrowIfNull(host);
-        if (_storeOwned || _disposed)
+        if (Ownership != ClosureOwnership.BuilderOwned)
         {
             var refused = Objects
                 .Select(s => new CleanupItemResult(CleanupItemOutcome.IdentityMismatch, s.StagingName, "closure ownership has moved to the store"))
@@ -141,31 +190,45 @@ internal sealed class PreparedClosure : IDisposable
         return report;
     }
 
-    /// <summary>Releases handle authority. No-op if already disposed or if
-    /// ownership has moved to the store; callers holding a stale builder
-    /// reference cannot close store-owned handles.</summary>
+    /// <summary>Releases handle authority. Acts only on a live builder-owned
+    /// closure; a no-op once ownership has moved to the store (callers
+    /// holding a stale builder reference cannot close store-owned handles)
+    /// or once already released.</summary>
     public void Dispose()
     {
-        if (_disposed || _storeOwned)
+        bool release;
+        lock (_gate)
         {
-            return;
+            release = _ownership == ClosureOwnership.BuilderOwned;
+            if (release)
+            {
+                _ownership = ClosureOwnership.Released;
+            }
         }
 
-        _disposed = true;
-        DisposeHandles();
+        if (release)
+        {
+            DisposeHandles();
+        }
     }
 
     /// <summary>Store-side release on invalidation/abort. Disposes handles
-    /// exactly once regardless of stale builder references.</summary>
+    /// exactly once regardless of stale builder references: the Released
+    /// transition is atomic, and sharing cannot exist because transfer
+    /// succeeds exactly once.</summary>
     internal void ReleaseFromStore()
     {
-        if (_disposed)
+        bool release;
+        lock (_gate)
         {
-            return;
+            release = _ownership != ClosureOwnership.Released;
+            _ownership = ClosureOwnership.Released;
         }
 
-        _disposed = true;
-        DisposeHandles();
+        if (release)
+        {
+            DisposeHandles();
+        }
     }
 
     private void DisposeHandles()
