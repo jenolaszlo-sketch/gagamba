@@ -37,13 +37,14 @@ internal sealed class PreparationOwnershipCoordinator
         _intentTemplate = intentTemplate ?? throw new ArgumentNullException(nameof(intentTemplate));
     }
 
-    /// <summary>Full integrated preparation. The instance assumes it is the
-    /// exclusive journal writer (owner holds the writer lock).</summary>
+    /// <summary>Full integrated preparation. The caller holds the exclusive
+    /// journal writer lease; every durable record in this path requires it.</summary>
     internal PreparedTransactionOutcome Run(
         ICopyHost copyHost,
         CopyPlan plan,
         DomainLease domain,
         ICleanupAuthoritySink authority,
+        JournalWriterLease writer,
         PreparedTransaction.PreparationStore store,
         RestrictedManifest manifest,
         PreparationIdentity identity,
@@ -54,6 +55,7 @@ internal sealed class PreparationOwnershipCoordinator
         ArgumentNullException.ThrowIfNull(plan);
         ArgumentNullException.ThrowIfNull(domain);
         ArgumentNullException.ThrowIfNull(authority);
+        ArgumentNullException.ThrowIfNull(writer);
         ArgumentNullException.ThrowIfNull(store);
         ArgumentNullException.ThrowIfNull(manifest);
         ArgumentNullException.ThrowIfNull(identity);
@@ -68,7 +70,7 @@ internal sealed class PreparationOwnershipCoordinator
             Cleanup = OwnershipCleanupState.NotStarted,
             Stage = PreparationStage.AllocationIntent,
         };
-        var intentWrite = _journal.WriteNext(intent);
+        var intentWrite = _journal.WriteNext(writer, intent);
         if (!intentWrite.Ok)
         {
             return new PreparedTransactionOutcome(false, CopyFailureKind.PublicationFailure, $"AllocationIntent not durable: {intentWrite.Error}", null, null);
@@ -87,7 +89,7 @@ internal sealed class PreparationOwnershipCoordinator
         //    authority, then durably record AllocationRegistered and
         //    Prepared. Any failure publishes nothing and retains accounted
         //    objects for explicit cleanup.
-        var ack = PrepareAcknowledgement(domain, authority, closure, identity);
+        var ack = PrepareAcknowledgement(domain, authority, writer, closure, identity);
         var published = PreparationPublisher.Publish(
             store, closure, manifest, identity, expiresAtNs, ack, cancellationToken);
 
@@ -99,6 +101,7 @@ internal sealed class PreparationOwnershipCoordinator
     private Func<CancellationToken, bool> PrepareAcknowledgement(
         DomainLease domain,
         ICleanupAuthoritySink authority,
+        JournalWriterLease writer,
         PreparedClosure closure,
         PreparationIdentity identity)
     {
@@ -131,13 +134,13 @@ internal sealed class PreparationOwnershipCoordinator
                     identity.ExecutionId, identity.IssuerId, identity.GenerationId,
                     identity.PreparationId, identity.ManifestDigest.ToArray()),
             };
-            var registeredWrite = _journal.WriteNext(registered);
+            var registeredWrite = _journal.WriteNext(writer, registered);
             if (!registeredWrite.Ok)
             {
                 return false;
             }
 
-            var preparedWrite = _journal.WriteNext(registered with { Stage = PreparationStage.Prepared });
+            var preparedWrite = _journal.WriteNext(writer, registered with { Stage = PreparationStage.Prepared });
             return preparedWrite.Ok;
         };
     }

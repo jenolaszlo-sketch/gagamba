@@ -52,13 +52,19 @@ public sealed class PreparationOwnershipTests
             baseline.Channels);
     }
 
-    private static (PreparationOwnershipCoordinator Coordinator, FakeJournalStorage Journal, OwnershipSnapshot Template)
+    private static (PreparationOwnershipCoordinator Coordinator, OwnershipJournal Journal, FakeJournalStorage Storage)
         NewCoordinator()
     {
         var storage = new FakeJournalStorage();
         var journal = new OwnershipJournal(storage, "/recovery");
         var template = RecoveryTestSupport.Snapshot(stage: PreparationStage.None);
-        return (new PreparationOwnershipCoordinator(journal, template), storage, template);
+        return (new PreparationOwnershipCoordinator(journal, template), journal, storage);
+    }
+
+    private static JournalWriterLease Acquire(OwnershipJournal journal)
+    {
+        Assert.True(journal.TryAcquireWriter(out var lease, out var error), error);
+        return lease!;
     }
 
     [Fact]
@@ -70,15 +76,16 @@ public sealed class PreparationOwnershipTests
         host.AddSourceFile("tool", tool);
         host.AddSourceFile("input", input);
 
-        var (coordinator, storage, _) = NewCoordinator();
+        var (coordinator, journal, storage) = NewCoordinator();
         var manifest = ManifestFor(("tool", tool), ("input", input));
         var identity = IdentityFor(manifest);
         var (store, _) = NewStoreAndClock();
         var domain = new DomainLease(new FakeDomainBackend(), RecoveryTestSupport.Identity());
         var authority = new FakeAuthority();
+        using var writer = Acquire(journal);
 
         var outcome = coordinator.Run(
-            host, Plan(host, Tool(), Input()), domain, authority, store, manifest, identity,
+            host, Plan(host, Tool(), Input()), domain, authority, writer, store, manifest, identity,
             1_000_000_000, CancellationToken.None);
 
         Assert.True(outcome.Published, outcome.Detail);
@@ -101,16 +108,17 @@ public sealed class PreparationOwnershipTests
         var host = Preparation.CopyTestSupport.NewHost();
         host.AddSourceFile("tool", Bytes(0x30, 128));
 
-        var (coordinator, storage, _) = NewCoordinator();
+        var (coordinator, journal, storage) = NewCoordinator();
         storage.Fault = step => step == "create" ? JournalIoResult.Failure("intent not durable") : null;
 
         var manifest = ManifestFor(("tool", Bytes(0x30, 128)));
         var identity = IdentityFor(manifest);
         var (store, _) = NewStoreAndClock();
         var domain = new DomainLease(new FakeDomainBackend(), RecoveryTestSupport.Identity());
+        using var writer = Acquire(journal);
 
         var outcome = coordinator.Run(
-            host, Plan(host, Tool()), domain, new FakeAuthority(), store, manifest, identity,
+            host, Plan(host, Tool()), domain, new FakeAuthority(), writer, store, manifest, identity,
             1_000_000_000, CancellationToken.None);
 
         Assert.False(outcome.Published);
@@ -125,7 +133,7 @@ public sealed class PreparationOwnershipTests
         var tool = Bytes(0x40, 512);
         host.AddSourceFile("tool", tool);
 
-        var (coordinator, storage, _) = NewCoordinator();
+        var (coordinator, journal, storage) = NewCoordinator();
         // Succeed the first write (intent) then fail the registered write.
         var writes = 0;
         storage.Fault = step =>
@@ -146,9 +154,10 @@ public sealed class PreparationOwnershipTests
         var identity = IdentityFor(manifest);
         var (store, _) = NewStoreAndClock();
         var domain = new DomainLease(new FakeDomainBackend(), RecoveryTestSupport.Identity());
+        using var writer = Acquire(journal);
 
         var outcome = coordinator.Run(
-            host, Plan(host, Tool()), domain, new FakeAuthority(), store, manifest, identity,
+            host, Plan(host, Tool()), domain, new FakeAuthority(), writer, store, manifest, identity,
             1_000_000_000, CancellationToken.None);
 
         Assert.False(outcome.Published);
@@ -165,15 +174,16 @@ public sealed class PreparationOwnershipTests
         var tool = Bytes(0x50, 256);
         host.AddSourceFile("tool", tool);
 
-        var (coordinator, _, _) = NewCoordinator();
+        var (coordinator, journal, _) = NewCoordinator();
         var manifest = ManifestFor(("tool", tool));
         var identity = IdentityFor(manifest);
         var (store, _) = NewStoreAndClock();
         var domain = new DomainLease(new FakeDomainBackend(), RecoveryTestSupport.Identity());
         var authority = new FakeAuthority { Accept = false };
+        using var writer = Acquire(journal);
 
         var outcome = coordinator.Run(
-            host, Plan(host, Tool()), domain, authority, store, manifest, identity,
+            host, Plan(host, Tool()), domain, authority, writer, store, manifest, identity,
             1_000_000_000, CancellationToken.None);
 
         Assert.False(outcome.Published);

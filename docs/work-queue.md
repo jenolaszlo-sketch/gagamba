@@ -2,7 +2,7 @@
 
 Updated 2026-10-09. Status definitions: Complete = stated artifact exists; Ready = dependencies sufficient to start; Held = named prerequisite missing; Pending = later delivery. Slice-specific historical entries retain their original tested SHAs; the later AR-6 SHA has separate three-host native and package evidence. Complete lifecycle qualification does not imply restricted-execution security qualification.
 
-## Current priority: AR-7 first implementation milestone (G2 R2 done: WP03 G2-01/G2-02/G2-09 corrected; G2-03/G2-04/G2-05/G2-08/G2-10/G2-11 remain; WP04 blocked)
+## Current priority: AR-7 first implementation milestone (G2 R3 done: WP03 G2-04/G2-05 corrected; G2-03/G2-08/G2-10/G2-11 remain; WP04 blocked)
 
 Update 2026-10-10: [ADR 0003: Linux-first restricted execution](adr/0003-ar7-linux-first-restricted-execution.md) approves the Linux-first architecture and authorizes only the bounded internal prepared-execution milestone described there. The architecture decision is complete; implementation has not begun in this documentation save. P05/P06 preparation and closure work belongs to the milestone; full resource, output, lifecycle, runtime and package qualification remains required before production restricted execution. No accepted feasibility rerun is required. Stop for independent review before expanding the slice; Hufu/workflow integration, privileged services, Windows/macOS enforcement and VM implementation remain deferred.
 
@@ -34,6 +34,8 @@ Update: independent G2 review completed against 1e117e0a64ee473f2ba251818761afc3
 Update: G2 remediation R1 (WP02 only) complete (evidence [WP02 evidence](evidence/linux-m1/wp02.md) section 15): G2-06 capability owns the exact PreparedClosure with controlled borrow and once-only invalidation release; G2-07 identity-checked staging cleanup refusing replacements with truthful outcomes. M1 212/212 Linux, Windows solution 0 failures, WP01 vector unchanged. G2 remains NOT ACCEPTED; WP03 blockers G2-01..G2-05/G2-08..G2-10 and G2-11 remain open; WP04 blocked.
 
 Update: G2 remediation R2 (WP03: G2-01, G2-02, G2-09) complete (evidence [WP03 evidence](evidence/linux-m1/wp03.md) section 15): explicit FD ownership with FD-reuse sentinel; strict versioned SCM_RIGHTS transfer with CLOEXEC/msg_flags/count/role enforcement and bootstrap close; complete domain corroboration, mount identity derived from retained descriptors, control membership/access validation, and recovery eligibility derived from the live lease. M1 239/239 Linux (0 skipped), Windows solution 0 failures, WP01 vector unchanged. G2 remains NOT ACCEPTED; G2-03/G2-04/G2-05/G2-08/G2-10/G2-11 remain open; WP04 blocked.
+
+Update: G2 remediation R3 (WP03: G2-04, G2-05) complete (evidence [WP03 evidence](evidence/linux-m1/wp03.md) section 16): bounded two-generation journal with conservative resolution; fenced `JournalWriterLease` with monotonic sequence; cross-process exclusion/takeover proven. M1 250/250 Linux (0 skipped), Windows solution 0 failures, WP01 vector unchanged. G2 remains NOT ACCEPTED; G2-03/G2-08/G2-10/G2-11 remain open; WP04 blocked.
 
 Implementation handoff: [Linux M1 implementation plan](plans/gagamba-linux-m1-implementation-plan.md), bound to ADR commit 4d09452172caf232c209ae5c6d1031ef3f6feaa8. Follow its 12 ordered work packages and review gates; this plan is documentation only and does not mark implementation or qualification complete.
 

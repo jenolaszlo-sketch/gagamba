@@ -315,6 +315,83 @@ public sealed class RecoveryHarness
     }
 
     [Fact]
+    public void LiveOwnerExcludesRecoveryWriter()
+    {
+        SkipUnlessUsable();
+        if (LocateOwnerDll() is null)
+        {
+            Assert.Skip("owner executable not built");
+            return;
+        }
+
+        using var temp = new TempParent();
+        using var journal = new TempDir();
+        using var scope = new M1RecoveryScope();
+        Assert.True(scope.TryInitialize().Ok);
+        Assert.True(scope.TryOpenDelegatedParent(temp.Path).Ok);
+        var (owner, recovery, _) = StartOwner(scope, temp, journal.Path, "none");
+        using (owner)
+        using (recovery)
+        {
+            // The live owner holds the writer lease (observed REGISTERED).
+            ReadUntil(owner, l => l.StartsWith("REGISTERED", StringComparison.Ordinal), TimeSpan.FromSeconds(10));
+
+            // A second writer in this process cannot acquire while the owner
+            // lives, so no normal mutation API is reachable.
+            var rival = new OwnershipJournal(new JournalFileStorage(), journal.Path);
+            Assert.False(rival.TryAcquireWriter(out var rivalLease, out _));
+            Assert.Null(rivalLease);
+
+            // Disk bytes/sequence are unchanged by the failed attempts.
+            var read = rival.ReadLatest();
+            Assert.True(read.Ok, read.Error);
+            Assert.Equal(1, read.Snapshot!.Sequence);
+
+            owner.StandardInput.WriteLine("die");
+            owner.StandardInput.Flush();
+            Assert.True(scope.WaitForOwner(owner, TimeSpan.FromSeconds(5)).Exited);
+            Assert.True(rival.TryAcquireWriter(out var takeover, out var takeoverError), takeoverError);
+            using (takeover!)
+            {
+            }
+        }
+    }
+
+    [Fact]
+    public void DeadOwnerTakeoverContinuesSequence()
+    {
+        SkipUnlessUsable();
+        if (LocateOwnerDll() is null)
+        {
+            Assert.Skip("owner executable not built");
+            return;
+        }
+
+        using var temp = new TempParent();
+        using var journal = new TempDir();
+        using var scope = new M1RecoveryScope();
+        Assert.True(scope.TryInitialize().Ok);
+        Assert.True(scope.TryOpenDelegatedParent(temp.Path).Ok);
+        var (owner, recovery, _) = StartOwner(scope, temp, journal.Path, "after-registered");
+        using (owner)
+        using (recovery)
+        {
+            ReadUntil(owner, l => l.StartsWith("BARRIER", StringComparison.Ordinal), TimeSpan.FromSeconds(10));
+            // Owner wrote sequence 1 and died; prove death, then take over.
+            Assert.True(scope.WaitForOwner(owner, TimeSpan.FromSeconds(5)).Exited);
+            var takeover = new OwnershipJournal(new JournalFileStorage(), journal.Path);
+            Assert.True(takeover.TryAcquireWriter(out var lease, out var acquireError), acquireError);
+            Assert.Equal(1, lease!.BaselineSequence);
+            using (lease)
+            {
+                Assert.True(takeover.WriteNext(lease, RecoveryTestSupport.Snapshot()).Ok);
+            }
+
+            Assert.Equal(2, takeover.ReadLatest().Snapshot!.Sequence);
+        }
+    }
+
+    [Fact]
     public void OwnerDeathBeforeRegisteredRecoversWithoutCapability()
     {
         SkipUnlessUsable();
@@ -496,12 +573,16 @@ public sealed class RecoveryHarness
         // The durable record names the exact staged allocation.
         using var journalDir = new TempDir();
         var journal = new OwnershipJournal(new JournalFileStorage(), journalDir.Path);
+        Assert.True(journal.TryAcquireWriter(out var writer, out var acquireError), acquireError);
         var record = RecoveryTestSupport.Snapshot(
             allocations: new[]
             {
                 new AllocationEntry(AllocationKind.Staging, closure.Objects[0].StagingName, closure.Objects[0].Length, closure.Objects[0].Sha256),
             });
-        Assert.True(journal.WriteNext(record).Ok);
+        using (writer!)
+        {
+            Assert.True(journal.WriteNext(writer, record).Ok);
+        }
 
         // The scope retains a duplicate of the staging-directory handle and
         // cleans the exact registered original through it. No
@@ -528,9 +609,14 @@ public sealed class RecoveryHarness
         using var dir = new TempDir();
         using var storage = new JournalFileStorage();
         var journal = new OwnershipJournal(storage, dir.Path);
-        Assert.True(journal.WriteNext(RecoveryTestSupport.Snapshot()).Ok);
+        Assert.True(journal.TryAcquireWriter(out var writer, out var acquireError), acquireError);
+        using (writer!)
+        {
+            Assert.True(journal.WriteNext(writer, RecoveryTestSupport.Snapshot()).Ok);
+        }
+
         Assert.True(journal.ReadLatest().Ok);
-        File.WriteAllBytes(System.IO.Path.Combine(dir.Path, OwnershipJournal.DefaultSnapshotName), new byte[] { 1, 2, 3, 4, 5 });
+        File.WriteAllBytes(System.IO.Path.Combine(dir.Path, OwnershipJournal.SlotA), new byte[] { 1, 2, 3, 4, 5 });
         Assert.False(journal.ReadLatest().Ok);
     }
 

@@ -107,13 +107,42 @@ internal sealed class JournalFileStorage : IJournalStorage, IDisposable
         }
     }
 
+    public JournalIoResult Unlink(string directory, string name)
+    {
+        var path = Path.Combine(directory, name);
+        try
+        {
+            if (!File.Exists(path))
+            {
+                return JournalIoResult.Success;
+            }
+
+            File.Delete(path);
+            return JournalIoResult.Success;
+        }
+        catch (Exception ex)
+        {
+            return JournalIoResult.Failure($"unlink {name}: {ex.GetType().Name}");
+        }
+    }
+
     public bool Exists(string directory, string name) => File.Exists(Path.Combine(directory, name));
 
     public byte[]? ReadAll(string directory, string name)
     {
+        var path = Path.Combine(directory, name);
         try
         {
-            return File.ReadAllBytes(Path.Combine(directory, name));
+            // Inspect length through trusted metadata before allocating or
+            // reading proportionally to a corrupt length.
+            var length = new FileInfo(path).Length;
+            if (length < 0 || length > OwnershipSnapshotCodec.MaxSnapshotBytes)
+            {
+                return null;
+            }
+
+            var bytes = File.ReadAllBytes(path);
+            return bytes.Length > OwnershipSnapshotCodec.MaxSnapshotBytes ? null : bytes;
         }
         catch (Exception)
         {

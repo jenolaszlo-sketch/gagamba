@@ -13,6 +13,9 @@ internal sealed class FakeJournalStorage : IJournalStorage
     /// <summary>Fault hook keyed by step name; non-null result fails that step.</summary>
     public Func<string, JournalIoResult?>? Fault { get; set; }
 
+    public void DirectPut(string directory, string name, byte[] content) =>
+        _files[directory + "/" + name] = (byte[])content.Clone();
+
     public JournalIoResult CreateExclusive(string directory, string name)
     {
         var fault = Fault?.Invoke("create");
@@ -56,13 +59,35 @@ internal sealed class FakeJournalStorage : IJournalStorage
         return JournalIoResult.Success;
     }
 
+    public JournalIoResult Unlink(string directory, string name)
+    {
+        var fault = Fault?.Invoke("unlink");
+        if (fault is { } f) { return f; }
+        _files.Remove(directory + "/" + name);
+        return JournalIoResult.Success;
+    }
+
     public bool Exists(string directory, string name) => _files.ContainsKey(directory + "/" + name);
 
-    public byte[]? ReadAll(string directory, string name) =>
-        _files.TryGetValue(directory + "/" + name, out var value) ? (byte[])value.Clone() : null;
+    public byte[]? ReadAll(string directory, string name)
+    {
+        if (!_files.TryGetValue(directory + "/" + name, out var value))
+        {
+            return null;
+        }
+
+        if (value.Length > OwnershipSnapshotCodec.MaxSnapshotBytes)
+        {
+            return null;
+        }
+
+        return (byte[])value.Clone();
+    }
 
     public JournalIoResult TryAcquireExclusiveLock(string directory, string name)
     {
+        var fault = Fault?.Invoke("lock");
+        if (fault is { } f) { return f; }
         var key = directory + "/lock/" + name;
         if (_locks.ContainsKey(key)) { return JournalIoResult.Failure("lock held"); }
         _locks[key] = true;

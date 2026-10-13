@@ -138,33 +138,34 @@ if (barrier == "after-receive")
 var journalDir = parsed["--journal-dir"];
 var storage = new JournalFileStorage();
 var journal = new OwnershipJournal(storage, journalDir);
-var lockResult = journal.TryAcquireExclusiveWriter();
-if (!lockResult.Ok)
+if (!journal.TryAcquireWriter(out var writerLease, out var lockError))
 {
-    Emit($"ERR writer-lock {lockResult.Error}");
+    Emit($"ERR writer-lock {lockError}");
     return 6;
 }
 
-Emit("WRITER_LOCKED");
-if (barrier == "after-lock")
+using (writerLease!)
 {
-    Emit("BARRIER after-lock");
-    return 0;
-}
+    Emit("WRITER_LOCKED");
+    if (barrier == "after-lock")
+    {
+        Emit("BARRIER after-lock");
+        return 0;
+    }
 
-if (barrier == "before-registered")
-{
-    Emit("BARRIER before-registered");
-    return 0;
-}
+    if (barrier == "before-registered")
+    {
+        Emit("BARRIER before-registered");
+        return 0;
+    }
 
-var registered = new OwnershipSnapshot(
-    OwnershipSnapshotCodec.CurrentVersion, 0, execution, bootId, identity.CgroupMountId, identity.CgroupMountFsType,
-    identity.ParentDevice, identity.ParentInode, domainName, identity.ChildDevice, identity.ChildInode, leaseGen,
-    OwnershipWriterKind.Owner, OwnershipCleanupState.NotStarted, PreparationStage.AllocationRegistered,
-    new[] { new AllocationEntry(AllocationKind.Domain, domainName, 0, Array.Empty<byte>()) }, null);
-var registeredWrite = journal.WriteNext(registered);
-Emit($"REGISTERED ok={registeredWrite.Ok} err={registeredWrite.Error}");
+    var registered = new OwnershipSnapshot(
+        OwnershipSnapshotCodec.CurrentVersion, 0, execution, bootId, identity.CgroupMountId, identity.CgroupMountFsType,
+        identity.ParentDevice, identity.ParentInode, domainName, identity.ChildDevice, identity.ChildInode, leaseGen,
+        OwnershipWriterKind.Owner, OwnershipCleanupState.NotStarted, PreparationStage.AllocationRegistered,
+        new[] { new AllocationEntry(AllocationKind.Domain, domainName, 0, Array.Empty<byte>()) }, null);
+    var registeredWrite = journal.WriteNext(writerLease, registered);
+    Emit($"REGISTERED ok={registeredWrite.Ok} err={registeredWrite.Error}");
 
 if (barrier == "after-registered")
 {
@@ -204,6 +205,7 @@ while ((line = Console.In.ReadLine()) is not null)
 
 Emit("CONTROL_EOF");
 return 0;
+}
 
 internal sealed class OwnerClock : IDomainClock
 {
