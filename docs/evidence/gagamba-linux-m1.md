@@ -67,7 +67,12 @@ findings from the preserved R6B rereview: F1 (the zero-length-record
 `SCM_RIGHTS` rejection now parses and closes the already-installed received
 descriptors exactly once) and F2 (the live-owner endpoint test now observes
 `/proc/<pid>/fd` while the owner is deterministically alive, removing the
-post-exit race). G2-02 remains independently resolved; this patch is not a
+post-exit race). Independent regression check completed: R6B.1 ACCEPTED -
+F1/F2 CORRECTED (F1 verified fd-neutral single and 25× repeated, root and
+uid-1000/gaga-delegated; F2 verified 6/6 as a live-owner observation; exact
+`51 + 0x55` counterexample still refuses; reviewer suites from a pristine
+export: root-native M1 278 passed + 17 skipped, non-root delegated 16/16).
+G2-02 remains independently resolved; this patch is not a
 new G2-02 acceptance. G2-03, G2-04, G2-05, G2-08 and G2-10 remain blocking;
 G2-11 maintenance; G2 overall NOT ACCEPTED; WP04 blocked.
 
