@@ -29,13 +29,27 @@ internal enum ReconcileOutcome : byte
     Failed = 3,
 }
 
-internal sealed record ReconcileResult(ReconcileOutcome Outcome, string Detail, bool DestructiveActionTaken);
+internal sealed record ReconcileResult(
+    ReconcileOutcome Outcome,
+    string Detail,
+    bool DestructiveActionTaken,
+    IReadOnlyList<ComponentOutcome>? Components = null);
 
 /// <summary>Identity-checked cleanup of accounted allocations through
 /// retained parent handles. Never arbitrary-path, never journal-only.</summary>
+internal enum AllocationCleanOutcome : byte
+{
+    Cleaned,
+    AlreadyAbsent,
+    Mismatch,
+    Failed,
+}
+
+internal readonly record struct AllocationCleanResult(AllocationCleanOutcome Outcome, string Detail);
+
 internal interface IAllocationCleaner
 {
-    DomainIoResult CleanOne(AllocationEntry entry);
+    AllocationCleanResult CleanOne(AllocationEntry entry);
 }
 
 internal static class RecoveryPlanner
@@ -83,6 +97,27 @@ internal static class RecoveryPlanner
     }
 }
 
+[Flags]
+internal enum CleanupComponents : byte
+{
+    None = 0,
+    DomainStop = 1,
+    DomainEmpty = 2,
+    Staging = 4,
+    DomainRemoval = 8,
+    JournalFinalization = 16,
+}
+
+internal enum ComponentState : byte
+{
+    Pending,
+    Confirmed,
+    Failed,
+    Unknown,
+}
+
+internal sealed record ComponentOutcome(CleanupComponents Component, ComponentState State, string Detail);
+
 internal sealed class Reconciler
 {
     private readonly IDomainClock _clock;
@@ -94,13 +129,19 @@ internal sealed class Reconciler
         _stopAllowance = stopAllowance;
     }
 
-    /// <summary>Idempotent reconciliation. Repeating a call returns the
-    /// same facts plus any new cleanup observations.</summary>
+    /// <summary>Idempotent component-wise reconciliation. Every required
+    /// component is evaluated from live authority and actual outcomes; a
+    /// missing cleaner or missing authority yields Unknown debt, never
+    /// assumed success. Progress persists monotonically under the writer
+    /// lease when one is supplied; without it, finalization stays Unknown
+    /// while urgent domain stop may still proceed.</summary>
     internal ReconcileResult Reconcile(
         OwnershipSnapshot record,
         string currentBootId,
         DomainLease? liveLease,
-        IAllocationCleaner? cleaner)
+        IAllocationCleaner? cleaner,
+        OwnershipJournal? journal,
+        JournalWriterLease? writer)
     {
         ArgumentNullException.ThrowIfNull(record);
         ArgumentNullException.ThrowIfNull(currentBootId);
@@ -115,43 +156,290 @@ internal sealed class Reconciler
                 return new ReconcileResult(ReconcileOutcome.QuarantinedUnknown, plan.Reason, DestructiveActionTaken: false);
         }
 
-        // KillAndClean: re-verify the retained handle still refers to the
-        // captured object, then stop/observe/clean by retained authority.
-        var verify = liveLease!.VerifyIdentity();
-        if (!verify.Match)
-        {
-            return new ReconcileResult(ReconcileOutcome.Refused, verify.Error, false);
-        }
+        var outcomes = new List<ComponentOutcome>();
+        var destructive = false;
+        var bits = record.CompletedCleanup;
+        var finalizationFailed = false;
+        var finalizationDetail = string.Empty;
 
-        var stop = liveLease.StopAndAwaitEmpty(_stopAllowance, _clock);
-        if (!stop.Stopped)
+        bool TryPersist(byte newBits, OwnershipCleanupState cleanup, out string error)
         {
-            return new ReconcileResult(ReconcileOutcome.Failed, stop.Error, DestructiveActionTaken: true);
-        }
-
-        if (cleaner is not null)
-        {
-            foreach (var allocation in record.Allocations)
+            error = string.Empty;
+            if (journal is null || writer is null)
             {
-                var clean = cleaner.CleanOne(allocation);
-                if (!clean.Ok)
+                return false;
+            }
+
+            var persisted = journal.WriteNext(writer, record with { CompletedCleanup = newBits, Cleanup = cleanup });
+            if (!persisted.Ok)
+            {
+                error = persisted.Error;
+                return false;
+            }
+
+            return true;
+        }
+
+        void Note(CleanupComponents component, ComponentState state, string detail) =>
+            outcomes.Add(new ComponentOutcome(component, state, detail));
+
+        // DomainStop (+DomainEmpty established by the same bounded wait).
+        var stopState = ComponentState.Pending;
+        if ((bits & (byte)CleanupComponents.DomainStop) != 0)
+        {
+            stopState = ComponentState.Confirmed;
+            Note(CleanupComponents.DomainStop, stopState, "previously verified");
+        }
+        else
+        {
+            var verify = liveLease!.VerifyIdentity();
+            if (!verify.Match)
+            {
+                return new ReconcileResult(ReconcileOutcome.Refused, verify.Error, false, outcomes);
+            }
+
+            destructive = true;
+            var stop = liveLease.StopAndAwaitEmpty(_stopAllowance, _clock);
+            if (!stop.Stopped)
+            {
+                Note(CleanupComponents.DomainStop, ComponentState.Failed, stop.Error);
+                stopState = ComponentState.Failed;
+            }
+            else
+            {
+                bits |= (byte)(CleanupComponents.DomainStop | CleanupComponents.DomainEmpty);
+                stopState = ComponentState.Confirmed;
+                Note(CleanupComponents.DomainStop, stopState, "stopped and observed empty");
+                if (!TryPersist(bits, record.Cleanup, out var persistError))
                 {
-                    return new ReconcileResult(ReconcileOutcome.Failed, clean.Error, DestructiveActionTaken: true);
+                    finalizationFailed = true;
+                    finalizationDetail = $"stop progress persistence failed: {persistError}";
                 }
             }
         }
 
-        var removal = liveLease.RemoveIfIdentityMatches();
-        if (removal.Refused)
+        // DomainEmpty.
+        var emptyState = ComponentState.Pending;
+        if ((bits & (byte)CleanupComponents.DomainEmpty) != 0)
         {
-            return new ReconcileResult(ReconcileOutcome.QuarantinedUnknown, removal.Error, DestructiveActionTaken: true);
+            emptyState = ComponentState.Confirmed;
+            Note(CleanupComponents.DomainEmpty, emptyState, "previously verified");
+        }
+        else if (stopState == ComponentState.Confirmed)
+        {
+            // Established by the successful bounded wait above.
+            emptyState = ComponentState.Confirmed;
+            Note(CleanupComponents.DomainEmpty, emptyState, "established by stop");
+        }
+        else
+        {
+            var population = liveLease!.ObservePopulation();
+            if (population.Known && population.Empty)
+            {
+                bits |= (byte)CleanupComponents.DomainEmpty;
+                emptyState = ComponentState.Confirmed;
+                Note(CleanupComponents.DomainEmpty, emptyState, "observed empty");
+                if (!TryPersist(bits, record.Cleanup, out var persistError))
+                {
+                    finalizationFailed = true;
+                    finalizationDetail = $"empty progress persistence failed: {persistError}";
+                }
+            }
+            else if (population.Known)
+            {
+                emptyState = ComponentState.Failed;
+                Note(CleanupComponents.DomainEmpty, emptyState, "domain still populated");
+            }
+            else
+            {
+                emptyState = ComponentState.Unknown;
+                Note(CleanupComponents.DomainEmpty, emptyState, population.Error);
+            }
         }
 
-        if (!removal.Removed)
+        // Staging: every Staging-kind allocation must be cleaned through
+        // live authority, then confirmed StagingDirectory containers; a
+        // missing cleaner is debt, never success. Unconfirmed directory
+        // entries are skipped (their objects still resolve individually);
+        // Domain-kind entries are covered by domain removal, not the
+        // cleaner.
+        var stagingState = ComponentState.Pending;
+        var stagingObjects = record.Allocations.Where(a => a.Kind == AllocationKind.Staging).ToArray();
+        var stagingDirs = record.Allocations
+            .Where(a => a.Kind == AllocationKind.StagingDirectory && a.Confirmed)
+            .ToArray();
+        if (stagingObjects.Length == 0 && stagingDirs.Length == 0)
         {
-            return new ReconcileResult(ReconcileOutcome.Failed, removal.Error, DestructiveActionTaken: true);
+            stagingState = ComponentState.Confirmed;
+            Note(CleanupComponents.Staging, stagingState, "no staging allocations recorded");
+        }
+        else if ((bits & (byte)CleanupComponents.Staging) != 0)
+        {
+            stagingState = ComponentState.Confirmed;
+            Note(CleanupComponents.Staging, stagingState, "previously verified");
+        }
+        else if (cleaner is null)
+        {
+            stagingState = ComponentState.Unknown;
+            Note(CleanupComponents.Staging, stagingState, "recorded staging allocations but no cleanup authority");
+        }
+        else
+        {
+            destructive = true;
+            var sawFailure = false;
+            var sawMismatch = false;
+            var mismatchDetail = string.Empty;
+            var failureDetail = string.Empty;
+            foreach (var allocation in stagingObjects)
+            {
+                var clean = cleaner.CleanOne(allocation);
+                switch (clean.Outcome)
+                {
+                    case AllocationCleanOutcome.Cleaned:
+                    case AllocationCleanOutcome.AlreadyAbsent:
+                        break;
+                    case AllocationCleanOutcome.Mismatch:
+                        sawMismatch = true;
+                        mismatchDetail = clean.Detail;
+                        break;
+                    default:
+                        sawFailure = true;
+                        failureDetail = clean.Detail;
+                        break;
+                }
+            }
+
+            // Containers are removed only when every object inside them is
+            // already gone; a pending object debt keeps its directory.
+            if (!sawFailure && !sawMismatch)
+            {
+                foreach (var directory in stagingDirs)
+                {
+                    var clean = cleaner.CleanOne(directory);
+                    switch (clean.Outcome)
+                    {
+                        case AllocationCleanOutcome.Cleaned:
+                        case AllocationCleanOutcome.AlreadyAbsent:
+                            break;
+                        case AllocationCleanOutcome.Mismatch:
+                            sawMismatch = true;
+                            mismatchDetail = clean.Detail;
+                            break;
+                        default:
+                            sawFailure = true;
+                            failureDetail = clean.Detail;
+                            break;
+                    }
+                }
+            }
+
+            if (sawFailure)
+            {
+                stagingState = ComponentState.Failed;
+                Note(CleanupComponents.Staging, stagingState, failureDetail);
+            }
+            else if (sawMismatch)
+            {
+                stagingState = ComponentState.Unknown;
+                Note(CleanupComponents.Staging, stagingState, $"replacement preserved: {mismatchDetail}");
+            }
+            else
+            {
+                bits |= (byte)CleanupComponents.Staging;
+                stagingState = ComponentState.Confirmed;
+                Note(CleanupComponents.Staging, stagingState, "all staging allocations cleaned");
+                if (!TryPersist(bits, record.Cleanup, out var persistError))
+                {
+                    finalizationFailed = true;
+                    finalizationDetail = $"staging progress persistence failed: {persistError}";
+                }
+            }
         }
 
-        return new ReconcileResult(ReconcileOutcome.CleanupConfirmed, "domain stopped, allocations cleaned, domain removed", DestructiveActionTaken: true);
+        // DomainRemoval.
+        var removalState = ComponentState.Pending;
+        if ((bits & (byte)CleanupComponents.DomainRemoval) != 0)
+        {
+            removalState = ComponentState.Confirmed;
+            Note(CleanupComponents.DomainRemoval, removalState, "previously verified");
+        }
+        else
+        {
+            destructive = true;
+            var removal = liveLease!.RemoveIfIdentityMatches();
+            if (removal.Removed)
+            {
+                bits |= (byte)CleanupComponents.DomainRemoval;
+                removalState = ComponentState.Confirmed;
+                Note(CleanupComponents.DomainRemoval, removalState, "removed");
+                if (!TryPersist(bits, record.Cleanup, out var persistError))
+                {
+                    finalizationFailed = true;
+                    finalizationDetail = $"removal progress persistence failed: {persistError}";
+                }
+            }
+            else if (removal.Refused)
+            {
+                removalState = ComponentState.Unknown;
+                Note(CleanupComponents.DomainRemoval, removalState, removal.Error);
+            }
+            else
+            {
+                removalState = ComponentState.Failed;
+                Note(CleanupComponents.DomainRemoval, removalState, removal.Error);
+            }
+        }
+
+        // JournalFinalization + truthful aggregation.
+        var finalizationState = ComponentState.Pending;
+        var required = new[] { stopState, emptyState, stagingState, removalState };
+        OwnershipCleanupState verdict;
+        ReconcileOutcome outcome;
+        string detail;
+        if (required.Any(s => s == ComponentState.Failed) || finalizationFailed)
+        {
+            verdict = OwnershipCleanupState.Failed;
+            outcome = ReconcileOutcome.Failed;
+            detail = finalizationFailed && !required.Any(s => s == ComponentState.Failed)
+                ? finalizationDetail
+                : "one or more required cleanup components failed";
+        }
+        else if (required.Any(s => s == ComponentState.Unknown))
+        {
+            verdict = OwnershipCleanupState.Unknown;
+            outcome = ReconcileOutcome.QuarantinedUnknown;
+            detail = "required cleanup state cannot be established";
+        }
+        else
+        {
+            verdict = OwnershipCleanupState.Confirmed;
+            outcome = ReconcileOutcome.CleanupConfirmed;
+            detail = "all required cleanup components confirmed";
+        }
+
+        if (journal is null || writer is null)
+        {
+            finalizationState = ComponentState.Unknown;
+            Note(CleanupComponents.JournalFinalization, finalizationState, "persistence uncertainty: no writer lease supplied");
+            if (outcome == ReconcileOutcome.CleanupConfirmed)
+            {
+                outcome = ReconcileOutcome.QuarantinedUnknown;
+                detail = "operations confirmed but persistence unavailable; explicit Unknown";
+            }
+        }
+        else if (TryPersist(bits, verdict, out var finalError))
+        {
+            finalizationState = ComponentState.Confirmed;
+            Note(CleanupComponents.JournalFinalization, finalizationState, "progress persisted");
+        }
+        else
+        {
+            finalizationState = ComponentState.Failed;
+            Note(CleanupComponents.JournalFinalization, finalizationState, $"persistence failed: {finalError}");
+            outcome = ReconcileOutcome.Failed;
+            detail = $"cleanup progress persistence failed distinctly from operations: {finalError}";
+        }
+
+        return new ReconcileResult(outcome, detail, destructive, outcomes);
     }
 }

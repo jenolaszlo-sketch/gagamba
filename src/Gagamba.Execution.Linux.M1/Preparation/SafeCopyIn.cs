@@ -45,8 +45,30 @@ internal sealed record CopyObjectPlan(
 /// default; production never sets them.</summary>
 internal sealed record CopyTestHooks(Action<int>? OnChunkCopied, Action<string>? OnBeforeReopen);
 
+/// <summary>Simulated actor death for deterministic recovery barriers.
+/// Thrown by test hooks to abandon preparation immediately without any
+/// failure cleanup, modeling a dead owner: staged files stay on disk,
+/// durable records stay as written, and only independently retained
+/// authority plus durable state may be used afterward. Never thrown by
+/// production paths; the engine lets it propagate instead of converting
+/// it into a normal failure.</summary>
+internal sealed class BarrierDeathException : Exception
+{
+    internal BarrierDeathException(string barrier)
+        : base($"simulated death at barrier '{barrier}'")
+    {
+        Barrier = barrier;
+    }
+
+    internal string Barrier { get; }
+}
+
 /// <summary>Immutable preparation request. All collections are copied on
-/// use; mutating caller arrays afterwards cannot change preparation.</summary>
+/// use; mutating caller arrays afterwards cannot change preparation.
+/// OnObjectAccounted, when set, is invoked synchronously after each
+/// successful object bind with the staging directory handle and the bound
+/// object, so recovery accounting can durably record staged allocations
+/// incrementally. It must not take ownership of either handle.</summary>
 internal sealed record CopyPlan(
     string SourceRootPath,
     string StagingParentPath,
@@ -56,7 +78,8 @@ internal sealed record CopyPlan(
     int MaxObjects,
     IReadOnlyList<KeyValuePair<string, string>>? Environment,
     Func<CancellationToken, bool>? Acknowledge,
-    CopyTestHooks? Hooks)
+    CopyTestHooks? Hooks,
+    Action<SafeHandle, StagedObject>? OnObjectAccounted = null)
 {
     internal const ulong EnvironmentBudgetBytes = 16384;
     internal const int CopyChunkBytes = 65536;
@@ -139,7 +162,7 @@ internal static class SafeCopyIn
                 var staged = CopyOneObject(
                     host, sourceRoot!, stagingDir!, plan.Objects[index], index,
                     plan.TotalBudgetBytes, ref totalBytes,
-                    plan.Hooks, cancellationToken, created);
+                    plan.Hooks, plan.OnObjectAccounted, cancellationToken, created);
                 if (!staged.Succeeded)
                 {
                     return FinishFailed(host, ref stagingDir, created, bound, totalBytes, environment, staged.Failure, staged.Detail);
@@ -167,6 +190,13 @@ internal static class SafeCopyIn
         {
             return FinishFailed(host, ref stagingDir, created, bound, totalBytes, environment,
                 CopyFailureKind.Cancelled, "Cancelled during preparation.");
+        }
+        catch (BarrierDeathException)
+        {
+            // Simulated actor death for deterministic recovery barriers:
+            // propagate without any failure cleanup so durable state plus
+            // independently retained authority is all recovery may use.
+            throw;
         }
         catch (Exception ex)
         {
@@ -323,6 +353,7 @@ internal static class SafeCopyIn
         ulong totalBudget,
         ref ulong totalBytes,
         CopyTestHooks? hooks,
+        Action<SafeHandle, StagedObject>? onObjectAccounted,
         CancellationToken cancellationToken,
         List<CreatedEntry> created)
     {
@@ -440,6 +471,31 @@ internal static class SafeCopyIn
 
             hooks?.OnBeforeReopen?.Invoke(stagingName);
             var bound = BindReopened(host, stagingDir, stagingName, request.Role, digest, count, createdIdentity, finalMode);
+            if (bound.Succeeded && bound.Bound is not null && onObjectAccounted is not null)
+            {
+                // Recovery accounting hook: runs after the bind, before the
+                // object joins the bound list, so an accounting failure
+                // treats the object as partial (synchronously cleaned via
+                // FinishFailed) rather than accounted. BarrierDeath and
+                // cancellation propagate for death barriers.
+                try
+                {
+                    onObjectAccounted(stagingDir, bound.Bound);
+                }
+                catch (BarrierDeathException)
+                {
+                    throw;
+                }
+                catch (OperationCanceledException)
+                {
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    return new ObjectStage(false, CopyFailureKind.PublicationFailure, $"Object accounting failed: {ex.GetType().Name}.", null);
+                }
+            }
+
             return bound;
         }
     }

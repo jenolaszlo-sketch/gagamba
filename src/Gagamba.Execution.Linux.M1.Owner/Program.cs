@@ -163,7 +163,8 @@ using (writerLease!)
         OwnershipSnapshotCodec.CurrentVersion, 0, execution, bootId, identity.CgroupMountId, identity.CgroupMountFsType,
         identity.ParentDevice, identity.ParentInode, domainName, identity.ChildDevice, identity.ChildInode, leaseGen,
         OwnershipWriterKind.Owner, OwnershipCleanupState.NotStarted, PreparationStage.AllocationRegistered,
-        new[] { new AllocationEntry(AllocationKind.Domain, domainName, 0, Array.Empty<byte>()) }, null);
+        StagingParentDevice: 0, StagingParentInode: 0,
+        Allocations: new[] { new AllocationEntry(AllocationKind.Domain, domainName, 0, Array.Empty<byte>(), 0, 0, true) }, Preparation: null);
     var registeredWrite = journal.WriteNext(writerLease, registered);
     Emit($"REGISTERED ok={registeredWrite.Ok} err={registeredWrite.Error}");
 

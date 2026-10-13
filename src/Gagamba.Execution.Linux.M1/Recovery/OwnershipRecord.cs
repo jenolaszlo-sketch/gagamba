@@ -28,6 +28,7 @@ internal enum AllocationKind : byte
 {
     Staging = 0,
     Domain = 1,
+    StagingDirectory = 2,
 }
 
 internal enum PreparationStage : byte
@@ -39,12 +40,18 @@ internal enum PreparationStage : byte
 }
 
 /// <summary>One accounted allocation the recovery scope can clean by
-/// retained parent + identity, never by arbitrary path.</summary>
+/// retained parent + identity, never by arbitrary path. Device/Inode are
+/// the captured creation identity used for identity-checked removal;
+/// Confirmed marks durable per-object accounting (unconfirmed entries are
+/// planned-but-unverified names).</summary>
 internal sealed record AllocationEntry(
     AllocationKind Kind,
     string Name,
     ulong Length,
-    byte[] Digest);
+    byte[] Digest,
+    ulong Device,
+    ulong Inode,
+    bool Confirmed);
 
 /// <summary>Preparation identity carried in the durable record. Bounded,
 /// non-secret corroboration only; it can never resurrect a capability.</summary>
@@ -56,7 +63,9 @@ internal sealed record RecordedPreparation(
     byte[] ManifestDigest);
 
 /// <summary>Immutable ownership snapshot. Versioned; sequence-monotonic;
-/// checksummed over the canonical payload.</summary>
+/// checksummed over the canonical payload. CompletedCleanup is a bitmask
+/// of independently confirmed cleanup components for idempotent,
+/// monotonic recovery progress.</summary>
 internal sealed record OwnershipSnapshot(
     ushort Version,
     long Sequence,
@@ -73,14 +82,17 @@ internal sealed record OwnershipSnapshot(
     OwnershipWriterKind Writer,
     OwnershipCleanupState Cleanup,
     PreparationStage Stage,
+    ulong StagingParentDevice,
+    ulong StagingParentInode,
     IReadOnlyList<AllocationEntry> Allocations,
-    RecordedPreparation? Preparation);
+    RecordedPreparation? Preparation,
+    byte CompletedCleanup = 0);
 
 /// <summary>Bounded codec for ownership snapshots. Refuses overlarge or
 /// malformed records; the checksum covers every byte before it.</summary>
 internal static class OwnershipSnapshotCodec
 {
-    internal const ushort CurrentVersion = 1;
+    internal const ushort CurrentVersion = 2;
     internal const int MaxSnapshotBytes = 65536;
     internal const int MaxAllocations = 128;
     internal const int MaxNameBytes = 256;
@@ -111,6 +123,9 @@ internal static class OwnershipSnapshotCodec
         body.WriteByte((byte)snapshot.Writer);
         body.WriteByte((byte)snapshot.Cleanup);
         body.WriteByte((byte)snapshot.Stage);
+        body.WriteByte(snapshot.CompletedCleanup);
+        WriteU64(body, snapshot.StagingParentDevice);
+        WriteU64(body, snapshot.StagingParentInode);
         WriteU32(body, checked((uint)snapshot.Allocations.Count));
         foreach (var allocation in snapshot.Allocations)
         {
@@ -118,6 +133,9 @@ internal static class OwnershipSnapshotCodec
             WriteString(body, allocation.Name, MaxNameBytes, nameof(allocation.Name));
             WriteU64(body, allocation.Length);
             WriteBytes(body, allocation.Digest, nameof(allocation.Digest));
+            WriteU64(body, allocation.Device);
+            WriteU64(body, allocation.Inode);
+            body.WriteByte(allocation.Confirmed ? (byte)1 : (byte)0);
         }
 
         if (snapshot.Preparation is null)
@@ -191,6 +209,9 @@ internal static class OwnershipSnapshotCodec
             var writer = (OwnershipWriterKind)ReadByte(payload, ref offset);
             var cleanup = (OwnershipCleanupState)ReadByte(payload, ref offset);
             var stage = (PreparationStage)ReadByte(payload, ref offset);
+            var completed = ReadByte(payload, ref offset);
+            var stagingParentDevice = ReadU64(payload, ref offset);
+            var stagingParentInode = ReadU64(payload, ref offset);
             var count = ReadU32(payload, ref offset);
             if (count > MaxAllocations)
             {
@@ -205,7 +226,16 @@ internal static class OwnershipSnapshotCodec
                 var name = ReadString(payload, ref offset, MaxNameBytes);
                 var length = ReadU64(payload, ref offset);
                 var digest = ReadBytes(payload, ref offset);
-                allocations.Add(new AllocationEntry(kind, name, length, digest));
+                var device = ReadU64(payload, ref offset);
+                var inode = ReadU64(payload, ref offset);
+                var confirmed = ReadByte(payload, ref offset);
+                if (confirmed != 0 && confirmed != 1)
+                {
+                    error = "invalid allocation confirmation tag";
+                    return false;
+                }
+
+                allocations.Add(new AllocationEntry(kind, name, length, digest, device, inode, confirmed == 1));
             }
 
             RecordedPreparation? preparation = null;
@@ -234,7 +264,11 @@ internal static class OwnershipSnapshotCodec
             snapshot = new OwnershipSnapshot(
                 version, sequence, executionId, bootId, mountId, mountFs,
                 parentDev, parentIno, domainName, domainDev, domainIno,
-                lease, writer, cleanup, stage, allocations, preparation);
+                lease, writer, cleanup, stage,
+                StagingParentDevice: stagingParentDevice,
+                StagingParentInode: stagingParentInode,
+                Allocations: allocations, Preparation: preparation,
+                CompletedCleanup: completed);
             return true;
         }
         catch (Exception ex)

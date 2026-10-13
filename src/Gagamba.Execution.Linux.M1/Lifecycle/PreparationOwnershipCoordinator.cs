@@ -117,11 +117,11 @@ internal sealed class PreparationOwnershipCoordinator
 
             var allocations = new List<AllocationEntry>
             {
-                new(AllocationKind.Domain, domain.Identity.ChildName, 0, Array.Empty<byte>()),
+                new(AllocationKind.Domain, domain.Identity.ChildName, 0, Array.Empty<byte>(), domain.Identity.ChildDevice, domain.Identity.ChildInode, true),
             };
             foreach (var staged in closure.Objects)
             {
-                allocations.Add(new AllocationEntry(AllocationKind.Staging, staged.StagingName, staged.Length, (byte[])staged.Sha256.Clone()));
+                allocations.Add(new AllocationEntry(AllocationKind.Staging, staged.StagingName, staged.Length, (byte[])staged.Sha256.Clone(), staged.Device, staged.Inode, true));
             }
 
             var registered = _intentTemplate with

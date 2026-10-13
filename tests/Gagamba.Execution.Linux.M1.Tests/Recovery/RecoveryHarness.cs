@@ -421,9 +421,15 @@ public sealed class RecoveryHarness
             var reconciler = new Reconciler(new RealClock(), TimeSpan.FromSeconds(5));
             // Record built from the actual live identity; eligibility is
             // derived from the live lease and boot, not caller booleans.
-            var record = RecordFrom(identity, new AllocationEntry(AllocationKind.Domain, identity.ChildName, 0, Array.Empty<byte>()));
-            var result = reconciler.Reconcile(record, Boot(), recovery, null);
-            Assert.Equal(ReconcileOutcome.CleanupConfirmed, result.Outcome);
+            var record = RecordFrom(identity, new AllocationEntry(AllocationKind.Domain, identity.ChildName, 0, Array.Empty<byte>(), 0, 0, true));
+            var recoveryJournal = new OwnershipJournal(new JournalFileStorage(), journal.Path);
+            Assert.True(recoveryJournal.TryAcquireWriter(out var recoveryWriter, out var acquireError), acquireError);
+            using (recoveryWriter!)
+            {
+                var result = reconciler.Reconcile(record, Boot(), recovery, null, recoveryJournal, recoveryWriter);
+                Assert.Equal(ReconcileOutcome.CleanupConfirmed, result.Outcome);
+            }
+
             Assert.Empty(Directory.GetDirectories(temp.Path, "d-*"));
             Assert.True(Directory.Exists(sibling));
         }
@@ -434,7 +440,8 @@ public sealed class RecoveryHarness
             OwnershipSnapshotCodec.CurrentVersion, 0, id.ExecutionId, id.BootId, id.CgroupMountId, id.CgroupMountFsType,
             id.ParentDevice, id.ParentInode, id.ChildName, id.ChildDevice, id.ChildInode, id.LeaseGeneration,
             OwnershipWriterKind.Owner, OwnershipCleanupState.NotStarted, PreparationStage.AllocationRegistered,
-            allocations, null);
+            StagingParentDevice: 0, StagingParentInode: 0,
+            Allocations: allocations, Preparation: null);
 
     [Fact]
     public void OwnerDeathAfterRegisteredRecoversOriginalAllocation()
@@ -469,8 +476,14 @@ public sealed class RecoveryHarness
 
             var reconciler = new Reconciler(new RealClock(), TimeSpan.FromSeconds(5));
             // Eligibility derived from the live recovery lease and boot (G2-09).
-            var result = reconciler.Reconcile(durable.Snapshot, Boot(), recovery, null);
-            Assert.Equal(ReconcileOutcome.CleanupConfirmed, result.Outcome);
+            var recoveryJournal = new OwnershipJournal(new JournalFileStorage(), journal.Path);
+            Assert.True(recoveryJournal.TryAcquireWriter(out var recoveryWriter, out var recoveryAcquireError), recoveryAcquireError);
+            using (recoveryWriter!)
+            {
+                var result = reconciler.Reconcile(durable.Snapshot, Boot(), recovery, null, recoveryJournal, recoveryWriter);
+                Assert.Equal(ReconcileOutcome.CleanupConfirmed, result.Outcome);
+            }
+
             Assert.Empty(Directory.GetDirectories(temp.Path, "d-*"));
             Assert.True(Directory.Exists(sibling));
         }
@@ -577,7 +590,7 @@ public sealed class RecoveryHarness
         var record = RecoveryTestSupport.Snapshot(
             allocations: new[]
             {
-                new AllocationEntry(AllocationKind.Staging, closure.Objects[0].StagingName, closure.Objects[0].Length, closure.Objects[0].Sha256),
+                new AllocationEntry(AllocationKind.Staging, closure.Objects[0].StagingName, closure.Objects[0].Length, closure.Objects[0].Sha256, closure.Objects[0].Device, closure.Objects[0].Inode, true),
             });
         using (writer!)
         {
@@ -588,13 +601,28 @@ public sealed class RecoveryHarness
         // cleans the exact registered original through it. No
         // PreparationStore exists here, so no capability can be resurrected
         // or published late.
-        var stagingDirFd = PreparationInterop.Dup(
-            ((Microsoft.Win32.SafeHandles.SafeFileHandle)closure.StagingDirectory!).DangerousGetHandle().ToInt32());
-        Assert.True(stagingDirFd >= 0);
-        var cleaner = new RetainedStagingCleaner(stagingDirFd);
-        Assert.True(cleaner.CleanOne(record.Allocations[0]).Ok);
-        Assert.False(File.Exists(stagedPath));
-        PreparationInterop.CloseFd(stagingDirFd);
+        Assert.Equal(0, PreparationInterop.OpenDirectory(staging.Path, out var stagingParentFd));
+        try
+        {
+            var stagingDirFd = PreparationInterop.Dup(
+                ((Microsoft.Win32.SafeHandles.SafeFileHandle)closure.StagingDirectory!).DangerousGetHandle().ToInt32());
+            Assert.True(stagingDirFd >= 0);
+            try
+            {
+                var cleaner = new RetainedStagingCleaner(stagingParentFd, stagingDirFd);
+                Assert.Equal(AllocationCleanOutcome.Cleaned, cleaner.CleanOne(record.Allocations[0]).Outcome);
+                Assert.False(File.Exists(stagedPath));
+            }
+            finally
+            {
+                PreparationInterop.CloseFd(stagingDirFd);
+            }
+        }
+        finally
+        {
+            PreparationInterop.CloseFd(stagingParentFd);
+        }
+
         closure.Dispose();
     }
 
@@ -646,14 +674,41 @@ public sealed class RecoveryHarness
 
     private sealed class RetainedStagingCleaner : IAllocationCleaner
     {
-        private readonly int _stagingDirFd;
+        private readonly int _parentFd;
+        private readonly SafeHandle _stagingDir;
 
-        public RetainedStagingCleaner(int stagingDirFd) => _stagingDirFd = stagingDirFd;
-
-        public DomainIoResult CleanOne(AllocationEntry entry)
+        public RetainedStagingCleaner(int parentFd, int stagingDirFd)
         {
-            var errno = PreparationInterop.Unlink(_stagingDirFd, entry.Name);
-            return errno == 0 ? DomainIoResult.Success : DomainIoResult.Failure($"unlink errno {errno}");
+            _parentFd = parentFd;
+            _stagingDir = new Microsoft.Win32.SafeHandles.SafeFileHandle(new IntPtr(stagingDirFd), ownsHandle: false);
+        }
+
+        public AllocationCleanResult CleanOne(AllocationEntry entry)
+        {
+            if (entry.Kind == AllocationKind.StagingDirectory)
+            {
+                var subdirFd = ((Microsoft.Win32.SafeHandles.SafeFileHandle)_stagingDir).DangerousGetHandle().ToInt32();
+                if (PreparationInterop.StatFd(subdirFd, out var current) != 0
+                    || current.Device != entry.Device
+                    || current.Inode != entry.Inode)
+                {
+                    return new AllocationCleanResult(AllocationCleanOutcome.Mismatch, "staging directory identity mismatch");
+                }
+
+                var errno = PreparationInterop.RemoveDirectory(_parentFd, entry.Name);
+                return errno == 0
+                    ? new AllocationCleanResult(AllocationCleanOutcome.Cleaned, string.Empty)
+                    : new AllocationCleanResult(AllocationCleanOutcome.Failed, $"rmdir errno {errno}");
+            }
+
+            var result = StagingCleanup.CleanOne(LibcCopyHost.Instance, _stagingDir, entry.Name, entry.Device, entry.Inode);
+            return result.Outcome switch
+            {
+                CleanupItemOutcome.Removed => new AllocationCleanResult(AllocationCleanOutcome.Cleaned, string.Empty),
+                CleanupItemOutcome.AlreadyAbsent => new AllocationCleanResult(AllocationCleanOutcome.AlreadyAbsent, string.Empty),
+                CleanupItemOutcome.IdentityMismatch => new AllocationCleanResult(AllocationCleanOutcome.Mismatch, result.Error),
+                _ => new AllocationCleanResult(AllocationCleanOutcome.Failed, result.Error),
+            };
         }
     }
 

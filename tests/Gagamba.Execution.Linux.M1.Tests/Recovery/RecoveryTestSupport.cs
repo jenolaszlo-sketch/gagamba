@@ -218,7 +218,8 @@ internal static class RecoveryTestSupport
             OwnershipCodecVersion, 0, Execution, bootId, 356, "cgroup2",
             0xABCD, 100, "domain-1", 0xABCD, 200, Lease,
             writer, cleanup, stage,
-            allocations ?? Array.Empty<AllocationEntry>(), preparation)) with { };
+            StagingParentDevice: 0xABCD, StagingParentInode: 101,
+            Allocations: allocations ?? Array.Empty<AllocationEntry>(), Preparation: preparation)) with { };
 
-    internal const ushort OwnershipCodecVersion = 1;
+    internal const ushort OwnershipCodecVersion = 2;
 }

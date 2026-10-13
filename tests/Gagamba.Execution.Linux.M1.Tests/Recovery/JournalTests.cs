@@ -98,7 +98,7 @@ public sealed class JournalTests
         var many = new List<AllocationEntry>();
         for (var i = 0; i < OwnershipSnapshotCodec.MaxAllocations + 1; i++)
         {
-            many.Add(new AllocationEntry(AllocationKind.Staging, $"s-{i}", 1, new byte[32]));
+            many.Add(new AllocationEntry(AllocationKind.Staging, $"s-{i}", 1, new byte[32], 0, 0, true));
         }
 
         var snapshot = RecoveryTestSupport.Snapshot(allocations: many);
