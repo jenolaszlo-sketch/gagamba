@@ -165,10 +165,13 @@ public sealed class IntegratedBarrierTests
     }
 
     [Fact]
-    public void OwnerProcessPerformsPreparationAndKeepsCapabilityLocal()
+    public void RecoveryScopeWaitsForOwnerDomainRecoveryAuthorityBeforePreparationCompletes()
     {
         SkipUnlessUsable();
         using var fx = new Fixture(Bytes(0x71, 2048), null, null);
+        // Real domain creation runs in the owner between StartAuthority and
+        // its seven-descriptor recovery reply; completion proves the scope
+        // waited, retained that authority, and acknowledged it before registration.
         var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest(null), CancellationToken.None);
 
         Assert.True(outcome.Ok, outcome.Error);
@@ -176,7 +179,15 @@ public sealed class IntegratedBarrierTests
         Assert.NotEqual(Environment.ProcessId, outcome.Owner!.Id);
         Assert.Equal(fx.Exec, outcome.Description!.ExecutionId);
         Assert.Equal(PreparationStage.Prepared, fx.Journal.ReadLatest().Snapshot!.Stage);
-        Assert.Single(fx.Scope.RetainedRecoveryLeases);
+        var retainedDomain = Assert.Single(fx.Scope.RetainedRecoveryLeases);
+        Assert.True(retainedDomain.AuthorityAlive);
+        Assert.Equal(fx.Exec, retainedDomain.Identity.ExecutionId);
+        Assert.Equal(fx.ChildName, retainedDomain.Identity.ChildName);
+        var domainRecord = Assert.Single(fx.Journal.ReadLatest().Snapshot!.Allocations,
+            allocation => allocation.Kind == AllocationKind.Domain);
+        Assert.True(domainRecord.Confirmed);
+        Assert.Equal(retainedDomain.Identity.ChildDevice, domainRecord.Device);
+        Assert.Equal(retainedDomain.Identity.ChildInode, domainRecord.Inode);
         Assert.Single(fx.Scope.RetainedStagingParents);
         Assert.Single(fx.Scope.RetainedStagingDirectories);
         Assert.Null(typeof(OwnerPreparationOutcome).GetProperty("Capability"));

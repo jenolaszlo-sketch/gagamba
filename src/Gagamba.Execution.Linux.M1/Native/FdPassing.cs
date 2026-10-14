@@ -198,13 +198,54 @@ internal static class FdPassing
         }
     }
 
-    /// <summary>Returns the next queued SOCK_SEQPACKET record length without
-    /// consuming it or installing any SCM_RIGHTS descriptors. Callers use
-    /// the fixed protocol frame size to select the exact receiver.</summary>
-    internal static bool TryPeekRecordLength(int sock, out int length, out string error)
+    /// <summary>Polls for one record within the configured bounded timeout, then reports
+    /// its length without consuming it or installing SCM_RIGHTS descriptors.
+    /// The fixed protocol frame size selects the exact receiver.</summary>
+    internal static bool TryPeekRecordLength(
+        int sock,
+        int timeoutMilliseconds,
+        out int length,
+        out string error)
     {
         length = 0;
         error = string.Empty;
+        if (timeoutMilliseconds < 0)
+        {
+            error = "negative owner protocol record timeout";
+            return false;
+        }
+
+        var pollFd = Marshal.AllocHGlobal(8);
+        try
+        {
+            Zero(pollFd, 8);
+            Marshal.WriteInt32(pollFd, 0, sock);
+            Marshal.WriteInt16(pollFd, 4, POLLIN);
+            var ready = Poll(pollFd, 1, timeoutMilliseconds);
+            if (ready < 0)
+            {
+                error = $"poll errno {Marshal.GetLastWin32Error()}";
+                return false;
+            }
+
+            if (ready == 0)
+            {
+                error = "owner protocol record timed out";
+                return false;
+            }
+
+            var events = Marshal.ReadInt16(pollFd, 6);
+            if ((events & POLLIN) == 0)
+            {
+                error = $"owner protocol socket was not readable (revents 0x{events:X4})";
+                return false;
+            }
+        }
+        finally
+        {
+            Marshal.FreeHGlobal(pollFd);
+        }
+
         if (Ioctl(sock, FIONREAD, out length) != 0)
         {
             error = $"socket record length unavailable: errno {Marshal.GetLastWin32Error()}";

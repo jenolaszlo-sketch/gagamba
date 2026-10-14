@@ -715,7 +715,11 @@ internal sealed class M1RecoveryScope : IDisposable
 
     private static int ReadNextRecordLength(OwnerProtocolChannel channel, out string error)
     {
-        if (!FdPassing.TryPeekRecordLength(channel.Socket, out var length, out error))
+        if (!FdPassing.TryPeekRecordLength(
+                channel.Socket,
+                OwnerProtocolChannel.TransitionTimeoutMilliseconds,
+                out var length,
+                out error))
         {
             return -1;
         }

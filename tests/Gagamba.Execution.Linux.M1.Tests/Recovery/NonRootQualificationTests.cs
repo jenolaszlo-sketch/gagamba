@@ -79,16 +79,45 @@ public sealed class NonRootQualificationTests
 
     private static string Boot() => CgroupInterop.TryReadBootId(out var id, out _) ? id : "unknown";
 
-    private sealed class FailingPidFdProvider : IPidFdProvider
+    private sealed class FailingPidFdProvider : IPidFdProvider, IDisposable
     {
+        private readonly ManualResetEventSlim _attempted = new(false);
+        private readonly ManualResetEventSlim _release = new(false);
+
+        internal Process? OwnerProcess { get; private set; }
+
+        internal bool WaitForAttempt(TimeSpan timeout) => _attempted.Wait(timeout);
+
+        internal void Release() => _release.Set();
+
         public bool TryOpen(int pid, out int fd, out string error)
         {
             fd = -1;
+            try
+            {
+                OwnerProcess = Process.GetProcessById(pid);
+            }
+            catch (Exception ex)
+            {
+                error = $"could not retain owner process observation: {ex.GetType().Name}";
+                _attempted.Set();
+                return false;
+            }
+
+            _attempted.Set();
+            _release.Wait(TimeSpan.FromSeconds(15));
             error = "injected pidfd failure";
             return false;
         }
-    }
 
+        public void Dispose()
+        {
+            Release();
+            OwnerProcess?.Dispose();
+            _attempted.Dispose();
+            _release.Dispose();
+        }
+    }
     private sealed class TempDir : IDisposable
     {
         public string Path { get; } = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "gagamba-r5-" + Guid.NewGuid().ToString("N"));
@@ -277,15 +306,36 @@ public sealed class NonRootQualificationTests
     }
 
     [Fact]
-    public void NonRootMissingPidfdRefusesBeforeOwnerTransaction()
+    public async Task NonRootMissingPidfdRefusesBeforeOwnerTransaction()
     {
         SkipUnlessQualified();
-        using var fx = new IntegratedFixture(Bytes(0x19, 1024), null, null, new FailingPidFdProvider());
-        var outcome = fx.Scope.StartOwnerPreparation(fx.Request("none"), CancellationToken.None);
+        using var pidFdProvider = new FailingPidFdProvider();
+        using var fx = new IntegratedFixture(Bytes(0x19, 1024), null, null, pidFdProvider);
+        var preparation = Task.Run(() => fx.Scope.StartOwnerPreparation(fx.Request(null), TestContext.Current.CancellationToken));
 
+        try
+        {
+            Assert.True(await Task.Run(() => pidFdProvider.WaitForAttempt(TimeSpan.FromSeconds(5)), TestContext.Current.CancellationToken), "owner pidfd attempt was not observed");
+            var observedOwner = pidFdProvider.OwnerProcess
+                ?? throw new InvalidOperationException("spawned owner process was not retained for the live observation");
+            Assert.False(observedOwner.HasExited, "owner must remain live while pidfd acquisition is held");
+            Assert.Equal(PreparationStage.AllocationIntent, fx.Journal.ReadLatest().Snapshot!.Stage);
+            Assert.False(Directory.Exists(System.IO.Path.Combine(DelegatedParent!, fx.ChildName)));
+        }
+        finally
+        {
+            pidFdProvider.Release();
+            await preparation.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
+        }
+
+        var outcome = await preparation;
+        var ownerProcess = pidFdProvider.OwnerProcess
+            ?? throw new InvalidOperationException("spawned owner process observation was lost");
         Assert.False(outcome.Completed);
         Assert.Null(outcome.Owner);
         Assert.Contains("pidfd", outcome.Error, StringComparison.OrdinalIgnoreCase);
+        await ownerProcess.WaitForExitAsync(TestContext.Current.CancellationToken).WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
+        Assert.True(ownerProcess.HasExited);
         Assert.Equal(PreparationStage.AllocationIntent, fx.Journal.ReadLatest().Snapshot!.Stage);
         Assert.False(Directory.Exists(System.IO.Path.Combine(DelegatedParent!, fx.ChildName)));
         Assert.Empty(fx.Scope.RetainedRecoveryLeases);
@@ -296,6 +346,46 @@ public sealed class NonRootQualificationTests
             Assert.Equal(1, recovered!.BaselineSequence);
         }
     }
+    [Fact]
+    public void NonRootRecoveryScopeWaitsForOwnerDomainAuthorityBeforePreparationCompletes()
+    {
+        SkipUnlessQualified();
+        using var fx = new IntegratedFixture(Bytes(0x1A, 1024), null, null);
+        var scopePid = Environment.ProcessId;
+        var outcome = fx.Scope.StartOwnerPreparation(fx.Request(null), TestContext.Current.CancellationToken);
+
+        Assert.True(outcome.Ok, outcome.Error);
+        Assert.True(outcome.Completed);
+        var owner = outcome.Owner!;
+        Assert.NotEqual(scopePid, owner.Id);
+        Assert.Equal(fx.Exec, outcome.Description!.ExecutionId);
+        Assert.True(fx.Scope.TryOwnerPidFdExited(owner, 0, out var exited, out var pidfdError), pidfdError);
+        Assert.False(exited, "the owner must still be live while its local preparation capability is held");
+
+        var retainedDomain = Assert.Single(fx.Scope.RetainedRecoveryLeases);
+        Assert.True(retainedDomain.AuthorityAlive);
+        Assert.Equal(fx.Exec, retainedDomain.Identity.ExecutionId);
+        Assert.Equal(fx.ChildName, retainedDomain.Identity.ChildName);
+        var snapshot = fx.Journal.ReadLatest().Snapshot!;
+        Assert.Equal(PreparationStage.Prepared, snapshot.Stage);
+        var domainRecord = Assert.Single(snapshot.Allocations, allocation => allocation.Kind == AllocationKind.Domain);
+        Assert.True(domainRecord.Confirmed);
+        Assert.Equal(retainedDomain.Identity.ChildDevice, domainRecord.Device);
+        Assert.Equal(retainedDomain.Identity.ChildInode, domainRecord.Inode);
+        Assert.Single(fx.Scope.RetainedStagingParents);
+        Assert.Single(fx.Scope.RetainedStagingDirectories);
+
+        var competitor = new OwnershipJournal(new JournalFileStorage(), fx.JournalDir.Path);
+        var writerExcluded = !competitor.TryAcquireWriter(out _, out _);
+        Assert.True(writerExcluded, "the live owner must retain the exclusive journal writer");
+        Console.WriteLine(
+            $"R6D.2a non-root topology: uid={RealUid} euid={EffectiveUid} capEff={CapEff} " +
+            $"delegatedParent={DelegatedParent} recoveryScopePid={scopePid} ownerPid={owner.Id} " +
+            $"domain={domainRecord.Name}:{domainRecord.Inode} domainAuthorityRetained={retainedDomain.AuthorityAlive} " +
+            $"stagingParents={fx.Scope.RetainedStagingParents.Count} stagingDirectories={fx.Scope.RetainedStagingDirectories.Count} " +
+            $"writerExcluded={writerExcluded}");
+    }
+
     [Fact]
     public void NonRootOwnerDeathBeforeRegistrationRecoversIntegrated()
     {
