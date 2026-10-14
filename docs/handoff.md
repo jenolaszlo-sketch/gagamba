@@ -1,6 +1,8 @@
 # Gagamba handoff
 
-## Current action — R6D.2b owner-owned topology accepted for D1-D6 qualification; G2-03/G2-10 blocking; G2 NOT ACCEPTED; WP04 blocked
+## Current action — R6D.3 BLOCKED - D1-D6 EXPOSED QUALIFICATION DEFECT; G2-03/G2-10 blocking; G2 NOT ACCEPTED; WP04 blocked
+
+Update 2026-10-14: R6D.3 qualification stopped at D1/D2. The new real-process suite reached all rows under root WSL2 (5 passed, 2 failed): D1 exposed missing writer exclusion at after-intent before kill; D2 killed/reaped the owner and retained authority but reconciliation returned Refused from AllocationIntent rather than cleaning through the retained exact handle. D3-D6 and the D5 replacement control passed exploratory assertions but do not qualify G2-03. No production source change or WP04 work. Full row table and evidence: [WP03 section 25](evidence/linux-m1/wp03.md). G2-03 remains blocking; G2-10 blocking; G2-11 maintenance; G2 NOT ACCEPTED; WP04 BLOCKED.
 
 Update: R6D.2b corrects both B1 reply-dispatch residuals by consuming one bounded packet and dispatching from decoded type plus explicit protocol state/sequence; no queue-empty rule or record-length semantic prefetch remains. B3 now asserts the reachable tool-accounted/input-absent mid-staging state and genuine-absence cleanup. Implementation/tests commit: `2b6b9d67ba79b90d102d83150f079c299a601bf9`; evidence/docs follow-up binds to this SHA. Linux root broad M1 selection: 336 passed, 12 skipped; ten explicit owner-termination tests were excluded, including the D1–D6 barrier matrix. Non-root uid-1000 protocol/scope/B3 selection: 25/25 passed in the existing delegated environment. Windows full solution build: 0 warnings/errors; Windows M1: 257 passed, 101 Linux/native skips; canonical vector: 873 bytes, SHA-256 `82161029848b1a821241af112ca806be8029d3cf2e7b95c6b23ce3e35850d5f3`. No topology redesign, ADR 0003 revision, D1–D6 qualification, or WP04 work was performed. At the time this implementation evidence was recorded, topology rereview was pending; the independent rereview below subsequently accepted qualification readiness only. G2-03 blocking; G2-10 blocking; G2-11 maintenance; G2 NOT ACCEPTED; WP04 BLOCKED. Details: [WP03 evidence](evidence/linux-m1/wp03.md) section 24.
 
@@ -204,4 +206,3 @@ Documentation link resolution and original-proposal SHA-256 equality are checked
 Verifier regression checks passed on 2026-10-03: Windows PowerShell -File with default/explicit root, call-operator invocation, PowerShell 7 -File with default/explicit root, and missing/empty root rejection (seven cases). Default-root tests ran outside the repository. Documentation links and the original proposal hash still pass. These are preparation-tool checks only.
 
 Historical preparation notes about absent providers, pending CI and uncommitted GW-1B work are superseded by the later checkpoints and the 2026-10-08 review baseline. Use current Git state and the Sol plan for new work.
-
