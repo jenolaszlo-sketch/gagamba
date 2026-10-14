@@ -87,4 +87,16 @@ G2-01, G2-02, G2-04, G2-05, G2-06, G2-07, G2-08, G2-09. Still blocking:
 G2-03, G2-10. G2-11 remains evidence maintenance. G2 overall remains NOT
 ACCEPTED; WP04 remains blocked.
 
+Independent R6D.2 topology review of implementation `b3cbc97` (docs/plan-only
+HEAD `f6c9176`) completed and preserved verbatim as
+[reviews/gagamba-linux-m1-r6d2-topology-review.md](../reviews/gagamba-linux-m1-r6d2-topology-review.md):
+R6D.2 TOPOLOGY NOT ACCEPTED - CORRECTION REQUIRED. Blocker B1: the protocol
+driver's wait-free `FIONREAD` reply peek aborts every owner transaction
+before the owner's reply arrives, leaving D1–D6 unreachable; bounded
+readability wait required at all four peek sites. Test-side bug B2: the
+non-root missing-pidfd test passes `"none"` as `TestBarrier`, rejected by
+the spec codec allowlist. G2-03 remains blocking; G2-10 remains blocking;
+G2-11 maintenance; G2 overall NOT ACCEPTED; WP04 blocked; no correction has
+begun.
+
 Production gaps from the plan (inode/object ceilings, complete P05/P06, owner-death deployment, complete no-IP policy, P08 runtime, P09 packaging, core sinks, host breadth, Windows/macOS/VM) remain pending and are restated in each package record.
