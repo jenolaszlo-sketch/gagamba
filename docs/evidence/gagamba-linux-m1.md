@@ -100,3 +100,6 @@ G2-11 maintenance; G2 overall NOT ACCEPTED; WP04 blocked; no correction has
 begun.
 
 Production gaps from the plan (inode/object ceilings, complete P05/P06, owner-death deployment, complete no-IP policy, P08 runtime, P09 packaging, core sinks, host breadth, Windows/macOS/VM) remain pending and are restated in each package record.
+## R6D.2b topology rereview status (2026-10-14)
+
+The independent rereview of implementation 2b6b9d67ba79b90d102d83150f079c299a601bf9, bound to evidence/docs HEAD 0589dd1716100dd5f6b4a7deda369985cf105b6a, is preserved verbatim at [gagamba-linux-m1-r6d2b-topology-rereview.md](../reviews/gagamba-linux-m1-r6d2b-topology-rereview.md). It accepts the owner-owned topology and protocol readiness for actual D1-D6 qualification only. No D1-D6 matrix was run; G2-03 remains blocking pending that qualification and independent review. Current status: G2-10 blocking; G2-11 maintenance; G2 NOT ACCEPTED; WP04 BLOCKED.
