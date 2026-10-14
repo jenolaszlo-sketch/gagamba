@@ -352,38 +352,22 @@ internal sealed class M1RecoveryScope : IDisposable
                 return FailOwnerPreparation(owner, channel, $"owner authority transfer failed: {operationError}");
             }
 
-            var nextLength = ReadNextRecordLength(channel, out operationError);
-            if (nextLength < 0)
-            {
-                return FailOwnerPreparation(owner, channel, operationError);
-            }
-
-            int[] recoveryFds;
-            if (nextLength == OwnerProtocol.HeaderBytes)
-            {
-                if (!ReceiveControlOrBarrier(channel, OwnerProtocolMessageType.DomainRecoveryAuthority,
-                        out message, out barrier, out operationError))
-                {
-                    return FailOwnerPreparation(owner, channel, operationError);
-                }
-
-                if (barrier is not null)
-                {
-                    return new OwnerPreparationOutcome(false, null, owner, barrier, string.Empty);
-                }
-
-                return FailOwnerPreparation(owner, channel, "owner sent a descriptor-free domain authority frame");
-            }
-
-            if (!channel.TryReceiveTransfer(
+            if (!ReceiveTransferOrBarrier(
+                    channel,
                     OwnerProtocolMessageType.DomainRecoveryAuthority,
                     DomainHandleTransfer.ExactDescriptorCount,
-                    expectedPayloadBytes: 1,
+                    1,
                     out var domainMessage,
-                    out recoveryFds,
+                    out var recoveryFds,
+                    out barrier,
                     out operationError))
             {
                 return FailOwnerPreparation(owner, channel, $"domain recovery authority transfer failed: {operationError}");
+            }
+
+            if (barrier is not null)
+            {
+                return new OwnerPreparationOutcome(false, null, owner, barrier, string.Empty);
             }
 
             if (domainMessage!.Payload[0] != DomainHandleTransfer.ExactDescriptorCount)
@@ -430,37 +414,22 @@ internal sealed class M1RecoveryScope : IDisposable
                 return FailOwnerPreparation(owner, channel, $"registered-domain acknowledgement failed: {operationError}");
             }
 
-            nextLength = ReadNextRecordLength(channel, out operationError);
-            if (nextLength < 0)
-            {
-                return FailOwnerPreparation(owner, channel, operationError);
-            }
-
-            if (nextLength == OwnerProtocol.HeaderBytes)
-            {
-                if (!ReceiveControlOrBarrier(channel, OwnerProtocolMessageType.StagingAuthority,
-                        out message, out barrier, out operationError))
-                {
-                    return FailOwnerPreparation(owner, channel, operationError);
-                }
-
-                if (barrier is not null)
-                {
-                    return new OwnerPreparationOutcome(false, null, owner, barrier, string.Empty);
-                }
-
-                return FailOwnerPreparation(owner, channel, "owner sent a descriptor-free staging authority frame");
-            }
-
-            if (!channel.TryReceiveTransfer(
+            if (!ReceiveTransferOrBarrier(
+                    channel,
                     OwnerProtocolMessageType.StagingAuthority,
-                    expectedDescriptorCount: 1,
-                    expectedPayloadBytes: 16,
+                    1,
+                    16,
                     out var stagingMessage,
                     out var stagingFds,
+                    out barrier,
                     out operationError))
             {
                 return FailOwnerPreparation(owner, channel, $"staging authority transfer failed: {operationError}");
+            }
+
+            if (barrier is not null)
+            {
+                return new OwnerPreparationOutcome(false, null, owner, barrier, string.Empty);
             }
 
             var stagingDevice = BinaryPrimitives.ReadUInt64LittleEndian(stagingMessage!.Payload.AsSpan(0, 8));
@@ -508,44 +477,19 @@ internal sealed class M1RecoveryScope : IDisposable
                 return FailOwnerPreparation(owner, channel, $"staging continuation acknowledgement failed: {operationError}");
             }
 
-            var afterStageLength = ReadNextRecordLength(channel, out operationError);
-            if (afterStageLength < 0)
+            if (!ReceiveControlOrBarrier(channel, OwnerProtocolMessageType.StagedObjects,
+                    out message, out barrier, out operationError))
             {
                 return FailOwnerPreparation(owner, channel, operationError);
             }
 
-            if (afterStageLength == OwnerProtocol.HeaderBytes)
+            if (barrier is not null)
             {
-                if (!ReceiveControlOrBarrier(channel, OwnerProtocolMessageType.StagedObjects,
-                        out message, out barrier, out operationError))
-                {
-                    return FailOwnerPreparation(owner, channel, operationError);
-                }
-
-                if (barrier is not null)
-                {
-                    return new OwnerPreparationOutcome(false, null, owner, barrier, string.Empty);
-                }
-
-                return FailOwnerPreparation(owner, channel, "owner sent an empty staged-object description");
+                return new OwnerPreparationOutcome(false, null, owner, barrier, string.Empty);
             }
 
-            if (!channel.TryReceiveAny(out message, out operationError))
-            {
-                return FailOwnerPreparation(owner, channel, operationError);
-            }
-
-            if (message!.Type == OwnerProtocolMessageType.BarrierReached)
-            {
-                barrier = DecodeBarrier(message.Payload, out operationError);
-                return barrier is null
-                    ? FailOwnerPreparation(owner, channel, operationError)
-                    : new OwnerPreparationOutcome(false, null, owner, barrier, string.Empty);
-            }
-
-            if (message.Type != OwnerProtocolMessageType.StagedObjects
-                || !OwnerPreparationSpecificationCodec.TryDecodeStagedObjects(
-                    message.Payload, out var stagedDescriptions, out operationError))
+            if (!OwnerPreparationSpecificationCodec.TryDecodeStagedObjects(
+                    message!.Payload, out var stagedDescriptions, out operationError))
             {
                 return FailOwnerPreparation(owner, channel, $"owner staged-object description refused: {operationError}");
             }
@@ -599,44 +543,19 @@ internal sealed class M1RecoveryScope : IDisposable
                 return FailOwnerPreparation(owner, channel, $"Prepared acknowledgement failed: {operationError}");
             }
 
-            var finalLength = ReadNextRecordLength(channel, out operationError);
-            if (finalLength < 0)
+            if (!ReceiveControlOrBarrier(channel, OwnerProtocolMessageType.Completed,
+                    out message, out barrier, out operationError))
             {
                 return FailOwnerPreparation(owner, channel, operationError);
             }
 
-            if (finalLength == OwnerProtocol.HeaderBytes)
+            if (barrier is not null)
             {
-                if (!ReceiveControlOrBarrier(channel, OwnerProtocolMessageType.Completed,
-                        out message, out barrier, out operationError))
-                {
-                    return FailOwnerPreparation(owner, channel, operationError);
-                }
-
-                if (barrier is not null)
-                {
-                    return new OwnerPreparationOutcome(false, null, owner, barrier, string.Empty);
-                }
-
-                return FailOwnerPreparation(owner, channel, "owner completed without a prepared description");
+                return new OwnerPreparationOutcome(false, preparedDescription, owner, barrier, string.Empty);
             }
 
-            if (!channel.TryReceiveAny(out message, out operationError))
-            {
-                return FailOwnerPreparation(owner, channel, operationError);
-            }
-
-            if (message!.Type == OwnerProtocolMessageType.BarrierReached)
-            {
-                barrier = DecodeBarrier(message.Payload, out operationError);
-                return barrier is null
-                    ? FailOwnerPreparation(owner, channel, operationError)
-                    : new OwnerPreparationOutcome(false, preparedDescription, owner, barrier, string.Empty);
-            }
-
-            if (message.Type != OwnerProtocolMessageType.Completed
-                || !OwnerPreparationSpecificationCodec.TryDecodePreparedDescription(
-                    message.Payload, out var completedDescription, out operationError)
+            if (!OwnerPreparationSpecificationCodec.TryDecodePreparedDescription(
+                    message!.Payload, out var completedDescription, out operationError)
                 || !SameDescription(completedDescription!, preparedDescription!))
             {
                 return FailOwnerPreparation(owner, channel, $"owner completion frame refused: {operationError}");
@@ -672,7 +591,11 @@ internal sealed class M1RecoveryScope : IDisposable
         out string error)
     {
         barrier = null;
-        if (!channel.TryReceiveAny(out message, out error))
+        if (!channel.TryReceiveAllowed(
+                out message, out error,
+                expected,
+                OwnerProtocolMessageType.BarrierReached,
+                OwnerProtocolMessageType.Aborted))
         {
             return false;
         }
@@ -699,6 +622,45 @@ internal sealed class M1RecoveryScope : IDisposable
         return true;
     }
 
+    private static bool ReceiveTransferOrBarrier(
+        OwnerProtocolChannel channel,
+        OwnerProtocolMessageType expectedTransferType,
+        int expectedDescriptorCount,
+        int expectedPayloadBytes,
+        out OwnerProtocolMessage? message,
+        out int[] descriptors,
+        out string? barrier,
+        out string error)
+    {
+        barrier = null;
+        if (!channel.TryReceiveTransferOrControl(
+                expectedTransferType, expectedDescriptorCount, expectedPayloadBytes,
+                out message, out descriptors, out error))
+        {
+            return false;
+        }
+
+        if (message!.Type == OwnerProtocolMessageType.Aborted)
+        {
+            error = Encoding.UTF8.GetString(message.Payload);
+            if (string.IsNullOrWhiteSpace(error))
+            {
+                error = "owner aborted the preparation transaction";
+            }
+
+            return false;
+        }
+
+        if (message.Type == OwnerProtocolMessageType.BarrierReached)
+        {
+            barrier = DecodeBarrier(message.Payload, out error);
+            return barrier is not null;
+        }
+
+        error = string.Empty;
+        return true;
+    }
+
     private static string? DecodeBarrier(byte[] payload, out string error)
     {
         var value = Encoding.UTF8.GetString(payload);
@@ -711,26 +673,6 @@ internal sealed class M1RecoveryScope : IDisposable
 
         error = string.Empty;
         return value;
-    }
-
-    private static int ReadNextRecordLength(OwnerProtocolChannel channel, out string error)
-    {
-        if (!FdPassing.TryPeekRecordLength(
-                channel.Socket,
-                OwnerProtocolChannel.TransitionTimeoutMilliseconds,
-                out var length,
-                out error))
-        {
-            return -1;
-        }
-
-        if (length <= 0 || length > OwnerProtocol.MaxFrameBytes)
-        {
-            error = "owner sent a record outside the protocol frame bound";
-            return -1;
-        }
-
-        return length;
     }
 
     private static bool IsExpectedRegistered(

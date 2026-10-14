@@ -214,6 +214,66 @@ public sealed class IntegratedBarrierTests
     }
 
     [Fact]
+    public void FullOwnerTransactionCompletesWithoutOwnerDeath()
+    {
+        SkipUnlessUsable();
+        using var fx = new Fixture(Bytes(0x70, 2048), null, null);
+        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest(null), CancellationToken.None);
+
+        Assert.True(outcome.Ok, outcome.Error);
+        Assert.True(outcome.Completed);
+        Assert.NotNull(outcome.Owner);
+        Assert.True(fx.Scope.TryOwnerPidFdExited(outcome.Owner!, 0, out var exited, out var pidfdError), pidfdError);
+        Assert.False(exited, "the owner should remain alive after Mint while its local store is held");
+        Assert.Equal(PreparationStage.Prepared, fx.Journal.ReadLatest().Snapshot!.Stage);
+        Assert.Single(fx.Scope.RetainedRecoveryLeases);
+        Assert.Single(fx.Scope.RetainedStagingParents);
+        Assert.Single(fx.Scope.RetainedStagingDirectories);
+        Assert.Null(typeof(OwnerPreparationOutcome).GetProperty("Capability"));
+    }
+
+    [Fact]
+    public void AfterIntentBarrierIsDispatchedAtTheOwnerIntentBoundary()
+    {
+        SkipUnlessUsable();
+        using var fx = new Fixture(Bytes(0x70, 2048), null, null);
+        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest("after-intent"), CancellationToken.None);
+
+        Assert.False(outcome.Ok);
+        Assert.Equal(string.Empty, outcome.Error);
+        Assert.Equal("after-intent", outcome.Barrier);
+        Assert.Equal(PreparationStage.AllocationIntent, fx.Journal.ReadLatest().Snapshot!.Stage);
+        Assert.Empty(fx.Scope.RetainedRecoveryLeases);
+        Assert.Empty(fx.Scope.RetainedStagingDirectories);
+    }
+
+    [Fact]
+    public void AfterRegisteredBarrierIsDispatchedBeforeStagingAuthorityTransfer()
+    {
+        SkipUnlessUsable();
+        var execution = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
+        var generation = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb");
+        var barrierFrame = OwnerProtocol.Encode(new OwnerProtocolMessage(
+            OwnerProtocolMessageType.BarrierReached, execution, generation, 1,
+            System.Text.Encoding.UTF8.GetBytes("after-registered")));
+        var stagingFrame = OwnerProtocol.Encode(new OwnerProtocolMessage(
+            OwnerProtocolMessageType.StagingAuthority, execution, generation, 1, new byte[16]));
+        Assert.Equal(64, barrierFrame.Length);
+        Assert.Equal(barrierFrame.Length, stagingFrame.Length);
+
+        using var fx = new Fixture(Bytes(0x71, 2048), null, null);
+        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest("after-registered"), CancellationToken.None);
+
+        Assert.False(outcome.Ok);
+        Assert.Equal(string.Empty, outcome.Error);
+        Assert.False(outcome.Completed);
+        Assert.Equal("after-registered", outcome.Barrier);
+        Assert.Equal(PreparationStage.AllocationRegistered, fx.Journal.ReadLatest().Snapshot!.Stage);
+        Assert.Single(fx.Scope.RetainedRecoveryLeases);
+        Assert.Empty(fx.Scope.RetainedStagingDirectories);
+    }
+
+    [Fact]
     public void OwnerDoesNotCopyUntilScopeAcknowledgesStagingRetention()
     {
         SkipUnlessUsable();

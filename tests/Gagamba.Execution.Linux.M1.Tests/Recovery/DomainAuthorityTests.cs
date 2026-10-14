@@ -352,6 +352,32 @@ public sealed class DomainAuthorityTests
     }
 
     [Fact]
+    public void AncillaryDataTruncationRefusedWithoutLeak()
+    {
+        SkipUnlessUsable();
+        using var temp = new TempParent();
+        using var domain = BuildDomain(temp);
+        var repeatedAuthority = Enumerable.Repeat(
+            domain.Ordered[(int)DomainTransferRole.DomainDirectory], 65).ToArray();
+        var baseline = CountFdsUnder(domain.ChildPath);
+        Assert.True(FdPassing.TryCreateInheritableSocketPair(out var parentEnd, out var childEnd, out _));
+        try
+        {
+            Assert.True(FdPassing.TrySendTransfer(parentEnd, repeatedAuthority, new byte[] { 0x5A }, out var sendError), sendError);
+            Assert.False(FdPassing.TryReceiveTransfer(
+                childEnd, 1, 1, out var received, out _, out var receiveError));
+            Assert.Empty(received);
+            Assert.Contains("MSG_CTRUNC", receiveError, StringComparison.Ordinal);
+            Assert.Equal(baseline, CountFdsUnder(domain.ChildPath));
+        }
+        finally
+        {
+            PreparationInterop.CloseFd(parentEnd);
+            PreparationInterop.CloseFd(childEnd);
+        }
+    }
+
+    [Fact]
     public void TruncatedPayloadRefused()
     {
         SkipUnlessUsable();
@@ -424,23 +450,56 @@ public sealed class DomainAuthorityTests
         PreparationInterop.CloseFd(childEnd);
     }
 
-    // G2-02 R6B: two logical frames cannot be mistaken for one.
+    // G2-02: every queued logical record is consumed once and checked against
+    // the explicit next state/sequence; queue emptiness is not a framing rule.
     [Fact]
-    public void TwoLogicalMessagesRefused()
+    public void QueuedSecondTransferIsRejectedByProtocolStateWithoutFdLeak()
     {
         SkipUnlessUsable();
         using var temp = new TempParent();
         using var domain = BuildDomain(temp);
-        var payload = DomainHandleTransfer.Encode(Guid.NewGuid(), Guid.NewGuid());
+        var execution = Guid.NewGuid();
+        var lease = Guid.NewGuid();
+        var payload = new byte[] { checked((byte)DomainHandleTransfer.ExactDescriptorCount) };
         Assert.True(FdPassing.TryCreateInheritableSocketPair(out var parentEnd, out var childEnd, out _));
-        Assert.True(FdPassing.TrySendTransfer(parentEnd, domain.Ordered, payload, out _));
-        Assert.True(FdPassing.TrySendTransfer(parentEnd, domain.Ordered, payload, out _));
-        Assert.False(FdPassing.TryReceiveTransfer(
-            childEnd, DomainHandleTransfer.ExactDescriptorCount, DomainHandleTransfer.ExactPayloadBytes,
-            out _, out _, out var error), "two frames accepted as one");
-        Assert.Contains("extra", error);
-        PreparationInterop.CloseFd(parentEnd);
-        PreparationInterop.CloseFd(childEnd);
+        using var receiver = new OwnerProtocolChannel(childEnd, execution, lease, ownsSocket: true);
+        var baseline = CountFdsUnder(temp.Path);
+        try
+        {
+            var first = OwnerProtocol.Encode(new OwnerProtocolMessage(
+                OwnerProtocolMessageType.DomainRecoveryAuthority, execution, lease, 1, payload));
+            var surplus = OwnerProtocol.Encode(new OwnerProtocolMessage(
+                OwnerProtocolMessageType.DomainRecoveryAuthority, execution, lease, 2, payload));
+            Assert.True(FdPassing.TrySendTransfer(parentEnd, domain.Ordered, first, out var sendError), sendError);
+            Assert.True(FdPassing.TrySendTransfer(parentEnd, domain.Ordered, surplus, out sendError), sendError);
+
+            Assert.True(receiver.TryReceiveTransfer(OwnerProtocolMessageType.DomainRecoveryAuthority,
+                DomainHandleTransfer.ExactDescriptorCount, 1,
+                out var accepted, out var acceptedFds, out var acceptedError), acceptedError);
+            Assert.Equal((uint)1, accepted!.Sequence);
+            foreach (var fd in acceptedFds)
+            {
+                PreparationInterop.CloseFd(fd);
+            }
+
+            Assert.False(receiver.TryReceive(OwnerProtocolMessageType.DomainAuthorityRetained,
+                out var rejected, out var rejectError), "surplus transfer was accepted in the acknowledgment state");
+            Assert.Null(rejected);
+            Assert.Contains("descriptor-bearing", rejectError, StringComparison.Ordinal);
+            Assert.Equal(baseline, CountFdsUnder(temp.Path));
+
+            var correctNextState = OwnerProtocol.Encode(new OwnerProtocolMessage(
+                OwnerProtocolMessageType.DomainAuthorityRetained, execution, lease, 2, Array.Empty<byte>()));
+            Assert.True(FdPassing.TrySendMessage(parentEnd, correctNextState, out var controlSendError), controlSendError);
+            Assert.True(receiver.TryReceive(OwnerProtocolMessageType.DomainAuthorityRetained,
+                out var retained, out var retainedError), retainedError);
+            Assert.Equal((uint)2, retained!.Sequence);
+            Assert.Equal(baseline, CountFdsUnder(temp.Path));
+        }
+        finally
+        {
+            PreparationInterop.CloseFd(parentEnd);
+        }
     }
 
     // G2-02 R6B: every received descriptor is closed on a rejection path.
@@ -479,7 +538,7 @@ public sealed class DomainAuthorityTests
             childEnd, DomainHandleTransfer.ExactDescriptorCount, DomainHandleTransfer.ExactPayloadBytes,
             out var received, out _, out var error), "zero-length record with descriptors was accepted");
         Assert.Empty(received);
-        Assert.Contains("peer closed", error);
+        Assert.Contains("zero-length", error);
         Assert.Equal(baseline, CountFdsUnder(domain.ChildPath));
         PreparationInterop.CloseFd(parentEnd);
         PreparationInterop.CloseFd(childEnd);

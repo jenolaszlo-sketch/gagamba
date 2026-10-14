@@ -3,6 +3,7 @@
 // It carries descriptions and acknowledgements only; capabilities and
 // release authority have no wire representation.
 using System.Buffers.Binary;
+using System.Text;
 using Gagamba.Execution.Linux.M1.Preparation.Native;
 
 namespace Gagamba.Execution.Linux.M1.Native;
@@ -47,6 +48,36 @@ internal static class OwnerProtocol
     internal const int HeaderBytes = 4 + 2 + 1 + 1 + 16 + 16 + 4 + 4;
     internal const int MaxPayloadBytes = 60 * 1024;
     internal const int MaxFrameBytes = HeaderBytes + MaxPayloadBytes;
+
+    internal static bool IsKnownBarrierPayload(ReadOnlySpan<byte> payload)
+    {
+        var value = Encoding.UTF8.GetString(payload);
+        return value is "after-intent" or "after-domain-retained" or "after-registered"
+            or "after-staging-accounted" or "mid-staging" or "after-copy"
+            or "after-prepared-before-mint";
+    }
+
+    internal static bool HasValidControlPayloadShape(OwnerProtocolMessage message) =>
+        message.Type switch
+        {
+            OwnerProtocolMessageType.WriterReady
+                or OwnerProtocolMessageType.DomainAuthorityRetained
+                or OwnerProtocolMessageType.DomainRegistered
+                or OwnerProtocolMessageType.DomainRegistrationRetained
+                or OwnerProtocolMessageType.StagingAuthorityRetained
+                or OwnerProtocolMessageType.StagingMayProceed
+                or OwnerProtocolMessageType.PreparedAcknowledgement
+                or OwnerProtocolMessageType.Continue => message.Payload.Length == 0,
+            OwnerProtocolMessageType.StagingAccounted => message.Payload.Length == 16,
+            OwnerProtocolMessageType.BarrierReached => IsKnownBarrierPayload(message.Payload),
+            OwnerProtocolMessageType.Aborted => message.Payload.Length <= 1024,
+            _ => !IsTransferType(message.Type),
+        };
+
+    internal static bool IsTransferType(OwnerProtocolMessageType type) =>
+        type is OwnerProtocolMessageType.StartAuthority
+            or OwnerProtocolMessageType.DomainRecoveryAuthority
+            or OwnerProtocolMessageType.StagingAuthority;
 
     internal static byte[] Encode(OwnerProtocolMessage message)
     {
@@ -175,34 +206,33 @@ internal sealed class OwnerProtocolSequencer
             return false;
         }
 
-        var expectedSequence = checked(_nextReceive + 1);
-        if (message!.Type != expectedType || message.Sequence != expectedSequence)
-        {
-            error = $"unexpected owner protocol transition: type={message.Type}, sequence={message.Sequence}";
-            message = null;
-            return false;
-        }
-
-        _nextReceive = expectedSequence;
-        return true;
+        return TryAcceptDecoded(message!, new[] { expectedType }, out message, out error);
     }
 
-    internal bool TryAcceptAny(ReadOnlySpan<byte> frame, out OwnerProtocolMessage? message, out string error)
+    internal bool TryAcceptDecoded(
+        OwnerProtocolMessage candidate,
+        IReadOnlyCollection<OwnerProtocolMessageType> allowedTypes,
+        out OwnerProtocolMessage? message,
+        out string error)
     {
-        if (!OwnerProtocol.TryDecode(frame, _executionId, _leaseGeneration, out message, out error))
+        message = candidate;
+        var expectedSequence = checked(_nextReceive + 1);
+        if (!allowedTypes.Contains(candidate.Type))
         {
+            error = $"unexpected owner protocol transition: type={candidate.Type}, sequence={candidate.Sequence}";
+            message = null;
             return false;
         }
 
-        var expectedSequence = checked(_nextReceive + 1);
-        if (message!.Sequence != expectedSequence)
+        if (candidate.Sequence != expectedSequence)
         {
-            error = $"stale or duplicate owner protocol sequence {message.Sequence}; expected {expectedSequence}";
+            error = $"stale or duplicate owner protocol sequence {candidate.Sequence}; expected {expectedSequence}";
             message = null;
             return false;
         }
 
         _nextReceive = expectedSequence;
+        error = string.Empty;
         return true;
     }
 }
@@ -215,6 +245,8 @@ internal sealed class OwnerProtocolChannel : IDisposable
 
     private readonly int _socket;
     private readonly bool _ownsSocket;
+    private readonly Guid _sequencerExecutionId;
+    private readonly Guid _sequencerLeaseGeneration;
     private readonly OwnerProtocolSequencer _sequencer;
     private bool _disposed;
 
@@ -227,6 +259,8 @@ internal sealed class OwnerProtocolChannel : IDisposable
 
         _socket = socket;
         _ownsSocket = ownsSocket;
+        _sequencerExecutionId = executionId;
+        _sequencerLeaseGeneration = leaseGeneration;
         _sequencer = new OwnerProtocolSequencer(executionId, leaseGeneration);
     }
 
@@ -265,22 +299,13 @@ internal sealed class OwnerProtocolChannel : IDisposable
         out OwnerProtocolMessage? message,
         out string error)
     {
-        message = null;
-        if (_disposed)
-        {
-            error = "owner protocol channel is closed";
-            return false;
-        }
-
-        if (!FdPassing.TryReceiveMessage(_socket, TransitionTimeoutMilliseconds, out var frame, out error))
-        {
-            return false;
-        }
-
-        return _sequencer.TryAccept(frame, expectedType, out message, out error);
+        return TryReceiveAllowed(out message, out error, expectedType);
     }
 
-    internal bool TryReceiveAny(out OwnerProtocolMessage? message, out string error)
+    internal bool TryReceiveAllowed(
+        out OwnerProtocolMessage? message,
+        out string error,
+        params OwnerProtocolMessageType[] allowedTypes)
     {
         message = null;
         if (_disposed)
@@ -289,12 +314,39 @@ internal sealed class OwnerProtocolChannel : IDisposable
             return false;
         }
 
-        if (!FdPassing.TryReceiveMessage(_socket, TransitionTimeoutMilliseconds, out var frame, out error))
+        if (allowedTypes is null || allowedTypes.Length == 0)
+        {
+            error = "owner protocol receive state has no allowed message types";
+            return false;
+        }
+
+        if (!FdPassing.TryReceiveRecord(_socket, TransitionTimeoutMilliseconds, out var record, out error))
         {
             return false;
         }
 
-        return _sequencer.TryAcceptAny(frame, out message, out error);
+        using (record!)
+        {
+            if (!OwnerProtocol.TryDecode(record!.Payload, _sequencerExecutionId, _sequencerLeaseGeneration,
+                    out var decoded, out error))
+            {
+                return false;
+            }
+
+            if (OwnerProtocol.IsTransferType(decoded!.Type) || record.DescriptorCount != 0)
+            {
+                error = "unexpected descriptor-bearing owner message in a control state";
+                return false;
+            }
+
+            if (!OwnerProtocol.HasValidControlPayloadShape(decoded))
+            {
+                error = $"owner control payload shape is invalid for {decoded.Type}";
+                return false;
+            }
+
+            return _sequencer.TryAcceptDecoded(decoded, allowedTypes, out message, out error);
+        }
     }
 
     internal bool TryReceiveTransfer(
@@ -313,38 +365,144 @@ internal sealed class OwnerProtocolChannel : IDisposable
             return false;
         }
 
-        if (!FdPassing.TryReceiveTransfer(
-                _socket, expectedDescriptorCount, OwnerProtocol.HeaderBytes + expectedPayloadBytes,
-                out descriptors, out var frame, out error))
+        if (!OwnerProtocol.IsTransferType(expectedType)
+            || expectedDescriptorCount <= 0
+            || expectedDescriptorCount > 64
+            || expectedPayloadBytes < 0
+            || expectedPayloadBytes > OwnerProtocol.MaxPayloadBytes)
+        {
+            error = "expected owner transfer shape is invalid";
+            return false;
+        }
+
+        if (!FdPassing.TryReceiveRecord(_socket, TransitionTimeoutMilliseconds, out var record, out error))
         {
             return false;
         }
 
-        if (!_sequencer.TryAccept(frame, expectedType, out message, out error))
+        using (record!)
         {
-            foreach (var descriptor in descriptors)
+            if (!OwnerProtocol.TryDecode(record!.Payload, _sequencerExecutionId, _sequencerLeaseGeneration,
+                    out var decoded, out error))
             {
-                PreparationInterop.CloseFd(descriptor);
+                return false;
             }
 
-            descriptors = Array.Empty<int>();
-            return false;
-        }
-
-        if (message!.Payload.Length != expectedPayloadBytes)
-        {
-            foreach (var descriptor in descriptors)
+            if (decoded!.Type != expectedType || !OwnerProtocol.IsTransferType(decoded.Type))
             {
-                PreparationInterop.CloseFd(descriptor);
+                error = $"unexpected owner transfer type {decoded.Type}; expected {expectedType}";
+                return false;
             }
 
-            descriptors = Array.Empty<int>();
-            message = null;
-            error = "owner protocol transfer payload length mismatch";
+            if (decoded.Payload.Length != expectedPayloadBytes)
+            {
+                error = $"owner protocol transfer payload length {decoded.Payload.Length} != {expectedPayloadBytes}";
+                return false;
+            }
+
+            if (record.DescriptorCount != expectedDescriptorCount)
+            {
+                error = $"descriptor count mismatch ({record.DescriptorCount} != {expectedDescriptorCount})";
+                return false;
+            }
+
+            if (!_sequencer.TryAcceptDecoded(decoded, new[] { expectedType }, out message, out error))
+            {
+                return false;
+            }
+
+            descriptors = record.DetachDescriptors();
+            return true;
+        }
+    }
+
+    /// <summary>Receives the transfer expected in this state, or a valid
+    /// descriptor-free BarrierReached/Aborted control record. The decoded
+    /// type, rather than packet length, selects the path.</summary>
+    internal bool TryReceiveTransferOrControl(
+        OwnerProtocolMessageType expectedTransferType,
+        int expectedDescriptorCount,
+        int expectedPayloadBytes,
+        out OwnerProtocolMessage? message,
+        out int[] descriptors,
+        out string error)
+    {
+        message = null;
+        descriptors = Array.Empty<int>();
+        if (_disposed)
+        {
+            error = "owner protocol channel is closed";
             return false;
         }
 
-        return true;
+        if (!OwnerProtocol.IsTransferType(expectedTransferType)
+            || expectedDescriptorCount <= 0
+            || expectedDescriptorCount > 64
+            || expectedPayloadBytes < 0
+            || expectedPayloadBytes > OwnerProtocol.MaxPayloadBytes)
+        {
+            error = "expected owner transfer state is invalid";
+            return false;
+        }
+
+        if (!FdPassing.TryReceiveRecord(_socket, TransitionTimeoutMilliseconds, out var record, out error))
+        {
+            return false;
+        }
+
+        using (record!)
+        {
+            if (!OwnerProtocol.TryDecode(record!.Payload, _sequencerExecutionId, _sequencerLeaseGeneration,
+                    out var decoded, out error))
+            {
+                return false;
+            }
+
+            var allowed = new[]
+            {
+                expectedTransferType,
+                OwnerProtocolMessageType.BarrierReached,
+                OwnerProtocolMessageType.Aborted,
+            };
+            if (!allowed.Contains(decoded!.Type))
+            {
+                error = $"unexpected owner transition {decoded.Type}; expected {expectedTransferType}, BarrierReached, or Aborted";
+                return false;
+            }
+
+            if (decoded.Type == expectedTransferType)
+            {
+                if (!OwnerProtocol.IsTransferType(decoded.Type)
+                    || decoded.Payload.Length != expectedPayloadBytes
+                    || record.DescriptorCount != expectedDescriptorCount)
+                {
+                    error = "owner transfer payload or descriptor count did not match the expected shape";
+                    return false;
+                }
+
+                if (!_sequencer.TryAcceptDecoded(decoded, allowed, out message, out error))
+                {
+                    return false;
+                }
+
+                descriptors = record.DetachDescriptors();
+                return true;
+            }
+
+            if (record.DescriptorCount != 0)
+            {
+                error = "unexpected descriptors on owner control record";
+                return false;
+            }
+
+            if (!OwnerProtocol.HasValidControlPayloadShape(decoded))
+            {
+                error = $"owner control payload shape is invalid for {decoded.Type}";
+                return false;
+            }
+
+            return _sequencer.TryAcceptDecoded(decoded, allowed, out message, out error);
+        }
     }
 
     /// <summary>Keeps the owner process and its local store/capability alive

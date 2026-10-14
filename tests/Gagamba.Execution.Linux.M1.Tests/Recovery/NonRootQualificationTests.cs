@@ -387,6 +387,36 @@ public sealed class NonRootQualificationTests
     }
 
     [Fact]
+    public void NonRootAfterIntentBarrierIsDispatchedAtTheOwnerIntentBoundary()
+    {
+        SkipUnlessQualified();
+        using var fx = new IntegratedFixture(Bytes(0x1B, 1024), null, null);
+        var outcome = fx.Scope.StartOwnerPreparation(fx.Request("after-intent"), TestContext.Current.CancellationToken);
+
+        Assert.False(outcome.Ok);
+        Assert.Equal(string.Empty, outcome.Error);
+        Assert.Equal("after-intent", outcome.Barrier);
+        Assert.Equal(PreparationStage.AllocationIntent, fx.Journal.ReadLatest().Snapshot!.Stage);
+        Assert.Empty(fx.Scope.RetainedRecoveryLeases);
+        Assert.Empty(fx.Scope.RetainedStagingDirectories);
+    }
+
+    [Fact]
+    public void NonRootAfterRegisteredBarrierIsDispatchedBeforeStagingAuthority()
+    {
+        SkipUnlessQualified();
+        using var fx = new IntegratedFixture(Bytes(0x1C, 1024), null, null);
+        var outcome = fx.Scope.StartOwnerPreparation(fx.Request("after-registered"), TestContext.Current.CancellationToken);
+
+        Assert.False(outcome.Ok);
+        Assert.Equal(string.Empty, outcome.Error);
+        Assert.Equal("after-registered", outcome.Barrier);
+        Assert.Equal(PreparationStage.AllocationRegistered, fx.Journal.ReadLatest().Snapshot!.Stage);
+        Assert.Single(fx.Scope.RetainedRecoveryLeases);
+        Assert.Empty(fx.Scope.RetainedStagingDirectories);
+    }
+
+    [Fact]
     public void NonRootOwnerDeathBeforeRegistrationRecoversIntegrated()
     {
         SkipUnlessQualified();
@@ -413,7 +443,7 @@ public sealed class NonRootQualificationTests
     }
 
     [Fact]
-    public void NonRootMidStagingDeathRecoversAccountedObject()
+    public void NonRootMidStagingDeathResolvesUnconfirmedAbsentInputAsGenuineAbsence()
     {
         SkipUnlessQualified();
         var tool = Bytes(0x40, 1000);
@@ -431,6 +461,7 @@ public sealed class NonRootQualificationTests
         var inputEntry = Assert.Single(read.Snapshot.Allocations, a => a.Kind == AllocationKind.Staging && a.Name == "input-001.staged");
         Assert.False(inputEntry.Confirmed);
         Assert.True(File.Exists(System.IO.Path.Combine(fx.Staging.Path, "prep-001", "tool-000.staged")));
+        Assert.False(File.Exists(System.IO.Path.Combine(fx.Staging.Path, "prep-001", "input-001.staged")));
 
         var recovery = Assert.Single(fx.Scope.RetainedRecoveryLeases);
         var parentHandle = (SafeFileHandle)Assert.Single(fx.Scope.RetainedStagingParents);
@@ -443,9 +474,9 @@ public sealed class NonRootQualificationTests
         var cleaner = new QualScopeCleaner(parentFd, subdirFd);
         var reconciler = new Reconciler(new RealClock(), TimeSpan.FromSeconds(5));
         var result = reconciler.Reconcile(read.Snapshot!, Boot(), recovery, cleaner, fx.Journal, takeover);
-        Assert.Equal(ReconcileOutcome.QuarantinedUnknown, result.Outcome);
+        Assert.Equal(ReconcileOutcome.CleanupConfirmed, result.Outcome);
         Assert.False(File.Exists(System.IO.Path.Combine(fx.Staging.Path, "prep-001", "tool-000.staged")));
-        Assert.True(File.Exists(System.IO.Path.Combine(fx.Staging.Path, "prep-001", "input-001.staged")));
+        Assert.False(File.Exists(System.IO.Path.Combine(fx.Staging.Path, "prep-001", "input-001.staged")));
         }
     }
 

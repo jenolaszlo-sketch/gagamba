@@ -7,11 +7,12 @@
 // recvmsg record. A SOCK_STREAM endpoint would silently split an overlong
 // send, letting a valid 51-byte prefix pass as the whole message; a
 // message-preserving endpoint instead reports MSG_TRUNC for an overlong
-// record and refuses any second queued record. Never filesystem-bound;
-// never a service. Receive uses MSG_CMSG_CLOEXEC, inspects msg_flags,
-// validates the exact control layout and payload, requires exactly one
-// record, verifies every received descriptor has FD_CLOEXEC, and closes
-// every received descriptor on any rejection path.
+// record. Never filesystem-bound; never a service. Receive uses
+// MSG_CMSG_CLOEXEC, inspects msg_flags, validates one complete bounded
+// record, keeps each received descriptor under explicit ownership until
+// protocol dispatch, and closes every descriptor on any rejection path.
+// Queued records are consumed only when the state machine asks for the next
+// transition.
 using System.Runtime.InteropServices;
 using Gagamba.Execution.Linux.M1.Preparation.Native;
 
@@ -33,10 +34,6 @@ internal static class FdPassing
     private const int MSG_NOSIGNAL = 0x4000;
     private const int POLLIN = 0x001;
 
-    // FIONREAD reports the byte length of the next queued record without
-    // consuming it or installing any SCM_RIGHTS descriptors (unlike
-    // MSG_PEEK, which duplicates them). 0 means no record is queued.
-    private const ulong FIONREAD = 0x541B;
 
     [DllImport("libc", EntryPoint = "socketpair", SetLastError = true)]
     private static extern int SocketPair(int domain, int type, int protocol, int[] sv);
@@ -49,9 +46,6 @@ internal static class FdPassing
 
     [DllImport("libc", EntryPoint = "fcntl", SetLastError = true)]
     private static extern int Fcntl(int fd, int cmd, int arg);
-
-    [DllImport("libc", EntryPoint = "ioctl", SetLastError = true)]
-    private static extern int Ioctl(int fd, ulong request, out int value);
 
     [DllImport("libc", EntryPoint = "poll", SetLastError = true)]
     private static extern int Poll(IntPtr fds, uint count, int timeoutMilliseconds);
@@ -198,73 +192,16 @@ internal static class FdPassing
         }
     }
 
-    /// <summary>Polls for one record within the configured bounded timeout, then reports
-    /// its length without consuming it or installing SCM_RIGHTS descriptors.
-    /// The fixed protocol frame size selects the exact receiver.</summary>
-    internal static bool TryPeekRecordLength(
+    /// <summary>Waits for and consumes exactly one bounded SOCK_SEQPACKET record.
+    /// Any delivered SCM_RIGHTS descriptors are retained by the returned value
+    /// until the protocol dispatcher accepts or disposes the record.</summary>
+    internal static bool TryReceiveRecord(
         int sock,
         int timeoutMilliseconds,
-        out int length,
+        out ReceivedFdRecord? record,
         out string error)
     {
-        length = 0;
-        error = string.Empty;
-        if (timeoutMilliseconds < 0)
-        {
-            error = "negative owner protocol record timeout";
-            return false;
-        }
-
-        var pollFd = Marshal.AllocHGlobal(8);
-        try
-        {
-            Zero(pollFd, 8);
-            Marshal.WriteInt32(pollFd, 0, sock);
-            Marshal.WriteInt16(pollFd, 4, POLLIN);
-            var ready = Poll(pollFd, 1, timeoutMilliseconds);
-            if (ready < 0)
-            {
-                error = $"poll errno {Marshal.GetLastWin32Error()}";
-                return false;
-            }
-
-            if (ready == 0)
-            {
-                error = "owner protocol record timed out";
-                return false;
-            }
-
-            var events = Marshal.ReadInt16(pollFd, 6);
-            if ((events & POLLIN) == 0)
-            {
-                error = $"owner protocol socket was not readable (revents 0x{events:X4})";
-                return false;
-            }
-        }
-        finally
-        {
-            Marshal.FreeHGlobal(pollFd);
-        }
-
-        if (Ioctl(sock, FIONREAD, out length) != 0)
-        {
-            error = $"socket record length unavailable: errno {Marshal.GetLastWin32Error()}";
-            return false;
-        }
-
-        return true;
-    }
-
-    /// <summary>Waits a bounded interval for exactly one control record.
-    /// Unexpected ancillary data is closed and refused, and a second queued
-    /// record is rejected so a valid prefix cannot hide a duplicate frame.</summary>
-    internal static bool TryReceiveMessage(
-        int sock,
-        int timeoutMilliseconds,
-        out byte[] payload,
-        out string error)
-    {
-        payload = Array.Empty<byte>();
+        record = null;
         error = string.Empty;
         if (timeoutMilliseconds < 0)
         {
@@ -290,6 +227,13 @@ internal static class FdPassing
                 error = "control record timed out";
                 return false;
             }
+
+            var events = Marshal.ReadInt16(pollFd, 6);
+            if ((events & POLLIN) == 0)
+            {
+                error = $"owner protocol socket was not readable (revents 0x{events:X4})";
+                return false;
+            }
         }
         finally
         {
@@ -303,6 +247,7 @@ internal static class FdPassing
         var iov = Marshal.AllocHGlobal(16);
         var msg = Marshal.AllocHGlobal(56);
         var pinned = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+        var received = new List<int>();
         try
         {
             Zero(ctrl, ctrlSize);
@@ -321,51 +266,72 @@ internal static class FdPassing
                 return false;
             }
 
-            var controlBytes = checked((int)Marshal.ReadInt64(msg, 40));
-            if (controlBytes > 0)
-            {
-                CloseAncillaryFds(ctrl, Math.Min(controlBytes, ctrlSize));
-                error = "unexpected ancillary data on a control record";
-                return false;
-            }
-
+            var controlLength = Marshal.ReadInt64(msg, 40);
+            var controlBytes = controlLength <= 0
+                ? 0
+                : (int)Math.Min(controlLength, ctrlSize);
+            var ancillaryValid = TryCaptureAncillaryDescriptors(
+                ctrl, controlBytes, out var ancillaryError, received);
             var flags = Marshal.ReadInt32(msg, 48);
-            if ((flags & MSG_CTRUNC) != 0)
-            {
-                CloseAncillaryFds(ctrl, ctrlSize);
-                error = "MSG_CTRUNC on a control record";
-                return false;
-            }
 
             if (rc == 0)
             {
-                error = "peer closed the owner protocol channel";
+                CloseReceived(received);
+                error = controlBytes > 0
+                    ? "zero-length record is not an owner protocol frame"
+                    : "peer closed the owner protocol channel";
                 return false;
             }
 
-            if ((flags & MSG_TRUNC) != 0 || rc < 0 || rc > OwnerProtocol.MaxFrameBytes)
+            if ((flags & MSG_CTRUNC) != 0)
             {
-                error = (flags & MSG_TRUNC) != 0
-                    ? "overlong control record"
-                    : "invalid control record";
+                CloseReceived(received);
+                error = "MSG_CTRUNC: control data truncated";
                 return false;
             }
 
-            var ioctlResult = Ioctl(sock, FIONREAD, out var pendingRecord);
-            if (ioctlResult != 0 || pendingRecord > 0)
+            if ((flags & MSG_TRUNC) != 0 || rc > OwnerProtocol.MaxFrameBytes)
             {
-                error = ioctlResult != 0
-                    ? "socket state unavailable for frame-boundary check"
-                    : $"extra queued control frame ({pendingRecord} bytes)";
+                CloseReceived(received);
+                error = "overlong owner protocol record";
                 return false;
             }
 
-            payload = buffer.AsSpan(0, checked((int)rc)).ToArray();
+            if (controlLength < 0 || controlLength > ctrlSize || !ancillaryValid)
+            {
+                CloseReceived(received);
+                error = controlLength < 0 || controlLength > ctrlSize
+                    ? "invalid ancillary control length"
+                    : ancillaryError;
+                return false;
+            }
+
+            foreach (var fd in received)
+            {
+                var descriptorFlags = Fcntl(fd, 1 /*F_GETFD*/, 0);
+                if (descriptorFlags < 0 || (descriptorFlags & FD_CLOEXEC) == 0)
+                {
+                    CloseReceived(received);
+                    error = $"received descriptor {fd} lacks FD_CLOEXEC";
+                    return false;
+                }
+            }
+
+            record = new ReceivedFdRecord(
+                buffer.AsSpan(0, checked((int)rc)).ToArray(), received.ToArray());
+            received.Clear();
             return true;
         }
         catch (DllNotFoundException)
         {
+            CloseReceived(received);
             error = "Unsupported: recvmsg unavailable";
+            return false;
+        }
+        catch (Exception ex)
+        {
+            CloseReceived(received);
+            error = $"owner protocol record receive failed: {ex.GetType().Name}";
             return false;
         }
         finally
@@ -377,45 +343,36 @@ internal static class FdPassing
         }
     }
 
-    private static void CloseAncillaryFds(IntPtr control, int controlBytes)
+    /// <summary>Receives one bounded record for a descriptor-free protocol state.
+    /// A subsequent queued record remains queued for the next state transition.</summary>
+    internal static bool TryReceiveMessage(
+        int sock,
+        int timeoutMilliseconds,
+        out byte[] payload,
+        out string error)
     {
-        // Control messages received by this protocol are forbidden. Walk
-        // every well-formed SCM_RIGHTS header and close all installed FDs
-        // before returning a rejection.
-        var offset = 0;
-        while (offset + 16 <= controlBytes)
+        payload = Array.Empty<byte>();
+        if (!TryReceiveRecord(sock, timeoutMilliseconds, out var received, out error))
         {
-            var length = Marshal.ReadInt64(control, offset);
-            var level = Marshal.ReadInt32(control, offset + 8);
-            var type = Marshal.ReadInt32(control, offset + 12);
-            if (length < 16 || length > controlBytes - offset)
+            return false;
+        }
+
+        using (received!)
+        {
+            if (received!.DescriptorCount != 0)
             {
-                return;
+                error = "unexpected ancillary data on a control record";
+                return false;
             }
 
-            if (level == SOL_SOCKET && type == SCM_RIGHTS)
-            {
-                var count = (int)((length - 16) / 4);
-                for (var i = 0; i < count; i++)
-                {
-                    var fd = Marshal.ReadInt32(control, offset + 16 + (4 * i));
-                    CloseFdChecked(fd);
-                }
-            }
-
-            var alignedLength = checked((int)((length + 7) & ~7L));
-            if (alignedLength <= 0)
-            {
-                return;
-            }
-
-            offset += alignedLength;
+            payload = received.Payload;
+            error = string.Empty;
+            return true;
         }
     }
 
-    /// <summary>Receives descriptors with MSG_CMSG_CLOEXEC, validates the
-    /// exact payload length and control layout, and verifies FD_CLOEXEC on
-    /// every received descriptor. Any rejection closes all received FDs.</summary>
+    /// <summary>Receives a raw exact-payload SCM_RIGHTS record. The protocol
+    /// channel uses the same bounded record path and adds type/sequence checks.</summary>
     internal static bool TryReceiveTransfer(
         int sock,
         int expectedDescriptorCount,
@@ -427,169 +384,161 @@ internal static class FdPassing
         fds = Array.Empty<int>();
         payload = Array.Empty<byte>();
         error = string.Empty;
-
-        var payloadBuffer = new byte[expectedPayloadLength];
-        var ctrlSize = 16 + Align4(4 * expectedDescriptorCount);
-        var ctrl = Marshal.AllocHGlobal(ctrlSize);
-        var iov = Marshal.AllocHGlobal(16);
-        var msg = Marshal.AllocHGlobal(56);
-        var pinned = GCHandle.Alloc(payloadBuffer, GCHandleType.Pinned);
-        var received = new List<int>();
-        try
+        if (expectedDescriptorCount <= 0
+            || expectedDescriptorCount > 64
+            || expectedPayloadLength < 0
+            || expectedPayloadLength > OwnerProtocol.MaxFrameBytes)
         {
-            Zero(ctrl, ctrlSize);
-            Marshal.WriteIntPtr(iov, 0, pinned.AddrOfPinnedObject());
-            Marshal.WriteIntPtr(iov, 8, (IntPtr)payloadBuffer.Length);
-
-            Zero(msg, 56);
-            Marshal.WriteIntPtr(msg, 16, iov);
-            Marshal.WriteIntPtr(msg, 24, (IntPtr)1);
-            Marshal.WriteIntPtr(msg, 32, ctrl);
-            Marshal.WriteIntPtr(msg, 40, (IntPtr)ctrlSize);
-
-            var rc = RecvMsg(sock, msg, MSG_CMSG_CLOEXEC);
-            if (rc < 0)
-            {
-                error = $"recvmsg errno {Marshal.GetLastWin32Error()}";
-                return false;
-            }
-
-            if (rc == 0)
-            {
-                // A zero-length record can still carry SCM_RIGHTS control
-                // data (the kernel installs the descriptors with rc == 0).
-                // Parse and close anything delivered before refusing. On a
-                // genuine peer close the zeroed control buffer yields no
-                // usable count and nothing is closed.
-                CloseControlFds(ctrl, received);
-                error = "peer closed before descriptors were received";
-                return false;
-            }
-
-            var msgFlags = Marshal.ReadInt32(msg, 48);
-            if ((msgFlags & MSG_CTRUNC) != 0)
-            {
-                // Control data truncated: parse whatever arrived so we can
-                // close it, then refuse.
-                CloseControlFds(ctrl, received);
-                error = "MSG_CTRUNC: control data truncated";
-                return false;
-            }
-
-            if ((msgFlags & MSG_TRUNC) != 0 || rc != expectedPayloadLength)
-            {
-                CloseControlFds(ctrl, received);
-                error = (msgFlags & MSG_TRUNC) != 0
-                    ? $"overlong message: record exceeds the exact {expectedPayloadLength}-byte payload"
-                    : $"payload length {rc} != {expectedPayloadLength}";
-                return false;
-            }
-
-            var cmsgLen = Marshal.ReadInt64(ctrl, 0);
-            var level = Marshal.ReadInt32(ctrl, 8);
-            var type = Marshal.ReadInt32(ctrl, 12);
-            var controllen = Marshal.ReadInt64(msg, 40);
-            if (level != SOL_SOCKET || type != SCM_RIGHTS)
-            {
-                error = "no SCM_RIGHTS control message";
-                return false;
-            }
-
-            var count = (int)((cmsgLen - 16) / 4);
-            // Exactly one control message, no padding ambiguity, no extra
-            // ancillary data.
-            if (count != expectedDescriptorCount || cmsgLen != 16 + (4 * count) || controllen != 16 + Align4(4 * count))
-            {
-                CloseControlFds(ctrl, received);
-                error = $"descriptor count/layout mismatch (count={count}, controllen={controllen})";
-                return false;
-            }
-
-            for (var i = 0; i < count; i++)
-            {
-                var fd = Marshal.ReadInt32(ctrl, 16 + (4 * i));
-                received.Add(fd);
-            }
-
-            // Verify the kernel actually produced CLOEXEC descriptors.
-            foreach (var fd in received)
-            {
-                var flags = Fcntl(fd, 1 /*F_GETFD*/, 0);
-                if (flags < 0 || (flags & FD_CLOEXEC) == 0)
-                {
-                    foreach (var open in received)
-                    {
-                        CloseFdChecked(open);
-                    }
-
-                    error = $"received descriptor {fd} lacks FD_CLOEXEC";
-                    return false;
-                }
-            }
-
-            // A message-preserving endpoint delivers exactly one record per
-            // recvmsg. A second queued record means the peer sent more than
-            // one logical frame; refuse rather than accept the first as the
-            // whole transfer. FIONREAD reports the next record's length
-            // without installing its descriptors.
-            var ioctlResult = Ioctl(sock, FIONREAD, out var pendingRecord);
-            if (ioctlResult != 0 || pendingRecord > 0)
-            {
-                foreach (var open in received)
-                {
-                    CloseFdChecked(open);
-                }
-
-                error = ioctlResult != 0
-                    ? "socket state unavailable for frame-boundary check"
-                    : $"extra queued frame ({pendingRecord} bytes)";
-                return false;
-            }
-
-            fds = received.ToArray();
-            payload = payloadBuffer;
-            return true;
-        }
-        catch (DllNotFoundException)
-        {
-            foreach (var fd in received)
-            {
-                CloseFdChecked(fd);
-            }
-
-            error = "Unsupported: recvmsg unavailable";
+            error = "expected transfer shape is outside the receive bound";
             return false;
         }
-        finally
+
+        if (!TryReceiveRecord(
+                sock, OwnerProtocolChannel.TransitionTimeoutMilliseconds, out var received, out error))
         {
-            pinned.Free();
-            Marshal.FreeHGlobal(ctrl);
-            Marshal.FreeHGlobal(iov);
-            Marshal.FreeHGlobal(msg);
+            return false;
+        }
+
+        using (received!)
+        {
+            if (received!.Payload.Length != expectedPayloadLength)
+            {
+                error = received.Payload.Length > expectedPayloadLength
+                    ? $"overlong message: record exceeds the exact {expectedPayloadLength}-byte payload"
+                    : $"payload length {received.Payload.Length} != {expectedPayloadLength}";
+                return false;
+            }
+
+            if (received.DescriptorCount != expectedDescriptorCount)
+            {
+                error = $"descriptor count mismatch ({received.DescriptorCount} != {expectedDescriptorCount})";
+                return false;
+            }
+
+            fds = received.DetachDescriptors();
+            payload = received.Payload;
+            error = string.Empty;
+            return true;
         }
     }
 
-    private static void CloseControlFds(IntPtr ctrl, List<int> received)
+    private static bool TryCaptureAncillaryDescriptors(
+        IntPtr control,
+        int controlBytes,
+        out string error,
+        List<int> received)
     {
-        // Best-effort: read the count from the (possibly truncated) control
-        // buffer and close what the kernel delivered.
-        try
+        error = string.Empty;
+        if (controlBytes == 0)
         {
-            var cmsgLen = Marshal.ReadInt64(ctrl, 0);
-            var count = (int)((cmsgLen - 16) / 4);
-            for (var i = 0; i < count && i < 64; i++)
+            return true;
+        }
+
+        var offset = 0;
+        var messageCount = 0;
+        var valid = true;
+        while (offset < controlBytes)
+        {
+            var remaining = controlBytes - offset;
+            if (remaining < 16)
             {
-                var fd = Marshal.ReadInt32(ctrl, 16 + (4 * i));
-                if (fd >= 0)
+                valid = false;
+                error = "truncated ancillary header";
+                break;
+            }
+
+            var length = Marshal.ReadInt64(control, offset);
+            var level = Marshal.ReadInt32(control, offset + 8);
+            var type = Marshal.ReadInt32(control, offset + 12);
+            if (length < 16)
+            {
+                valid = false;
+                error = "invalid ancillary header length";
+                break;
+            }
+
+            var availableDataBytes = Math.Max(0, remaining - 16);
+            var declaredDataBytes = length - 16;
+            var readableDataBytes = (int)Math.Min(declaredDataBytes, availableDataBytes);
+            if (level == SOL_SOCKET && type == SCM_RIGHTS)
+            {
+                messageCount++;
+                var descriptorBytes = readableDataBytes - (readableDataBytes % 4);
+                for (var i = 0; i < descriptorBytes / 4; i++)
                 {
-                    CloseFdChecked(fd);
-                    received.Add(fd);
+                    var fd = Marshal.ReadInt32(control, offset + 16 + (4 * i));
+                    if (fd >= 0)
+                    {
+                        received.Add(fd);
+                    }
+                    else
+                    {
+                        valid = false;
+                        error = "invalid received descriptor";
+                    }
+                }
+
+                if (declaredDataBytes != readableDataBytes
+                    || declaredDataBytes == 0
+                    || declaredDataBytes % 4 != 0)
+                {
+                    valid = false;
+                    error = "invalid SCM_RIGHTS control layout";
                 }
             }
+            else
+            {
+                valid = false;
+                error = "unsupported ancillary control message";
+            }
+
+            if (length > remaining)
+            {
+                valid = false;
+                if (string.IsNullOrEmpty(error))
+                {
+                    error = "ancillary control message exceeds its buffer";
+                }
+
+                break;
+            }
+
+            if (length == remaining)
+            {
+                offset = controlBytes;
+                break;
+            }
+
+            var alignedLength = checked((int)((length + 7) & ~7L));
+            if (alignedLength <= 0 || alignedLength > remaining)
+            {
+                valid = false;
+                error = "invalid ancillary control alignment";
+                break;
+            }
+
+            offset += alignedLength;
         }
-        catch
+
+        if (messageCount != 1)
         {
+            valid = false;
+            error = messageCount == 0
+                ? "unexpected ancillary data"
+                : "multiple ancillary control messages";
         }
+
+        return valid;
+    }
+
+    private static void CloseReceived(List<int> received)
+    {
+        foreach (var fd in received)
+        {
+            CloseFdChecked(fd);
+        }
+
+        received.Clear();
     }
 
     private static void CloseFdChecked(int fd)
@@ -599,7 +548,6 @@ internal static class FdPassing
             PreparationInterop.CloseFd(fd);
         }
     }
-
     private static int Align4(int n) => (n + 3) & ~3;
 
     private static void Zero(IntPtr p, int count)
@@ -607,6 +555,49 @@ internal static class FdPassing
         for (var i = 0; i < count; i++)
         {
             Marshal.WriteByte(p, i, 0);
+        }
+    }
+}
+
+/// <summary>Owns descriptors delivered with one bounded record. Descriptors
+/// remain owned here until detached after complete protocol validation.</summary>
+internal sealed class ReceivedFdRecord : IDisposable
+{
+    private int[]? _descriptors;
+
+    internal ReceivedFdRecord(byte[] payload, int[] descriptors)
+    {
+        Payload = payload ?? throw new ArgumentNullException(nameof(payload));
+        _descriptors = descriptors ?? throw new ArgumentNullException(nameof(descriptors));
+    }
+
+    internal byte[] Payload { get; }
+
+    internal int DescriptorCount => _descriptors?.Length ?? 0;
+
+    internal int[] DetachDescriptors()
+    {
+        var descriptors = _descriptors
+            ?? throw new InvalidOperationException("record descriptors were already detached or disposed");
+        _descriptors = null;
+        return descriptors;
+    }
+
+    public void Dispose()
+    {
+        var descriptors = _descriptors;
+        if (descriptors is null)
+        {
+            return;
+        }
+
+        _descriptors = null;
+        foreach (var fd in descriptors)
+        {
+            if (fd >= 0)
+            {
+                PreparationInterop.CloseFd(fd);
+            }
         }
     }
 }
