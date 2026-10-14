@@ -153,6 +153,33 @@ internal sealed class JournalWriterLease : IDisposable
     }
 }
 
+/// <summary>Unforgeable proof that one exact AllocationIntent is the
+/// acknowledged baseline under a live writer lease. It is produced only by
+/// OwnershipJournal after reading the committed state while that lease's
+/// storage fence is held.</summary>
+internal sealed class AcknowledgedAllocationIntent
+{
+    internal AcknowledgedAllocationIntent(
+        OwnershipJournal journal,
+        JournalWriterLease writer,
+        long sequence,
+        OwnershipSnapshot snapshot)
+    {
+        Journal = journal;
+        Writer = writer;
+        Sequence = sequence;
+        Snapshot = snapshot;
+    }
+
+    internal OwnershipJournal Journal { get; }
+
+    internal JournalWriterLease Writer { get; }
+
+    internal long Sequence { get; }
+
+    internal OwnershipSnapshot Snapshot { get; }
+}
+
 /// <summary>Bounded two-generation journal. Thread-affine; mutation
 /// requires a live <see cref="JournalWriterLease"/> so flock fencing is
 /// structural, not conventional.</summary>
@@ -237,6 +264,65 @@ internal sealed class OwnershipJournal
         return true;
     }
 
+    /// <summary>Verifies that the current acknowledged journal baseline is
+    /// the exact supplied AllocationIntent for this transaction, then
+    /// returns a proof bound to this journal and its live fenced writer.
+    /// A positive sequence by itself is never allocation authority.</summary>
+    internal bool TryProveAllocationIntent(
+        JournalWriterLease? lease,
+        OwnershipSnapshot expectedIntent,
+        out AcknowledgedAllocationIntent? proof,
+        out string error)
+    {
+        proof = null;
+        error = string.Empty;
+        ArgumentNullException.ThrowIfNull(expectedIntent);
+        if (lease is null || !ReferenceEquals(lease.Journal, this) || !IsEffectiveWriter(lease))
+        {
+            error = "allocation intent proof requires this journal's effective live writer";
+            return false;
+        }
+
+        var resolved = Resolve();
+        if (resolved.Kind != ResolveKind.Acknowledged || resolved.Snapshot is null)
+        {
+            error = resolved.Error.Length == 0 ? "allocation intent baseline is not acknowledged" : resolved.Error;
+            return false;
+        }
+
+        var actual = resolved.Snapshot;
+        if (actual.Sequence != lease.BaselineSequence
+            || actual.Stage != PreparationStage.AllocationIntent
+            || expectedIntent.Stage != PreparationStage.AllocationIntent
+            || actual.ExecutionId != expectedIntent.ExecutionId
+            || actual.LeaseGeneration != expectedIntent.LeaseGeneration
+            || actual.BootId != expectedIntent.BootId
+            || actual.DomainName != expectedIntent.DomainName
+            || actual.Writer != expectedIntent.Writer
+            || actual.Cleanup != expectedIntent.Cleanup
+            || actual.StagingParentDevice != expectedIntent.StagingParentDevice
+            || actual.StagingParentInode != expectedIntent.StagingParentInode
+            || actual.Preparation is not null
+            || actual.Allocations.Count != expectedIntent.Allocations.Count
+            || actual.Allocations.Where((item, index) => !AllocationIntentEntryMatches(item, expectedIntent.Allocations[index])).Any())
+        {
+            error = "acknowledged journal baseline is not the matching AllocationIntent";
+            return false;
+        }
+
+        proof = new AcknowledgedAllocationIntent(this, lease, actual.Sequence, actual);
+        return true;
+    }
+
+    private static bool AllocationIntentEntryMatches(AllocationEntry actual, AllocationEntry expected) =>
+        actual.Kind == expected.Kind
+        && actual.Name == expected.Name
+        && actual.Length == expected.Length
+        && actual.Device == expected.Device
+        && actual.Inode == expected.Inode
+        && actual.Confirmed == expected.Confirmed
+        && actual.Digest.AsSpan().SequenceEqual(expected.Digest);
+
     /// <summary>Relinquishes the fence for a released lease. Only the
     /// currently active lease can clear writer authority; anything else is
     /// a harmless no-op on the tracking side (the storage release itself is
@@ -256,7 +342,7 @@ internal sealed class OwnershipJournal
 
     /// <summary>True only while the given lease is this journal's active
     /// writer and the real exclusive fence is still held.</summary>
-    private bool IsEffectiveWriter(JournalWriterLease lease)
+    internal bool IsEffectiveWriter(JournalWriterLease lease)
     {
         lock (_gate)
         {

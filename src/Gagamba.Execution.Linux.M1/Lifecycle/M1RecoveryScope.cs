@@ -1,12 +1,9 @@
-// WP03 M1RecoveryScope: the dedicated harness host. It sets and verifies
-// child-subreaper, creates the delegated domain beneath a retained parent,
-// retains independent recovery handles, spawns the per-execution owner as
-// its direct child, and — when the owner dies — fences journal takeover
-// and cleans the domain and preparation allocations by retained-handle
-// identity. It never recreates a capability, release authority, target
-// work or execution state from records alone.
+// WP03 M1RecoveryScope is the external recovery actor. It retains the delegated parent and independent domain/staging handles, owns the subreaper and owner pidfd lifecycle, and takes the journal writer only after proven owner exit.
+// Domain creation, staging, Prepared, and Mint execute in the owner process. The scope never receives a preparation capability or release authority.
 using System.Diagnostics;
+using System.Buffers.Binary;
 using System.Runtime.InteropServices;
+using System.Text;
 using Microsoft.Win32.SafeHandles;
 using Gagamba.Execution.Linux.M1.Native;
 using Gagamba.Execution.Linux.M1.Preparation;
@@ -17,8 +14,6 @@ using Gagamba.Execution.Restricted;
 namespace Gagamba.Execution.Linux.M1.Lifecycle;
 
 internal sealed record ScopeInitResult(bool Ok, string Error);
-
-internal sealed record DomainAllocationResult(bool Ok, DomainLease? RecoveryLease, int OwnerSocketFd, string Error);
 
 internal sealed record OwnerExitResult(bool Exited, int ExitCode, bool Crashed, string Error);
 
@@ -32,36 +27,37 @@ internal sealed record OwnerSpawnResult(Process? Process, int PidFd, string Erro
     internal bool Ok => Process is not null && Error.Length == 0;
 }
 
-/// <summary>Real integrated preparation request. The manifest is built by
-/// the caller from staged bindings after copy (never predicted); the death
-/// barrier is test-only deterministic death injection (null in production).</summary>
-internal sealed record IntegratedPreparationRequest(
+/// <summary>Inputs for launching the isolated owner transaction. The
+/// callback builds a manifest from bounded, non-authoritative staged
+/// descriptions; neither it nor any capability-bearing object crosses the
+/// owner boundary.</summary>
+internal sealed record OwnerPreparationRequest(
+    string OwnerDllPath,
     string DomainChildName,
     Guid ExecutionId,
     Guid LeaseGeneration,
     string BootId,
-    ICopyHost CopyHost,
     CopyPlan Plan,
     OwnershipJournal Journal,
     JournalWriterLease Writer,
-    PreparedTransaction.PreparationStore Store,
-    Func<IReadOnlyList<StagedObject>, (RestrictedManifest Manifest, PreparationIdentity Identity)> ManifestFactory,
+    Guid IssuerId,
+    Guid StoreGenerationId,
+    Func<IReadOnlyList<StagedObjectDescription>, (RestrictedManifest Manifest, PreparationIdentity Identity)> ManifestFactory,
     long ExpiresAtNs,
-    Action<string>? DeathBarrier);
+    string? TestBarrier = null,
+    bool WithholdStagingRetentionAckForTest = false);
 
-internal sealed record IntegratedPreparationOutcome(
-    bool Published,
-    CopyFailureKind Failure,
-    string Detail,
-    PreparedTransaction? Capability,
-    DomainLease? PrimaryLease,
-    PreparedClosure? Closure)
+/// <summary>Non-authoritative owner result. The capability and primary
+/// domain lease remain in the live owner process; only a bounded
+/// preparation description may return to the scope.</summary>
+internal sealed record OwnerPreparationOutcome(
+    bool Completed,
+    OwnerPreparedDescription? Description,
+    Process? Owner,
+    string? Barrier,
+    string Error)
 {
-    internal static IntegratedPreparationOutcome Failed(CopyFailureKind failure, string detail, PreparedClosure? retained = null) =>
-        new(false, failure, detail, null, null, retained);
-
-    internal static IntegratedPreparationOutcome Success(PreparedTransaction capability, DomainLease primary) =>
-        new(true, CopyFailureKind.None, "Integrated preparation published.", capability, primary, null);
+    internal bool Ok => Completed && Error.Length == 0 && Description is not null && Owner is not null;
 }
 
 internal sealed class M1RecoveryScope : IDisposable
@@ -74,6 +70,8 @@ internal sealed class M1RecoveryScope : IDisposable
     private readonly List<SafeHandle> _retainedStagingParents = new();
     private readonly List<SafeHandle> _retainedStagingDirs = new();
     private readonly Dictionary<int, SafeHandle> _retainedOwnerPidFds = new();
+    private readonly Dictionary<int, OwnerProtocolChannel> _ownerChannels = new();
+    private readonly Dictionary<int, Process> _owners = new();
 
     internal M1RecoveryScope(IPidFdProvider? pidFdProvider = null)
     {
@@ -144,123 +142,6 @@ internal sealed class M1RecoveryScope : IDisposable
         return new ScopeInitResult(true, string.Empty);
     }
 
-    /// <summary>Intent-first domain allocation used by the scoped
-    /// transaction and its qualification seams. A durable, unconfirmed
-    /// AllocationIntent is written under the supplied live writer FIRST;
-    /// only then is an unforgeable scoped context created, the real domain
-    /// created, the recovery duplicate retained, the actual identity
-    /// durably registered, and the primary handles transferred over the
-    /// inherited socketpair. There is no journal-free allocation path; a
-    /// missing journal, a dead writer or an unacknowledged intent refuses
-    /// before any domain is created. The returned child socket end must be
-    /// handed to <see cref="TrySpawnOwner"/> (which closes it) or closed by
-    /// the caller.</summary>
-    internal DomainAllocationResult AllocateDomainUnderTransaction(
-        OwnershipJournal journal,
-        JournalWriterLease writer,
-        string childName,
-        Guid executionId,
-        Guid leaseGeneration,
-        string bootId)
-    {
-        if (_parentFd < 0)
-        {
-            return new DomainAllocationResult(false, null, -1, "no retained delegated parent");
-        }
-
-        if (journal is null || writer is null)
-        {
-            return new DomainAllocationResult(false, null, -1, "domain allocation requires a journal and a live writer lease");
-        }
-
-        var intent = BuildDomainIntent(childName, executionId, bootId, leaseGeneration);
-        var intentWrite = journal.WriteNext(writer, intent);
-        if (!intentWrite.Ok)
-        {
-            return new DomainAllocationResult(false, null, -1, $"AllocationIntent not durable: {intentWrite.Error}");
-        }
-
-        if (!ScopedAllocationContext.TryCreate(
-                _parentFd, journal, writer, executionId, leaseGeneration, bootId,
-                out var context, out var contextError))
-        {
-            return new DomainAllocationResult(false, null, -1, contextError);
-        }
-
-        if (!CgroupInterop.TryCreateDomain(context!, childName, out var backend, out var identity, out var error))
-        {
-            return new DomainAllocationResult(false, null, -1, error);
-        }
-
-        // Separately owned recovery duplicate retained by this scope.
-        var recoveryBackend = backend!.DuplicateForRecovery();
-        var recoveryLease = new DomainLease(recoveryBackend, identity!);
-        _retainedRecoveryLeases.Add(recoveryLease);
-
-        // Durable registration with the actual created identity.
-        var registered = BuildDomainRegistered(childName, executionId, bootId, leaseGeneration, identity!);
-        var registeredWrite = journal.WriteNext(writer, registered);
-        if (!registeredWrite.Ok)
-        {
-            return new DomainAllocationResult(false, recoveryLease, -1, $"AllocationRegistered not durable: {registeredWrite.Error}");
-        }
-
-        if (!FdPassing.TryCreateInheritableSocketPair(out var parentEnd, out var childEnd, out var socketError))
-        {
-            recoveryLease.Dispose();
-            backend.Dispose();
-            return new DomainAllocationResult(false, null, -1, socketError);
-        }
-
-        var payload = DomainHandleTransfer.Encode(executionId, leaseGeneration);
-        bool sent;
-        string sendError;
-        try
-        {
-            sent = FdPassing.TrySendTransfer(parentEnd, backend.OrderedFds(), payload, out sendError);
-        }
-        finally
-        {
-            // The parent end is this scope's and is closed exactly once.
-            PreparationInterop.CloseFd(parentEnd);
-        }
-
-        // The primary descriptors were duplicated into the owner via
-        // SCM_RIGHTS; the scope's primary copies are no longer needed.
-        backend.Dispose();
-
-        if (!sent)
-        {
-            recoveryLease.Dispose();
-            // The child end was never handed off; close it exactly once.
-            PreparationInterop.CloseFd(childEnd);
-            return new DomainAllocationResult(false, null, -1, sendError);
-        }
-
-        return new DomainAllocationResult(true, recoveryLease, childEnd, string.Empty);
-    }
-
-    private static OwnershipSnapshot BuildDomainIntent(
-        string childName, Guid executionId, string bootId, Guid leaseGeneration) =>
-        new(
-            OwnershipSnapshotCodec.CurrentVersion, 0, executionId, bootId, 0, string.Empty,
-            0, 0, childName, 0, 0, leaseGeneration,
-            OwnershipWriterKind.Owner, OwnershipCleanupState.NotStarted, PreparationStage.AllocationIntent,
-            StagingParentDevice: 0, StagingParentInode: 0,
-            Allocations: new[] { new AllocationEntry(AllocationKind.Domain, childName, 0, Array.Empty<byte>(), 0, 0, Confirmed: false) },
-            Preparation: null);
-
-    private static OwnershipSnapshot BuildDomainRegistered(
-        string childName, Guid executionId, string bootId, Guid leaseGeneration, DomainIdentity domain) =>
-        new(
-            OwnershipSnapshotCodec.CurrentVersion, 0, executionId, bootId,
-            domain.CgroupMountId, domain.CgroupMountFsType, domain.ParentDevice, domain.ParentInode,
-            childName, domain.ChildDevice, domain.ChildInode, leaseGeneration,
-            OwnershipWriterKind.Owner, OwnershipCleanupState.NotStarted, PreparationStage.AllocationRegistered,
-            StagingParentDevice: 0, StagingParentInode: 0,
-            Allocations: new[] { new AllocationEntry(AllocationKind.Domain, childName, 0, Array.Empty<byte>(), domain.ChildDevice, domain.ChildInode, Confirmed: true) },
-            Preparation: null);
-
     /// <summary>Spawns the per-execution owner as this scope's direct child,
     /// then immediately acquires and retains a CLOEXEC pidfd for that exact
     /// PID before any owner-loss-dependent state exists. A missing or
@@ -308,6 +189,7 @@ internal sealed class M1RecoveryScope : IDisposable
 
             var handle = new SafeFileHandle(new IntPtr(pidFd), ownsHandle: true);
             _retainedOwnerPidFds[process.Id] = handle;
+            _owners[process.Id] = process;
             return new OwnerSpawnResult(process, pidFd, string.Empty);
         }
         catch (Exception ex)
@@ -327,6 +209,619 @@ internal sealed class M1RecoveryScope : IDisposable
             {
                 PreparationInterop.CloseFd(ownerSocketFd);
             }
+        }
+    }
+
+    /// <summary>Runs one owner-owned allocation/preparation transaction.
+    /// This scope writes only the initial durable intent, relinquishes the
+    /// journal fence, spawns the issuer, and then retains/acknowledges
+    /// recovery authority through the private protocol. It never runs
+    /// SafeCopyIn, owns a PreparationStore, or receives a capability.</summary>
+    internal OwnerPreparationOutcome StartOwnerPreparation(
+        OwnerPreparationRequest request,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        if (_disposed || _parentFd < 0 || !_subreaperEnabled)
+        {
+            return new OwnerPreparationOutcome(false, null, null, null, "recovery scope is not initialized");
+        }
+
+        if (!ReferenceEquals(request.Writer.Journal, request.Journal)
+            || !request.Writer.IsLive
+            || request.Writer.Directory.Length == 0)
+        {
+            return new OwnerPreparationOutcome(false, null, null, null, "scope does not hold the matching live intent writer");
+        }
+
+        var openErrno = LibcStagingParent(request.Plan.StagingParentPath, out var stagingParent);
+        if (openErrno != 0 || stagingParent is null)
+        {
+            return new OwnerPreparationOutcome(false, null, null, null, $"staging parent open errno {openErrno}");
+        }
+
+        if (PreparationInterop.StatFd(stagingParent.DangerousGetHandle().ToInt32(), out var stagingStat) != 0)
+        {
+            stagingParent.Dispose();
+            return new OwnerPreparationOutcome(false, null, null, null, "staging parent identity unavailable");
+        }
+
+        _retainedStagingParents.Add(stagingParent);
+        var specification = new OwnerPreparationSpecification(
+            request.Writer.Directory,
+            request.DomainChildName,
+            request.ExecutionId,
+            request.LeaseGeneration,
+            request.BootId,
+            request.IssuerId,
+            request.StoreGenerationId,
+            request.Plan.SourceRootPath,
+            request.Plan.StagingParentPath,
+            stagingStat.Device,
+            stagingStat.Inode,
+            request.Plan.StagingDirectoryName,
+            request.Plan.Objects,
+            request.Plan.TotalBudgetBytes,
+            request.Plan.MaxObjects,
+            request.Plan.Environment ?? Array.Empty<KeyValuePair<string, string>>(),
+            request.ExpiresAtNs,
+            request.TestBarrier);
+
+        byte[] encodedSpecification;
+        OwnershipSnapshot intent;
+        try
+        {
+            encodedSpecification = OwnerPreparationSpecificationCodec.Encode(specification);
+            intent = OwnerPreparationSpecificationCodec.BuildIntent(specification);
+        }
+        catch (ArgumentException ex)
+        {
+            return new OwnerPreparationOutcome(false, null, null, null, $"owner request refused: {ex.Message}");
+        }
+
+        var intentWrite = request.Journal.WriteNext(request.Writer, intent);
+        if (!intentWrite.Ok)
+        {
+            return new OwnerPreparationOutcome(false, null, null, null, $"AllocationIntent not durable: {intentWrite.Error}");
+        }
+
+        // Exact writer handoff: release this real flock before the owner is
+        // launched. There is no interval with two usable writer leases.
+        request.Writer.Dispose();
+
+        if (!FdPassing.TryCreateInheritableSocketPair(out var parentSocket, out var childSocket, out var socketError))
+        {
+            return new OwnerPreparationOutcome(false, null, null, null, socketError);
+        }
+
+        var spawned = TrySpawnOwner(
+            request.OwnerDllPath,
+            new[] { "--exec", request.ExecutionId.ToString("D"), "--lease", request.LeaseGeneration.ToString("D") },
+            childSocket);
+        if (!spawned.Ok || spawned.Process is null)
+        {
+            PreparationInterop.CloseFd(parentSocket);
+            return new OwnerPreparationOutcome(false, null, null, null, spawned.Error);
+        }
+
+        var owner = spawned.Process;
+        var channel = new OwnerProtocolChannel(
+            parentSocket, request.ExecutionId, request.LeaseGeneration, ownsSocket: true);
+        _ownerChannels[owner.Id] = channel;
+        var operationError = string.Empty;
+        try
+        {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return FailOwnerPreparation(owner, channel, "owner preparation cancelled before start");
+            }
+
+            if (!channel.TrySend(OwnerProtocolMessageType.Start, encodedSpecification, out operationError))
+            {
+                return FailOwnerPreparation(owner, channel, $"owner start frame failed: {operationError}");
+            }
+
+            if (!ReceiveControlOrBarrier(channel, OwnerProtocolMessageType.WriterReady, out var message, out var barrier, out operationError))
+            {
+                return FailOwnerPreparation(owner, channel, operationError);
+            }
+
+            if (barrier is not null)
+            {
+                return new OwnerPreparationOutcome(false, null, owner, barrier, string.Empty);
+            }
+
+            var parentDuplicate = PreparationInterop.Dup(_parentFd);
+            var stagingDuplicate = PreparationInterop.Dup(stagingParent.DangerousGetHandle().ToInt32());
+            if (parentDuplicate < 0 || stagingDuplicate < 0)
+            {
+                if (parentDuplicate >= 0) PreparationInterop.CloseFd(parentDuplicate);
+                if (stagingDuplicate >= 0) PreparationInterop.CloseFd(stagingDuplicate);
+                return FailOwnerPreparation(owner, channel, "owner authority descriptor duplication failed");
+            }
+
+            var startAuthoritySent = channel.TrySendTransfer(
+                OwnerProtocolMessageType.StartAuthority,
+                new byte[] { 0, 1 },
+                new[] { parentDuplicate, stagingDuplicate },
+                out operationError);
+            PreparationInterop.CloseFd(parentDuplicate);
+            PreparationInterop.CloseFd(stagingDuplicate);
+            if (!startAuthoritySent)
+            {
+                return FailOwnerPreparation(owner, channel, $"owner authority transfer failed: {operationError}");
+            }
+
+            var nextLength = ReadNextRecordLength(channel, out operationError);
+            if (nextLength < 0)
+            {
+                return FailOwnerPreparation(owner, channel, operationError);
+            }
+
+            int[] recoveryFds;
+            if (nextLength == OwnerProtocol.HeaderBytes)
+            {
+                if (!ReceiveControlOrBarrier(channel, OwnerProtocolMessageType.DomainRecoveryAuthority,
+                        out message, out barrier, out operationError))
+                {
+                    return FailOwnerPreparation(owner, channel, operationError);
+                }
+
+                if (barrier is not null)
+                {
+                    return new OwnerPreparationOutcome(false, null, owner, barrier, string.Empty);
+                }
+
+                return FailOwnerPreparation(owner, channel, "owner sent a descriptor-free domain authority frame");
+            }
+
+            if (!channel.TryReceiveTransfer(
+                    OwnerProtocolMessageType.DomainRecoveryAuthority,
+                    DomainHandleTransfer.ExactDescriptorCount,
+                    expectedPayloadBytes: 1,
+                    out var domainMessage,
+                    out recoveryFds,
+                    out operationError))
+            {
+                return FailOwnerPreparation(owner, channel, $"domain recovery authority transfer failed: {operationError}");
+            }
+
+            if (domainMessage!.Payload[0] != DomainHandleTransfer.ExactDescriptorCount)
+            {
+                CloseReceived(recoveryFds);
+                return FailOwnerPreparation(owner, channel, "scope rejected owner domain authority role count");
+            }
+
+            if (!CgroupInterop.TryValidateDomainHandles(
+                    recoveryFds, request.DomainChildName, request.ExecutionId, request.LeaseGeneration,
+                    request.BootId, out var recoveryBackend, out var domainIdentity, out var domainError))
+            {
+                CloseReceived(recoveryFds);
+                return FailOwnerPreparation(owner, channel, $"scope rejected owner domain authority: {domainError}");
+            }
+
+            var recoveryLease = new DomainLease(recoveryBackend!, domainIdentity!);
+            _retainedRecoveryLeases.Add(recoveryLease);
+            if (!channel.TrySend(OwnerProtocolMessageType.DomainAuthorityRetained, ReadOnlySpan<byte>.Empty, out operationError))
+            {
+                return FailOwnerPreparation(owner, channel, $"domain retention acknowledgement failed: {operationError}");
+            }
+
+            if (!ReceiveControlOrBarrier(channel, OwnerProtocolMessageType.DomainRegistered,
+                    out message, out barrier, out operationError))
+            {
+                return FailOwnerPreparation(owner, channel, operationError);
+            }
+
+            if (barrier is not null)
+            {
+                return new OwnerPreparationOutcome(false, null, owner, barrier, string.Empty);
+            }
+
+            var registeredRead = request.Journal.ReadLatest();
+            if (!registeredRead.Ok || registeredRead.Snapshot is null
+                || !IsExpectedRegistered(registeredRead.Snapshot, specification, domainIdentity!))
+            {
+                return FailOwnerPreparation(owner, channel, "owner AllocationRegistered state did not match retained domain authority");
+            }
+
+            if (!channel.TrySend(OwnerProtocolMessageType.DomainRegistrationRetained, ReadOnlySpan<byte>.Empty, out operationError))
+            {
+                return FailOwnerPreparation(owner, channel, $"registered-domain acknowledgement failed: {operationError}");
+            }
+
+            nextLength = ReadNextRecordLength(channel, out operationError);
+            if (nextLength < 0)
+            {
+                return FailOwnerPreparation(owner, channel, operationError);
+            }
+
+            if (nextLength == OwnerProtocol.HeaderBytes)
+            {
+                if (!ReceiveControlOrBarrier(channel, OwnerProtocolMessageType.StagingAuthority,
+                        out message, out barrier, out operationError))
+                {
+                    return FailOwnerPreparation(owner, channel, operationError);
+                }
+
+                if (barrier is not null)
+                {
+                    return new OwnerPreparationOutcome(false, null, owner, barrier, string.Empty);
+                }
+
+                return FailOwnerPreparation(owner, channel, "owner sent a descriptor-free staging authority frame");
+            }
+
+            if (!channel.TryReceiveTransfer(
+                    OwnerProtocolMessageType.StagingAuthority,
+                    expectedDescriptorCount: 1,
+                    expectedPayloadBytes: 16,
+                    out var stagingMessage,
+                    out var stagingFds,
+                    out operationError))
+            {
+                return FailOwnerPreparation(owner, channel, $"staging authority transfer failed: {operationError}");
+            }
+
+            var stagingDevice = BinaryPrimitives.ReadUInt64LittleEndian(stagingMessage!.Payload.AsSpan(0, 8));
+            var stagingInode = BinaryPrimitives.ReadUInt64LittleEndian(stagingMessage.Payload.AsSpan(8, 8));
+            if (PreparationInterop.StatFd(stagingFds[0], out var receivedStagingStat) != 0
+                || !PreparationInterop.IsDirectory(receivedStagingStat.Mode)
+                || receivedStagingStat.Device != stagingDevice
+                || receivedStagingStat.Inode != stagingInode)
+            {
+                CloseReceived(stagingFds);
+                return FailOwnerPreparation(owner, channel, "received staging authority identity mismatch");
+            }
+
+            _retainedStagingDirs.Add(new SafeFileHandle(new IntPtr(stagingFds[0]), ownsHandle: true));
+            if (request.WithholdStagingRetentionAckForTest)
+            {
+                return new OwnerPreparationOutcome(false, null, owner, null, "test withheld staging retention acknowledgement");
+            }
+            if (!channel.TrySend(OwnerProtocolMessageType.StagingAuthorityRetained, ReadOnlySpan<byte>.Empty, out operationError))
+            {
+                return FailOwnerPreparation(owner, channel, $"staging retention acknowledgement failed: {operationError}");
+            }
+
+            if (!ReceiveControlOrBarrier(channel, OwnerProtocolMessageType.StagingAccounted,
+                    out message, out barrier, out operationError))
+            {
+                return FailOwnerPreparation(owner, channel, operationError);
+            }
+
+            if (barrier is not null)
+            {
+                return new OwnerPreparationOutcome(false, null, owner, barrier, string.Empty);
+            }
+
+            if (message!.Payload.Length != 16
+                || BinaryPrimitives.ReadUInt64LittleEndian(message.Payload.AsSpan(0, 8)) != stagingDevice
+                || BinaryPrimitives.ReadUInt64LittleEndian(message.Payload.AsSpan(8, 8)) != stagingInode
+                || !HasDurableStagingDirectory(request.Journal, specification, stagingDevice, stagingInode))
+            {
+                return FailOwnerPreparation(owner, channel, "staging identity was not durably accounted before continuation");
+            }
+
+            if (!channel.TrySend(OwnerProtocolMessageType.StagingMayProceed, ReadOnlySpan<byte>.Empty, out operationError))
+            {
+                return FailOwnerPreparation(owner, channel, $"staging continuation acknowledgement failed: {operationError}");
+            }
+
+            var afterStageLength = ReadNextRecordLength(channel, out operationError);
+            if (afterStageLength < 0)
+            {
+                return FailOwnerPreparation(owner, channel, operationError);
+            }
+
+            if (afterStageLength == OwnerProtocol.HeaderBytes)
+            {
+                if (!ReceiveControlOrBarrier(channel, OwnerProtocolMessageType.StagedObjects,
+                        out message, out barrier, out operationError))
+                {
+                    return FailOwnerPreparation(owner, channel, operationError);
+                }
+
+                if (barrier is not null)
+                {
+                    return new OwnerPreparationOutcome(false, null, owner, barrier, string.Empty);
+                }
+
+                return FailOwnerPreparation(owner, channel, "owner sent an empty staged-object description");
+            }
+
+            if (!channel.TryReceiveAny(out message, out operationError))
+            {
+                return FailOwnerPreparation(owner, channel, operationError);
+            }
+
+            if (message!.Type == OwnerProtocolMessageType.BarrierReached)
+            {
+                barrier = DecodeBarrier(message.Payload, out operationError);
+                return barrier is null
+                    ? FailOwnerPreparation(owner, channel, operationError)
+                    : new OwnerPreparationOutcome(false, null, owner, barrier, string.Empty);
+            }
+
+            if (message.Type != OwnerProtocolMessageType.StagedObjects
+                || !OwnerPreparationSpecificationCodec.TryDecodeStagedObjects(
+                    message.Payload, out var stagedDescriptions, out operationError))
+            {
+                return FailOwnerPreparation(owner, channel, $"owner staged-object description refused: {operationError}");
+            }
+
+            (RestrictedManifest Manifest, PreparationIdentity Identity) authorization;
+            try
+            {
+                authorization = request.ManifestFactory(stagedDescriptions!);
+            }
+            catch (Exception ex)
+            {
+                return FailOwnerPreparation(owner, channel, $"manifest authorization failed: {ex.GetType().Name}");
+            }
+
+            if (authorization.Identity.ExecutionId != request.ExecutionId
+                || authorization.Identity.IssuerId != request.IssuerId
+                || authorization.Identity.GenerationId != request.StoreGenerationId
+                || !authorization.Identity.ManifestDigest.AsSpan()
+                    .SequenceEqual(ManifestCodec.ComputeDigestBytes(authorization.Manifest)))
+            {
+                return FailOwnerPreparation(owner, channel, "manifest authorization identity is not bound to this transaction");
+            }
+
+            var authorizationPayload = OwnerManifestAuthorizationCodec.Encode(
+                new OwnerManifestAuthorization(authorization.Manifest, authorization.Identity));
+            if (!channel.TrySend(OwnerProtocolMessageType.ManifestAuthorization, authorizationPayload, out operationError))
+            {
+                return FailOwnerPreparation(owner, channel, $"manifest authorization transfer failed: {operationError}");
+            }
+
+            if (!ReceiveControlOrBarrier(channel, OwnerProtocolMessageType.PreparedDescription,
+                    out message, out barrier, out operationError))
+            {
+                return FailOwnerPreparation(owner, channel, operationError);
+            }
+
+            if (barrier is not null)
+            {
+                return new OwnerPreparationOutcome(false, null, owner, barrier, string.Empty);
+            }
+
+            if (!OwnerPreparationSpecificationCodec.TryDecodePreparedDescription(
+                    message!.Payload, out var preparedDescription, out operationError)
+                || !MatchesPrepared(request.Journal, specification, preparedDescription!, authorization.Identity))
+            {
+                return FailOwnerPreparation(owner, channel, "Prepared description does not match the durable journal state");
+            }
+
+            if (!channel.TrySend(OwnerProtocolMessageType.PreparedAcknowledgement, ReadOnlySpan<byte>.Empty, out operationError))
+            {
+                return FailOwnerPreparation(owner, channel, $"Prepared acknowledgement failed: {operationError}");
+            }
+
+            var finalLength = ReadNextRecordLength(channel, out operationError);
+            if (finalLength < 0)
+            {
+                return FailOwnerPreparation(owner, channel, operationError);
+            }
+
+            if (finalLength == OwnerProtocol.HeaderBytes)
+            {
+                if (!ReceiveControlOrBarrier(channel, OwnerProtocolMessageType.Completed,
+                        out message, out barrier, out operationError))
+                {
+                    return FailOwnerPreparation(owner, channel, operationError);
+                }
+
+                if (barrier is not null)
+                {
+                    return new OwnerPreparationOutcome(false, null, owner, barrier, string.Empty);
+                }
+
+                return FailOwnerPreparation(owner, channel, "owner completed without a prepared description");
+            }
+
+            if (!channel.TryReceiveAny(out message, out operationError))
+            {
+                return FailOwnerPreparation(owner, channel, operationError);
+            }
+
+            if (message!.Type == OwnerProtocolMessageType.BarrierReached)
+            {
+                barrier = DecodeBarrier(message.Payload, out operationError);
+                return barrier is null
+                    ? FailOwnerPreparation(owner, channel, operationError)
+                    : new OwnerPreparationOutcome(false, preparedDescription, owner, barrier, string.Empty);
+            }
+
+            if (message.Type != OwnerProtocolMessageType.Completed
+                || !OwnerPreparationSpecificationCodec.TryDecodePreparedDescription(
+                    message.Payload, out var completedDescription, out operationError)
+                || !SameDescription(completedDescription!, preparedDescription!))
+            {
+                return FailOwnerPreparation(owner, channel, $"owner completion frame refused: {operationError}");
+            }
+
+            return new OwnerPreparationOutcome(true, preparedDescription, owner, null, string.Empty);
+        }
+        catch (Exception ex)
+        {
+            return FailOwnerPreparation(owner, channel, $"owner protocol failed: {ex.GetType().Name}");
+        }
+    }
+
+    private OwnerPreparationOutcome FailOwnerPreparation(Process owner, OwnerProtocolChannel channel, string error)
+    {
+        TerminateOwner(owner);
+        var exit = WaitForOwner(owner, TimeSpan.FromSeconds(5));
+        if (!exit.Exited)
+        {
+            error = $"{error}; owner exit proof failed: {exit.Error}";
+        }
+
+        channel.Dispose();
+        _ownerChannels.Remove(owner.Id);
+        return new OwnerPreparationOutcome(false, null, owner, null, error);
+    }
+
+    private static bool ReceiveControlOrBarrier(
+        OwnerProtocolChannel channel,
+        OwnerProtocolMessageType expected,
+        out OwnerProtocolMessage? message,
+        out string? barrier,
+        out string error)
+    {
+        barrier = null;
+        if (!channel.TryReceiveAny(out message, out error))
+        {
+            return false;
+        }
+
+        if (message!.Type == OwnerProtocolMessageType.Aborted)
+        {
+            error = Encoding.UTF8.GetString(message.Payload);
+            return false;
+        }
+
+        if (message.Type == OwnerProtocolMessageType.BarrierReached)
+        {
+            barrier = DecodeBarrier(message.Payload, out error);
+            return barrier is not null;
+        }
+
+        if (message.Type != expected)
+        {
+            error = $"unexpected owner transition {message.Type}; expected {expected}";
+            return false;
+        }
+
+        error = string.Empty;
+        return true;
+    }
+
+    private static string? DecodeBarrier(byte[] payload, out string error)
+    {
+        var value = Encoding.UTF8.GetString(payload);
+        if (value is not ("after-intent" or "after-domain-retained" or "after-registered"
+            or "after-staging-accounted" or "mid-staging" or "after-copy" or "after-prepared-before-mint"))
+        {
+            error = "owner sent an unknown test barrier";
+            return null;
+        }
+
+        error = string.Empty;
+        return value;
+    }
+
+    private static int ReadNextRecordLength(OwnerProtocolChannel channel, out string error)
+    {
+        if (!FdPassing.TryPeekRecordLength(channel.Socket, out var length, out error))
+        {
+            return -1;
+        }
+
+        if (length <= 0 || length > OwnerProtocol.MaxFrameBytes)
+        {
+            error = "owner sent a record outside the protocol frame bound";
+            return -1;
+        }
+
+        return length;
+    }
+
+    private static bool IsExpectedRegistered(
+        OwnershipSnapshot snapshot,
+        OwnerPreparationSpecification specification,
+        DomainIdentity identity)
+    {
+        if (snapshot.ExecutionId != specification.ExecutionId
+            || snapshot.LeaseGeneration != specification.LeaseGeneration
+            || snapshot.BootId != specification.BootId
+            || snapshot.DomainName != specification.DomainChildName
+            || snapshot.Stage != PreparationStage.AllocationRegistered
+            || snapshot.Writer != OwnershipWriterKind.Owner
+            || snapshot.Cleanup != OwnershipCleanupState.NotStarted
+            || snapshot.DomainDevice != identity.ChildDevice
+            || snapshot.DomainInode != identity.ChildInode
+            || snapshot.CgroupMountId != identity.CgroupMountId
+            || snapshot.CgroupMountFsType != identity.CgroupMountFsType
+            || snapshot.ParentDevice != identity.ParentDevice
+            || snapshot.ParentInode != identity.ParentInode
+            || snapshot.StagingParentDevice != specification.StagingParentDevice
+            || snapshot.StagingParentInode != specification.StagingParentInode)
+        {
+            return false;
+        }
+
+        var domain = snapshot.Allocations.SingleOrDefault(item => item.Kind == AllocationKind.Domain);
+        return domain is { Confirmed: true }
+            && domain.Name == specification.DomainChildName
+            && domain.Device == identity.ChildDevice
+            && domain.Inode == identity.ChildInode;
+    }
+
+    private static bool HasDurableStagingDirectory(
+        OwnershipJournal journal,
+        OwnerPreparationSpecification specification,
+        ulong device,
+        ulong inode)
+    {
+        var read = journal.ReadLatest();
+        if (!read.Ok || read.Snapshot is null
+            || read.Snapshot.ExecutionId != specification.ExecutionId
+            || read.Snapshot.LeaseGeneration != specification.LeaseGeneration
+            || read.Snapshot.Stage != PreparationStage.AllocationRegistered
+            || read.Snapshot.StagingParentDevice != specification.StagingParentDevice
+            || read.Snapshot.StagingParentInode != specification.StagingParentInode)
+        {
+            return false;
+        }
+
+        var entry = read.Snapshot.Allocations.SingleOrDefault(item => item.Kind == AllocationKind.StagingDirectory);
+        return entry is { Confirmed: true }
+            && entry.Name == specification.StagingDirectoryName
+            && entry.Device == device
+            && entry.Inode == inode;
+    }
+
+    private static bool MatchesPrepared(
+        OwnershipJournal journal,
+        OwnerPreparationSpecification specification,
+        OwnerPreparedDescription description,
+        PreparationIdentity authorizedIdentity)
+    {
+        var read = journal.ReadLatest();
+        var recorded = read.Snapshot?.Preparation;
+        return read.Ok && read.Snapshot is not null
+            && read.Snapshot.Stage == PreparationStage.Prepared
+            && read.Snapshot.Writer == OwnershipWriterKind.Owner
+            && read.Snapshot.ExecutionId == specification.ExecutionId
+            && read.Snapshot.LeaseGeneration == specification.LeaseGeneration
+            && description.ExecutionId == specification.ExecutionId
+            && description.IssuerId == authorizedIdentity.IssuerId
+            && description.GenerationId == authorizedIdentity.GenerationId
+            && description.PreparationId == authorizedIdentity.PreparationId
+            && description.ManifestDigest.AsSpan().SequenceEqual(authorizedIdentity.ManifestDigest.AsSpan())
+            && recorded is not null
+            && recorded.ExecutionId == description.ExecutionId
+            && recorded.IssuerId == description.IssuerId
+            && recorded.GenerationId == description.GenerationId
+            && recorded.PreparationId == description.PreparationId
+            && recorded.ManifestDigest.AsSpan().SequenceEqual(description.ManifestDigest);
+    }
+
+    private static bool SameDescription(OwnerPreparedDescription left, OwnerPreparedDescription right) =>
+        left.ExecutionId == right.ExecutionId
+        && left.IssuerId == right.IssuerId
+        && left.GenerationId == right.GenerationId
+        && left.PreparationId == right.PreparationId
+        && left.ManifestDigest.AsSpan().SequenceEqual(right.ManifestDigest);
+
+    private static void CloseReceived(IEnumerable<int> descriptors)
+    {
+        foreach (var descriptor in descriptors)
+        {
+            PreparationInterop.CloseFd(descriptor);
         }
     }
 
@@ -394,189 +889,6 @@ internal sealed class M1RecoveryScope : IDisposable
         return new OwnerExitResult(true, owner.ExitCode, crashed, string.Empty);
     }
 
-    /// <summary>Real integrated allocation/preparation path (G2-03). Runs
-    /// the required order with the caller-held writer lease: intent durable
-    /// → create domain + open staging parent → capture identities → retain
-    /// recovery authority → registered durable → WP02 copy/binding with
-    /// incremental per-object accounting → authority acknowledgement →
-    /// Prepared durable → Mint. A <see cref="BarrierDeathException"/> from
-    /// the death barrier abandons the operation immediately with no unwind
-    /// cleanup; only previously retained scope authority plus durable state
-    /// may be used afterward. Test-only barrier; null in production.</summary>
-    internal IntegratedPreparationOutcome AllocatePreparation(
-        IntegratedPreparationRequest request, CancellationToken cancellationToken)
-    {
-        ArgumentNullException.ThrowIfNull(request);
-        if (_disposed)
-        {
-            return IntegratedPreparationOutcome.Failed(CopyFailureKind.InvariantFailure, "scope disposed");
-        }
-
-        if (_parentFd < 0)
-        {
-            return IntegratedPreparationOutcome.Failed(CopyFailureKind.InvariantFailure, "no retained delegated parent");
-        }
-
-        DomainLease? primary = null;
-        try
-        {
-            // Intent names everything planned (domain child, staging
-            // subdir, object names) as unconfirmed; no identities yet.
-            var intent = BuildIntent(request);
-            var intentWrite = request.Journal.WriteNext(request.Writer, intent);
-            if (!intentWrite.Ok)
-            {
-                return IntegratedPreparationOutcome.Failed(CopyFailureKind.PublicationFailure, $"AllocationIntent not durable: {intentWrite.Error}");
-            }
-
-            // The only entry to real domain creation: an unforgeable scoped
-            // context proving writer authority plus an acknowledged durable
-            // intent. A missing journal or dead writer cannot create a domain.
-            if (!ScopedAllocationContext.TryCreate(
-                    _parentFd, request.Journal, request.Writer, request.ExecutionId, request.LeaseGeneration, request.BootId,
-                    out var allocationContext, out var contextError))
-            {
-                return IntegratedPreparationOutcome.Failed(CopyFailureKind.PublicationFailure, contextError);
-            }
-
-            request.DeathBarrier?.Invoke("after-intent");
-
-            // Create the domain and retain the recovery duplicate.
-            if (!CgroupInterop.TryCreateDomain(
-                allocationContext!, request.DomainChildName,
-                out var backend, out var identity, out var domainError))
-            {
-                return IntegratedPreparationOutcome.Failed(CopyFailureKind.StagingFailure, $"domain creation failed: {domainError}");
-            }
-
-            primary = new DomainLease(backend!, identity!);
-            var recovery = primary.DuplicateForRecovery();
-            _retainedRecoveryLeases.Add(recovery);
-
-            request.DeathBarrier?.Invoke("after-domain-create");
-
-            // Open and retain the staging parent (real FS authority).
-            var openErrno = LibcStagingParent(request.Plan.StagingParentPath, out var parentHandle);
-            if (openErrno != 0 || parentHandle is null)
-            {
-                return IntegratedPreparationOutcome.Failed(CopyFailureKind.StagingFailure, $"staging parent open errno {openErrno}");
-            }
-
-            _retainedStagingParents.Add(parentHandle);
-
-            request.DeathBarrier?.Invoke("after-create");
-
-            // Registered with actual domain + staging-parent identities.
-            var registered = BuildRegistered(request, primary.Identity, parentHandle);
-            var registeredWrite = request.Journal.WriteNext(request.Writer, registered);
-            if (!registeredWrite.Ok)
-            {
-                return IntegratedPreparationOutcome.Failed(CopyFailureKind.PublicationFailure, $"AllocationRegistered not durable: {registeredWrite.Error}");
-            }
-
-            request.DeathBarrier?.Invoke("after-registered");
-
-            // Copy with incremental per-object durable accounting. The
-            // staging directory is retained and durably accounted the moment
-            // it is created (before any object copy); the death barrier
-            // fires at that boundary so a real actor death there is
-            // composable with the surviving scope.
-            var accounted = new IntegratedAccounting(this, request.Journal, request.Writer, registered);
-            var plan = request.Plan with
-            {
-                OnStagingDirectoryCreated = stagingDir =>
-                {
-                    accounted.OnStagingDirectory(stagingDir);
-                    request.DeathBarrier?.Invoke("after-staging-dir");
-                },
-                OnObjectAccounted = accounted.OnObject,
-            };
-            var prepared = SafeCopyIn.Prepare(plan, request.CopyHost, cancellationToken);
-            if (!prepared.Succeeded)
-            {
-                return IntegratedPreparationOutcome.Failed(
-                    prepared.Failure, prepared.Detail, prepared.Closure);
-            }
-
-            var closure = prepared.Closure!;
-            request.DeathBarrier?.Invoke("after-copy");
-
-            // Build the manifest from staged bindings (never predicted)
-            // before acknowledgement, so the Prepared record can name the
-            // exact preparation it precedes.
-            RestrictedManifest manifest;
-            PreparationIdentity identity2;
-            try
-            {
-                (manifest, identity2) = request.ManifestFactory(closure.Objects);
-            }
-            catch (Exception ex) when (ex is not BarrierDeathException)
-            {
-                return IntegratedPreparationOutcome.Failed(CopyFailureKind.PublicationFailure, $"Manifest construction failed: {ex.GetType().Name}.", closure);
-            }
-
-            // Acknowledge: verify retained authority is live, retain the
-            // staging subdir duplicate, then write Prepared.
-            var sink = new ScopeRecoverySink(this, request.ExecutionId, request.LeaseGeneration);
-            if (!sink.TryVerifyAuthority(primary, closure, out var ackError))
-            {
-                return IntegratedPreparationOutcome.Failed(CopyFailureKind.PublicationFailure, ackError, closure);
-            }
-
-            var preparedRecord = accounted.Current with
-            {
-                Stage = PreparationStage.Prepared,
-                Preparation = new RecordedPreparation(
-                    identity2.ExecutionId, identity2.IssuerId, identity2.GenerationId,
-                    identity2.PreparationId, identity2.ManifestDigest.ToArray()),
-            };
-            var preparedWrite = request.Journal.WriteNext(request.Writer, preparedRecord);
-            if (!preparedWrite.Ok)
-            {
-                return IntegratedPreparationOutcome.Failed(CopyFailureKind.PublicationFailure, $"Prepared not durable: {preparedWrite.Error}", closure);
-            }
-
-            request.DeathBarrier?.Invoke("after-prepared");
-
-            // Mint through the WP01 boundary.
-            var ack = new Func<CancellationToken, bool>(_ => true);
-            var published = PreparationPublisher.Publish(
-                request.Store, closure, manifest, identity2, request.ExpiresAtNs, ack, cancellationToken);
-            if (!published.Published)
-            {
-                return IntegratedPreparationOutcome.Failed(published.Failure, published.Detail, published.Closure);
-            }
-
-            // Success: the primary lease transfers to the caller with the
-            // capability; recovery duplicates stay retained by this scope.
-            var ownedPrimary = primary;
-            primary = null;
-            return IntegratedPreparationOutcome.Success(published.Capability!, ownedPrimary);
-        }
-        catch (BarrierDeathException)
-        {
-            // Simulated actor death: close operation-local authority
-            // (simulating OS reclaim) and propagate with no unwind cleanup,
-            // no journal writes and no capability. Scope-retained authority
-            // and durable state are untouched for recovery.
-            primary?.Dispose();
-            primary = null;
-            throw;
-        }
-        catch (OperationCanceledException)
-        {
-            primary?.Dispose();
-            primary = null;
-            throw;
-        }
-        catch (Exception ex)
-        {
-            // Unexpected failure outside the engine (which reports its own
-            // outcomes): fail closed without publishing. No capability.
-            return IntegratedPreparationOutcome.Failed(CopyFailureKind.InvariantFailure, $"Integrated preparation failed: {ex.GetType().Name}.");
-        }
-    }
-
     private static int LibcStagingParent(string path, out SafeHandle? handle)
     {
         handle = null;
@@ -595,238 +907,6 @@ internal sealed class M1RecoveryScope : IDisposable
         handle = new SafeFileHandle(new IntPtr(fd), ownsHandle: true);
         return 0;
     }
-
-    private static OwnershipSnapshot BuildIntent(IntegratedPreparationRequest request)
-    {
-        var allocations = new List<AllocationEntry>
-        {
-            new(AllocationKind.Domain, request.DomainChildName, 0, Array.Empty<byte>(), 0, 0, Confirmed: false),
-            new(AllocationKind.StagingDirectory, request.Plan.StagingDirectoryName, 0, Array.Empty<byte>(), 0, 0, Confirmed: false),
-        };
-        var index = 0;
-        foreach (var obj in request.Plan.Objects)
-        {
-            allocations.Add(new AllocationEntry(
-                AllocationKind.Staging, $"{obj.Role}-{index:D3}.staged", 0, Array.Empty<byte>(), 0, 0, Confirmed: false));
-            index++;
-        }
-
-        return new OwnershipSnapshot(
-            OwnershipSnapshotCodec.CurrentVersion, 0, request.ExecutionId, request.BootId,
-            0, string.Empty, 0, 0, request.DomainChildName, 0, 0, request.LeaseGeneration,
-            OwnershipWriterKind.Owner, OwnershipCleanupState.NotStarted, PreparationStage.AllocationIntent,
-            StagingParentDevice: 0, StagingParentInode: 0,
-            Allocations: allocations, Preparation: null);
-    }
-
-    private static OwnershipSnapshot BuildRegistered(
-        IntegratedPreparationRequest request, DomainIdentity domain, SafeHandle stagingParent)
-    {
-        PreparationInterop.StatFd(((SafeFileHandle)stagingParent).DangerousGetHandle().ToInt32(), out var parentStat);
-        var allocations = new List<AllocationEntry>
-        {
-            new(AllocationKind.Domain, domain.ChildName, 0, Array.Empty<byte>(), domain.ChildDevice, domain.ChildInode, Confirmed: true),
-            new(AllocationKind.StagingDirectory, request.Plan.StagingDirectoryName, 0, Array.Empty<byte>(), 0, 0, Confirmed: false),
-        };
-        var index = 0;
-        foreach (var obj in request.Plan.Objects)
-        {
-            allocations.Add(new AllocationEntry(
-                AllocationKind.Staging, $"{obj.Role}-{index:D3}.staged", 0, Array.Empty<byte>(), 0, 0, Confirmed: false));
-            index++;
-        }
-
-        return new OwnershipSnapshot(
-            OwnershipSnapshotCodec.CurrentVersion, 0, request.ExecutionId, request.BootId,
-            domain.CgroupMountId, domain.CgroupMountFsType,
-            domain.ParentDevice, domain.ParentInode,
-            domain.ChildName, domain.ChildDevice, domain.ChildInode, domain.LeaseGeneration,
-            OwnershipWriterKind.Owner, OwnershipCleanupState.NotStarted, PreparationStage.AllocationRegistered,
-            StagingParentDevice: parentStat.Device, StagingParentInode: parentStat.Inode,
-            Allocations: allocations, Preparation: null);
-    }
-
-    /// <summary>Per-object incremental accounting: confirms each bound
-    /// object (and the staging subdir on first sight) durably under the
-    /// writer fence as copying proceeds. The staging subdir descriptor is
-    /// duplicated into scope retention on first sight so recovery never
-    /// needs to reopen it by name.</summary>
-    private sealed class IntegratedAccounting
-    {
-        private readonly M1RecoveryScope _scope;
-        private readonly OwnershipJournal _journal;
-        private readonly JournalWriterLease _writer;
-        private OwnershipSnapshot _current;
-        private bool _subdirRecorded;
-
-        internal IntegratedAccounting(M1RecoveryScope scope, OwnershipJournal journal, JournalWriterLease writer, OwnershipSnapshot registered)
-        {
-            _scope = scope;
-            _journal = journal;
-            _writer = writer;
-            _current = registered;
-        }
-
-        internal OwnershipSnapshot Current => _current;
-
-        /// <summary>Captures the staging directory's actual identity,
-        /// retains an independent live descriptor in the scope, and makes
-        /// the identity durable at creation, before any dependent object
-        /// content is copied. Any failure refuses further preparation
-        /// (thrown, no unwind deletion): the caller sees a failure outcome,
-        /// and the durable record plus retained parent let recovery
-        /// classify the directory truthfully.</summary>
-        internal void OnStagingDirectory(SafeHandle stagingDir)
-        {
-            if (_subdirRecorded)
-            {
-                return;
-            }
-
-            var subdirFd = ((SafeFileHandle)stagingDir).DangerousGetHandle().ToInt32();
-            if (PreparationInterop.StatFd(subdirFd, out var subdirStat) != 0)
-            {
-                throw new InvalidOperationException("staging directory stat failed after creation");
-            }
-
-            var dup = PreparationInterop.Dup(subdirFd);
-            if (dup < 0)
-            {
-                throw new InvalidOperationException("staging directory recovery retention failed");
-            }
-
-            _scope._retainedStagingDirs.Add(new SafeFileHandle(new IntPtr(dup), ownsHandle: true));
-
-            var allocations = _current.Allocations.ToList();
-            for (var i = 0; i < allocations.Count; i++)
-            {
-                if (allocations[i].Kind == AllocationKind.StagingDirectory)
-                {
-                    allocations[i] = allocations[i] with
-                    {
-                        Device = subdirStat.Device,
-                        Inode = subdirStat.Inode,
-                        Confirmed = true,
-                    };
-                }
-            }
-
-            var updated = _current with { Allocations = allocations };
-            var written = _journal.WriteNext(_writer, updated);
-            if (!written.Ok)
-            {
-                throw new InvalidOperationException($"staging directory accounting not durable: {written.Error}");
-            }
-
-            _current = updated;
-            _subdirRecorded = true;
-        }
-
-        internal void OnObject(SafeHandle stagingDir, StagedObject staged)
-        {
-            // Defense in depth: if a plan did not surface the creation-time
-            // callback, retain/account the directory now rather than waiting
-            // for later objects.
-            if (!_subdirRecorded)
-            {
-                OnStagingDirectory(stagingDir);
-            }
-
-            var allocations = _current.Allocations.ToList();
-            for (var i = 0; i < allocations.Count; i++)
-            {
-                if (allocations[i].Kind == AllocationKind.Staging
-                    && allocations[i].Name == staged.StagingName)
-                {
-                    allocations[i] = new AllocationEntry(
-                        AllocationKind.Staging, staged.StagingName, staged.Length,
-                        (byte[])staged.Sha256.Clone(), staged.Device, staged.Inode, Confirmed: true);
-                }
-            }
-
-            var updated = _current with { Allocations = allocations };
-            var written = _journal.WriteNext(_writer, updated);
-            if (!written.Ok)
-            {
-                throw new InvalidOperationException($"object accounting not durable: {written.Error}");
-            }
-
-            _current = updated;
-        }
-    }
-
-    /// <summary>Real surviving-scope cleanup sink: verifies the presented
-    /// primary lease and closure against the expected execution/generation,
-    /// confirms live handles, and retains a duplicate of the staging
-    /// subdirectory for recovery. It never manufactures authority from the
-    /// journal; mismatched or dead authority is refused.</summary>
-    private sealed class ScopeRecoverySink : ICleanupAuthoritySink
-    {
-        private readonly M1RecoveryScope _scope;
-        private readonly Guid _executionId;
-        private readonly Guid _leaseGeneration;
-
-        internal ScopeRecoverySink(M1RecoveryScope scope, Guid executionId, Guid leaseGeneration)
-        {
-            _scope = scope;
-            _executionId = executionId;
-            _leaseGeneration = leaseGeneration;
-        }
-
-        public bool TryRetainRecoveryHandles(DomainLease recoveryLease, PreparedClosure closure, out string error)
-        {
-            error = string.Empty;
-            ArgumentNullException.ThrowIfNull(recoveryLease);
-            ArgumentNullException.ThrowIfNull(closure);
-            return TryVerifyAuthority(recoveryLease, closure, out error);
-        }
-
-        internal bool TryVerifyAuthority(DomainLease primary, PreparedClosure closure, out string error)
-        {
-            error = string.Empty;
-            ArgumentNullException.ThrowIfNull(primary);
-            ArgumentNullException.ThrowIfNull(closure);
-            if (!primary.Identity.ExecutionId.Equals(_executionId)
-                || !primary.Identity.LeaseGeneration.Equals(_leaseGeneration))
-            {
-                error = "primary lease identity does not match this allocation";
-                return false;
-            }
-
-            if (!primary.AuthorityAlive)
-            {
-                error = "primary lease has no live authority";
-                return false;
-            }
-
-            foreach (var staged in closure.Objects)
-            {
-                if (staged.Handle.IsClosed)
-                {
-                    error = $"staged object {staged.Role} has no live handle";
-                    return false;
-                }
-            }
-
-            if (closure.StagingDirectory is null)
-            {
-                error = "closure has no retained staging directory";
-                return false;
-            }
-
-            var dup = PreparationInterop.Dup(
-                ((SafeFileHandle)closure.StagingDirectory).DangerousGetHandle().ToInt32());
-            if (dup < 0)
-            {
-                error = "staging subdirectory duplication failed";
-                return false;
-            }
-
-            _scope._retainedStagingDirs.Add(new SafeFileHandle(new IntPtr(dup), ownsHandle: true));
-            return true;
-        }
-    }
-
     public void Dispose()
     {
         if (_disposed)
@@ -835,6 +915,30 @@ internal sealed class M1RecoveryScope : IDisposable
         }
 
         _disposed = true;
+        foreach (var channel in _ownerChannels.Values)
+        {
+            channel.Dispose();
+        }
+
+        _ownerChannels.Clear();
+        foreach (var (ownerId, owner) in _owners.ToArray())
+        {
+            var exit = WaitForOwner(owner, TimeSpan.FromSeconds(30));
+            if (!exit.Exited)
+            {
+                TerminateOwner(owner);
+                exit = WaitForOwner(owner, TimeSpan.FromSeconds(5));
+            }
+
+            if (_retainedOwnerPidFds.Remove(ownerId, out var ownerPidFd))
+            {
+                ownerPidFd.Dispose();
+            }
+
+            owner.Dispose();
+        }
+
+        _owners.Clear();
         foreach (var lease in _retainedRecoveryLeases)
         {
             lease.Dispose();

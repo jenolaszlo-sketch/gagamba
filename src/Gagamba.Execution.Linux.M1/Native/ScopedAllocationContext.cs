@@ -16,6 +16,7 @@ internal sealed class ScopedAllocationContext
         int parentFd,
         OwnershipJournal journal,
         JournalWriterLease writer,
+        AcknowledgedAllocationIntent intent,
         long intentSequence,
         Guid executionId,
         Guid leaseGeneration,
@@ -24,6 +25,7 @@ internal sealed class ScopedAllocationContext
         ParentFd = parentFd;
         Journal = journal;
         Writer = writer;
+        Intent = intent;
         IntentSequence = intentSequence;
         ExecutionId = executionId;
         LeaseGeneration = leaseGeneration;
@@ -35,6 +37,8 @@ internal sealed class ScopedAllocationContext
     internal OwnershipJournal Journal { get; }
 
     internal JournalWriterLease Writer { get; }
+
+    internal AcknowledgedAllocationIntent Intent { get; }
 
     /// <summary>The writer baseline at the point the durable
     /// AllocationIntent was acknowledged; proof the intent precedes
@@ -50,7 +54,7 @@ internal sealed class ScopedAllocationContext
     /// <summary>The context is usable only while the fence that proved the
     /// intent is still held. Allocation after the writer is released is
     /// refused.</summary>
-    internal bool IsLive => Writer.IsLive;
+    internal bool IsLive => Journal.IsEffectiveWriter(Writer);
 
     /// <summary>The only way to obtain a context. A journal-free call, a
     /// foreign lease, a released lease, or an unacknowledged intent all
@@ -59,6 +63,7 @@ internal sealed class ScopedAllocationContext
         int parentFd,
         OwnershipJournal? journal,
         JournalWriterLease? writer,
+        OwnershipSnapshot? expectedIntent,
         Guid executionId,
         Guid leaseGeneration,
         string bootId,
@@ -91,14 +96,28 @@ internal sealed class ScopedAllocationContext
             return false;
         }
 
-        if (writer.BaselineSequence <= 0)
+        if (expectedIntent is null)
         {
-            error = "durable AllocationIntent has not been acknowledged under this writer";
+            error = "matching AllocationIntent is required";
+            return false;
+        }
+
+        if (expectedIntent.ExecutionId != executionId
+            || expectedIntent.LeaseGeneration != leaseGeneration
+            || expectedIntent.BootId != bootId
+            || expectedIntent.Stage != PreparationStage.AllocationIntent)
+        {
+            error = "expected AllocationIntent identity does not match this transaction";
+            return false;
+        }
+
+        if (!journal.TryProveAllocationIntent(writer, expectedIntent, out var intentProof, out error))
+        {
             return false;
         }
 
         context = new ScopedAllocationContext(
-            parentFd, journal, writer, writer.BaselineSequence, executionId, leaseGeneration, bootId);
+            parentFd, journal, writer, intentProof!, intentProof!.Sequence, executionId, leaseGeneration, bootId);
         return true;
     }
 }

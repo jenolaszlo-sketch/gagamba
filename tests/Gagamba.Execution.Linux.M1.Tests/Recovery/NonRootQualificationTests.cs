@@ -1,10 +1,4 @@
-// WP03 G2-10 non-root delegated qualification. Runs the real corrected
-// R1-R4 topology under an operator-supplied, already-existing unprivileged
-// cgroup v2 delegation: no root, no sudo, no capability, no host
-// provisioning by Gagamba. The process must already live inside the
-// delegated subtree. Owner pidfd is explicitly acquired, retained and used
-// for owner-exit proof; missing pidfd refuses. Cases skip honestly unless
-// GAGAMBA_DELEGATED_CGROUP is set and the process is genuinely non-root.
+// R6D.2 non-root owner-owned transaction qualification on operator-delegated cgroup v2.
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Gagamba.Execution.Linux.M1.Lifecycle;
@@ -22,9 +16,6 @@ namespace Gagamba.Execution.Linux.M1.Tests.Recovery;
 [System.Runtime.Versioning.SupportedOSPlatform("linux")]
 public sealed class NonRootQualificationTests
 {
-    [DllImport("libc", SetLastError = true)]
-    private static extern int waitpid(int pid, out int status, int options);
-
     private static string? DelegatedParent => Environment.GetEnvironmentVariable("GAGAMBA_DELEGATED_CGROUP");
 
     private static string StatusField(string name)
@@ -88,72 +79,6 @@ public sealed class NonRootQualificationTests
 
     private static string Boot() => CgroupInterop.TryReadBootId(out var id, out _) ? id : "unknown";
 
-    private static string? LocateOwnerDll()
-    {
-        var dir = new DirectoryInfo(AppContext.BaseDirectory);
-        while (dir is not null && !File.Exists(System.IO.Path.Combine(dir.FullName, "Gagamba.sln")))
-        {
-            dir = dir.Parent;
-        }
-
-        if (dir is null)
-        {
-            return null;
-        }
-
-        var candidate = System.IO.Path.Combine(
-            dir.FullName, "src", "Gagamba.Execution.Linux.M1.Owner", "bin", "Debug", "net10.0",
-            "Gagamba.Execution.Linux.M1.Owner.dll");
-        return File.Exists(candidate) ? candidate : null;
-    }
-
-    private static string[] OwnerArgs(string journalDir, string name, Guid exec, Guid leaseGen, string barrier) => new[]
-    {
-        "--journal-dir", journalDir,
-        "--exec", exec.ToString("D"),
-        "--lease", leaseGen.ToString("D"),
-        "--domain", name,
-        "--barrier", barrier,
-    };
-
-    private static string ReadUntil(Process owner, Func<string, bool> stop, TimeSpan timeout)
-    {
-        var output = new System.Text.StringBuilder();
-        var deadline = DateTime.UtcNow + timeout;
-        string? line;
-        while ((line = owner.StandardOutput.ReadLine()) is not null)
-        {
-            output.AppendLine(line);
-            if (stop(line))
-            {
-                break;
-            }
-
-            if (DateTime.UtcNow > deadline)
-            {
-                break;
-            }
-        }
-
-        return output.ToString();
-    }
-
-    private static int ReadPpid(int pid)
-    {
-        var stat = File.ReadAllText($"/proc/{pid}/stat");
-        var close = stat.LastIndexOf(')');
-        var rest = stat[(close + 2)..].Split(' ');
-        return int.Parse(rest[1]);
-    }
-
-    private static OwnershipSnapshot RecordFrom(DomainIdentity id, params AllocationEntry[] allocations) =>
-        new(
-            OwnershipSnapshotCodec.CurrentVersion, 0, id.ExecutionId, id.BootId, id.CgroupMountId, id.CgroupMountFsType,
-            id.ParentDevice, id.ParentInode, id.ChildName, id.ChildDevice, id.ChildInode, id.LeaseGeneration,
-            OwnershipWriterKind.Owner, OwnershipCleanupState.NotStarted, PreparationStage.AllocationRegistered,
-            StagingParentDevice: 0, StagingParentInode: 0,
-            Allocations: allocations, Preparation: null);
-
     private sealed class FailingPidFdProvider : IPidFdProvider
     {
         public bool TryOpen(int pid, out int fd, out string error)
@@ -173,41 +98,6 @@ public sealed class NonRootQualificationTests
         public void Dispose()
         {
             try { Directory.Delete(Path, true); } catch { }
-        }
-    }
-
-    /// <summary>Owns the scope plus every domain child it created under the
-    /// operator-delegated parent, so cleanup touches only test-owned
-    /// allocations and never the delegation itself.</summary>
-    private sealed class QualHost : IDisposable
-    {
-        private readonly List<string> _domains = new();
-
-        public QualHost(IPidFdProvider? provider = null)
-        {
-            Scope = new M1RecoveryScope(provider);
-            Assert.True(Scope.TryInitialize().Ok);
-            Assert.True(Scope.TryOpenDelegatedParent(DelegatedParent!).Ok);
-        }
-
-        public M1RecoveryScope Scope { get; }
-
-        public string NewDomainName()
-        {
-            var name = "d-" + Guid.NewGuid().ToString("N");
-            _domains.Add(name);
-            return name;
-        }
-
-        public void Dispose()
-        {
-            Scope.Dispose();
-            foreach (var domain in _domains)
-            {
-                var path = System.IO.Path.Combine(DelegatedParent!, domain);
-                try { File.WriteAllText(System.IO.Path.Combine(path, "cgroup.kill"), "1"); } catch { }
-                try { Directory.Delete(path); } catch { }
-            }
         }
     }
 
@@ -282,14 +172,9 @@ public sealed class NonRootQualificationTests
         Assert.Equal("cgroup2", mount!.FileSystemType);
         Assert.True(CgroupInterop.TryReadBootId(out var boot, out var bootError), bootError);
 
-        using var host = new QualHost();
-        var name = host.NewDomainName();
-        var allocation = host.Scope.AllocateDomain(name, Guid.NewGuid(), Guid.NewGuid(), boot);
-        Assert.True(allocation.Ok, allocation.Error);
-        PreparationInterop.CloseFd(allocation.OwnerSocketFd);
-        using var recovery = allocation.RecoveryLease!;
-        Assert.True(recovery.StopAndAwaitEmpty(TimeSpan.FromSeconds(5), new RealClock()).Stopped);
-        Assert.True(recovery.RemoveIfIdentityMatches().Removed);
+        using var scope = new M1RecoveryScope();
+        Assert.True(scope.TryInitialize().Ok);
+        Assert.True(scope.TryOpenDelegatedParent(DelegatedParent!).Ok);
 
         Console.WriteLine(
             $"G2-10 inventory: uid={RealUid} euid={EffectiveUid} gid={RealGid} capInh={CapInh} capPrm={CapPrm} " +
@@ -321,349 +206,23 @@ public sealed class NonRootQualificationTests
         }
     }
 
-    // ---- Owner pidfd contract ----
-
-    [Fact]
-    public void OwnerPidfdAcquiredAndRetained()
-    {
-        SkipUnlessQualified();
-        var ownerDll = LocateOwnerDll();
-        if (ownerDll is null)
-        {
-            Assert.Skip("owner executable not built");
-            return;
-        }
-
-        using var host = new QualHost();
-        using var journal = new TempDir();
-        var name = host.NewDomainName();
-        var exec = Guid.NewGuid();
-        var leaseGen = Guid.NewGuid();
-        var allocation = host.Scope.AllocateDomain(name, exec, leaseGen, Boot());
-        Assert.True(allocation.Ok, allocation.Error);
-        using var recovery = allocation.RecoveryLease!;
-        var spawned = host.Scope.TrySpawnOwner(ownerDll, OwnerArgs(journal.Path, name, exec, leaseGen, "none"), allocation.OwnerSocketFd);
-        Assert.True(spawned.Ok, spawned.Error);
-        Assert.True(spawned.PidFd >= 0);
-        Assert.True(PreparationInterop.HasCloexec(spawned.PidFd));
-
-        using var owner = spawned.Process!;
-        Assert.True(host.Scope.TryOwnerPidFdExited(owner, 0, out var live, out var liveError), liveError);
-        Assert.False(live);
-        var ready = ReadUntil(owner, l => l.StartsWith("REGISTERED", StringComparison.Ordinal), TimeSpan.FromSeconds(10));
-        Assert.Contains("WRITER_LOCKED", ready);
-        Assert.Contains("REGISTERED ok=True", ready);
-
-        owner.StandardInput.WriteLine("die");
-        owner.StandardInput.Flush();
-        Assert.True(host.Scope.WaitForOwner(owner, TimeSpan.FromSeconds(5)).Exited);
-        Assert.True(host.Scope.TryOwnerPidFdExited(owner, 1000, out var dead, out var deadError), deadError);
-        Assert.True(dead);
-    }
-
-    [Fact]
-    public void MissingPidfdRefuses()
-    {
-        SkipUnlessQualified();
-        var ownerDll = LocateOwnerDll();
-        if (ownerDll is null)
-        {
-            Assert.Skip("owner executable not built");
-            return;
-        }
-
-        using var host = new QualHost(new FailingPidFdProvider());
-        using var journal = new TempDir();
-        var name = host.NewDomainName();
-        var exec = Guid.NewGuid();
-        var leaseGen = Guid.NewGuid();
-        var allocation = host.Scope.AllocateDomain(name, exec, leaseGen, Boot());
-        Assert.True(allocation.Ok, allocation.Error);
-        using var recovery = allocation.RecoveryLease!;
-        var spawned = host.Scope.TrySpawnOwner(ownerDll, OwnerArgs(journal.Path, name, exec, leaseGen, "none"), allocation.OwnerSocketFd);
-        Assert.False(spawned.Ok);
-        Assert.Null(spawned.Process);
-        Assert.Contains("pidfd", spawned.Error);
-    }
-
-    [Fact]
-    public void LiveOwnerPidfdBlocksRecoveryTakeover()
-    {
-        SkipUnlessQualified();
-        var ownerDll = LocateOwnerDll();
-        if (ownerDll is null)
-        {
-            Assert.Skip("owner executable not built");
-            return;
-        }
-
-        using var host = new QualHost();
-        using var journal = new TempDir();
-        var name = host.NewDomainName();
-        var exec = Guid.NewGuid();
-        var leaseGen = Guid.NewGuid();
-        var allocation = host.Scope.AllocateDomain(name, exec, leaseGen, Boot());
-        Assert.True(allocation.Ok, allocation.Error);
-        using var recovery = allocation.RecoveryLease!;
-        var spawned = host.Scope.TrySpawnOwner(ownerDll, OwnerArgs(journal.Path, name, exec, leaseGen, "none"), allocation.OwnerSocketFd);
-        Assert.True(spawned.Ok, spawned.Error);
-        using var owner = spawned.Process!;
-        var ready = ReadUntil(owner, l => l.StartsWith("REGISTERED", StringComparison.Ordinal), TimeSpan.FromSeconds(10));
-        Assert.Contains("REGISTERED ok=True", ready);
-
-        Assert.True(host.Scope.TryOwnerPidFdExited(owner, 0, out var live, out _));
-        Assert.False(live);
-
-        var rival = new OwnershipJournal(new JournalFileStorage(), journal.Path);
-        Assert.False(rival.TryAcquireWriter(out var rivalLease, out _));
-        Assert.Null(rivalLease);
-        Assert.Equal(1, rival.ReadLatest().Snapshot!.Sequence);
-
-        owner.StandardInput.WriteLine("die");
-        owner.StandardInput.Flush();
-        Assert.True(host.Scope.WaitForOwner(owner, TimeSpan.FromSeconds(5)).Exited);
-        Assert.True(rival.TryAcquireWriter(out var takeover, out var takeoverError), takeoverError);
-        using (takeover!)
-        {
-        }
-    }
-
-    [Fact]
-    public void OwnerDeathPidfdAllowsFencedTakeover()
-    {
-        SkipUnlessQualified();
-        var ownerDll = LocateOwnerDll();
-        if (ownerDll is null)
-        {
-            Assert.Skip("owner executable not built");
-            return;
-        }
-
-        using var host = new QualHost();
-        using var journal = new TempDir();
-        var name = host.NewDomainName();
-        var exec = Guid.NewGuid();
-        var leaseGen = Guid.NewGuid();
-        var allocation = host.Scope.AllocateDomain(name, exec, leaseGen, Boot());
-        Assert.True(allocation.Ok, allocation.Error);
-        using var recovery = allocation.RecoveryLease!;
-        var spawned = host.Scope.TrySpawnOwner(ownerDll, OwnerArgs(journal.Path, name, exec, leaseGen, "after-registered"), allocation.OwnerSocketFd);
-        Assert.True(spawned.Ok, spawned.Error);
-        using var owner = spawned.Process!;
-        ReadUntil(owner, l => l.StartsWith("BARRIER", StringComparison.Ordinal), TimeSpan.FromSeconds(10));
-        Assert.True(host.Scope.WaitForOwner(owner, TimeSpan.FromSeconds(5)).Exited);
-
-        var takeover = new OwnershipJournal(new JournalFileStorage(), journal.Path);
-        Assert.True(takeover.TryAcquireWriter(out var lease, out var acquireError), acquireError);
-        Assert.Equal(1, lease!.BaselineSequence);
-        using (lease)
-        {
-            Assert.True(takeover.WriteNext(lease, RecoveryTestSupport.Snapshot()).Ok);
-        }
-
-        Assert.Equal(2, takeover.ReadLatest().Snapshot!.Sequence);
-    }
-
-    // ---- Non-root authority and owner death ----
-
-    [Fact]
-    public void NonRootPrimaryAndRecoveryLeasesRemainIndependent()
-    {
-        SkipUnlessQualified();
-        var ownerDll = LocateOwnerDll();
-        if (ownerDll is null)
-        {
-            Assert.Skip("owner executable not built");
-            return;
-        }
-
-        using var host = new QualHost();
-        using var journal = new TempDir();
-        var name = host.NewDomainName();
-        var exec = Guid.NewGuid();
-        var leaseGen = Guid.NewGuid();
-        var allocation = host.Scope.AllocateDomain(name, exec, leaseGen, Boot());
-        Assert.True(allocation.Ok, allocation.Error);
-        using var recovery = allocation.RecoveryLease!;
-        var spawned = host.Scope.TrySpawnOwner(ownerDll, OwnerArgs(journal.Path, name, exec, leaseGen, "none"), allocation.OwnerSocketFd);
-        Assert.True(spawned.Ok, spawned.Error);
-        using var owner = spawned.Process!;
-        var ready = ReadUntil(owner, l => l.StartsWith("REGISTERED", StringComparison.Ordinal), TimeSpan.FromSeconds(10));
-        Assert.Contains("PRIMARY", ready);
-
-        owner.StandardInput.WriteLine("identity");
-        owner.StandardInput.Flush();
-        Assert.Equal("IDENTITY match=True", owner.StandardOutput.ReadLine());
-
-        owner.StandardInput.WriteLine("stop");
-        owner.StandardInput.Flush();
-        Assert.Equal("STOPPED ok=True err=", owner.StandardOutput.ReadLine());
-        Assert.True(recovery.ObservePopulation().Empty);
-
-        owner.StandardInput.WriteLine("die");
-        owner.StandardInput.Flush();
-        Assert.True(host.Scope.WaitForOwner(owner, TimeSpan.FromSeconds(5)).Exited);
-
-        // The recovery duplicate remains independently usable after the
-        // primary holder died.
-        Assert.True(recovery.StopAndAwaitEmpty(TimeSpan.FromSeconds(5), new RealClock()).Stopped);
-        Assert.True(recovery.RemoveIfIdentityMatches().Removed);
-    }
-
-    [Fact]
-    public void NonRootOwnerDeathBeforeRegistrationRecovers()
-    {
-        SkipUnlessQualified();
-        var ownerDll = LocateOwnerDll();
-        if (ownerDll is null)
-        {
-            Assert.Skip("owner executable not built");
-            return;
-        }
-
-        using var host = new QualHost();
-        using var journal = new TempDir();
-        var sibling = System.IO.Path.Combine(DelegatedParent!, "sibling-" + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(sibling);
-        try
-        {
-            var name = host.NewDomainName();
-            var exec = Guid.NewGuid();
-            var leaseGen = Guid.NewGuid();
-            var allocation = host.Scope.AllocateDomain(name, exec, leaseGen, Boot());
-            Assert.True(allocation.Ok, allocation.Error);
-            using var recovery = allocation.RecoveryLease!;
-            var spawned = host.Scope.TrySpawnOwner(ownerDll, OwnerArgs(journal.Path, name, exec, leaseGen, "after-lock"), allocation.OwnerSocketFd);
-            Assert.True(spawned.Ok, spawned.Error);
-            using var owner = spawned.Process!;
-            var output = ReadUntil(owner, l => l.StartsWith("BARRIER", StringComparison.Ordinal), TimeSpan.FromSeconds(10));
-            Assert.Contains("WRITER_LOCKED", output);
-            Assert.True(host.Scope.WaitForOwner(owner, TimeSpan.FromSeconds(5)).Exited);
-
-            var reconciler = new Reconciler(new RealClock(), TimeSpan.FromSeconds(5));
-            var record = RecordFrom(recovery.Identity, new AllocationEntry(AllocationKind.Domain, recovery.Identity.ChildName, 0, Array.Empty<byte>(), 0, 0, true));
-            var recoveryJournal = new OwnershipJournal(new JournalFileStorage(), journal.Path);
-            Assert.True(recoveryJournal.TryAcquireWriter(out var writer, out var acquireError), acquireError);
-            using (writer!)
-            {
-                var result = reconciler.Reconcile(record, Boot(), recovery, null, recoveryJournal, writer);
-                Assert.Equal(ReconcileOutcome.CleanupConfirmed, result.Outcome);
-            }
-
-            Assert.False(Directory.Exists(System.IO.Path.Combine(DelegatedParent!, name)));
-            Assert.True(Directory.Exists(sibling));
-        }
-        finally
-        {
-            try { Directory.Delete(sibling); } catch { }
-        }
-    }
-
-    [Fact]
-    public void NonRootOwnerDeathAfterRegistrationRecovers()
-    {
-        SkipUnlessQualified();
-        var ownerDll = LocateOwnerDll();
-        if (ownerDll is null)
-        {
-            Assert.Skip("owner executable not built");
-            return;
-        }
-
-        using var host = new QualHost();
-        using var journal = new TempDir();
-        var sibling = System.IO.Path.Combine(DelegatedParent!, "sibling-" + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(sibling);
-        try
-        {
-            var name = host.NewDomainName();
-            var exec = Guid.NewGuid();
-            var leaseGen = Guid.NewGuid();
-            var allocation = host.Scope.AllocateDomain(name, exec, leaseGen, Boot());
-            Assert.True(allocation.Ok, allocation.Error);
-            using var recovery = allocation.RecoveryLease!;
-            var spawned = host.Scope.TrySpawnOwner(ownerDll, OwnerArgs(journal.Path, name, exec, leaseGen, "after-registered"), allocation.OwnerSocketFd);
-            Assert.True(spawned.Ok, spawned.Error);
-            using var owner = spawned.Process!;
-            var output = ReadUntil(owner, l => l.StartsWith("BARRIER", StringComparison.Ordinal), TimeSpan.FromSeconds(10));
-            Assert.Contains("REGISTERED ok=True", output);
-            Assert.True(host.Scope.WaitForOwner(owner, TimeSpan.FromSeconds(5)).Exited);
-
-            var durable = new OwnershipJournal(new JournalFileStorage(), journal.Path).ReadLatest();
-            Assert.True(durable.Ok, durable.Error);
-            Assert.Equal(PreparationStage.AllocationRegistered, durable.Snapshot!.Stage);
-            Assert.Equal(recovery.Identity.ChildInode, durable.Snapshot.DomainInode);
-
-            var reconciler = new Reconciler(new RealClock(), TimeSpan.FromSeconds(5));
-            var recoveryJournal = new OwnershipJournal(new JournalFileStorage(), journal.Path);
-            Assert.True(recoveryJournal.TryAcquireWriter(out var writer, out var acquireError), acquireError);
-            using (writer!)
-            {
-                var result = reconciler.Reconcile(durable.Snapshot, Boot(), recovery, null, recoveryJournal, writer);
-                Assert.Equal(ReconcileOutcome.CleanupConfirmed, result.Outcome);
-            }
-
-            Assert.False(Directory.Exists(System.IO.Path.Combine(DelegatedParent!, name)));
-            Assert.True(Directory.Exists(sibling));
-        }
-        finally
-        {
-            try { Directory.Delete(sibling); } catch { }
-        }
-    }
-
-    [Fact]
-    public void NonRootOrphanAdoptedAndReapedByScope()
-    {
-        SkipUnlessQualified();
-        var ownerDll = LocateOwnerDll();
-        if (ownerDll is null)
-        {
-            Assert.Skip("owner executable not built");
-            return;
-        }
-
-        using var host = new QualHost();
-        using var journal = new TempDir();
-        var name = host.NewDomainName();
-        var exec = Guid.NewGuid();
-        var leaseGen = Guid.NewGuid();
-        var allocation = host.Scope.AllocateDomain(name, exec, leaseGen, Boot());
-        Assert.True(allocation.Ok, allocation.Error);
-        using var recovery = allocation.RecoveryLease!;
-        var spawned = host.Scope.TrySpawnOwner(ownerDll, OwnerArgs(journal.Path, name, exec, leaseGen, "none"), allocation.OwnerSocketFd);
-        Assert.True(spawned.Ok, spawned.Error);
-        using var owner = spawned.Process!;
-        ReadUntil(owner, l => l.StartsWith("REGISTERED", StringComparison.Ordinal), TimeSpan.FromSeconds(10));
-        owner.StandardInput.WriteLine("orphan 3");
-        owner.StandardInput.Flush();
-        var orphanLine = owner.StandardOutput.ReadLine();
-        Assert.StartsWith("ORPHAN_PID ", orphanLine);
-        var orphanPid = int.Parse(orphanLine!.Substring("ORPHAN_PID ".Length).Trim());
-        Assert.True(host.Scope.WaitForOwner(owner, TimeSpan.FromSeconds(5)).Exited);
-
-        Assert.Equal(Environment.ProcessId, ReadPpid(orphanPid));
-        Assert.Equal(orphanPid, waitpid(orphanPid, out _, 0));
-    }
-
-    // ---- Non-root integrated R4 path ----
+    // ---- Non-root owner-owned R6D.2 path ----
 
     private sealed class IntegratedFixture : IDisposable
     {
         public TempDir Source = new();
         public TempDir Staging = new();
         public TempDir JournalDir = new();
-        public M1RecoveryScope Scope = new();
+        public M1RecoveryScope Scope = null!;
         public OwnershipJournal Journal;
         public JournalWriterLease Writer;
-        public PreparedTransaction.PreparationStore Store;
-        public TestClock Clock = new();
         public Guid Exec = Guid.NewGuid();
         public Guid LeaseGen = Guid.NewGuid();
         public string ChildName;
 
-        public IntegratedFixture(byte[] tool, byte[]? input, CopyTestHooks? hooks)
+        public IntegratedFixture(byte[] tool, byte[]? input, CopyTestHooks? hooks, IPidFdProvider? pidFdProvider = null)
         {
+            Scope = new M1RecoveryScope(pidFdProvider);
             Assert.True(Scope.TryInitialize().Ok);
             Assert.True(Scope.TryOpenDelegatedParent(DelegatedParent!).Ok);
             File.WriteAllBytes(System.IO.Path.Combine(Source.Path, "tool"), tool);
@@ -677,7 +236,6 @@ public sealed class NonRootQualificationTests
             Journal = new OwnershipJournal(new JournalFileStorage(), JournalDir.Path);
             Assert.True(Journal.TryAcquireWriter(out var writer, out var error), error);
             Writer = writer!;
-            Store = new PreparedTransaction.PreparationStore(Issuer, Generation, Clock);
             ChildName = "d-" + Guid.NewGuid().ToString("N");
             Plan = new CopyPlan(
                 Source.Path, Staging.Path, "prep-001", objects, 16UL * 1024 * 1024, 128,
@@ -686,16 +244,23 @@ public sealed class NonRootQualificationTests
 
         public CopyPlan Plan { get; }
 
-        public IntegratedPreparationRequest Request(Action<string>? deathBarrier) =>
+        public OwnerPreparationRequest Request(string? testBarrier) =>
             new(
-                ChildName, Exec, LeaseGen, Boot(),
-                LibcCopyHost.Instance, Plan, Journal, Writer, Store,
+                RecoveryHarness.LocateOwnerDll() ?? throw new InvalidOperationException("owner executable missing from the test build"),
+                ChildName, Exec, LeaseGen, Boot(), Plan, Journal, Writer, Issuer, Generation,
                 staged =>
                 {
                     var manifest = ManifestWithClosure(staged);
-                    return (manifest, IdentityFor(manifest));
+                    return (manifest, IdentityFor(manifest, Exec));
                 },
-                1_000_000_000, deathBarrier);
+                MonotonicNanoseconds() + 60_000_000_000L, testBarrier);
+
+        private static long MonotonicNanoseconds()
+        {
+            var ticks = Stopwatch.GetTimestamp();
+            return ticks / Stopwatch.Frequency * 1_000_000_000L
+                + ticks % Stopwatch.Frequency * 1_000_000_000L / Stopwatch.Frequency;
+        }
 
         public void Dispose()
         {
@@ -711,14 +276,26 @@ public sealed class NonRootQualificationTests
         }
     }
 
-    private static Action<string> DieAt(string target) => barrier =>
+    [Fact]
+    public void NonRootMissingPidfdRefusesBeforeOwnerTransaction()
     {
-        if (barrier == target)
-        {
-            throw new BarrierDeathException(barrier);
-        }
-    };
+        SkipUnlessQualified();
+        using var fx = new IntegratedFixture(Bytes(0x19, 1024), null, null, new FailingPidFdProvider());
+        var outcome = fx.Scope.StartOwnerPreparation(fx.Request("none"), CancellationToken.None);
 
+        Assert.False(outcome.Completed);
+        Assert.Null(outcome.Owner);
+        Assert.Contains("pidfd", outcome.Error, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(PreparationStage.AllocationIntent, fx.Journal.ReadLatest().Snapshot!.Stage);
+        Assert.False(Directory.Exists(System.IO.Path.Combine(DelegatedParent!, fx.ChildName)));
+        Assert.Empty(fx.Scope.RetainedRecoveryLeases);
+
+        Assert.True(fx.Journal.TryAcquireWriter(out var recovered, out var error), error);
+        using (recovered!)
+        {
+            Assert.Equal(1, recovered!.BaselineSequence);
+        }
+    }
     [Fact]
     public void NonRootOwnerDeathBeforeRegistrationRecoversIntegrated()
     {
@@ -728,8 +305,10 @@ public sealed class NonRootQualificationTests
         Directory.CreateDirectory(sibling);
         try
         {
-            Assert.Throws<BarrierDeathException>(() =>
-                fx.Scope.AllocatePreparation(fx.Request(DieAt("after-create")), CancellationToken.None));
+            var outcome = fx.Scope.StartOwnerPreparation(fx.Request("after-domain-retained"), CancellationToken.None);
+            Assert.Equal("after-domain-retained", outcome.Barrier);
+            outcome.Owner!.Kill(entireProcessTree: false);
+            Assert.True(fx.Scope.WaitForOwner(outcome.Owner, TimeSpan.FromSeconds(5)).Exited);
             Assert.Equal(PreparationStage.AllocationIntent, fx.Journal.ReadLatest().Snapshot!.Stage);
             var recovery = Assert.Single(fx.Scope.RetainedRecoveryLeases);
             Assert.True(recovery.StopAndAwaitEmpty(TimeSpan.FromSeconds(5), new RealClock()).Stopped);
@@ -749,19 +328,11 @@ public sealed class NonRootQualificationTests
         SkipUnlessQualified();
         var tool = Bytes(0x40, 1000);
         var input = Bytes(0x41, 200000);
-        var chunks = 0;
-        var hooks = new CopyTestHooks(
-            _ =>
-            {
-                if (++chunks == 3)
-                {
-                    throw new BarrierDeathException("mid-copy");
-                }
-            },
-            null);
-        using var fx = new IntegratedFixture(tool, input, hooks);
-        Assert.Throws<BarrierDeathException>(() =>
-            fx.Scope.AllocatePreparation(fx.Request(null), CancellationToken.None));
+        using var fx = new IntegratedFixture(tool, input, null);
+        var outcome = fx.Scope.StartOwnerPreparation(fx.Request("mid-staging"), CancellationToken.None);
+        Assert.Equal("mid-staging", outcome.Barrier);
+        outcome.Owner!.Kill(entireProcessTree: false);
+        Assert.True(fx.Scope.WaitForOwner(outcome.Owner, TimeSpan.FromSeconds(5)).Exited);
 
         var read = fx.Journal.ReadLatest();
         Assert.True(read.Ok, read.Error);
@@ -772,16 +343,20 @@ public sealed class NonRootQualificationTests
         Assert.True(File.Exists(System.IO.Path.Combine(fx.Staging.Path, "prep-001", "tool-000.staged")));
 
         var recovery = Assert.Single(fx.Scope.RetainedRecoveryLeases);
-        Assert.Equal(0, PreparationInterop.OpenDirectory(fx.Staging.Path, out var parentFd));
-        Assert.Equal(0, PreparationInterop.OpenSubdirectory(parentFd, "prep-001", out var subdirFd));
+        var parentHandle = (SafeFileHandle)Assert.Single(fx.Scope.RetainedStagingParents);
+        var subdirHandle = (SafeFileHandle)Assert.Single(fx.Scope.RetainedStagingDirectories);
+        var parentFd = parentHandle.DangerousGetHandle().ToInt32();
+        var subdirFd = subdirHandle.DangerousGetHandle().ToInt32();
+        Assert.True(fx.Journal.TryAcquireWriter(out var takeover, out var takeoverError), takeoverError);
+        using (takeover!)
+        {
         var cleaner = new QualScopeCleaner(parentFd, subdirFd);
         var reconciler = new Reconciler(new RealClock(), TimeSpan.FromSeconds(5));
-        var result = reconciler.Reconcile(read.Snapshot!, Boot(), recovery, cleaner, fx.Journal, fx.Writer);
+        var result = reconciler.Reconcile(read.Snapshot!, Boot(), recovery, cleaner, fx.Journal, takeover);
         Assert.Equal(ReconcileOutcome.QuarantinedUnknown, result.Outcome);
         Assert.False(File.Exists(System.IO.Path.Combine(fx.Staging.Path, "prep-001", "tool-000.staged")));
         Assert.True(File.Exists(System.IO.Path.Combine(fx.Staging.Path, "prep-001", "input-001.staged")));
-        PreparationInterop.CloseFd(subdirFd);
-        PreparationInterop.CloseFd(parentFd);
+        }
     }
 
     [Fact]
@@ -789,27 +364,32 @@ public sealed class NonRootQualificationTests
     {
         SkipUnlessQualified();
         using var fx = new IntegratedFixture(Bytes(0x60, 2048), null, null);
-        Assert.Throws<BarrierDeathException>(() =>
-            fx.Scope.AllocatePreparation(fx.Request(DieAt("after-prepared")), CancellationToken.None));
+        var outcome = fx.Scope.StartOwnerPreparation(fx.Request("after-prepared-before-mint"), CancellationToken.None);
+        Assert.Equal("after-prepared-before-mint", outcome.Barrier);
+        Assert.NotNull(outcome.Description);
+        outcome.Owner!.Kill(entireProcessTree: false);
+        Assert.True(fx.Scope.WaitForOwner(outcome.Owner, TimeSpan.FromSeconds(5)).Exited);
 
         var read = fx.Journal.ReadLatest();
         Assert.True(read.Ok, read.Error);
         Assert.Equal(PreparationStage.Prepared, read.Snapshot!.Stage);
         Assert.NotNull(read.Snapshot.Preparation);
-        // The durable Prepared record names a preparation that was never
-        // minted: the store has no capability to resurrect.
-        Assert.False(fx.Store.TryLookup(read.Snapshot.Preparation!.PreparationId, out _));
+        // The durable Prepared record has only an identifier; the owner-local
+        // store died with the process and has no scope-side mirror.
+        Assert.Null(typeof(OwnerPreparationOutcome).GetProperty("Capability"));
 
         var recovery = Assert.Single(fx.Scope.RetainedRecoveryLeases);
-        Assert.Equal(0, PreparationInterop.OpenDirectory(fx.Staging.Path, out var parentFd));
-        Assert.Equal(0, PreparationInterop.OpenSubdirectory(parentFd, "prep-001", out var subdirFd));
+        var parentFd = ((SafeFileHandle)Assert.Single(fx.Scope.RetainedStagingParents)).DangerousGetHandle().ToInt32();
+        var subdirFd = ((SafeFileHandle)Assert.Single(fx.Scope.RetainedStagingDirectories)).DangerousGetHandle().ToInt32();
         var cleaner = new QualScopeCleaner(parentFd, subdirFd);
         var reconciler = new Reconciler(new RealClock(), TimeSpan.FromSeconds(5));
-        var result = reconciler.Reconcile(read.Snapshot!, Boot(), recovery, cleaner, fx.Journal, fx.Writer);
+        Assert.True(fx.Journal.TryAcquireWriter(out var takeover, out var takeoverError), takeoverError);
+        using (takeover!)
+        {
+        var result = reconciler.Reconcile(read.Snapshot!, Boot(), recovery, cleaner, fx.Journal, takeover);
         Assert.Equal(ReconcileOutcome.CleanupConfirmed, result.Outcome);
         Assert.False(Directory.Exists(System.IO.Path.Combine(fx.Staging.Path, "prep-001")));
-        PreparationInterop.CloseFd(subdirFd);
-        PreparationInterop.CloseFd(parentFd);
+        }
     }
 
     // ---- Staging reconciliation truthfulness ----
@@ -819,22 +399,26 @@ public sealed class NonRootQualificationTests
     {
         SkipUnlessQualified();
         using var fx = new IntegratedFixture(Bytes(0x50, 2048), Bytes(0x51, 4096), null);
-        Assert.Throws<BarrierDeathException>(() =>
-            fx.Scope.AllocatePreparation(fx.Request(DieAt("after-copy")), CancellationToken.None));
+        var outcome = fx.Scope.StartOwnerPreparation(fx.Request("after-copy"), CancellationToken.None);
+        Assert.Equal("after-copy", outcome.Barrier);
+        outcome.Owner!.Kill(entireProcessTree: false);
+        Assert.True(fx.Scope.WaitForOwner(outcome.Owner, TimeSpan.FromSeconds(5)).Exited);
         var read = fx.Journal.ReadLatest();
         Assert.True(read.Ok, read.Error);
         Assert.NotEqual(PreparationStage.Prepared, read.Snapshot!.Stage);
 
         var recovery = Assert.Single(fx.Scope.RetainedRecoveryLeases);
-        Assert.Equal(0, PreparationInterop.OpenDirectory(fx.Staging.Path, out var parentFd));
-        Assert.Equal(0, PreparationInterop.OpenSubdirectory(parentFd, "prep-001", out var subdirFd));
+        var parentFd = ((SafeFileHandle)Assert.Single(fx.Scope.RetainedStagingParents)).DangerousGetHandle().ToInt32();
+        var subdirFd = ((SafeFileHandle)Assert.Single(fx.Scope.RetainedStagingDirectories)).DangerousGetHandle().ToInt32();
         var cleaner = new QualScopeCleaner(parentFd, subdirFd);
         var reconciler = new Reconciler(new RealClock(), TimeSpan.FromSeconds(5));
-        var result = reconciler.Reconcile(read.Snapshot!, Boot(), recovery, cleaner, fx.Journal, fx.Writer);
+        Assert.True(fx.Journal.TryAcquireWriter(out var takeover, out var takeoverError), takeoverError);
+        using (takeover!)
+        {
+        var result = reconciler.Reconcile(read.Snapshot!, Boot(), recovery, cleaner, fx.Journal, takeover);
         Assert.Equal(ReconcileOutcome.CleanupConfirmed, result.Outcome);
         Assert.False(Directory.Exists(System.IO.Path.Combine(fx.Staging.Path, "prep-001")));
-        PreparationInterop.CloseFd(subdirFd);
-        PreparationInterop.CloseFd(parentFd);
+        }
     }
 
     [Fact]
@@ -842,8 +426,10 @@ public sealed class NonRootQualificationTests
     {
         SkipUnlessQualified();
         using var fx = new IntegratedFixture(Bytes(0x52, 2048), null, null);
-        Assert.Throws<BarrierDeathException>(() =>
-            fx.Scope.AllocatePreparation(fx.Request(DieAt("after-copy")), CancellationToken.None));
+        var outcome = fx.Scope.StartOwnerPreparation(fx.Request("after-copy"), CancellationToken.None);
+        Assert.Equal("after-copy", outcome.Barrier);
+        outcome.Owner!.Kill(entireProcessTree: false);
+        Assert.True(fx.Scope.WaitForOwner(outcome.Owner, TimeSpan.FromSeconds(5)).Exited);
         var read = fx.Journal.ReadLatest();
         Assert.True(read.Ok, read.Error);
 
@@ -853,15 +439,17 @@ public sealed class NonRootQualificationTests
         File.WriteAllBytes(stagedPath, Bytes(0x77, 64));
 
         var recovery = Assert.Single(fx.Scope.RetainedRecoveryLeases);
-        Assert.Equal(0, PreparationInterop.OpenDirectory(fx.Staging.Path, out var parentFd));
-        Assert.Equal(0, PreparationInterop.OpenSubdirectory(parentFd, "prep-001", out var subdirFd));
+        var parentFd = ((SafeFileHandle)Assert.Single(fx.Scope.RetainedStagingParents)).DangerousGetHandle().ToInt32();
+        var subdirFd = ((SafeFileHandle)Assert.Single(fx.Scope.RetainedStagingDirectories)).DangerousGetHandle().ToInt32();
         var cleaner = new QualScopeCleaner(parentFd, subdirFd);
         var reconciler = new Reconciler(new RealClock(), TimeSpan.FromSeconds(5));
-        var result = reconciler.Reconcile(read.Snapshot!, Boot(), recovery, cleaner, fx.Journal, fx.Writer);
+        Assert.True(fx.Journal.TryAcquireWriter(out var takeover, out var takeoverError), takeoverError);
+        using (takeover!)
+        {
+        var result = reconciler.Reconcile(read.Snapshot!, Boot(), recovery, cleaner, fx.Journal, takeover);
         Assert.Equal(ReconcileOutcome.QuarantinedUnknown, result.Outcome);
         Assert.True(File.Exists(stagedPath), "replacement must be preserved");
-        PreparationInterop.CloseFd(subdirFd);
-        PreparationInterop.CloseFd(parentFd);
+        }
     }
 
     [Fact]
@@ -873,19 +461,23 @@ public sealed class NonRootQualificationTests
         Directory.CreateDirectory(sibling);
         try
         {
-            Assert.Throws<BarrierDeathException>(() =>
-                fx.Scope.AllocatePreparation(fx.Request(DieAt("after-copy")), CancellationToken.None));
+            var outcome = fx.Scope.StartOwnerPreparation(fx.Request("after-copy"), CancellationToken.None);
+            Assert.Equal("after-copy", outcome.Barrier);
+            outcome.Owner!.Kill(entireProcessTree: false);
+            Assert.True(fx.Scope.WaitForOwner(outcome.Owner, TimeSpan.FromSeconds(5)).Exited);
             var read = fx.Journal.ReadLatest();
             var recovery = Assert.Single(fx.Scope.RetainedRecoveryLeases);
-            Assert.Equal(0, PreparationInterop.OpenDirectory(fx.Staging.Path, out var parentFd));
-            Assert.Equal(0, PreparationInterop.OpenSubdirectory(parentFd, "prep-001", out var subdirFd));
+            var parentFd = ((SafeFileHandle)Assert.Single(fx.Scope.RetainedStagingParents)).DangerousGetHandle().ToInt32();
+            var subdirFd = ((SafeFileHandle)Assert.Single(fx.Scope.RetainedStagingDirectories)).DangerousGetHandle().ToInt32();
             var cleaner = new QualScopeCleaner(parentFd, subdirFd);
             var reconciler = new Reconciler(new RealClock(), TimeSpan.FromSeconds(5));
-            var result = reconciler.Reconcile(read.Snapshot!, Boot(), recovery, cleaner, fx.Journal, fx.Writer);
+            Assert.True(fx.Journal.TryAcquireWriter(out var takeover, out var takeoverError), takeoverError);
+            using (takeover!)
+            {
+            var result = reconciler.Reconcile(read.Snapshot!, Boot(), recovery, cleaner, fx.Journal, takeover);
             Assert.Equal(ReconcileOutcome.CleanupConfirmed, result.Outcome);
+            }
             Assert.True(Directory.Exists(sibling));
-            PreparationInterop.CloseFd(subdirFd);
-            PreparationInterop.CloseFd(parentFd);
         }
         finally
         {

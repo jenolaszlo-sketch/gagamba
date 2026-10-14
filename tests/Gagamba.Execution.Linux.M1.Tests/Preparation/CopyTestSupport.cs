@@ -96,12 +96,29 @@ internal static class CopyTestSupport
             baseline.Channels);
     }
 
+    internal static RestrictedManifest ManifestWithClosure(IReadOnlyList<StagedObjectDescription> staged)
+    {
+        var baseline = SampleManifest();
+        var objects = staged
+            .Select(s => new ClosureObject(s.Role, (byte[])s.Sha256.Clone(), s.Length, "/" + s.Role, "test-build"))
+            .ToArray();
+        var closure = new ClosureIdentity(objects, Array.Empty<string>());
+        return new RestrictedManifest(
+            RestrictedManifest.CurrentSchemaVersion,
+            RestrictedManifest.ImplementationIdentifier,
+            baseline.Authority,
+            baseline.Resources,
+            closure,
+            baseline.Invocation,
+            baseline.Channels);
+    }
+
     internal static PreparedTransaction.PreparationStore NewStore(TestClock clock) =>
         new(Issuer, Generation, clock);
 
-    internal static PreparationIdentity IdentityFor(RestrictedManifest manifest) =>
+    internal static PreparationIdentity IdentityFor(RestrictedManifest manifest, Guid? executionId = null) =>
         new(
-            new Guid("33333333-3333-3333-3333-333333333333"),
+            executionId ?? new Guid("33333333-3333-3333-3333-333333333333"),
             Issuer,
             Generation,
             new Guid("44444444-4444-4444-4444-444444444444"),

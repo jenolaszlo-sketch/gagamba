@@ -12,6 +12,17 @@ using Gagamba.Execution.Restricted;
 
 namespace Gagamba.Execution.Linux.M1.Preparation;
 
+/// <summary>Bounded non-authoritative copy result sent to the recovery
+/// coordinator when it must build/authorize a manifest. It intentionally
+/// contains no path, descriptor, closure or capability handle.</summary>
+internal sealed record StagedObjectDescription(
+    string Role,
+    byte[] Sha256,
+    ulong Length,
+    ulong Device,
+    ulong Inode,
+    string StagingName);
+
 /// <summary>One immutably bound staged object. A sealed class (never a
 /// record): handle identity must not participate in value equality.</summary>
 internal sealed class StagedObject

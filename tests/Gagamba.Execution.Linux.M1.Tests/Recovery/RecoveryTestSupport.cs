@@ -250,37 +250,4 @@ internal static class RecoveryTestSupport
 
     internal const ushort OwnershipCodecVersion = 2;
 
-    /// <summary>Test-only intent-first domain allocation seam (G2-03). The
-    /// product no longer exposes a journal-free allocation path; this
-    /// helper satisfies the scoped context with an in-memory journal and a
-    /// live writer so tests still create real domains without regressing
-    /// the production contract.</summary>
-    internal static DomainAllocationResult AllocateDomainForTest(
-        M1RecoveryScope scope, string childName, Guid executionId, Guid leaseGeneration, string bootId)
-    {
-        var journal = new OwnershipJournal(new FakeJournalStorage(), "/test-allocation");
-        if (!journal.TryAcquireWriter(out var writer, out var error))
-        {
-            throw new InvalidOperationException(error);
-        }
-
-        try
-        {
-            return scope.AllocateDomainUnderTransaction(journal, writer!, childName, executionId, leaseGeneration, bootId);
-        }
-        finally
-        {
-            writer!.Dispose();
-        }
-    }
-}
-
-internal static class TestAllocationSeams
-{
-    /// <summary>Keeps test call sites <c>scope.AllocateDomain(...)</c>
-    /// compiling after the product method was removed. The seam is
-    /// test-only and still requires the intent-first transaction.</summary>
-    internal static DomainAllocationResult AllocateDomain(
-        this M1RecoveryScope scope, string childName, Guid executionId, Guid leaseGeneration, string bootId)
-        => RecoveryTestSupport.AllocateDomainForTest(scope, childName, executionId, leaseGeneration, bootId);
 }

@@ -8,6 +8,7 @@
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Win32.SafeHandles;
 
 namespace Gagamba.Execution.Linux.M1.Preparation;
 
@@ -80,7 +81,8 @@ internal sealed record CopyPlan(
     Func<CancellationToken, bool>? Acknowledge,
     CopyTestHooks? Hooks,
     Action<SafeHandle, StagedObject>? OnObjectAccounted = null,
-    Action<SafeHandle>? OnStagingDirectoryCreated = null)
+    Action<SafeHandle>? OnStagingDirectoryCreated = null,
+    SafeHandle? StagingParentAuthority = null)
 {
     internal const ulong EnvironmentBudgetBytes = 16384;
     internal const int CopyChunkBytes = 65536;
@@ -151,7 +153,7 @@ internal static class SafeCopyIn
         {
             var opened = OpenAuthority(
                 host, plan.SourceRootPath, plan.StagingParentPath, plan.StagingDirectoryName,
-                out sourceRoot, out stagingParent, out stagingDir);
+                plan.StagingParentAuthority, out sourceRoot, out stagingParent, out stagingDir);
             if (opened is not null)
             {
                 return opened;
@@ -287,6 +289,7 @@ internal static class SafeCopyIn
         string sourceRootPath,
         string stagingParentPath,
         string stagingDirectoryName,
+        SafeHandle? retainedStagingParent,
         out SafeHandle? sourceRoot,
         out SafeHandle? stagingParent,
         out SafeHandle? stagingDir)
@@ -308,7 +311,41 @@ internal static class SafeCopyIn
             return Fail(CopyFailureKind.InvalidSource, "Source root is not a directory.", null);
         }
 
-        errno = host.OpenDirectory(stagingParentPath, out var parent);
+        SafeHandle? parent;
+        if (retainedStagingParent is not null)
+        {
+            var addedRef = false;
+            var duplicate = -1;
+            try
+            {
+                if (retainedStagingParent.IsClosed || retainedStagingParent.IsInvalid)
+                {
+                    return Fail(CopyFailureKind.StagingFailure, "Retained staging-parent authority is not live.", null);
+                }
+
+                retainedStagingParent.DangerousAddRef(ref addedRef);
+                duplicate = Native.PreparationInterop.Dup(retainedStagingParent.DangerousGetHandle().ToInt32());
+            }
+            catch (ObjectDisposedException)
+            {
+                return Fail(CopyFailureKind.StagingFailure, "Retained staging-parent authority is not live.", null);
+            }
+            finally
+            {
+                if (addedRef)
+                {
+                    retainedStagingParent.DangerousRelease();
+                }
+            }
+
+            errno = duplicate < 0 ? Native.PreparationInterop.EBADF : 0;
+            parent = duplicate < 0 ? null : new SafeFileHandle(new IntPtr(duplicate), ownsHandle: true);
+        }
+        else
+        {
+            errno = host.OpenDirectory(stagingParentPath, out parent);
+        }
+
         if (errno != 0 || parent is null)
         {
             return Fail(MapBootstrapErrno(errno), $"Staging-parent bootstrap failed with errno {errno}.", null);

@@ -1,10 +1,4 @@
-// WP03 integrated-path death-barrier tests (G2-03): the real scope-driven
-// allocation/preparation sequence with deterministic actor death at each
-// barrier. Death is simulated by abandoning the operation at an exact
-// point (operation-locals dropped exactly as OS reclaim would); recovery
-// uses only durable journal state plus independently retained scope
-// authority. Process-death itself is covered by the owner-death tests;
-// Mint is in-process by necessity. No target execution.
+// R6D.2 owner-process transaction and recovery-scope death barriers.
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -24,6 +18,8 @@ namespace Gagamba.Execution.Linux.M1.Tests.Recovery;
 public sealed class IntegratedBarrierTests
 {
     private const string CgroupRoot = "/sys/fs/cgroup";
+    [DllImport("libc", SetLastError = true)]
+    private static extern int open(string path, int flags);
 
     private sealed class TempParent : IDisposable
     {
@@ -102,14 +98,6 @@ public sealed class IntegratedBarrierTests
     private static string Boot() =>
         CgroupInterop.TryReadBootId(out var id, out _) ? id : "unknown";
 
-    private static Action<string> DieAt(string target) => barrier =>
-    {
-        if (barrier == target)
-        {
-            throw new BarrierDeathException(barrier);
-        }
-    };
-
     private sealed class Fixture : IDisposable
     {
         public TempParent Temp = new();
@@ -119,8 +107,6 @@ public sealed class IntegratedBarrierTests
         public M1RecoveryScope Scope = new();
         public OwnershipJournal Journal;
         public JournalWriterLease Writer;
-        public PreparedTransaction.PreparationStore Store;
-        public TestClock Clock = new();
         public Guid Exec = Guid.NewGuid();
         public Guid LeaseGen = Guid.NewGuid();
         public string ChildName = "d-" + Guid.NewGuid().ToString("N");
@@ -140,7 +126,6 @@ public sealed class IntegratedBarrierTests
             Journal = new OwnershipJournal(new JournalFileStorage(), JournalDir.Path);
             Assert.True(Journal.TryAcquireWriter(out var writer, out var error), error);
             Writer = writer!;
-            Store = new PreparedTransaction.PreparationStore(Issuer, Generation, Clock);
             Plan = new CopyPlan(
                 Source.Path, Staging.Path, "prep-001", objects, 16UL * 1024 * 1024, 128,
                 Array.Empty<KeyValuePair<string, string>>(), _ => true, hooks);
@@ -148,16 +133,24 @@ public sealed class IntegratedBarrierTests
 
         public CopyPlan Plan { get; }
 
-        public IntegratedPreparationRequest Request(Action<string>? deathBarrier) =>
+        public OwnerPreparationRequest OwnerRequest(string? testBarrier) =>
             new(
-                ChildName, Exec, LeaseGen, Boot(),
-                LibcCopyHost.Instance, Plan, Journal, Writer, Store,
+                RecoveryHarness.LocateOwnerDll() ?? throw new InvalidOperationException("owner executable missing from the test build"),
+                ChildName, Exec, LeaseGen, Boot(), Plan, Journal, Writer, Issuer, Generation,
                 staged =>
                 {
                     var manifest = ManifestWithClosure(staged);
-                    return (manifest, IdentityFor(manifest));
+                    return (manifest, IdentityFor(manifest, Exec));
                 },
-                1_000_000_000, deathBarrier);
+                MonotonicNanoseconds() + 60_000_000_000L,
+                testBarrier);
+
+        private static long MonotonicNanoseconds()
+        {
+            var ticks = Stopwatch.GetTimestamp();
+            return ticks / Stopwatch.Frequency * 1_000_000_000L
+                + ticks % Stopwatch.Frequency * 1_000_000_000L / Stopwatch.Frequency;
+        }
 
         public void Dispose()
         {
@@ -172,197 +165,170 @@ public sealed class IntegratedBarrierTests
     }
 
     [Fact]
-    public void BarrierAfterIntentCreatesNothing()
+    public void OwnerProcessPerformsPreparationAndKeepsCapabilityLocal()
     {
         SkipUnlessUsable();
-        using var fx = new Fixture(Bytes(0x10, 1024), null, null);
-        var ex = Assert.Throws<BarrierDeathException>(() =>
-            fx.Scope.AllocatePreparation(fx.Request(DieAt("after-intent")), CancellationToken.None));
-        Assert.Equal("after-intent", ex.Barrier);
+        using var fx = new Fixture(Bytes(0x71, 2048), null, null);
+        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest(null), CancellationToken.None);
 
-        var read = fx.Journal.ReadLatest();
-        Assert.True(read.Ok, read.Error);
-        Assert.Equal(PreparationStage.AllocationIntent, read.Snapshot!.Stage);
-        Assert.Empty(Directory.GetDirectories(fx.Temp.Path, "d-*"));
-        Assert.False(Directory.Exists(System.IO.Path.Combine(fx.Staging.Path, "prep-001")));
+        Assert.True(outcome.Ok, outcome.Error);
+        Assert.NotNull(outcome.Owner);
+        Assert.NotEqual(Environment.ProcessId, outcome.Owner!.Id);
+        Assert.Equal(fx.Exec, outcome.Description!.ExecutionId);
+        Assert.Equal(PreparationStage.Prepared, fx.Journal.ReadLatest().Snapshot!.Stage);
+        Assert.Single(fx.Scope.RetainedRecoveryLeases);
+        Assert.Single(fx.Scope.RetainedStagingParents);
+        Assert.Single(fx.Scope.RetainedStagingDirectories);
+        Assert.Null(typeof(OwnerPreparationOutcome).GetProperty("Capability"));
+
+        var competitor = new OwnershipJournal(new JournalFileStorage(), fx.JournalDir.Path);
+        Assert.False(competitor.TryAcquireWriter(out _, out _));
+
+        outcome.Owner.Kill(entireProcessTree: false);
+        var exit = fx.Scope.WaitForOwner(outcome.Owner, TimeSpan.FromSeconds(5));
+        Assert.True(exit.Exited, exit.Error);
+        Assert.True(fx.Journal.TryAcquireWriter(out var recoveryWriter, out var writerError), writerError);
+        using (recoveryWriter!)
+        {
+            var snapshot = fx.Journal.ReadLatest().Snapshot!;
+            var stagingParent = (SafeFileHandle)Assert.Single(fx.Scope.RetainedStagingParents);
+            var stagingDirectory = (SafeFileHandle)Assert.Single(fx.Scope.RetainedStagingDirectories);
+            var cleaner = new ScopeCleaner(
+                stagingParent.DangerousGetHandle().ToInt32(),
+                stagingDirectory.DangerousGetHandle().ToInt32());
+            var result = new Reconciler(new BarrierClock(), TimeSpan.FromSeconds(5)).Reconcile(
+                snapshot, Boot(), Assert.Single(fx.Scope.RetainedRecoveryLeases), cleaner, fx.Journal, recoveryWriter);
+            Assert.Equal(ReconcileOutcome.CleanupConfirmed, result.Outcome);
+        }
     }
 
     [Fact]
-    public void BarrierAfterCreateCleansDomainOnly()
+    public void OwnerDoesNotCopyUntilScopeAcknowledgesStagingRetention()
     {
         SkipUnlessUsable();
-        using var fx = new Fixture(Bytes(0x20, 1024), null, null);
-        var sibling = System.IO.Path.Combine(fx.Temp.Path, "sibling-" + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(sibling);
-        Assert.Throws<BarrierDeathException>(() =>
-            fx.Scope.AllocatePreparation(fx.Request(DieAt("after-create")), CancellationToken.None));
+        using var fx = new Fixture(Bytes(0x75, 1024), null, null);
+        var request = fx.OwnerRequest(null) with { WithholdStagingRetentionAckForTest = true };
+        var outcome = fx.Scope.StartOwnerPreparation(request, CancellationToken.None);
 
-        // Only intent is durable; the domain exists with scope-retained authority.
-        Assert.Equal(PreparationStage.AllocationIntent, fx.Journal.ReadLatest().Snapshot!.Stage);
-        var recovery = Assert.Single(fx.Scope.RetainedRecoveryLeases);
-        Assert.True(recovery.StopAndAwaitEmpty(TimeSpan.FromSeconds(5), new BarrierClock()).Stopped);
-        Assert.True(recovery.RemoveIfIdentityMatches().Removed);
-        Assert.Empty(Directory.GetDirectories(fx.Temp.Path, "d-*"));
-        Assert.True(Directory.Exists(fx.Staging.Path));
-        Assert.True(Directory.Exists(sibling));
-    }
-
-    [Fact]
-    public void BarrierAfterRegisteredCleansExactOriginals()
-    {
-        SkipUnlessUsable();
-        using var fx = new Fixture(Bytes(0x30, 1024), null, null);
-        var sibling = System.IO.Path.Combine(fx.Temp.Path, "sibling-" + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(sibling);
-        Assert.Throws<BarrierDeathException>(() =>
-            fx.Scope.AllocatePreparation(fx.Request(DieAt("after-registered")), CancellationToken.None));
+        Assert.False(outcome.Completed);
+        Assert.Contains("staging retention acknowledgement", outcome.Error, StringComparison.OrdinalIgnoreCase);
+        Assert.NotNull(outcome.Owner);
+        Assert.True(fx.Scope.TryOwnerPidFdExited(outcome.Owner!, 0, out var exited, out var pidfdError), pidfdError);
+        Assert.False(exited, "owner must remain blocked waiting for the missing acknowledgement");
 
         var read = fx.Journal.ReadLatest();
         Assert.True(read.Ok, read.Error);
         Assert.Equal(PreparationStage.AllocationRegistered, read.Snapshot!.Stage);
-        var recovery = Assert.Single(fx.Scope.RetainedRecoveryLeases);
-        Assert.Equal(recovery.Identity.ChildInode, read.Snapshot.DomainInode);
-        Assert.Equal(recovery.Identity.ChildDevice, read.Snapshot.DomainDevice);
-        Assert.True(recovery.StopAndAwaitEmpty(TimeSpan.FromSeconds(5), new BarrierClock()).Stopped);
-        Assert.True(recovery.RemoveIfIdentityMatches().Removed);
-        Assert.Empty(Directory.GetDirectories(fx.Temp.Path, "d-*"));
-        Assert.True(Directory.Exists(sibling));
+        var directory = Assert.Single(read.Snapshot.Allocations, item => item.Kind == AllocationKind.StagingDirectory);
+        Assert.False(directory.Confirmed);
+        Assert.Equal(0UL, directory.Inode);
+        Assert.Single(fx.Scope.RetainedStagingDirectories);
+        var path = System.IO.Path.Combine(fx.Staging.Path, "prep-001");
+        Assert.True(Directory.Exists(path));
+        Assert.Empty(Directory.GetFiles(path));
+        Assert.All(read.Snapshot.Allocations.Where(item => item.Kind == AllocationKind.Staging), item => Assert.False(item.Confirmed));
+        var competitor = new OwnershipJournal(new JournalFileStorage(), fx.JournalDir.Path);
+        Assert.False(competitor.TryAcquireWriter(out _, out _));
+        outcome.Owner!.Kill(entireProcessTree: false);
+        Assert.True(fx.Scope.WaitForOwner(outcome.Owner, TimeSpan.FromSeconds(5)).Exited);
+        Assert.True(fx.Journal.TryAcquireWriter(out var takeover, out var takeoverError), takeoverError);
+        using (takeover!)
+        {
+            Assert.Equal(fx.Journal.ReadLatest().Snapshot!.Sequence, takeover!.BaselineSequence);
+        }
     }
-
     [Fact]
-    public void BarrierMidCopyLeavesAccountedAndDebt()
+    public void ScopeDisposalDoesNotCloseReusedOwnerPidfd()
     {
         SkipUnlessUsable();
-        // Tool completes in one chunk; input dies on its third chunk.
-        var tool = Bytes(0x40, 1000);
-        var input = Bytes(0x41, 200000);
-        var chunks = 0;
-        var hooks = new CopyTestHooks(
-            _ =>
-            {
-                if (++chunks == 3)
-                {
-                    throw new BarrierDeathException("mid-copy");
-                }
-            },
+        using var fx = new Fixture(Bytes(0x74, 1024), null, null);
+        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest("after-copy"), CancellationToken.None);
+        Assert.Equal("after-copy", outcome.Barrier);
+        var owner = outcome.Owner!;
+        owner.Kill(entireProcessTree: false);
+        Assert.True(fx.Scope.WaitForOwner(owner, TimeSpan.FromSeconds(5)).Exited);
+
+        var field = typeof(M1RecoveryScope).GetField("_retainedOwnerPidFds", BindingFlags.NonPublic | BindingFlags.Instance);
+        Assert.NotNull(field);
+        var pidfds = (Dictionary<int, SafeHandle>)field!.GetValue(fx.Scope)!;
+        var retained = pidfds[owner.Id];
+        var descriptor = retained.DangerousGetHandle().ToInt32();
+        retained.Dispose();
+
+        var sentinel = open("/dev/null", 0);
+        Assert.Equal(descriptor, sentinel);
+        fx.Scope.Dispose();
+        Assert.True(PreparationInterop.IsValidFd(sentinel), "scope disposal closed an unrelated descriptor reusing its pidfd number");
+        PreparationInterop.CloseFd(sentinel);
+    }
+    [Theory]
+    [InlineData("after-intent", "AllocationIntent", 0, 0)]
+    [InlineData("after-domain-retained", "AllocationIntent", 1, 0)]
+    [InlineData("after-registered", "AllocationRegistered", 1, 0)]
+    [InlineData("after-staging-accounted", "AllocationRegistered", 1, 1)]
+    [InlineData("mid-staging", "AllocationRegistered", 1, 1)]
+    [InlineData("after-copy", "AllocationRegistered", 1, 1)]
+    [InlineData("after-prepared-before-mint", "Prepared", 1, 1)]
+    public void RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(
+        string barrier,
+        string expectedStage,
+        int expectedDomains,
+        int expectedStagingDirectories)
+    {
+        SkipUnlessUsable();
+        using var fx = new Fixture(
+            Bytes(0x72, 2048),
+            barrier is "mid-staging" or "after-copy" ? Bytes(0x73, 200_000) : null,
             null);
-        using var fx = new Fixture(tool, input, hooks);
-        Assert.Throws<BarrierDeathException>(() =>
-            fx.Scope.AllocatePreparation(fx.Request(null), CancellationToken.None));
+        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest(barrier), CancellationToken.None);
+
+        Assert.Equal(barrier, outcome.Barrier);
+        Assert.False(outcome.Completed);
+        Assert.NotNull(outcome.Owner);
+        if (barrier == "after-prepared-before-mint")
+        {
+            Assert.NotNull(outcome.Description);
+        }
+        else
+        {
+            Assert.Null(outcome.Description);
+        }
+
+        outcome.Owner!.Kill(entireProcessTree: false);
+        var exit = fx.Scope.WaitForOwner(outcome.Owner, TimeSpan.FromSeconds(5));
+        Assert.True(exit.Exited, exit.Error);
 
         var read = fx.Journal.ReadLatest();
         Assert.True(read.Ok, read.Error);
-        var toolEntry = Assert.Single(read.Snapshot!.Allocations, a => a.Kind == AllocationKind.Staging && a.Name == "tool-000.staged");
-        Assert.True(toolEntry.Confirmed);
-        var inputEntry = Assert.Single(read.Snapshot.Allocations, a => a.Kind == AllocationKind.Staging && a.Name == "input-001.staged");
-        Assert.False(inputEntry.Confirmed);
-        Assert.True(File.Exists(System.IO.Path.Combine(fx.Staging.Path, "prep-001", "tool-000.staged")));
+        Assert.Equal(expectedStage, read.Snapshot!.Stage.ToString());
+        Assert.Equal(expectedDomains, fx.Scope.RetainedRecoveryLeases.Count);
+        Assert.Equal(expectedStagingDirectories, fx.Scope.RetainedStagingDirectories.Count);
+        if (barrier == "after-staging-accounted")
+        {
+            var directoryEntry = Assert.Single(read.Snapshot.Allocations, item => item.Kind == AllocationKind.StagingDirectory);
+            Assert.True(directoryEntry.Confirmed);
+            Assert.True(Directory.Exists(System.IO.Path.Combine(fx.Staging.Path, "prep-001")));
+            Assert.Empty(Directory.GetFiles(System.IO.Path.Combine(fx.Staging.Path, "prep-001")));
+            Assert.All(read.Snapshot.Allocations.Where(item => item.Kind == AllocationKind.Staging), item => Assert.False(item.Confirmed));
+        }
+        if (barrier == "mid-staging")
+        {
+            Assert.True(Assert.Single(read.Snapshot.Allocations, item => item.Name == "tool-000.staged").Confirmed);
+            Assert.False(Assert.Single(read.Snapshot.Allocations, item => item.Name == "input-001.staged").Confirmed);
+        }
+        if (expectedDomains == 1)
+        {
+            var recovery = Assert.Single(fx.Scope.RetainedRecoveryLeases);
+            Assert.True(recovery.AuthorityAlive);
+            Assert.True(recovery.StopAndAwaitEmpty(TimeSpan.FromSeconds(5), new BarrierClock()).Stopped);
+            Assert.True(recovery.RemoveIfIdentityMatches().Removed);
+        }
 
-        // Recovery with the scope-retained authority: exact tool removed,
-        // unconfirmed partial preserved as debt, overall not Confirmed.
-        var recovery = Assert.Single(fx.Scope.RetainedRecoveryLeases);
-        Assert.Equal(0, PreparationInterop.OpenDirectory(fx.Staging.Path, out var parentFd));
-        Assert.Equal(0, PreparationInterop.OpenSubdirectory(parentFd, "prep-001", out var subdirFd));
-        var cleaner = new ScopeCleaner(parentFd, subdirFd);
-        var reconciler = new Reconciler(new BarrierClock(), TimeSpan.FromSeconds(5));
-        var result = reconciler.Reconcile(read.Snapshot, Boot(), recovery, cleaner, fx.Journal, fx.Writer);
-        Assert.Equal(ReconcileOutcome.QuarantinedUnknown, result.Outcome);
-        Assert.False(File.Exists(System.IO.Path.Combine(fx.Staging.Path, "prep-001", "tool-000.staged")));
-        Assert.True(File.Exists(System.IO.Path.Combine(fx.Staging.Path, "prep-001", "input-001.staged")));
-        PreparationInterop.CloseFd(subdirFd);
-        PreparationInterop.CloseFd(parentFd);
-    }
-
-    [Fact]
-    public void BarrierAfterCopyCleansExactClosure()
-    {
-        SkipUnlessUsable();
-        using var fx = new Fixture(Bytes(0x50, 2048), Bytes(0x51, 4096), null);
-        Assert.Throws<BarrierDeathException>(() =>
-            fx.Scope.AllocatePreparation(fx.Request(DieAt("after-copy")), CancellationToken.None));
-
-        var read = fx.Journal.ReadLatest();
-        Assert.True(read.Ok, read.Error);
-        Assert.NotEqual(PreparationStage.Prepared, read.Snapshot!.Stage);
-        Assert.All(read.Snapshot.Allocations.Where(a => a.Kind == AllocationKind.Staging), a => Assert.True(a.Confirmed));
-
-        var recovery = Assert.Single(fx.Scope.RetainedRecoveryLeases);
-        Assert.Equal(0, PreparationInterop.OpenDirectory(fx.Staging.Path, out var parentFd));
-        Assert.Equal(0, PreparationInterop.OpenSubdirectory(parentFd, "prep-001", out var subdirFd));
-        var cleaner = new ScopeCleaner(parentFd, subdirFd);
-        var reconciler = new Reconciler(new BarrierClock(), TimeSpan.FromSeconds(5));
-        var result = reconciler.Reconcile(read.Snapshot, Boot(), recovery, cleaner, fx.Journal, fx.Writer);
-        Assert.Equal(ReconcileOutcome.CleanupConfirmed, result.Outcome);
-        Assert.False(Directory.Exists(System.IO.Path.Combine(fx.Staging.Path, "prep-001")));
-        PreparationInterop.CloseFd(subdirFd);
-        PreparationInterop.CloseFd(parentFd);
-    }
-
-    [Fact]
-    public void BarrierAfterPreparedNeverMints()
-    {
-        SkipUnlessUsable();
-        using var fx = new Fixture(Bytes(0x60, 2048), null, null);
-        Assert.Throws<BarrierDeathException>(() =>
-            fx.Scope.AllocatePreparation(fx.Request(DieAt("after-prepared")), CancellationToken.None));
-
-        var read = fx.Journal.ReadLatest();
-        Assert.True(read.Ok, read.Error);
-        Assert.Equal(PreparationStage.Prepared, read.Snapshot!.Stage);
-        Assert.NotNull(read.Snapshot.Preparation);
-
-        var recovery = Assert.Single(fx.Scope.RetainedRecoveryLeases);
-        Assert.Equal(0, PreparationInterop.OpenDirectory(fx.Staging.Path, out var parentFd));
-        Assert.Equal(0, PreparationInterop.OpenSubdirectory(parentFd, "prep-001", out var subdirFd));
-        var cleaner = new ScopeCleaner(parentFd, subdirFd);
-        var reconciler = new Reconciler(new BarrierClock(), TimeSpan.FromSeconds(5));
-        var result = reconciler.Reconcile(read.Snapshot, Boot(), recovery, cleaner, fx.Journal, fx.Writer);
-        Assert.Equal(ReconcileOutcome.CleanupConfirmed, result.Outcome);
-        Assert.False(Directory.Exists(System.IO.Path.Combine(fx.Staging.Path, "prep-001")));
-        PreparationInterop.CloseFd(subdirFd);
-        PreparationInterop.CloseFd(parentFd);
-    }
-
-    [Fact]
-    public void FullIntegratedPathPublishesCapability()
-    {
-        SkipUnlessUsable();
-        using var fx = new Fixture(Bytes(0x70, 2048), null, null);
-        var outcome = fx.Scope.AllocatePreparation(fx.Request(null), CancellationToken.None);
-        Assert.True(outcome.Published, outcome.Detail);
-        Assert.NotNull(outcome.Capability);
-        Assert.NotNull(outcome.PrimaryLease);
-        outcome.PrimaryLease!.Dispose();
-    }
-
-    // G2-03 1B: the staging directory's identity is retained and durably
-    // accounted at creation, before any object content is copied.
-    [Fact]
-    public void BarrierAfterStagingDirectoryRetainsAuthority()
-    {
-        SkipUnlessUsable();
-        using var fx = new Fixture(Bytes(0x80, 1024), null, null);
-        Assert.Throws<BarrierDeathException>(() =>
-            fx.Scope.AllocatePreparation(fx.Request(DieAt("after-staging-dir")), CancellationToken.None));
-
-        var read = fx.Journal.ReadLatest();
-        Assert.True(read.Ok, read.Error);
-        var subdir = Assert.Single(read.Snapshot!.Allocations, a => a.Kind == AllocationKind.StagingDirectory);
-        Assert.True(subdir.Confirmed);
-        Assert.NotEqual(0UL, subdir.Inode);
-        Assert.NotEmpty(fx.Scope.RetainedStagingDirectories);
-        Assert.Empty(Directory.GetFiles(System.IO.Path.Combine(fx.Staging.Path, "prep-001")));
-
-        var recovery = Assert.Single(fx.Scope.RetainedRecoveryLeases);
-        Assert.Equal(0, PreparationInterop.OpenDirectory(fx.Staging.Path, out var parentFd));
-        Assert.Equal(0, PreparationInterop.OpenSubdirectory(parentFd, "prep-001", out var subdirFd));
-        var cleaner = new ScopeCleaner(parentFd, subdirFd);
-        var result = new Reconciler(new BarrierClock(), TimeSpan.FromSeconds(5))
-            .Reconcile(read.Snapshot, Boot(), recovery, cleaner, fx.Journal, fx.Writer);
-        Assert.Equal(ReconcileOutcome.CleanupConfirmed, result.Outcome);
-        Assert.False(Directory.Exists(System.IO.Path.Combine(fx.Staging.Path, "prep-001")));
-        PreparationInterop.CloseFd(subdirFd);
-        PreparationInterop.CloseFd(parentFd);
+        Assert.True(fx.Journal.TryAcquireWriter(out var takeover, out var takeoverError), takeoverError);
+        using (takeover!)
+        {
+            Assert.Equal(read.Snapshot.Sequence, takeover!.BaselineSequence);
+        }
     }
 
     // G2-03 1A: no journal-free production allocation path exists.
@@ -371,7 +337,8 @@ public sealed class IntegratedBarrierTests
     {
         var scopeType = typeof(M1RecoveryScope);
         Assert.Null(scopeType.GetMethod("AllocateDomain", BindingFlags.NonPublic | BindingFlags.Instance));
-        Assert.NotNull(scopeType.GetMethod("AllocateDomainUnderTransaction", BindingFlags.NonPublic | BindingFlags.Instance));
+        Assert.Null(scopeType.GetMethod("AllocateDomainUnderTransaction", BindingFlags.NonPublic | BindingFlags.Instance));
+        Assert.Null(scopeType.GetMethod("AllocatePreparation", BindingFlags.NonPublic | BindingFlags.Instance));
 
         var create = typeof(CgroupInterop).GetMethod(
             "TryCreateDomain", BindingFlags.NonPublic | BindingFlags.Static);
@@ -380,16 +347,26 @@ public sealed class IntegratedBarrierTests
 
         // No context without a live writer and an acknowledged durable intent.
         Assert.False(ScopedAllocationContext.TryCreate(
-            0, null, null, RecoveryTestSupport.Execution, RecoveryTestSupport.Lease, Boot(), out var none, out _));
+            0, null, null, null, RecoveryTestSupport.Execution, RecoveryTestSupport.Lease, Boot(), out var none, out _));
         Assert.Null(none);
 
         var journal = new OwnershipJournal(new FakeJournalStorage(), "/intent");
         Assert.True(journal.TryAcquireWriter(out var writer, out var error), error);
         Assert.False(ScopedAllocationContext.TryCreate(
-            0, journal, writer, RecoveryTestSupport.Execution, RecoveryTestSupport.Lease, Boot(), out _, out _));
-        Assert.True(journal.WriteNext(writer!, RecoveryTestSupport.Snapshot()).Ok);
+            0, journal, writer, null, RecoveryTestSupport.Execution, RecoveryTestSupport.Lease, Boot(), out _, out _));
+        var intent = RecoveryTestSupport.Snapshot(
+            stage: PreparationStage.AllocationIntent,
+            allocations: Array.Empty<AllocationEntry>(),
+            bootId: Boot());
+        Assert.True(journal.WriteNext(writer!, intent).Ok);
+        Assert.False(ScopedAllocationContext.TryCreate(
+            0, journal, writer, intent with { ExecutionId = Guid.NewGuid() },
+            RecoveryTestSupport.Execution, RecoveryTestSupport.Lease, Boot(), out _, out _));
+        Assert.False(ScopedAllocationContext.TryCreate(
+            0, journal, writer, intent with { DomainName = "another-domain" },
+            RecoveryTestSupport.Execution, RecoveryTestSupport.Lease, Boot(), out _, out _));
         Assert.True(ScopedAllocationContext.TryCreate(
-            0, journal, writer, RecoveryTestSupport.Execution, RecoveryTestSupport.Lease, Boot(), out var ctx, out _));
+            0, journal, writer, intent, RecoveryTestSupport.Execution, RecoveryTestSupport.Lease, Boot(), out var ctx, out _));
         writer!.Dispose();
         Assert.False(ctx!.IsLive);
     }

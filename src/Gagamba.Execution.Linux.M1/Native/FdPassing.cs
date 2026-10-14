@@ -30,6 +30,8 @@ internal static class FdPassing
     private const int MSG_CMSG_CLOEXEC = 0x40000000;
     private const int MSG_CTRUNC = 0x8;
     private const int MSG_TRUNC = 0x20;
+    private const int MSG_NOSIGNAL = 0x4000;
+    private const int POLLIN = 0x001;
 
     // FIONREAD reports the byte length of the next queued record without
     // consuming it or installing any SCM_RIGHTS descriptors (unlike
@@ -50,6 +52,9 @@ internal static class FdPassing
 
     [DllImport("libc", EntryPoint = "ioctl", SetLastError = true)]
     private static extern int Ioctl(int fd, ulong request, out int value);
+
+    [DllImport("libc", EntryPoint = "poll", SetLastError = true)]
+    private static extern int Poll(IntPtr fds, uint count, int timeoutMilliseconds);
 
     /// <summary>Creates a message-preserving (SOCK_SEQPACKET) socketpair
     /// without CLOEXEC on the child end so the owner inherits it at a known
@@ -112,7 +117,7 @@ internal static class FdPassing
             Marshal.WriteIntPtr(msg, 32, ctrl);
             Marshal.WriteIntPtr(msg, 40, (IntPtr)cmsgLen);
 
-            var rc = SendMsg(sock, msg, 0);
+            var rc = SendMsg(sock, msg, MSG_NOSIGNAL);
             if (rc < 0)
             {
                 error = $"sendmsg errno {Marshal.GetLastWin32Error()}";
@@ -138,6 +143,232 @@ internal static class FdPassing
             Marshal.FreeHGlobal(ctrl);
             Marshal.FreeHGlobal(iov);
             Marshal.FreeHGlobal(msg);
+        }
+    }
+
+    /// <summary>Sends one bounded SOCK_SEQPACKET control record without
+    /// ancillary descriptors. This is reserved for protocol acknowledgments
+    /// and descriptions; descriptor authority uses the strict transfer
+    /// method above.</summary>
+    internal static bool TrySendMessage(int sock, byte[] payload, out string error)
+    {
+        error = string.Empty;
+        if (payload is null || payload.Length == 0 || payload.Length > OwnerProtocol.MaxFrameBytes)
+        {
+            error = "control record length is outside the owner protocol bound";
+            return false;
+        }
+
+        var iov = Marshal.AllocHGlobal(16);
+        var msg = Marshal.AllocHGlobal(56);
+        var pinned = GCHandle.Alloc(payload, GCHandleType.Pinned);
+        try
+        {
+            Marshal.WriteIntPtr(iov, 0, pinned.AddrOfPinnedObject());
+            Marshal.WriteIntPtr(iov, 8, (IntPtr)payload.Length);
+            Zero(msg, 56);
+            Marshal.WriteIntPtr(msg, 16, iov);
+            Marshal.WriteIntPtr(msg, 24, (IntPtr)1);
+
+            var rc = SendMsg(sock, msg, MSG_NOSIGNAL);
+            if (rc < 0)
+            {
+                error = $"sendmsg errno {Marshal.GetLastWin32Error()}";
+                return false;
+            }
+
+            if (rc != payload.Length)
+            {
+                error = $"partial control record {rc}/{payload.Length}";
+                return false;
+            }
+
+            return true;
+        }
+        catch (DllNotFoundException)
+        {
+            error = "Unsupported: sendmsg unavailable";
+            return false;
+        }
+        finally
+        {
+            pinned.Free();
+            Marshal.FreeHGlobal(iov);
+            Marshal.FreeHGlobal(msg);
+        }
+    }
+
+    /// <summary>Returns the next queued SOCK_SEQPACKET record length without
+    /// consuming it or installing any SCM_RIGHTS descriptors. Callers use
+    /// the fixed protocol frame size to select the exact receiver.</summary>
+    internal static bool TryPeekRecordLength(int sock, out int length, out string error)
+    {
+        length = 0;
+        error = string.Empty;
+        if (Ioctl(sock, FIONREAD, out length) != 0)
+        {
+            error = $"socket record length unavailable: errno {Marshal.GetLastWin32Error()}";
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>Waits a bounded interval for exactly one control record.
+    /// Unexpected ancillary data is closed and refused, and a second queued
+    /// record is rejected so a valid prefix cannot hide a duplicate frame.</summary>
+    internal static bool TryReceiveMessage(
+        int sock,
+        int timeoutMilliseconds,
+        out byte[] payload,
+        out string error)
+    {
+        payload = Array.Empty<byte>();
+        error = string.Empty;
+        if (timeoutMilliseconds < 0)
+        {
+            error = "negative control-record timeout";
+            return false;
+        }
+
+        var pollFd = Marshal.AllocHGlobal(8);
+        try
+        {
+            Zero(pollFd, 8);
+            Marshal.WriteInt32(pollFd, 0, sock);
+            Marshal.WriteInt16(pollFd, 4, POLLIN);
+            var ready = Poll(pollFd, 1, timeoutMilliseconds);
+            if (ready < 0)
+            {
+                error = $"poll errno {Marshal.GetLastWin32Error()}";
+                return false;
+            }
+
+            if (ready == 0)
+            {
+                error = "control record timed out";
+                return false;
+            }
+        }
+        finally
+        {
+            Marshal.FreeHGlobal(pollFd);
+        }
+
+        var buffer = new byte[OwnerProtocol.MaxFrameBytes];
+        const int maxControlFds = 64;
+        var ctrlSize = 16 + Align4(4 * maxControlFds);
+        var ctrl = Marshal.AllocHGlobal(ctrlSize);
+        var iov = Marshal.AllocHGlobal(16);
+        var msg = Marshal.AllocHGlobal(56);
+        var pinned = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+        try
+        {
+            Zero(ctrl, ctrlSize);
+            Marshal.WriteIntPtr(iov, 0, pinned.AddrOfPinnedObject());
+            Marshal.WriteIntPtr(iov, 8, (IntPtr)buffer.Length);
+            Zero(msg, 56);
+            Marshal.WriteIntPtr(msg, 16, iov);
+            Marshal.WriteIntPtr(msg, 24, (IntPtr)1);
+            Marshal.WriteIntPtr(msg, 32, ctrl);
+            Marshal.WriteIntPtr(msg, 40, (IntPtr)ctrlSize);
+
+            var rc = RecvMsg(sock, msg, MSG_CMSG_CLOEXEC);
+            if (rc < 0)
+            {
+                error = $"recvmsg errno {Marshal.GetLastWin32Error()}";
+                return false;
+            }
+
+            var controlBytes = checked((int)Marshal.ReadInt64(msg, 40));
+            if (controlBytes > 0)
+            {
+                CloseAncillaryFds(ctrl, Math.Min(controlBytes, ctrlSize));
+                error = "unexpected ancillary data on a control record";
+                return false;
+            }
+
+            var flags = Marshal.ReadInt32(msg, 48);
+            if ((flags & MSG_CTRUNC) != 0)
+            {
+                CloseAncillaryFds(ctrl, ctrlSize);
+                error = "MSG_CTRUNC on a control record";
+                return false;
+            }
+
+            if (rc == 0)
+            {
+                error = "peer closed the owner protocol channel";
+                return false;
+            }
+
+            if ((flags & MSG_TRUNC) != 0 || rc < 0 || rc > OwnerProtocol.MaxFrameBytes)
+            {
+                error = (flags & MSG_TRUNC) != 0
+                    ? "overlong control record"
+                    : "invalid control record";
+                return false;
+            }
+
+            var ioctlResult = Ioctl(sock, FIONREAD, out var pendingRecord);
+            if (ioctlResult != 0 || pendingRecord > 0)
+            {
+                error = ioctlResult != 0
+                    ? "socket state unavailable for frame-boundary check"
+                    : $"extra queued control frame ({pendingRecord} bytes)";
+                return false;
+            }
+
+            payload = buffer.AsSpan(0, checked((int)rc)).ToArray();
+            return true;
+        }
+        catch (DllNotFoundException)
+        {
+            error = "Unsupported: recvmsg unavailable";
+            return false;
+        }
+        finally
+        {
+            pinned.Free();
+            Marshal.FreeHGlobal(ctrl);
+            Marshal.FreeHGlobal(iov);
+            Marshal.FreeHGlobal(msg);
+        }
+    }
+
+    private static void CloseAncillaryFds(IntPtr control, int controlBytes)
+    {
+        // Control messages received by this protocol are forbidden. Walk
+        // every well-formed SCM_RIGHTS header and close all installed FDs
+        // before returning a rejection.
+        var offset = 0;
+        while (offset + 16 <= controlBytes)
+        {
+            var length = Marshal.ReadInt64(control, offset);
+            var level = Marshal.ReadInt32(control, offset + 8);
+            var type = Marshal.ReadInt32(control, offset + 12);
+            if (length < 16 || length > controlBytes - offset)
+            {
+                return;
+            }
+
+            if (level == SOL_SOCKET && type == SCM_RIGHTS)
+            {
+                var count = (int)((length - 16) / 4);
+                for (var i = 0; i < count; i++)
+                {
+                    var fd = Marshal.ReadInt32(control, offset + 16 + (4 * i));
+                    CloseFdChecked(fd);
+                }
+            }
+
+            var alignedLength = checked((int)((length + 7) & ~7L));
+            if (alignedLength <= 0)
+            {
+                return;
+            }
+
+            offset += alignedLength;
         }
     }
 

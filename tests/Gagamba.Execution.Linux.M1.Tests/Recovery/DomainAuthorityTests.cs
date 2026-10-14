@@ -178,29 +178,6 @@ public sealed class DomainAuthorityTests
 
     // G2-01: FD-number reuse sentinel.
     [Fact]
-    public void ScopeDisposalDoesNotCloseReusedDescriptor()
-    {
-        SkipUnlessUsable();
-        using var temp = new TempParent();
-        var scope = new M1RecoveryScope();
-        Assert.True(scope.TryInitialize().Ok);
-        Assert.True(scope.TryOpenDelegatedParent(temp.Path).Ok);
-        var allocation = scope.AllocateDomain("d-" + Guid.NewGuid().ToString("N"), Guid.NewGuid(), Guid.NewGuid(), Boot());
-        Assert.True(allocation.Ok, allocation.Error);
-        allocation.RecoveryLease!.Dispose();
-        PreparationInterop.CloseFd(allocation.OwnerSocketFd);
-
-        // Open a sentinel that may reuse a number freed by any premature
-        // close; disposing the scope must not close it.
-        var sentinel = open("/dev/null", 0);
-        Assert.True(sentinel >= 0);
-        Assert.True(PreparationInterop.IsValidFd(sentinel));
-        scope.Dispose();
-        Assert.True(PreparationInterop.IsValidFd(sentinel), "scope disposal closed an unrelated reused descriptor");
-        PreparationInterop.CloseFd(sentinel);
-    }
-
-    [Fact]
     public void RepeatedScopeDisposalIsSafe()
     {
         SkipUnlessUsable();

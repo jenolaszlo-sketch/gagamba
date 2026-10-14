@@ -63,6 +63,10 @@ internal sealed partial class PreparedTransaction
             _clock = clock ?? throw new ArgumentNullException(nameof(clock));
         }
 
+        internal Guid IssuerId => _issuerId;
+
+        internal Guid GenerationId => _generationId;
+
         public PreparedTransaction Mint(
             RestrictedManifest manifest,
             PreparationIdentity identity,
