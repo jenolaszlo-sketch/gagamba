@@ -38,6 +38,73 @@ public sealed class OwnerProtocolTests
     }
 
     [Fact]
+    public void AfterIntentBarrierFollowsValidatedStartAuthorityAndCanBeReleased()
+    {
+        if (!OperatingSystem.IsLinux())
+        {
+            Assert.Skip("requires Linux SOCK_SEQPACKET and SCM_RIGHTS");
+        }
+
+        Assert.True(FdPassing.TryCreateInheritableSocketPair(out var ownerFd, out var scopeFd, out var socketError), socketError);
+        using var owner = new OwnerProtocolChannel(ownerFd, Execution, Lease, ownsSocket: true);
+        using var scope = new OwnerProtocolChannel(scopeFd, Execution, Lease, ownsSocket: true);
+        var parentPath = Path.Combine(Path.GetTempPath(), "gagamba-m1-owner-parent-" + Guid.NewGuid().ToString("N"));
+        var stagingPath = Path.Combine(Path.GetTempPath(), "gagamba-m1-owner-staging-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(parentPath);
+        Directory.CreateDirectory(stagingPath);
+        var parentFd = -1;
+        var stagingFd = -1;
+        int[] receivedFds = Array.Empty<int>();
+        try
+        {
+            Assert.Equal(0, PreparationInterop.OpenDirectory(parentPath, out parentFd));
+            Assert.Equal(0, PreparationInterop.OpenDirectory(stagingPath, out stagingFd));
+
+            Assert.True(owner.TrySend(OwnerProtocolMessageType.WriterReady, ReadOnlySpan<byte>.Empty, out var readyError), readyError);
+            Assert.True(scope.TryReceive(OwnerProtocolMessageType.WriterReady, out var ready, out var receiveReadyError), receiveReadyError);
+            Assert.Equal((uint)1, ready!.Sequence);
+
+            Assert.True(scope.TrySendTransfer(
+                OwnerProtocolMessageType.StartAuthority, new byte[] { 0, 1 },
+                new[] { parentFd, stagingFd }, out var authorityError), authorityError);
+            Assert.True(owner.TryReceiveTransfer(
+                OwnerProtocolMessageType.StartAuthority, expectedDescriptorCount: 2, expectedPayloadBytes: 2,
+                out var authority, out receivedFds, out var receiveAuthorityError), receiveAuthorityError);
+            Assert.Equal((uint)1, authority!.Sequence);
+            Assert.Equal(new byte[] { 0, 1 }, authority.Payload);
+            Assert.Equal(2, receivedFds.Length);
+            Assert.All(receivedFds, descriptor =>
+                Assert.True(PreparationInterop.HasCloexec(descriptor), "received authority descriptors must be CLOEXEC"));
+
+            Assert.True(owner.TrySend(OwnerProtocolMessageType.BarrierReached,
+                Encoding.UTF8.GetBytes("after-intent"), out var barrierSendError), barrierSendError);
+            Assert.True(scope.TryReceiveTransferOrControl(
+                OwnerProtocolMessageType.DomainRecoveryAuthority, DomainHandleTransfer.ExactDescriptorCount, 1,
+                out var barrier, out var unexpectedFds, out var receiveBarrierError), receiveBarrierError);
+            Assert.Empty(unexpectedFds);
+            Assert.Equal(OwnerProtocolMessageType.BarrierReached, barrier!.Type);
+            Assert.Equal((uint)2, barrier.Sequence);
+            Assert.Equal("after-intent", Encoding.UTF8.GetString(barrier.Payload));
+
+            Assert.True(scope.TrySend(OwnerProtocolMessageType.Continue, ReadOnlySpan<byte>.Empty, out var continueError), continueError);
+            Assert.True(owner.TryReceive(OwnerProtocolMessageType.Continue, out var continuation, out var receiveContinueError), receiveContinueError);
+            Assert.Equal((uint)2, continuation!.Sequence);
+        }
+        finally
+        {
+            foreach (var descriptor in receivedFds)
+            {
+                PreparationInterop.CloseFd(descriptor);
+            }
+
+            if (parentFd >= 0) PreparationInterop.CloseFd(parentFd);
+            if (stagingFd >= 0) PreparationInterop.CloseFd(stagingFd);
+            Directory.Delete(parentPath);
+            Directory.Delete(stagingPath);
+        }
+    }
+
+    [Fact]
     public void AfterRegisteredBarrierAndStagingAuthorityFramesShareThePinnedLength()
     {
         var barrier = OwnerProtocol.Encode(new OwnerProtocolMessage(

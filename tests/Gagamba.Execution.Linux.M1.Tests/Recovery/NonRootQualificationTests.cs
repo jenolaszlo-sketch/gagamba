@@ -77,6 +77,27 @@ public sealed class NonRootQualificationTests
         }
     }
 
+    private static void AssertLiveOwnerAtBarrier(
+        M1RecoveryScope scope, OwnerPreparationOutcome outcome, string expectedBarrier, OwnershipJournal journal)
+    {
+        Assert.Equal(expectedBarrier, outcome.Barrier);
+        var owner = outcome.Owner ?? throw new InvalidOperationException("barrier acknowledgement had no owner process");
+        Assert.NotEqual(Environment.ProcessId, owner.Id);
+        Assert.True(scope.TryOwnerPidFdExited(owner, 0, out var exited, out var pidfdError), pidfdError);
+        Assert.False(exited, "retained pidfd already reports owner exit at the barrier");
+        owner.Refresh();
+        Assert.False(owner.HasExited, "direct-child owner must still be alive immediately before kill");
+        var competitor = new OwnershipJournal(new JournalFileStorage(), GetJournalDirectory(journal));
+        Assert.False(competitor.TryAcquireWriter(out _, out _), "live owner must continue to hold the journal fence");
+    }
+
+    private static string GetJournalDirectory(OwnershipJournal journal)
+    {
+        var field = typeof(OwnershipJournal).GetField("_directory", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        Assert.NotNull(field);
+        return (string)field!.GetValue(journal)!;
+    }
+
     private static string Boot() => CgroupInterop.TryReadBootId(out var id, out _) ? id : "unknown";
 
     private sealed class FailingPidFdProvider : IPidFdProvider, IDisposable
@@ -427,6 +448,7 @@ public sealed class NonRootQualificationTests
         {
             var outcome = fx.Scope.StartOwnerPreparation(fx.Request("after-domain-retained"), CancellationToken.None);
             Assert.Equal("after-domain-retained", outcome.Barrier);
+            AssertLiveOwnerAtBarrier(fx.Scope, outcome, "after-domain-retained", fx.Journal);
             outcome.Owner!.Kill(entireProcessTree: false);
             Assert.True(fx.Scope.WaitForOwner(outcome.Owner, TimeSpan.FromSeconds(5)).Exited);
             Assert.Equal(PreparationStage.AllocationIntent, fx.Journal.ReadLatest().Snapshot!.Stage);
@@ -451,6 +473,7 @@ public sealed class NonRootQualificationTests
         using var fx = new IntegratedFixture(tool, input, null);
         var outcome = fx.Scope.StartOwnerPreparation(fx.Request("mid-staging"), CancellationToken.None);
         Assert.Equal("mid-staging", outcome.Barrier);
+        AssertLiveOwnerAtBarrier(fx.Scope, outcome, "mid-staging", fx.Journal);
         outcome.Owner!.Kill(entireProcessTree: false);
         Assert.True(fx.Scope.WaitForOwner(outcome.Owner, TimeSpan.FromSeconds(5)).Exited);
 
@@ -488,6 +511,7 @@ public sealed class NonRootQualificationTests
         var outcome = fx.Scope.StartOwnerPreparation(fx.Request("after-prepared-before-mint"), CancellationToken.None);
         Assert.Equal("after-prepared-before-mint", outcome.Barrier);
         Assert.NotNull(outcome.Description);
+        AssertLiveOwnerAtBarrier(fx.Scope, outcome, "after-prepared-before-mint", fx.Journal);
         outcome.Owner!.Kill(entireProcessTree: false);
         Assert.True(fx.Scope.WaitForOwner(outcome.Owner, TimeSpan.FromSeconds(5)).Exited);
 

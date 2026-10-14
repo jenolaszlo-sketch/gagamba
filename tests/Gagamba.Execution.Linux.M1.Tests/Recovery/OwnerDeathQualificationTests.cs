@@ -330,9 +330,17 @@ public sealed class OwnerDeathQualificationTests
             $"retainedLeases={retainedLeases} retainedStagingDirs={retainedStagingDirs}");
     }
 
-    private static Process KillAndProveExit(M1RecoveryScope scope, Process owner)
+    private static Process KillAndProveExit(
+        M1RecoveryScope scope, OwnerPreparationOutcome outcome, string expectedBarrier,
+        OwnershipJournal journal)
     {
-        Assert.False(owner.HasExited, "owner must be alive at the kill point");
+        Assert.Equal(expectedBarrier, outcome.Barrier);
+        var owner = outcome.Owner ?? throw new InvalidOperationException("barrier acknowledgement had no owner process");
+        Assert.True(scope.TryOwnerPidFdExited(owner, 0, out var exited, out var pidfdAliveError), pidfdAliveError);
+        Assert.False(exited, "retained pidfd already reports owner exit at the kill point");
+        owner.Refresh();
+        Assert.False(owner.HasExited, "direct-child owner must remain live at the kill point");
+        AssertWriterExcludedWhileOwnerLive(journal);
         owner.Kill(entireProcessTree: false);
         var exit = scope.WaitForOwner(owner, TimeSpan.FromSeconds(10));
         Assert.True(exit.Exited, exit.Error);
@@ -403,12 +411,18 @@ public sealed class OwnerDeathQualificationTests
         Assert.Empty(fx.Scope.RetainedRecoveryLeases);
         Assert.Empty(fx.Scope.RetainedStagingDirectories);
         Assert.False(Directory.Exists(System.IO.Path.Combine(fx.Temp.Path, fx.ChildName)));
+        Assert.False(Directory.Exists(System.IO.Path.Combine(fx.Staging.Path, "prep-001")));
+        Assert.Null(typeof(OwnerPreparationOutcome).GetProperty("Capability"));
+        AssertNoStoreOrCapabilityInScope(fx.Scope);
         AssertPidfdRetainedCloexec(fx.Scope, outcome.Owner.Id);
         Assert.False(outcome.Owner.HasExited, "owner must be alive while holding the writer at after-intent");
         AssertWriterExcludedWhileOwnerLive(fx.Journal);
+        _output.WriteLine(
+            $"D1 live barrier acknowledgement={outcome.Barrier} scopePid={Environment.ProcessId} " +
+            $"ownerPid={outcome.Owner.Id} pidfdLive=true writerExcluded=true domain=false staging=false capability=false");
 
         var scopePid = Environment.ProcessId;
-        KillAndProveExit(fx.Scope, outcome.Owner);
+        KillAndProveExit(fx.Scope, outcome, "after-intent", fx.Journal);
         LogDeathEvidence("after-intent", scopePid, outcome.Owner, fx.Journal, 0, 0);
 
         using var takeover = TakeOver(fx.Journal);
@@ -424,7 +438,7 @@ public sealed class OwnerDeathQualificationTests
     }
 
     [Fact]
-    public void D2OwnerDeathAfterDomainRetentionCleansThroughRetainedHandles()
+    public void D2OwnerDeathAfterDomainRetentionRefusesUncorroboratedIntentThenCleansByRetainedHandle()
     {
         SkipUnlessUsable();
         using var fx = new Fixture(Bytes(0xA2, 1024), null);
@@ -446,7 +460,7 @@ public sealed class OwnerDeathQualificationTests
             AssertWriterExcludedWhileOwnerLive(fx.Journal);
 
             var scopePid = Environment.ProcessId;
-            KillAndProveExit(fx.Scope, outcome.Owner);
+            KillAndProveExit(fx.Scope, outcome, "after-domain-retained", fx.Journal);
             LogDeathEvidence("after-domain-retained", scopePid, outcome.Owner, fx.Journal, 1, 0);
 
             Assert.True(recovery.AuthorityAlive, "retained recovery handles must survive owner death");
@@ -456,7 +470,19 @@ public sealed class OwnerDeathQualificationTests
             var stagingParentFd = ((SafeFileHandle)Assert.Single(fx.Scope.RetainedStagingParents)).DangerousGetHandle().ToInt32();
             var cleaner = new DeathQualificationCleaner(stagingParentFd, -1);
             var result = ReconcileTwice(read.Snapshot!, recovery, cleaner, fx.Journal, takeover);
-            Assert.Equal(ReconcileOutcome.CleanupConfirmed, result.Outcome);
+            Assert.Equal(ReconcileOutcome.Refused, result.Outcome);
+            Assert.Contains("live lease identity does not corroborate the record", result.Detail, StringComparison.Ordinal);
+            Assert.True(recovery.AuthorityAlive, "conservative journal refusal must not discard retained authority");
+            _output.WriteLine(
+                $"D2 retained domain identity: execution={recovery.Identity.ExecutionId} " +
+                $"child={recovery.Identity.ChildName} device={recovery.Identity.ChildDevice} inode={recovery.Identity.ChildInode}");
+
+            // The intent-stage journal has no registered domain identity, so
+            // Reconciler correctly refuses to infer one. The survivor may
+            // still stop/remove the exact domain through its retained lease.
+            Assert.True(recovery.StopAndAwaitEmpty(TimeSpan.FromSeconds(5), new QualificationClock()).Stopped);
+            Assert.True(recovery.RemoveIfIdentityMatches().Removed);
+            _output.WriteLine("D2 retained-handle stop=Confirmed removal=Confirmed; Reconciler remains Refused; no CleanupConfirmed written");
             Assert.False(Directory.Exists(System.IO.Path.Combine(fx.Temp.Path, fx.ChildName)));
             Assert.True(Directory.Exists(sibling));
         }
@@ -489,7 +515,7 @@ public sealed class OwnerDeathQualificationTests
         AssertWriterExcludedWhileOwnerLive(fx.Journal);
 
         var scopePid = Environment.ProcessId;
-        KillAndProveExit(fx.Scope, outcome.Owner);
+        KillAndProveExit(fx.Scope, outcome, "after-registered", fx.Journal);
         LogDeathEvidence("after-registered", scopePid, outcome.Owner, fx.Journal, 1, 0);
 
             using var takeover = TakeOver(fx.Journal);
@@ -524,7 +550,7 @@ public sealed class OwnerDeathQualificationTests
         AssertWriterExcludedWhileOwnerLive(fx.Journal);
 
         var scopePid = Environment.ProcessId;
-        KillAndProveExit(fx.Scope, outcome.Owner);
+        KillAndProveExit(fx.Scope, outcome, "after-staging-accounted", fx.Journal);
         LogDeathEvidence("after-staging-accounted", scopePid, outcome.Owner, fx.Journal, 1, 1);
 
         using var takeover = TakeOver(fx.Journal);
@@ -559,7 +585,7 @@ public sealed class OwnerDeathQualificationTests
         AssertWriterExcludedWhileOwnerLive(fx.Journal);
 
         var scopePid = Environment.ProcessId;
-        KillAndProveExit(fx.Scope, outcome.Owner);
+        KillAndProveExit(fx.Scope, outcome, "mid-staging", fx.Journal);
         LogDeathEvidence("mid-staging", scopePid, outcome.Owner, fx.Journal, 1, 1);
 
         using var takeover = TakeOver(fx.Journal);
@@ -585,7 +611,7 @@ public sealed class OwnerDeathQualificationTests
 
         Assert.Equal("mid-staging", outcome.Barrier);
         var scopePid = Environment.ProcessId;
-        KillAndProveExit(fx.Scope, outcome.Owner!);
+        KillAndProveExit(fx.Scope, outcome, "mid-staging", fx.Journal);
         LogDeathEvidence("mid-staging-replaced", scopePid, outcome.Owner!, fx.Journal, 1, 1);
 
         // Hostile change after death, before recovery: replace the accounted
@@ -633,7 +659,7 @@ public sealed class OwnerDeathQualificationTests
         AssertWriterExcludedWhileOwnerLive(fx.Journal);
 
         var scopePid = Environment.ProcessId;
-        KillAndProveExit(fx.Scope, outcome.Owner);
+        KillAndProveExit(fx.Scope, outcome, "after-prepared-before-mint", fx.Journal);
         LogDeathEvidence("after-prepared-before-mint", scopePid, outcome.Owner, fx.Journal, 1, 1);
 
         using var takeover = TakeOver(fx.Journal);

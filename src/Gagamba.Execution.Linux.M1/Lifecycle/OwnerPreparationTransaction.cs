@@ -88,11 +88,6 @@ internal static class OwnerPreparationTransaction
                 return 24;
             }
 
-            if (!WaitAtBarrier(request, channel, "after-intent", out channelError))
-            {
-                return 25;
-            }
-
             if (!channel.TryReceiveTransfer(
                     OwnerProtocolMessageType.StartAuthority,
                     expectedDescriptorCount: 2,
@@ -123,6 +118,15 @@ internal static class OwnerPreparationTransaction
             {
                 SendAbort(channel, "retained owner parent authority identity mismatch");
                 return 28;
+            }
+
+            // D1 is after the owner has accepted StartAuthority but before
+            // allocation context creation or domain creation. The owner
+            // keeps the transaction writer while the scope observes this
+            // barrier, so a real owner death releases the writer fence.
+            if (!WaitAtBarrier(request, channel, "after-intent", out channelError))
+            {
+                return 25;
             }
 
             if (!ScopedAllocationContext.TryCreate(

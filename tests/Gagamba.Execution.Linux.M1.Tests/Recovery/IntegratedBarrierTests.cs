@@ -365,8 +365,18 @@ public sealed class IntegratedBarrierTests
             Assert.Null(outcome.Description);
         }
 
-        outcome.Owner!.Kill(entireProcessTree: false);
-        var exit = fx.Scope.WaitForOwner(outcome.Owner, TimeSpan.FromSeconds(5));
+        Assert.Equal(barrier, outcome.Barrier);
+        var owner = outcome.Owner!;
+        Assert.NotEqual(Environment.ProcessId, owner.Id);
+        Assert.True(fx.Scope.TryOwnerPidFdExited(owner, 0, out var exitedBeforeKill, out var pidfdError), pidfdError);
+        Assert.False(exitedBeforeKill, "retained pidfd already reports owner exit at the barrier");
+        owner.Refresh();
+        Assert.False(owner.HasExited, "direct-child owner must still be alive immediately before kill");
+        var competitor = new OwnershipJournal(new JournalFileStorage(), fx.JournalDir.Path);
+        Assert.False(competitor.TryAcquireWriter(out _, out _), "live owner must continue to hold the journal fence");
+
+        owner.Kill(entireProcessTree: false);
+        var exit = fx.Scope.WaitForOwner(owner, TimeSpan.FromSeconds(5));
         Assert.True(exit.Exited, exit.Error);
 
         var read = fx.Journal.ReadLatest();
