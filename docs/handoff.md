@@ -1,6 +1,8 @@
 # Gagamba handoff
 
-## Current action — fresh root D1-D6 passed; non-root D6 unavailable; G2-03 corrected pending independent rereview; G2-10 blocking; G2 NOT ACCEPTED; WP04 blocked
+## Current action — G2-03 independently resolved (final rereview); G2-01–G2-09 resolved, G2-10 blocking; G2 NOT ACCEPTED; WP04 blocked
+
+Update: independent G2-03 final rereview of the fresh R6D.3 qualification (implementation `40e8adda46a44e29465c739d3498e7387be4ce8a`, evidence HEAD `9fe127a`) completed and preserved verbatim as [G2-03 final rereview](reviews/gagamba-linux-m1-g2-03-r6d3-final-rereview.md). Disposition: G2-03 RESOLVED - R6D.3 OWNER-DEATH QUALIFICATION ACCEPTED. Root D1-D6 independently rerun green (7/7) with hardened pre-kill liveness, fenced takeover, truthful idempotent reconciliation and no capability resurrection; non-root D6 gap analyzed as G2-10 evidence debt, not a G2-03 blocker; historical R6B.1 F2 classified superseded by equivalent/stronger coverage. Gate state: G2-01/02/03/04/05/06/07/08/09 resolved; G2-10 blocking; G2-11 maintenance; G2 NOT ACCEPTED; WP04 BLOCKED. This turn is documentation-only: no source or tests changed.
 
 Update 2026-10-15: fresh root D1-D6 owner-death matrix passed 7/7 against implementation 40e8adda46a44e29465c739d3498e7387be4ce8a. Non-root D1-D5, including the replacement negative control, passed 6/6; non-root D6 was attempted and skipped because the operator-supplied delegated parent was absent. Full Linux M1: 354 passed/12 non-root-only skips; Windows build: 0 warnings/errors; Windows M1: 257 passed/109 Linux-native skips; canonical vector unchanged. R6B.1 F1 passed; historical F2 test is absent from current HEAD and was not rerun. Evidence: [WP03 section 27](evidence/linux-m1/wp03.md). Status: G2-03 CORRECTED PENDING INDEPENDENT REREVIEW; G2-10 blocking; G2-11 maintenance; G2 NOT ACCEPTED; WP04 BLOCKED.
 
