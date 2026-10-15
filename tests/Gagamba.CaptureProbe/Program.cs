@@ -22,6 +22,8 @@ internal static class Program
             Console.Error.WriteLine(argumentError);
             return 2;
         }
+        if (mode == "qualify")
+            return await CaptureQualification.RunAsync(outputPath);
 
         var report = new ProbeReport
         {
@@ -41,7 +43,7 @@ internal static class Program
         try
         {
             if (mode != "baseline")
-                throw new ArgumentException("Only --mode baseline is supported by this source snapshot.");
+                throw new ArgumentException("Supported modes are baseline and qualify.");
             if (!OperatingSystem.IsMacOS() || RuntimeInformation.ProcessArchitecture != Architecture.Arm64)
                 throw new PlatformNotSupportedException("This native probe requires macOS ARM64.");
 
@@ -233,7 +235,7 @@ internal static class Program
     {
         mode = "";
         outputPath = "";
-        error = "Usage: dotnet run --project tests/Gagamba.CaptureProbe -- --mode baseline --output <json>";
+        error = "Usage: dotnet run --project tests/Gagamba.CaptureProbe -- --mode <baseline|qualify> --output <json>";
         for (int i = 0; i < args.Length; i++)
         {
             if (args[i] == "--mode" && i + 1 < args.Length) mode = args[++i];

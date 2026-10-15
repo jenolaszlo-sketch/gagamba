@@ -25,7 +25,7 @@ public sealed class Ar5MacTests
     }
 
     [Fact]
-    public async Task CaptureRefusesBeforeDispatchAndLegacyOutputHasNoHiddenFile()
+    public async Task InvalidCaptureRefusesBeforeDispatchAndLegacyOutputHasNoHiddenFile()
     {
         var fake = new Fake();
         var provider = new MacOsExecutionProvider("gui/501", fake);
@@ -34,7 +34,7 @@ public sealed class Ar5MacTests
             var token = Assert.IsType<PrepareResult.Accepted>(provider.Prepare(
                 new ExecutionRequirements([]))).Prepared;
             var spec = ProcessStartSpec.Vector("/bin/echo", ["secret"], Path.GetTempPath());
-            var refusal = provider.LaunchCaptured(token, spec, new OutputCaptureOptions(32, 32, 64));
+            var refusal = provider.LaunchCaptured(token, spec, new OutputCaptureOptions(-1, 32, 64));
             Assert.IsType<CaptureLaunchResult.Failed>(refusal);
             Assert.Equal(0, fake.Kickstarts);
             Assert.IsType<LaunchResult.Started>(provider.Launch(token, spec));

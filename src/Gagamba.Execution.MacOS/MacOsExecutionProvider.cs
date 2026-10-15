@@ -16,6 +16,7 @@ public sealed class MacOsExecutionProvider : IExecutionProvider, IOutputCaptureP
     private readonly Dictionary<Guid, PreparedExecution> _activeTokens = new();
     private readonly HashSet<OwnedJob> _launches = new();
     private readonly HashSet<OwnedJob> _failedJobs = new();
+    private readonly HashSet<MacCapturePipes> _captures = new();
     private readonly Dictionary<Guid, MacExecutionState> _executions = new();
     private readonly Dictionary<Guid, (WeakReference<ExecutionHandle> Handle, Task<CompletionResult> Result)> _completed = new();
     private readonly List<string> _terminalFailures = new();
@@ -37,8 +38,85 @@ public sealed class MacOsExecutionProvider : IExecutionProvider, IOutputCaptureP
         ProcessStartSpec process, OutputCaptureOptions options)
     {
         lock (_gate) ObjectDisposedException.ThrowIf(_disposed, this);
-        return new CaptureLaunchResult.Failed(new[] {
-            "bounded macOS launchd capture is unavailable; no target dispatched" });
+        if (options is null) return new CaptureLaunchResult.Failed(new[] { "capture options required" });
+        if (!options.TryValidate(out string captureError))
+            return new CaptureLaunchResult.Failed(new[] { captureError });
+        if (!ProcessStartSpec.TrySnapshot(process, windows: false, out var invocation, out var inputError))
+            return new CaptureLaunchResult.Failed(new[] { inputError });
+        if (!TryBuildEnvironment(invocation!.Environment, out var environment, out string envError))
+            return new CaptureLaunchResult.Failed(new[] { envError });
+
+        OwnedJob job;
+        MacCapturePipes capture;
+        lock (_gate)
+        {
+            if (_disposed) return new CaptureLaunchResult.Failed(new[] { "disposal won before admission" });
+            if (prepared is null || !_issued.TryGetValue(prepared, out var token) || token.Value != 0
+                || !_preparations.TryGetValue(prepared.PreparationId, out job!))
+                return new CaptureLaunchResult.Failed(new[] { "unknown preparation: not issued by this provider" });
+            try { capture = MacCapturePipes.Create(job.WorkDir, options); }
+            catch (Exception ex)
+            {
+                return new CaptureLaunchResult.Failed(new[] {
+                    $"bounded capture setup failed before dispatch: {ex.GetType().Name}: {ex.Message}" });
+            }
+            // Both endpoint pairs and bounded drains exist before consuming the
+            // issued preparation. Failed setup leaves Discard/ordinary launch valid.
+            _preparations.Remove(prepared.PreparationId);
+            token.Value = 1;
+            _activeTokens.Remove(prepared.PreparationId);
+            _launches.Add(job);
+            _captures.Add(capture);
+            _ = ObserveCaptureCleanupAsync(capture);
+        }
+
+        LaunchResult result = new LaunchResult.Failed(new[] { "captured launch did not complete" });
+        string? cleanupFailure = null;
+        try { result = LaunchInner(job, invocation, environment!, capture); }
+        catch (Exception ex)
+        { result = new LaunchResult.Failed(new[] { $"captured launch fault: {ex.GetType().Name}: {ex.Message}" }); }
+        finally
+        {
+            try
+            {
+                if (result is not LaunchResult.Started)
+                {
+                    var cleanup = job.Cleanup();
+                    if (!cleanup.Ok) cleanupFailure = cleanup.Error;
+                }
+            }
+            catch (Exception ex)
+            { cleanupFailure = $"captured launch cleanup fault: {ex.GetType().Name}: {ex.Message}"; }
+            finally
+            {
+                if (result is not LaunchResult.Started)
+                    capture.BindCompletion(Task.FromResult<CompletionResult>(new CompletionResult.Failed(
+                        new[] { cleanupFailure ?? "captured launch failed" })));
+                lock (_gate)
+                {
+                    if (cleanupFailure is not null) _failedJobs.Add(job);
+                    _launches.Remove(job);
+                    if (_launches.Count == 0) _launchesDrained?.TrySetResult();
+                }
+            }
+        }
+        return result is LaunchResult.Started started
+            ? new CaptureLaunchResult.Started(started.Handle, capture.Session)
+            : new CaptureLaunchResult.Failed(cleanupFailure is not null
+                ? new[] { cleanupFailure } : ((LaunchResult.Failed)result).Reasons);
+    }
+
+    private async Task ObserveCaptureCleanupAsync(MacCapturePipes capture)
+    {
+        try
+        {
+            await capture.CleanupCompletion.ConfigureAwait(false);
+            lock (_gate) _captures.Remove(capture);
+        }
+        catch (Exception ex)
+        {
+            lock (_gate) _terminalFailures.Add($"capture resource cleanup failed: {ex.GetType().Name}");
+        }
     }
 
     public PrepareResult Prepare(ExecutionRequirements requirements)
@@ -139,11 +217,11 @@ public sealed class MacOsExecutionProvider : IExecutionProvider, IOutputCaptureP
     }
 
     private LaunchResult LaunchInner(OwnedJob job, ProcessStartSpec process,
-        IReadOnlyDictionary<string, string> env)
+        IReadOnlyDictionary<string, string> env, MacCapturePipes? capture = null)
     {
         job.WritePlist(process.Executable, process.ArgumentVector?.ToArray()
             ?? Launchd.SplitArguments(process.Arguments),
-            process.WorkingDirectory, env);
+            process.WorkingDirectory, env, capture?.StdoutPath, capture?.StderrPath);
         var bootstrap = _transport.Run("bootstrap", _domain, job.PlistPath);
         if (!bootstrap.Ok) return new LaunchResult.Failed(new[] { "bootstrap refused: " + bootstrap.Diagnostic });
         job.MarkLoaded();
@@ -162,6 +240,7 @@ public sealed class MacOsExecutionProvider : IExecutionProvider, IOutputCaptureP
             var handle = new ExecutionHandle(WellKnownPlatforms.MacOs.Platform, Guid.NewGuid());
             var state = new MacExecutionState(handle, job, OnTerminal);
             _executions.Add(handle.ExecutionId, state);
+            capture?.BindCompletion(state.Completion);
             state.Start();
             return new LaunchResult.Started(handle);
         }
@@ -227,7 +306,7 @@ public sealed class MacOsExecutionProvider : IExecutionProvider, IOutputCaptureP
         {
             if (_disposeTask is not null)
             {
-                if (_disposeTask.IsFaulted && (_failedJobs.Count > 0 || _executions.Count > 0))
+                if (_disposeTask.IsFaulted && (_failedJobs.Count > 0 || _executions.Count > 0 || _captures.Count > 0))
                     _disposeTask = RetryFailedAsync();
                 return new ValueTask(_disposeTask);
             }
@@ -263,6 +342,7 @@ public sealed class MacOsExecutionProvider : IExecutionProvider, IOutputCaptureP
         }
         var results = await Task.WhenAll(join.Select(state => state.Completion)).ConfigureAwait(false);
         foreach (var failed in results.OfType<CompletionResult.Failed>()) errors.AddRange(failed.Reasons);
+        await CleanupCapturesAsync(errors).ConfigureAwait(false);
         lock (_gate) errors.AddRange(_terminalFailures);
         await CleanupFailedAsync(errors).ConfigureAwait(false);
         if (errors.Count > 0)
@@ -287,6 +367,7 @@ public sealed class MacOsExecutionProvider : IExecutionProvider, IOutputCaptureP
         }
         var results = await Task.WhenAll(join.Select(state => state.Completion)).ConfigureAwait(false);
         foreach (var failed in results.OfType<CompletionResult.Failed>()) errors.AddRange(failed.Reasons);
+        await CleanupCapturesAsync(errors).ConfigureAwait(false);
         await CleanupFailedAsync(errors).ConfigureAwait(false);
         if (errors.Count > 0)
             throw new InvalidOperationException("macOS cleanup unconfirmed: " + string.Join("; ", errors));
@@ -303,6 +384,26 @@ public sealed class MacOsExecutionProvider : IExecutionProvider, IOutputCaptureP
             else lock (_gate) _failedJobs.Remove(job);
         }
         return Task.CompletedTask;
+    }
+
+    private async Task CleanupCapturesAsync(List<string> errors)
+    {
+        MacCapturePipes[] captures;
+        lock (_gate) captures = _captures.ToArray();
+        foreach (var capture in captures)
+            if (!capture.LifecycleCompleted) capture.Abort();
+        try
+        {
+            // Capture options cap PipeGrace at one minute. Native reads are
+            // nonblocking/cancellable; resource quiescence is owned and awaited.
+            await Task.WhenAll(captures.Select(c => c.CleanupCompletion))
+                .WaitAsync(TimeSpan.FromSeconds(65)).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            foreach (var capture in captures) capture.Abort();
+            errors.Add($"capture cleanup unconfirmed: {ex.GetType().Name}");
+        }
     }
 
     private void OnTerminal(MacExecutionState state, CompletionResult result)

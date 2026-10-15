@@ -43,7 +43,8 @@ internal sealed class OwnedJob : IDisposable
     /// launchd's same-PG cleanup applies). Environment comes exclusively
     /// from the spec dict; validation rejects bad shapes first.</summary>
     public void WritePlist(string executable, string[] argv,
-        string workingDirectory, IReadOnlyDictionary<string, string> environment)
+        string workingDirectory, IReadOnlyDictionary<string, string> environment,
+        string? stdoutPath = null, string? stderrPath = null)
     {
         var sb = new StringBuilder();
         sb.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
@@ -64,11 +65,10 @@ internal sealed class OwnedJob : IDisposable
                 sb.AppendLine($"<key>{Escape(kv.Key)}</key><string>{Escape(kv.Value)}</string>");
             sb.AppendLine("</dict>");
         }
-        // Legacy launch has no output-capture contract. Discard stdio instead
-        // of creating unbounded private files. Bounded capture explicitly
-        // refuses before dispatch until a native launchd topology is proven.
-        sb.AppendLine("<key>StandardOutPath</key><string>/dev/null</string>");
-        sb.AppendLine("<key>StandardErrorPath</key><string>/dev/null</string>");
+        // Capture paths name already-open private FIFOs, never ordinary logs.
+        // Legacy launch retains its /dev/null behavior.
+        sb.AppendLine($"<key>StandardOutPath</key><string>{Escape(stdoutPath ?? "/dev/null")}</string>");
+        sb.AppendLine($"<key>StandardErrorPath</key><string>{Escape(stderrPath ?? "/dev/null")}</string>");
         sb.AppendLine("</dict></plist>");
         File.WriteAllText(PlistPath, sb.ToString());
     }
