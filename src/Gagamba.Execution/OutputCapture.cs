@@ -51,6 +51,7 @@ public sealed class OutputCaptureSession
     private readonly Stream _stdout;
     private readonly Stream _stderr;
     private readonly OutputCaptureOptions _options;
+    private readonly bool _joinReadersOnCompletion;
     private readonly TaskCompletionSource _overflow =
         new(TaskCreationOptions.RunContinuationsAsynchronously);
     private readonly TaskCompletionSource _abort =
@@ -69,6 +70,13 @@ public sealed class OutputCaptureSession
 
     public OutputCaptureSession(Stream stdout, Stream stderr,
         Task<CompletionResult> providerCompletion, OutputCaptureOptions options)
+        : this(stdout, stderr, providerCompletion, options, joinReadersOnCompletion: false) { }
+
+    // macOS supplies nonblocking, cancellable FIFO streams whose disposal
+    // guarantees reads can unwind. Keep other providers' existing behavior.
+    internal OutputCaptureSession(Stream stdout, Stream stderr,
+        Task<CompletionResult> providerCompletion, OutputCaptureOptions options,
+        bool joinReadersOnCompletion)
     {
         ArgumentNullException.ThrowIfNull(stdout);
         ArgumentNullException.ThrowIfNull(stderr);
@@ -78,6 +86,7 @@ public sealed class OutputCaptureSession
         _stdout = stdout;
         _stderr = stderr;
         _options = options;
+        _joinReadersOnCompletion = joinReadersOnCompletion;
         Completion = CollectAsync(providerCompletion);
     }
 
@@ -117,7 +126,17 @@ public sealed class OutputCaptureSession
             return new OutputCaptureResult(_overflowed ? OutputCaptureStatus.Overflow : OutputCaptureStatus.Complete,
                 outResult.Seen, errResult.Seen, outResult.Retained, errResult.Retained);
         }
-        finally { _stdout.Dispose(); _stderr.Dispose(); }
+        finally
+        {
+            _stdout.Dispose(); _stderr.Dispose();
+            if (_joinReadersOnCompletion)
+            {
+                // ReadAsync quiescence alone precedes DrainAsync's finalizer.
+                // Join both complete tasks, including pooled-buffer returns.
+                try { await Task.WhenAll(stdout, stderr).ConfigureAwait(false); }
+                catch { /* ReadFailed/DrainIncomplete already represents failure. */ }
+            }
+        }
     }
 
     private async Task<DrainResult> DrainAsync(Stream stream, int streamLimit, bool isStdout)

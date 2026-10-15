@@ -21,7 +21,8 @@ internal sealed class MacCapturePipes
     {
         _stdout = stdout;
         _stderr = stderr;
-        Session = new OutputCaptureSession(stdout, stderr, _lifecycle.Task, options);
+        Session = new OutputCaptureSession(stdout, stderr, _lifecycle.Task, options,
+            joinReadersOnCompletion: true);
         CleanupCompletion = CloseAfterCaptureAsync();
     }
 
