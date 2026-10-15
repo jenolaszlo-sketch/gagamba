@@ -103,6 +103,15 @@ lifetime and uncertain cleanup must be explicitly coordinated and tested.
 If launchd cannot open these endpoints safely, retain the original refusal.
 No unmeasured FIFO topology is claimed as implemented or qualified.
 
+Native follow-up: [baseline and mechanism evidence](baseline.md) records the
+actual current refusal plus successful finite FIFO experiment at `cc7b76c`.
+Implementation may now proceed; pressure and lifecycle cases remain unqualified.
+Darwin descriptor flags follow Apple's [fcntl header](https://github.com/apple/darwin-xnu/blob/main/bsd/sys/fcntl.h)
+and [open manual](https://github.com/apple/darwin-xnu/blob/main/bsd/man/man2/open.2);
+launchd endpoint keys are documented in Apple's [plist manual](https://github.com/apple-oss-distributions/launchd/blob/main/man/launchd.plist.5).
+These sources explain the primitives; the native experiment, not the manuals,
+establishes the tested launchd/FIFO behavior.
+
 Required native evidence: baseline refusal plus ordinary positive control;
 launchd/FIFO setup and full drain; below/exact/over-budget output for both
 streams; simultaneous pressure; normal/nonzero exits; cancellation/deadline/
