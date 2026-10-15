@@ -1,0 +1,59 @@
+name: GP-M5 native macOS captured launch
+
+on:
+  push:
+    branches: [codex/gp-m5-macos-capture]
+    paths:
+      - '.github/workflows/gp-m5.yml'
+      - 'eng/gp-m5/**'
+      - 'src/**'
+      - 'tests/**'
+      - 'Directory.Build.*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native-macos:
+    runs-on: macos-15
+    timeout-minutes: 30
+    env:
+      UseSharedCompilation: 'false'
+      MSBUILDDISABLENODEREUSE: '1'
+      DOTNET_CLI_DO_NOT_USE_MSBUILD_SERVER: '1'
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1
+        with:
+          dotnet-version: 10.0.401
+      - name: Native inventory and provider baseline
+        shell: bash
+        run: |
+          test "$(uname -m)" = arm64
+          mkdir -p artifacts/gp-m5
+          git rev-parse HEAD > artifacts/gp-m5/source.txt
+          git status --porcelain > artifacts/gp-m5/source-start.txt
+          test ! -s artifacts/gp-m5/source-start.txt
+          sw_vers > artifacts/gp-m5/os.txt
+          dotnet --info > artifacts/gp-m5/dotnet.txt
+          /bin/launchctl print "gui/$(id -u)" > /dev/null
+          echo "gui/$(id -u) available" > artifacts/gp-m5/domain.txt
+          dotnet run --project tests/Gagamba.CaptureProbe/Gagamba.CaptureProbe.csproj -c Release -- --mode baseline --output artifacts/gp-m5/baseline.json
+      - name: Measure private FIFO launchd topology
+        if: always()
+        run: python3 eng/gp-m5/fifo-topology.py artifacts/gp-m5/fifo-mechanism.json
+      - name: Record source end
+        if: always()
+        run: git status --porcelain > artifacts/gp-m5/source-end.txt
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+        if: always()
+        with:
+          name: gp-m5-native-${{ github.sha }}
+          path: artifacts/gp-m5/
+          if-no-files-found: error
+          retention-days: 30
