@@ -1,6 +1,6 @@
 # Gagamba Linux M1 evidence index
 
-Date: 2026-10-13 (Asia/Manila). Slice: internal Linux prepared-execution transaction (Milestone M1).
+Date: 2026-10-15 (Asia/Manila). Slice: internal Linux prepared-execution transaction (Milestone M1).
 
 This index tracks per-package evidence for the M1 milestone under
 [ADR 0003](../adr/0003-ar7-linux-first-restricted-execution.md) and the
@@ -14,7 +14,7 @@ until all mandatory gates pass.
 |---|---|---|
 | WP01 — Internal contracts, capability identity and state model | [wp01](linux-m1/wp01.md) | Complete, G1 ACCEPTED ([acceptance](../reviews/gagamba-linux-m1-g1-acceptance.md); M1 70/70, probes 13/13, native NotApplicable) |
 | WP02 — Protected copy-in and atomic preparation publication | [wp02](linux-m1/wp02.md) | Implemented and remediated for G2-06/G2-07 (`a1b8e3a2da44d781b996ccc5cbe604a863611368`); G2-06 R6A `e5f90ce4c3c6a239775b4af72e26e077b292e6d5` independently resolved, G2-07 resolved |
-| WP03 — Delegated domain lease, persistent allocation and external recovery scope | [wp03](linux-m1/wp03.md) | Implemented/remediated for G2-01…G2-05, G2-08…G2-10 (R2 `8a11e145e5c3fe06258a074acc13f0709630214a`, R3 `5c5a0b2243416e1602299360cda0115ac0cfc254`, R4 `0f91cc9c5433ce592fccfd45019c5b7171737e9c`, R5 `121c644f2aa774119149f598a935a181fc71e137`); G2-02 R6B `b80e9c28b462e2aa392313ff5dc58063478b955c` independently resolved (R6B.1 `447432c07558782ac8ba7dcc172d75af2ed92b9d` F1/F2 hygiene corrected and independently verified); G2-04/G2-05 R6C `cbe8739` independently resolved; G2-08 R6D `b52742c` independently resolved (G2-03 structural 1A/1B progress only, separate-actor matrix pending); unprivileged delegated qualification passed; G2-01/02/04/05/06/07/08/09 resolved |
+| WP03 — Delegated domain lease, persistent allocation and external recovery scope | [wp03](linux-m1/wp03.md) | Latest: fresh root R6D.3 D1-D6 matrix 7/7 passed; non-root D1-D5 (six cases including D5 replacement control) passed, D6 unavailable; G2-03 corrected pending independent rereview. G2-10 blocking; G2-11 maintenance; G2 NOT ACCEPTED; WP04 BLOCKED. Historical R6 evidence and independent dispositions are preserved in WP03. |
 | WP04–WP12 | — | Not started; WP04 blocked pending independent G2 rereview |
 
 The original independent G2 review is preserved verbatim at

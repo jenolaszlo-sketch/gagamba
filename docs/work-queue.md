@@ -1,8 +1,10 @@
 # Current work queue
 
-Updated 2026-10-14. Status definitions: Complete = stated artifact exists; Ready = dependencies sufficient to start; Held = named prerequisite missing; Pending = later delivery. Slice-specific historical entries retain their original tested SHAs; the later AR-6 SHA has separate three-host native and package evidence. Complete lifecycle qualification does not imply restricted-execution security qualification.
+Updated 2026-10-15. Status definitions: Complete = stated artifact exists; Ready = dependencies sufficient to start; Held = named prerequisite missing; Pending = later delivery. Slice-specific historical entries retain their original tested SHAs; the later AR-6 SHA has separate three-host native and package evidence. Complete lifecycle qualification does not imply restricted-execution security qualification.
 
-## Current priority: AR-7 first implementation milestone (R6D.3a remediation independently accepted; fresh D1-D6 requalification required; G2-03/G2-10 blocking; G2 NOT ACCEPTED; WP04 blocked)
+## Current priority: AR-7 first implementation milestone (fresh root D1-D6 passed; non-root D6 unavailable; G2-03 corrected pending independent rereview; G2-10 blocking; G2 NOT ACCEPTED; WP04 blocked)
+
+Update 2026-10-15: fresh root D1-D6 owner-death matrix passed 7/7 against implementation 40e8adda46a44e29465c739d3498e7387be4ce8a. Non-root D1-D5, including the replacement negative control, passed 6/6; non-root D6 was attempted and skipped because the operator-supplied delegated parent was absent. Full Linux M1: 354 passed/12 non-root-only skips; Windows build: 0 warnings/errors; Windows M1: 257 passed/109 Linux-native skips; canonical vector unchanged. R6B.1 F1 passed; historical F2 test is absent from current HEAD and was not rerun. Evidence: [WP03 section 27](evidence/linux-m1/wp03.md). Status: G2-03 CORRECTED PENDING INDEPENDENT REREVIEW; G2-10 blocking; G2-11 maintenance; G2 NOT ACCEPTED; WP04 BLOCKED.
 
 Update: independent R6D.3a remediation review of `40e8add` (docs-only HEAD `d7f9042`) completed ([R6D.3a review](reviews/gagamba-linux-m1-r6d3a-remediation-review.md)): R6D.3a REMEDIATION ACCEPTED - FULL D1-D6 REQUALIFICATION REQUIRED; G2-03 REMAINS BLOCKING. Corrected implementation for requalification: `40e8adda46a44e29465c739d3498e7387be4ce8a`; pre-remediation D3-D6 results are historical only; requalification restarts at D1. G2-03 remains blocking; G2-10 blocking; G2-11 maintenance; G2 NOT ACCEPTED; WP04 BLOCKED. This turn is documentation-only: no source or tests changed.
 
