@@ -1,6 +1,8 @@
 # Gagamba handoff
 
-## Current action — G2-03 independently resolved (final rereview); G2-01–G2-09 resolved, G2-10 blocking; G2 NOT ACCEPTED; WP04 blocked
+## Current action — G2-10 corrected pending independent rereview; G2-01–G2-09 resolved; G2 NOT ACCEPTED; WP04 blocked
+
+Update 2026-10-16: fresh non-root G2-10 pidfd-backed topology qualification passed D1-D6 plus the D5 replacement control (7/7) under UID/GID 1000; `NonRootQualificationTests` passed 12/12. The full Linux M1 suite passed 354 with 12 expected skips; `CanonicalGoldenBytes` passed as non-root (873 bytes, SHA-256 `82161029848b1a821241af112ca806be8029d3cf2e7b95c6b23ce3e35850d5f3`). Final audit confirmed empty delegated host leaf, no Gagamba cgroup/tmp residue, unchanged WSL boot ID, and keepalive PID 419 alive in `/init.scope`; keepalive left running for operator shutdown. No production or test changes. Evidence: [WP03 section 28](evidence/linux-m1/wp03.md). Status: **G2-10 CORRECTED PENDING INDEPENDENT REREVIEW**; G2-11 maintenance; G2 NOT ACCEPTED; WP04 BLOCKED.
 
 Update: independent G2-03 final rereview of the fresh R6D.3 qualification (implementation `40e8adda46a44e29465c739d3498e7387be4ce8a`, evidence HEAD `9fe127a`) completed and preserved verbatim as [G2-03 final rereview](reviews/gagamba-linux-m1-g2-03-r6d3-final-rereview.md). Disposition: G2-03 RESOLVED - R6D.3 OWNER-DEATH QUALIFICATION ACCEPTED. Root D1-D6 independently rerun green (7/7) with hardened pre-kill liveness, fenced takeover, truthful idempotent reconciliation and no capability resurrection; non-root D6 gap analyzed as G2-10 evidence debt, not a G2-03 blocker; historical R6B.1 F2 classified superseded by equivalent/stronger coverage. Gate state: G2-01/02/03/04/05/06/07/08/09 resolved; G2-10 blocking; G2-11 maintenance; G2 NOT ACCEPTED; WP04 BLOCKED. This turn is documentation-only: no source or tests changed.
 

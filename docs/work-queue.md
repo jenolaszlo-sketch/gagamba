@@ -1,8 +1,10 @@
 # Current work queue
 
-Updated 2026-10-15. Status definitions: Complete = stated artifact exists; Ready = dependencies sufficient to start; Held = named prerequisite missing; Pending = later delivery. Slice-specific historical entries retain their original tested SHAs; the later AR-6 SHA has separate three-host native and package evidence. Complete lifecycle qualification does not imply restricted-execution security qualification.
+Updated 2026-10-16. Status definitions: Complete = stated artifact exists; Ready = dependencies sufficient to start; Held = named prerequisite missing; Pending = later delivery. Slice-specific historical entries retain their original tested SHAs; the later AR-6 SHA has separate three-host native and package evidence. Complete lifecycle qualification does not imply restricted-execution security qualification.
 
-## Current priority: AR-7 first implementation milestone (G2-03 independently resolved via final rereview; G2-01–G2-09 resolved; G2-10 blocking; G2 NOT ACCEPTED; WP04 blocked)
+## Current priority: AR-7 first implementation milestone (G2-01–G2-09 resolved; G2-10 corrected pending independent rereview; G2 NOT ACCEPTED; WP04 blocked)
+
+Update 2026-10-16: fresh non-root G2-10 pidfd-backed qualification passed D1-D6 plus the D5 replacement control (7/7) as UID/GID 1000; `NonRootQualificationTests` passed 12/12. Full Linux M1 passed 354/366 with 12 expected skips. Non-root canonical vector passed: 873 bytes, SHA-256 `82161029848b1a821241af112ca806be8029d3cf2e7b95c6b23ce3e35850d5f3`. Delegated host cleanup and host boundary were confirmed; WSL stayed on the same boot ID; keepalive PID 419 remains running in `/init.scope` for operator shutdown. No production or test changes. Evidence: [WP03 section 28](evidence/linux-m1/wp03.md). Status: G2-10 CORRECTED PENDING INDEPENDENT REREVIEW; G2-11 maintenance; G2 NOT ACCEPTED; WP04 BLOCKED.
 
 Update: independent G2-03 final rereview completed ([G2-03 final rereview](reviews/gagamba-linux-m1-g2-03-r6d3-final-rereview.md)): G2-03 RESOLVED - R6D.3 OWNER-DEATH QUALIFICATION ACCEPTED. Non-root D6 remains evidence debt associated with G2-10, not G2-03; historical R6B.1 F2 superseded by current equivalent/stronger coverage; no G2-03 remediation remains. Gate state: G2-01–G2-09 resolved; G2-10 blocking; G2-11 maintenance; G2 NOT ACCEPTED; WP04 BLOCKED. This turn is documentation-only: no source or tests changed.
 
