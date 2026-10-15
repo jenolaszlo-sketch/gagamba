@@ -1,5 +1,17 @@
 # Current work queue
 
+## GP-M5 — bounded macOS capture
+
+Implementation source `0c1f05e199588622a5987f95a9149374f5bd858b` has native
+macOS ARM64 captured-launch, lifecycle and package evidence plus Windows and
+delegated WSL2 regressions. See the [exact-source qualification](evidence/gp-m5/qualification.md)
+and preserved independent reviews. The completion disposition is recorded there;
+aggregate test totals alone do not close the gate. After that gate, resume the
+unchanged Marang M5 canonical scenario with these exact package inputs.
+No AR-7/restricted execution work, Hufu changes, public API graduation or package
+publication is authorized by this slice. Historical queue entries below retain
+their original scope and evidence identities.
+
 Updated 2026-10-09. Status definitions: Complete = stated artifact exists; Ready = dependencies sufficient to start; Held = named prerequisite missing; Pending = later delivery. Slice-specific historical entries retain their original tested SHAs; the later AR-6 SHA has separate three-host native and package evidence. Complete lifecycle qualification does not imply restricted-execution security qualification.
 
 ## Current priority: independent-review remediation

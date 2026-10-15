@@ -1,6 +1,24 @@
 # Gagamba handoff
 
-## Current action — AR-6 qualified at one exact SHA; stop before AR-7
+## Current action — GP-M5 bounded macOS captured launch
+
+GP-M5 source `0c1f05e199588622a5987f95a9149374f5bd858b` adds private,
+bounded stdout/stderr FIFO capture to the existing launchd lifecycle path.
+[Qualification evidence](evidence/gp-m5/qualification.md) binds the native
+macOS ARM64 suites, negative controls, package consumers and Windows/WSL2
+regressions to that exact implementation. [Consumer guidance](evidence/gp-m5/consumer-guidance.md)
+explains the separate lifecycle/output results and required success checks.
+The original refusal, first candidate, independent review finding and correction
+remain preserved. No package was published. Packages remain preview.
+
+Scope remains launchd/same-process-group lifecycle and bounded capture on the
+exercised host. AR-7, hostile isolation, setsid escape cleanup, owner-death
+cleanup and the separate restricted Linux workstream remain held/excluded.
+The next authorized consumer step is unchanged Marang M5 qualification using
+the exact GP-M5 package hashes after the evidence/review gate is complete.
+Historical AR-6 and earlier source-specific claims below remain unchanged.
+
+## Prior action — AR-6 qualified at one exact SHA; stop before AR-7
 
 AR-6 source `7660f16dbb5b4b165e6a5279b131bf53c5bf6a7b` passed [hosted three-platform qualification](https://github.com/jenolaszlo-sketch/gagamba/actions/runs/37901286740): strict Windows Job Object, delegated non-root Ubuntu cgroup v2, and macOS `gui/501` launchd conformance; all three installed-package consumers; and the exact-source seal. The downloaded seal independently verified against a clean checkout and all ten package files. [AR-6 evidence](evidence/release-qualification-AR-6.md) includes the manifest, raw host/consumer reports, hashes, negative controls and scope limits. This documentation update creates a new SHA requiring its own passing gate before that revision can be released. No tag or package was published. Stop before AR-7; restricted-execution security design requires separate review.
 
