@@ -1,6 +1,8 @@
 # Gagamba handoff
 
-## Current action — G2-10 independently resolved (final rereview); G2-01–G2-10 resolved; G2-11 maintenance only; G2 NOT ACCEPTED; WP04 blocked
+## Current action — G2-11 reconciled; G2-01–G2-11 resolved; G2 NOT ACCEPTED pending whole-G2 review; WP04 blocked
+
+Update: G2-11 evidence/status reconciliation completed (documentation-only; no source or test changes). The original evidence-maintenance finding (obsolete counts, SHA-less headers, overstated claims, completion language) is closed: current status documents agree, accepted findings point to final revision-bound evidence and preserved reviews, superseded claims are marked historical, implementation/evidence SHAs verified accurate, and no document overclaims global G2 acceptance. Disposition: G2-11 RESOLVED - EVIDENCE AND STATUS RECONCILED. Gate state: G2-01 through G2-11 resolved; G2 NOT ACCEPTED pending the final whole-G2 independent acceptance review; WP04 BLOCKED.
 
 Update: independent G2-10 final rereview of the fresh non-root qualification (implementation `40e8add`, evidence HEAD `127c8e63`) completed and preserved verbatim as [G2-10 final rereview](reviews/gagamba-linux-m1-g2-10-final-rereview.md). Disposition: G2-10 RESOLVED - UNPRIVILEGED PIDFD QUALIFICATION ACCEPTED. The final non-root D1-D6 matrix plus D5 replacement executed successfully (7/7 as UID/GID 1000, incl. D6); non-root D6 closed the explicit outstanding G2-10 evidence debt; the unprivileged pidfd-backed topology is independently accepted; no G2-10 remediation remains. Gate state: G2-01–G2-10 resolved; G2-11 maintenance only; G2 NOT ACCEPTED; WP04 BLOCKED. This turn is documentation-only: no source or tests changed.
 
