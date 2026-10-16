@@ -14,7 +14,7 @@ until all mandatory gates pass.
 |---|---|---|
 | WP01 — Internal contracts, capability identity and state model | [wp01](linux-m1/wp01.md) | Complete, G1 ACCEPTED ([acceptance](../reviews/gagamba-linux-m1-g1-acceptance.md); M1 70/70, probes 13/13, native NotApplicable) |
 | WP02 — Protected copy-in and atomic preparation publication | [wp02](linux-m1/wp02.md) | Implemented and remediated for G2-06/G2-07 (`a1b8e3a2da44d781b996ccc5cbe604a863611368`); G2-06 R6A `e5f90ce4c3c6a239775b4af72e26e077b292e6d5` independently resolved, G2-07 resolved |
-| WP03 — Delegated domain lease, persistent allocation and external recovery scope | [wp03](linux-m1/wp03.md) | Latest: G2-03 independently resolved; fresh non-root G2-10 D1-D6 plus D5 replacement passed 7/7, NonRootQualificationTests 12/12, full Linux M1 354 passed/12 expected skips. G2-10 CORRECTED PENDING INDEPENDENT REREVIEW; G2-11 maintenance; G2 NOT ACCEPTED; WP04 BLOCKED. Details: WP03 section 28. |
+| WP03 — Delegated domain lease, persistent allocation and external recovery scope | [wp03](linux-m1/wp03.md) | Latest: G2-03 independently resolved; G2-10 independently resolved via final rereview (non-root D1-D6 plus D5 replacement 7/7 incl. D6, NonRootQualificationTests 12/12). Gate state: G2-01–G2-10 resolved; G2-11 maintenance only; G2 NOT ACCEPTED; WP04 BLOCKED. Details: WP03 section 28. |
 | WP04–WP12 | — | Not started; WP04 blocked pending independent G2 rereview |
 
 The original independent G2 review is preserved verbatim at
@@ -113,4 +113,4 @@ The independent G2-03 final rereview of the fresh R6D.3 qualification (implement
 
 The fresh non-root pidfd-backed G2-10 qualification passed all seven rows (D1-D6 plus the D5 replacement control) under UID/GID 1000 with zero effective, permitted, inheritable, and ambient capabilities. `NonRootQualificationTests` passed 12/12; the full Linux M1 suite passed 354/366 with 12 expected skips; the canonical 873-byte vector passed with the expected SHA-256. Delegation and fixture cleanup were confirmed, WSL remained on the same boot ID, and operator keepalive PID 419 remains alive in `/init.scope` for operator-controlled shutdown. No production or test changes were made. Full bounded evidence is in [WP03 section 28](linux-m1/wp03.md).
 
-Gate state: **G2-10 CORRECTED PENDING INDEPENDENT REREVIEW**; G2-01–G2-09 resolved; G2-11 maintenance; G2 remains **NOT ACCEPTED**; WP04 remains **BLOCKED**.
+Gate state: **G2-10 RESOLVED - UNPRIVILEGED PIDFD QUALIFICATION ACCEPTED** (independent final rereview preserved verbatim at [gagamba-linux-m1-g2-10-final-rereview.md](../reviews/gagamba-linux-m1-g2-10-final-rereview.md)); G2-01–G2-10 resolved; G2-11 maintenance only; G2 remains **NOT ACCEPTED**; WP04 remains **BLOCKED**. Non-root D6 closed the explicit outstanding evidence debt; no G2-10 remediation remains.

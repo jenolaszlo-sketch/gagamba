@@ -1,6 +1,8 @@
 # Gagamba handoff
 
-## Current action — G2-10 corrected pending independent rereview; G2-01–G2-09 resolved; G2 NOT ACCEPTED; WP04 blocked
+## Current action — G2-10 independently resolved (final rereview); G2-01–G2-10 resolved; G2-11 maintenance only; G2 NOT ACCEPTED; WP04 blocked
+
+Update: independent G2-10 final rereview of the fresh non-root qualification (implementation `40e8add`, evidence HEAD `127c8e63`) completed and preserved verbatim as [G2-10 final rereview](reviews/gagamba-linux-m1-g2-10-final-rereview.md). Disposition: G2-10 RESOLVED - UNPRIVILEGED PIDFD QUALIFICATION ACCEPTED. The final non-root D1-D6 matrix plus D5 replacement executed successfully (7/7 as UID/GID 1000, incl. D6); non-root D6 closed the explicit outstanding G2-10 evidence debt; the unprivileged pidfd-backed topology is independently accepted; no G2-10 remediation remains. Gate state: G2-01–G2-10 resolved; G2-11 maintenance only; G2 NOT ACCEPTED; WP04 BLOCKED. This turn is documentation-only: no source or tests changed.
 
 Update 2026-10-16: fresh non-root G2-10 pidfd-backed topology qualification passed D1-D6 plus the D5 replacement control (7/7) under UID/GID 1000; `NonRootQualificationTests` passed 12/12. The full Linux M1 suite passed 354 with 12 expected skips; `CanonicalGoldenBytes` passed as non-root (873 bytes, SHA-256 `82161029848b1a821241af112ca806be8029d3cf2e7b95c6b23ce3e35850d5f3`). Final audit confirmed empty delegated host leaf, no Gagamba cgroup/tmp residue, unchanged WSL boot ID, and keepalive PID 419 alive in `/init.scope`; keepalive left running for operator shutdown. No production or test changes. Evidence: [WP03 section 28](evidence/linux-m1/wp03.md). Status: **G2-10 CORRECTED PENDING INDEPENDENT REREVIEW**; G2-11 maintenance; G2 NOT ACCEPTED; WP04 BLOCKED.
 
