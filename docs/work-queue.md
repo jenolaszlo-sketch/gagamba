@@ -2,7 +2,9 @@
 
 Updated 2026-10-16. Status definitions: Complete = stated artifact exists; Ready = dependencies sufficient to start; Held = named prerequisite missing; Pending = later delivery. Slice-specific historical entries retain their original tested SHAs; the later AR-6 SHA has separate three-host native and package evidence. Complete lifecycle qualification does not imply restricted-execution security qualification.
 
-## Current priority: AR-7 first implementation milestone (G2-01–G2-11 resolved; G2 NOT ACCEPTED pending whole-G2 review; WP04 blocked)
+## Current priority: AR-7 first implementation milestone (G2 ACCEPTED; WP04 MAY PROCEED — eligible to start, not implemented or qualified)
+
+Update: independent final whole-G2 acceptance review completed ([G2 final acceptance review](reviews/gagamba-linux-m1-g2-final-acceptance-review.md)): G2 ACCEPTED - WHOLE-G2 QUALIFICATION PACKAGE ACCEPTED; WP04 MAY PROCEED. Gate state: G2-01–G2-11 resolved; G2 ACCEPTED; WP04 MAY PROCEED (not implemented or qualified). This turn is documentation-only: no source or tests changed.
 
 Update: G2-11 evidence/status reconciliation completed (documentation-only). Disposition: G2-11 RESOLVED - EVIDENCE AND STATUS RECONCILED. Gate state: G2-01 through G2-11 resolved; G2 NOT ACCEPTED pending the final whole-G2 independent acceptance review; WP04 BLOCKED.
 

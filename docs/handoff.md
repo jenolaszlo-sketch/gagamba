@@ -1,6 +1,8 @@
 # Gagamba handoff
 
-## Current action — G2-11 reconciled; G2-01–G2-11 resolved; G2 NOT ACCEPTED pending whole-G2 review; WP04 blocked
+## Current action — G2 ACCEPTED (whole-G2 review); G2-01–G2-11 resolved; WP04 MAY PROCEED (unblocked, not yet implemented or qualified)
+
+Update: independent final whole-G2 acceptance review of implementation `40e8add` (docs-only HEAD `5b882c1`) completed and preserved verbatim as [G2 final acceptance review](reviews/gagamba-linux-m1-g2-final-acceptance-review.md). Disposition: G2 ACCEPTED - WHOLE-G2 QUALIFICATION PACKAGE ACCEPTED; WP04 MAY PROCEED. The review found the G2-11 current-status contradiction corrected and no new blocker; prior G2-01–G2-10 acceptances stand on the unchanged implementation. Gate state: G2-01–G2-11 resolved; G2 ACCEPTED; WP04 MAY PROCEED (eligible to start; WP04 itself is not implemented or qualified). This turn is documentation-only: no source or tests changed.
 
 Update: G2-11 evidence/status reconciliation completed (documentation-only; no source or test changes). The original evidence-maintenance finding (obsolete counts, SHA-less headers, overstated claims, completion language) is closed: current status documents agree, accepted findings point to final revision-bound evidence and preserved reviews, superseded claims are marked historical, implementation/evidence SHAs verified accurate, and no document overclaims global G2 acceptance. Disposition: G2-11 RESOLVED - EVIDENCE AND STATUS RECONCILED. Gate state: G2-01 through G2-11 resolved; G2 NOT ACCEPTED pending the final whole-G2 independent acceptance review; WP04 BLOCKED.
 
