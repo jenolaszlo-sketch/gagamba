@@ -168,6 +168,12 @@ internal static class OwnershipTransitions
 
         if (current.Exec is not null)
         {
+            if (current.Exec == observation)
+            {
+                next = current; // already durable: idempotent no-op, do not write
+                return true;
+            }
+
             error = "exec observation is single-assignment";
             return false;
         }
@@ -216,6 +222,12 @@ internal static class OwnershipTransitions
 
         if (current.Root is not null)
         {
+            if (current.Root == observation)
+            {
+                next = current; // already durable: idempotent no-op, do not write
+                return true;
+            }
+
             error = "root observation is single-assignment";
             return false;
         }

@@ -298,6 +298,9 @@ public sealed class OwnershipV3TransitionTests
                 latest, RecoveryTestSupport.ExecConfirmed(), out var exec, out var error), error);
             Assert.True(journal.WriteTransition(lease, latest, exec!).Ok);
             var afterExec = journal.ReadLatest().Snapshot!;
+            Assert.True(OwnershipTransitions.TryPlanExecObservation(
+                afterExec, RecoveryTestSupport.ExecConfirmed(), out var sameExec, out error), error);
+            Assert.Equal(afterExec.Sequence, sameExec!.Sequence);
             Assert.False(OwnershipTransitions.TryPlanExecObservation(
                 afterExec, RecoveryTestSupport.ExecUnknown(), out _, out error));
             Assert.Contains("single-assignment", error);
@@ -306,6 +309,9 @@ public sealed class OwnershipV3TransitionTests
                 afterExec, RecoveryTestSupport.RootExited(), out var root, out error), error);
             Assert.True(journal.WriteTransition(lease, afterExec, root!).Ok);
             var afterRoot = journal.ReadLatest().Snapshot!;
+            Assert.True(OwnershipTransitions.TryPlanRootObservation(
+                afterRoot, RecoveryTestSupport.RootExited(), out var sameRoot, out error), error);
+            Assert.Equal(afterRoot.Sequence, sameRoot!.Sequence);
             Assert.False(OwnershipTransitions.TryPlanRootObservation(
                 afterRoot, RecoveryTestSupport.RootUnknown(), out _, out error));
 
@@ -374,6 +380,24 @@ public sealed class OwnershipV3TransitionTests
                 Release = current.Release! with { SetupDeadlineNanoseconds = 20_000 },
             };
             Assert.False(journal.WriteTransition(lease, current, changedDeadline).Ok);
+        }
+    }
+
+    [Fact]
+    public void CommittedWithoutPriorIntentRefused()
+    {
+        var (journal, lease, latest) = Seed(V2Prepared());
+        using (lease)
+        {
+            var committed = latest with
+            {
+                Version = OwnershipSnapshotCodec.CurrentVersion,
+                Release = RecoveryTestSupport.ReleaseCommitted(),
+            };
+            var attempt = journal.WriteTransition(lease, latest, committed);
+            Assert.False(attempt.Ok);
+            Assert.Contains("prior acknowledged intent", attempt.Error);
+            Assert.Null(journal.ReadLatest().Snapshot!.Release);
         }
     }
 

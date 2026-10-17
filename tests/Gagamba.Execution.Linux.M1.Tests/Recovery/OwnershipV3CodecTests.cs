@@ -154,6 +154,36 @@ public sealed class OwnershipV3CodecTests
     }
 
     [Fact]
+    public void TrailingBytesAndTruncationFailClosed()
+    {
+        var snapshot = RecoveryTestSupport.V3Snapshot(
+            release: RecoveryTestSupport.ReleaseCommitted(),
+            stop: RecoveryTestSupport.Stop(),
+            exec: RecoveryTestSupport.ExecConfirmed(),
+            root: RecoveryTestSupport.RootExited(rawWait: true));
+        var bytes = OwnershipSnapshotCodec.Encode(snapshot);
+        var payload = bytes.AsSpan(0, bytes.Length - 32).ToArray();
+
+        var trailingPayload = payload.Concat(new byte[] { 0 }).ToArray();
+        var trailing = WithChecksum(trailingPayload);
+        Assert.False(OwnershipSnapshotCodec.TryDecode(trailing, out _, out var error));
+        Assert.Contains("trailing", error, StringComparison.OrdinalIgnoreCase);
+
+        var truncatedPayload = payload.AsSpan(0, payload.Length - 1).ToArray();
+        var truncated = WithChecksum(truncatedPayload);
+        Assert.False(OwnershipSnapshotCodec.TryDecode(truncated, out _, out _));
+    }
+
+    private static byte[] WithChecksum(byte[] payload)
+    {
+        var checksum = SHA256.HashData(payload);
+        var encoded = new byte[payload.Length + checksum.Length];
+        payload.CopyTo(encoded, 0);
+        checksum.CopyTo(encoded, payload.Length);
+        return encoded;
+    }
+
+    [Fact]
     public void InvalidManagedCombinationsFailClosed()
     {
         AssertInvalid(RecoveryTestSupport.V3Snapshot(
