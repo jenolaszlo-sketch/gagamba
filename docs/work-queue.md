@@ -2,7 +2,11 @@
 
 Updated 2026-10-17. Status definitions: Complete = stated artifact exists; Ready = dependencies sufficient to start; Held = named prerequisite missing; Pending = later delivery. Slice-specific historical entries retain their original tested SHAs; the later AR-6 SHA has separate three-host native and package evidence. Complete lifecycle qualification does not imply restricted-execution security qualification.
 
-## Current priority: WP05 BLOCKED — DURABLE RELEASE SCHEMA CHANGE REQUIRED; WP10 deferred
+## Current priority: WP05 SCHEMA AMENDMENT PROPOSED — INDEPENDENT REVIEW REQUIRED; WP10 deferred
+
+Update 2026-10-17: The WP05 durable-schema blocker was preserved at `c48b4cd193616c7a2777ac664457183002f845a1` ([blocker evidence](evidence/linux-m1/wp05-plan-binding-2026-10-17.md)). A design-only amendment is proposed: [ADR 0004](adr/0004-wp05-durable-release-schema-amendment.md) extends `OwnershipSnapshot` to version 3 with optional `ReleaseRecord` (Intent/Committed plus delivery result) and `StopRecord`, under the existing G2 `JournalWriterLease`; version 2 remains decodable and pre-release writes stay v2. The durable safety boundary is `ReleaseIntent`; the post-gate `Committed` record is evidence only and recovery never resends. Disposition: **WP05 SCHEMA AMENDMENT READY FOR INDEPENDENT REVIEW**. No production code, migration, coordinator/native change, release, target execution or WP05 qualification was performed. WP04 remains accepted; WP05/WP10 remain unqualified; WP10 target execution and the wrong-audit-architecture seccomp decision remain deferred.
+
+## Prior priority: WP05 BLOCKED — DURABLE RELEASE SCHEMA CHANGE REQUIRED; WP10 deferred
 
 Update 2026-10-17: WP05 plan binding completed and stopped before implementation: **`WP05 SCHEMA CHANGE REQUIRED - RELEASE DURABILITY NOT REPRESENTABLE IN CURRENT SCHEMA`**. WP05 requires a durable `ReleaseIntent` with preparation/manifest identity and absolute deadlines, but the accepted WP03/G2 ownership journal snapshot is version 2 with preparation stages only (`None`, `AllocationIntent`, `AllocationRegistered`, `Prepared`) and no release state or deadline fields; the decoder rejects other versions. A second release journal would be parallel release state and would not prove G2 writer fencing. No implementation, migration, coordinator build or qualification ran. Evidence: [WP05 plan binding and schema blocker](evidence/linux-m1/wp05-plan-binding-2026-10-17.md). WP04 remains accepted; WP05/WP10 remain unqualified, and the wrong-audit-architecture seccomp decision remains deferred.
 
