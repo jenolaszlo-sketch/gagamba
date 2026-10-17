@@ -15,10 +15,15 @@ internal static class NativeLaunchInterop
     internal const int O_ACCMODE = 3;
     internal const int O_CLOEXEC = 0x80000;
     internal const int O_NOFOLLOW = 0x20000;
+    internal const int O_NONBLOCK = 0x800;
     internal const int F_DUPFD_CLOEXEC = 1030;
     internal const int F_GETFD = 1;
     internal const int F_GETFL = 3;
+    internal const int F_SETFL = 4;
     internal const int FD_CLOEXEC = 1;
+    internal const int EAGAIN = 11;
+    internal const int EPIPE = 32;
+    internal const int SIGPIPE = 13;
     internal const int POSIX_SPAWN_SETCGROUP = 0x100;
     internal const int WNOHANG = 1;
     internal const int EINTR = 4;
@@ -102,6 +107,8 @@ internal static class NativeLaunchInterop
     private static extern int MemfdCreate(string name, uint flags);
     [DllImport("libc", EntryPoint = "write", SetLastError = true)]
     private static extern nint Write(int fd, byte[] buffer, nuint count);
+    [DllImport("libc", EntryPoint = "signal", SetLastError = true)]
+    private static extern IntPtr Signal(int signal, IntPtr handler);
     [DllImport("libc", EntryPoint = "read", SetLastError = true)]
     internal static extern nint Read(int fd, byte[] buffer, nuint count);
     [DllImport("libc", EntryPoint = "pread", SetLastError = true)]
@@ -330,6 +337,46 @@ internal static class NativeLaunchInterop
         write = new Microsoft.Win32.SafeHandles.SafeFileHandle(new IntPtr(fds[1]), ownsHandle: true);
         return true;
     }
+
+    internal static bool TrySetNonBlocking(int fd, out string error)
+    {
+        error = string.Empty;
+        var flags = Fcntl(fd, F_GETFL, 0);
+        if (flags < 0)
+        {
+            error = $"F_GETFL errno {Marshal.GetLastWin32Error()}";
+            return false;
+        }
+
+        if (Fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0)
+        {
+            error = $"F_SETFL errno {Marshal.GetLastWin32Error()}";
+            return false;
+        }
+
+        return true;
+    }
+
+    internal static bool TryIgnoreSigPipe(out string error)
+    {
+        error = string.Empty;
+        var previous = Signal(SIGPIPE, new IntPtr(1));
+        if (previous == new IntPtr(-1))
+        {
+            error = $"signal(SIGPIPE) errno {Marshal.GetLastWin32Error()}";
+            return false;
+        }
+
+        return true;
+    }
+
+    internal static nint WriteBytesOnce(int fd, byte[] buffer)
+    {
+        var written = Write(fd, buffer, (nuint)buffer.Length);
+        return written < 0 && Marshal.GetLastWin32Error() == EINTR ? -2 : written;
+    }
+
+    internal static int LastErrno => Marshal.GetLastWin32Error();
 
     internal static bool TryCreateSealedMemfd(string name, ReadOnlySpan<byte> contents,
         out Microsoft.Win32.SafeHandles.SafeFileHandle? handle, out string error)

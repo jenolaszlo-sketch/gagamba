@@ -7,6 +7,10 @@ namespace Gagamba.Execution.Linux.M1.Launch;
 internal enum CoordinatorStatusKind : ushort
 {
     Held = 1,
+    Release = 2,
+    ExecFailed = 3,
+    ExecConfirmed = 4,
+    RootWait = 5,
     ProtocolFailed = 6,
 }
 
@@ -17,6 +21,14 @@ internal sealed record CoordinatorFrame(
     Guid PreparationId,
     byte[] ManifestDigest,
     byte[] Payload);
+
+internal sealed record ReleaseFrame(
+    ulong Sequence,
+    Guid ExecutionId,
+    Guid PreparationId,
+    byte[] ManifestDigest,
+    Guid GenerationId,
+    long OverallDeadlineNanoseconds);
 
 internal sealed record CoordinatorHeldReport(
     ushort Flags,
@@ -44,6 +56,8 @@ internal static class CoordinatorProtocol
 {
     internal const int HeaderBytes = 96;
     internal const int MaxFrameBytes = 4096;
+    internal const int ReleaseFrameBytes = 128;
+    internal const ulong ReleaseSequence = 1;
     private static readonly byte[] Magic = Encoding.ASCII.GetBytes("GGM1CTL\0");
 
     internal static bool TryDecode(
@@ -82,6 +96,140 @@ internal static class CoordinatorProtocol
             || frame[88..96].IndexOfAnyExcept((byte)0) >= 0)
         {
             error = "coordinator frame identity, sequence, kind or length mismatch";
+            return false;
+        }
+
+        decoded = new CoordinatorFrame(kind, sequence, execution, preparation,
+            frame.Slice(56, 32).ToArray(), frame[HeaderBytes..].ToArray());
+        return true;
+    }
+
+    /// <summary>Encodes the sole owner-to-coordinator RELEASE frame. Exactly
+    /// one frame is attempted; the 16-byte generation and absolute overall
+    /// deadline are bound to the same preparation identity.</summary>
+    internal static byte[] EncodeRelease(PreparationIdentity identity, long overallDeadlineNanoseconds)
+    {
+        ArgumentNullException.ThrowIfNull(identity);
+        if (identity.ManifestDigest.Length != 32 || overallDeadlineNanoseconds <= 0)
+        {
+            throw new ArgumentException("release identity/digest or deadline is invalid", nameof(identity));
+        }
+
+        var frame = new byte[ReleaseFrameBytes];
+        Magic.CopyTo(frame, 0);
+        BinaryPrimitives.WriteUInt16LittleEndian(frame.AsSpan(8), 1);
+        BinaryPrimitives.WriteUInt16LittleEndian(frame.AsSpan(10), (ushort)CoordinatorStatusKind.Release);
+        BinaryPrimitives.WriteUInt32LittleEndian(frame.AsSpan(12), ReleaseFrameBytes);
+        BinaryPrimitives.WriteUInt64LittleEndian(frame.AsSpan(16), ReleaseSequence);
+        GuidToRfcBytes(identity.ExecutionId).CopyTo(frame, 24);
+        GuidToRfcBytes(identity.PreparationId).CopyTo(frame, 40);
+        identity.ManifestDigest.AsSpan().CopyTo(frame.AsSpan(56, 32));
+        GuidToRfcBytes(identity.GenerationId).CopyTo(frame, 96);
+        BinaryPrimitives.WriteUInt64LittleEndian(frame.AsSpan(112), checked((ulong)overallDeadlineNanoseconds));
+        return frame;
+    }
+
+    internal static bool TryDecodeRelease(
+        ReadOnlySpan<byte> frame,
+        Guid expectedExecutionId,
+        Guid expectedPreparationId,
+        ReadOnlySpan<byte> expectedDigest,
+        Guid expectedGenerationId,
+        long expectedOverallDeadlineNanoseconds,
+        out ReleaseFrame? decoded,
+        out string error)
+    {
+        decoded = null;
+        error = string.Empty;
+        if (frame.Length != ReleaseFrameBytes)
+        {
+            error = "release frame length is not exactly 128 bytes";
+            return false;
+        }
+
+        if (expectedOverallDeadlineNanoseconds <= 0)
+        {
+            error = "expected release deadline is invalid";
+            return false;
+        }
+
+        if (!frame[..8].SequenceEqual(Magic)
+            || BinaryPrimitives.ReadUInt16LittleEndian(frame[8..]) != 1
+            || BinaryPrimitives.ReadUInt16LittleEndian(frame[10..]) != (ushort)CoordinatorStatusKind.Release
+            || BinaryPrimitives.ReadUInt32LittleEndian(frame[12..]) != ReleaseFrameBytes
+            || BinaryPrimitives.ReadUInt64LittleEndian(frame[16..]) != ReleaseSequence)
+        {
+            error = "release frame magic/version/kind/length/sequence mismatch";
+            return false;
+        }
+
+        var execution = FromRfc4122(frame.Slice(24, 16));
+        var preparation = FromRfc4122(frame.Slice(40, 16));
+        var generation = FromRfc4122(frame.Slice(96, 16));
+        var overall = BinaryPrimitives.ReadUInt64LittleEndian(frame[112..]);
+        if (execution != expectedExecutionId || preparation != expectedPreparationId
+            || expectedDigest.Length != 32 || !frame.Slice(56, 32).SequenceEqual(expectedDigest)
+            || generation != expectedGenerationId
+            || overall != (ulong)expectedOverallDeadlineNanoseconds
+            || overall > long.MaxValue
+            || frame[88..96].IndexOfAnyExcept((byte)0) >= 0
+            || frame[120..128].IndexOfAnyExcept((byte)0) >= 0)
+        {
+            error = "release frame identity, deadline or reserved bytes mismatch";
+            return false;
+        }
+
+        decoded = new ReleaseFrame(
+            ReleaseSequence, execution, preparation, frame.Slice(56, 32).ToArray(),
+            generation, (long)overall);
+        return true;
+    }
+
+    /// <summary>Decodes a post-release coordinator status frame. The caller
+    /// enforces the plan sequence; this method only enforces the fixed header,
+    /// expected identity/sequence and kind-specific payload length.</summary>
+    internal static bool TryDecodeStatus(
+        ReadOnlySpan<byte> frame,
+        Guid expectedExecutionId,
+        Guid expectedPreparationId,
+        ReadOnlySpan<byte> expectedDigest,
+        ulong expectedSequence,
+        out CoordinatorFrame? decoded,
+        out string error)
+    {
+        decoded = null;
+        error = string.Empty;
+        if (frame.Length < HeaderBytes || frame.Length > MaxFrameBytes)
+        {
+            error = "coordinator status length is outside the bound";
+            return false;
+        }
+
+        if (!frame[..8].SequenceEqual(Magic)
+            || BinaryPrimitives.ReadUInt16LittleEndian(frame[8..]) != 1)
+        {
+            error = "coordinator status magic/version mismatch";
+            return false;
+        }
+
+        var kind = (CoordinatorStatusKind)BinaryPrimitives.ReadUInt16LittleEndian(frame[10..]);
+        var total = BinaryPrimitives.ReadUInt32LittleEndian(frame[12..]);
+        var sequence = BinaryPrimitives.ReadUInt64LittleEndian(frame[16..]);
+        var execution = FromRfc4122(frame.Slice(24, 16));
+        var preparation = FromRfc4122(frame.Slice(40, 16));
+        var payloadLength = kind == CoordinatorStatusKind.ExecConfirmed ? 0u : 4u;
+        if (kind is not (CoordinatorStatusKind.ExecFailed
+                or CoordinatorStatusKind.ExecConfirmed
+                or CoordinatorStatusKind.RootWait
+                or CoordinatorStatusKind.ProtocolFailed)
+            || total != frame.Length
+            || total != HeaderBytes + payloadLength
+            || sequence != expectedSequence
+            || execution != expectedExecutionId || preparation != expectedPreparationId
+            || expectedDigest.Length != 32 || !frame.Slice(56, 32).SequenceEqual(expectedDigest)
+            || frame[88..96].IndexOfAnyExcept((byte)0) >= 0)
+        {
+            error = "coordinator status identity, sequence, kind or length mismatch";
             return false;
         }
 

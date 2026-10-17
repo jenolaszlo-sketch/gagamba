@@ -99,7 +99,7 @@ internal sealed class LaunchDescriptorMap
         (1, "stdout pipe writer", "Coordinator/scaffolding; owner reader remains outside"),
         (2, "stderr pipe writer", "Coordinator/scaffolding; owner reader remains outside"),
         (3, "sealed immutable coordinator configuration", "Read before HELD, then closed"),
-        (4, "control pipe reader", "Coordinator only; WP04 refuses every byte"),
+        (4, "RELEASE pipe reader", "Coordinator only; one-shot 128-byte RELEASE; never target"),
         (5, "trusted coordinator status writer", "Coordinator parent only"),
         (6, "sealed seccomp program", "Bubblewrap consumes"),
         (7, "copied static tool read-only FD", "Read-only /tool bind"),

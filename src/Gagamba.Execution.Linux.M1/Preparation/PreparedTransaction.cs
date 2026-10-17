@@ -46,6 +46,28 @@ internal sealed partial class PreparedTransaction : IDisposable
         return _store is not null && _store.TryBorrowClosure(this, out closure);
     }
 
+    /// <summary>True while this exact capability is the live, unexpired,
+    /// unconsumed store issuance. Used by the release arbiter before it
+    /// commits intent; consumption remains the store's single-use decision.</summary>
+    internal bool IsLive =>
+        _store is not null
+        && _store.TryLookup(Identity.PreparationId, out var live)
+        && ReferenceEquals(live, this);
+
+    /// <summary>Consumes this exact capability through its issuing store.
+    /// The release arbiter is the only production caller; recovery cannot
+    /// reconstruct a consumed capability.</summary>
+    internal bool TryConsume(out InvariantViolation violation)
+    {
+        if (_store is null)
+        {
+            violation = InvariantViolation.Consumed;
+            return false;
+        }
+
+        return _store.TryConsume(this, out violation);
+    }
+
     public void Dispose()
     {
         _store?.Invalidate(this);

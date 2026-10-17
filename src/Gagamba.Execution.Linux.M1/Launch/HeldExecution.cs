@@ -1,13 +1,15 @@
 using Microsoft.Win32.SafeHandles;
+using Gagamba.Execution.Linux.M1.Execution;
 using Gagamba.Execution.Linux.M1.Native;
 
 namespace Gagamba.Execution.Linux.M1.Launch;
 
-/// <summary>Private live HELD state. The control writer is never exposed;
-/// WP04 can close it for abort but has no way to write a release token.</summary>
-internal sealed class HeldExecution : IDisposable
+/// <summary>Private live HELD state. The control writer is never exposed; it
+/// permits exactly one nonblocking 128-byte RELEASE write or an abort close.</summary>
+internal sealed class HeldExecution : IDisposable, IReleaseWriteChannel
 {
     private SafeFileHandle? _controlWriter;
+    private int _releaseAttempted;
     private bool _disposed;
 
     internal HeldExecution(
@@ -37,6 +39,28 @@ internal sealed class HeldExecution : IDisposable
     internal SafeFileHandle StderrReader { get; }
     internal int HelperChildPid { get; }
     internal CoordinatorHeldReport Report { get; }
+
+    /// <summary>Exactly one nonblocking RELEASE attempt. The writer remains
+    /// owner-local and is never exposed; a second call cannot write again.</summary>
+    internal ReleasePipeWriteResult TryWriteRelease(ReadOnlyMemory<byte> frame)
+    {
+        if (Interlocked.Exchange(ref _releaseAttempted, 1) != 0)
+        {
+            return ReleasePipeWriteResult.AlreadyAttempted;
+        }
+
+        var writer = _controlWriter;
+        if (writer is null || writer.IsInvalid || writer.IsClosed)
+        {
+            return ReleasePipeWriteResult.Unknown;
+        }
+
+        return ReleasePipeWrite.WriteOnce(
+            checked((int)writer.DangerousGetHandle()), frame);
+    }
+
+    ReleasePipeWriteResult IReleaseWriteChannel.TryWriteOnce(ReadOnlyMemory<byte> frame) =>
+        TryWriteRelease(frame);
 
     internal void CloseAbortControl() => Interlocked.Exchange(ref _controlWriter, null)?.Dispose();
 

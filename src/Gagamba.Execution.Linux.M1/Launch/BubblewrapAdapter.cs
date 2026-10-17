@@ -14,8 +14,9 @@ using Gagamba.Execution.Restricted;
 
 namespace Gagamba.Execution.Linux.M1.Launch;
 
-/// <summary>Fixed Bubblewrap 0.11.1 adapter for WP04. The adapter can enter
-/// HELD and can abort; it has no managed release operation.</summary>
+/// <summary>Fixed Bubblewrap 0.11.1 adapter for WP04/WP05. The adapter prepares
+/// HELD and aborts; the returned HeldExecution owns the sole owner-side writer
+/// and permits exactly one nonblocking RELEASE attempt.</summary>
 internal sealed class BubblewrapAdapter : IHeldLauncher
 {
     internal const string FilterSha256 = "4ee63c48010d74118f74ddec44b48acc16cabc3e7e5693e83d941f82bbb3a2bc";
@@ -87,6 +88,9 @@ internal sealed class BubblewrapAdapter : IHeldLauncher
                 || !CreatePipe(out coordinatorStatusRead, out coordinatorStatusWrite, out pipeError)
                 || !CreatePipe(out helperStatusRead, out helperStatusWrite, out pipeError))
                 throw new InvalidOperationException(pipeError);
+
+            if (!NativeLaunchInterop.TrySetNonBlocking(Fd(controlWrite!), out var nonblockingError))
+                throw new InvalidOperationException($"RELEASE writer setup refused: {nonblockingError}");
 
             var descriptors = new[]
             {
