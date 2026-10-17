@@ -17,8 +17,8 @@ namespace Gagamba.Execution.Linux.M1.Launch;
 /// HELD and can abort; it has no managed release operation.</summary>
 internal sealed class BubblewrapAdapter : IHeldLauncher
 {
-    internal const string FilterSha256 = "3649a083435cb7e7f1dad0157dfe6bd4c480ad635b7cecb88214a9332403395c";
-    internal const ulong FilterLength = 424;
+    internal const string FilterSha256 = "4ee63c48010d74118f74ddec44b48acc16cabc3e7e5693e83d941f82bbb3a2bc";
+    internal const ulong FilterLength = 672;
     private const int ConfigHeaderBytes = 202;
     private const int MaxConfigBytes = 16 * 1024;
     private const int MaxCaptureBytes = 65536;
@@ -250,7 +250,7 @@ internal sealed class BubblewrapAdapter : IHeldLauncher
         error = string.Empty;
         if (filter.Length != FilterLength || filter.Length > 4096)
         {
-            error = "staged seccomp filter length is not the plan-pinned 424 bytes";
+            error = "staged seccomp filter length is not the plan-pinned 672 bytes";
             return false;
         }
         bytes = new byte[checked((int)filter.Length)];

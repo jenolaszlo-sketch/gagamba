@@ -413,8 +413,36 @@ public sealed class NonRootQualificationTests
         Assert.False(Directory.Exists(System.IO.Path.Combine(DelegatedParent!, fx.ChildName)));
     }
 
+    [Fact]
+    public void NonRootWp04MissingFilterRefusesBeforeBubblewrapOrTargetInitialization()
+    {
+        SkipUnlessQualified();
+        var root = RepositoryRoot();
+        var fixtureImage = File.ReadAllBytes(System.IO.Path.Combine(root, "tests/Fixtures/Gagamba.LinuxM1.Native/out/fixture"));
+        var coordinator = File.ReadAllBytes(System.IO.Path.Combine(root, "artifacts/linux-m1/wp04/exec-coordinator"));
+        using var fx = new IntegratedFixture(fixtureImage, Bytes(0x45, 64), null, coordinator: coordinator);
+
+        var outcome = fx.Scope.StartOwnerPreparation(
+            fx.Request(null, enableHeldCoordinator: true), CancellationToken.None);
+
+        Assert.False(outcome.Ok);
+        Assert.False(outcome.Held);
+        Assert.False(outcome.Completed);
+        Assert.Contains("owner request refused", outcome.Error);
+        Assert.False(Directory.Exists(System.IO.Path.Combine(DelegatedParent!, fx.ChildName)));
+        Assert.False(Directory.Exists(System.IO.Path.Combine(fx.Staging.Path, "prep-001")));
+    }
+
     private static string RepositoryRoot()
     {
+        var configuredRoot = Environment.GetEnvironmentVariable("GAGAMBA_REPOSITORY_ROOT");
+        if (!string.IsNullOrWhiteSpace(configuredRoot))
+        {
+            var fullRoot = System.IO.Path.GetFullPath(configuredRoot);
+            if (!File.Exists(System.IO.Path.Combine(fullRoot, "Gagamba.sln")))
+                throw new DirectoryNotFoundException("GAGAMBA_REPOSITORY_ROOT does not identify the Gagamba repository");
+            return fullRoot;
+        }
         var directory = new DirectoryInfo(Directory.GetCurrentDirectory());
         while (directory is not null && !File.Exists(System.IO.Path.Combine(directory.FullName, "Gagamba.sln")))
             directory = directory.Parent;

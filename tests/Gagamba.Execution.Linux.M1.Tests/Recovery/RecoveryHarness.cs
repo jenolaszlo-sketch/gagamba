@@ -63,6 +63,12 @@ public sealed class RecoveryHarness
 
     internal static string? LocateOwnerDll()
     {
+        var configured = Environment.GetEnvironmentVariable("GAGAMBA_OWNER_DLL");
+        if (!string.IsNullOrWhiteSpace(configured))
+        {
+            var fullPath = System.IO.Path.GetFullPath(configured);
+            return File.Exists(fullPath) ? fullPath : null;
+        }
         var dir = new DirectoryInfo(AppContext.BaseDirectory);
         while (dir is not null && !File.Exists(System.IO.Path.Combine(dir.FullName, "Gagamba.sln")))
         {
