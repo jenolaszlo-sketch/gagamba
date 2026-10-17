@@ -2,7 +2,7 @@
 
 Date: 2026-10-17 (Asia/Manila)
 
-**Disposition: `WP04 QUALIFIED - INDEPENDENT FINAL ACCEPTANCE REVIEW REQUIRED`.** This is qualification evidence for the held coordinator and pinned Bubblewrap adapter. It does not accept a new independent review finding, enable RELEASE, qualify the production restricted-execution profile, or authorize WP05/WP10 work. G2 remains accepted; WP05 release and WP10 target execution remain deferred.
+**Disposition: `WP04 ACCEPTED - HELD SANDBOX QUALIFICATION COMPLETE`.** This is qualification evidence for the held coordinator and pinned Bubblewrap adapter. Independent final acceptance supersedes the author qualification disposition; all qualification results remain unchanged. The exact review body was not included with the supplied task materials and still needs to be archived verbatim. This acceptance does not enable RELEASE, qualify the production restricted-execution profile, or complete WP05/WP10. G2 remains accepted; WP05 release and WP10 target execution remain deferred.
 
 The earlier incomplete attempt remains preserved unchanged in [WP04 fresh qualification attempt](wp04-fresh-qualification-2026-10-17.md). Its 354 passed / 35 skipped / 1 failed result is historical only. The first-run preservation checkpoint, qualification-probe commit, and this successful qualification/status commit remain separate commits.
 
@@ -141,7 +141,7 @@ Artifacts were built from the clean final archive under WSL ext4. `eng/linux-m1/
 | Production `exec-coordinator` | 878,792 | `4c0c25af23109f8e17287a09d6929e83a8eb8d87413dd489c0343970ca6151fa` |
 | Pinned seccomp filter | 672 | `4ee63c48010d74118f74ddec44b48acc16cabc3e7e5693e83d941f82bbb3a2bc` |
 | Static fixture image (built/bound, never released or executed) | 735,432 | `ee25a876bad5312afcece19821668b91db0c09f5a2f1aaac74f00c45806e2305` |
-| Managed owner helper DLL | 7,168 | `b0a07154bd5bad7b8d2e1865c27cccf99f3c2d92eedd0038563dca4549cc30` |
+| Managed owner helper DLL | 7,168 | `b0a07154bd5bad7b8d2e1865c27cccf99f3c2b2d92eedd0038563dca4549cc30` |
 | Managed Linux M1 adapter assembly | 358,400 | `6722ca0a643a444f6bca3aed13f19be3ffbf124d7462840e60bf7e44c5ab6ea9` |
 | Managed execution contracts assembly | 126,464 | `afb5ca7ee62a56715c6d6883c0a9ea9f42104971201309654f0ea1b23bcf42d3` |
 | Final test assembly | 349,184 | `e87900941d4d22036e38058bb407fa993ca7111c9a06843e7791d0c136d7816f` |
@@ -172,4 +172,4 @@ Six `/tmp/gagamba-r5-*` directories were already present and recorded by the aud
 
 ## Final status
 
-**`WP04 QUALIFIED - INDEPENDENT FINAL ACCEPTANCE REVIEW REQUIRED`**. This author qualification does not replace the required independent final WP04 acceptance review. G2 remains accepted. WP05 maintenance/release work and WP10 target execution remain deferred; no target code was released or executed. Production source remains identical to `bac516eeb640ce4ea415043a86579c20948793c2`.
+**`WP04 ACCEPTED - HELD SANDBOX QUALIFICATION COMPLETE`**. The exact independent review text was not included with the supplied task materials and remains to be archived verbatim. G2 remains accepted. WP05 maintenance/release work and WP10 target execution remain deferred; no target code was released or executed. Production source remains identical to `bac516eeb640ce4ea415043a86579c20948793c2`.
