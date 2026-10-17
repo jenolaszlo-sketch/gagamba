@@ -4,7 +4,7 @@ Updated 2026-10-17. Status definitions: Complete = stated artifact exists; Ready
 
 ## Current priority: WP05 V3 SCHEMA IMPLEMENTED — INDEPENDENT QUALIFICATION REQUIRED; WP10 deferred
 
-Update 2026-10-17: The bounded v3 durable schema foundation is implemented at `3ffb843` (schema/codec) and `959bac1` (monotonic transitions/recovery classification). Evidence: [WP05 v3 schema implementation](evidence/linux-m1/wp05-v3-schema-implementation-2026-10-17.md). Windows full M1: 315 passed, 156 skipped, 0 failed; WSL focused journal-fence and WP04 owner-protocol regressions: 27/27; canonical vector unchanged. Release transport, coordinator RELEASE, native post-release behavior, owner release orchestration, target execution, WP05 qualification and WP10 remain deferred. Status: **WP05 V3 SCHEMA IMPLEMENTED - INDEPENDENT QUALIFICATION REQUIRED**. WP04 and G2 remain accepted.
+Update 2026-10-17: The bounded v3 durable schema foundation is implemented at `3ffb843` (schema/codec), `959bac1` (monotonic transitions/recovery classification) and `21a04a1` (observation idempotency and negative controls). Evidence: [WP05 v3 schema implementation](evidence/linux-m1/wp05-v3-schema-implementation-2026-10-17.md). Windows full M1: 317 passed, 156 skipped, 0 failed; WSL focused journal-fence and WP04 owner-protocol regressions: 27/27; canonical vector unchanged. Release transport, coordinator RELEASE, native post-release behavior, owner release orchestration, target execution, WP05 qualification and WP10 remain deferred. Status: **WP05 V3 SCHEMA IMPLEMENTED - INDEPENDENT QUALIFICATION REQUIRED**. WP04 and G2 remain accepted.
 
 ## Prior priority: ADR 0004 ACCEPTED — WP05 V3 SCHEMA IMPLEMENTATION MAY PROCEED (NOT STARTED); WP10 deferred
 

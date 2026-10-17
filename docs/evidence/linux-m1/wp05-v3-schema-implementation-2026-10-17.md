@@ -8,7 +8,9 @@ transport.
 
 Baseline source SHA: `84a6aac92647b1c09bd729fe6171d62b34063047`
 Implementation SHAs: `3ffb843f5382e914b7d51325644424f98a361c00` (schema/codec),
-`959bac1fad1c3ec8a5a5834ceb94712461f60edb` (transitions/recovery)
+`959bac1fad1c3ec8a5a5834ceb94712461f60edb` (transitions/recovery),
+`21a04a1d35d3eea4d81c388903e30bdc7c85b921` (observation idempotency and
+negative controls)
 Branch: `qualification/ar7-feasibility`
 Host: Windows development host; WSL2 Ubuntu used only for focused Linux fence and
 owner-protocol regressions
@@ -49,6 +51,15 @@ Implementation commit `959bac1`:
 - `src/Gagamba.Execution.Linux.M1/Recovery/ReleaseRecoveryClassification.cs` (new)
 - `tests/Gagamba.Execution.Linux.M1.Tests/Recovery/OwnershipV3TransitionTests.cs` (new)
 - `tests/Gagamba.Execution.Linux.M1.Tests/Recovery/ReleaseRecoveryClassificationTests.cs` (new)
+
+Implementation commit `21a04a1`:
+
+- `src/Gagamba.Execution.Linux.M1/Recovery/OwnershipTransitions.cs` (identical
+  observations return the current durable snapshot as an idempotent no-op)
+- `tests/Gagamba.Execution.Linux.M1.Tests/Recovery/OwnershipV3CodecTests.cs`
+  (trailing-byte and truncation controls)
+- `tests/Gagamba.Execution.Linux.M1.Tests/Recovery/OwnershipV3TransitionTests.cs`
+  (committed-without-intent and observation-idempotency controls)
 
 The only WP04 production change is the explicit `LegacyVersion` constant in the
 two pre-release snapshot constructors. Ordinary HELD/abort remains on version 2.
@@ -157,7 +168,9 @@ persists trusted coordinator-derived facts; the implementation does not wire the
 future coordinator status protocol. Observations are evidence only: no release,
 capability reconstruction, retry, target-execution authorization or fence
 override is possible from the durable record. Recovery reads observations and
-never invents them.
+never invents them. An identical duplicate observation returns the current
+durable snapshot as an idempotent no-op with no second write; a contradictory
+or weaker observation is refused.
 
 ## 9. Recovery classification
 
@@ -186,9 +199,9 @@ authorizes release or resend.
 
 | Check | Result |
 |---|---|
-| Windows full Linux M1 project | **315 passed, 156 skipped, 0 failed / 471** |
-| New v3 codec tests | 19/19 |
-| New transition/journal/fence tests | 17/17 |
+| Windows full Linux M1 project | **317 passed, 156 skipped, 0 failed / 473** |
+| New v3 codec tests | 20/20 |
+| New transition/journal/fence tests | 18/18 |
 | New recovery-classification tests | 11/11 |
 | WSL focused `JournalFencingTests` | 6/6 |
 | WSL focused `OwnerProtocolTests` | 21/21 |
