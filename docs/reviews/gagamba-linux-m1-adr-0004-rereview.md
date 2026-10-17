@@ -13,6 +13,7 @@ migration, native, release or target work was performed.
 | Original ADR 0004 | `c3cb16412cf136691280eb8f3fadedbe7dc451a9` |
 | Preceding blocker preservation | `c48b4cd193616c7a2777ac664457183002f845a1` |
 | Partial review preservation | `fa75f31` |
+| Complete review preservation | `46a1991b57edb410d53ac7fc0c6b43ba815a6792` |
 | Clarified ADR 0004 | `a7738f07bcaacb86e356ab0f982262b53e26065d` |
 | Working tree at review | clean |
 | WP04 / G2 | accepted, unchanged |
@@ -22,11 +23,19 @@ The clarified diff touches only documentation: ADR 0004, `docs/handoff.md`,
 `docs/work-queue.md`, plus the earlier review-preservation file. There is no
 source, test, native, migration or coordinator implementation in the diff.
 
-Stage A note: the exact original Luna review body was not present in the
-repository or supplied materials. The existing partial preservation at
-`fa75f31` is truthful but incomplete; it has not been rewritten, and no
-supposedly verbatim body has been fabricated. The original requirements used
-for this rereview are Luna's supplied findings and required clarifications.
+Stage A correction: the complete Luna review is now preserved at
+`46a1991b57edb410d53ac7fc0c6b43ba815a6792`, replacing the partial
+`fa75f31` content without rewriting that historical commit. The earlier
+partial-preservation note in this rereview is superseded. The complete review
+contains exactly the three required clarifications evaluated below and no
+additional blocking finding; the rereview disposition is unchanged.
+
+Post-preservation verification: the complete review confirms the existing
+architecture acceptance, the three required clarifications, the
+`Delivered`/`Partial` semantics, the no-resend rule, the WP04 v2 boundary, the
+G2 focused-evidence split, and the requirement that a focused G2b review remain
+appropriate. The clarified ADR resolves all three required clarifications. No
+new architecture defect is introduced by the completed review preservation.
 
 ## Original review requirements
 
