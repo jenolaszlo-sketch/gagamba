@@ -10,7 +10,8 @@ Baseline source SHA: `84a6aac92647b1c09bd729fe6171d62b34063047`
 Implementation SHAs: `3ffb843f5382e914b7d51325644424f98a361c00` (schema/codec),
 `959bac1fad1c3ec8a5a5834ceb94712461f60edb` (transitions/recovery),
 `21a04a1d35d3eea4d81c388903e30bdc7c85b921` (observation idempotency and
-negative controls)
+negative controls), `e004bc4b12d20fbf674c2aef3f0adaed205b0bb8` (cleanup-state
+monotonicity)
 Branch: `qualification/ar7-feasibility`
 Host: Windows development host; WSL2 Ubuntu used only for focused Linux fence and
 owner-protocol regressions
@@ -60,6 +61,11 @@ Implementation commit `21a04a1`:
   (trailing-byte and truncation controls)
 - `tests/Gagamba.Execution.Linux.M1.Tests/Recovery/OwnershipV3TransitionTests.cs`
   (committed-without-intent and observation-idempotency controls)
+
+Implementation commit `e004bc4`:
+
+- `src/Gagamba.Execution.Linux.M1/Recovery/OwnershipValidation.cs` (confirmed
+  cleanup cannot regress; failed/unknown cleanup cannot return to pending)
 
 The only WP04 production change is the explicit `LegacyVersion` constant in the
 two pre-release snapshot constructors. Ordinary HELD/abort remains on version 2.
