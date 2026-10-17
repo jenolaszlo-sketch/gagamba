@@ -471,6 +471,7 @@ public sealed class OwnerProtocolTests
         var first = sender.Create(OwnerProtocolMessageType.Start);
 
         Assert.False(OwnerProtocol.TryDecode(first, Guid.NewGuid(), Lease, out _, out _));
+        Assert.False(OwnerProtocol.TryDecode(first, Execution, Guid.NewGuid(), out _, out _));
         var wrongTypeReceiver = new OwnerProtocolSequencer(Execution, Lease);
         Assert.False(wrongTypeReceiver.TryAccept(first, OwnerProtocolMessageType.WriterReady, out _, out _));
 

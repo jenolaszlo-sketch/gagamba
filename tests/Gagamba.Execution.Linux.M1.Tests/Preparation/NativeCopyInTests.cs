@@ -285,24 +285,118 @@ public sealed class NativeCopyInTests
         }
     }
 
+    private static FileIdentity StatStagingEntry(string directory, string name)
+    {
+        var directoryErrno = PreparationInterop.OpenDirectory(directory, out var directoryFd);
+        if (directoryErrno != 0)
+            throw new InvalidOperationException($"open staging directory errno {directoryErrno}");
+        try
+        {
+            var openErrno = PreparationInterop.OpenSourceRaw(
+                directoryFd, name, PreparationInterop.RequiredResolve, out var entryFd);
+            if (openErrno != 0)
+                throw new InvalidOperationException($"open staging entry errno {openErrno}");
+            try
+            {
+                var statErrno = PreparationInterop.StatFd(entryFd, out var identity);
+                if (statErrno != 0)
+                    throw new InvalidOperationException($"stat staging entry errno {statErrno}");
+                return identity;
+            }
+            finally
+            {
+                LibcClose(entryFd);
+            }
+        }
+        finally
+        {
+            LibcClose(directoryFd);
+        }
+    }
+
+    private static (FileIdentity Before, FileIdentity After) ReplaceWithReadOnlyEntry(
+        string directory, string name, byte[] replacementBytes)
+    {
+        var targetPath = Path.Combine(directory, name);
+        var replacementName = name + ".replacement-" + Guid.NewGuid().ToString("N");
+        var replacementPath = Path.Combine(directory, replacementName);
+        var before = StatStagingEntry(directory, name);
+        try
+        {
+            File.WriteAllBytes(replacementPath, replacementBytes);
+            File.SetUnixFileMode(replacementPath, UnixFileMode.UserRead | UnixFileMode.UserExecute);
+            File.Move(replacementPath, targetPath, overwrite: true);
+            var after = StatStagingEntry(directory, name);
+            return (before, after);
+        }
+        finally
+        {
+            try { File.Delete(replacementPath); } catch { }
+        }
+    }
+
+    [Fact]
+    public void AtomicRenamePositiveControlReplacesMode0500Entry()
+    {
+        SkipUnlessUsable(out _);
+        using var dirs = new NativeDirs();
+        var control = Path.Combine(dirs.Parent, "rename-control");
+        Directory.CreateDirectory(control);
+        var original = Bytes(0x58, 512);
+        var replacement = Bytes(0x5A, 512);
+        File.WriteAllBytes(Path.Combine(control, "entry"), original);
+        File.SetUnixFileMode(Path.Combine(control, "entry"), UnixFileMode.UserRead | UnixFileMode.UserExecute);
+
+        var (before, after) = ReplaceWithReadOnlyEntry(control, "entry", replacement);
+
+        Assert.NotEqual((before.Device, before.Inode), (after.Device, after.Inode));
+        Assert.Equal(0x140u, after.Mode & 0x1FFu);
+        Assert.Equal(replacement, File.ReadAllBytes(Path.Combine(control, "entry")));
+    }
+
     [Fact]
     public void ReplacementRaceDeterministicallyRefused()
     {
         SkipUnlessUsable(out _);
         using var dirs = new NativeDirs();
         File.WriteAllBytes(Path.Combine(dirs.Root, "tool"), Bytes(0x59, 512));
+        var replacement = Bytes(0x5A, 512);
+        FileIdentity? before = null;
+        FileIdentity? after = null;
+        string? hookError = null;
         var plan = NativePlan(dirs, Tool()) with
         {
             Hooks = new CopyTestHooks(
                 null,
-                name => File.WriteAllBytes(
-                    Path.Combine(dirs.Parent, "prep-native", name), Bytes(0x5A, 512))),
+                name =>
+                {
+                    try
+                    {
+                        var identities = ReplaceWithReadOnlyEntry(
+                            Path.Combine(dirs.Parent, "prep-native"), name, replacement);
+                        before = identities.Before;
+                        after = identities.After;
+                    }
+                    catch (Exception ex)
+                    {
+                        hookError = $"{ex.GetType().Name}: {ex.Message}";
+                    }
+                }),
         };
         var result = SafeCopyIn.Prepare(plan, LibcCopyHost.Instance, CancellationToken.None);
+        Assert.Null(hookError);
+        Assert.NotNull(before);
+        Assert.NotNull(after);
+        Assert.NotEqual((before!.Value.Device, before.Value.Inode), (after!.Value.Device, after.Value.Inode));
+        var stagedPath = Path.Combine(dirs.Parent, "prep-native", "tool-000.staged");
+        Assert.Equal(replacement, File.ReadAllBytes(stagedPath));
         Assert.False(result.Succeeded);
         Assert.Equal(CopyFailureKind.ObjectReplaced, result.Failure);
+        Assert.Contains("identity does not match", result.Detail, StringComparison.OrdinalIgnoreCase);
         Assert.Null(result.Closure);
-        Assert.Empty(Directory.GetFiles(Path.Combine(dirs.Parent, "prep-native")));
+        var cleanup = Assert.Single(Assert.IsType<StagingCleanupReport>(result.Cleanup).Items);
+        Assert.Equal(CleanupItemOutcome.IdentityMismatch, cleanup.Outcome);
+        Assert.True(File.Exists(stagedPath), "cleanup must preserve the replacement rather than delete an object with a different identity");
     }
 
     [Fact]

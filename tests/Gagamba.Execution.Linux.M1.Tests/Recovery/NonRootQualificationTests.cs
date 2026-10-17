@@ -1,6 +1,7 @@
 // R6D.2 non-root owner-owned transaction qualification on operator-delegated cgroup v2.
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text;
 using Gagamba.Execution.Linux.M1.Lifecycle;
 using Gagamba.Execution.Linux.M1.Native;
 using Gagamba.Execution.Linux.M1.Preparation;
@@ -168,6 +169,24 @@ public sealed class NonRootQualificationTests
             _release.Dispose();
         }
     }
+
+    private sealed class RecordingPidFdProvider : IPidFdProvider, IDisposable
+    {
+        internal Process? OwnerProcess { get; private set; }
+
+        public bool TryOpen(int pid, out int fd, out string error)
+        {
+            OwnerProcess = Process.GetProcessById(pid);
+            return PidFd.TryOpen(pid, out fd, out error);
+        }
+
+        public void Dispose()
+        {
+            OwnerProcess?.Dispose();
+            OwnerProcess = null;
+        }
+    }
+
     private sealed class TempDir : IDisposable
     {
         public string Path { get; } = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "gagamba-r5-" + Guid.NewGuid().ToString("N"));
@@ -231,6 +250,81 @@ public sealed class NonRootQualificationTests
                 CleanupItemOutcome.IdentityMismatch => new AllocationCleanResult(AllocationCleanOutcome.Mismatch, result.Error),
                 _ => new AllocationCleanResult(AllocationCleanOutcome.Failed, result.Error),
             };
+        }
+    }
+
+    private sealed class RegisteredDeathCleaner : IAllocationCleaner
+    {
+        private readonly int _parentFd;
+        private readonly string _stagingDirectoryName;
+
+        public RegisteredDeathCleaner(int parentFd, string stagingDirectoryName = "prep-001")
+        {
+            _parentFd = parentFd;
+            _stagingDirectoryName = stagingDirectoryName;
+        }
+
+        public AllocationCleanResult CleanOne(AllocationEntry entry)
+        {
+            if (entry.Kind == AllocationKind.StagingDirectory)
+                return ResolveDirectoryBeneathParent(entry);
+            if (entry.Kind != AllocationKind.Staging)
+                return new AllocationCleanResult(AllocationCleanOutcome.Failed, $"unexpected entry kind {entry.Kind}");
+
+            var (directory, early) = OpenStagingDirectory();
+            if (early.HasValue)
+            {
+                directory?.Dispose();
+                return early.Value;
+            }
+
+            using (directory!)
+            {
+                var result = StagingCleanup.CleanOne(LibcCopyHost.Instance, directory!, entry.Name, entry.Device, entry.Inode);
+                return result.Outcome switch
+                {
+                    CleanupItemOutcome.Removed => new AllocationCleanResult(AllocationCleanOutcome.Cleaned, string.Empty),
+                    CleanupItemOutcome.AlreadyAbsent => new AllocationCleanResult(AllocationCleanOutcome.AlreadyAbsent, string.Empty),
+                    CleanupItemOutcome.IdentityMismatch => new AllocationCleanResult(AllocationCleanOutcome.Mismatch, result.Error),
+                    _ => new AllocationCleanResult(AllocationCleanOutcome.Failed, result.Error),
+                };
+            }
+        }
+
+        private (SafeFileHandle? Handle, AllocationCleanResult? Early) OpenStagingDirectory()
+        {
+            if (_stagingDirectoryName.Length == 0 || _stagingDirectoryName.Contains('/'))
+                return (null, new AllocationCleanResult(AllocationCleanOutcome.Failed, "staging directory name is not a single component"));
+            var errno = PreparationInterop.OpenRelative(
+                _parentFd, _stagingDirectoryName,
+                PreparationInterop.O_RDONLY | PreparationInterop.O_DIRECTORY | PreparationInterop.O_NOFOLLOW | PreparationInterop.O_CLOEXEC,
+                PreparationInterop.RequiredResolve, out var directoryFd);
+            if (errno == PreparationInterop.ENOENT)
+                return (null, new AllocationCleanResult(AllocationCleanOutcome.AlreadyAbsent, string.Empty));
+            if (errno != 0 || directoryFd < 0)
+                return (null, new AllocationCleanResult(AllocationCleanOutcome.Failed, $"staging inspection errno {errno}"));
+            return (new SafeFileHandle(new IntPtr(directoryFd), ownsHandle: true), null);
+        }
+
+        private AllocationCleanResult ResolveDirectoryBeneathParent(AllocationEntry entry)
+        {
+            var (directory, early) = OpenStagingDirectory();
+            if (early.HasValue)
+            {
+                directory?.Dispose();
+                return early.Value;
+            }
+
+            using (directory!)
+            {
+                if (PreparationInterop.StatFd(directory!.DangerousGetHandle().ToInt32(), out var current) != 0
+                    || current.Device != entry.Device || current.Inode != entry.Inode)
+                    return new AllocationCleanResult(AllocationCleanOutcome.Mismatch, "staging directory identity mismatch");
+                var errno = PreparationInterop.RemoveDirectory(_parentFd, entry.Name);
+                return errno == 0
+                    ? new AllocationCleanResult(AllocationCleanOutcome.Cleaned, string.Empty)
+                    : new AllocationCleanResult(AllocationCleanOutcome.Failed, $"rmdir errno {errno}");
+            }
         }
     }
 
@@ -302,6 +396,7 @@ public sealed class NonRootQualificationTests
         public IntegratedFixture(byte[] tool, byte[]? input, CopyTestHooks? hooks,
             IPidFdProvider? pidFdProvider = null, byte[]? coordinator = null, byte[]? filter = null)
         {
+            ChildName = "d-" + Guid.NewGuid().ToString("N");
             Scope = new M1RecoveryScope(pidFdProvider);
             Assert.True(Scope.TryInitialize().Ok);
             Assert.True(Scope.TryOpenDelegatedParent(DelegatedParent!).Ok);
@@ -326,7 +421,6 @@ public sealed class NonRootQualificationTests
             Journal = new OwnershipJournal(new JournalFileStorage(), JournalDir.Path);
             Assert.True(Journal.TryAcquireWriter(out var writer, out var error), error);
             Writer = writer!;
-            ChildName = "d-" + Guid.NewGuid().ToString("N");
             Plan = new CopyPlan(
                 Source.Path, Staging.Path, "prep-001", objects, 16UL * 1024 * 1024, 128,
                 Array.Empty<KeyValuePair<string, string>>(), _ => true, hooks);
@@ -393,10 +487,12 @@ public sealed class NonRootQualificationTests
             coordinator: coordinator, filter: filter);
 
         var outcome = fx.Scope.StartOwnerPreparation(fx.Request(null, enableHeldCoordinator: true), CancellationToken.None);
+
         Assert.True(outcome.Ok, outcome.Error);
         Assert.True(outcome.Held);
         Assert.False(outcome.Completed, "WP04 must remain held and must not complete target execution");
         Assert.True(outcome.NoTargetInitializationMarkerAbsent);
+        Assert.False(TargetExecPresentInDomain(fx), "target must not be present when HELD is accepted");
         Assert.NotNull(outcome.HeldReport);
         Assert.Equal(0u, outcome.HeldReport!.Uid);
         Assert.Equal(0UL, outcome.HeldReport.CapEff);
@@ -423,7 +519,9 @@ public sealed class NonRootQualificationTests
         Assert.True(aborted.Accepted, aborted.Error);
         Assert.True(aborted.OwnerExited, aborted.Error);
         Assert.True(aborted.CleanupRequested, aborted.Error);
-        Assert.True(aborted.NoTargetInitializationMarkerAbsent);
+        Assert.True(aborted.NoTargetInitializationMarkerAbsent,
+            "the adapter's independent pre-reconciliation capture must show the target constructor marker absent after abort");
+        Assert.False(TargetExecPresentInDomain(fx), "target must remain absent immediately after abort");
 
         var recoveryLease = Assert.Single(fx.Scope.RetainedRecoveryLeases);
         var parent = Assert.IsType<SafeFileHandle>(Assert.Single(fx.Scope.RetainedStagingParents));
@@ -442,6 +540,635 @@ public sealed class NonRootQualificationTests
         }
         Assert.False(Directory.Exists(System.IO.Path.Combine(fx.Staging.Path, "prep-001")));
         Assert.False(Directory.Exists(System.IO.Path.Combine(DelegatedParent!, fx.ChildName)));
+        Assert.False(TargetExecPresentInDomain(fx), "target must remain absent after final reconciliation");
+        var tracePath = Environment.GetEnvironmentVariable("WP04_TRACE_LOG");
+        if (!string.IsNullOrWhiteSpace(tracePath))
+            AssertIndependentTraceMarkerAbsent(tracePath, owner.Id, requireCompleteDrains: true);
+        AssertFinalCleanupTargetMarkerAbsentIfTraced();
+    }
+
+    private static void ReconcileAfterOwnerDeath(IntegratedFixture fx)
+    {
+        var read = fx.Journal.ReadLatest();
+        Assert.True(read.Ok, read.Error);
+        Assert.Equal(PreparationStage.Prepared, read.Snapshot!.Stage);
+        var recovery = Assert.Single(fx.Scope.RetainedRecoveryLeases);
+        Assert.True(recovery.AuthorityAlive);
+        var parent = Assert.IsType<SafeFileHandle>(Assert.Single(fx.Scope.RetainedStagingParents));
+        var staging = Assert.IsType<SafeFileHandle>(Assert.Single(fx.Scope.RetainedStagingDirectories));
+        var cleaner = new QualScopeCleaner(parent.DangerousGetHandle().ToInt32(), staging.DangerousGetHandle().ToInt32());
+        Assert.True(fx.Journal.TryAcquireWriter(out var recoveryWriter, out var writerError), writerError);
+        using (recoveryWriter!)
+        {
+            var result = new Reconciler(new RealClock(), TimeSpan.FromSeconds(5)).Reconcile(
+                read.Snapshot!, Boot(), recovery, cleaner, fx.Journal, recoveryWriter);
+            Assert.Equal(ReconcileOutcome.CleanupConfirmed, result.Outcome);
+            Assert.True(result.DestructiveActionTaken);
+        }
+
+        Assert.True(fx.Scope.ReapAdoptedChildren(TimeSpan.FromSeconds(5), out _, out var reapError), reapError);
+        Assert.False(Directory.Exists(System.IO.Path.Combine(fx.Staging.Path, "prep-001")));
+        Assert.False(Directory.Exists(System.IO.Path.Combine(DelegatedParent!, fx.ChildName)));
+        Assert.Equal(OwnershipCleanupState.Confirmed, fx.Journal.ReadLatest().Snapshot!.Cleanup);
+
+        AssertFinalCleanupTargetMarkerAbsentIfTraced();
+    }
+
+    private static byte[] BuildTestCoordinator(int mode)
+        => BuildTestCoordinator(mode, null);
+
+    private static byte[] BuildTestCoordinator(int mode, ulong? hostMntNamespaceInode)
+    {
+        using var temp = new TempDir();
+        var root = RepositoryRoot();
+        var source = System.IO.Path.Combine(root, "tests/Fixtures/wp04-qualification-coordinator.c");
+        var output = System.IO.Path.Combine(temp.Path, "wp04-coordinator-" + mode);
+        var start = new ProcessStartInfo("/usr/bin/cc")
+        {
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+        };
+        var arguments = new List<string> { "-static", "-O2", "-std=c11", "-DWP04_MODE=" + mode };
+        if (hostMntNamespaceInode is { } hostMnt)
+            arguments.Add("-DWP04_HOST_MNT_INODE=" + hostMnt.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        arguments.AddRange(new[] { source, "-o", output });
+        foreach (var argument in arguments)
+            start.ArgumentList.Add(argument);
+        using var compiler = Process.Start(start) ?? throw new InvalidOperationException("test coordinator compiler did not start");
+        var stdout = compiler.StandardOutput.ReadToEnd();
+        var stderr = compiler.StandardError.ReadToEnd();
+        Assert.True(compiler.WaitForExit(30_000), "test coordinator compile exceeded its bound");
+        Assert.Equal(0, compiler.ExitCode);
+        Assert.True(File.Exists(output), $"test coordinator artifact missing; stdout={stdout}; stderr={stderr}");
+        return File.ReadAllBytes(output);
+    }
+
+    private static int WaitForCoordinatorInDomain(IntegratedFixture fx, TimeSpan timeout)
+    {
+        var path = System.IO.Path.Combine(DelegatedParent!, fx.ChildName);
+        var deadline = Stopwatch.GetTimestamp() + (long)(timeout.TotalSeconds * Stopwatch.Frequency);
+        while (Stopwatch.GetTimestamp() < deadline)
+        {
+            try
+            {
+                foreach (var item in File.ReadAllLines(System.IO.Path.Combine(path, "cgroup.procs")))
+                {
+                    if (!int.TryParse(item, out var pid)) continue;
+                    var command = Encoding.UTF8.GetString(File.ReadAllBytes($"/proc/{pid}/cmdline"));
+                    var comm = File.ReadAllText($"/proc/{pid}/comm").Trim();
+                    if (command.Contains("/coordinator", StringComparison.Ordinal)
+                        || comm == "exec-coordinator") return pid;
+                }
+            }
+            catch (IOException) { }
+            catch (UnauthorizedAccessException) { }
+            Thread.Yield();
+        }
+        return -1;
+    }
+
+    private static ulong ParseProcSyscallWord(string value)
+    {
+        if (value.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+            return ulong.Parse(value.AsSpan(2), System.Globalization.NumberStyles.HexNumber,
+                System.Globalization.CultureInfo.InvariantCulture);
+        return ulong.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+    }
+
+    private static bool TryReadStoppedRead(Process process, int expectedLength, out int fd)
+    {
+        fd = -1;
+        try
+        {
+            var state = File.ReadLines($"/proc/{process.Id}/status")
+                .First(line => line.StartsWith("State:", StringComparison.Ordinal))[6..].TrimStart();
+            if (state.Length == 0 || (state[0] != 't' && state[0] != 'T')) return false;
+            var fields = File.ReadAllText($"/proc/{process.Id}/syscall")
+                .Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            if (fields.Length < 4 || ParseProcSyscallWord(fields[0]) != 0
+                || ParseProcSyscallWord(fields[3]) != (ulong)expectedLength)
+                return false;
+            fd = checked((int)ParseProcSyscallWord(fields[1]));
+            return fd >= 0;
+        }
+        catch (IOException) { return false; }
+        catch (UnauthorizedAccessException) { return false; }
+        catch (InvalidOperationException) { return false; }
+        catch (FormatException) { return false; }
+        catch (OverflowException) { return false; }
+    }
+
+    private static int WaitForInjectedRead(Process owner, int expectedLength, TimeSpan timeout)
+    {
+        var deadline = Stopwatch.GetTimestamp() + checked((long)(timeout.TotalSeconds * Stopwatch.Frequency));
+        while (Stopwatch.GetTimestamp() < deadline)
+        {
+            if (TryReadStoppedRead(owner, expectedLength, out var fd)) return fd;
+            Thread.Yield();
+        }
+        throw new InvalidOperationException(
+            $"strace did not hold owner PID {owner.Id} at read(..., {expectedLength}) before timeout");
+    }
+
+    private static void AssertCoordinatorHeldWriteIsBufferedBeforeRead(int ownerPid, int readFd, string tracePath)
+    {
+        Assert.True(File.Exists(tracePath), $"strace artifact is missing: {tracePath}");
+        var lines = File.ReadAllLines(tracePath);
+        var heldWrite = lines.FirstOrDefault(line => line.Contains("write(5", StringComparison.Ordinal) && line.Contains("GGM1CTL\\0", StringComparison.Ordinal));
+        Assert.True(heldWrite is not null,
+            "strace must record the coordinator's complete HELD frame write before owner death");
+        var resultMarker = heldWrite!.LastIndexOf(" = ", StringComparison.Ordinal);
+        var callEnd = heldWrite!.LastIndexOf(") = ", StringComparison.Ordinal);
+        var argumentEnd = heldWrite.LastIndexOf(", ", callEnd, StringComparison.Ordinal);
+        var coordinatorPidEnd = heldWrite.IndexOf(' ');
+        var coordinatorPid = 0;
+        var hasCoordinatorPid = coordinatorPidEnd > 0
+            && int.TryParse(heldWrite.AsSpan(0, coordinatorPidEnd), out coordinatorPid);
+        Assert.True(hasCoordinatorPid, $"strace HELD writer PID is missing: {heldWrite}");
+        Assert.True(resultMarker > 0 && argumentEnd > 0
+            && int.TryParse(heldWrite.AsSpan(resultMarker + 3).Trim(), out var bytesWritten)
+            && int.TryParse(heldWrite.AsSpan(argumentEnd + 2, callEnd - argumentEnd - 2), out var requestedBytes)
+            && bytesWritten >= 96 && bytesWritten == requestedBytes,
+            $"coordinator HELD frame write was not complete: {heldWrite}");
+        Assert.Contains("GGM1CTL\\0\\1\\0\\1\\0", heldWrite, StringComparison.Ordinal);
+        var ownerRead = lines.FirstOrDefault(line => line.StartsWith(ownerPid + " ", StringComparison.Ordinal)
+            && (line.Contains($"read({readFd},", StringComparison.Ordinal) || line.Contains($"read({readFd}<", StringComparison.Ordinal))
+            && line.Contains(", 96)", StringComparison.Ordinal));
+        Assert.True(ownerRead is null,
+            "the owner header read must still be stopped at syscall entry; no completed read may have consumed the HELD header");
+        var fdTarget = new FileInfo($"/proc/{ownerPid}/fd/{readFd}").LinkTarget;
+        Assert.StartsWith("pipe:[", fdTarget, StringComparison.Ordinal);
+        Assert.Contains($"write(5<{fdTarget}>", heldWrite, StringComparison.Ordinal);
+    }
+
+    private static void AssertIndependentTraceMarkerAbsent(string tracePath, int ownerPid, bool requireCompleteDrains)
+    {
+        const string marker = "gagamba-m1-fixture: ctor-marker";
+        Assert.True(File.Exists(tracePath), $"strace artifact is missing: {tracePath}");
+        var lines = File.ReadAllLines(tracePath);
+        Assert.DoesNotContain(marker, string.Join("\n", lines));
+        if (!requireCompleteDrains) return;
+
+        var eofPipes = lines.Where(line => line.StartsWith(ownerPid + " ", StringComparison.Ordinal)
+                && line.Contains("read(", StringComparison.Ordinal)
+                && line.Contains(", \"\", 4096) = 0", StringComparison.Ordinal))
+            .Select(line =>
+            {
+                var start = line.IndexOf("read(", StringComparison.Ordinal) + 5;
+                var end = line.IndexOf(',', start);
+                return start >= 5 && end > start ? line[start..end] : string.Empty;
+            })
+            .Where(fd => fd.Length != 0)
+            .Distinct(StringComparer.Ordinal)
+            .Count();
+        Assert.True(eofPipes >= 4,
+            $"after cleanup, expected independent stdout/stderr/helper/coordinator EOF reads; observed {eofPipes}");
+    }
+
+    private static void AssertFinalCleanupTargetMarkerAbsentIfTraced()
+    {
+        var tracePath = Environment.GetEnvironmentVariable("WP04_FINAL_TRACE_LOG");
+        if (!string.IsNullOrWhiteSpace(tracePath))
+            AssertIndependentTraceMarkerAbsent(tracePath, ownerPid: -1, requireCompleteDrains: false);
+    }
+    private static bool TargetExecPresentInDomain(IntegratedFixture fx)
+    {
+        var path = System.IO.Path.Combine(DelegatedParent!, fx.ChildName);
+        try
+        {
+            foreach (var item in File.ReadAllLines(System.IO.Path.Combine(path, "cgroup.procs")))
+            {
+                if (!int.TryParse(item, out var pid)) continue;
+                var command = Encoding.UTF8.GetString(File.ReadAllBytes($"/proc/{pid}/cmdline"));
+                if (command.Split('\0', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() == "/tool")
+                    return true;
+            }
+        }
+        catch (IOException) { }
+        catch (UnauthorizedAccessException) { }
+        return false;
+    }
+
+    private static Process WaitForRecordedOwner(RecordingPidFdProvider provider, TimeSpan timeout)
+    {
+        var deadline = Stopwatch.GetTimestamp() + (long)(timeout.TotalSeconds * Stopwatch.Frequency);
+        while (Stopwatch.GetTimestamp() < deadline)
+        {
+            if (provider.OwnerProcess is { } owner) return owner;
+            Thread.Yield();
+        }
+        throw new InvalidOperationException("direct owner process was not recorded before timeout");
+    }
+
+    [Fact]
+    public async Task NonRootWp04RealOwnerLossDuringCoordinatorStartupBeforeHeldReconciles()
+    {
+        SkipUnlessQualified();
+        var coordinator = BuildTestCoordinator(0);
+        using var ownerObservation = new RecordingPidFdProvider();
+        var root = RepositoryRoot();
+        var fixtureImage = File.ReadAllBytes(System.IO.Path.Combine(root, "tests/Fixtures/Gagamba.LinuxM1.Native/out/fixture"));
+        var filter = File.ReadAllBytes(System.IO.Path.Combine(root, "artifacts/linux-m1/wp04/seccomp-filter.bin"));
+        using var fx = new IntegratedFixture(fixtureImage, Bytes(0x45, 64), null,
+            pidFdProvider: ownerObservation, coordinator: coordinator, filter: filter);
+        var preparation = Task.Run(() => fx.Scope.StartOwnerPreparation(
+            fx.Request(null, enableHeldCoordinator: true), CancellationToken.None));
+
+        var coordinatorPid = WaitForCoordinatorInDomain(fx, TimeSpan.FromSeconds(20));
+        Assert.True(coordinatorPid > 0, "test coordinator did not reach the real Bubblewrap execution domain");
+        var owner = WaitForRecordedOwner(ownerObservation, TimeSpan.FromSeconds(10));
+        Assert.True(fx.Scope.TryOwnerPidFdExited(owner, 0, out var exited, out var pidfdError), pidfdError);
+        Assert.False(exited);
+        owner.Refresh();
+        Assert.False(owner.HasExited);
+        Assert.Equal(PreparationStage.Prepared, fx.Journal.ReadLatest().Snapshot!.Stage);
+        var domainPath = System.IO.Path.Combine(DelegatedParent!, fx.ChildName);
+        Assert.Contains("populated 1", File.ReadAllText(System.IO.Path.Combine(domainPath, "cgroup.events")), StringComparison.Ordinal);
+        Assert.False(TargetExecPresentInDomain(fx), "target executable was not initialized before owner death");
+        owner.Kill(entireProcessTree: false);
+
+        var outcome = await preparation.WaitAsync(TimeSpan.FromSeconds(15), TestContext.Current.CancellationToken);
+        Assert.False(outcome.Held);
+        Assert.False(outcome.Completed);
+        Assert.DoesNotContain("target constructor marker appeared", outcome.Error, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal(PreparationStage.Prepared, fx.Journal.ReadLatest().Snapshot!.Stage);
+        ReconcileAfterOwnerDeath(fx);
+    }
+
+    [Fact]
+    public async Task NonRootWp04RealOwnerLossAfterCoordinatorHeldFrameBeforeManagedAcceptanceReconciles()
+    {
+        SkipUnlessQualified();
+        var root = RepositoryRoot();
+        var fixtureImage = File.ReadAllBytes(System.IO.Path.Combine(root, "tests/Fixtures/Gagamba.LinuxM1.Native/out/fixture"));
+        var filter = File.ReadAllBytes(System.IO.Path.Combine(root, "artifacts/linux-m1/wp04/seccomp-filter.bin"));
+        var tracePath = Environment.GetEnvironmentVariable("WP04_TRACE_LOG");
+        if (string.IsNullOrWhiteSpace(tracePath))
+        {
+            using var ordinary = new IntegratedFixture(fixtureImage, Bytes(0x45, 64), null,
+                coordinator: BuildTestCoordinator(11), filter: filter);
+            var accepted = ordinary.Scope.StartOwnerPreparation(
+                ordinary.Request(null, enableHeldCoordinator: true), CancellationToken.None);
+            Assert.True(accepted.Ok, accepted.Error);
+            Assert.True(accepted.Held, accepted.Error);
+            Assert.False(accepted.Completed);
+            var ordinaryAbort = ordinary.Scope.AbortHeld(accepted);
+            Assert.True(ordinaryAbort.Accepted, ordinaryAbort.Error);
+            Assert.True(ordinaryAbort.OwnerExited, ordinaryAbort.Error);
+            ReconcileAfterOwnerDeath(ordinary);
+            Assert.False(TargetExecPresentInDomain(ordinary));
+            return;
+        }
+
+        using var ownerObservation = new RecordingPidFdProvider();
+        using var fx = new IntegratedFixture(fixtureImage, Bytes(0x45, 64), null,
+            pidFdProvider: ownerObservation, coordinator: BuildTestCoordinator(11), filter: filter);
+
+        Task<OwnerPreparationOutcome>? preparation = null;
+        Process? owner = null;
+        try
+        {
+            preparation = Task.Run(() => fx.Scope.StartOwnerPreparation(
+                fx.Request(null, enableHeldCoordinator: true), CancellationToken.None));
+            owner = WaitForRecordedOwner(ownerObservation, TimeSpan.FromSeconds(10));
+            var readFd = WaitForInjectedRead(owner, 96, TimeSpan.FromSeconds(15));
+            Assert.False(preparation.IsCompleted,
+                "the managed owner/scope path must remain before HELD acceptance while the complete frame is buffered");
+            AssertCoordinatorHeldWriteIsBufferedBeforeRead(owner.Id, readFd, tracePath);
+            owner = ownerObservation.OwnerProcess!;
+            Assert.True(fx.Scope.TryOwnerPidFdExited(owner, 0, out var exited, out var pidfdError), pidfdError);
+            Assert.False(exited, "owner must be live at the pre-accept kill barrier");
+            owner.Refresh();
+            Assert.False(owner.HasExited);
+            Assert.Equal(PreparationStage.Prepared, fx.Journal.ReadLatest().Snapshot!.Stage);
+            Assert.True(Assert.Single(fx.Scope.RetainedRecoveryLeases).AuthorityAlive);
+            Assert.Single(fx.Scope.RetainedStagingDirectories);
+            var domainPath = System.IO.Path.Combine(DelegatedParent!, fx.ChildName);
+            Assert.Contains("populated 1", File.ReadAllText(System.IO.Path.Combine(domainPath, "cgroup.events")), StringComparison.Ordinal);
+            Assert.True(WaitForCoordinatorInDomain(fx, TimeSpan.FromSeconds(5)) > 0,
+                "the coordinator must have emitted its complete HELD report from the real Bubblewrap domain");
+            Assert.False(TargetExecPresentInDomain(fx), "target must be absent before managed HELD acceptance");
+
+            // strace's syscall-entry delay holds the real owner before the
+            // adapter consumes its complete, buffered 96-byte HELD header.
+            // This is a real owner-process loss, not a thrown error or
+            // cooperative exit.
+            owner.Kill(entireProcessTree: false);
+            var outcome = await preparation.WaitAsync(TimeSpan.FromSeconds(30), TestContext.Current.CancellationToken);
+            Assert.False(outcome.Ok);
+            Assert.False(outcome.Held);
+            Assert.False(outcome.Completed);
+            Assert.Equal(PreparationStage.Prepared, fx.Journal.ReadLatest().Snapshot!.Stage);
+            Assert.True(fx.Scope.TryOwnerPidFdExited(owner, 0, out exited, out pidfdError), pidfdError);
+            Assert.True(exited, "the scope must observe the exact owner dead through its retained pidfd");
+            Assert.False(TargetExecPresentInDomain(fx), "target remains absent after pre-accept owner death");
+            ReconcileAfterOwnerDeath(fx);
+            Assert.False(TargetExecPresentInDomain(fx), "target remains absent after final pre-accept reconciliation");
+            AssertIndependentTraceMarkerAbsent(tracePath, owner.Id, requireCompleteDrains: false);
+        }
+        finally
+        {
+            if (owner is not null)
+            {
+                try
+                {
+                    owner.Refresh();
+                    if (!owner.HasExited) owner.Kill(entireProcessTree: false);
+                }
+                catch (InvalidOperationException) { }
+            }
+            if (preparation is { IsCompleted: false })
+            {
+                try { await preparation.WaitAsync(TimeSpan.FromSeconds(15), TestContext.Current.CancellationToken); }
+                catch (TimeoutException) { }
+            }
+        }
+    }
+
+    [Fact]
+    public async Task NonRootWp04RealOwnerLossDuringAbortDrainReconciles()
+    {
+        SkipUnlessQualified();
+        var root = RepositoryRoot();
+        var fixtureImage = File.ReadAllBytes(System.IO.Path.Combine(root, "tests/Fixtures/Gagamba.LinuxM1.Native/out/fixture"));
+        var filter = File.ReadAllBytes(System.IO.Path.Combine(root, "artifacts/linux-m1/wp04/seccomp-filter.bin"));
+        var tracePath = Environment.GetEnvironmentVariable("WP04_TRACE_LOG");
+        if (string.IsNullOrWhiteSpace(tracePath))
+        {
+            using var ordinary = new IntegratedFixture(fixtureImage, Bytes(0x45, 64), null,
+                coordinator: BuildTestCoordinator(11), filter: filter);
+            var accepted = ordinary.Scope.StartOwnerPreparation(
+                ordinary.Request(null, enableHeldCoordinator: true), CancellationToken.None);
+            Assert.True(accepted.Ok, accepted.Error);
+            Assert.True(accepted.Held, accepted.Error);
+            var ordinaryAbort = ordinary.Scope.AbortHeld(accepted);
+            Assert.True(ordinaryAbort.Accepted, ordinaryAbort.Error);
+            Assert.True(ordinaryAbort.OwnerExited, ordinaryAbort.Error);
+            ReconcileAfterOwnerDeath(ordinary);
+            Assert.False(TargetExecPresentInDomain(ordinary));
+            return;
+        }
+
+        using var ownerObservation = new RecordingPidFdProvider();
+        using var fx = new IntegratedFixture(fixtureImage, Bytes(0x45, 64), null,
+            pidFdProvider: ownerObservation, coordinator: BuildTestCoordinator(11), filter: filter);
+
+        var held = fx.Scope.StartOwnerPreparation(fx.Request(null, enableHeldCoordinator: true), CancellationToken.None);
+
+        Assert.True(held.Ok, held.Error);
+        Assert.True(held.Held, held.Error);
+        Assert.False(held.Completed);
+        Assert.True(held.NoTargetInitializationMarkerAbsent);
+        Assert.False(TargetExecPresentInDomain(fx), "target must be absent at accepted HELD");
+        var owner = held.Owner!;
+        Assert.True(fx.Scope.TryOwnerPidFdExited(owner, 0, out var exited, out var pidfdError), pidfdError);
+        Assert.False(exited, "accepted HELD owner must be alive before abort begins");
+        owner.Refresh();
+        Assert.False(owner.HasExited);
+        Assert.Equal(PreparationStage.Prepared, fx.Journal.ReadLatest().Snapshot!.Stage);
+
+        var abort = Task.Run(() => fx.Scope.AbortHeld(held));
+        try
+        {
+            var readFd = WaitForInjectedRead(owner, 4096, TimeSpan.FromSeconds(15));
+            Assert.False(abort.IsCompleted,
+                "abort must remain in its final drain before the owner reports HeldAborted");
+            Assert.True(fx.Scope.TryOwnerPidFdExited(owner, 0, out exited, out pidfdError), pidfdError);
+            Assert.False(exited, "owner must still be live at the abort-in-progress kill barrier");
+            owner.Refresh();
+            Assert.False(owner.HasExited);
+            Assert.Equal(PreparationStage.Prepared, fx.Journal.ReadLatest().Snapshot!.Stage);
+            var domainPath = System.IO.Path.Combine(DelegatedParent!, fx.ChildName);
+            Assert.Contains("populated 0", File.ReadAllText(System.IO.Path.Combine(domainPath, "cgroup.events")), StringComparison.Ordinal);
+            Assert.Empty(File.ReadAllLines(System.IO.Path.Combine(domainPath, "cgroup.procs")));
+            Assert.False(TargetExecPresentInDomain(fx), "target must remain absent after abort stopped and reaped the domain");
+            var fdTarget = new FileInfo($"/proc/{owner.Id}/fd/{readFd}").LinkTarget;
+            Assert.StartsWith("pipe:[", fdTarget, StringComparison.Ordinal);
+
+            // This kill occurs after the retained domain is empty and wrapper
+            // reaping has completed, while the owner is still draining abort
+            // outputs and before it can report HeldAborted.
+            owner.Kill(entireProcessTree: false);
+            var abortOutcome = await abort.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken);
+            Assert.True(abortOutcome.Accepted, abortOutcome.Error);
+            Assert.False(abortOutcome.OwnerExited);
+            Assert.False(abortOutcome.CleanupRequested);
+            Assert.True(fx.Scope.TryOwnerPidFdExited(owner, 0, out exited, out pidfdError), pidfdError);
+            Assert.True(exited, "scope pidfd must report the killed aborting owner dead");
+            var ownerExit = fx.Scope.WaitForOwner(owner, TimeSpan.FromSeconds(10));
+            Assert.True(ownerExit.Exited, ownerExit.Error);
+            Assert.Equal(PreparationStage.Prepared, fx.Journal.ReadLatest().Snapshot!.Stage);
+            Assert.True(Assert.Single(fx.Scope.RetainedRecoveryLeases).AuthorityAlive,
+                "recovery authority must survive owner death during abort drain");
+
+            ReconcileAfterOwnerDeath(fx);
+            Assert.False(TargetExecPresentInDomain(fx), "target remains absent after abort-loss reconciliation");
+            AssertIndependentTraceMarkerAbsent(tracePath, owner.Id, requireCompleteDrains: false);
+        }
+        finally
+        {
+            if (!abort.IsCompleted)
+            {
+                try { owner.Kill(entireProcessTree: false); }
+                catch (InvalidOperationException) { }
+                try { await abort.WaitAsync(TimeSpan.FromSeconds(10), TestContext.Current.CancellationToken); }
+                catch (TimeoutException) { }
+            }
+        }
+    }
+
+    [Theory]
+    [InlineData(1, "incomplete frame")]
+    [InlineData(2, "malformed frame")]
+    [InlineData(3, "wrong message type")]
+    [InlineData(4, "wrong execution identity")]
+    [InlineData(5, "wrong generation digest")]
+    [InlineData(6, "wrong sequence")]
+    [InlineData(7, "wrong preparation identity")]
+    public void NonRootWp04CoordinatorProtocolNegativesRefuseAndReconcile(int mode, string caseName)
+    {
+        SkipUnlessQualified();
+        var root = RepositoryRoot();
+        var fixtureImage = File.ReadAllBytes(System.IO.Path.Combine(root, "tests/Fixtures/Gagamba.LinuxM1.Native/out/fixture"));
+        var filter = File.ReadAllBytes(System.IO.Path.Combine(root, "artifacts/linux-m1/wp04/seccomp-filter.bin"));
+        using var fx = new IntegratedFixture(fixtureImage, Bytes(0x45, 64), null,
+            coordinator: BuildTestCoordinator(mode), filter: filter);
+
+        var outcome = fx.Scope.StartOwnerPreparation(
+            fx.Request(null, enableHeldCoordinator: true), CancellationToken.None);
+
+        Assert.False(outcome.Ok, caseName);
+        Assert.False(outcome.Held, caseName);
+        Assert.False(outcome.Completed, caseName);
+        Assert.DoesNotContain("target constructor marker appeared", outcome.Error, StringComparison.OrdinalIgnoreCase);
+        if (mode >= 5)
+            Assert.Contains("coordinator frame identity, sequence, kind or length mismatch", outcome.Error, StringComparison.Ordinal);
+        Assert.False(TargetExecPresentInDomain(fx), "invalid coordinator frame must not initialize the target");
+        Assert.Equal(PreparationStage.Prepared, fx.Journal.ReadLatest().Snapshot!.Stage);
+        ReconcileAfterOwnerDeath(fx);
+        Assert.False(TargetExecPresentInDomain(fx), "target remains absent after final cleanup");
+    }
+
+    [Fact]
+    public void NonRootWp04CoordinatorExitBeforeHeldRefusesAndReconciles()
+    {
+        SkipUnlessQualified();
+        var root = RepositoryRoot();
+        var fixtureImage = File.ReadAllBytes(System.IO.Path.Combine(root, "tests/Fixtures/Gagamba.LinuxM1.Native/out/fixture"));
+        var filter = File.ReadAllBytes(System.IO.Path.Combine(root, "artifacts/linux-m1/wp04/seccomp-filter.bin"));
+        using var fx = new IntegratedFixture(fixtureImage, Bytes(0x45, 64), null,
+            coordinator: BuildTestCoordinator(8), filter: filter);
+
+        var outcome = fx.Scope.StartOwnerPreparation(
+            fx.Request(null, enableHeldCoordinator: true), CancellationToken.None);
+
+        AssertSetupRejectedAndReconciled(fx, outcome, "status channel closed before a complete record");
+    }
+
+    [Fact]
+    public void NonRootWp04InvalidMountReportRefusesAndReconciles()
+    {
+        SkipUnlessQualified();
+        var root = RepositoryRoot();
+        var fixtureImage = File.ReadAllBytes(System.IO.Path.Combine(root, "tests/Fixtures/Gagamba.LinuxM1.Native/out/fixture"));
+        var filter = File.ReadAllBytes(System.IO.Path.Combine(root, "artifacts/linux-m1/wp04/seccomp-filter.bin"));
+        using var fx = new IntegratedFixture(fixtureImage, Bytes(0x45, 64), null,
+            coordinator: BuildTestCoordinator(9), filter: filter);
+
+        var outcome = fx.Scope.StartOwnerPreparation(
+            fx.Request(null, enableHeldCoordinator: true), CancellationToken.None);
+
+        AssertSetupRejectedAndReconciled(fx, outcome, "scratch tmpfs capacity mismatch");
+    }
+
+    [Fact]
+    public void NonRootWp04HostNamespaceClaimRefusesAndReconciles()
+    {
+        SkipUnlessQualified();
+        var root = RepositoryRoot();
+        var fixtureImage = File.ReadAllBytes(System.IO.Path.Combine(root, "tests/Fixtures/Gagamba.LinuxM1.Native/out/fixture"));
+        var filter = File.ReadAllBytes(System.IO.Path.Combine(root, "artifacts/linux-m1/wp04/seccomp-filter.bin"));
+        var hostMntNamespace = ReadNamespaceInode("mnt");
+        using var fx = new IntegratedFixture(fixtureImage, Bytes(0x45, 64), null,
+            coordinator: BuildTestCoordinator(10, hostMntNamespace), filter: filter);
+
+        var outcome = fx.Scope.StartOwnerPreparation(
+            fx.Request(null, enableHeldCoordinator: true), CancellationToken.None);
+
+        AssertSetupRejectedAndReconciled(fx, outcome, "trusted coordinator did not enter a private mnt namespace");
+    }
+
+    [Fact]
+    public void NonRootWp04CorruptPinnedFilterRefusesAndReconciles()
+    {
+        SkipUnlessQualified();
+        var root = RepositoryRoot();
+        var fixtureImage = File.ReadAllBytes(System.IO.Path.Combine(root, "tests/Fixtures/Gagamba.LinuxM1.Native/out/fixture"));
+        var coordinator = File.ReadAllBytes(System.IO.Path.Combine(root, "artifacts/linux-m1/wp04/exec-coordinator"));
+        var filter = File.ReadAllBytes(System.IO.Path.Combine(root, "artifacts/linux-m1/wp04/seccomp-filter.bin"));
+        filter[0] ^= 0x01;
+        using var fx = new IntegratedFixture(fixtureImage, Bytes(0x45, 64), null,
+            coordinator: coordinator, filter: filter);
+
+        var outcome = fx.Scope.StartOwnerPreparation(
+            fx.Request(null, enableHeldCoordinator: true), CancellationToken.None);
+
+        AssertSetupRejectedAndReconciled(fx, outcome, "staged seccomp filter digest does not match the approved artifact");
+    }
+
+    [Fact]
+    public void NonRootWp04SyntheticHeldReportPositiveControlAbortsAndReconciles()
+    {
+        SkipUnlessQualified();
+        var root = RepositoryRoot();
+        var fixtureImage = File.ReadAllBytes(System.IO.Path.Combine(root, "tests/Fixtures/Gagamba.LinuxM1.Native/out/fixture"));
+        var filter = File.ReadAllBytes(System.IO.Path.Combine(root, "artifacts/linux-m1/wp04/seccomp-filter.bin"));
+        using var fx = new IntegratedFixture(fixtureImage, Bytes(0x45, 64), null,
+            coordinator: BuildTestCoordinator(11), filter: filter);
+
+        var outcome = fx.Scope.StartOwnerPreparation(
+            fx.Request(null, enableHeldCoordinator: true), CancellationToken.None);
+        Assert.True(outcome.Ok, outcome.Error);
+        Assert.True(outcome.Held, outcome.Error);
+        Assert.False(outcome.Completed);
+        Assert.True(outcome.NoTargetInitializationMarkerAbsent);
+        Assert.False(TargetExecPresentInDomain(fx));
+
+        var aborted = fx.Scope.AbortHeld(outcome);
+        Assert.True(aborted.Accepted, aborted.Error);
+        Assert.True(aborted.OwnerExited, aborted.Error);
+        Assert.True(aborted.CleanupRequested, aborted.Error);
+        Assert.True(aborted.NoTargetInitializationMarkerAbsent);
+        ReconcileAfterOwnerDeath(fx);
+        Assert.False(TargetExecPresentInDomain(fx), "target remains absent after final reconciliation");
+        AssertFinalCleanupTargetMarkerAbsentIfTraced();
+    }
+
+    private static void AssertSetupRejectedAndReconciled(
+        IntegratedFixture fx, OwnerPreparationOutcome outcome, string expectedError)
+    {
+        Assert.False(outcome.Ok, expectedError);
+        Assert.False(outcome.Held, expectedError);
+        Assert.False(outcome.Completed, expectedError);
+        Assert.Contains(expectedError, outcome.Error, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("target constructor marker appeared", outcome.Error, StringComparison.OrdinalIgnoreCase);
+        Assert.NotNull(outcome.Owner);
+        outcome.Owner!.Refresh();
+        Assert.True(outcome.Owner.HasExited, "failed setup must stop and reap its owner before recovery");
+        Assert.Equal(PreparationStage.Prepared, fx.Journal.ReadLatest().Snapshot!.Stage);
+        Assert.False(TargetExecPresentInDomain(fx), "refused setup must not initialize the target");
+
+        ReconcileAfterOwnerDeath(fx);
+        Assert.False(TargetExecPresentInDomain(fx), "target remains absent after bounded final reconciliation");
+    }
+
+    [Fact]
+    public void NonRootWp04RealOwnerLossAfterHeldAcceptanceReconciles()
+    {
+        SkipUnlessQualified();
+        var root = RepositoryRoot();
+        var fixtureImage = File.ReadAllBytes(System.IO.Path.Combine(root, "tests/Fixtures/Gagamba.LinuxM1.Native/out/fixture"));
+        var coordinator = File.ReadAllBytes(System.IO.Path.Combine(root, "artifacts/linux-m1/wp04/exec-coordinator"));
+        var filter = File.ReadAllBytes(System.IO.Path.Combine(root, "artifacts/linux-m1/wp04/seccomp-filter.bin"));
+        using var ownerObservation = new RecordingPidFdProvider();
+        var fx = new IntegratedFixture(fixtureImage, Bytes(0x45, 64), null,
+            pidFdProvider: ownerObservation, coordinator: coordinator, filter: filter);
+        using var fixture = fx;
+        var outcome = fx.Scope.StartOwnerPreparation(fx.Request(null, enableHeldCoordinator: true), CancellationToken.None);
+
+        Assert.True(outcome.Ok, outcome.Error);
+        Assert.True(outcome.Held, outcome.Error);
+        Assert.False(outcome.Completed);
+        Assert.True(outcome.NoTargetInitializationMarkerAbsent);
+        var owner = outcome.Owner!;
+        Assert.NotEqual(Environment.ProcessId, owner.Id);
+        Assert.True(fx.Scope.TryOwnerPidFdExited(owner, 0, out var exited, out var pidfdError), pidfdError);
+        Assert.False(exited, "accepted HELD must retain a live owner before the real kill barrier");
+        Assert.Equal(PreparationStage.Prepared, fx.Journal.ReadLatest().Snapshot!.Stage);
+
+        var domainPath = System.IO.Path.Combine(DelegatedParent!, fx.ChildName);
+        Assert.Contains("populated 1", File.ReadAllText(System.IO.Path.Combine(domainPath, "cgroup.events")), StringComparison.Ordinal);
+        Assert.True(Assert.Single(fx.Scope.RetainedRecoveryLeases).AuthorityAlive);
+        Assert.Single(fx.Scope.RetainedStagingDirectories);
+        var competitor = new OwnershipJournal(new JournalFileStorage(), GetJournalDirectory(fx.Journal));
+        Assert.False(competitor.TryAcquireWriter(out _, out _), "accepted HELD owner must retain the journal writer until process death");
+
+        // Real SIGKILL after HELD has been accepted; no cancellation, exception,
+        // or cooperative owner exit stands in for process loss.
+        owner.Kill(entireProcessTree: false);
+        var ownerExit = fx.Scope.WaitForOwner(owner, TimeSpan.FromSeconds(10));
+        Assert.True(ownerExit.Exited, ownerExit.Error);
+        Assert.True(fx.Scope.TryOwnerPidFdExited(owner, 0, out exited, out pidfdError), pidfdError);
+        Assert.True(exited, "pidfd must report the accepted-HELD owner dead before reconciliation");
+        Assert.Equal(PreparationStage.Prepared, fx.Journal.ReadLatest().Snapshot!.Stage);
+        Assert.True(Assert.Single(fx.Scope.RetainedRecoveryLeases).AuthorityAlive,
+            "retained recovery scope must survive owner death");
+        Assert.False(TargetExecPresentInDomain(fx), "the HELD coordinator must not have initialized the target before cleanup");
+
+        ReconcileAfterOwnerDeath(fx);
+        Assert.True(outcome.NoTargetInitializationMarkerAbsent,
+            "the adapter's independently collected constructor-marker oracle remains absent after final cleanup");
     }
 
     [Fact]
@@ -462,6 +1189,7 @@ public sealed class NonRootQualificationTests
         Assert.Contains("owner request refused", outcome.Error);
         Assert.False(Directory.Exists(System.IO.Path.Combine(DelegatedParent!, fx.ChildName)));
         Assert.False(Directory.Exists(System.IO.Path.Combine(fx.Staging.Path, "prep-001")));
+        AssertFinalCleanupTargetMarkerAbsentIfTraced();
     }
 
     private static string RepositoryRoot()
@@ -589,6 +1317,69 @@ public sealed class NonRootQualificationTests
         Assert.Equal(PreparationStage.AllocationRegistered, fx.Journal.ReadLatest().Snapshot!.Stage);
         Assert.Single(fx.Scope.RetainedRecoveryLeases);
         Assert.Empty(fx.Scope.RetainedStagingDirectories);
+    }
+
+    [Fact]
+    public void NonRootWp04OwnerDeathAfterDomainRegistrationBeforeCoordinatorStartReconciles()
+    {
+        SkipUnlessQualified();
+        using var fx = new IntegratedFixture(Bytes(0x1D, 1024), null, null);
+        var outcome = fx.Scope.StartOwnerPreparation(fx.Request("after-registered"), CancellationToken.None);
+
+        AssertLiveOwnerAtBarrier(fx.Scope, outcome, "after-registered", fx.Journal);
+        var owner = outcome.Owner!;
+        var ownerStatus = File.ReadAllLines($"/proc/{owner.Id}/status");
+        var parentLine = Assert.Single(ownerStatus, line => line.StartsWith("PPid:", StringComparison.Ordinal));
+        Assert.Equal(Environment.ProcessId, int.Parse(parentLine.AsSpan("PPid:".Length).Trim()));
+        var before = fx.Journal.ReadLatest();
+        Assert.True(before.Ok, before.Error);
+        Assert.Equal(PreparationStage.AllocationRegistered, before.Snapshot!.Stage);
+        var recovery = Assert.Single(fx.Scope.RetainedRecoveryLeases);
+        Assert.True(recovery.AuthorityAlive);
+        var domainRecord = Assert.Single(before.Snapshot.Allocations, item => item.Kind == AllocationKind.Domain);
+        Assert.True(domainRecord.Confirmed);
+        Assert.Equal(recovery.Identity.ChildDevice, domainRecord.Device);
+        Assert.Equal(recovery.Identity.ChildInode, domainRecord.Inode);
+        var domainPath = System.IO.Path.Combine(DelegatedParent!, fx.ChildName);
+        Assert.True(Directory.Exists(domainPath), "the durable registered domain must exist at the kill barrier");
+        Assert.Contains("populated 0", File.ReadAllText(System.IO.Path.Combine(domainPath, "cgroup.events")), StringComparison.Ordinal);
+        Assert.Empty(File.ReadAllLines(System.IO.Path.Combine(domainPath, "cgroup.procs")));
+        Assert.Empty(fx.Scope.RetainedStagingDirectories);
+        Assert.False(Directory.Exists(System.IO.Path.Combine(fx.Staging.Path, "prep-001")));
+        Assert.False(TargetExecPresentInDomain(fx));
+        Assert.True(fx.Scope.TryOwnerPidFdExited(owner, 0, out var exited, out var pidfdError), pidfdError);
+        Assert.False(exited, "pidfd must prove the owner is live immediately before the real kill");
+
+        owner.Kill(entireProcessTree: false);
+        var ownerExit = fx.Scope.WaitForOwner(owner, TimeSpan.FromSeconds(10));
+        Assert.True(ownerExit.Exited, ownerExit.Error);
+        Assert.True(fx.Scope.TryOwnerPidFdExited(owner, 0, out exited, out pidfdError), pidfdError);
+        Assert.True(exited, "pidfd must observe the direct owner exit before recovery takeover");
+        Assert.True(recovery.AuthorityAlive, "recovery authority must survive owner death");
+        Assert.Equal(PreparationStage.AllocationRegistered, fx.Journal.ReadLatest().Snapshot!.Stage);
+
+        var parentFd = ((SafeFileHandle)Assert.Single(fx.Scope.RetainedStagingParents)).DangerousGetHandle().ToInt32();
+        var cleaner = new RegisteredDeathCleaner(parentFd);
+        var reconciler = new Reconciler(new RealClock(), TimeSpan.FromSeconds(5));
+        Assert.True(fx.Journal.TryAcquireWriter(out var recoveryWriter, out var writerError), writerError);
+        using (recoveryWriter!)
+        {
+            var first = reconciler.Reconcile(before.Snapshot, Boot(), recovery, cleaner, fx.Journal, recoveryWriter);
+            var reread = fx.Journal.ReadLatest();
+            Assert.True(reread.Ok, reread.Error);
+            var second = reconciler.Reconcile(reread.Snapshot!, Boot(), recovery, cleaner, fx.Journal, recoveryWriter);
+            Assert.Equal(ReconcileOutcome.CleanupConfirmed, first.Outcome);
+            Assert.Equal(first.Outcome, second.Outcome);
+            Assert.Equal(OwnershipCleanupState.Confirmed, fx.Journal.ReadLatest().Snapshot!.Cleanup);
+
+        AssertFinalCleanupTargetMarkerAbsentIfTraced();
+        }
+
+        Assert.True(fx.Scope.ReapAdoptedChildren(TimeSpan.FromSeconds(5), out _, out var reapError), reapError);
+        Assert.False(Directory.Exists(domainPath));
+        Assert.False(Directory.Exists(System.IO.Path.Combine(fx.Staging.Path, "prep-001")));
+        Assert.False(TargetExecPresentInDomain(fx), "target remains absent after final reconciliation");
+        AssertFinalCleanupTargetMarkerAbsentIfTraced();
     }
 
     [Fact]

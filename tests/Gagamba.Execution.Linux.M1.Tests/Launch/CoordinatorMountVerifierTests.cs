@@ -39,13 +39,16 @@ public sealed class CoordinatorMountVerifierTests
     [Theory]
     [InlineData("size=7167k")]
     [InlineData("size=7169k")]
+    [InlineData("size=bad")]
+    [InlineData("size=")]
     public void RejectsATmpCeilingThatIsNotExactlySection11(string size)
     {
         SkipUnlessLinux();
         var mountInfo = ValidMountInfo.Replace("size=7168k", size, StringComparison.Ordinal);
 
         Assert.False(CoordinatorMountVerifier.Validate(mountInfo, NoHostDevices, out var error));
-        Assert.Contains("/tmp expected 7340032 bytes", error, StringComparison.Ordinal);
+        Assert.Contains(size is "size=bad" or "size=" ? "size option is missing or unsupported" : "/tmp expected 7340032 bytes",
+            error, StringComparison.Ordinal);
     }
 
     [Theory]
@@ -109,6 +112,29 @@ public sealed class CoordinatorMountVerifierTests
 
         Assert.False(CoordinatorMountVerifier.Validate(mountInfo, NoHostDevices, out var error));
         Assert.Contains("duplicate mount point", error, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void RejectsDuplicateMountIds()
+    {
+        SkipUnlessLinux();
+        var duplicateId = ValidMountInfo.Replace("504 450 0:91 / /tmp", "474 450 0:91 / /tmp", StringComparison.Ordinal);
+
+        Assert.False(CoordinatorMountVerifier.Validate(duplicateId, NoHostDevices, out var error));
+        Assert.Contains("duplicate mount ID", error, StringComparison.Ordinal);
+    }
+
+    [Theory]
+    [InlineData("shared:1")]
+    [InlineData("master:1")]
+    public void RejectsProhibitedPropagationMetadata(string propagation)
+    {
+        SkipUnlessLinux();
+        var mountInfo = ValidMountInfo.Replace("rw,nosuid,nodev,relatime - tmpfs tmpfs rw,size=7168k",
+            $"rw,nosuid,nodev,relatime {propagation} - tmpfs tmpfs rw,size=7168k", StringComparison.Ordinal);
+
+        Assert.False(CoordinatorMountVerifier.Validate(mountInfo, NoHostDevices, out var error));
+        Assert.Contains("identity/topology mismatch: /tmp", error, StringComparison.Ordinal);
     }
 
     [Theory]
