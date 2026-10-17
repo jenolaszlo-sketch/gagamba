@@ -1,5 +1,6 @@
 using System.Buffers.Binary;
 using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -391,6 +392,8 @@ internal sealed class BubblewrapAdapter : IHeldLauncher
             error = "trusted coordinator HELD report does not prove the required uid/capability/seccomp/rlimit state";
             return false;
         }
+        if (!CoordinatorMountVerifier.HasPrivateNamespaces(report.NamespaceInodes, out error))
+            return false;
         var expected = new[] { tool, input, coordinator };
         for (var i = 0; i < expected.Length; i++)
         {
@@ -519,10 +522,85 @@ internal static class CoordinatorMountVerifier
     private static readonly HashSet<string> Expected = new(StringComparer.Ordinal)
     { "/", "/tool", "/input", "/coordinator", "/proc", "/tmp", "/dev/shm" };
 
-    internal static bool Validate(string mountInfo, out string error)
+    private static readonly string[] NamespaceNames = { "user", "mnt", "pid", "net", "ipc", "uts" };
+
+    private const ulong ExpectedTmpBytes = 7UL * 1024 * 1024;
+    private const ulong ExpectedShmBytes = 1UL * 1024 * 1024;
+
+    private sealed record MountEntry(
+        int MountId,
+        int ParentId,
+        string Device,
+        string Root,
+        string MountPoint,
+        string MountOptions,
+        string FileSystemType,
+        string Source,
+        string SuperOptions,
+        string[] OptionalFields);
+
+    internal static bool HasPrivateNamespaces(IReadOnlyList<ulong> namespaceInodes, out string error)
     {
         error = string.Empty;
-        var found = new Dictionary<string, (string FsType, string MountOptions, string SuperOptions)>(StringComparer.Ordinal);
+        if (namespaceInodes.Count != NamespaceNames.Length)
+        {
+            error = "trusted coordinator namespace identity count is invalid";
+            return false;
+        }
+
+        for (var i = 0; i < NamespaceNames.Length; i++)
+        {
+            var path = $"/proc/self/ns/{NamespaceNames[i]}";
+            string? target;
+            try { target = new FileInfo(path).LinkTarget; }
+            catch (IOException)
+            {
+                error = $"host {NamespaceNames[i]} namespace identity is unavailable";
+                return false;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                error = $"host {NamespaceNames[i]} namespace identity is unavailable";
+                return false;
+            }
+
+            if (!TryParseNamespaceLink(target, out var hostInode))
+            {
+                error = $"host {NamespaceNames[i]} namespace identity is malformed";
+                return false;
+            }
+            if (namespaceInodes[i] == hostInode)
+            {
+                error = $"trusted coordinator did not enter a private {NamespaceNames[i]} namespace";
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static bool TryParseNamespaceLink(string? target, out ulong inode)
+    {
+        inode = 0;
+        if (target is null || !target.EndsWith(']')) return false;
+        var open = target.LastIndexOf('[');
+        return open > 0
+            && ulong.TryParse(target.AsSpan(open + 1, target.Length - open - 2),
+                NumberStyles.None, CultureInfo.InvariantCulture, out inode)
+            && inode != 0;
+    }
+
+    internal static bool Validate(string mountInfo, out string error)
+    {
+        if (!TryReadHostMountDevices(out var hostDevices, out error)) return false;
+        return Validate(mountInfo, hostDevices, out error);
+    }
+
+    internal static bool Validate(string mountInfo, IReadOnlySet<string> hostDevices, out string error)
+    {
+        error = string.Empty;
+        var found = new Dictionary<string, MountEntry>(StringComparer.Ordinal);
+        var mountIds = new HashSet<int>();
         foreach (var line in mountInfo.Split('\n', StringSplitOptions.RemoveEmptyEntries))
         {
             var separator = line.IndexOf(" - ", StringComparison.Ordinal);
@@ -530,35 +608,157 @@ internal static class CoordinatorMountVerifier
             var left = line[..separator].Split(' ', StringSplitOptions.RemoveEmptyEntries);
             var right = line[(separator + 3)..].Split(' ', StringSplitOptions.RemoveEmptyEntries);
             if (left.Length < 6 || right.Length < 3) { error = "truncated coordinator mount record"; return false; }
+            if (!int.TryParse(left[0], NumberStyles.None, CultureInfo.InvariantCulture, out var mountId) || mountId <= 0
+                || !int.TryParse(left[1], NumberStyles.None, CultureInfo.InvariantCulture, out var parentId) || parentId <= 0
+                || !IsDeviceNumber(left[2]))
+            { error = "invalid mount identity in coordinator inventory"; return false; }
+            if (!mountIds.Add(mountId)) { error = "duplicate mount ID in coordinator inventory"; return false; }
             var point = UnescapeMountPoint(left[4]);
-            var fs = right[0];
-            var options = left[5];
-            var super = right[2];
             if (found.ContainsKey(point)) { error = $"duplicate mount point in coordinator inventory: {point}"; return false; }
-            found.Add(point, (fs, options, super));
+            found.Add(point, new MountEntry(
+                mountId, parentId, left[2], UnescapeMountPoint(left[3]), point, left[5],
+                right[0], UnescapeMountPoint(right[1]), right[2], left.Skip(6).ToArray()));
         }
         if (!Expected.SetEquals(found.Keys)) { error = "sandbox mount inventory differs from the exact WP04 tree"; return false; }
 
         foreach (var point in new[] { "/", "/tool", "/input", "/coordinator", "/proc" })
         {
-            if (!found[point].MountOptions.Split(',').Contains("ro", StringComparer.Ordinal))
+            if (!HasOption(found[point].MountOptions, "ro"))
             { error = $"required read-only mount is writable: {point}"; return false; }
         }
-        if (found["/"].FsType != "tmpfs" || found["/proc"].FsType != "proc"
-            || found["/tmp"].FsType != "tmpfs" || found["/dev/shm"].FsType != "tmpfs")
+        if (found["/"].FileSystemType != "tmpfs" || found["/proc"].FileSystemType != "proc"
+            || found["/tmp"].FileSystemType != "tmpfs" || found["/dev/shm"].FileSystemType != "tmpfs")
         { error = "sandbox mount filesystem type mismatch"; return false; }
         foreach (var point in new[] { "/tmp", "/dev/shm" })
         {
-            if (!found[point].MountOptions.Split(',').Contains("rw", StringComparer.Ordinal)
-                || !found[point].MountOptions.Split(',').Contains("nodev", StringComparer.Ordinal)
-                || !found[point].MountOptions.Split(',').Contains("nosuid", StringComparer.Ordinal))
+            if (!HasOption(found[point].MountOptions, "rw")
+                || !HasOption(found[point].MountOptions, "nodev")
+                || !HasOption(found[point].MountOptions, "nosuid"))
             { error = $"scratch mount policy mismatch: {point}"; return false; }
         }
-        if (!found["/tmp"].SuperOptions.Split(',').Contains("size=7340032", StringComparer.Ordinal)
-            || !found["/dev/shm"].SuperOptions.Split(',').Contains("size=1048576", StringComparer.Ordinal))
-        { error = "scratch tmpfs capacity differs from Section 11"; return false; }
+
+        var root = found["/"];
+        var tmp = found["/tmp"];
+        var shm = found["/dev/shm"];
+        if (!IsPrivateScratchMount(tmp, root, shm, hostDevices, out error)
+            || !IsPrivateScratchMount(shm, root, tmp, hostDevices, out error))
+            return false;
+
+        if (!TryReadTmpfsSize(tmp.SuperOptions, out var tmpBytes)
+            || !TryReadTmpfsSize(shm.SuperOptions, out var shmBytes))
+        {
+            error = $"scratch tmpfs size option is missing or unsupported; /tmp: {Describe(tmp)}; /dev/shm: {Describe(shm)}";
+            return false;
+        }
+        var pageSize = (ulong)Environment.SystemPageSize;
+        if (pageSize == 0 || ExpectedTmpBytes % pageSize != 0 || ExpectedShmBytes % pageSize != 0)
+        {
+            error = "Section 11 scratch ceilings are not aligned to the host page size";
+            return false;
+        }
+        if (tmpBytes != ExpectedTmpBytes || shmBytes != ExpectedShmBytes)
+        {
+            error = $"scratch tmpfs capacity mismatch: /tmp expected {ExpectedTmpBytes} bytes, observed {tmpBytes}; "
+                + $"/dev/shm expected {ExpectedShmBytes} bytes, observed {shmBytes}; /tmp: {Describe(tmp)}; /dev/shm: {Describe(shm)}";
+            return false;
+        }
         return true;
     }
+
+    private static bool IsPrivateScratchMount(
+        MountEntry entry, MountEntry root, MountEntry other, IReadOnlySet<string> hostDevices, out string error)
+    {
+        error = string.Empty;
+        if (entry.ParentId != root.MountId || entry.Root != "/" || entry.Source != "tmpfs"
+            || entry.Device == root.Device || entry.Device == other.Device
+            || hostDevices.Contains(entry.Device)
+            || entry.OptionalFields.Any(field => field.StartsWith("shared:", StringComparison.Ordinal)
+                || field.StartsWith("master:", StringComparison.Ordinal)))
+        {
+            error = $"scratch mount identity/topology mismatch: {entry.MountPoint}: {Describe(entry)}";
+            return false;
+        }
+        return true;
+    }
+
+    private static bool IsDeviceNumber(string value)
+    {
+        var colon = value.IndexOf(':');
+        return colon > 0 && colon == value.LastIndexOf(':')
+            && uint.TryParse(value.AsSpan(0, colon), NumberStyles.None, CultureInfo.InvariantCulture, out _)
+            && uint.TryParse(value.AsSpan(colon + 1), NumberStyles.None, CultureInfo.InvariantCulture, out _);
+    }
+
+    private static bool TryReadHostMountDevices(out IReadOnlySet<string> devices, out string error)
+    {
+        devices = new HashSet<string>(StringComparer.Ordinal);
+        error = string.Empty;
+        string[] lines;
+        try { lines = File.ReadAllLines("/proc/self/mountinfo"); }
+        catch (IOException)
+        {
+            error = "host mount identity inventory is unavailable";
+            return false;
+        }
+        catch (UnauthorizedAccessException)
+        {
+            error = "host mount identity inventory is unavailable";
+            return false;
+        }
+
+        var result = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var line in lines)
+        {
+            var separator = line.IndexOf(" - ", StringComparison.Ordinal);
+            if (separator < 0) { error = "malformed host mount identity inventory"; return false; }
+            var left = line[..separator].Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            if (left.Length < 6 || !IsDeviceNumber(left[2]))
+            { error = "truncated host mount identity inventory"; return false; }
+            result.Add(left[2]);
+        }
+        if (result.Count == 0) { error = "host mount identity inventory is empty"; return false; }
+        devices = result;
+        return true;
+    }
+
+    private static bool HasOption(string options, string expected) =>
+        options.Split(',').Contains(expected, StringComparer.Ordinal);
+
+    private static bool TryReadTmpfsSize(string superOptions, out ulong bytes)
+    {
+        bytes = 0;
+        var values = superOptions.Split(',')
+            .Where(option => option.StartsWith("size=", StringComparison.Ordinal))
+            .ToArray();
+        if (values.Length != 1) return false;
+        var value = values[0].AsSpan("size=".Length);
+        if (value.IsEmpty) return false;
+
+        ulong multiplier = 1;
+        var last = value[^1];
+        if (char.IsLetter(last))
+        {
+            multiplier = char.ToLowerInvariant(last) switch
+            {
+                'k' => 1024UL,
+                'm' => 1024UL * 1024,
+                'g' => 1024UL * 1024 * 1024,
+                _ => 0,
+            };
+            if (multiplier == 0) return false;
+            value = value[..^1];
+        }
+        if (!ulong.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out var amount)
+            || amount == 0 || amount > ulong.MaxValue / multiplier)
+            return false;
+        bytes = amount * multiplier;
+        return true;
+    }
+
+    private static string Describe(MountEntry entry) =>
+        $"id={entry.MountId} parent={entry.ParentId} dev={entry.Device} root={entry.Root} "
+        + $"mount={entry.MountPoint} fs={entry.FileSystemType} source={entry.Source} "
+        + $"mount-options={entry.MountOptions} super-options={entry.SuperOptions}";
 
     private static string UnescapeMountPoint(string value) => value
         .Replace("\\040", " ", StringComparison.Ordinal)

@@ -100,6 +100,35 @@ public sealed class NonRootQualificationTests
 
     private static string Boot() => CgroupInterop.TryReadBootId(out var id, out _) ? id : "unknown";
 
+    private static ulong ReadNamespaceInode(string name)
+    {
+        var target = new FileInfo($"/proc/self/ns/{name}").LinkTarget;
+        Assert.NotNull(target);
+        var open = target!.LastIndexOf('[');
+        Assert.True(open > 0);
+        Assert.True(ulong.TryParse(target.AsSpan(open + 1, target.Length - open - 2), out var inode));
+        return inode;
+    }
+
+    private static void AssertScratchMountsAreDistinctChildrenOfSandboxRoot(string mountInfo)
+    {
+        var records = mountInfo.Split('\n', StringSplitOptions.RemoveEmptyEntries)
+            .Select(line =>
+            {
+                var separator = line.IndexOf(" - ", StringComparison.Ordinal);
+                Assert.True(separator > 0);
+                var fields = line[..separator].Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                Assert.True(fields.Length >= 6);
+                return (Id: fields[0], Parent: fields[1], Device: fields[2], Point: fields[4]);
+            }).ToDictionary(record => record.Point, StringComparer.Ordinal);
+
+        var root = records["/"].Id;
+        Assert.Equal(root, records["/tmp"].Parent);
+        Assert.Equal(root, records["/dev/shm"].Parent);
+        Assert.NotEqual(records["/tmp"].Id, records["/dev/shm"].Id);
+        Assert.NotEqual(records["/tmp"].Device, records["/dev/shm"].Device);
+    }
+
     private sealed class FailingPidFdProvider : IPidFdProvider, IDisposable
     {
         private readonly ManualResetEventSlim _attempted = new(false);
@@ -371,6 +400,8 @@ public sealed class NonRootQualificationTests
         Assert.NotNull(outcome.HeldReport);
         Assert.Equal(0u, outcome.HeldReport!.Uid);
         Assert.Equal(0UL, outcome.HeldReport.CapEff);
+        Assert.NotEqual(ReadNamespaceInode("mnt"), outcome.HeldReport.NamespaceInodes[1]);
+        AssertScratchMountsAreDistinctChildrenOfSandboxRoot(outcome.HeldReport.MountInfo);
 
         var owner = outcome.Owner!;
         Assert.NotEqual(Environment.ProcessId, owner.Id);
