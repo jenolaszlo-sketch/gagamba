@@ -183,7 +183,7 @@ internal static class OwnerPreparationSpecificationCodec
 
     internal static OwnershipSnapshot BuildIntent(OwnerPreparationSpecification request) =>
         new(
-            OwnershipSnapshotCodec.CurrentVersion,
+            OwnershipSnapshotCodec.LegacyVersion,
             0,
             request.ExecutionId,
             request.BootId,

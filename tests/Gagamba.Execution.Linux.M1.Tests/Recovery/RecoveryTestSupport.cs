@@ -2,6 +2,7 @@
 // backends with per-step fault injection, plus an injectable clock.
 using Gagamba.Execution.Linux.M1.Lifecycle;
 using Gagamba.Execution.Linux.M1.Recovery;
+using Gagamba.Execution.Restricted;
 
 namespace Gagamba.Execution.Linux.M1.Tests.Recovery;
 
@@ -248,6 +249,79 @@ internal static class RecoveryTestSupport
             StagingParentDevice: 0xABCD, StagingParentInode: 101,
             Allocations: allocations ?? Array.Empty<AllocationEntry>(), Preparation: preparation)) with { };
 
-    internal const ushort OwnershipCodecVersion = 2;
+    internal const ushort OwnershipCodecVersion = OwnershipSnapshotCodec.LegacyVersion;
+    internal const ushort CurrentCodecVersion = OwnershipSnapshotCodec.CurrentVersion;
 
+    internal static readonly Guid Issuer = new("cccccccc-0000-0000-0000-000000000003");
+    internal static readonly Guid Generation = new("dddddddd-0000-0000-0000-000000000004");
+    internal static readonly Guid Preparation = new("eeeeeeee-0000-0000-0000-000000000005");
+
+    internal static RecordedPreparation PreparationIdentity(byte fill = 0x11) =>
+        new(Execution, Issuer, Generation, Preparation, Enumerable.Repeat(fill, 32).ToArray());
+
+    internal static OwnershipSnapshot V3Snapshot(
+        ReleaseRecord? release = null,
+        StopRecord? stop = null,
+        ExecObservation? exec = null,
+        RootObservation? root = null,
+        PreparationStage stage = PreparationStage.Prepared,
+        RecordedPreparation? preparation = null,
+        OwnershipCleanupState cleanup = OwnershipCleanupState.NotStarted,
+        byte completedCleanup = 0,
+        OwnershipSnapshot? basis = null)
+    {
+        var snapshot = (basis ?? Snapshot()) with
+        {
+            Version = CurrentCodecVersion,
+            Stage = stage,
+            Preparation = preparation ?? PreparationIdentity(),
+            Release = release,
+            Stop = stop,
+            Exec = exec,
+            Root = root,
+            Cleanup = cleanup,
+            CompletedCleanup = completedCleanup,
+        };
+        return snapshot;
+    }
+
+    internal static ReleaseRecord ReleaseIntent(
+        long intentAt = 1_000,
+        long setupDeadline = 10_000,
+        long overallDeadline = 30_000) =>
+        new(ReleaseTag.Intent, intentAt, setupDeadline, overallDeadline);
+
+    internal static ReleaseRecord ReleaseCommitted(
+        DeliveryResult delivery = DeliveryResult.Delivered,
+        long intentAt = 1_000,
+        long setupDeadline = 10_000,
+        long overallDeadline = 30_000,
+        long committedAt = 2_000) =>
+        new(ReleaseTag.Committed, intentAt, setupDeadline, overallDeadline, committedAt, delivery);
+
+    internal static StopRecord Stop(
+        long acceptedAt = 2_000,
+        StopCauseKind cause = StopCauseKind.CallerStop) =>
+        new(acceptedAt, cause, acceptedAt + OwnershipSnapshotCodec.StopConfirmationAllowanceNanoseconds);
+
+    internal static ExecObservation ExecFailed(int errno = 2) =>
+        new(ExecTag.FailedBeforeExec, errno);
+
+    internal static ExecObservation ExecConfirmed(ExecBasis basis = ExecBasis.CoordinatorFrame) =>
+        new(ExecTag.Confirmed, Basis: basis);
+
+    internal static ExecObservation ExecUnknown() => new(ExecTag.Unknown);
+
+    internal static RootObservation RootUnknown(bool rawWait = false, int rawWaitStatus = 0) =>
+        new(RootKind.Unknown, RawWaitPresent: rawWait, RawWaitStatus: rawWaitStatus);
+
+    internal static RootObservation RootNotStarted() => new(RootKind.NotStarted);
+
+    internal static RootObservation RootExited(int code = 0, bool rawWait = false) =>
+        new(RootKind.Exited, ExitCode: code, RawWaitPresent: rawWait,
+            RawWaitStatus: rawWait ? code << 8 : 0);
+
+    internal static RootObservation RootSignalled(int signal = 15, bool core = false, bool rawWait = false) =>
+        new(RootKind.Signalled, Signal: signal, CoreDumped: core,
+            RawWaitPresent: rawWait, RawWaitStatus: rawWait ? signal | (core ? 0x80 : 0) : 0);
 }

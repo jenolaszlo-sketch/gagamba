@@ -440,7 +440,7 @@ internal static class OwnerPreparationTransaction
         }
 
         return new OwnershipSnapshot(
-            OwnershipSnapshotCodec.CurrentVersion, 0, request.ExecutionId, request.BootId,
+            OwnershipSnapshotCodec.LegacyVersion, 0, request.ExecutionId, request.BootId,
             domain.CgroupMountId, domain.CgroupMountFsType,
             domain.ParentDevice, domain.ParentInode, domain.ChildName,
             domain.ChildDevice, domain.ChildInode, request.LeaseGeneration,
