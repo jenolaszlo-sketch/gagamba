@@ -448,6 +448,20 @@ internal static class OwnershipTransitionValidator
             return false;
         }
 
+        if (previous.Cleanup == OwnershipCleanupState.Confirmed
+            && next.Cleanup != OwnershipCleanupState.Confirmed)
+        {
+            error = "confirmed cleanup must not regress";
+            return false;
+        }
+
+        if (previous.Cleanup is OwnershipCleanupState.Failed or OwnershipCleanupState.Unknown
+            && next.Cleanup is OwnershipCleanupState.NotStarted or OwnershipCleanupState.InProgress)
+        {
+            error = "failed/unknown cleanup must not regress to pending";
+            return false;
+        }
+
         var releaseChanged = !Equals(previous.Release, next.Release);
         var stopChanged = !Equals(previous.Stop, next.Stop);
         var execChanged = !Equals(previous.Exec, next.Exec);
