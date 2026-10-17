@@ -1,6 +1,7 @@
 /* WP04 trusted setup coordinator; deliberately no target launch or RELEASE path. */
 #define _GNU_SOURCE
 #include "protocol.h"
+#include "release_protocol.h"
 #include <errno.h>
 #include <fcntl.h>
 #include <limits.h>
@@ -19,6 +20,7 @@
 #define CONFIG_MANIFEST_LEN 14u
 #define CONFIG_EXEC_ID 18u
 #define CONFIG_PREP_ID 34u
+#define CONFIG_GENERATION 50u
 #define CONFIG_DIGEST 66u
 #define CONFIG_TOOL_DEV 98u
 #define CONFIG_TOOL_INO 106u
@@ -30,7 +32,7 @@
 #define CONFIG_DEADLINE 194u
 
 static unsigned char cfg[GGM1_MAX_CONFIG_BYTES];
-static const unsigned char *exec_id, *prep_id, *digest;
+static const unsigned char *exec_id, *prep_id, *generation, *digest;
 static uint64_t deadline_ns;
 static uint64_t setup_deadline_ns;
 static int have_config;
@@ -68,7 +70,7 @@ static int load_config(void)
     if(read_all(3,cfg,sizeof(cfg),&n) || n!=(size_t)st.st_size
        || memcmp(cfg,GGM1_CONFIG_MAGIC,8) || rd16(cfg+8)!=GGM1_CONFIG_VERSION
        || rd32(cfg+10)!=n || rd32(cfg+CONFIG_MANIFEST_LEN)!=n-GGM1_CONFIG_HEADER_BYTES) return -1;
-    exec_id=cfg+CONFIG_EXEC_ID; prep_id=cfg+CONFIG_PREP_ID; digest=cfg+CONFIG_DIGEST;
+    exec_id=cfg+CONFIG_EXEC_ID; prep_id=cfg+CONFIG_PREP_ID; generation=cfg+CONFIG_GENERATION; digest=cfg+CONFIG_DIGEST;
     setup_deadline_ns=rd64(cfg+CONFIG_SETUP_DEADLINE);
     deadline_ns=rd64(cfg+CONFIG_DEADLINE);
     if(!setup_deadline_ns || setup_deadline_ns>=deadline_ns || !now_ns() || now_ns()>=setup_deadline_ns) return -1;
@@ -183,7 +185,25 @@ int main(void)
         uint64_t now=now_ns();if(!now||now>=deadline_ns)return fail(30,2);
         uint64_t rem=(deadline_ns-now)/1000000ull;int ms=rem>250?250:(int)rem;
         int r=poll(&pfd,1,ms);if(r<0&&errno==EINTR)continue;if(r<0)return fail(31,2);if(!r)continue;
-        if(pfd.revents&POLLIN){ssize_t got=read(4,&b,1);if(got>0)return fail(32,2);if(got<0&&errno==EINTR)continue;}
+        if(pfd.revents&POLLIN){
+            unsigned char frame[GGM1_RELEASE_BYTES];size_t got=0;
+            while(got<sizeof(frame)){
+                ssize_t nread=read(4,frame+got,sizeof(frame)-got);
+                if(nread<0&&errno==EINTR)continue;
+                if(nread<0)return fail(40,2);
+                if(nread==0)return fail(33,2);
+                got+=(size_t)nread;
+            }
+            struct pollfd extra={.fd=4,.events=POLLIN};
+            int have_extra=poll(&extra,1,0);
+            if(have_extra<0)return fail(40,2);
+            if(have_extra>0&&(extra.revents&POLLIN))return fail(41,2);
+            if(!ggm1_release_frame_valid(frame,sizeof(frame),exec_id,prep_id,digest,generation,deadline_ns,now_ns()))
+                return fail(42,2);
+            close(4);
+            /* WP05 stops at the pre-exec boundary. Target fork/exec is WP10. */
+            return 0;
+        }
         if(pfd.revents&(POLLHUP|POLLERR))return fail(33,2);
         return fail(34,2);
     }
