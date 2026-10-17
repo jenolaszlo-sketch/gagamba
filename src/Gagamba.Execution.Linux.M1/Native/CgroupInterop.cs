@@ -51,6 +51,98 @@ internal sealed class CgroupBackend : IDomainBackend
 
     internal IReadOnlyDictionary<string, int> ReadbackFds => _readbackFds;
 
+    /// <summary>Installs and reads back the fixed WP04 fixture-envelope
+    /// limits before any helper is admitted to the newly created domain.</summary>
+    internal bool TryInstallWp04Limits(out string error)
+    {
+        error = string.Empty;
+        if (_disposed)
+        {
+            error = "domain backend is disposed";
+            return false;
+        }
+
+        foreach (var (name, expected) in new[]
+        {
+            ("memory.max", "134217728"),
+            ("memory.swap.max", "0"),
+            ("pids.max", "48"),
+        })
+        {
+            if (!_readbackFds.TryGetValue(name, out var fd))
+            {
+                error = $"retained {name} descriptor is missing";
+                return false;
+            }
+
+            var bytes = System.Text.Encoding.ASCII.GetBytes(expected);
+            var errno = PreparationInterop.WriteAll(fd, bytes, 0, bytes.Length);
+            if (errno != 0)
+            {
+                error = $"{name} write errno {errno}";
+                return false;
+            }
+
+            if (!CgroupInterop.TryReadControlText(_domainFd, name, out var actual, out error)
+                || !string.Equals(actual, expected, StringComparison.Ordinal))
+            {
+                if (error.Length == 0) error = $"{name} readback mismatch: {actual}";
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    internal bool TryReadWp04Limits(out IReadOnlyDictionary<string, string> values, out string error)
+    {
+        var result = new Dictionary<string, string>(StringComparer.Ordinal);
+        values = result;
+        error = string.Empty;
+        if (_disposed) { error = "domain backend is disposed"; return false; }
+        foreach (var name in new[] { "memory.max", "memory.swap.max", "pids.max" })
+        {
+            if (!CgroupInterop.TryReadControlText(_domainFd, name, out var actual, out error)) return false;
+            result.Add(name, actual);
+        }
+        return true;
+    }
+
+    /// <summary>Duplicates the retained domain directory for atomic
+    /// posix_spawn setcgroup. The duplicate is CLOEXEC and remains separate
+    /// from the backend's recovery handles.</summary>
+    internal int DuplicateDomainDirectoryFd() => _disposed ? -1 : PreparationInterop.Dup(_domainFd);
+
+    /// <summary>Observation only: checks a numeric process ID against
+    /// cgroup.procs opened relative to the retained domain descriptor. This
+    /// never grants process or cgroup authority.</summary>
+    internal bool ContainsProcess(int pid, out string error)
+    {
+        error = string.Empty;
+        if (_disposed || pid <= 0)
+        {
+            error = "domain observation handle unavailable or PID invalid";
+            return false;
+        }
+
+        if (!CgroupInterop.TryReadControlText(_domainFd, "cgroup.procs", out var text, out error))
+        {
+            return false;
+        }
+
+        foreach (var line in text.Split(new[] { '\n', '\r', ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries))
+        {
+            if (int.TryParse(line, NumberStyles.None, CultureInfo.InvariantCulture, out var observed)
+                && observed == pid)
+            {
+                return true;
+            }
+        }
+
+        error = "process was not observed in the retained domain";
+        return false;
+    }
+
     /// <summary>Primary handles in the fixed role order for SCM_RIGHTS
     /// transfer to the owner: parent, domain dir, kill, events,
     /// memory.max, memory.swap.max, pids.max.</summary>

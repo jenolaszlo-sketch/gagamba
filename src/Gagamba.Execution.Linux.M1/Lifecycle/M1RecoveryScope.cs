@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.Win32.SafeHandles;
 using Gagamba.Execution.Linux.M1.Native;
+using Gagamba.Execution.Linux.M1.Launch;
 using Gagamba.Execution.Linux.M1.Preparation;
 using Gagamba.Execution.Linux.M1.Preparation.Native;
 using Gagamba.Execution.Linux.M1.Recovery;
@@ -45,7 +46,8 @@ internal sealed record OwnerPreparationRequest(
     Func<IReadOnlyList<StagedObjectDescription>, (RestrictedManifest Manifest, PreparationIdentity Identity)> ManifestFactory,
     long ExpiresAtNs,
     string? TestBarrier = null,
-    bool WithholdStagingRetentionAckForTest = false);
+    bool WithholdStagingRetentionAckForTest = false,
+    bool EnableHeldCoordinator = false);
 
 /// <summary>Non-authoritative owner result. The capability and primary
 /// domain lease remain in the live owner process; only a bounded
@@ -55,10 +57,17 @@ internal sealed record OwnerPreparationOutcome(
     OwnerPreparedDescription? Description,
     Process? Owner,
     string? Barrier,
-    string Error)
+    string Error,
+    bool Held = false,
+    CoordinatorHeldReport? HeldReport = null,
+    byte[]? CoordinatorStatusFrame = null,
+    bool NoTargetInitializationMarkerAbsent = false)
 {
-    internal bool Ok => Completed && Error.Length == 0 && Description is not null && Owner is not null;
+    internal bool Ok => (Completed || Held) && Error.Length == 0 && Description is not null && Owner is not null;
 }
+
+internal sealed record HeldOwnerAbortOutcome(bool Accepted, bool OwnerExited, bool CleanupRequested, string Error,
+    bool NoTargetInitializationMarkerAbsent = false);
 
 internal sealed class M1RecoveryScope : IDisposable
 {
@@ -265,7 +274,9 @@ internal sealed class M1RecoveryScope : IDisposable
             request.Plan.MaxObjects,
             request.Plan.Environment ?? Array.Empty<KeyValuePair<string, string>>(),
             request.ExpiresAtNs,
-            request.TestBarrier);
+            request.TestBarrier,
+            request.EnableHeldCoordinator,
+            MonotonicNowNanoseconds());
 
         byte[] encodedSpecification;
         OwnershipSnapshot intent;
@@ -543,7 +554,10 @@ internal sealed class M1RecoveryScope : IDisposable
                 return FailOwnerPreparation(owner, channel, $"Prepared acknowledgement failed: {operationError}");
             }
 
-            if (!ReceiveControlOrBarrier(channel, OwnerProtocolMessageType.Completed,
+            var expectedTerminal = request.EnableHeldCoordinator
+                ? OwnerProtocolMessageType.HeldReady
+                : OwnerProtocolMessageType.Completed;
+            if (!ReceiveControlOrBarrier(channel, expectedTerminal,
                     out message, out barrier, out operationError))
             {
                 return FailOwnerPreparation(owner, channel, operationError);
@@ -554,18 +568,104 @@ internal sealed class M1RecoveryScope : IDisposable
                 return new OwnerPreparationOutcome(false, preparedDescription, owner, barrier, string.Empty);
             }
 
+            if (request.EnableHeldCoordinator)
+            {
+                if (message!.Payload.Length < 2 || message.Payload[0] != 1
+                    || !CoordinatorProtocol.TryDecode(message.Payload.AsSpan(1), request.ExecutionId,
+                        preparedDescription!.PreparationId, preparedDescription.ManifestDigest, 1,
+                        out var coordinatorFrame, out operationError)
+                    || !CoordinatorProtocol.TryDecodeHeldReport(coordinatorFrame!, out var heldReport, out operationError))
+                {
+                    return FailOwnerPreparation(owner, channel, $"owner HELD frame refused: {operationError}");
+                }
+
+                return new OwnerPreparationOutcome(false, preparedDescription, owner, null, string.Empty,
+                    Held: true, HeldReport: heldReport, CoordinatorStatusFrame: message.Payload.AsSpan(1).ToArray(),
+                    NoTargetInitializationMarkerAbsent: true);
+            }
+
             if (!OwnerPreparationSpecificationCodec.TryDecodePreparedDescription(
                     message!.Payload, out var completedDescription, out operationError)
                 || !SameDescription(completedDescription!, preparedDescription!))
-            {
                 return FailOwnerPreparation(owner, channel, $"owner completion frame refused: {operationError}");
-            }
 
             return new OwnerPreparationOutcome(true, preparedDescription, owner, null, string.Empty);
         }
         catch (Exception ex)
         {
             return FailOwnerPreparation(owner, channel, $"owner protocol failed: {ex.GetType().Name}");
+        }
+    }
+
+    /// <summary>Accepts only abort from a live HELD owner. The existing
+    /// owner pidfd proves exit before recovery can take over any journal
+    /// writer; the child descriptor map has no release writer.</summary>
+    internal HeldOwnerAbortOutcome AbortHeld(OwnerPreparationOutcome held)
+    {
+        if (!held.Held || held.Owner is null
+            || !_ownerChannels.TryGetValue(held.Owner.Id, out var channel))
+            return new HeldOwnerAbortOutcome(false, false, false, "no live HELD owner channel");
+
+        if (!channel.TrySend(OwnerProtocolMessageType.AbortHeld, ReadOnlySpan<byte>.Empty, out var sendError))
+            return new HeldOwnerAbortOutcome(false, false, false, $"abort frame failed: {sendError}");
+        if (!channel.TryReceive(OwnerProtocolMessageType.HeldAborted, out var message, out var receiveError)
+            || message!.Payload.Length != 2 || message.Payload[0] != 1 || message.Payload[1] != 1)
+            return new HeldOwnerAbortOutcome(true, false, false,
+                receiveError.Length == 0 ? "owner did not confirm abort cleanup" : receiveError);
+
+        var exit = WaitForOwner(held.Owner, TimeSpan.FromSeconds(7));
+        if (!exit.Exited)
+            return new HeldOwnerAbortOutcome(true, false, false, $"owner pidfd exit/reap failed: {exit.Error}");
+        if (exit.ExitCode != 0)
+            return new HeldOwnerAbortOutcome(true, true, false, $"owner reported abort failure exit {exit.ExitCode}");
+
+        if (!ReapAdoptedChildren(TimeSpan.FromSeconds(5), out _, out var reapError))
+            return new HeldOwnerAbortOutcome(true, true, false, $"adopted setup child reap failed: {reapError}");
+
+        channel.Dispose();
+        _ownerChannels.Remove(held.Owner.Id);
+        return new HeldOwnerAbortOutcome(true, true, true, string.Empty, NoTargetInitializationMarkerAbsent: true);
+    }
+
+    /// <summary>Reaps only adopted children after the exact owner has been
+    /// pidfd-proven dead/reaped. The M1 scope is a dedicated subreaper; it
+    /// has no unrelated child workload. waitpid(-1, WNOHANG) is lifecycle
+    /// observation/reaping only and never supplies stop authority.</summary>
+    internal bool ReapAdoptedChildren(TimeSpan timeout, out int reapedCount, out string error)
+    {
+        reapedCount = 0;
+        error = string.Empty;
+        if (!_subreaperEnabled)
+        {
+            error = "recovery scope is not a verified subreaper";
+            return false;
+        }
+
+        var deadline = Stopwatch.GetTimestamp() + checked((long)(timeout.TotalSeconds * Stopwatch.Frequency));
+        while (true)
+        {
+            while (true)
+            {
+                var result = NativeLaunchInterop.WaitPid(-1, out _, 1 /* WNOHANG */);
+                if (result > 0)
+                {
+                    reapedCount++;
+                    continue;
+                }
+                if (result == 0) break;
+                var errno = Marshal.GetLastPInvokeError();
+                if (errno == 10 /* ECHILD */) return true;
+                if (errno == 4 /* EINTR */) continue;
+                error = $"adopted waitpid errno {errno}";
+                return false;
+            }
+
+            if (Stopwatch.GetTimestamp() >= deadline)
+            {
+                error = "adopted children did not become reapable before the bound";
+                return false;
+            }
+            Thread.Sleep(10);
         }
     }
 
@@ -762,6 +862,13 @@ internal sealed class M1RecoveryScope : IDisposable
         && left.GenerationId == right.GenerationId
         && left.PreparationId == right.PreparationId
         && left.ManifestDigest.AsSpan().SequenceEqual(right.ManifestDigest);
+
+    private static long MonotonicNowNanoseconds()
+    {
+        var timestamp = Stopwatch.GetTimestamp();
+        return (timestamp / Stopwatch.Frequency * 1_000_000_000L)
+            + (timestamp % Stopwatch.Frequency * 1_000_000_000L / Stopwatch.Frequency);
+    }
 
     private static void CloseReceived(IEnumerable<int> descriptors)
     {

@@ -28,7 +28,9 @@ internal sealed record OwnerPreparationSpecification(
     int MaxObjects,
     IReadOnlyList<KeyValuePair<string, string>> Environment,
     long ExpiresAtNs,
-    string? TestBarrier = null);
+    string? TestBarrier = null,
+    bool EnableHeldCoordinator = false,
+    long AcceptedAtNs = 0);
 
 internal sealed record OwnerManifestAuthorization(
     RestrictedManifest Manifest,
@@ -130,7 +132,8 @@ internal static class OwnerPreparationSpecificationCodec
         if (value.Objects is null || value.Objects.Count is 0 or > OwnershipSnapshotCodec.MaxAllocations - 2
             || value.Environment is null || value.Environment.Count > 256
             || value.StagingParentInode == 0 || value.TotalBudgetBytes == 0 || value.MaxObjects < value.Objects.Count
-            || value.MaxObjects > 128 || value.ExpiresAtNs <= 0)
+            || value.MaxObjects > 128 || value.ExpiresAtNs <= 0
+            || value.EnableHeldCoordinator && (value.AcceptedAtNs <= 0 || value.ExpiresAtNs <= value.AcceptedAtNs))
         {
             throw new ArgumentException("Owner preparation bounds are invalid.");
         }
@@ -147,11 +150,21 @@ internal static class OwnerPreparationSpecificationCodec
             RequireBounded(item.Role, 32, $"Objects[{i}].Role");
             RequireBounded(item.SourceName, 255, $"Objects[{i}].SourceName");
             RequireSingleName(item.SourceName, $"Objects[{i}].SourceName");
-            if (item.Role is not ("tool" or "input") || item.MaxBytes == 0
+            var allowedRole = item.Role is "tool" or "input"
+                || value.EnableHeldCoordinator && item.Role is "coordinator" or "filter";
+            if (!allowedRole || item.MaxBytes == 0
                 || item.ClaimedDigest is { Length: not 32 })
             {
                 throw new ArgumentException($"Owner object request {i} is invalid.");
             }
+        }
+
+        var roles = value.Objects.Select(item => item.Role).ToHashSet(StringComparer.Ordinal);
+        if (roles.Count != value.Objects.Count
+            || value.EnableHeldCoordinator && !new[] { "tool", "input", "coordinator", "filter" }.All(roles.Contains)
+            || !value.EnableHeldCoordinator && roles.Any(role => role is "coordinator" or "filter"))
+        {
+            throw new ArgumentException("Owner object roles are duplicated or do not match the held-launch mode.");
         }
 
         foreach (var pair in value.Environment)

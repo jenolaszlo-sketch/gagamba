@@ -270,7 +270,8 @@ public sealed class NonRootQualificationTests
         public Guid LeaseGen = Guid.NewGuid();
         public string ChildName;
 
-        public IntegratedFixture(byte[] tool, byte[]? input, CopyTestHooks? hooks, IPidFdProvider? pidFdProvider = null)
+        public IntegratedFixture(byte[] tool, byte[]? input, CopyTestHooks? hooks,
+            IPidFdProvider? pidFdProvider = null, byte[]? coordinator = null, byte[]? filter = null)
         {
             Scope = new M1RecoveryScope(pidFdProvider);
             Assert.True(Scope.TryInitialize().Ok);
@@ -281,6 +282,16 @@ public sealed class NonRootQualificationTests
             {
                 File.WriteAllBytes(System.IO.Path.Combine(Source.Path, "input"), input);
                 objects.Add(new("input", "input", 4UL * 1024 * 1024, null));
+            }
+            if (coordinator is not null)
+            {
+                File.WriteAllBytes(System.IO.Path.Combine(Source.Path, "coordinator"), coordinator);
+                objects.Add(new("coordinator", "coordinator", 4UL * 1024 * 1024, null));
+            }
+            if (filter is not null)
+            {
+                File.WriteAllBytes(System.IO.Path.Combine(Source.Path, "filter"), filter);
+                objects.Add(new("filter", "filter", 4UL * 1024 * 1024, null));
             }
 
             Journal = new OwnershipJournal(new JournalFileStorage(), JournalDir.Path);
@@ -294,16 +305,31 @@ public sealed class NonRootQualificationTests
 
         public CopyPlan Plan { get; }
 
-        public OwnerPreparationRequest Request(string? testBarrier) =>
+        public OwnerPreparationRequest Request(string? testBarrier, bool enableHeldCoordinator = false) =>
             new(
                 RecoveryHarness.LocateOwnerDll() ?? throw new InvalidOperationException("owner executable missing from the test build"),
                 ChildName, Exec, LeaseGen, Boot(), Plan, Journal, Writer, Issuer, Generation,
                 staged =>
                 {
-                    var manifest = ManifestWithClosure(staged);
+                    var baseline = Gagamba.Execution.Linux.M1.Tests.Contracts.ManifestTests.SampleManifest();
+                    var closureObjects = staged.Select(item => new ClosureObject(
+                        item.Role, item.Sha256, item.Length,
+                        item.Role == "filter" ? "fd:6" : "/" + item.Role,
+                        item.Role == "filter" ? "p07-seccomp-filter" : "static-test-object"));
+                    var manifest = new RestrictedManifest(
+                        RestrictedManifest.CurrentSchemaVersion,
+                        RestrictedManifest.ImplementationIdentifier,
+                        baseline.Authority,
+                        baseline.Resources,
+                        new ClosureIdentity(closureObjects, enableHeldCoordinator
+                            ? new[] { "bubblewrap-0.11.1:" + Gagamba.Execution.Linux.M1.Launch.HelperInstallation.PinnedSha256 }
+                            : Array.Empty<string>()),
+                        baseline.Invocation,
+                        baseline.Channels);
                     return (manifest, IdentityFor(manifest, Exec));
                 },
-                MonotonicNanoseconds() + 60_000_000_000L, testBarrier);
+                MonotonicNanoseconds() + 60_000_000_000L, testBarrier,
+                EnableHeldCoordinator: enableHeldCoordinator);
 
         private static long MonotonicNanoseconds()
         {
@@ -324,6 +350,75 @@ public sealed class NonRootQualificationTests
             Source.Dispose();
             GC.SuppressFinalize(this);
         }
+    }
+
+    [Fact]
+    public void NonRootWp04HeldSetupReportsHeldWithoutTargetInitializationThenAbortsAndReconciles()
+    {
+        SkipUnlessQualified();
+        var root = RepositoryRoot();
+        var fixtureImage = File.ReadAllBytes(System.IO.Path.Combine(root, "tests/Fixtures/Gagamba.LinuxM1.Native/out/fixture"));
+        var coordinator = File.ReadAllBytes(System.IO.Path.Combine(root, "artifacts/linux-m1/wp04/exec-coordinator"));
+        var filter = File.ReadAllBytes(System.IO.Path.Combine(root, "artifacts/linux-m1/wp04/seccomp-filter.bin"));
+        using var fx = new IntegratedFixture(fixtureImage, Bytes(0x45, 64), null,
+            coordinator: coordinator, filter: filter);
+
+        var outcome = fx.Scope.StartOwnerPreparation(fx.Request(null, enableHeldCoordinator: true), CancellationToken.None);
+        Assert.True(outcome.Ok, outcome.Error);
+        Assert.True(outcome.Held);
+        Assert.False(outcome.Completed, "WP04 must remain held and must not complete target execution");
+        Assert.True(outcome.NoTargetInitializationMarkerAbsent);
+        Assert.NotNull(outcome.HeldReport);
+        Assert.Equal(0u, outcome.HeldReport!.Uid);
+        Assert.Equal(0UL, outcome.HeldReport.CapEff);
+
+        var owner = outcome.Owner!;
+        Assert.NotEqual(Environment.ProcessId, owner.Id);
+        Assert.True(fx.Scope.TryOwnerPidFdExited(owner, 0, out var ownerExited, out var pidfdError), pidfdError);
+        Assert.False(ownerExited, "the owner must remain alive while Bubblewrap/coordinator are HELD");
+        owner.Refresh();
+        Assert.False(owner.HasExited);
+        var competitor = new OwnershipJournal(new JournalFileStorage(), GetJournalDirectory(fx.Journal));
+        Assert.False(competitor.TryAcquireWriter(out _, out _), "the live owner must retain the journal writer while HELD");
+        var retainedDomain = Assert.Single(fx.Scope.RetainedRecoveryLeases);
+        Assert.True(retainedDomain.AuthorityAlive);
+        Assert.True(retainedDomain.TryReadWp04Limits(out var resourceLimits, out var limitsError), limitsError);
+        Assert.Equal("134217728", resourceLimits["memory.max"]);
+        Assert.Equal("0", resourceLimits["memory.swap.max"]);
+        Assert.Equal("48", resourceLimits["pids.max"]);
+        Assert.Single(fx.Scope.RetainedStagingDirectories);
+
+        var aborted = fx.Scope.AbortHeld(outcome);
+        Assert.True(aborted.Accepted, aborted.Error);
+        Assert.True(aborted.OwnerExited, aborted.Error);
+        Assert.True(aborted.CleanupRequested, aborted.Error);
+        Assert.True(aborted.NoTargetInitializationMarkerAbsent);
+
+        var recoveryLease = Assert.Single(fx.Scope.RetainedRecoveryLeases);
+        var parent = Assert.IsType<SafeFileHandle>(Assert.Single(fx.Scope.RetainedStagingParents));
+        var staging = Assert.IsType<SafeFileHandle>(Assert.Single(fx.Scope.RetainedStagingDirectories));
+        var cleaner = new QualScopeCleaner(parent.DangerousGetHandle().ToInt32(), staging.DangerousGetHandle().ToInt32());
+        Assert.True(fx.Journal.TryAcquireWriter(out var recoveryWriter, out var recoveryError), recoveryError);
+        using (recoveryWriter!)
+        {
+            var record = fx.Journal.ReadLatest().Snapshot!;
+            var reconciler = new Reconciler(new RealClock(), TimeSpan.FromSeconds(5));
+            var first = reconciler.Reconcile(record, Boot(), recoveryLease, cleaner, fx.Journal, recoveryWriter);
+            Assert.Equal(ReconcileOutcome.CleanupConfirmed, first.Outcome);
+            Assert.True(first.DestructiveActionTaken);
+            var second = reconciler.Reconcile(fx.Journal.ReadLatest().Snapshot!, Boot(), recoveryLease, cleaner, fx.Journal, recoveryWriter);
+            Assert.Equal(ReconcileOutcome.CleanupConfirmed, second.Outcome);
+        }
+        Assert.False(Directory.Exists(System.IO.Path.Combine(fx.Staging.Path, "prep-001")));
+        Assert.False(Directory.Exists(System.IO.Path.Combine(DelegatedParent!, fx.ChildName)));
+    }
+
+    private static string RepositoryRoot()
+    {
+        var directory = new DirectoryInfo(Directory.GetCurrentDirectory());
+        while (directory is not null && !File.Exists(System.IO.Path.Combine(directory.FullName, "Gagamba.sln")))
+            directory = directory.Parent;
+        return directory?.FullName ?? throw new DirectoryNotFoundException("Gagamba repository root not found");
     }
 
     [Fact]

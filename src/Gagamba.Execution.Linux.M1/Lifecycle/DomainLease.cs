@@ -4,6 +4,8 @@
 // stop writes through the retained cgroup.kill handle and observes
 // cgroup.events; removal re-checks the child identity under the retained
 // parent so a same-name replacement can never be removed or adopted.
+using Gagamba.Execution.Linux.M1.Native;
+
 namespace Gagamba.Execution.Linux.M1.Lifecycle;
 
 internal readonly record struct StopOutcome(bool Stopped, bool TimedOut, string Error)
@@ -60,6 +62,38 @@ internal sealed class DomainLease : IDisposable
     /// either side must not affect the other.</summary>
     internal DomainLease DuplicateForRecovery() =>
         new(_backend.DuplicateForRecovery(), Identity);
+
+    /// <summary>Launch-only duplicate of the live cgroup directory handle.
+    /// It is not placed in the child descriptor map.</summary>
+    internal int DuplicateDomainDirectoryFd() => !_disposed && _backend is CgroupBackend native
+        ? native.DuplicateDomainDirectoryFd()
+        : -1;
+
+    internal bool ContainsProcess(int pid, out string error)
+    {
+        if (!_disposed && _backend is CgroupBackend native)
+        {
+            return native.ContainsProcess(pid, out error);
+        }
+
+        error = "native domain observation is unavailable";
+        return false;
+    }
+
+    internal bool TryInstallWp04Limits(out string error)
+    {
+        if (!_disposed && _backend is CgroupBackend native) return native.TryInstallWp04Limits(out error);
+        error = "native domain resource authority is unavailable";
+        return false;
+    }
+
+    internal bool TryReadWp04Limits(out IReadOnlyDictionary<string, string> values, out string error)
+    {
+        if (!_disposed && _backend is CgroupBackend native) return native.TryReadWp04Limits(out values, out error);
+        values = new Dictionary<string, string>(StringComparer.Ordinal);
+        error = "native domain observation is unavailable";
+        return false;
+    }
 
     internal DomainIoResult RequestStop() => _disposed
         ? DomainIoResult.Failure("lease disposed; no stop authority")

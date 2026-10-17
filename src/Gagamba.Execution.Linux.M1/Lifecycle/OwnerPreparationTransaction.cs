@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Win32.SafeHandles;
 using Gagamba.Execution.Linux.M1.Execution;
 using Gagamba.Execution.Linux.M1.Native;
+using Gagamba.Execution.Linux.M1.Launch;
 using Gagamba.Execution.Linux.M1.Preparation;
 using Gagamba.Execution.Linux.M1.Preparation.Native;
 using Gagamba.Execution.Linux.M1.Recovery;
@@ -185,6 +186,12 @@ internal static class OwnerPreparationTransaction
                 return 35;
             }
 
+            if (request.EnableHeldCoordinator && !primaryLease.TryInstallWp04Limits(out var limitError))
+            {
+                SendAbort(channel, $"WP04 cgroup resource installation failed: {limitError}");
+                return 52;
+            }
+
             if (!WaitAtBarrier(request, channel, "after-registered", out channelError))
             {
                 return 36;
@@ -338,6 +345,61 @@ internal static class OwnerPreparationTransaction
             {
                 SendAbort(channel, $"owner Mint failed: {publication.Failure}/{publication.Detail}");
                 return 43;
+            }
+
+            if (request.EnableHeldCoordinator)
+            {
+                var acceptedAt = request.AcceptedAtNs;
+                var setupDeadline = Math.Min(checked(acceptedAt + 10_000_000_000L), request.ExpiresAtNs);
+                var overallDeadline = Math.Min(checked(acceptedAt + 30_000_000_000L), request.ExpiresAtNs);
+                var launcher = new BubblewrapAdapter();
+                var launch = launcher.PrepareHeldAsync(primaryLease, closure, manifest, identity,
+                        setupDeadline, overallDeadline, CancellationToken.None)
+                    .GetAwaiter().GetResult();
+                if (!launch.Held || launch.Execution is null || launch.CoordinatorStatusFrame is null
+                    || !launch.NoTargetInitializationMarkerAbsent)
+                {
+                    publication.Capability.Dispose();
+                    SendAbort(channel, $"WP04 held setup failed: {launch.Error}");
+                    return 46;
+                }
+
+                using var heldExecution = launch.Execution;
+                var heldReadyPayload = new byte[launch.CoordinatorStatusFrame.Length + 1];
+                heldReadyPayload[0] = 1; // independent fixture constructor-marker oracle checked before HELD is accepted
+                launch.CoordinatorStatusFrame.CopyTo(heldReadyPayload, 1);
+                if (!channel.TrySend(OwnerProtocolMessageType.HeldReady, heldReadyPayload, out channelError))
+                {
+                    _ = launcher.AbortAsync(heldExecution, primaryLease, CancellationToken.None).GetAwaiter().GetResult();
+                    publication.Capability.Dispose();
+                    return 47;
+                }
+
+                var receivedAbort = channel.TryReceive(OwnerProtocolMessageType.AbortHeld, out _, out channelError);
+                var abort = launcher.AbortAsync(heldExecution, primaryLease, CancellationToken.None)
+                    .GetAwaiter().GetResult();
+                publication.Capability.Dispose();
+                if (!receivedAbort)
+                {
+                    GC.KeepAlive(store);
+                    GC.KeepAlive(closure);
+                    GC.KeepAlive(primaryLease);
+                    GC.KeepAlive(activeWriter);
+                    return abort.Stopped ? 48 : 49;
+                }
+
+                var abortPayload = new[]
+                {
+                    abort.Stopped ? (byte)1 : (byte)0,
+                    abort.NoTargetInitializationMarkerAbsent ? (byte)1 : (byte)0,
+                };
+                if (!channel.TrySend(OwnerProtocolMessageType.HeldAborted, abortPayload, out channelError))
+                    return 50;
+                GC.KeepAlive(store);
+                GC.KeepAlive(closure);
+                GC.KeepAlive(primaryLease);
+                GC.KeepAlive(activeWriter);
+                return abort.Stopped ? 0 : 51;
             }
 
             if (!channel.TrySend(OwnerProtocolMessageType.Completed, encodedDescription, out channelError))

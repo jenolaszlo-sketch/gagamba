@@ -29,6 +29,9 @@ internal enum OwnerProtocolMessageType : byte
     Continue = 17,
     Completed = 18,
     Aborted = 19,
+    HeldReady = 20,
+    AbortHeld = 21,
+    HeldAborted = 22,
 }
 
 internal sealed record OwnerProtocolMessage(
@@ -71,6 +74,9 @@ internal static class OwnerProtocol
             OwnerProtocolMessageType.StagingAccounted => message.Payload.Length == 16,
             OwnerProtocolMessageType.BarrierReached => IsKnownBarrierPayload(message.Payload),
             OwnerProtocolMessageType.Aborted => message.Payload.Length <= 1024,
+            OwnerProtocolMessageType.AbortHeld => message.Payload.Length == 0,
+            OwnerProtocolMessageType.HeldReady => message.Payload.Length is >= 97 and <= 4097,
+            OwnerProtocolMessageType.HeldAborted => message.Payload.Length <= 1024,
             _ => !IsTransferType(message.Type),
         };
 

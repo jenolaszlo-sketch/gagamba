@@ -132,7 +132,7 @@ internal static class SafeCopyIn
                 return Fail(CopyFailureKind.InvalidSource, "Source name or role is not acceptable.", null);
             }
 
-            if (request.Role is not ("tool" or "input"))
+            if (request.Role is not ("tool" or "input" or "coordinator" or "filter"))
             {
                 return Fail(CopyFailureKind.InvalidSource, $"Role '{request.Role}' is not a WP02-staged role.", null);
             }
@@ -411,12 +411,14 @@ internal static class SafeCopyIn
         var finalMode = request.Role switch
         {
             "tool" => Native.PreparationInterop.Mode0500,
+            "coordinator" => Native.PreparationInterop.Mode0500,
             "input" => Native.PreparationInterop.Mode0400,
+            "filter" => Native.PreparationInterop.Mode0400,
             _ => 0u,
         };
         if (finalMode == 0)
         {
-            return new ObjectStage(false, CopyFailureKind.InvalidSource, $"Role '{request.Role}' is not a WP02-staged role.", null);
+            return new ObjectStage(false, CopyFailureKind.InvalidSource, $"Role '{request.Role}' is not an approved staged role.", null);
         }
 
         var errno = host.OpenSource(sourceRoot, request.SourceName, out var source);
