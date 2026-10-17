@@ -2,10 +2,11 @@
 
 Date: 2026-10-17 (Asia/Manila)
 
-Status: **Proposed revision 2 — design/documentation only. No production
-implementation, migration, coordinator change, release execution, target
-execution or WP05 qualification is authorized by this document.** It is input to
-independent rereview.
+Status: **Accepted revision 2 — independent clarification rereview accepted;
+WP05 v3 schema implementation may proceed.** This is a schema-design acceptance
+only. No production implementation, migration, coordinator change, release
+execution, target execution or WP05 qualification has been performed or is
+authorized by this document alone.
 
 Revision binding:
 
@@ -13,7 +14,8 @@ Revision binding:
 |---|---|
 | Original ADR 0004 commit | `c3cb16412cf136691280eb8f3fadedbe7dc451a9` |
 | Independent review disposition | `ADR 0004 ACCEPTED WITH REQUIRED CLARIFICATIONS - UPDATE ADR BEFORE IMPLEMENTATION` |
-| Preserved review record | [Independent ADR 0004 review](../reviews/gagamba-linux-m1-adr-0004-review.md) |
+| Preserved review record | [Independent ADR 0004 review](../reviews/gagamba-linux-m1-adr-0004-review.md) at `46a1991b57edb410d53ac7fc0c6b43ba815a6792` |
+| Clarification rereview | [Independent clarification rereview](../reviews/gagamba-linux-m1-adr-0004-rereview.md) — accepted |
 | Branch | `qualification/ar7-feasibility` |
 | Authoritative architecture | [ADR 0003](0003-ar7-linux-first-restricted-execution.md) |
 | Authoritative delivery plan | [Linux M1 implementation plan](../plans/gagamba-linux-m1-implementation-plan.md) |
@@ -820,4 +822,6 @@ Those follow only after the durable representation is independently qualified.
 ## 23. Disposition
 
 ADR 0004 revision 2 incorporates the supplied independent-review clarifications
-and is submitted for independent rereview.
+and was accepted by the independent clarification rereview. WP05 v3 schema
+implementation may proceed under the bounded first-tranche scope in §21.
+Implementation has not begun.
