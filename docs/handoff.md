@@ -1,6 +1,10 @@
 # Gagamba handoff
 
-## Current action — WP04 ACCEPTED - HELD SANDBOX QUALIFICATION COMPLETE; G2 ACCEPTED; WP05/WP10 deferred
+## Current action — WP05 BLOCKED ON DURABLE SCHEMA; WP05 SCHEMA CHANGE REQUIRED
+
+Update 2026-10-17: WP05 plan binding completed and found a hard stop before implementation: **`WP05 SCHEMA CHANGE REQUIRED - RELEASE DURABILITY NOT REPRESENTABLE IN CURRENT SCHEMA`**. The authoritative WP05 contract requires a durable `ReleaseIntent` carrying the preparation/manifest identity and absolute deadlines before the release gate, but the accepted WP03/G2 ownership snapshot (`OwnershipRecord.cs`, version 2) only represents `None/AllocationIntent/AllocationRegistered/Prepared`, has no release state and no deadline fields, and rejects other versions. A release durable record would therefore require a reviewed versioned schema change and renewed G2 evidence, which WP05 does not authorize. No production or test code, migration, coordinator build or qualification run was performed. The binding/blocker evidence is [WP05 plan binding and schema blocker](evidence/linux-m1/wp05-plan-binding-2026-10-17.md). WP04 remains accepted; WP05 and WP10 remain unqualified, and WP10 target execution plus the wrong-audit-architecture seccomp decision remain deferred.
+
+## Prior action — WP04 ACCEPTED - HELD SANDBOX QUALIFICATION COMPLETE; G2 ACCEPTED; WP05/WP10 deferred
 
 Update 2026-10-17: Independent final acceptance has been received: WP04 ACCEPTED - HELD SANDBOX QUALIFICATION COMPLETE. This supersedes the author qualification pending-review disposition without changing any qualification result. The complete independent review is preserved verbatim at [WP04 final acceptance review](reviews/gagamba-linux-m1-wp04-final-acceptance-review.md); the review itself is unchanged. The earlier incomplete qualification and R1/R2/R3 remediation records remain historical. WP05 release protocol, WP10 target execution, the wrong-audit-architecture KILL_THREAD versus historical KILL_PROCESS generator decision, and global-root-only cases outside the WP04 claim remain deferred; none is completed or accepted by WP04.
 

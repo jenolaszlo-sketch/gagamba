@@ -2,7 +2,11 @@
 
 Updated 2026-10-17. Status definitions: Complete = stated artifact exists; Ready = dependencies sufficient to start; Held = named prerequisite missing; Pending = later delivery. Slice-specific historical entries retain their original tested SHAs; the later AR-6 SHA has separate three-host native and package evidence. Complete lifecycle qualification does not imply restricted-execution security qualification.
 
-## Current priority: WP04 ACCEPTED - HELD SANDBOX QUALIFICATION COMPLETE; G2 ACCEPTED; WP05/WP10 deferred
+## Current priority: WP05 BLOCKED — DURABLE RELEASE SCHEMA CHANGE REQUIRED; WP10 deferred
+
+Update 2026-10-17: WP05 plan binding completed and stopped before implementation: **`WP05 SCHEMA CHANGE REQUIRED - RELEASE DURABILITY NOT REPRESENTABLE IN CURRENT SCHEMA`**. WP05 requires a durable `ReleaseIntent` with preparation/manifest identity and absolute deadlines, but the accepted WP03/G2 ownership journal snapshot is version 2 with preparation stages only (`None`, `AllocationIntent`, `AllocationRegistered`, `Prepared`) and no release state or deadline fields; the decoder rejects other versions. A second release journal would be parallel release state and would not prove G2 writer fencing. No implementation, migration, coordinator build or qualification ran. Evidence: [WP05 plan binding and schema blocker](evidence/linux-m1/wp05-plan-binding-2026-10-17.md). WP04 remains accepted; WP05/WP10 remain unqualified, and the wrong-audit-architecture seccomp decision remains deferred.
+
+## Prior priority: WP04 ACCEPTED - HELD SANDBOX QUALIFICATION COMPLETE; G2 ACCEPTED; WP05/WP10 deferred
 
 Update 2026-10-17: Independent final acceptance has been received: WP04 ACCEPTED - HELD SANDBOX QUALIFICATION COMPLETE. The successful fresh qualification and earlier incomplete attempt remain separately recorded; this acceptance changes no qualification results. The complete independent review is preserved verbatim at [WP04 final acceptance review](reviews/gagamba-linux-m1-wp04-final-acceptance-review.md); the review itself is unchanged. WP05 release protocol, WP10 target execution, the wrong-audit-architecture KILL_THREAD versus historical KILL_PROCESS generator decision, and global-root-only cases outside the WP04 claim remain deferred.
 
