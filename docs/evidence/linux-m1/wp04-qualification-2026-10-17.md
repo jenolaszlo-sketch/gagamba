@@ -2,7 +2,7 @@
 
 Date: 2026-10-17 (Asia/Manila)
 
-**Disposition: `WP04 ACCEPTED - HELD SANDBOX QUALIFICATION COMPLETE`.** This is qualification evidence for the held coordinator and pinned Bubblewrap adapter. Independent final acceptance supersedes the author qualification disposition; all qualification results remain unchanged. The exact review body was not included with the supplied task materials and still needs to be archived verbatim. This acceptance does not enable RELEASE, qualify the production restricted-execution profile, or complete WP05/WP10. G2 remains accepted; WP05 release and WP10 target execution remain deferred.
+**Disposition: `WP04 ACCEPTED - HELD SANDBOX QUALIFICATION COMPLETE`.** This is qualification evidence for the held coordinator and pinned Bubblewrap adapter. Independent final acceptance supersedes the author qualification disposition; all qualification results remain unchanged. The complete independent review is preserved verbatim at [WP04 final acceptance review](../../reviews/gagamba-linux-m1-wp04-final-acceptance-review.md); the review itself is unchanged. This acceptance does not enable RELEASE, qualify the production restricted-execution profile, or complete WP05/WP10. G2 remains accepted; WP05 release and WP10 target execution remain deferred.
 
 The earlier incomplete attempt remains preserved unchanged in [WP04 fresh qualification attempt](wp04-fresh-qualification-2026-10-17.md). Its 354 passed / 35 skipped / 1 failed result is historical only. The first-run preservation checkpoint, qualification-probe commit, and this successful qualification/status commit remain separate commits.
 
@@ -172,4 +172,4 @@ Six `/tmp/gagamba-r5-*` directories were already present and recorded by the aud
 
 ## Final status
 
-**`WP04 ACCEPTED - HELD SANDBOX QUALIFICATION COMPLETE`**. The exact independent review text was not included with the supplied task materials and remains to be archived verbatim. G2 remains accepted. WP05 maintenance/release work and WP10 target execution remain deferred; no target code was released or executed. Production source remains identical to `bac516eeb640ce4ea415043a86579c20948793c2`.
+**`WP04 ACCEPTED - HELD SANDBOX QUALIFICATION COMPLETE`**. The complete independent review is preserved verbatim at [WP04 final acceptance review](../../reviews/gagamba-linux-m1-wp04-final-acceptance-review.md); the review itself is unchanged. G2 remains accepted. WP05 maintenance/release work and WP10 target execution remain deferred; no target code was released or executed. Production source remains identical to `bac516eeb640ce4ea415043a86579c20948793c2`.
