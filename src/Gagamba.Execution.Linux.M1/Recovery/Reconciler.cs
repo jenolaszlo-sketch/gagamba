@@ -170,7 +170,36 @@ internal sealed class Reconciler
                 return false;
             }
 
-            var persisted = journal.WriteNext(writer, record with { CompletedCleanup = newBits, Cleanup = cleanup });
+            var latest = journal.ReadLatest();
+            if (latest.Ok && latest.Snapshot is not null
+                && latest.Snapshot.Cleanup == cleanup
+                && (latest.Snapshot.CompletedCleanup | newBits) == latest.Snapshot.CompletedCleanup)
+            {
+                return true;
+            }
+
+            JournalIoResult persisted;
+            if (!latest.Ok && latest.Error == "no durable snapshot exists")
+            {
+                persisted = journal.WriteNext(writer, record with
+                {
+                    CompletedCleanup = newBits,
+                    Cleanup = cleanup,
+                });
+            }
+            else if (!latest.Ok)
+            {
+                persisted = JournalIoResult.Failure($"cleanup baseline is uncertain: {latest.Error}");
+            }
+            else
+            {
+                persisted = journal.WriteMutation(writer, current => current with
+                {
+                    CompletedCleanup = (byte)(current.CompletedCleanup | newBits),
+                    Cleanup = cleanup,
+                });
+            }
+
             if (!persisted.Ok)
             {
                 error = persisted.Error;

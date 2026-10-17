@@ -543,6 +543,137 @@ internal sealed class OwnershipJournal
         return Write(lease, snapshot with { Sequence = next });
     }
 
+    /// <summary>Writes a full-snapshot transition only when the supplied
+    /// baseline is the exact latest acknowledged snapshot. A stale baseline,
+    /// changed lineage, wrong sequence or non-monotonic fact change fails
+    /// closed without modifying durable state.</summary>
+    internal JournalIoResult WriteTransition(
+        JournalWriterLease? lease,
+        OwnershipSnapshot expectedBaseline,
+        OwnershipSnapshot next)
+    {
+        ArgumentNullException.ThrowIfNull(expectedBaseline);
+        ArgumentNullException.ThrowIfNull(next);
+        if (lease is null || !ReferenceEquals(lease.Journal, this) || !lease.IsLive)
+        {
+            return JournalIoResult.Failure("writer authority required: no live writer lease");
+        }
+
+        if (!IsEffectiveWriter(lease))
+        {
+            return JournalIoResult.Failure("writer authority required: lease is not the active fence holder");
+        }
+
+        var resolved = Resolve();
+        if (resolved.Kind != ResolveKind.Acknowledged || resolved.Snapshot is null)
+        {
+            return JournalIoResult.Failure(resolved.Error.Length == 0
+                ? "no acknowledged baseline for transition"
+                : resolved.Error);
+        }
+
+        if (resolved.Snapshot.Sequence != lease.BaselineSequence)
+        {
+            return JournalIoResult.Failure("writer baseline is stale; re-read the acknowledged snapshot");
+        }
+
+        byte[] expected;
+        byte[] actual;
+        try
+        {
+            expected = OwnershipSnapshotCodec.Encode(expectedBaseline);
+            actual = OwnershipSnapshotCodec.Encode(resolved.Snapshot);
+        }
+        catch (ArgumentException ex)
+        {
+            return JournalIoResult.Failure($"transition baseline invalid: {ex.Message}");
+        }
+
+        if (!expected.AsSpan().SequenceEqual(actual))
+        {
+            return JournalIoResult.Failure("stale baseline: expected snapshot is not the acknowledged lineage");
+        }
+
+        long sequence;
+        try
+        {
+            checked { sequence = resolved.Snapshot.Sequence + 1; }
+        }
+        catch (OverflowException)
+        {
+            return JournalIoResult.Failure("sequence overflow");
+        }
+
+        var stamped = next with { Sequence = sequence };
+        if (!OwnershipTransitionValidator.TryValidate(resolved.Snapshot, stamped, out var transitionError))
+        {
+            return JournalIoResult.Failure($"transition refused: {transitionError}");
+        }
+
+        return Write(lease, stamped);
+    }
+
+    /// <summary>Applies one full-snapshot mutation to the latest acknowledged
+    /// snapshot under the live lease. The mutation must preserve every
+    /// existing fact and change only one authorized fact group; cleanup-only
+    /// progress is allowed. Stale caller state is never the baseline.</summary>
+    internal JournalIoResult WriteMutation(
+        JournalWriterLease? lease,
+        Func<OwnershipSnapshot, OwnershipSnapshot> mutate)
+    {
+        ArgumentNullException.ThrowIfNull(mutate);
+        if (lease is null || !ReferenceEquals(lease.Journal, this) || !lease.IsLive)
+        {
+            return JournalIoResult.Failure("writer authority required: no live writer lease");
+        }
+
+        if (!IsEffectiveWriter(lease))
+        {
+            return JournalIoResult.Failure("writer authority required: lease is not the active fence holder");
+        }
+
+        var resolved = Resolve();
+        if (resolved.Kind != ResolveKind.Acknowledged || resolved.Snapshot is null)
+        {
+            return JournalIoResult.Failure(resolved.Error.Length == 0
+                ? "no acknowledged baseline for mutation"
+                : resolved.Error);
+        }
+
+        if (resolved.Snapshot.Sequence != lease.BaselineSequence)
+        {
+            return JournalIoResult.Failure("writer baseline is stale; re-read the acknowledged snapshot");
+        }
+
+        OwnershipSnapshot mutated;
+        try
+        {
+            mutated = mutate(resolved.Snapshot);
+        }
+        catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or OverflowException)
+        {
+            return JournalIoResult.Failure($"mutation refused: {ex.Message}");
+        }
+
+        long sequence;
+        try
+        {
+            checked { sequence = resolved.Snapshot.Sequence + 1; }
+        }
+        catch (OverflowException)
+        {
+            return JournalIoResult.Failure("sequence overflow");
+        }
+
+        var stamped = mutated with { Sequence = sequence };
+        if (!OwnershipTransitionValidator.TryValidate(resolved.Snapshot, stamped, out var transitionError))
+        {
+            return JournalIoResult.Failure($"mutation refused: {transitionError}");
+        }
+
+        return Write(lease, stamped);
+    }
+
     internal JournalReadResult ReadLatest()
     {
         var resolved = Resolve();
