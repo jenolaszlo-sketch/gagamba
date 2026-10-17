@@ -23,6 +23,11 @@ internal static class NativeLaunchInterop
     internal const int WNOHANG = 1;
     internal const int EINTR = 4;
     internal const int SIGCHLD = 17;
+    private const int PidFdWaitId = 3;
+    private const int WaitExited = 4;
+    private const int ChildExited = 1;
+    private const int ChildKilled = 2;
+    private const int ChildDumped = 3;
     internal const int MFD_CLOEXEC = 1;
     internal const int MFD_ALLOW_SEALING = 2;
     internal const int F_ADD_SEALS = 1033;
@@ -73,6 +78,16 @@ internal static class NativeLaunchInterop
         public long Blocks, AtimSec, AtimNsec, MtimSec, MtimNsec, CtimSec, CtimNsec, Unused0, Unused1;
     }
 
+    [StructLayout(LayoutKind.Explicit, Size = 128)]
+    private struct ChildSignalInfo
+    {
+        [FieldOffset(0)] internal int Signal;
+        [FieldOffset(8)] internal int Code;
+        [FieldOffset(16)] internal int Pid;
+        [FieldOffset(20)] internal uint Uid;
+        [FieldOffset(24)] internal int Status;
+    }
+
     [DllImport("libc", EntryPoint = "gnu_get_libc_version")]
     private static extern IntPtr GnuGetLibcVersion();
     [DllImport("libc", EntryPoint = "open", SetLastError = true)]
@@ -118,6 +133,8 @@ internal static class NativeLaunchInterop
     private static extern int FileActionsCloseFrom(IntPtr actions, int first);
     [DllImport("libc", EntryPoint = "waitpid", SetLastError = true)]
     internal static extern int WaitPid(int pid, out int status, int options);
+    [DllImport("libc", EntryPoint = "waitid", SetLastError = true)]
+    private static extern int WaitId(int idType, uint id, IntPtr info, int options);
     [DllImport("libc", EntryPoint = "syscall", SetLastError = true)]
     private static extern long Syscall(long number, long arg1, long arg2, long arg3, long arg4);
     [DllImport("libc", EntryPoint = "fgetxattr", SetLastError = true)]
@@ -126,6 +143,64 @@ internal static class NativeLaunchInterop
     private static extern int FStatX64(int fd, out StatX64 stat);
     [DllImport("libc", EntryPoint = "fstat", SetLastError = true)]
     private static extern int FStatArm64(int fd, out StatArm64 stat);
+
+    internal static bool TryWaitPidFd(int pidfd, out int exitCode, out string error)
+    {
+        exitCode = -1;
+        error = string.Empty;
+        if (!OperatingSystem.IsLinux() || pidfd < 0)
+        {
+            error = "invalid Linux pidfd wait request";
+            return false;
+        }
+
+        var info = Marshal.AllocHGlobal(128);
+        try
+        {
+            Marshal.Copy(new byte[128], 0, info, 128);
+            int result;
+            do
+            {
+                result = WaitId(PidFdWaitId, (uint)pidfd, info, WaitExited);
+            }
+            while (result != 0 && Marshal.GetLastPInvokeError() == EINTR);
+
+            if (result != 0)
+            {
+                error = $"waitid(P_PIDFD) errno {Marshal.GetLastPInvokeError()}";
+                return false;
+            }
+
+            var child = Marshal.PtrToStructure<ChildSignalInfo>(info);
+            if (child.Signal != SIGCHLD || child.Pid <= 0)
+            {
+                error = "waitid(P_PIDFD) returned no child exit record";
+                return false;
+            }
+
+            exitCode = child.Code switch
+            {
+                ChildExited => child.Status,
+                ChildKilled or ChildDumped => 128 + child.Status,
+                _ => -1,
+            };
+            if (exitCode < 0)
+            {
+                error = $"waitid(P_PIDFD) returned unexpected child state {child.Code}";
+                return false;
+            }
+            return true;
+        }
+        catch (Exception ex) when (ex is DllNotFoundException or EntryPointNotFoundException)
+        {
+            error = $"Unsupported pidfd wait primitive: {ex.GetType().Name}";
+            return false;
+        }
+        finally
+        {
+            Marshal.FreeHGlobal(info);
+        }
+    }
 
     internal static string LibcVersion
     {

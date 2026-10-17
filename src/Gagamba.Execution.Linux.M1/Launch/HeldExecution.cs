@@ -1,5 +1,5 @@
-using System.Diagnostics;
 using Microsoft.Win32.SafeHandles;
+using Gagamba.Execution.Linux.M1.Native;
 
 namespace Gagamba.Execution.Linux.M1.Launch;
 
@@ -11,8 +11,7 @@ internal sealed class HeldExecution : IDisposable
     private bool _disposed;
 
     internal HeldExecution(
-        Process wrapper,
-        SafeFileHandle wrapperPidFd,
+        PidFdChildReaper wrapperReaper,
         SafeFileHandle controlWriter,
         SafeFileHandle coordinatorStatusReader,
         SafeFileHandle helperStatusReader,
@@ -21,8 +20,7 @@ internal sealed class HeldExecution : IDisposable
         int helperChildPid,
         CoordinatorHeldReport report)
     {
-        Wrapper = wrapper;
-        WrapperPidFd = wrapperPidFd;
+        WrapperReaper = wrapperReaper;
         _controlWriter = controlWriter;
         CoordinatorStatusReader = coordinatorStatusReader;
         HelperStatusReader = helperStatusReader;
@@ -32,8 +30,7 @@ internal sealed class HeldExecution : IDisposable
         Report = report;
     }
 
-    internal Process Wrapper { get; }
-    internal SafeFileHandle WrapperPidFd { get; }
+    internal PidFdChildReaper WrapperReaper { get; }
     internal SafeFileHandle CoordinatorStatusReader { get; }
     internal SafeFileHandle HelperStatusReader { get; }
     internal SafeFileHandle StdoutReader { get; }
@@ -52,8 +49,7 @@ internal sealed class HeldExecution : IDisposable
         HelperStatusReader.Dispose();
         StdoutReader.Dispose();
         StderrReader.Dispose();
-        WrapperPidFd.Dispose();
-        Wrapper.Dispose();
+        WrapperReaper.Dispose();
         GC.SuppressFinalize(this);
     }
 }

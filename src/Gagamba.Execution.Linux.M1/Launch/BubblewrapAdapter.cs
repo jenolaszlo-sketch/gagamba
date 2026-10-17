@@ -45,8 +45,7 @@ internal sealed class BubblewrapAdapter : IHeldLauncher
         SafeFileHandle? stderrRead = null, stderrWrite = null, controlRead = null, controlWrite = null;
         SafeFileHandle? coordinatorStatusRead = null, coordinatorStatusWrite = null;
         SafeFileHandle? helperStatusRead = null, helperStatusWrite = null;
-        Process? wrapper = null;
-        SafeFileHandle? wrapperPidFd = null;
+        PidFdChildReaper? wrapperReaper = null;
         var spawned = false;
         try
         {
@@ -109,14 +108,14 @@ internal sealed class BubblewrapAdapter : IHeldLauncher
             if (!NativeLaunchInterop.TrySpawn(domain, map!, BubblewrapArguments.Build(), out var pid, out var spawnError))
                 throw new InvalidOperationException(spawnError);
             spawned = true;
-            wrapper = Process.GetProcessById(pid);
             if (!PidFd.TryOpen(pid, out var pidfd, out var pidfdError)
                 || !PreparationInterop.HasCloexec(pidfd))
             {
                 if (pidfd >= 0) PreparationInterop.CloseFd(pidfd);
                 throw new InvalidOperationException($"Bubblewrap pidfd acquisition failed: {pidfdError}");
             }
-            wrapperPidFd = new SafeFileHandle(new IntPtr(pidfd), ownsHandle: true);
+            wrapperReaper = new PidFdChildReaper(
+                new SafeFileHandle(new IntPtr(pidfd), ownsHandle: true));
 
             // Parent closes every child endpoint immediately after the atomic spawn.
             Dispose(ref stdinRead);
@@ -149,10 +148,10 @@ internal sealed class BubblewrapAdapter : IHeldLauncher
             if (MonotonicNowNanoseconds() >= overallDeadlineNs)
                 throw new InvalidOperationException("overall execution deadline expired before HELD acceptance");
 
-            execution = new HeldExecution(wrapper, wrapperPidFd!, controlWrite!, coordinatorStatusRead!, helperStatusRead!,
+            execution = new HeldExecution(wrapperReaper!, controlWrite!, coordinatorStatusRead!, helperStatusRead!,
                 stdoutRead!, stderrRead!, helperPid, report!);
-            wrapper = null;
-            wrapperPidFd = controlWrite = coordinatorStatusRead = helperStatusRead = stdoutRead = stderrRead = null;
+            wrapperReaper = null;
+            controlWrite = coordinatorStatusRead = helperStatusRead = stdoutRead = stderrRead = null;
             return Task.FromResult(new HeldLaunchOutcome(true, execution, statusFrame, report, string.Empty,
                 NoTargetInitializationMarkerAbsent: true));
         }
@@ -165,16 +164,9 @@ internal sealed class BubblewrapAdapter : IHeldLauncher
                 controlWrite?.Dispose();
                 var stop = domain.StopAndAwaitEmpty(TimeSpan.FromSeconds(5), new LaunchDomainClock());
                 if (!stop.Stopped) cleanupError = $"; domain stop failed: {stop.Error}";
-                if (wrapper is not null)
-                {
-                    if (wrapperPidFd is not null
-                        && PidFd.TryExited(Fd(wrapperPidFd), 5000, out var exited, out _)
-                        && exited)
-                    {
-                        if (!wrapper.WaitForExit(5000)) cleanupError = "; Bubblewrap was not reapable after pidfd exit";
-                    }
-                    else cleanupError = "; Bubblewrap pidfd did not prove exit";
-                }
+                if (wrapperReaper is not null
+                    && !wrapperReaper.TryReap(5000, out _, out var reapError))
+                    cleanupError = $"; Bubblewrap wrapper exit/reap failed: {reapError}";
                 if (stdoutRead is not null)
                 {
                     if (ReadToEofBounded(Fd(stdoutRead), MaxCaptureBytes, out var failedStdout, out var failedStdoutError))
@@ -203,8 +195,7 @@ internal sealed class BubblewrapAdapter : IHeldLauncher
             Dispose(ref coordinatorStatusRead); Dispose(ref coordinatorStatusWrite);
             Dispose(ref helperStatusRead); Dispose(ref helperStatusWrite);
             Dispose(ref config); Dispose(ref filter); Dispose(ref bwrap);
-            wrapperPidFd?.Dispose();
-            wrapper?.Dispose();
+            wrapperReaper?.Dispose();
             _ = execution;
         }
     }
@@ -219,8 +210,7 @@ internal sealed class BubblewrapAdapter : IHeldLauncher
         cancellationToken.ThrowIfCancellationRequested();
         execution.CloseAbortControl();
         var stop = domain.StopAndAwaitEmpty(TimeSpan.FromSeconds(5), new LaunchDomainClock());
-        var pidfdOk = PidFd.TryExited(Fd(execution.WrapperPidFd), 5000, out var exited, out var pidfdError);
-        var reaped = pidfdOk && exited && execution.Wrapper.WaitForExit(5000);
+        var reaped = execution.WrapperReaper.TryReap(5000, out _, out var reapError);
         var stdoutOk = ReadToEofBounded(Fd(execution.StdoutReader), MaxCaptureBytes, out var stdout, out var stdoutError);
         var stderrOk = ReadToEofBounded(Fd(execution.StderrReader), MaxCaptureBytes, out var stderr, out var stderrError);
         var helperOk = ReadToEofBounded(Fd(execution.HelperStatusReader), 16 * 1024, out var helperTail, out var helperError);
@@ -231,8 +221,7 @@ internal sealed class BubblewrapAdapter : IHeldLauncher
         var errors = new[]
         {
             !stop.Stopped ? $"domain stop/empty failed: {stop.Error}" : string.Empty,
-            !pidfdOk ? $"wrapper pidfd observation failed: {pidfdError}" : string.Empty,
-            !reaped ? "wrapper did not exit and reap exactly once" : string.Empty,
+            !reaped ? $"wrapper did not exit and reap exactly once: {reapError}" : string.Empty,
             !stdoutOk ? $"stdout drain failed: {stdoutError}" : string.Empty,
             !stderrOk ? $"stderr drain failed: {stderrError}" : string.Empty,
             !helperOk ? $"helper status drain failed: {helperError}" : string.Empty,
