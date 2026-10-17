@@ -2,7 +2,11 @@
 
 Updated 2026-10-17. Status definitions: Complete = stated artifact exists; Ready = dependencies sufficient to start; Held = named prerequisite missing; Pending = later delivery. Slice-specific historical entries retain their original tested SHAs; the later AR-6 SHA has separate three-host native and package evidence. Complete lifecycle qualification does not imply restricted-execution security qualification.
 
-## Current priority: WP05 V3 SCHEMA ACCEPTED - RELEASE PROTOCOL IMPLEMENTATION MAY PROCEED; WP10 deferred
+## Current priority: WP05 RELEASE PROTOCOL IMPLEMENTED - INDEPENDENT QUALIFICATION REQUIRED; WP10 deferred
+
+Update 2026-10-18: The bounded release protocol/arbitration tranche is implemented at `4bd2f3a` (managed arbitration/release/status) and `08cda01` (no-target native RELEASE coordinator/tests). Evidence: [WP05 release protocol implementation](evidence/linux-m1/wp05-release-protocol-implementation-2026-10-18.md). Windows full M1: 366 passed, 160 skipped, 0 failed; non-root Linux full assembly: 453 passed, 73 skipped, 0 failed; native release protocol 4/4; canonical manifest and seccomp hashes unchanged. The production integrated path still cannot release; no target was executed. WP04 native HELD/abort with the new coordinator remains environment-pending (delegated cgroup unavailable after WSL reboot). Status: **WP05 RELEASE PROTOCOL IMPLEMENTED - INDEPENDENT QUALIFICATION REQUIRED**. WP05, WP10 and the deferred seccomp-generator decision remain deferred.
+
+## Prior priority: WP05 V3 SCHEMA ACCEPTED - RELEASE PROTOCOL IMPLEMENTATION MAY PROCEED; WP10 deferred
 
 Update 2026-10-17: Independent final acceptance is complete: **WP05 V3 SCHEMA ACCEPTED - RELEASE PROTOCOL IMPLEMENTATION MAY PROCEED**. The combined qualification package is recorded in [the composite record](reviews/gagamba-linux-m1-wp05-v3-schema-qualification-record.md) and [final acceptance review](reviews/gagamba-linux-m1-wp05-v3-schema-final-acceptance-review.md). Windows full Linux-M1: 322 passed, 156 skipped, 0 failed; non-root Linux full assembly: 405 passed, 73 skipped, 0 failed; independent probes 5/5; canonical manifest 873 bytes/SHA unchanged; seccomp 672 bytes/SHA unchanged; Release build 0 warnings/0 errors. Release transport, runtime release/stop arbitration, coordinator RELEASE, native post-release behavior, owner release orchestration, capability consumption, target execution, integrated WP05 process-loss behavior, full WP05 and WP10 remain deferred. WP04 and G2 remain accepted.
 
