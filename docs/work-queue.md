@@ -2,7 +2,11 @@
 
 Updated 2026-10-17. Status definitions: Complete = stated artifact exists; Ready = dependencies sufficient to start; Held = named prerequisite missing; Pending = later delivery. Slice-specific historical entries retain their original tested SHAs; the later AR-6 SHA has separate three-host native and package evidence. Complete lifecycle qualification does not imply restricted-execution security qualification.
 
-## Current priority: ADR 0004 ACCEPTED — WP05 V3 SCHEMA IMPLEMENTATION MAY PROCEED (NOT STARTED); WP10 deferred
+## Current priority: WP05 V3 SCHEMA IMPLEMENTED — INDEPENDENT QUALIFICATION REQUIRED; WP10 deferred
+
+Update 2026-10-17: The bounded v3 durable schema foundation is implemented at `3ffb843` (schema/codec) and `959bac1` (monotonic transitions/recovery classification). Evidence: [WP05 v3 schema implementation](evidence/linux-m1/wp05-v3-schema-implementation-2026-10-17.md). Windows full M1: 315 passed, 156 skipped, 0 failed; WSL focused journal-fence and WP04 owner-protocol regressions: 27/27; canonical vector unchanged. Release transport, coordinator RELEASE, native post-release behavior, owner release orchestration, target execution, WP05 qualification and WP10 remain deferred. Status: **WP05 V3 SCHEMA IMPLEMENTED - INDEPENDENT QUALIFICATION REQUIRED**. WP04 and G2 remain accepted.
+
+## Prior priority: ADR 0004 ACCEPTED — WP05 V3 SCHEMA IMPLEMENTATION MAY PROCEED (NOT STARTED); WP10 deferred
 
 Update 2026-10-17: The complete Luna review is preserved at `46a1991b57edb410d53ac7fc0c6b43ba815a6792` ([review record](reviews/gagamba-linux-m1-adr-0004-review.md)); the earlier partial `fa75f31` preservation remains in history. The independent clarification rereview is preserved at `f1bb62b` ([rereview](reviews/gagamba-linux-m1-adr-0004-rereview.md)) with disposition **ADR 0004 ACCEPTED - WP05 V3 SCHEMA IMPLEMENTATION MAY PROCEED**. [ADR 0004 revision 2](adr/0004-wp05-durable-release-schema-amendment.md) is accepted. No production code, schema code, tests, migration, coordinator/native change, release, target execution or WP05 qualification has been performed. WP04 remains accepted; WP05/WP10 remain unqualified; WP10 target execution and the wrong-audit-architecture seccomp decision remain deferred.
 
