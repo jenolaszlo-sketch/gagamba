@@ -67,8 +67,11 @@ Implementation commit `e004bc4`:
 - `src/Gagamba.Execution.Linux.M1/Recovery/OwnershipValidation.cs` (confirmed
   cleanup cannot regress; failed/unknown cleanup cannot return to pending)
 
-The only WP04 production change is the explicit `LegacyVersion` constant in the
-two pre-release snapshot constructors. Ordinary HELD/abort remains on version 2.
+The only WP04 HELD/abort production change is the explicit `LegacyVersion`
+constant in the two pre-release snapshot constructors; ordinary HELD/abort
+remains on version 2. The shared recovery cleanup writer now uses the new
+latest-snapshot `WriteMutation` path so cleanup preserves release/stop/
+observation facts; cleanup decisions and WP04 HELD/abort behavior are unchanged.
 
 ## 3. Schema version and complete v3 field inventory
 
@@ -221,8 +224,10 @@ No new test was skipped. No target/fixture execution occurred.
 
 ## 12. WP04 and G2 boundary
 
-- WP04 production HELD/abort behavior is unchanged; only the two pre-release
-  version constants were made explicitly legacy. The full portable suite and the
+- WP04 production HELD/abort behavior is unchanged; the two pre-release version
+  constants were made explicitly legacy. The shared reconciliation cleanup writer
+  now starts from the latest acknowledged snapshot and preserves all new facts;
+  cleanup decisions and HELD/abort are unchanged. The full portable suite and the
   WSL owner-protocol selection pass. Native WP04 HELD/owner-death tests were not
   rerun in this tranche because no WP04 native behavior changed; they remain the
   accepted WP04 evidence.
