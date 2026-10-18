@@ -253,3 +253,8 @@ Documentation link resolution and original-proposal SHA-256 equality are checked
 Verifier regression checks passed on 2026-10-03: Windows PowerShell -File with default/explicit root, call-operator invocation, PowerShell 7 -File with default/explicit root, and missing/empty root rejection (seven cases). Default-root tests ran outside the repository. Documentation links and the original proposal hash still pass. These are preparation-tool checks only.
 
 Historical preparation notes about absent providers, pending CI and uncommitted GW-1B work are superseded by the later checkpoints and the 2026-10-08 review baseline. Use current Git state and the Sol plan for new work.
+
+## Current action — WP05 SECCOMP COUNTEREXAMPLE PRESERVED; QUALIFICATION STOPPED
+
+Update 2026-10-18: Independent WP05 qualification stopped after confirming a product defect in the pinned seccomp filter. The filter (seccomp-filter.bin, 672 bytes, sha256 4ee63c48...) denies exit_group (231), futex (202), set_tid_address (218), gettid (186), tgkill (234) and other syscalls with bit 7 set, because instruction 79 (clone JEQ) has jf=1 instead of jf=3. The coordinator exits 139 (SIGSEGV) instead of 0 (release) or 130 (expiry). Q1 probe committed at 99dc8c2 (3 Facts: 1 passed, 2 failed due to this defect). Evidence: [counterexample](evidence/linux-m1/wp05-release-seccomp-counterexample-2026-10-18.md). Review: [counterexample review](reviews/gagamba-linux-m1-wp05-release-seccomp-counterexample-review.md). Production diff empty. WSL2 broken (CreateInstance/E_FAIL). WP05 acceptance BLOCKED. Remediation required: fix seccomp generator (jf=1->3), regenerate filter, rebind hash, requalify.
+
