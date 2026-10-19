@@ -1,0 +1,49 @@
+ORIGINAL_BUNDLE=/home/gaga/qualification/bundles/wp05-r12-readiness.bundle
+ORIGINAL_SIZE=2081455
+ORIGINAL_SHA256=0e9b5486035b558acb746c61e07c6934ff1a023dba8142809953c21a75d76bf3
+SUPPLEMENT_BUNDLE=/home/gaga/qualification/bundles/wp05-r12-readiness-supplement.bundle
+SUPPLEMENT_SIZE=1953932
+SUPPLEMENT_SHA256=19b524a1ef57d2491fc1a2a8e2355599d59b9166af15811b2d94cd1294870e0f
+From /home/gaga/qualification/bundles/wp05-r12-readiness.bundle
+ * [new branch]      review/wp05-harness-linux-final-acceptance -> original/review/wp05-harness-linux-final-acceptance
+ * [new branch]      review/wp05-abort-oracle-final-requalification -> original/review/wp05-abort-oracle-final-requalification
+ * [new branch]      review/wp05-qualification-harness-requalification -> original/review/wp05-qualification-harness-requalification
+ * [new branch]      review/wp05-seccomp-kernel-requalification -> original/review/wp05-seccomp-kernel-requalification
+ * [new branch]      review/wp05-release-seccomp-counterexample -> original/review/wp05-release-seccomp-counterexample
+ * [new branch]      remediation/wp05-identity-evidence-integrity -> original/remediation/wp05-identity-evidence-integrity
+ * [new branch]      infrastructure/wp05-independent-linux-readiness -> original/infrastructure/wp05-independent-linux-readiness
+From /home/gaga/qualification/bundles/wp05-r12-readiness-supplement.bundle
+ * [new branch]      review/wp05-opencode-linux-readiness -> supp/review/wp05-opencode-linux-readiness
+ * [new branch]      remediation/wp05-identity-evidence-integrity -> supp/remediation/wp05-identity-evidence-integrity
+ * [new branch]      infrastructure/wp05-independent-linux-readiness -> supp/infrastructure/wp05-independent-linux-readiness
+Switched to a new branch 'review/wp05-opencode-linux-qualification'
+ROOT=/home/gaga/qualification/gagamba-r12
+HEAD=38f6981b2a60daab2df37c92913a6760c1bef131
+TREE=6854675d6b37a49d5302d6104103bdbfbc268040
+BRANCH=review/wp05-opencode-linux-qualification
+STATUS=0
+R11_ANCESTOR=0
+BASE_ANCESTOR=0
+I3B_REACHABLE=0
+REVIEWER_REACHABLE=0
+REVIEWER_DOC=0
+ORIGINAL_INFRA=79095223c2675934bec0ce52fe21718f28d3f471
+SUPP_INFRA=5c04d324894a84b17a5d40f7546eab9a65d0eb4c
+REVIEWER_REF=e6f8604cf6d2a0e532e651bece987fb9613e6b94
+SCRIPT_BLOB_AT_I3B=93c4dec426372c2cd89be05f3e617ed20f3b24eb
+SAFE_DIRECTORY_CONFIG=
+FSCK_EXIT=0
+38f6981 (HEAD -> review/wp05-opencode-linux-qualification, supp/remediation/wp05-identity-evidence-integrity, original/remediation/wp05-identity-evidence-integrity) docs(wp05): record identity and evidence-integrity remediation
+c48e358 fix(wp05): bind expected wrapper identity to owned pidfd
+5a30576 docs(wp05): reconcile R9 evidence checksum provenance
+aa1a7f5 fix(wp05): restore byte-exact preserved hostile probe
+3ba6fde docs(wp05): record abort-oracle provenance and SIGPIPE evidence
+6e534c8 test(wp05): classify SIGPIPE host state and isolate qualification
+fc4f53f fix(wp05): bind abort oracle to raw termination and stop provenance
+042940e test(wp05): import preserved hostile abort-provenance probe from 8a863c4
+TOOLS_SCRIPT_SHA256=09a1c6b0a1938c0dbcdc93dcc5859e241330948882ac68dd7b55e564377be394
+TOOLS_SCRIPT_BLOB=93c4dec426372c2cd89be05f3e617ed20f3b24eb
+CHECKOUT_CONFIG_USER_NAME=
+CHECKOUT_CONFIG_USER_EMAIL=
+R12_STATUS_AFTER_TOOLS=0
+LINUX_NATIVE_READY=1

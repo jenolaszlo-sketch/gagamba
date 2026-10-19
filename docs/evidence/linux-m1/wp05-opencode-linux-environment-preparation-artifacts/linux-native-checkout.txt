@@ -1,0 +1,88 @@
+WP05 Linux-native R12 source preparation
+Date: 2026-10-19
+Scope: source transfer and exact-source verification; no qualification
+
+Canonical repository
+  root: C:/Users/Laszlos/source/repos/Gagamba
+  continuation branch: infrastructure/wp05-independent-linux-readiness-2
+  base: I3b 5c04d324894a84b17a5d40f7546eab9a65d0eb4c
+  frozen target: R12 38f6981b2a60daab2df37c92913a6760c1bef131
+  expected tree: 6854675d6b37a49d5302d6104103bdbfbc268040
+  production baseline: 58cb1ba31c102e0e9d5488721e8c438adb55c614
+
+Linux-native checkout
+  path: /home/gaga/qualification/gagamba-r12
+  owner: gaga:gaga (uid/gid 1000)
+  construction: fresh `git init`; no Windows .git metadata or ownership copied
+  branch: review/wp05-opencode-linux-qualification
+  HEAD: 38f6981b2a60daab2df37c92913a6760c1bef131
+  tree: 6854675d6b37a49d5302d6104103bdbfbc268040
+  tracked status: clean (0 entries)
+  R11 c48e358451c8b0dbe7aace281f64a2eced399ed7 ancestor: yes
+  production baseline 58cb1ba... ancestor: yes
+  git fsck --no-progress: exit 0
+  safe.directory configuration: empty (no broad or local exception)
+  Git ownership: normal operations as gaga succeeded without warnings
+
+Bundles
+  original: /home/gaga/qualification/bundles/wp05-r12-readiness.bundle
+    Windows source: C:/Users/Laszlos/source/repos/Solo/wp05-r12-readiness.bundle
+    size: 2,081,455 bytes
+    SHA-256: 0e9b5486035b558acb746c61e07c6934ff1a023dba8142809953c21a75d76bf3
+    refs: infra I3 7909522, R12, five review refs
+    preserved unchanged
+  supplement: /home/gaga/qualification/bundles/wp05-r12-readiness-supplement.bundle
+    Windows source: C:/Users/Laszlos/source/repos/Solo/wp05-r12-readiness-supplement.bundle
+    size: 1,953,932 bytes
+    SHA-256: 19b524a1ef57d2491fc1a2a8e2355599d59b9166af15811b2d94cd1294870e0f
+    refs: I3b 5c04d324894a84b17a5d40f7546eab9a65d0eb4c,
+          R12 38f6981b2a60daab2df37c92913a6760c1bef131,
+          reviewer e6f8604cf6d2a0e532e651bece987fb9613e6b94
+    reason: the original seven-ref bundle was created at I3 before I3b; the
+            supplement transfers I3b and the OpenCode review commit separately
+    verification: complete history, all seven plus three refs restored, fsck 0
+
+Preserved refs in Linux-native checkout
+  refs/remotes/original/infrastructure/wp05-independent-linux-readiness:
+    79095223c2675934bec0ce52fe21718f28d3f471 (I3)
+  refs/remotes/supp/infrastructure/wp05-independent-linux-readiness:
+    5c04d324894a84b17a5d40f7546eab9a65d0eb4c (I3b)
+  refs/remotes/supp/review/wp05-opencode-linux-readiness:
+    e6f8604cf6d2a0e532e651bece987fb9613e6b94
+  refs/remotes/original/remediation/wp05-identity-evidence-integrity:
+    38f6981b2a60daab2df37c92913a6760c1bef131
+  refs/remotes/original/review/wp05-release-seccomp-counterexample:
+    712e0fc2dc56c0b14f12ca75c7d48137dae8a500
+  refs/remotes/original/review/wp05-seccomp-kernel-requalification:
+    5b6ab064ec0e329735aae969a3478577203d6616
+  refs/remotes/original/review/wp05-qualification-harness-requalification:
+    67e2d5b95ff2ff1a7d92fb2af27cb37bc0995bce
+  refs/remotes/original/review/wp05-abort-oracle-final-requalification:
+    d809ac969a84073d117d30b5a80437159741774c
+  refs/remotes/original/review/wp05-harness-linux-final-acceptance:
+    71d5a7e0af5141d74110eacc06ba478ab75a81ac
+  reviewer evidence object e6f8604: reachable, including
+    docs/evidence/linux-m1/wp05-opencode-independent-linux-readiness-2026-10-19.md
+
+Readiness tooling
+  extracted script: /home/gaga/qualification/tools/linux-m1-independent-readiness.sh
+  source commit: I3b 5c04d324894a84b17a5d40f7546eab9a65d0eb4c
+  Git blob: 93c4dec426372c2cd89be05f3e617ed20f3b24eb (matches I3/I3b)
+  SHA-256: 09a1c6b0a1938c0dbcdc93dcc5859e241330948882ac68dd7b55e564377be394
+  staging wrapper: /home/gaga/qualification/tools/run-readiness-in-r12.sh
+    copies the byte-exact script into the R12 checkout's eng/ as an untracked
+    temporary file, runs it with --source-rev R12, and removes it on exit
+  host launcher: /home/gaga/qualification/tools/run-in-host.sh
+    self-places the invoking process in /sys/fs/cgroup/gaga-delegated/host and
+    execs the requested command; non-root, no privilege escalation
+  The R12 checkout's tracked source was not modified; temporary staging was
+  removed and status re-verified clean.
+
+Verification source
+  raw output: linux-native-verification.log (committed artifact)
+  setup ran as gaga and exited 0.
+
+Limits
+  This is source preparation, not qualification or acceptance. No build, test
+  suite, target execution, release/stop, crash, SIGPIPE or no-resend test was
+  run. The implementation branch was not merged into the reviewer branch.
