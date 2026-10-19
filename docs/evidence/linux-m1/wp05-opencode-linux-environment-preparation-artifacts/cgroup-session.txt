@@ -50,11 +50,13 @@ Placement and the non-root boundary
     because the source cgroup is outside the delegated subtree. This was
     preserved as preflight-placement-failure.log and the failure narrative.
   - The authorized placement is an explicit operator launcher:
-    /home/gaga/qualification/tools/run-as-gaga-in-host.sh
-    It checks root, writes its own PID to the host leaf, then execs setpriv to
-    uid=1000, gid=1000, clear-groups with HOME/TMPDIR/USER/LOGNAME/DOTNET
-    settings. Root is never the qualification/test process. The launcher is a
-    per-session operator step, not a setuid helper, daemon or system service.
+    /root/wp05/run-as-gaga-in-host.sh
+    It is root-owned and mode 700 (root-only; not in gaga's writable home, not
+    setuid). It checks root, writes its own PID to the host leaf, then execs
+    setpriv to uid=1000, gid=1000, clear-groups with HOME/TMPDIR/USER/LOGNAME/
+    DOTNET and GAGAMBA_DELEGATED_CGROUP settings. Root is never the
+    qualification/test process. The launcher is a per-session operator step,
+    not a privileged daemon or system service.
   - The preflight verified uid=1000, gid=1000, CapInh=CapPrm=CapEff=CapAmb=0,
     CapBnd=000001ffffffffff, and placement at /gaga-delegated/host.
 

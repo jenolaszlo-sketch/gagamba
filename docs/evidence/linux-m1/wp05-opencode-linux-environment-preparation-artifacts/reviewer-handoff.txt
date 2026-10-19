@@ -1,0 +1,114 @@
+WP05 OpenCode independent reviewer handoff
+Date: 2026-10-19
+Scope: environment/source readiness handoff; no WP05 qualification
+
+Source checkout
+  Linux path: /home/gaga/qualification/gagamba-r12
+  owner: gaga:gaga
+  branch: review/wp05-opencode-linux-qualification
+  exact target: 38f6981b2a60daab2df37c92913a6760c1bef131
+  tree: 6854675d6b37a49d5302d6104103bdbfbc268040
+  status: clean tracked tree (ignored artifacts/ excluded)
+  do not set safe.directory; the Linux-native repository is owned by gaga.
+
+Reviewer source verification (as gaga)
+  wsl.exe -d Ubuntu -u gaga -- bash -lc '
+    cd /home/gaga/qualification/gagamba-r12
+    git rev-parse --show-toplevel
+    git rev-parse HEAD
+    git show -s --format=%T HEAD
+    git status --porcelain=v1
+    git merge-base --is-ancestor c48e358451c8b0dbe7aace281f64a2eced399ed7 HEAD
+    git merge-base --is-ancestor 58cb1ba31c102e0e9d5488721e8c438adb55c614 HEAD
+  '
+  Expected HEAD/tree above; status empty; both ancestry commands exit 0.
+  If Git refuses ownership without a safe.directory setting, stop and report;
+  do not relax Git ownership configuration.
+
+Environment entry (authorized operator step)
+  The qualification process must run as gaga in
+  /sys/fs/cgroup/gaga-delegated/host. gaga cannot self-migrate from
+  /init.scope; the operator uses the root-only launcher:
+    /root/wp05/run-as-gaga-in-host.sh (root:root, mode 700)
+  It writes its own PID to the host leaf and execs setpriv to gaga.
+
+Readiness preflight
+  wsl.exe -d Ubuntu -u root -- bash \
+    /root/wp05/run-as-gaga-in-host.sh \
+    /bin/bash /home/gaga/qualification/tools/run-preflight-once.sh reviewer-readiness
+  Expected: READINESS=PASS, SUMMARY pass=57 fail=0, exit 0,
+  REVIEWER_ACCESS=UNVERIFIED and INDEPENDENT_ACCEPTANCE=NOT_CLAIMED.
+  The runner stages the byte-exact script (Git blob 93c4dec4... from I3b) into
+  the R12 checkout, runs with --source-rev R12, and removes it.
+  Report: /home/gaga/qualification/logs/readiness-reviewer-readiness.report
+  Log:    /home/gaga/qualification/logs/readiness-reviewer-readiness.log
+  Copy both logs to the reviewer evidence location; do not modify source.
+
+Direct environment inspection
+  wsl.exe -d Ubuntu -u gaga -- bash \
+    /home/gaga/qualification/tools/verify-session.sh
+  Expected: host cgroup populated 0, host cgroup.procs empty, parent subtree
+  memory pids, cgroup.kill present, anchor alive in /init.scope, R12 clean,
+  safe.directory empty.
+
+Session delegation and anchor
+  - Delegated parent: /sys/fs/cgroup/gaga-delegated (755 gaga:gaga)
+  - Host leaf: /sys/fs/cgroup/gaga-delegated/host (755 gaga:gaga)
+  - Parent subtree_control: memory pids; host controllers: memory pids
+  - gaga session anchor: sleep infinity, PID in
+    /home/gaga/qualification/session-anchor.pid, in /init.scope.
+  - The anchor keeps the WSL session/cgroup hierarchy alive. It is not in the
+    host leaf and is not a qualification process. It is intentionally retained
+    for this review session; do not kill it while reviewing.
+  - The host leaf is empty before qualification. The preflight creates/removes
+    only its disposable child and workspace.
+
+Reboot / reestablishment (operator)
+  1. Start the anchor as gaga:
+       wsl.exe -d Ubuntu -u gaga -- bash \
+         /home/gaga/qualification/tools/start-session-anchor.sh
+  2. Provision as root (the script refuses an existing delegation):
+       wsl.exe -d Ubuntu -u root -- bash \
+         /root/wp05/provision-session-cgroup.sh
+     Expected: parent/host 755 gaga:gaga; controllers cpu memory pids; subtree
+     memory pids; host populated 0; cgroup.kill present.
+  3. Run the reviewer source verification and readiness preflight above.
+  The Linux-native source survives reboot; the cgroup tree and anchor do not.
+
+Cleanup (after the review, operator)
+  wsl.exe -d Ubuntu -u root -- bash -c '
+    test -z "$(cat /sys/fs/cgroup/gaga-delegated/host/cgroup.procs)"
+    rmdir /sys/fs/cgroup/gaga-delegated/host
+    rmdir /sys/fs/cgroup/gaga-delegated
+  '
+  wsl.exe -d Ubuntu -u gaga -- bash -c '
+    kill "$(cat /home/gaga/qualification/session-anchor.pid)"
+  '
+  Remove any empty reviewer-created child cgroups first; never kill unrelated
+  processes. The tree must not be removed while the reviewer is using it.
+
+Reviewer-only changes
+  Use the separate branch review/wp05-opencode-linux-qualification for
+  reviewer-only evidence/test commits. Do not modify R12 tracked source, do not
+  merge into the implementation branch, and do not push without authorization.
+  The canonical implementation branch and previous reviewer histories are
+  immutable for this task.
+
+Portable bundle
+  Final portable preparation bundle (created after the evidence commit):
+    C:\Users\Laszlos\source\repos\Solo\wp05-opencode-preparation.bundle
+  It includes the Linux-native preparation branch, exact R12, the OpenCode
+  reviewer commit e6f8604, and the preserved review refs. Its SHA-256 and
+  verification are recorded in the preparation evidence artifacts. The source
+  checkout above is already usable; the bundle is for independent portability.
+
+Evidence collection
+  Preserve the preflight report/log, the source identity output, cgroup/session
+  output, any failure, and cleanup output. Do not include credentials or host
+  secrets. A producer pass is not independent verification; only the reviewer's
+  own OpenCode execution establishes access.
+
+Not performed here
+  No WP05 release, termination observer, SIGPIPE, crash/no-resend, full M1
+  suite, target execution, or harness acceptance. This is environment/source
+  preparation only.

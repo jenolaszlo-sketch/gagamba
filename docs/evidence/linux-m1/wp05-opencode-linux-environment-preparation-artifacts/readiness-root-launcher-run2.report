@@ -1,0 +1,84 @@
+PASS  tool.bash: /usr/bin/bash
+PASS  tool.uname: /usr/bin/uname
+PASS  tool.id: /usr/bin/id
+PASS  tool.stat: /usr/bin/stat
+PASS  tool.getent: /usr/bin/getent
+PASS  tool.git: /usr/bin/git
+PASS  tool.sha256sum: /usr/bin/sha256sum
+PASS  tool.wc: /usr/bin/wc
+PASS  tool.file: /usr/bin/file
+PASS  tool.python3: /usr/bin/python3
+PASS  tool.gcc: /usr/bin/gcc
+PASS  tool.dotnet: /usr/bin/dotnet
+PASS  tool.bwrap: /usr/bin/bwrap
+PASS  tool.mktemp: /usr/bin/mktemp
+PASS  tool.awk: /usr/bin/awk
+PASS  tool.grep: /usr/bin/grep
+PASS  tool.tr: /usr/bin/tr
+PASS  tool.realpath: /usr/bin/realpath
+PASS  tool.dirname: /usr/bin/dirname
+PASS  tool.tee: /usr/bin/tee
+INFO  host.uname: Linux 6.6.114.1-microsoft-standard-WSL2 x86_64
+PASS  host.linux: Linux
+PASS  host.x86_64: x86_64
+INFO  host.distro: Ubuntu 26.04.1 LTS
+INFO  identity: uid=1000 gid=1000 groups=1000
+PASS  identity.nonroot: uid=1000
+PASS  capability.CapInh: 0000000000000000
+PASS  capability.CapPrm: 0000000000000000
+PASS  capability.CapEff: 0000000000000000
+PASS  capability.CapAmb: 0000000000000000
+INFO  capability.CapBnd: 000001ffffffffff
+INFO  NoNewPrivs: 0
+PASS  cgroup.unified: cgroup2fs
+PASS  cgroup.controllers: cpuset cpu io memory hugetlb pids rdma
+INFO  cgroup.current_raw: /gaga-delegated/host
+INFO  cgroup.current: /sys/fs/cgroup/gaga-delegated/host
+PASS  cgroup.placement: /sys/fs/cgroup/gaga-delegated/host is beneath /sys/fs/cgroup/gaga-delegated
+PASS  delegated.exists: /sys/fs/cgroup/gaga-delegated
+INFO  delegated.controllers: cpu memory pids
+PASS  delegated.controller.memory: offered
+PASS  delegated.controller.pids: offered
+INFO  delegated.subtree_control: memory pids
+PASS  delegated.subtree.memory: delegated
+PASS  delegated.subtree.pids: delegated
+PASS  delegated.cgroup_kill: cgroup.kill present
+PASS  delegated.writable: /sys/fs/cgroup/gaga-delegated writable
+PASS  delegated.placement.writable: /sys/fs/cgroup/gaga-delegated/host and cgroup.procs writable
+PASS  delegated.create: /sys/fs/cgroup/gaga-delegated/gagamba-readiness-1523
+PASS  delegated.control_files: memory.max and pids.max present
+PASS  delegated.control_write: memory.max and pids.max accept max
+PASS  delegated.remove: /sys/fs/cgroup/gaga-delegated/gagamba-readiness-1523 removed
+INFO  toolchain.dotnet: 10.0.112
+PASS  toolchain.dotnet.major: 10.x
+INFO  toolchain.gcc: gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+INFO  toolchain.python: Python 3.14.4
+INFO  toolchain.libc: ldd (Ubuntu GLIBC 2.43-2ubuntu2.4) 2.43
+INFO  bwrap.path: /usr/bin/bwrap
+INFO  bwrap.version: bubblewrap 0.11.1
+INFO  bwrap.mode: 755
+PASS  bwrap.version.pinned: bubblewrap 0.11.1
+PASS  bwrap.sha256: 523da3e7399044be5163aee6f57a77a6bef7454376e28f0a0627920bae1b76b6
+PASS  bwrap.nonsetuid: mode 755
+PASS  workspace.write: /tmp/gagamba-wp05-readiness.pfCicr
+PASS  report.write: /tmp/gagamba-wp05-readiness.pfCicr/readiness-report.txt
+INFO  source.root: /home/gaga/qualification/gagamba-r12
+INFO  source.top: /home/gaga/qualification/gagamba-r12
+INFO  source.head: 38f6981b2a60daab2df37c92913a6760c1bef131
+INFO  source.rev: 38f6981b2a60daab2df37c92913a6760c1bef131
+PASS  source.revision: 38f6981b2a60daab2df37c92913a6760c1bef131
+PASS  source.ancestor: 38f6981b2a60daab2df37c92913a6760c1bef131 is an ancestor of HEAD
+PASS  source.production_surfaces: src native tests match 38f6981b2a60daab2df37c92913a6760c1bef131
+PASS  source.clean_tracked: no tracked modifications
+PASS  filter.source: generator and checked-in hex present
+PASS  filter.generator_check: checked-in hex matches generator
+INFO  filter.generated: size=672 sha256=2aa879019138c4d4066557213ce0037de70430aac3a05008eec5c8abd999d108
+PASS  filter.size: 672
+PASS  filter.sha256: 2aa879019138c4d4066557213ce0037de70430aac3a05008eec5c8abd999d108
+INFO  filter.artifact: size=672 sha256=2aa879019138c4d4066557213ce0037de70430aac3a05008eec5c8abd999d108
+PASS  filter.artifact.pin: matches frozen identity
+REVIEWER_ACCESS=UNVERIFIED
+READINESS=PASS
+SUMMARY pass=57 fail=0
+INDEPENDENT_REVIEWER_ACCESS=UNVERIFIED
+INDEPENDENT_ACCEPTANCE=NOT_CLAIMED

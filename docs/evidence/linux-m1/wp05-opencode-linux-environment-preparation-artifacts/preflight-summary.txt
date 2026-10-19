@@ -1,0 +1,74 @@
+WP05 producer readiness preflight results
+Date: 2026-10-19
+Scope: environment/source readiness only; no harness qualification
+
+Selected script
+  commit: I3b 5c04d324894a84b17a5d40f7546eab9a65d0eb4c
+  path: eng/linux-m1-independent-readiness.sh
+  Git blob: 93c4dec426372c2cd89be05f3e617ed20f3b24eb
+  extracted SHA-256:
+    09a1c6b0a1938c0dbcdc93dcc5859e241330948882ac68dd7b55e564377be394
+  staging: run-readiness-in-r12.sh copies the blob into the R12 checkout as an
+  untracked temporary and removes it after the run
+  target: /home/gaga/qualification/gagamba-r12 at
+    38f6981b2a60daab2df37c92913a6760c1bef131
+  invocation (operator root step then gaga):
+    wsl.exe -d Ubuntu -u root -- bash \
+      /root/wp05/run-as-gaga-in-host.sh \
+      /bin/bash /home/gaga/qualification/tools/run-preflight-once.sh <label>
+  report: /home/gaga/qualification/logs/readiness-<label>.report
+  log: /home/gaga/qualification/logs/readiness-<label>.log
+
+Environment (passing runs)
+  boot 69d053fb-0fd9-4209-aa5b-be128424ed34
+  Ubuntu 26.04.1 LTS; Linux 6.6.114.1-microsoft-standard-WSL2 x86_64
+  uid=1000(gaga) gid=1000(gaga); CapInh=CapPrm=CapEff=CapAmb=0;
+  CapBnd=000001ffffffffff; NoNewPrivs=0
+  cgroup host /sys/fs/cgroup/gaga-delegated/host; parent subtree memory pids
+  Bubblewrap 0.11.1, SHA-256 523da3e7...; non-setuid mode 755
+  .NET 10.0.112; GCC 15.2.0; Python 3.14.4; Git 2.53.0
+  regenerated filter artifact 672 bytes / 2aa87901...
+
+Run history (all preserved)
+  placement-attempt (gaga self-migration):
+    exit 1; raw log preflight-placement-failure.log; exact error preserved in
+    preflight-placement-failure.txt; no preflight script outcomes.
+  run1 (artifact absent):
+    56 PASS / 0 FAIL; exit 0; readiness-run1.log/.report.
+  run2 (artifact absent):
+    56 PASS / 0 FAIL; exit 0; readiness-run2.log/.report.
+  artifact-run1 (regenerated ignored filter staged):
+    57 PASS / 0 FAIL; exit 0; readiness-artifact-run1.log/.report.
+  artifact-run2 (fresh probe state):
+    57 PASS / 0 FAIL; exit 0; readiness-artifact-run2.log/.report.
+  root-launcher-run1 (final root-only operator launcher):
+    57 PASS / 0 FAIL; exit 0; readiness-root-launcher-run1.log/.report.
+  root-launcher-run2 (fresh probe state, final):
+    57 PASS / 0 FAIL; exit 0; readiness-root-launcher-run2.log/.report.
+
+Trusted cgroup/probe evidence in each passing run
+  cgroup.current_raw /gaga-delegated/host; resolved host path matches
+  delegated.create created gagamba-readiness-<pid> under the delegated parent
+  memory.max and pids.max present; both accepted "max"
+  the child was removed; host cgroup.events populated 0 frozen 0 after exit
+  R12 tracked status remained clean; source.head == source.rev == R12
+
+Check-count reconciliation
+  Reviewer 39 PASS + 4 FAIL = 43; the script's guard blocks skipped 14
+  dependent checks (six delegation, four probe, four source), so 43 + 14 = 57
+  potential. With the ignored filter artifact absent, filter.artifact.pin is
+  not applicable, giving 56/0. After regenerating it from the checked-in
+  generator, both complete runs are 57/0. The script version is unchanged.
+
+Cleanup and session state
+  Each preflight removed its temporary child cgroup and /tmp workspace.
+  The delegated parent/host tree is retained for the review session.
+  host cgroup.procs is empty; parent cgroup.procs is empty; cgroup.events is
+  populated 0. The gaga session anchor (sleep infinity PID 576, /init.scope)
+  keeps the WSL session alive; it is not in the host leaf.
+  R12 checkout status is clean; no safe.directory setting exists.
+
+Not performed
+  No build, full Linux M1 suite, target execution, WP05 release/termination,
+  SIGPIPE, crash, no-resend, or acceptance test. The preflight is not a
+  qualification result.

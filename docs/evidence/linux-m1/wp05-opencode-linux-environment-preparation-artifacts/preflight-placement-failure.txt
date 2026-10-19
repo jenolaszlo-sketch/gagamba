@@ -28,10 +28,13 @@ Diagnosis
 
 Correction
   - Added the operator placement launcher
-    /home/gaga/qualification/tools/run-as-gaga-in-host.sh. It runs only with
-    operator root, writes its own PID to the designated host leaf, and then
-    execs setpriv --reuid=1000 --regid=1000 --clear-groups. The test process is
-    gaga, not root; no setuid binary or persistent privileged process exists.
+    /root/wp05/run-as-gaga-in-host.sh (root-owned, mode 700, root-only). It
+    runs only with operator root, writes its own PID to the designated host
+    leaf, and then execs setpriv --reuid=1000 --regid=1000 --clear-groups. The
+    test process is gaga, not root; no setuid binary or persistent privileged
+    process exists. The initial gaga-writable launcher was removed after this
+    privilege-boundary finding; the final two preflight runs used the root-only
+    launcher.
   - Changed run-preflight-once.sh to require that it is already in
     /gaga-delegated/host, reject uid 0, and never self-place.
   - The first failed attempt was not converted into a pass. The two later

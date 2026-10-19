@@ -1,0 +1,29 @@
+WP05 frozen seccomp artifact in the Linux-native R12 checkout
+Date: 2026-10-19
+Scope: reproducible artifact staging for the readiness preflight; no acceptance
+
+Source
+  checkout: /home/gaga/qualification/gagamba-r12
+  generator: native/linux-m1/seccomp_filter_policy.py
+  checked-in hex: native/linux-m1/seccomp-filter.hex
+  generator --check: matches, 672 bytes
+
+Artifact initially absent
+  artifacts/linux-m1/wp04/seccomp-filter.bin was not present in the R12 tree.
+  The preflight's generator checks passed; only the optional artifact-pin check
+  was omitted, producing 56 PASS / 0 FAIL.
+
+Regeneration (as gaga)
+  mkdir -p artifacts/linux-m1/wp04
+  python3 native/linux-m1/seccomp_filter_policy.py \
+    --binary > artifacts/linux-m1/wp04/seccomp-filter.bin
+  size: 672 bytes
+  SHA-256: 2aa879019138c4d4066557213ce0037de70430aac3a05008eec5c8abd999d108
+  artifacts/ is ignored by .gitignore; no tracked source changed.
+  git status --porcelain=v1 after generation: empty (ignored artifact only).
+
+Result
+  The two complete preflight runs after staging passed 57/0, including
+  filter.artifact.pin. This reproduces the earlier producer's 57-check profile
+  without copying a stale binary. The generator and checked-in hex remain the
+  authoritative source; no frozen identity changed.

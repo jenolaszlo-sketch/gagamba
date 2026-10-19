@@ -72,13 +72,14 @@ Readiness tooling
   staging wrapper: /home/gaga/qualification/tools/run-readiness-in-r12.sh
     copies the byte-exact script into the R12 checkout's eng/ as an untracked
     temporary file, runs it with --source-rev R12, and removes it on exit
-  operator placement launcher: /home/gaga/qualification/tools/run-as-gaga-in-host.sh
-    must be invoked by the authorized local WSL root context; it writes its own
-    PID to the delegated host cgroup.procs and then execs setpriv to uid/gid
-    1000. The qualification process is gaga with zero effective capabilities;
-    root is never the test process. Non-root self-migration from /init.scope was
-    attempted and failed with EPERM even though cgroup.procs was writable; the
-    operator launcher is therefore required.
+  operator placement launcher: /root/wp05/run-as-gaga-in-host.sh
+    root-owned, root-only mode 700; invoked by the authorized local WSL root
+    context; it writes its own PID to the delegated host cgroup.procs and then
+    execs setpriv to uid/gid 1000. The qualification process is gaga with zero
+    effective capabilities; root is never the test process. Non-root
+    self-migration from /init.scope was attempted and failed with EPERM even
+    though cgroup.procs was writable; the operator launcher is therefore
+    required. The launcher is not in gaga's writable home and is not setuid.
   preflight runner: /home/gaga/qualification/tools/run-preflight-once.sh
     checks that the invoking process is already in the delegated host, refuses
     root, and runs the staging wrapper; it does not self-place

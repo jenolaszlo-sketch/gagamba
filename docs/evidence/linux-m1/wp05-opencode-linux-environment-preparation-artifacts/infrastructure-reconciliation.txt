@@ -1,0 +1,82 @@
+WP05 readiness infrastructure and check-count reconciliation
+Date: 2026-10-19
+Scope: I3b, script provenance, and independent-reviewer count reconciliation
+
+I3b
+  full SHA: 5c04d324894a84b17a5d40f7546eab9a65d0eb4c
+  parent: 79095223c2675934bec0ce52fe21718f28d3f471 (I3)
+  tree: 803876d2a5151d9d89b5c92ed620e0a7eb8e26e0
+  subject: docs(wp05): record readiness bundle integrity
+  contents: bundle-identity.txt, hash-audit.txt, work-queue.md and handoff.md
+  executable infrastructure change: none
+  readiness script at I3b: Git blob
+    93c4dec426372c2cd89be05f3e617ed20f3b24eb, identical to I3 and to the
+    byte-exact extracted tool used by the Linux-native checkout
+  I3b is reachable in canonical and in the Linux-native checkout; the reviewer
+  had resolved I1-I3 only because the original seven-ref bundle was created at
+  I3 before I3b existed.
+
+Bundle provenance
+  Original bundle (unchanged):
+    C:/Users/Laszlos/source/repos/Solo/wp05-r12-readiness.bundle
+    2,081,455 bytes, SHA-256
+    0e9b5486035b558acb746c61e07c6934ff1a023dba8142809953c21a75d76bf3
+    seven refs; infrastructure ref at I3 7909522; reviewer history absent
+  Supplemental bundle (new, separate):
+    C:/Users/Laszlos/source/repos/Solo/wp05-r12-readiness-supplement.bundle
+    1,953,932 bytes, SHA-256
+    19b524a1ef57d2491fc1a2a8e2355599d59b9166af15811b2d94cd1294870e0f
+    three refs: I3b, R12, OpenCode reviewer e6f8604
+  The supplemental bundle was verified in an empty repository: complete
+  history, all refs fetched, fsck 0. The original bundle was not modified.
+
+OpenCode reviewer commit
+  branch: review/wp05-opencode-linux-readiness
+  full SHA: e6f8604cf6d2a0e532e651bece987fb9613e6b94
+  parent: R12 38f6981b2a60daab2df37c92913a6760c1bef131
+  contents: documentation-only independent readiness assessment
+  evidence object:
+    docs/evidence/linux-m1/wp05-opencode-independent-linux-readiness-2026-10-19.md
+  The ref was fetched into canonical and preserved in the Linux-native checkout
+  under refs/remotes/supp/review/wp05-opencode-linux-readiness. It was not
+  merged, rebased or amended.
+
+Selected script
+  infrastructure commit: I3b 5c04d32 (same script at I3 7909522)
+  Git blob: 93c4dec426372c2cd89be05f3e617ed20f3b24eb
+  SHA-256 of extracted bytes:
+    09a1c6b0a1938c0dbcdc93dcc5859e241330948882ac68dd7b55e564377be394
+  invocation wrapper: run-readiness-in-r12.sh
+  target source: /home/gaga/qualification/gagamba-r12 at R12
+  The script is staged byte-exact into the R12 checkout's eng/ directory as an
+  untracked temporary file; it is removed after the run. The tracked R12 tree
+  is unchanged.
+
+Check-count reconciliation (not arithmetic alone)
+  Reviewer run: 39 PASS + 4 FAIL = 43 outcomes.
+  Failures:
+    cgroup.placement
+    delegated.exists
+    delegated.placement.writable
+    source.repository
+  The script's guarded blocks skip dependent checks after those failures:
+    - delegated.exists false skips six controller/subtree/cgroup.kill/writable
+      checks;
+    - delegated.placement.writable false skips four create/control/remove
+      checks;
+    - source.repository false skips revision/ancestor/production/clean checks.
+    Total skipped: 14. 43 + 14 = 57 potential checks.
+  The earlier producer profile with an ignored WP04 filter artifact present ran
+  57/0. The Linux-native checkout initially had no ignored filter artifact, so
+  the complete environment run produced 56/0 (filter.artifact.pin absent while
+  the generator and frozen filter checks passed). After regenerating the
+  ignored artifact from the checked-in generator, two complete runs produced
+  57/0. The script version did not change; I3b contains no script change.
+  The reviewer's 39/4 result was therefore the two known blockers plus skipped
+  dependents, not a different script version.
+
+Remaining limitation
+  The original seven-ref bundle is not modified and does not contain I3b. The
+  supplemental bundle supplies I3b and the reviewer commit. The final
+  preparation bundle is created after the final evidence commit and verified
+  separately; it is not a rewrite of either existing bundle.
