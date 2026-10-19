@@ -1,0 +1,20 @@
+# Review binding
+
+The plan review was performed off this implementation branch. The exact review
+commit is `e4b0a798e944ddfb144901c63b0c444e7980533b` on
+`review/wp05-release-plan-adversarial-review`; its dispositions are binding for
+this slice.
+
+| Document | Commit path | Blob |
+|---|---|---|
+| Independent adversarial review | `docs/reviews/gagamba-linux-m1-wp05-release-plan-independent-adversarial-review.md` | `f1a062e1e12895426dcfb8b7b0b13a2e6d933918` |
+| Required changes C1-C9 | `docs/reviews/gagamba-linux-m1-wp05-release-plan-required-changes.md` | `73eb09af27c5dbc896739ebf48489862ec13e0a9` |
+| Counterexample register CE-01..CE-04 | `docs/reviews/gagamba-linux-m1-wp05-release-plan-counterexample-register.md` | `0bbafa6b9725cce8a20858e1d64a8deec6134f15` |
+
+Disposition: `PLAN ANALYSIS ACCEPTED WITH REQUIRED CHANGES`.
+
+C1-C4 are production-symbol decisions and are unresolved. This slice may run
+diagnostic probes but may not tag G3-A/B/D/E accepted. C5-C9 are test-only
+fixture clarifications; C5/C6/C7/C9 probes and the C8 plan-note are implemented
+to the extent recorded in the evidence disposition below. C7 remains partial
+(lease/process only), and C9 remains partial (synthetic status negatives).

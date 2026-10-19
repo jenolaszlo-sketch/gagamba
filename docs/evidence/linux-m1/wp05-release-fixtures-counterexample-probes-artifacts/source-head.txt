@@ -1,0 +1,90 @@
+branch=implementation/wp05-release-qualification-fixtures
+head=dc4c372b180abef1b27038d94f49af90226fa548
+tree=1f1c8669affd63ae2fc48d20429241e505751000
+base_r12=38f6981b2a60daab2df37c92913a6760c1bef131
+base_tree_r12=6854675d6b37a49d5302d6104103bdbfbc268040
+recent_commits=
+dc4c372 test(wp05): add release contract counterexample probes
+dbfecad test(wp05): add fresh-process lease fixture
+24e7498 docs: preserve WP05 release-plan adversarial review and blocking decisions
+2c66eac docs(wp05): plan bounded release qualification
+product_diff_src_native=
+diff_stat=
+ .../.gitattributes                                 |   1 +
+ .../SHA256SUMS                                     |   9 +
+ .../canonical-import.txt                           |  33 ++
+ .../cleanup-status.txt                             |  30 ++
+ .../documentation-diff.txt                         | 187 ++++++++++
+ .../evidence-audit.txt                             |  41 ++
+ .../frozen-identities.txt                          |  32 ++
+ .../hash-audit.txt                                 |  13 +
+ .../review-import-inventory.txt                    | 157 ++++++++
+ .../session-lifecycle.txt                          |  28 ++
+ .../test-accounting.txt                            |  41 ++
+ ...ndent-linux-environment-readiness-2026-10-19.md | 116 ++++++
+ .../.gitattributes                                 |   1 +
+ .../SHA256SUMS                                     |  12 +
+ .../access-blockers.txt                            |  48 +++
+ .../bundle-identity.txt                            |  71 ++++
+ .../commands.txt                                   |  82 ++++
+ .../environment-producer.txt                       |  74 ++++
+ .../hash-audit.txt                                 |  19 +
+ .../readiness-producer-dirty-source.txt            | 104 ++++++
+ .../readiness-producer-run1.txt                    | 103 +++++
+ .../readiness-producer-run2.txt                    | 103 +++++
+ .../readiness-producer.txt                         | 103 +++++
+ .../repository-refs.txt                            |  77 ++++
+ .../reviewer-checkout.txt                          |  52 +++
+ .../setup-cleanup.txt                              |  70 ++++
+ .../source-bundle-procedure.txt                    |  63 ++++
+ ...ode-linux-environment-preparation-2026-10-19.md | 141 +++++++
+ .../.gitattributes                                 |   1 +
+ .../SHA256SUMS                                     |  24 ++
+ .../bundle-identity.txt                            |  66 ++++
+ .../cgroup-provisioning.log                        |  36 ++
+ .../cgroup-session.txt                             | 109 ++++++
+ .../filter-identity.txt                            |  29 ++
+ .../final-bundle-fetch.txt                         |  11 +
+ .../hash-audit.txt                                 |  31 ++
+ .../infrastructure-reconciliation.txt              |  82 ++++
+ .../linux-native-checkout.txt                      |  97 +++++
+ .../linux-native-verification.log                  |  49 +++
+ .../preflight-placement-failure.log                |   2 +
+ .../preflight-placement-failure.txt                |  49 +++
+ .../preflight-summary.txt                          |  74 ++++
+ .../readiness-artifact-run1.log                    |  89 +++++
+ .../readiness-artifact-run1.report                 |  84 +++++
+ .../readiness-artifact-run2.log                    |  89 +++++
+ .../readiness-artifact-run2.report                 |  84 +++++
+ .../readiness-root-launcher-run1.log               |  89 +++++
+ .../readiness-root-launcher-run1.report            |  84 +++++
+ .../readiness-root-launcher-run2.log               |  89 +++++
+ .../readiness-root-launcher-run2.report            |  84 +++++
+ .../readiness-run1.log                             |  88 +++++
+ .../readiness-run1.report                          |  83 +++++
+ .../readiness-run2.log                             |  88 +++++
+ .../readiness-run2.report                          |  83 +++++
+ .../reviewer-handoff.txt                           | 114 ++++++
+ .../session-verification.txt                       | Bin 0 -> 1720 bytes
+ docs/handoff.md                                    |  24 +-
+ ...gagamba-linux-m1-wp05-release-decision-queue.md |  19 +
+ ...m1-wp05-release-qualification-execution-plan.md | 283 ++++++++++++++
+ ...ba-linux-m1-wp05-release-requirements-matrix.md |  79 ++++
+ ...arness-qualification-preservation-checkpoint.md | 145 +++++++
+ ...ase-plan-adversarial-preservation-checkpoint.md |  95 +++++
+ ...inux-m1-wp05-release-qualification-gap-audit.md | 342 +++++++++++++++++
+ docs/testing-and-ci.md                             |  20 +-
+ docs/work-queue.md                                 |  30 +-
+ eng/linux-m1-independent-readiness.sh              | 381 +++++++++++++++++++
+ tests/Fixtures/Wp05LeaseFixture/Program.cs         |   3 +
+ .../Wp05LeaseFixture/Wp05LeaseFixture.csproj       |  16 +
+ .../Execution/Wp05ReleaseContractProbes.cs         | 415 +++++++++++++++++++++
+ .../Recovery/Wp05LeaseFixtureHost.cs               |  55 +++
+ .../Recovery/Wp05LeaseProcessProbes.cs             | 172 +++++++++
+ 71 files changed, 5694 insertions(+), 4 deletions(-)
+test_sha256=
+cd5cd00c4c4ef213239047a85ed8f26129e45bb5cad0ddd2c3fe646a407da2b4  tests/Gagamba.Execution.Linux.M1.Tests/Execution/Wp05ReleaseContractProbes.cs
+ac6e3462ba1ebdf419e9681ff30006c6b9e9db357682f8c4352f6b26a09b7f86  tests/Gagamba.Execution.Linux.M1.Tests/Recovery/Wp05LeaseFixtureHost.cs
+15029e4d669f370154762fc1ca7ee7fd060459946bc69c070fac99455f7e6276  tests/Gagamba.Execution.Linux.M1.Tests/Recovery/Wp05LeaseProcessProbes.cs
+70155896bb8c2db4d34ecebe92a15eb4858a9682c1e82cfbbf96376ff29c347c  tests/Fixtures/Wp05LeaseFixture/Wp05LeaseFixture.csproj
+a27e4c23a933f446c4e2b0bc236f79e5081faa1203f08c7cd4e30d58a8b6a07e  tests/Fixtures/Wp05LeaseFixture/Program.cs

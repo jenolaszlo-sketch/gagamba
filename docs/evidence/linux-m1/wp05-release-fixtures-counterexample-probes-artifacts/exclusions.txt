@@ -1,0 +1,27 @@
+# Explicit exclusions and unavailable scope
+
+- No production remediation. C1-C4 remain unresolved decisions; the probes
+  document R09/R08/R27/R02 behavior at component seams only.
+- No real target fork/exec, no WP08/WP10 owner release wiring, no production
+  post-release FD5 status, no full-G3/WP05 release acceptance.
+- C7 is a fresh journal-lease/process-separation fixture, not a release-owner
+  SIGKILL-at-release-barrier qualification. The test-only release supervisor,
+  transport witness and coordinator receipt ledger required for G3-C are not
+  complete.
+- C9 negative cases use the synthetic queue source and `ReleaseObservationBuffer`.
+  They do not use the qualification coordinator's actual FD5 descriptor
+  topology; the production coordinator has no post-release EXEC/ROOT status.
+  The existing valid native qualification-coordinator status path is covered by
+  `Native.ReleaseProtocolTests`, included in the focused 49-pass run.
+- The focused five-class run has 49 passed, 0 failed, 3 skipped. The three
+  skipped `Wp05ReleasePathIndependentQualificationTests` facts are `Unavailable`
+  because this Linux checkout lacks the generated `tests/Fixtures/Gagamba.LinuxM1.Native/out/fixture`
+  and `artifacts/linux-m1/wp04/exec-coordinator` assets. They are not counted as
+  passed and are not used as current release evidence.
+- Windows cannot execute the C7 Linux process probe; it is recorded as
+  `Skipped: linux only` there, not as passed.
+- No full M1 assembly, qualified-profile repetition, macOS or Windows native
+  qualification was run for this slice. The frozen Q3 harness disposition and
+  its prior evidence are unchanged.
+- The review documents themselves are not merged into this branch; they are
+  bound by commit/blob identities in `commands.txt` and the evidence document.

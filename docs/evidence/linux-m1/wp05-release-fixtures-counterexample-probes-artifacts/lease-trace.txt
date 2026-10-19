@@ -1,0 +1,9 @@
+owner_pid=11994
+owner_sequence=0
+owner_lock=/tmp/gagamba-wp05-lease-trace.7Vxyxs/journal/ownership.lock
+owner_lock_fd=present
+supervisor_lock_fd=absent
+owner_exited=1
+replacement_exit=0
+replacement=pid=12096 sequence=0 
+lease_temp_residue_after_test=absent

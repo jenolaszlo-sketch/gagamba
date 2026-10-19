@@ -1,0 +1,4 @@
+/home/gaga/qualification/evidence/wp05-release-fixtures-d2-2026-10-20/contract-probes.log:Passed!  - Failed:     0, Passed:    13, Skipped:     0, Total:    13, Duration: 226 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+/home/gaga/qualification/evidence/wp05-release-fixtures-d2-2026-10-20/lease-process.log:Passed!  - Failed:     0, Passed:     1, Skipped:     0, Total:     1, Duration: 7 s - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+/home/gaga/qualification/evidence/wp05-release-fixtures-d2-2026-10-20/focused-existing.log:Passed!  - Failed:     0, Passed:    49, Skipped:     3, Total:    52, Duration: 938 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+/home/gaga/qualification/evidence/wp05-release-fixtures-d2-2026-10-20/native-release-protocol.log:Passed!  - Failed:     0, Passed:     4, Skipped:     0, Total:     4, Duration: 314 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)

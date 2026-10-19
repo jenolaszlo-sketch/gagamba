@@ -1,0 +1,60 @@
+# Commands and bindings
+
+Product under test: R12 `38f6981b2a60daab2df37c92913a6760c1bef131`,
+tree `6854675d6b37a49d5302d6104103bdbfbc268040`.
+Test-only commits: `dbfecad` fresh-process lease fixture, `dc4c372` release
+contract probes. Evidence run was made from Linux checkout at `dc4c372`
+(`implementation/wp05-release-qualification-fixtures`).
+
+Review bindings (not merged into this branch):
+`e4b0a798e944ddfb144901c63b0c444e7980533b`; required changes blob
+`73eb09af27c5dbc896739ebf48489862ec13e0a9`; adversarial review blob
+`f1a062e1e12895426dcfb8b7b0b13a2e6d933918`; counterexample register blob
+`0bbafa6b9725cce8a20858e1d64a8deec6134f15`.
+
+## Windows canonical implementation-time checks
+
+```text
+dotnet build tests/Fixtures/Wp05LeaseFixture/Wp05LeaseFixture.csproj -c Release --nologo
+dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Release --nologo --filter FullyQualifiedName~Wp05ReleaseContractProbes
+dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Release --nologo --filter FullyQualifiedName~Wp05LeaseProcessProbes
+```
+
+## Linux supported-profile checks
+
+Executed as uid 1000 `gaga` through the root-only operator launcher, which
+places the process in `/sys/fs/cgroup/gaga-delegated/host`; no target fork.
+
+```text
+/root/wp05/run-as-gaga-in-host.sh bash --noprofile --norc -c \
+  'cd /home/gaga/qualification/gagamba-r12; dotnet build tests/Fixtures/Wp05LeaseFixture/Wp05LeaseFixture.csproj -c Release --nologo'
+GAGAMBA_REPOSITORY_ROOT=/home/gaga/qualification/gagamba-r12 dotnet test \
+  tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj \
+  -c Release --nologo --filter FullyQualifiedName~Wp05ReleaseContractProbes
+GAGAMBA_REPOSITORY_ROOT=/home/gaga/qualification/gagamba-r12 dotnet test \
+  tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj \
+  -c Release --nologo --filter FullyQualifiedName~Wp05LeaseProcessProbes
+GAGAMBA_REPOSITORY_ROOT=/home/gaga/qualification/gagamba-r12 dotnet test \
+  tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj \
+  -c Release --nologo --filter FullyQualifiedName~ReleaseProtocolTests
+GAGAMBA_REPOSITORY_ROOT=/home/gaga/qualification/gagamba-r12 dotnet test \
+  tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj \
+  -c Release --nologo --filter 'FullyQualifiedName~ReleaseArbiterTests|FullyQualifiedName~Wp05ReleasePathIndependentQualificationTests|FullyQualifiedName~CoordinatorStatusReaderTests|FullyQualifiedName~Native.ReleaseProtocolTests|FullyQualifiedName~ReconcilerTests'
+```
+
+A separate diagnostic lease trace launched the test-only fixture host directly:
+
+```text
+/root/wp05/run-as-gaga-in-host.sh bash --noprofile --norc /mnt/d/temp/wp05/wp05-lease-trace.sh
+```
+
+The trace is `lease-trace.txt`; it used a fresh owner process, inspected the
+owner lock FD and the supervisor FD set, sent SIGKILL, then ran a fresh
+replacement.
+
+## Scope
+
+No production `src/` or `native/` diff exists from R12 to `dc4c372`; see
+`source-head.txt`. No WP08/WP10 owner wiring, target execution, real target
+status, or release acceptance was attempted. No production remediation was
+implemented.

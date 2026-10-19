@@ -1,0 +1,5 @@
+cgroup_host_procs=
+lease_temp_residue=
+fixture_processes=
+testhost_processes=
+cleanup=test-created-temp-removed, owner/replacement exited, no target

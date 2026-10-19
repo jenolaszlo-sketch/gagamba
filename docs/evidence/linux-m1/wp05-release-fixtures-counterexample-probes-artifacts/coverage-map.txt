@@ -1,0 +1,37 @@
+# New test inventory and required-change coverage
+
+Contract probes (`tests/Gagamba.Execution.Linux.M1.Tests/Execution/Wp05ReleaseContractProbes.cs`, 13 facts):
+
+| Test | Change / probe |
+|---|---|
+| StopWithUnavailableClockIsLiveAcceptedWithoutDurableStop | C5, CE-03 clock-unavailable stop |
+| StopDeadlineOverflowIsLiveAcceptedWithoutDurableStop | C5, CE-03 deadline overflow |
+| AmbiguousSealFailureLeavesUncertainIntentAndNoStop | C1/C6, CE-02 ambiguity shape |
+| DefiniteIntentFailureIsDistinctFromAmbiguousPersistence | C1/C6, definite intent failure |
+| StopFirstLeavesCapabilityLiveOnR12 | C2, CE-03 stop-first capability live |
+| DurableStopBlocksReleaseIntentFromSecondArbiter | C2, durable-stop journal guard |
+| StopPersistenceFailureAllowsSecondArbiterReleaseOnR12 | C2, CE-03 residual multi-instance window |
+| ConcurrentDuplicateReleaseProducesOnePhysicalWrite | C4, CE-01/CE-04 concurrent duplicate |
+| ReconcilerUsesCallerAllowanceAfterPersistedStopDeadlineExpired | C3, R27 persisted deadline not consumed |
+| StatusBufferDoesNotPersistBeforeDurableCommitted | C9, durable-commit gate |
+| StatusBeforeCommittedPersistenceFailureDoesNotCreateObservation | C9, failed flush |
+| StatusReaderRejectsWrongIdentityAndSequence | C9, synthetic identity/order negatives |
+| StatusReaderRejectsEofAndMalformedFrames | C9, synthetic EOF/short-frame negatives |
+
+Lease process probe (`tests/Gagamba.Execution.Linux.M1.Tests/Recovery/Wp05LeaseProcessProbes.cs`, 1 fact):
+
+| Test | Change / probe |
+|---|---|
+| FreshProcessLeaseIsNotInheritedAndReplacementReacquires | C7 fresh-process owner/replacement, real journal fence, no cross-process inheritance |
+
+C5-C9 disposition:
+
+- C5: implemented and Linux-passed (two facts).
+- C6: ambiguity and definite failure shapes implemented and Linux-passed (two facts). The ambiguity is at the fake storage's post-content seal unlink seam; not production execution.
+- C7: lease/process separation implemented and Linux-passed, plus independent trace. Release-owner/SIGKILL release-boundary qualification remains incomplete.
+- C8: plan prerequisite/sequence linearization applied in D3; docs-only, no runtime test.
+- C9: buffer/reader negatives implemented and Linux-passed; actual qualification-coordinator negative frames and the held-execution descriptor topology remain unqualified. Existing `Native.ReleaseProtocolTests` valid-status path passed in the focused 49-pass run.
+
+C1-C4 are diagnostic only. Their decisions are unresolved; no gate may be tagged accepted.
+
+Test file SHA-256 values are in `source-head.txt`.

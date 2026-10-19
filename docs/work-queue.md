@@ -1,6 +1,10 @@
 # Current work queue
 
-Updated 2026-10-17. Status definitions: Complete = stated artifact exists; Ready = dependencies sufficient to start; Held = named prerequisite missing; Pending = later delivery. Slice-specific historical entries retain their original tested SHAs; the later AR-6 SHA has separate three-host native and package evidence. Complete lifecycle qualification does not imply restricted-execution security qualification.
+Updated 2026-10-20. Status definitions: Complete = stated artifact exists; Ready = dependencies sufficient to start; Held = named prerequisite missing; Pending = later delivery. Slice-specific historical entries retain their original tested SHAs; the later AR-6 SHA has separate three-host native and package evidence. Complete lifecycle qualification does not imply restricted-execution security qualification.
+
+## Current priority: WP05 RELEASE FIXTURES AND DIAGNOSTIC PROBES IMPLEMENTED - C1-C4 UNRESOLVED; REVIEW REQUIRED
+
+Update 2026-10-20: Test-only slice on `implementation/wp05-release-qualification-fixtures` from preservation HEAD `24e7498...`: D1 `dbfecad...` adds the non-packable `wp05` lease/process fixture (real `OwnershipJournal` fence, fresh owner/replacement, SIGKILL, no lease inheritance); D2 `dc4c372...` adds 13 counterexample probes for C5/C6 and C1-C4/CE-01..CE-04 diagnostics plus partial C9 buffer/reader negatives. Exact R12 `38f6981...` / tree `6854675d...`; no production or frozen-harness changes. Linux supported profile as gaga in the delegated cgroup: contract probes 13/13, C7 lease/process 1/1, focused existing 49 passed/0 failed/3 unavailable (missing generated native/WP04 artifacts); Windows 13/13 and C7 Linux-only skip. C7 is lease/process separation, not a full release-owner crash/no-resend fixture; C9 native negative/descriptor evidence remains incomplete; C1-C4 decisions remain unresolved and no G3-A/B/D/E tag is accepted. Evidence: [fixtures/probes](evidence/linux-m1/wp05-release-fixtures-counterexample-probes-2026-10-20.md) with bounded `SHA256SUMS`. Next: independent GLM/Beam review, C1-C4 decisions, full C7 supervisor/no-resend and C9 native status. No release qualification is established; WP05 release remains NOT ACCEPTED.
 
 ## Current priority: WP05 RELEASE-PLAN INDEPENDENT REVIEW PRESERVED - REQUIRED CHANGES PENDING; GATES CANNOT BE TAGGED ACCEPTED UNTIL C1-C4 RESOLVE
 

@@ -1,0 +1,39 @@
+diff --git a/docs/plans/gagamba-linux-m1-wp05-release-qualification-execution-plan.md b/docs/plans/gagamba-linux-m1-wp05-release-qualification-execution-plan.md
+index 7df72bc..97dee27 100644
+--- a/docs/plans/gagamba-linux-m1-wp05-release-qualification-execution-plan.md
++++ b/docs/plans/gagamba-linux-m1-wp05-release-qualification-execution-plan.md
+@@ -25,6 +25,14 @@ plan review accepts the required test-only seams and any proposed remediation.
+ 
+ ## 2. Prerequisites
+ 
++0. The independent adversarial plan review is recorded at
++   `review/wp05-release-plan-adversarial-review` commit
++   `e4b0a798e944ddfb144901c63b0c444e7980533b`; its required changes C1-C9 are
++   binding. C1-C4 remain unresolved production-symbol decisions, so the
++   proposed G3-A/B/D/E labels may run diagnostic evidence but may not be tagged
++   accepted. C5-C9 authorize test-only fixture clarifications only. A1/A2/A3
++   fixture-authorization work depends on this review; it does not authorize
++   production remediation. No release qualification is established here.
+ 1. Independent adversarial review of this plan, the matrix, and the audit by
+    GLM or Beam (not the implementation author).
+ 2. Exact R12 source and tree; no later infrastructure/review-only commit may be
+@@ -263,11 +271,16 @@ Stop the affected gate if:
+ 
+ 1. A1 audit commit; A2 matrix commit; A3 plan/decision commit.
+ 2. Independent plan review by GLM/Beam; decide R02/R08/R09/R27 and test-only
+-   fixture authorization.
++   fixture authorization. The recorded review `e4b0a79...` authorizes only the
++   C5-C9 test-only fixture work and diagnostic probes; C1-C4 must be recorded as
++   resolved before any G3-A/B/D/E label is tagged accepted.
+ 3. Test-only fixture commits (release owner/supervisor/status bridge), no
+-   production changes.
++   production changes. C7 requires fresh `TryAcquireWriter` acquisition and no
++   cross-process lease inheritance; C9 status evidence must preserve exact
++   frame identity/order and use the qualification coordinator only.
+ 4. Diagnostic G3-A/G3-B/G3-D runs; if source gaps confirmed, separately
+-   authorized production remediation and retest.
++   authorized production remediation and retest. C1-C4 decisions remain
++   unresolved until their holders record them.
+ 5. G3-C fresh-process crash/no-resend run.
+ 6. Independent G3-E review and evidence preservation.
+ 7. Full G3/WP10 remains later; WP05 release is not accepted by this plan.
