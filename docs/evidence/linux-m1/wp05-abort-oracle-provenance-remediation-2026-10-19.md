@@ -20,18 +20,22 @@ This tranche changes qualification tests, a test-only native observer, a qualifi
 - R5 import of the preserved probe: `042940e1a471063b69644682946aa9c6d63efd5f`
 - R6 oracle/provenance correction: `fc4f53f5dd989c2a18c36c82e3535a82b36a6de8`
 - R7 SIGPIPE investigation/isolation: `6e534c893a84e56e80ca2d53306f57b408ff6c19`
-- R8 evidence/status: this commit
-- Tested code/test revision: `6e534c893a84e56e80ca2d53306f57b408ff6c19` (final supported-profile runs at this HEAD)
+- R8 evidence/status: `3ba6fde64ea3d450f74da13a6d8ab90a36c25977`
+- R9 byte-exact hostile-probe import correction: this commit (no semantic change; final probe bytes match Q1)
+- Tested code/test revision: `6e534c893a84e56e80ca2d53306f57b408ff6c19` (full supported-profile runs); R9 restores the exact Q1 probe bytes with no semantic change, so the final code/test revision is R9
 - Production diff (`src/`, `native/`, `artifacts/`): empty since `58cb1ba`. Tracked changes are tests, the qualification runner/fixture, and docs.
 
 ## B. Reproduced counterexample
 
 The preserved hostile probe `Wp05ForgedAbortOracleHostileProbeTests.Exit137WithoutRawWaitOrStopProvenanceIsRejected` supplies a valid forged-release refusal, valid journal, live capability, no transport use, a stopped/reaped abort, and only a numeric `wrapperExitCode: 137`, with no raw wait classification or authorized-stop provenance. It expects rejection.
 
-Before remediation the oracle returned `null` (accepted). The imported probe failed at `Assert.NotNull` (one failed test, one failed assertion); raw output is `hostile-probe-before.log`. The probe was imported unchanged from Q1 `8a863c4` at R5 and its assertion was not altered.
+Before remediation the oracle returned `null` (accepted). The imported probe failed at `Assert.NotNull` (one failed test, one failed assertion); raw output is `hostile-probe-before.log`. The probe was imported from Q1 `8a863c4` at R5 and its assertion was not altered; R9 corrects the import encoding to the exact Q1 blob (see B.1).
 
 Root cause: `src/Gagamba.Execution.Linux.M1/Native/AtomicCgroupSpawn.cs` `NativeLaunchInterop.TryWaitPidFd` decodes `waitid` as `CLD_EXITED -> si_status`, and `CLD_KILLED`/`CLD_DUMPED -> 128 + si_status`; `PidFdChildReaper` retains only the derived integer. The old oracle accepted 133 or 137 from that integer and had no `si_code`, `si_status`, wrapper identity, or stop-provenance input. A normal exit 137 and a SIGKILL-derived 137 were indistinguishable.
 
+### B.1 Hostile-probe import provenance correction
+
+R5 imported the Q1 probe through a PowerShell text redirect, which wrote UTF-16LE (3710 bytes) instead of the independent reviewer's blob. R9 restores the exact Q1 blob bytes (1810 bytes; Git blob `d427c19f7e0aaf635a24bc877b4eb511acbb89a2` = Q1 `8a863c4`). The test text, input, and substantive assertion are unchanged. The pre-fix failure log remains valid; the byte-exact probe passes at R9. The final import is byte-for-byte the preserved independent probe.
 ## C. Termination-evidence design
 
 Test-only types (`Wp05TerminationEvidence.cs`):
@@ -142,7 +146,7 @@ Committed under `docs/evidence/linux-m1/wp05-abort-oracle-provenance-remediation
 
 - `environment.txt`, `artifacts.txt`, `source-head.txt`
 - `hostile-probe-before.log`, `hostile-probe-after.log`
-- `oracle.log`, `observer.log`, `observer-observation.txt`, `sigpipe.log`, `sigpipe-observation.txt`
+- `oracle.log`, `oracle-byte-exact.log`, `observer.log`, `observer-observation.txt`, `sigpipe.log`, `sigpipe-observation.txt`
 - `fact2.log`, `q1.log`, `wp04.log`, `focused.log`, `freeze.log`
 - `qualified-profile-head-run1.log`, `qualified-profile-head-run2.log`
 - `qualified-profile-run1.log`, `qualified-profile-run2.log` (pre-commit identical-content supplementary)
@@ -151,3 +155,5 @@ Committed under `docs/evidence/linux-m1/wp05-abort-oracle-provenance-remediation
 - `SHA256SUMS`
 
 Commits: R5 `042940e...`, R6 `fc4f53f...`, R7 `6e534c8...`, R8 (this evidence/status commit).
+
+
