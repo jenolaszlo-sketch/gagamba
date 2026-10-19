@@ -15,6 +15,7 @@ using static Gagamba.Execution.Linux.M1.Tests.Preparation.CopyTestSupport;
 namespace Gagamba.Execution.Linux.M1.Tests.Recovery;
 
 [System.Runtime.Versioning.SupportedOSPlatform("linux")]
+[Trait("Category", "ProcessGlobalReaping")]
 public sealed class NonRootQualificationTests
 {
     private static string? DelegatedParent => Environment.GetEnvironmentVariable("GAGAMBA_DELEGATED_CGROUP");

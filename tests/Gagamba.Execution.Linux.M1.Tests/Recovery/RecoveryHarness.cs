@@ -11,6 +11,7 @@ using PreparationInterop = Gagamba.Execution.Linux.M1.Preparation.Native.Prepara
 namespace Gagamba.Execution.Linux.M1.Tests.Recovery;
 
 [System.Runtime.Versioning.SupportedOSPlatform("linux")]
+[Trait("Category", "ProcessGlobalReaping")]
 public sealed class RecoveryHarness
 {
     private const string CgroupRoot = "/sys/fs/cgroup";

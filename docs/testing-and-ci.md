@@ -42,6 +42,16 @@ Initially repeat each critical lifecycle race 100 times in the extended suite an
 
 Use a test watchdog independent of the launcher and enforce a workflow/job deadline. Cleanup runs on ordinary test failure and cancellation where possible; kernel-backed containment must also handle abrupt supervisor loss, when scripts cannot run. Resource exhaustion tests stay in disposable environments with hard outer limits and cannot establish an inner limit unless that limit is separately observed.
 
+## WP05 M1 process-global test isolation
+
+The Linux M1 qualification assembly contains tests that set `PR_SET_CHILD_SUBREAPER` and use process-wide `waitpid(-1)` through `M1RecoveryScope`. They must not share a test-host process with unrelated child-process tests. The supported M1 execution profile is:
+
+```bash
+bash eng/linux-m1-qualified-tests.sh
+```
+
+Use a Release build and the documented delegated non-root Linux environment. The script runs the regular assembly with `Category!=ProcessGlobalReaping` (parallel), then runs each tagged class in its own test-host process: `NonRootQualificationTests`, `OwnerDeathQualificationTests`, `IntegratedBarrierTests`, `DomainAuthorityTests`, and `RecoveryHarness`. A bare parallel `dotnet test` of the full M1 assembly is not a supported qualification profile; it can reproduce cross-test `ECHILD` and adopted-child interference. The M1 assembly is not currently wired into the CI workflows; any future M1 CI job must use this profile rather than a bare assembly-wide parallel command.
+
 ## Workload tests
 
 Restore/build fixture dependencies before entering the denied-network execution phase. Keep the dependency cache read-only or private, with explicit runtime grants. Disable or contain persistent build servers and user startup hooks.

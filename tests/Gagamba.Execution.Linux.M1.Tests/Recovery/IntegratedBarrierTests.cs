@@ -15,6 +15,7 @@ using static Gagamba.Execution.Linux.M1.Tests.Preparation.CopyTestSupport;
 namespace Gagamba.Execution.Linux.M1.Tests.Recovery;
 
 [System.Runtime.Versioning.SupportedOSPlatform("linux")]
+[Trait("Category", "ProcessGlobalReaping")]
 public sealed class IntegratedBarrierTests
 {
     private const string CgroupRoot = "/sys/fs/cgroup";

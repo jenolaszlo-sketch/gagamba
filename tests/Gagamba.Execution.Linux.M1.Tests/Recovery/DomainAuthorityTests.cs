@@ -12,6 +12,7 @@ using Xunit;
 namespace Gagamba.Execution.Linux.M1.Tests.Recovery;
 
 [System.Runtime.Versioning.SupportedOSPlatform("linux")]
+[Trait("Category", "ProcessGlobalReaping")]
 public sealed class DomainAuthorityTests
 {
     [DllImport("libc", SetLastError = true)]
