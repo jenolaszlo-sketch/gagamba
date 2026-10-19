@@ -50,7 +50,7 @@ The Linux M1 qualification assembly contains tests that set `PR_SET_CHILD_SUBREA
 bash eng/linux-m1-qualified-tests.sh
 ```
 
-Use a Release build and the documented delegated non-root Linux environment. The script runs the regular assembly with `Category!=ProcessGlobalReaping` (parallel), then runs each tagged class in its own test-host process: `NonRootQualificationTests`, `OwnerDeathQualificationTests`, `IntegratedBarrierTests`, `DomainAuthorityTests`, and `RecoveryHarness`. A bare parallel `dotnet test` of the full M1 assembly is not a supported qualification profile; it can reproduce cross-test `ECHILD` and adopted-child interference. The M1 assembly is not currently wired into the CI workflows; any future M1 CI job must use this profile rather than a bare assembly-wide parallel command.
+Use a Release build and the documented delegated non-root Linux environment. The script runs the regular assembly with `Category!=ProcessGlobalReaping&Category!=ProcessGlobalHostState` (parallel), then runs each tagged class in its own test-host process: `NonRootQualificationTests`, `OwnerDeathQualificationTests`, `IntegratedBarrierTests`, `DomainAuthorityTests`, `RecoveryHarness`, `Wp05TerminationObserverTests`, and `Wp05SigpipeDispositionTests`. A bare parallel `dotnet test` of the full M1 assembly is not a supported qualification profile; it can reproduce cross-test `ECHILD` and adopted-child interference. The M1 assembly is not currently wired into the CI workflows; any future M1 CI job must use this profile rather than a bare assembly-wide parallel command.
 
 ## Workload tests
 
@@ -144,3 +144,4 @@ Workflow cleanup must not affect the Actions agent or globally disable its netwo
 - [ ] All evidence binds to the exact candidate source/package identities; later edits invalidate affected qualification.
 
 No package publication is performed by this plan. Publishing remains a separate action after the concrete candidate is qualified.
+

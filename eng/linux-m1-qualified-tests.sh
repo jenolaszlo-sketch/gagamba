@@ -17,7 +17,7 @@ CONFIG="${CONFIGURATION:-Release}"
 COMMON=(-c "$CONFIG" --nologo --logger "console;verbosity=minimal")
 
 echo "== regular parallel phase (process-global reaping classes excluded) =="
-dotnet test "$PROJECT" "${COMMON[@]}" --filter 'Category!=ProcessGlobalReaping'
+dotnet test "$PROJECT" "${COMMON[@]}" --filter 'Category!=ProcessGlobalReaping&Category!=ProcessGlobalHostState'
 
 # Each class owns process-global child state. Separate test hosts prevent one
 # class's waitpid(-1) from reaping another class's children.
@@ -28,6 +28,7 @@ PROCESS_GLOBAL_CLASSES=(
   Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests
   Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness
   Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05TerminationObserverTests
+  Gagamba.Execution.Linux.M1.Tests.Launch.Wp05SigpipeDispositionTests
 )
 
 for class_name in "${PROCESS_GLOBAL_CLASSES[@]}"; do
@@ -35,6 +36,5 @@ for class_name in "${PROCESS_GLOBAL_CLASSES[@]}"; do
   dotnet test "$PROJECT" "${COMMON[@]}" --no-build \
     --filter "FullyQualifiedName~$class_name"
 done
-
 
 
