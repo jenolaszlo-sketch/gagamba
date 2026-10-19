@@ -1,0 +1,61 @@
+== launcher stat ==
+root:root 700 526 /root/wp05/run-as-gaga-in-host.sh
+root:root 700 1743 /root/wp05/provision-session-cgroup.sh
+
+== run-as-gaga-in-host.sh ==
+#!/usr/bin/env bash
+set -Eeuo pipefail
+host=/sys/fs/cgroup/gaga-delegated/host
+[[ "$(id -u)" -eq 0 ]] || { echo "operator root is required for placement" >&2; exit 2; }
+[[ -d "$host" ]] || { echo "missing delegated host: $host" >&2; exit 2; }
+printf '%s\n' "$$" >"$host/cgroup.procs"
+exec setpriv --reuid=1000 --regid=1000 --clear-groups \
+  env HOME=/home/gaga TMPDIR=/tmp USER=gaga LOGNAME=gaga \
+  GAGAMBA_DELEGATED_CGROUP=/sys/fs/cgroup/gaga-delegated \
+  DOTNET_CLI_HOME=/home/gaga DOTNET_CLI_TELEMETRY_OPTOUT=1 \
+  "$@"
+
+== provision-session-cgroup.sh ==
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+parent=/sys/fs/cgroup/gaga-delegated
+host="$parent/host"
+log=/home/gaga/qualification/logs/cgroup-provisioning.log
+
+mkdir -p /home/gaga/qualification/logs
+exec > >(tee -a "$log") 2>&1
+chown gaga:gaga "$log" 2>/dev/null || true
+
+echo "BOOT_ID=$(cat /proc/sys/kernel/random/boot_id)"
+echo "OPERATOR_UID=$(id -u)"
+echo "PARENT=$parent"
+echo "HOST=$host"
+
+if [[ -e "$parent" ]]; then
+  echo "REFUSE_EXISTING_DELEGATION=$parent"
+  exit 2
+fi
+
+mkdir "$parent"
+printf '+memory +pids\n' >"$parent/cgroup.subtree_control"
+mkdir "$host"
+chown gaga:gaga "$parent" "$parent/host" \
+  "$parent/cgroup.procs" "$parent/cgroup.subtree_control" \
+  "$parent/host/cgroup.procs" "$parent/host/cgroup.subtree_control"
+chmod 755 "$parent" "$parent/host"
+
+echo "PARENT_STAT=$(stat -c '%a %U:%G' "$parent")"
+echo "HOST_STAT=$(stat -c '%a %U:%G' "$host")"
+echo "PARENT_CONTROLLERS=$(cat "$parent/cgroup.controllers")"
+echo "PARENT_SUBTREE_CONTROL=$(cat "$parent/cgroup.subtree_control")"
+echo "HOST_CONTROLLERS=$(cat "$host/cgroup.controllers")"
+echo "HOST_SUBTREE_CONTROL=$(cat "$host/cgroup.subtree_control")"
+echo "PARENT_PROCS=$(cat "$parent/cgroup.procs")"
+echo "HOST_PROCS=$(cat "$host/cgroup.procs")"
+echo "HOST_EVENTS=$(tr '\n' ' ' <"$host/cgroup.events")"
+echo "CGROUP_KILL_PRESENT=$([[ -f "$parent/cgroup.kill" ]] && echo yes || echo no)"
+echo "PARENT_WRITABLE_BY_GAGA=$(setpriv --reuid=1000 --regid=1000 --clear-groups test -w "$parent" && echo yes || echo no)"
+echo "HOST_PROCS_WRITABLE_BY_GAGA=$(setpriv --reuid=1000 --regid=1000 --clear-groups test -w "$host/cgroup.procs" && echo yes || echo no)"
+echo "DELEGATION_PROVISIONED=1"
+echo "SESSION_OWNER=gaga review session; operator root owns provisioning lifecycle"
