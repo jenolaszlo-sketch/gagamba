@@ -1,0 +1,5 @@
+source_head=c48e358451c8b0dbe7aace281f64a2eced399ed7
+source_branch=remediation/wp05-identity-evidence-integrity
+tested_date=2026-10-19
+boot_id=55be3081-6938-41e7-9b53-60119ea44076
+note=Exact R11 Linux supported-profile environment; both runs at this revision.

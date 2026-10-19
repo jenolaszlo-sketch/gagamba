@@ -1,0 +1,12 @@
+R11 identity/oracle regression summary
+oracle + preserved hostile: 24/24 passed
+independent reviewer validator probes: 9/9 passed
+native observer controls (normal exit 137, SIGKILL, expected identity from owned pidfd): 3/3 passed
+Q1 Facts: 3/3 passed; Q1 Fact 2: 1/1 passed (uses observer.ExpectedIdentity)
+WP04 native NonRootQualificationTests: 31/31 passed
+focused: 83/83 passed
+freeze: 74/74 passed
+Linux supported profile, run 1 and run 2: phase 1 483/483; phase 2 48 passed / 35 skipped; 531 passed / 35 skipped / 566 rows; 0 failed
+Windows M1: 399 passed / 0 failed / 167 skipped / 566 rows; full solution Release build 0 warnings / 0 errors
+New identity negatives: MissingOrUnusableExpectedIdentityIsRejected; existing wrong execution/generation/preparation/pidfd/PID cases; reviewer probes.
+Preserved bare-137 hostile probe passes unchanged.
