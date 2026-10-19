@@ -115,6 +115,9 @@ public sealed class Wp05ReleasePathIndependentQualificationTests
         Assert.Equal(PreparationStage.Prepared, latest.Snapshot!.Stage);
         Assert.Null(latest.Snapshot.Release);
 
+        using var terminationObserver = Wp05TerminationObserver.StartForReaper(
+            execution.WrapperReaper, harness.Identity);
+
         var abort = await harness.Launcher.AbortAsync(
             execution, harness.PrimaryLease!, CancellationToken.None);
         Assert.True(abort.Stopped, abort.Error);
@@ -123,15 +126,13 @@ public sealed class Wp05ReleasePathIndependentQualificationTests
         var reapedForged = execution.WrapperReaper.TryReap(5000, out var forgedExit, out var forgedReapError);
         Assert.True(reapedForged, forgedReapError);
 
-        // Implementation-branch oracle remediation (2026-10-19): the accepted
-        // abort contract does not fix one wrapper exit code. AbortAsync closes
-        // control and then force-stops the domain before reaping; the wrapper
-        // may exit via the coordinator's own fail(33) (133) or via this test's
-        // SIGKILL stop (137). The original 139 expectation reflected the old
-        // seccomp SIGSEGV and is no longer accepted. The oracle below retains
-        // every security check: refused decision, no durable release, no
-        // transport activity, live capability, unchanged prepared journal,
-        // successful abort/reap/marker checks, and no unexplained exit code.
+        // Implementation-branch oracle remediation (2026-10-19): a bare
+        // numeric value cannot distinguish normal exit from SIGKILL or prove
+        // the authorized stop caused it. The test-only observer retains the
+        // raw kernel observation with waitid(P_PIDFD, WNOWAIT), the production
+        // reaper still consumes the status, and the oracle binds the
+        // termination to the same execution/wrapper identity and abort result.
+        var termination = terminationObserver.WaitForResult(10_000);
         var afterAbort = harness.Journal.ReadLatest();
         var oracleError = Wp05ForgedAbortOracle.Validate(
             new Wp05ForgedAbortOracle.DecisionState(
@@ -143,10 +144,13 @@ public sealed class Wp05ReleasePathIndependentQualificationTests
                 afterAbort.Snapshot?.Release is not null,
                 afterAbort.Snapshot?.Stop is not null,
                 afterAbort.Error),
-            new Wp05ForgedAbortOracle.AbortState(
-                abort.Stopped, abort.WrapperReaped, abort.Error,
+            new AuthorizedStopEvidence(
+                termination.Identity,
+                abort.Stopped,
+                abort.WrapperReaped,
+                abort.Error,
                 abort.NoTargetInitializationMarkerAbsent),
-            forgedExit);
+            termination);
         Assert.True(oracleError is null, oracleError);
     }
 

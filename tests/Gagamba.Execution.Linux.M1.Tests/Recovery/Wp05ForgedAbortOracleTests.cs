@@ -1,8 +1,10 @@
-// Negative controls for the WP05 forged-identity abort oracle. These are
-// portable qualification-harness tests; they prove that the corrected oracle
-// still rejects forged release acceptance, transport activity, capability
-// consumption, missing abort evidence, journal release/stop facts, and
-// unexplained terminal exit codes. They do not modify production behavior.
+// Negative and positive controls for the WP05 forged-identity abort oracle.
+// These are portable qualification-harness tests. The corrected oracle must
+// reject forged release acceptance, transport activity, capability
+// consumption, missing cleanup, journal release/stop facts, bare numeric
+// termination, normal exit 137, unexplained SIGKILL, identity mismatches, and
+// contradictory or missing raw termination evidence. It must still accept a
+// proven coordinator self-exit 133 and a proven authorized-stop SIGKILL.
 using Gagamba.Execution.Linux.M1.Execution;
 using Gagamba.Execution.Linux.M1.Recovery;
 using Gagamba.Execution.Restricted;
@@ -12,22 +14,55 @@ namespace Gagamba.Execution.Linux.M1.Tests.Recovery;
 
 public sealed class Wp05ForgedAbortOracleTests
 {
-    private static Wp05ForgedAbortOracle.DecisionState ValidDecision =>
-        new(ReleaseDecisionKind.Refused, ReleaseDisposition.NotCommitted, DeliveryResult.NotAttempted, false);
+    private static readonly Guid ExecutionId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+    private static readonly Guid GenerationId = Guid.Parse("22222222-2222-2222-2222-222222222222");
+    private static readonly Guid PreparationId = Guid.Parse("33333333-3333-3333-3333-333333333333");
 
-    private static Wp05ForgedAbortOracle.JournalState ValidJournal =>
-        new(true, PreparationStage.Prepared, HasRelease: false, HasStop: false, Error: string.Empty);
+    private static readonly OwnedWrapperIdentity ValidIdentity =
+        new(ExecutionId, GenerationId, PreparationId, PidFd: 42, Pid: 4242);
 
-    private static Wp05ForgedAbortOracle.AbortState ValidAbort =>
-        new(Stopped: true, WrapperReaped: true, Error: string.Empty, NoTargetInitializationMarkerAbsent: true);
+    private static readonly Wp05ForgedAbortOracle.DecisionState ValidDecision =
+        new(ReleaseDecisionKind.Refused, ReleaseDisposition.NotCommitted,
+            DeliveryResult.NotAttempted, DurableCommitted: false);
+
+    private static readonly Wp05ForgedAbortOracle.JournalState ValidJournal =
+        new(Ok: true, Stage: PreparationStage.Prepared, HasRelease: false,
+            HasStop: false, Error: string.Empty);
+
+    private static readonly AuthorizedStopEvidence ValidStop =
+        new(ValidIdentity, Stopped: true, WrapperReaped: true,
+            Error: string.Empty, NoTargetInitializationMarkerAbsent: true);
+
+    private static readonly ObservedTermination CoordinatorSelfExit =
+        new(ValidIdentity, ObservedTerminationKind.Exited, RawCode: 1,
+            ExitStatus: 133, Signal: null,
+            TerminationObservationSource.PidFdWaitIdWnowait, Error: string.Empty);
+
+    private static readonly ObservedTermination AuthorizedSigkill =
+        new(ValidIdentity, ObservedTerminationKind.Killed, RawCode: 2,
+            ExitStatus: null, Signal: 9,
+            TerminationObservationSource.PidFdWaitIdWnowait, Error: string.Empty);
+
+    [Fact]
+    public void ContractualAbortOutcomesAreAccepted()
+    {
+        Assert.Null(Wp05ForgedAbortOracle.Validate(
+            ValidDecision, capabilityLive: true, ValidJournal, ValidStop, CoordinatorSelfExit));
+        Assert.Null(Wp05ForgedAbortOracle.Validate(
+            ValidDecision, capabilityLive: true, ValidJournal, ValidStop, AuthorizedSigkill));
+    }
 
     [Theory]
     [InlineData(133)]
     [InlineData(137)]
-    public void ContractualAbortOutcomesAreAccepted(int exitCode)
+    [InlineData(139)]
+    public void BareNumericExitCodesAreRejected(int exitCode)
     {
-        Assert.Null(Wp05ForgedAbortOracle.Validate(
-            ValidDecision, capabilityLive: true, ValidJournal, ValidAbort, exitCode));
+        var abort = new Wp05ForgedAbortOracle.AbortState(
+            Stopped: true, WrapperReaped: true, Error: string.Empty,
+            NoTargetInitializationMarkerAbsent: true);
+        Assert.NotNull(Wp05ForgedAbortOracle.Validate(
+            ValidDecision, capabilityLive: true, ValidJournal, abort, exitCode));
     }
 
     [Fact]
@@ -35,7 +70,7 @@ public sealed class Wp05ForgedAbortOracleTests
     {
         var decision = ValidDecision with { Kind = ReleaseDecisionKind.Released };
         Assert.NotNull(Wp05ForgedAbortOracle.Validate(
-            decision, capabilityLive: true, ValidJournal, ValidAbort, 133));
+            decision, capabilityLive: true, ValidJournal, ValidStop, CoordinatorSelfExit));
     }
 
     [Fact]
@@ -43,20 +78,20 @@ public sealed class Wp05ForgedAbortOracleTests
     {
         Assert.NotNull(Wp05ForgedAbortOracle.Validate(
             ValidDecision with { DurableRelease = ReleaseDisposition.Committed },
-            capabilityLive: true, ValidJournal, ValidAbort, 133));
+            capabilityLive: true, ValidJournal, ValidStop, CoordinatorSelfExit));
         Assert.NotNull(Wp05ForgedAbortOracle.Validate(
             ValidDecision with { DurableCommitted = true },
-            capabilityLive: true, ValidJournal, ValidAbort, 133));
+            capabilityLive: true, ValidJournal, ValidStop, CoordinatorSelfExit));
         Assert.NotNull(Wp05ForgedAbortOracle.Validate(
             ValidDecision with { Delivery = DeliveryResult.Delivered },
-            capabilityLive: true, ValidJournal, ValidAbort, 133));
+            capabilityLive: true, ValidJournal, ValidStop, CoordinatorSelfExit));
     }
 
     [Fact]
     public void ConsumedCapabilityIsRejected()
     {
         Assert.NotNull(Wp05ForgedAbortOracle.Validate(
-            ValidDecision, capabilityLive: false, ValidJournal, ValidAbort, 133));
+            ValidDecision, capabilityLive: false, ValidJournal, ValidStop, CoordinatorSelfExit));
     }
 
     [Fact]
@@ -64,16 +99,16 @@ public sealed class Wp05ForgedAbortOracleTests
     {
         Assert.NotNull(Wp05ForgedAbortOracle.Validate(
             ValidDecision, capabilityLive: true, ValidJournal,
-            ValidAbort with { Stopped = false }, 133));
+            ValidStop with { Stopped = false }, CoordinatorSelfExit));
         Assert.NotNull(Wp05ForgedAbortOracle.Validate(
             ValidDecision, capabilityLive: true, ValidJournal,
-            ValidAbort with { WrapperReaped = false }, 133));
+            ValidStop with { WrapperReaped = false }, CoordinatorSelfExit));
         Assert.NotNull(Wp05ForgedAbortOracle.Validate(
             ValidDecision, capabilityLive: true, ValidJournal,
-            ValidAbort with { Error = "cleanup failed" }, 133));
+            ValidStop with { Error = "cleanup failed" }, CoordinatorSelfExit));
         Assert.NotNull(Wp05ForgedAbortOracle.Validate(
             ValidDecision, capabilityLive: true, ValidJournal,
-            ValidAbort with { NoTargetInitializationMarkerAbsent = false }, 133));
+            ValidStop with { NoTargetInitializationMarkerAbsent = false }, CoordinatorSelfExit));
     }
 
     [Fact]
@@ -81,16 +116,121 @@ public sealed class Wp05ForgedAbortOracleTests
     {
         Assert.NotNull(Wp05ForgedAbortOracle.Validate(
             ValidDecision, capabilityLive: true,
-            ValidJournal with { HasRelease = true }, ValidAbort, 133));
+            ValidJournal with { HasRelease = true }, ValidStop, CoordinatorSelfExit));
         Assert.NotNull(Wp05ForgedAbortOracle.Validate(
             ValidDecision, capabilityLive: true,
-            ValidJournal with { HasStop = true }, ValidAbort, 133));
+            ValidJournal with { HasStop = true }, ValidStop, CoordinatorSelfExit));
         Assert.NotNull(Wp05ForgedAbortOracle.Validate(
             ValidDecision, capabilityLive: true,
-            ValidJournal with { Stage = PreparationStage.None }, ValidAbort, 133));
+            ValidJournal with { Stage = PreparationStage.None }, ValidStop, CoordinatorSelfExit));
         Assert.NotNull(Wp05ForgedAbortOracle.Validate(
             ValidDecision, capabilityLive: true,
-            ValidJournal with { Ok = false, Error = "read failed" }, ValidAbort, 133));
+            ValidJournal with { Ok = false, Error = "read failed" }, ValidStop, CoordinatorSelfExit));
+    }
+
+    [Fact]
+    public void NormalExit137IsRejectedAsAuthorizedForcedStop()
+    {
+        Assert.NotNull(Wp05ForgedAbortOracle.Validate(
+            ValidDecision, capabilityLive: true, ValidJournal, ValidStop,
+            CoordinatorSelfExit with { ExitStatus = 137 }));
+    }
+
+    [Fact]
+    public void KilledWithoutStopProvenanceIsRejected()
+    {
+        Assert.NotNull(Wp05ForgedAbortOracle.Validate(
+            ValidDecision, capabilityLive: true, ValidJournal,
+            ValidStop with { Stopped = false }, AuthorizedSigkill));
+        Assert.NotNull(Wp05ForgedAbortOracle.Validate(
+            ValidDecision, capabilityLive: true, ValidJournal,
+            ValidStop with { WrapperReaped = false }, AuthorizedSigkill));
+    }
+
+    [Fact]
+    public void TerminationIdentityMismatchIsRejected()
+    {
+        Assert.NotNull(Wp05ForgedAbortOracle.Validate(
+            ValidDecision, capabilityLive: true, ValidJournal, ValidStop,
+            AuthorizedSigkill with { Identity = ValidIdentity with { PidFd = 43 } }));
+        Assert.NotNull(Wp05ForgedAbortOracle.Validate(
+            ValidDecision, capabilityLive: true, ValidJournal, ValidStop,
+            AuthorizedSigkill with { Identity = ValidIdentity with { Pid = 4243 } }));
+        Assert.NotNull(Wp05ForgedAbortOracle.Validate(
+            ValidDecision, capabilityLive: true, ValidJournal, ValidStop,
+            AuthorizedSigkill with
+            {
+                Identity = ValidIdentity with { ExecutionId = Guid.NewGuid() },
+            }));
+        Assert.NotNull(Wp05ForgedAbortOracle.Validate(
+            ValidDecision, capabilityLive: true, ValidJournal, ValidStop,
+            AuthorizedSigkill with
+            {
+                Identity = ValidIdentity with { GenerationId = Guid.NewGuid() },
+            }));
+    }
+
+    [Fact]
+    public void StopForDifferentDomainIsRejected()
+    {
+        Assert.NotNull(Wp05ForgedAbortOracle.Validate(
+            ValidDecision, capabilityLive: true, ValidJournal,
+            ValidStop with { Identity = ValidIdentity with { PreparationId = Guid.NewGuid() } },
+            AuthorizedSigkill));
+    }
+
+    [Fact]
+    public void WrongSignalIsRejected()
+    {
+        Assert.NotNull(Wp05ForgedAbortOracle.Validate(
+            ValidDecision, capabilityLive: true, ValidJournal, ValidStop,
+            AuthorizedSigkill with { Signal = 15 }));
+    }
+
+    [Fact]
+    public void ContradictoryTerminationsAreRejected()
+    {
+        Assert.NotNull(Wp05ForgedAbortOracle.Validate(
+            ValidDecision, capabilityLive: true, ValidJournal, ValidStop,
+            CoordinatorSelfExit with { Signal = 9 }));
+        Assert.NotNull(Wp05ForgedAbortOracle.Validate(
+            ValidDecision, capabilityLive: true, ValidJournal, ValidStop,
+            AuthorizedSigkill with { ExitStatus = 127 }));
+        Assert.NotNull(Wp05ForgedAbortOracle.Validate(
+            ValidDecision, capabilityLive: true, ValidJournal, ValidStop,
+            AuthorizedSigkill with { RawCode = 1 }));
+        Assert.NotNull(Wp05ForgedAbortOracle.Validate(
+            ValidDecision, capabilityLive: true, ValidJournal, ValidStop,
+            CoordinatorSelfExit with { RawCode = 2 }));
+    }
+
+    [Fact]
+    public void MissingOrConsumedRawWaitEvidenceIsRejected()
+    {
+        Assert.NotNull(Wp05ForgedAbortOracle.Validate(
+            ValidDecision, capabilityLive: true, ValidJournal, ValidStop,
+            CoordinatorSelfExit with
+            {
+                Kind = ObservedTerminationKind.Unknown,
+                Source = TerminationObservationSource.None,
+                Error = "waitid errno 10 (ECHILD)",
+            }));
+        Assert.NotNull(Wp05ForgedAbortOracle.Validate(
+            ValidDecision, capabilityLive: true, ValidJournal, ValidStop,
+            CoordinatorSelfExit with
+            {
+                Identity = ValidIdentity with { PidFd = -1, Pid = 0 },
+            }));
+    }
+
+    [Fact]
+    public void DumpedTerminationIsRejected()
+    {
+        Assert.NotNull(Wp05ForgedAbortOracle.Validate(
+            ValidDecision, capabilityLive: true, ValidJournal, ValidStop,
+            new ObservedTermination(ValidIdentity, ObservedTerminationKind.Dumped, RawCode: 3,
+                ExitStatus: null, Signal: 9,
+                TerminationObservationSource.PidFdWaitIdWnowait, Error: string.Empty)));
     }
 
     [Theory]
@@ -99,9 +239,10 @@ public sealed class Wp05ForgedAbortOracleTests
     [InlineData(130)]
     [InlineData(139)]
     [InlineData(143)]
-    public void UnexplainedTerminalExitCodesAreRejected(int exitCode)
+    public void UnexplainedNormalExitCodesAreRejected(int exitCode)
     {
         Assert.NotNull(Wp05ForgedAbortOracle.Validate(
-            ValidDecision, capabilityLive: true, ValidJournal, ValidAbort, exitCode));
+            ValidDecision, capabilityLive: true, ValidJournal, ValidStop,
+            CoordinatorSelfExit with { ExitStatus = exitCode }));
     }
 }

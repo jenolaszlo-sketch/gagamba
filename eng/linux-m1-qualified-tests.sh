@@ -27,6 +27,7 @@ PROCESS_GLOBAL_CLASSES=(
   Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests
   Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests
   Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness
+  Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05TerminationObserverTests
 )
 
 for class_name in "${PROCESS_GLOBAL_CLASSES[@]}"; do
@@ -34,3 +35,6 @@ for class_name in "${PROCESS_GLOBAL_CLASSES[@]}"; do
   dotnet test "$PROJECT" "${COMMON[@]}" --no-build \
     --filter "FullyQualifiedName~$class_name"
 done
+
+
+
