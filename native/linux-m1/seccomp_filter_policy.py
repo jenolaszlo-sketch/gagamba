@@ -94,9 +94,10 @@ def build_instructions() -> tuple[Instruction, ...]:
         )
     )
 
-    # The old clone tail's non-clone path tests the syscall number against the
-    # namespace mask. Preserve that existing disposition for every syscall
-    # except narrowly constrained arch_prctl and prctl startup operations.
+    # Ordinary syscalls that do not match the constrained arch_prctl, prctl or
+    # close_range checks retain the default ALLOW disposition. Only clone loads
+    # its flags and is tested against the namespace mask; unrelated syscall
+    # numbers must never be interpreted as clone flags.
     arch_prctl_pc = len(p)
     p.append(Instruction(BPF_JMP_JEQ_K, k=SYS_ARCH_PRCTL, note="match arch_prctl for one constrained startup operation"))
     p.append(Instruction(BPF_LD_W_ABS, k=16, note="load arch_prctl code (seccomp_data.args[0])"))
@@ -162,7 +163,7 @@ def build_instructions() -> tuple[Instruction, ...]:
     clone_pc = len(p)
     p.extend(
         (
-            Instruction(BPF_JMP_JEQ_K, jf=1, k=SYS_CLONE, note="match clone; preserve old non-clone path"),
+            Instruction(BPF_JMP_JEQ_K, k=SYS_CLONE, note="match clone; non-clone syscalls continue to the default ALLOW path"),
             Instruction(BPF_LD_W_ABS, k=16, note="load clone flags for clone only"),
             Instruction(BPF_JMP_JSET_K, jf=1, k=CLONE_NAMESPACE_MASK, note="reject namespace-creating clone flags"),
             Instruction(BPF_RET_K, k=SECCOMP_RET_ERRNO | EPERM, note="deny clone namespace flags with EPERM"),
@@ -170,6 +171,12 @@ def build_instructions() -> tuple[Instruction, ...]:
     )
     allow_pc = len(p)
     p.append(Instruction(BPF_RET_K, k=SECCOMP_RET_ALLOW, note="preserved default ALLOW disposition"))
+    p[clone_pc] = Instruction(
+        BPF_JMP_JEQ_K,
+        jf=allow_pc - clone_pc - 1,
+        k=SYS_CLONE,
+        note="match clone; non-clone syscalls continue to the default ALLOW path",
+    )
 
     # Non-arch_prctl syscalls proceed to the constrained prctl check. The exact
     # ARCH_SET_FS, PR_SET_DUMPABLE(0), and the exact close_range descriptor closure
