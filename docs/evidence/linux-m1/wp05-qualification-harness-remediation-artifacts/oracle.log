@@ -1,0 +1,5 @@
+Test run for /home/gaga/wp05-harness-qual/tests/Gagamba.Execution.Linux.M1.Tests/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+Results File: /home/gaga/wp05-harness-qual/tests/Gagamba.Execution.Linux.M1.Tests/TestResults/oracle.trx
+
+Passed!  - Failed:     0, Passed:    12, Skipped:     0, Total:    12, Duration: 31 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)

@@ -1,0 +1,18 @@
+date_utc=2026-10-19T05:42:31Z
+distro=Ubuntu 26.04.1 LTS
+kernel=Linux 6.6.114.1-microsoft-standard-WSL2 x86_64
+boot_id=bc5278f0-01e9-4a7c-9b25-a5e843a495ba
+arch=x86_64
+libc=ldd (Ubuntu GLIBC 2.43-2ubuntu2.4) 2.43
+dotnet=10.0.112
+gcc=gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+python=Python 3.14.4
+strace=strace -- version 6.19
+bwrap=bubblewrap 0.11.1 sha256=523da3e7399044be5163aee6f57a77a6bef7454376e28f0a0627920bae1b76b6
+gaga=uid=1000(gaga) gid=1000(gaga) groups=1000(gaga)
+cgroup_type=cgroup2fs
+root_controllers=cpuset cpu io memory hugetlb pids rdma
+delegated_parent=/sys/fs/cgroup/gaga-delegated
+delegated_controllers=cpu memory pids
+delegated_subtree=memory pids
+host_leaf=/sys/fs/cgroup/gaga-delegated/host
