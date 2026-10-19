@@ -122,7 +122,32 @@ public sealed class Wp05ReleasePathIndependentQualificationTests
 
         var reapedForged = execution.WrapperReaper.TryReap(5000, out var forgedExit, out var forgedReapError);
         Assert.True(reapedForged, forgedReapError);
-        Assert.True(forgedExit == 133 || forgedExit == 139);
+
+        // Implementation-branch oracle remediation (2026-10-19): the accepted
+        // abort contract does not fix one wrapper exit code. AbortAsync closes
+        // control and then force-stops the domain before reaping; the wrapper
+        // may exit via the coordinator's own fail(33) (133) or via this test's
+        // SIGKILL stop (137). The original 139 expectation reflected the old
+        // seccomp SIGSEGV and is no longer accepted. The oracle below retains
+        // every security check: refused decision, no durable release, no
+        // transport activity, live capability, unchanged prepared journal,
+        // successful abort/reap/marker checks, and no unexplained exit code.
+        var afterAbort = harness.Journal.ReadLatest();
+        var oracleError = Wp05ForgedAbortOracle.Validate(
+            new Wp05ForgedAbortOracle.DecisionState(
+                decision.Kind, decision.DurableRelease, decision.Delivery, decision.DurableCommitted),
+            harness.Capability!.IsLive,
+            new Wp05ForgedAbortOracle.JournalState(
+                afterAbort.Ok,
+                afterAbort.Snapshot?.Stage ?? PreparationStage.None,
+                afterAbort.Snapshot?.Release is not null,
+                afterAbort.Snapshot?.Stop is not null,
+                afterAbort.Error),
+            new Wp05ForgedAbortOracle.AbortState(
+                abort.Stopped, abort.WrapperReaped, abort.Error,
+                abort.NoTargetInitializationMarkerAbsent),
+            forgedExit);
+        Assert.True(oracleError is null, oracleError);
     }
 
     [Fact]
