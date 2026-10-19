@@ -1,0 +1,7 @@
+R10 commands
+git rev-parse HEAD                                            # aa1a7f5
+git cat-file blob HEAD:docs/evidence/linux-m1/wp05-abort-oracle-provenance-remediation-artifacts/<file>
+git rev-parse HEAD:docs/evidence/linux-m1/wp05-abort-oracle-provenance-remediation-artifacts/<file>
+Get-Content .gitattributes
+git config --get core.autocrlf
+python -c "recompute SHA-256 over committed blob and working-tree bytes; compare with SHA256SUMS"

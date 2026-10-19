@@ -1,0 +1,7 @@
+date_utc=2026-10-19T00:00:00Z
+host=Windows 11 x64
+git=git version 2.51.0.windows.1
+powershell=7.6.5
+core_autocrlf=true
+attributes=* text=auto eol=lf; docs/proposals/2026-10-03-original-proposal.md -text
+note=Investigation-time host identity; the R12 Linux test environment is recorded separately.

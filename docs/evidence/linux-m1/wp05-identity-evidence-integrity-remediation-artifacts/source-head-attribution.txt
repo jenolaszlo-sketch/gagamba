@@ -1,0 +1,7 @@
+source-head.txt revision attribution
+Committed content:
+  source_head=6e534c893a84e56e80ca2d53306f57b408ff6c19
+  source_branch=remediation/wp05-abort-oracle-provenance
+  tested_date=2026-10-19
+  boot_id=83799c16-80f7-4588-b29a-1dc9efe920fb
+It records R7 6e534c8, not R9 aa1a7f5. It is the execution record for the R7 supported-profile runs (phase 1 473 + phase 2 47 passed / 35 skipped / 555; two runs). R9 changed only the Q1 hostile-probe encoding and docs after those runs; no R9 full Linux supported-profile execution occurred. The R9 evidence report states the full profile results at R7 and does not claim an R9 execution. Do not relabel R7 results as R9.

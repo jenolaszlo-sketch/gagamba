@@ -1,0 +1,9 @@
+Independent review provenance (preserved)
+Q1 probes: bac2509b94510a522275fde6a640033f0fe6fbf4
+Q2 evidence: 2ee412be5ed5f21f4320d3d08aab4f2ff1141987
+Q3 disposition: d809ac969a84073d117d30b5a80437159741774c
+Review branch: review/wp05-abort-oracle-final-requalification
+Review worktree: C:\Users\Laszlos\source\repos\Solo\wp05-abort-oracle-final-requalification
+Review doc: docs/reviews/gagamba-linux-m1-wp05-qualification-harness-final-incomplete-review.md
+Review evidence: docs/evidence/linux-m1/wp05-abort-oracle-final-independent-requalification-2026-10-19.md
+The independent commits and evidence were not modified. The reviewer's 20/23 committed-byte match audit and 3 mismatches were reproduced exactly.
