@@ -1,0 +1,107 @@
+WP05 non-root qualification delegation and session lifecycle
+Date: 2026-10-19
+Scope: session-scoped Linux environment preparation; no qualification
+
+Finding and authority boundary
+  - The independent OpenCode review observed boot 8020a863-085b-48e3-87e4-b31983a64ef6,
+    current cgroup /init.scope, and no /sys/fs/cgroup/gaga-delegated.
+  - The producer preparation observed the same absent-delegation condition on
+    its WSL boots. A first preparation on boot 015438e6-5dd1-42cd-a11f-c299f498c5ca
+    disappeared when the WSL distro restarted; the current session is boot
+    69d053fb-0fd9-4209-aa5b-be128424ed34.
+  - The task explicitly requested a correctly provisioned non-root cgroup v2
+    environment. The minimal cgroup tree was created through the local WSL root
+    operator context. No host security setting, ACL, firewall, package, systemd
+    service, setuid binary, or persistent privileged daemon was changed. The
+    cgroup tree contains only the qualification parent and host leaf.
+
+Provisioning procedure (reused from the prior documented procedure)
+  mkdir /sys/fs/cgroup/gaga-delegated
+  printf '+memory +pids\n' > /sys/fs/cgroup/gaga-delegated/cgroup.subtree_control
+  mkdir /sys/fs/cgroup/gaga-delegated/host
+  chown gaga:gaga /sys/fs/cgroup/gaga-delegated \
+    /sys/fs/cgroup/gaga-delegated/host \
+    /sys/fs/cgroup/gaga-delegated/cgroup.procs \
+    /sys/fs/cgroup/gaga-delegated/cgroup.subtree_control \
+    /sys/fs/cgroup/gaga-delegated/host/cgroup.procs \
+    /sys/fs/cgroup/gaga-delegated/host/cgroup.subtree_control
+  chmod 755 /sys/fs/cgroup/gaga-delegated /sys/fs/cgroup/gaga-delegated/host
+
+Current observed environment (session boot 69d053fb...)
+  parent: /sys/fs/cgroup/gaga-delegated, 755 gaga:gaga
+  host:   /sys/fs/cgroup/gaga-delegated/host, 755 gaga:gaga
+  host cgroup.procs: 644 gaga:gaga
+  parent controllers: cpu memory pids
+  parent cgroup.subtree_control: memory pids
+  host controllers: memory pids
+  host cgroup.subtree_control: empty
+  parent cgroup.procs: empty
+  host cgroup.procs: empty
+  host cgroup.events: populated 0, frozen 0
+  cgroup.kill: present
+  gaga can write the parent and host cgroup.procs (directory/file permission)
+  controller availability was verified by the preflight, which created a
+  disposable child, wrote memory.max/pids.max to "max", and removed it.
+
+Placement and the non-root boundary
+  - Writing the gaga shell PID directly to host/cgroup.procs from /init.scope
+    failed with `printf: write error: Permission denied` even though the file
+    was 644 gaga:gaga and test -w returned true. cgroup v2 refuses the move
+    because the source cgroup is outside the delegated subtree. This was
+    preserved as preflight-placement-failure.log and the failure narrative.
+  - The authorized placement is an explicit operator launcher:
+    /home/gaga/qualification/tools/run-as-gaga-in-host.sh
+    It checks root, writes its own PID to the host leaf, then execs setpriv to
+    uid=1000, gid=1000, clear-groups with HOME/TMPDIR/USER/LOGNAME/DOTNET
+    settings. Root is never the qualification/test process. The launcher is a
+    per-session operator step, not a setuid helper, daemon or system service.
+  - The preflight verified uid=1000, gid=1000, CapInh=CapPrm=CapEff=CapAmb=0,
+    CapBnd=000001ffffffffff, and placement at /gaga-delegated/host.
+
+Why the session anchor exists
+  - A transient delegated tree is not retained across WSL distro lifetime
+    boundaries. After the first failed preflight attempt and WSL restart, the
+    empty /sys/fs/cgroup/gaga-delegated hierarchy disappeared even though the
+    kernel boot identifier was retained; the current session required a
+    long-lived WSL process to keep the distro and cgroup hierarchy alive.
+  - The minimal session anchor is `/home/gaga/qualification/tools`-managed
+    `sleep infinity` PID 576, owned by gaga, in /init.scope, outside the
+    delegated host. It is not a qualification process, has no capabilities,
+    does not enter the host leaf, and is not a privileged daemon.
+  - This anchor is necessary for session continuity only. It is not an
+    implementation process, target, service, or acceptance mechanism. It must
+    be removed when the review session ends.
+
+Session lifetime and cleanup
+  - The delegation tree and anchor are intentionally retained for the
+    independent review session. They are owned by the gaga review session and
+    the root operator provisioning lifecycle.
+  - After the review (or before a deliberate reboot), the operator should run:
+      # as root, in one WSL invocation while the anchor is alive
+      test -z "$(cat /sys/fs/cgroup/gaga-delegated/host/cgroup.procs)"
+      # remove any reviewer-created empty child cgroups first; do not kill
+      # unrelated processes
+      rmdir /sys/fs/cgroup/gaga-delegated/host
+      rmdir /sys/fs/cgroup/gaga-delegated
+      # after the tree is clean, as gaga/root:
+      kill "$(cat /home/gaga/qualification/session-anchor.pid)"
+  - If the reviewer is still running, do not remove the tree or anchor. A
+    reboot removes both; the operator must re-run the anchor and provisioning
+    procedure before the next review session.
+  - No permanent keepalive or resource ownership is claimed beyond the review
+    session. The anchor PID and cleanup path are recorded so the operator can
+    terminate it.
+
+Reboot behavior
+  - The Linux-native source checkout survives in /home/gaga/qualification.
+  - The cgroup tree and session anchor do not survive WSL reboot/shutdown.
+  - Operator reestablishment: start the anchor as gaga, run the provisioning
+    commands as root, verify the host leaf is empty, then use the root launcher
+    plus preflight runner. The exact commands and expected values are in
+    reviewer-handoff.txt.
+
+Boundaries
+  - This is preparation, not qualification. No WP05 target, harness acceptance,
+    release/stop, crash, SIGPIPE, no-resend or full M1 suite was run.
+  - The preflight is an environment/source checker; it does not build or test.
+  - The session anchor is not a substitute for independent reviewer access.

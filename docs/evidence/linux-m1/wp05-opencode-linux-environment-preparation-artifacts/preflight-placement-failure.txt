@@ -1,0 +1,46 @@
+WP05 preflight placement failure and correction
+Date: 2026-10-19
+Scope: preserved first-attempt failure before the operator placement launcher
+
+Attempt
+  Command:
+    wsl.exe -d Ubuntu -u gaga -- bash \
+      /home/gaga/qualification/tools/run-preflight-once.sh 1
+  Context: session delegation present; runner attempted to self-place the
+  non-root shell by writing its own PID to
+  /sys/fs/cgroup/gaga-delegated/host/cgroup.procs
+  Observed output:
+    RUN=1
+    HOST_PID=542
+    /home/gaga/qualification/tools/run-preflight-once.sh: line 13:
+      printf: write error: Permission denied
+  Exit code: 1
+  Raw log: preflight-placement-failure.log (only the pre-placement header lines
+  could be written to the gaga-owned log; the permission error was emitted to
+  the invoking terminal).
+
+Diagnosis
+  The host cgroup.procs file was mode 644, owner gaga:gaga; `test -w` returned
+  true. The write was still rejected by the kernel because the source process
+  was in /init.scope, outside the delegated subtree. gaga could not migrate
+  itself from an ancestor namespace into the delegated host leaf. This is not
+  a source or controller failure and not a reason to relax ownership security.
+
+Correction
+  - Added the operator placement launcher
+    /home/gaga/qualification/tools/run-as-gaga-in-host.sh. It runs only with
+    operator root, writes its own PID to the designated host leaf, and then
+    execs setpriv --reuid=1000 --regid=1000 --clear-groups. The test process is
+    gaga, not root; no setuid binary or persistent privileged process exists.
+  - Changed run-preflight-once.sh to require that it is already in
+    /gaga-delegated/host, reject uid 0, and never self-place.
+  - The first failed attempt was not converted into a pass. The two later
+    artifact runs (57/0 each) are separate runs; the earlier 56/0 runs before
+    the generated ignored filter artifact are also preserved.
+
+Residual limitation
+  The authorized operator launcher is required to enter the delegated host.
+  This is a session-start prerequisite, not a qualification test and not a
+  claim that an unprivileged reviewer can self-place. The independent reviewer
+  must run the operator step in its own WSL context; producer access is not
+  independent evidence.

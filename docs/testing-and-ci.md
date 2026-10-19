@@ -50,7 +50,9 @@ The Linux M1 qualification assembly contains tests that set `PR_SET_CHILD_SUBREA
 bash eng/linux-m1-qualified-tests.sh
 ```
 
-Use a Release build and the documented delegated non-root Linux environment. The script runs the regular assembly with `Category!=ProcessGlobalReaping&Category!=ProcessGlobalHostState` (parallel), then runs each tagged class in its own test-host process: `NonRootQualificationTests`, `OwnerDeathQualificationTests`, `IntegratedBarrierTests`, `DomainAuthorityTests`, `RecoveryHarness`, `Wp05TerminationObserverTests`, and `Wp05SigpipeDispositionTests`. ### Independent Linux readiness preflight
+Use a Release build and the documented delegated non-root Linux environment. The script runs the regular assembly with `Category!=ProcessGlobalReaping&Category!=ProcessGlobalHostState` (parallel), then runs each tagged class in its own test-host process: `NonRootQualificationTests`, `OwnerDeathQualificationTests`, `IntegratedBarrierTests`, `DomainAuthorityTests`, `RecoveryHarness`, `Wp05TerminationObserverTests`, and `Wp05SigpipeDispositionTests`.
+
+### Independent Linux readiness preflight
 
 Before handing a checkout to an independent Linux reviewer, run the environment and source preflight from the unprivileged delegated profile:
 
@@ -62,7 +64,9 @@ bash eng/linux-m1-independent-readiness.sh \
 
 The preflight checks Linux x86-64, non-root identity and zero inheritable/permitted/effective/ambient capabilities, cgroup v2 with a writable delegated `memory`/`pids` subtree and `cgroup.kill`, process placement, the pinned non-setuid Bubblewrap 0.11.1 (`523da3e7...`), the required toolchain, exact R12 source availability and unchanged production surfaces, the frozen 672-byte seccomp filter (`2aa87901...`) or reproducible generation, and workspace/report writability. It does not build, run the qualification suite, execute a target, or provide acceptance evidence.
 
-The delegation tree is an operator-provided prerequisite. A transient root-created delegation may be used only for a producer check if its creation and cleanup are recorded; do not leave a reusable privileged environment or keepalive. The script always prints `REVIEWER_ACCESS=UNVERIFIED`; only the independent reviewer's own execution can establish reviewer access. A passing producer run is not independent qualification.
+The delegation tree is an operator-provided prerequisite. For a producer-only preflight, a transient root-created delegation may be removed immediately after the check. For an independent review session, the operator may establish a session-scoped delegation and retain it until the review ends, with the owner, anchor and cleanup procedure recorded. Do not leave an unowned or permanent privileged environment, and do not install a system service or setuid helper. The script always prints `REVIEWER_ACCESS=UNVERIFIED`; only the independent reviewer's own execution can establish reviewer access. A passing producer run is not independent qualification.
+
+For an independent review, restore exact R12 into a `gaga`-owned Linux-native checkout from the verified bundle. Do not use `safe.directory` or copy Windows `.git` metadata. The operator must place the review session in the delegated host with a per-session root launcher that writes its own PID and then drops to `gaga`; the qualification process is always non-root. An empty delegated tree can disappear when the WSL distro restarts, so a minimal `gaga`-owned session anchor outside the host leaf may keep the review session alive. Record its owner and PID, keep the host leaf free of the anchor, and remove the anchor and tree after the review. Re-run the provisioning procedure after reboot. See the [OpenCode environment preparation evidence](evidence/linux-m1/wp05-opencode-linux-environment-preparation-2026-10-19.md).
 
 
 

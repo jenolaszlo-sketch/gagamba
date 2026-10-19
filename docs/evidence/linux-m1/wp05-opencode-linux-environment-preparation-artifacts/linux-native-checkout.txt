@@ -72,11 +72,19 @@ Readiness tooling
   staging wrapper: /home/gaga/qualification/tools/run-readiness-in-r12.sh
     copies the byte-exact script into the R12 checkout's eng/ as an untracked
     temporary file, runs it with --source-rev R12, and removes it on exit
-  host launcher: /home/gaga/qualification/tools/run-in-host.sh
-    self-places the invoking process in /sys/fs/cgroup/gaga-delegated/host and
-    execs the requested command; non-root, no privilege escalation
+  operator placement launcher: /home/gaga/qualification/tools/run-as-gaga-in-host.sh
+    must be invoked by the authorized local WSL root context; it writes its own
+    PID to the delegated host cgroup.procs and then execs setpriv to uid/gid
+    1000. The qualification process is gaga with zero effective capabilities;
+    root is never the test process. Non-root self-migration from /init.scope was
+    attempted and failed with EPERM even though cgroup.procs was writable; the
+    operator launcher is therefore required.
+  preflight runner: /home/gaga/qualification/tools/run-preflight-once.sh
+    checks that the invoking process is already in the delegated host, refuses
+    root, and runs the staging wrapper; it does not self-place
   The R12 checkout's tracked source was not modified; temporary staging was
-  removed and status re-verified clean.
+  removed and status re-verified clean. The generated ignored WP04 filter
+  artifact is described in the cgroup/preflight evidence.
 
 Verification source
   raw output: linux-native-verification.log (committed artifact)
