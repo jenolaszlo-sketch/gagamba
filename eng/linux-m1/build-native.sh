@@ -23,7 +23,7 @@ FILTER_BIN="$WP04_OUT/seccomp-filter.bin"
 python3 "$NATIVE/seccomp_filter_policy.py" --check || { echo "filter source/output mismatch" >&2; exit 4; }
 python3 "$NATIVE/seccomp_filter_policy.py" --binary > "$FILTER_BIN"
 [ "$(wc -c < "$FILTER_BIN")" -eq 672 ] || { echo "filter length mismatch" >&2; exit 4; }
-[ "$(sha256sum "$FILTER_BIN" | cut -d' ' -f1)" = "4ee63c48010d74118f74ddec44b48acc16cabc3e7e5693e83d941f82bbb3a2bc" ] || { echo "filter digest mismatch" >&2; exit 4; }
+[ "$(sha256sum "$FILTER_BIN" | cut -d' ' -f1)" = "2aa879019138c4d4066557213ce0037de70430aac3a05008eec5c8abd999d108" ] || { echo "filter digest mismatch" >&2; exit 4; }
 gcc -static -O2 -s -fno-ident -frandom-seed=gagamba-wp04 -Wl,--build-id=none -I"$NATIVE" -o "$WP04_OUT/exec-coordinator" "$NATIVE/exec-coordinator.c" || { echo "static coordinator link failed" >&2; exit 5; }
 gcc -static -O2 -s -fno-ident -frandom-seed=gagamba-wp05-qualification -Wl,--build-id=none -I"$NATIVE" -o "$WP05_OUT/wp05-qualification-coordinator" "$WP05_QUALIFICATION_SRC" || { echo "WP05 qualification coordinator link failed" >&2; exit 6; }
 sha256sum "$NATIVE/exec-coordinator.c" "$WP04_OUT/exec-coordinator" "$FILTER_BIN" "$WP05_QUALIFICATION_SRC" "$WP05_OUT/wp05-qualification-coordinator" | tee "$WP04_OUT/SHA256SUMS"

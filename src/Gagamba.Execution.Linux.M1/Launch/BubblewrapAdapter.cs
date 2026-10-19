@@ -19,7 +19,7 @@ namespace Gagamba.Execution.Linux.M1.Launch;
 /// and permits exactly one nonblocking RELEASE attempt.</summary>
 internal sealed class BubblewrapAdapter : IHeldLauncher
 {
-    internal const string FilterSha256 = "4ee63c48010d74118f74ddec44b48acc16cabc3e7e5693e83d941f82bbb3a2bc";
+    internal const string FilterSha256 = "2aa879019138c4d4066557213ce0037de70430aac3a05008eec5c8abd999d108";
     internal const ulong FilterLength = 672;
     private const int ConfigHeaderBytes = 202;
     private const int MaxConfigBytes = 16 * 1024;
