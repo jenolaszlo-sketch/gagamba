@@ -50,7 +50,21 @@ The Linux M1 qualification assembly contains tests that set `PR_SET_CHILD_SUBREA
 bash eng/linux-m1-qualified-tests.sh
 ```
 
-Use a Release build and the documented delegated non-root Linux environment. The script runs the regular assembly with `Category!=ProcessGlobalReaping&Category!=ProcessGlobalHostState` (parallel), then runs each tagged class in its own test-host process: `NonRootQualificationTests`, `OwnerDeathQualificationTests`, `IntegratedBarrierTests`, `DomainAuthorityTests`, `RecoveryHarness`, `Wp05TerminationObserverTests`, and `Wp05SigpipeDispositionTests`. A bare parallel `dotnet test` of the full M1 assembly is not a supported qualification profile; it can reproduce cross-test `ECHILD` and adopted-child interference. The M1 assembly is not currently wired into the CI workflows; any future M1 CI job must use this profile rather than a bare assembly-wide parallel command.
+Use a Release build and the documented delegated non-root Linux environment. The script runs the regular assembly with `Category!=ProcessGlobalReaping&Category!=ProcessGlobalHostState` (parallel), then runs each tagged class in its own test-host process: `NonRootQualificationTests`, `OwnerDeathQualificationTests`, `IntegratedBarrierTests`, `DomainAuthorityTests`, `RecoveryHarness`, `Wp05TerminationObserverTests`, and `Wp05SigpipeDispositionTests`. ### Independent Linux readiness preflight
+
+Before handing a checkout to an independent Linux reviewer, run the environment and source preflight from the unprivileged delegated profile:
+
+```bash
+bash eng/linux-m1-independent-readiness.sh \
+  --source-rev 38f6981b2a60daab2df37c92913a6760c1bef131 \
+  --report /tmp/wp05-readiness.txt
+```
+
+The preflight checks Linux x86-64, non-root identity and zero inheritable/permitted/effective/ambient capabilities, cgroup v2 with a writable delegated `memory`/`pids` subtree and `cgroup.kill`, process placement, the pinned non-setuid Bubblewrap 0.11.1 (`523da3e7...`), the required toolchain, exact R12 source availability and unchanged production surfaces, the frozen 672-byte seccomp filter (`2aa87901...`) or reproducible generation, and workspace/report writability. It does not build, run the qualification suite, execute a target, or provide acceptance evidence.
+
+The delegation tree is an operator-provided prerequisite. A transient root-created delegation may be used only for a producer check if its creation and cleanup are recorded; do not leave a reusable privileged environment or keepalive. The script always prints `REVIEWER_ACCESS=UNVERIFIED`; only the independent reviewer's own execution can establish reviewer access. A passing producer run is not independent qualification.
+
+
 
 ## Workload tests
 
