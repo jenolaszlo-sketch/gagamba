@@ -1,0 +1,63 @@
+WP05 R12 source bundle - creation and restore verification
+Date: 2026-10-19
+Scope: reproducible source access for independent Linux qualification; no acceptance
+
+Source bundle (deliverable)
+  path: C:\Users\Laszlos\source\repos\Solo\wp05-r12-source.bundle
+  size: 2,052,989 bytes
+  SHA-256: 38951b891be5673366c33c855610c7cd08b841353efbe108e78b41b9ad589eea
+  format: Git bundle, complete history, SHA-1 object format
+  refs:
+    38f6981b2a60daab2df37c92913a6760c1bef131 refs/heads/remediation/wp05-identity-evidence-integrity
+    712e0fc2dc56c0b14f12ca75c7d48137dae8a500 refs/heads/review/wp05-release-seccomp-counterexample
+    5b6ab064ec0e329735aae969a3478577203d6616 refs/heads/review/wp05-seccomp-kernel-requalification
+    67e2d5b95ff2ff1a7d92fb2af27cb37bc0995bce refs/heads/review/wp05-qualification-harness-requalification
+    d809ac969a84073d117d30b5a80437159741774c refs/heads/review/wp05-abort-oracle-final-requalification
+    71d5a7e0af5141d74110eacc06ba478ab75a81ac refs/heads/review/wp05-harness-linux-final-acceptance
+
+Creation command (run in canonical Gagamba at R12)
+  git bundle create C:\Users\Laszlos\source\repos\Solo\wp05-r12-source.bundle `
+    refs/heads/remediation/wp05-identity-evidence-integrity `
+    refs/heads/review/wp05-release-seccomp-counterexample `
+    refs/heads/review/wp05-seccomp-kernel-requalification `
+    refs/heads/review/wp05-qualification-harness-requalification `
+    refs/heads/review/wp05-abort-oracle-final-requalification `
+    refs/heads/review/wp05-harness-linux-final-acceptance
+
+Verification (disposable empty repository)
+  git init C:\Windows\TEMP\opencode\wp05-r12-bundle-verify
+  git -C <verify> bundle verify C:\Windows\TEMP\opencode\wp05-r12-source-readiness.bundle
+  git -C <verify> fetch <bundle> refs/heads/*:refs/remotes/bundle/*
+  git -C <verify> checkout --detach 38f6981b2a60daab2df37c92913a6760c1bef131
+  git -C <verify> show -s --format=%T HEAD
+  git -C <verify> fsck --no-progress
+
+Observed results
+  bundle verify: six refs; "The bundle records a complete history."; "is okay"; exit 0
+  fetch: all six refs created under refs/remotes/bundle/*; exit 0
+  checkout: detached at 38f6981b2a60daab2df37c92913a6760c1bef131; exit 0
+  canonical R12 tree: 6854675d6b37a49d5302d6104103bdbfbc268040
+  restored R12 tree:  6854675d6b37a49d5302d6104103bdbfbc268040
+  tree match: TRUE
+  git fsck --no-progress: exit 0
+  The temporary bundle used for verification is byte-identical to the source bundle:
+    size 2,052,989 bytes; SHA-256 38951b891be5673366c33c855610c7cd08b841353efbe108e78b41b9ad589eea
+
+Restore commands for an independent reviewer
+  Create an empty directory outside the repository, then:
+    git init
+    git fetch C:\Users\Laszlos\source\repos\Solo\wp05-r12-source.bundle refs/heads/*:refs/remotes/source/*
+    git checkout -b review/wp05-harness-r12-linux-qualification 38f6981b2a60daab2df37c92913a6760c1bef131
+    git rev-parse HEAD
+    git show -s --format=%T HEAD
+    git status --short
+
+Expected
+  HEAD: 38f6981b2a60daab2df37c92913a6760c1bef131
+  tree: 6854675d6b37a49d5302d6104103bdbfbc268040
+  clean status
+
+Limits
+  The source bundle carries source and reviewer history, not the infrastructure branch, preflight script, or readiness evidence.
+  The final readiness bundle will include infrastructure/wp05-independent-linux-readiness and will be recorded separately after I3.
+  The source bundle is outside the repository and is not committed.

@@ -1,0 +1,52 @@
+WP05 R12 independent reviewer checkout
+Date: 2026-10-19
+Scope: source accessibility preparation; not acceptance
+
+Checkout
+  path: C:\Users\Laszlos\source\repos\Solo\wp05-r12-linux-qualification
+  type: standalone repository created from the source bundle; not a worktree of the Solo review checkout
+  branch: review/wp05-harness-r12-linux-qualification
+  HEAD: 38f6981b2a60daab2df37c92913a6760c1bef131
+  tree: 6854675d6b37a49d5302d6104103bdbfbc268040
+  status: clean
+  diff from R12: empty
+  history refs: refs/remotes/source/* for R12 and all five preserved review branches
+  Q1-Q4 history: reachable through refs/remotes/source/review/*; no local checkout of the blocker branch
+
+Creation commands
+  New-Item -ItemType Directory C:\Users\Laszlos\source\repos\Solo\wp05-r12-linux-qualification
+  git -C <checkout> init --quiet
+  git -C <checkout> fetch C:\Users\Laszlos\source\repos\Solo\wp05-r12-source.bundle refs/heads/*:refs/remotes/source/*
+  git -C <checkout> checkout -b review/wp05-harness-r12-linux-qualification 38f6981b2a60daab2df37c92913a6760c1bef131
+  git -C <checkout> rev-parse HEAD
+  git -C <checkout> show -s --format='%T %s' HEAD
+  git -C <checkout> status --short
+  git -C <checkout> diff --stat 38f6981b2a60daab2df37c92913a6760c1bef131 --
+
+Observed results
+  HEAD: 38f6981b2a60daab2df37c92913a6760c1bef131
+  tree: 6854675d6b37a49d5302d6104103bdbfbc268040
+  subject: docs(wp05): record identity and evidence-integrity remediation
+  status: clean
+  diff from R12: empty (exit 0)
+
+Preserved history refs
+  38f6981b2a60daab2df37c92913a6760c1bef131 refs/remotes/source/remediation/wp05-identity-evidence-integrity
+  d809ac969a84073d117d30b5a80437159741774c refs/remotes/source/review/wp05-abort-oracle-final-requalification
+  71d5a7e0af5141d74110eacc06ba478ab75a81ac refs/remotes/source/review/wp05-harness-linux-final-acceptance
+  67e2d5b95ff2ff1a7d92fb2af27cb37bc0995bce refs/remotes/source/review/wp05-qualification-harness-requalification
+  712e0fc2dc56c0b14f12ca75c7d48137dae8a500 refs/remotes/source/review/wp05-release-seccomp-counterexample
+  5b6ab064ec0e329735aae969a3478577203d6616 refs/remotes/source/review/wp05-seccomp-kernel-requalification
+
+Review instructions
+  Work from the R12 checkout. Do not check out, merge, or rebase the blocked Q4 branch as the acceptance source.
+  Inspect reviewer history with:
+    git log --oneline --graph --all --decorate
+    git show source/review/wp05-harness-linux-final-acceptance
+  The infrastructure branch/script/evidence will be fetched into this checkout from the final readiness bundle after I3.
+  The checkout is outside the canonical repository and is not part of the acceptance source.
+
+Access caveat
+  The checkout was created in the DeepSeek producer context. Its existence does not prove that Luna can read or execute it.
+  Prior Luna attempts recorded Wsl/E_ACCESSDENIED and a canonical filesystem-permission failure.
+  Luna must run the readiness preflight in its own context; otherwise reviewer access remains unverified.

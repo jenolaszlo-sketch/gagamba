@@ -1,0 +1,77 @@
+WP05 independent Linux readiness - repository and source refs
+Date: 2026-10-19
+Scope: source accessibility preparation; no acceptance and no production change
+
+Canonical repository
+  path: C:\Users\Laszlos\source\repos\Gagamba
+  infrastructure branch: infrastructure/wp05-independent-linux-readiness
+  infrastructure branch created from: 38f6981b2a60daab2df37c92913a6760c1bef131
+  R12 HEAD: 38f6981b2a60daab2df37c92913a6760c1bef131
+  R12 tree: 6854675d6b37a49d5302d6104103bdbfbc268040
+  production baseline: 58cb1ba31c102e0e9d5488721e8c438adb55c614
+  working tree before I1: clean except pre-existing untracked spikes/TestResults/stray .trx file; those are not part of this slice
+
+Implementation evidence lineage
+  R9 preservation: aa1a7f54d28dc96a8367e2273999fbad7ec03634
+  R10 evidence reconciliation: 5a30576f60ba24be8fe76fdf71702ca29d93b4fc
+  R11 identity correction: c48e358451c8b0dbe7aace281f64a2eced399ed7
+  R12 evidence/handoff: 38f6981b2a60daab2df37c92913a6760c1bef131
+
+Independent review refs preserved in the source bundle
+  refs/heads/review/wp05-release-seccomp-counterexample: 712e0fc2dc56c0b14f12ca75c7d48137dae8a500
+  refs/heads/review/wp05-seccomp-kernel-requalification: 5b6ab064ec0e329735aae969a3478577203d6616
+  refs/heads/review/wp05-qualification-harness-requalification: 67e2d5b95ff2ff1a7d92fb2af27cb37bc0995bce
+  refs/heads/review/wp05-abort-oracle-final-requalification: d809ac969a84073d117d30b5a80437159741774c
+  refs/heads/review/wp05-harness-linux-final-acceptance: 71d5a7e0af5141d74110eacc06ba478ab75a81ac
+
+Final review history
+  Q1 probes: bac2509b94510a522275fde6a640033f0fe6fbf4
+  Q2 evidence: 2ee412be5ed5f21f4320d3d08aab4f2ff1141987
+  Q3 disposition: d809ac969a84073d117d30b5a80437159741774c
+  blocked Linux attempt: fa7aaed1ab40ab86892cf3c89a85bc7e070cfd4c
+  Q4 preservation: 71d5a7e0af5141d74110eacc06ba478ab75a81ac
+
+Q4 source and fetch
+  source checkout: C:\Users\Laszlos\source\repos\Solo\wp05-abort-oracle-final-requalification
+  source branch: review/wp05-harness-linux-final-acceptance
+  canonical destination ref: refs/heads/review/wp05-harness-linux-final-acceptance
+  command:
+    git fetch "C:\Users\Laszlos\source\repos\Solo\wp05-abort-oracle-final-requalification" review/wp05-harness-linux-final-acceptance:review/wp05-harness-linux-final-acceptance
+  result: new branch; exact object 71d5a7e0af5141d74110eacc06ba478ab75a81ac
+  Q4 tree: c98c1a3c1ebccaf7f789cc715416822fc19f702b
+
+Lineage checks
+  Q3 d809ac9 is an ancestor of Q4 71d5a7e: TRUE
+  R12 38f6981 is an ancestor of Q4 71d5a7e: FALSE
+  Q3 is an ancestor of R12: FALSE
+  R9 aa1a7f5 is the common preserved implementation base for the R10-R12 and Q1-Q4 lineages.
+  No merge, rebase, amend, or ancestry rewrite was performed.
+
+New independent R12 checkout
+  path: C:\Users\Laszlos\source\repos\Solo\wp05-r12-linux-qualification
+  branch: review/wp05-harness-r12-linux-qualification
+  HEAD: 38f6981b2a60daab2df37c92913a6760c1bef131
+  tree: 6854675d6b37a49d5302d6104103bdbfbc268040
+  status: clean
+  diff from R12: empty
+  fetched history refs under refs/remotes/source/*:
+    38f6981b2a60daab2df37c92913a6760c1bef131 refs/remotes/source/remediation/wp05-identity-evidence-integrity
+    d809ac969a84073d117d30b5a80437159741774c refs/remotes/source/review/wp05-abort-oracle-final-requalification
+    71d5a7e0af5141d74110eacc06ba478ab75a81ac refs/remotes/source/review/wp05-harness-linux-final-acceptance
+    67e2d5b95ff2ff1a7d92fb2af27cb37bc0995bce refs/remotes/source/review/wp05-qualification-harness-requalification
+    712e0fc2dc56c0b14f12ca75c7d48137dae8a500 refs/remotes/source/review/wp05-release-seccomp-counterexample
+    5b6ab064ec0e329735aae969a3478577203d6616 refs/remotes/source/review/wp05-seccomp-kernel-requalification
+
+Source bundle
+  path: C:\Users\Laszlos\source\repos\Solo\wp05-r12-source.bundle
+  size: 2,052,989 bytes
+  SHA-256: 38951b891be5673366c33c855610c7cd08b841353efbe108e78b41b9ad589eea
+  refs: R12 plus the five review refs above
+  verification: complete history; bundle okay; restored R12 tree matched exactly; git fsck exit 0
+  The source bundle does not include the infrastructure branch; the final readiness bundle will include it after I3.
+
+Access caveat
+  This checkout was created in the DeepSeek producer context. It demonstrates source preparation only.
+  It does not prove that Luna can execute WSL, read this checkout, or use the delegated cgroup host.
+  Prior Luna attempts recorded Wsl/E_ACCESSDENIED and a canonical filesystem-permission failure.
+  Independent reviewer access remains unverified until Luna runs the readiness command in its own context.
