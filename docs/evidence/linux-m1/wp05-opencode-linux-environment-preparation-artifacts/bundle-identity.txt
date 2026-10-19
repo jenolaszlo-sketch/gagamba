@@ -1,0 +1,66 @@
+WP05 final OpenCode preparation bundle attestation
+Date: 2026-10-19
+Scope: portable source/evidence bundle identity; no qualification
+
+Final bundle
+  Windows path:
+    C:/Users/Laszlos/source/repos/Solo/wp05-opencode-preparation.bundle
+  Linux copy:
+    /home/gaga/qualification/bundles/wp05-opencode-preparation.bundle
+  size: 2,121,754 bytes
+  SHA-256: b1bd41d69a86f3758168fc2e3b91b429f3185465d3a25dc20861f0dcd651fee5
+  format: Git bundle, complete history, SHA-1 object format
+  refs (8):
+    d3480b5d7e48e93d4f4de855d8da9b245e236764 refs/heads/infrastructure/wp05-independent-linux-readiness-2
+    38f6981b2a60daab2df37c92913a6760c1bef131 refs/heads/remediation/wp05-identity-evidence-integrity
+    e6f8604cf6d2a0e532e651bece987fb9613e6b94 refs/heads/review/wp05-opencode-linux-readiness
+    712e0fc2dc56c0b14f12ca75c7d48137dae8a500 refs/heads/review/wp05-release-seccomp-counterexample
+    5b6ab064ec0e329735aae969a3478577203d6616 refs/heads/review/wp05-seccomp-kernel-requalification
+    67e2d5b95ff2ff1a7d92fb2af27cb37bc0995bce refs/heads/review/wp05-qualification-harness-requalification
+    d809ac969a84073d117d30b5a80437159741774c refs/heads/review/wp05-abort-oracle-final-requalification
+    71d5a7e0af5141d74110eacc06ba478ab75a81ac refs/heads/review/wp05-harness-linux-final-acceptance
+
+Creation
+  git bundle create C:/Users/Laszlos/source/repos/Solo/wp05-opencode-preparation.bundle `
+    refs/heads/infrastructure/wp05-independent-linux-readiness-2 `
+    refs/heads/remediation/wp05-identity-evidence-integrity `
+    refs/heads/review/wp05-opencode-linux-readiness `
+    refs/heads/review/wp05-release-seccomp-counterexample `
+    refs/heads/review/wp05-seccomp-kernel-requalification `
+    refs/heads/review/wp05-qualification-harness-requalification `
+    refs/heads/review/wp05-abort-oracle-final-requalification `
+    refs/heads/review/wp05-harness-linux-final-acceptance
+
+Verification (D:/temp/wp05/wp05-opencode-preparation-verify)
+  bundle verify: eight refs; complete history; "is okay"; exit 0
+  fetch: all eight refs; exit 0
+  P3b checkout: d3480b5; tree 72a2896d5081c46589de766c3b9e19b4dfc5776e
+  script object present: eng/linux-m1-independent-readiness.sh
+  preparation evidence object present
+  hash-audit object present
+  diff from R12 over src/native/tests: empty; exit 0
+  R12 checkout: 38f6981; tree 6854675d6b37a49d5302d6104103bdbfbc268040
+  reviewer evidence object is on e6f8604, not R12; the reviewer ref is included
+  git fsck --no-progress: exit 0
+
+Linux-native reviewer fetch
+  final bundle copy hash matches above
+  refs/remotes/prep/* contains all eight refs
+  prep infrastructure ref: d3480b5d7e48e93d4f4de855d8da9b245e236764
+  reviewer evidence object: reachable at e6f8604
+  readiness script object: reachable on the prep ref
+  Linux-native HEAD remains R12; tree 6854675d...; tracked status clean
+  no safe.directory configuration
+
+Preserved bundles
+  Original seven-ref bundle remains unchanged:
+    0e9b5486035b558acb746c61e07c6934ff1a023dba8142809953c21a75d76bf3
+  Supplemental I3b/reviewer bundle remains unchanged:
+    19b524a1ef57d2491fc1a2a8e2355599d59b9166af15811b2d94cd1294870e0f
+  This final bundle is additive; it does not rewrite either prior bundle.
+
+Attestation scope
+  The bundle contains the preparation branch at P3b, exact R12, the OpenCode
+  reviewer evidence commit, and the preserved review refs. P3c records this
+  attestation. The bundle is portable source/evidence, not an acceptance
+  artifact and not proof of independent reviewer access.
