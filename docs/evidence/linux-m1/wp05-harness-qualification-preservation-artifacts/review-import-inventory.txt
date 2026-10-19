@@ -1,0 +1,157 @@
+REPO=/home/gaga/qualification/harness-review
+TOP=/home/gaga/qualification/harness-review
+BRANCH=review/wp05-opencode-harness-final-qualification
+HEAD=36a124d7dff98ecfaf956340767fe1768ad5b17f
+STATUS_COUNT=0
+STATUS_BEGIN
+STATUS_END
+LOG_BEGIN
+36a124d (HEAD -> review/wp05-opencode-harness-final-qualification) WP05 OpenCode reviewer Q3: final review facts, manifest, bounded acceptance decision (review-only)
+21e53ad WP05 OpenCode reviewer Q2: 2x full supported-profile runs + skip classification (review-only)
+bf453ea WP05 OpenCode reviewer Q1: hostile harness probes + evidence integrity reconciliation (review-only)
+1e64875 docs(wp05): Q0 record independent Linux readiness for R12 harness qualification
+38f6981 (supp/remediation/wp05-identity-evidence-integrity, prep/remediation/wp05-identity-evidence-integrity, original/remediation/wp05-identity-evidence-integrity, review/wp05-opencode-linux-qualification) docs(wp05): record identity and evidence-integrity remediation
+c48e358 fix(wp05): bind expected wrapper identity to owned pidfd
+5a30576 docs(wp05): reconcile R9 evidence checksum provenance
+aa1a7f5 fix(wp05): restore byte-exact preserved hostile probe
+3ba6fde docs(wp05): record abort-oracle provenance and SIGPIPE evidence
+6e534c8 test(wp05): classify SIGPIPE host state and isolate qualification
+fc4f53f fix(wp05): bind abort oracle to raw termination and stop provenance
+042940e test(wp05): import preserved hostile abort-provenance probe from 8a863c4
+LOG_END
+R12=38f6981b2a60daab2df37c92913a6760c1bef131
+R12_TREE=6854675d6b37a49d5302d6104103bdbfbc268040
+BASE=58cb1ba31c102e0e9d5488721e8c438adb55c614
+Q_1e64875=1e64875ce30f10c5c834188c330b6aae1fbac0ae
+  SUBJECT=docs(wp05): Q0 record independent Linux readiness for R12 harness qualification
+  PARENTS=38f6981b2a60daab2df37c92913a6760c1bef131
+  TREE=756b8ce91953d84a4f2233bc7e3980da110fc6c3
+Q_bf453ea=bf453ea6efd827b7ce965f3f5bfddb4db11af0d4
+  SUBJECT=WP05 OpenCode reviewer Q1: hostile harness probes + evidence integrity reconciliation (review-only)
+  PARENTS=1e64875ce30f10c5c834188c330b6aae1fbac0ae
+  TREE=68c6eff315e9b8c6e0c4623b640c2a5723c4ac05
+Q_21e53ad=21e53ad787c6c9b891aaab9c1996f4627659dcdf
+  SUBJECT=WP05 OpenCode reviewer Q2: 2x full supported-profile runs + skip classification (review-only)
+  PARENTS=bf453ea6efd827b7ce965f3f5bfddb4db11af0d4
+  TREE=7eb147bf4430ad33c6e711dc65ebe4020ea98415
+Q_36a124d=36a124d7dff98ecfaf956340767fe1768ad5b17f
+  SUBJECT=WP05 OpenCode reviewer Q3: final review facts, manifest, bounded acceptance decision (review-only)
+  PARENTS=21e53ad787c6c9b891aaab9c1996f4627659dcdf
+  TREE=f764722997130f06c8a62c45a4230805aa538ea5
+REF_Q3=36a124d7dff98ecfaf956340767fe1768ad5b17f
+ANCESTRY_BEGIN
+R12_ANCESTOR_Q0=0
+Q0_ANCESTOR_Q1=0
+Q1_ANCESTOR_Q2=0
+Q2_ANCESTOR_Q3=0
+R12_ANCESTOR_Q3=0
+BASE_ANCESTOR_Q3=0
+ANCESTRY_END
+Q0_PARENTS=38f6981b2a60daab2df37c92913a6760c1bef131
+Q1_PARENTS=1e64875ce30f10c5c834188c330b6aae1fbac0ae
+Q2_PARENTS=bf453ea6efd827b7ce965f3f5bfddb4db11af0d4
+Q3_PARENTS=21e53ad787c6c9b891aaab9c1996f4627659dcdf
+R12_Q3_DIFF_STAT_BEGIN
+ ...independent-harness-qualification-2026-10-19.md | 324 +++++++++++++++++++++
+ .../SHA256SUMS                                     |  17 ++
+ .../q0-environment.txt                             |  28 ++
+ .../q0-launcher-audit.txt                          |  61 ++++
+ .../q0-preflight-reviewer.log                      |  89 ++++++
+ .../q0-preflight-reviewer.report                   |  84 ++++++
+ .../q0-source-identity.txt                         |  32 ++
+ .../q1-reviewer-probe-identity.txt                 |  31 ++
+ .../q1-reviewer-probe-run.log                      |  40 +++
+ .../q2-crlf-cause-reconstruction.txt               |   6 +
+ .../q2-crlf-exhaustive.txt                         |   6 +
+ .../q2-evidence-integrity-reconciliation.txt       |  89 ++++++
+ .../q2-full-run-1.log                              | 124 ++++++++
+ .../q2-full-run-2.log                              | 124 ++++++++
+ .../q2-full-run-summary.txt                        |  35 +++
+ .../q2-residue-audit.txt                           |  14 +
+ .../q2-root-only-gate-probe.txt                    |  18 ++
+ .../q3-production-diff.txt                         |  22 ++
+ .../q3-release-path-focused.log                    |  15 +
+ .../Recovery/Wp05OpencodeReviewerProbeTests.cs     | 303 +++++++++++++++++++
+ 20 files changed, 1462 insertions(+)
+R12_Q3_DIFF_STAT_END
+R12_Q3_NAMES_BEGIN
+A	docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-2026-10-19.md
+A	docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/SHA256SUMS
+A	docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q0-environment.txt
+A	docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q0-launcher-audit.txt
+A	docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q0-preflight-reviewer.log
+A	docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q0-preflight-reviewer.report
+A	docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q0-source-identity.txt
+A	docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q1-reviewer-probe-identity.txt
+A	docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q1-reviewer-probe-run.log
+A	docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-crlf-cause-reconstruction.txt
+A	docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-crlf-exhaustive.txt
+A	docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-evidence-integrity-reconciliation.txt
+A	docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-full-run-1.log
+A	docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-full-run-2.log
+A	docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-full-run-summary.txt
+A	docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-residue-audit.txt
+A	docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-root-only-gate-probe.txt
+A	docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q3-production-diff.txt
+A	docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q3-release-path-focused.log
+A	tests/Gagamba.Execution.Linux.M1.Tests/Recovery/Wp05OpencodeReviewerProbeTests.cs
+R12_Q3_NAMES_END
+Q3_EVIDENCE_PATHS_BEGIN
+docs/evidence/linux-m1/wp04-fresh-qualification-2026-10-17.md
+docs/evidence/linux-m1/wp04-qualification-2026-10-17.md
+docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-2026-10-19.md
+docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/SHA256SUMS
+docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q0-environment.txt
+docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q0-launcher-audit.txt
+docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q0-preflight-reviewer.log
+docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q0-preflight-reviewer.report
+docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q0-source-identity.txt
+docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q1-reviewer-probe-identity.txt
+docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q1-reviewer-probe-run.log
+docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-crlf-cause-reconstruction.txt
+docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-crlf-exhaustive.txt
+docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-evidence-integrity-reconciliation.txt
+docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-full-run-1.log
+docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-full-run-2.log
+docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-full-run-summary.txt
+docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-residue-audit.txt
+docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-root-only-gate-probe.txt
+docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q3-production-diff.txt
+docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q3-release-path-focused.log
+docs/evidence/linux-m1/wp05-qualification-harness-remediation-2026-10-19.md
+docs/evidence/linux-m1/wp05-qualification-harness-remediation-artifacts/SHA256SUMS
+docs/evidence/linux-m1/wp05-qualification-harness-remediation-artifacts/artifacts.txt
+docs/evidence/linux-m1/wp05-qualification-harness-remediation-artifacts/environment.txt
+docs/evidence/linux-m1/wp05-qualification-harness-remediation-artifacts/fact1.log
+docs/evidence/linux-m1/wp05-qualification-harness-remediation-artifacts/fact2.log
+docs/evidence/linux-m1/wp05-qualification-harness-remediation-artifacts/fact3.log
+docs/evidence/linux-m1/wp05-qualification-harness-remediation-artifacts/focused.log
+docs/evidence/linux-m1/wp05-qualification-harness-remediation-artifacts/freeze.log
+docs/evidence/linux-m1/wp05-qualification-harness-remediation-artifacts/nonroot-rep-1.log
+docs/evidence/linux-m1/wp05-qualification-harness-remediation-artifacts/nonroot-rep-2.log
+docs/evidence/linux-m1/wp05-qualification-harness-remediation-artifacts/nonroot-rep-3.log
+docs/evidence/linux-m1/wp05-qualification-harness-remediation-artifacts/oracle.log
+docs/evidence/linux-m1/wp05-qualification-harness-remediation-artifacts/q1-run2.log
+docs/evidence/linux-m1/wp05-qualification-harness-remediation-artifacts/q1.log
+docs/evidence/linux-m1/wp05-qualification-harness-remediation-artifacts/qualified-profile-run2.log
+docs/evidence/linux-m1/wp05-qualification-harness-remediation-artifacts/qualified-profile.log
+docs/evidence/linux-m1/wp05-qualification-harness-remediation-artifacts/unsupported-full-parallel.log
+docs/evidence/linux-m1/wp05-qualification-harness-remediation-artifacts/windows-build.log
+docs/evidence/linux-m1/wp05-qualification-harness-remediation-artifacts/windows-m1.log
+docs/evidence/linux-m1/wp05-v3-qualification-evidence-completion-2026-10-17.md
+docs/reviews/gagamba-linux-m1-wp05-v3-schema-qualification-record.md
+Q3_EVIDENCE_PATHS_END
+Q3_PROBES_BEGIN
+tests/Fixtures/wp05-sigpipe-probe.c
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/Wp05AbortOracleFinalReviewerProbeTests.cs
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/Wp05ForgedAbortOracleHostileProbeTests.cs
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/Wp05OpencodeReviewerProbeTests.cs
+Q3_PROBES_END
+EVIDENCE_OBJECTS_BEGIN
+PRESENT docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-2026-10-19.md
+PRESENT docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/SHA256SUMS
+PRESENT docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts
+EVIDENCE_OBJECTS_END
+FSCK_BEGIN
+FSCK_EXIT=0
+FSCK_END

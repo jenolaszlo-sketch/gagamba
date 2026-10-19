@@ -1,0 +1,30 @@
+WP05 session lifecycle and cleanup disposition
+Date: 2026-10-19
+Source: current session verification plus Q2/Q3 reviewer cleanup records
+
+Current session
+  boot: 69d053fb-0fd9-4209-aa5b-be128424ed34
+  delegated parent: /sys/fs/cgroup/gaga-delegated (755 gaga:gaga)
+  host leaf: /sys/fs/cgroup/gaga-delegated/host (755 gaga:gaga)
+  controllers: memory pids; cgroup.kill present
+  host cgroup.procs: empty; host cgroup.events: populated 0, frozen 0
+  session anchor: PID 576, sleep infinity, owner gaga, cgroup 0::/init.scope
+  session anchor alive: yes
+  qualification child cgroups: none below the delegated parent
+  no testhost/coordinator/bubblewrap qualification process observed at the
+  post-review audit; no zombies reported by the reviewer residue audit
+
+Cleanup disposition
+  - Cleanup was NOT executed during preservation.
+  - Operator authorization to terminate/remove the retained session was not
+    established; the environment may be used by the next WP05 release
+    qualification.
+  - Cleanup remains the named responsibility of the operator. The documented
+    procedure is to remove the empty host/parent tree after the review session
+    and then stop the session anchor; do not blindly kill the recorded PID if
+    the boot or process identity has changed.
+  - A reboot removes the delegated tree and anchor; the Linux-native source
+    checkout survives and the operator must re-establish the session using the
+    documented preparation procedure.
+  - Cleanup completion is independent of the preservation validity; no cleanup
+    completion is claimed here.

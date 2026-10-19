@@ -1,0 +1,187 @@
+diff --git a/docs/handoff.md b/docs/handoff.md
+index 983918c..3c26077 100644
+--- a/docs/handoff.md
++++ b/docs/handoff.md
+@@ -1,5 +1,11 @@
+ # Gagamba handoff
+ 
++## Current action — WP05 HARNESS QUALIFIED (BOUNDED) BY INDEPENDENT OPENCODE REVIEW; RELEASE STILL NOT ACCEPTED
++
++Update 2026-10-19 (independent reviewer, OpenCode): The prepared independent reviewer (OpenCode, via its own WSL session as gaga on the prepared topology) completed the full Q0-Q3 harness qualification at exact R12 `38f6981...`. Every observation is first-hand from the reviewer session; the root-only operator launcher was audited (`setpriv` drop after self-placement, mode 700, root:root) and used exactly as documented. Q0: readiness 57/0 reproduced independently (boot `69d053fb...`, uid 1000, CapEff 0, cgroup `0::/gaga-delegated/host`), exact R12 tree verified directly from the Linux-native checkout; preserved hostile probe identity `d427c19f...` and readiness script blob `93c4dec4...` byte-exact. Q1: six new reviewer probes commit `bf453ea...` prove the test-only observation/oracle machinery fail-closed and identity-strict (pidfd scoping, WNOWAIT peek non-consumption + post-reap ECHILD fail-closed, zombie-observing late observer, stale/closed-pidfd fail-closed, unconditional bare-exit rejection, and a mutation matrix accepting only Exited/133 or SIGKILL/9); evidence-integrity histograms recomputed (R9 20/3 with byte-reproduced CRLF causes; remediation manifests 28/28 and 18/18); `eng/linux-m1/build-native.sh` staging reproduced all four producer native hashes byte-exact (fixture `ee25a876...`, exec-coordinator `5e55e92b...`, filter `2aa87901...`, wp05 qualification-coordinator `e20903cc...`). Q2 commit `21e53ad...`: supported profile `eng/linux-m1-qualified-tests.sh` twice, identical and exit 0 - 489 phase-1 passed/0 skipped (483 producer rows + 6 new reviewer probes), WP04 31/31, owner-death 7/7, observer 3/3, SIGPIPE 1/1, and the 35 phase-2 skips classified root-only (IntegratedBarrier 14, DomainAuthority 19, RecoveryHarness 2) with first-hand EPERM proof (`/sys/fs/cgroup` is `root:root 555`; delegated parent/host are `gaga:gaga 755`), matching the producer's R11 48-pass/35-skip distribution. Q3 commit `36a124d7dff98ecfaf956340767fe1768ad5b17f`: focused release-path 3/3 with the real wrapped coordinator (real bwrap, staged frozen artifacts), production-surface diffs baseline `58cb1ba...`->R12 and reviewer->R12 both EMPTY, frozen-artifact identities re-verified, SHA256SUMS published, and every evidence blob verified identical to the committed content. Final audits: no zombies/testhost/bwrap/coordinator residue, no child cgroups below the delegated parent, no build servers, session anchor and retention state exactly as prepared. Evidence: review branch `review/wp05-opencode-harness-final-qualification` evidence `docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-2026-10-19.md` plus `...-artifacts/` (all on review branch `review/wp05-opencode-harness-final-qualification`, tip `36a124d7dff98ecfaf956340767fe1768ad5b17f`; full hashes in `SHA256SUMS`). Disposition: **WP05 HARNESS QUALIFIED (BOUNDED)** - this qualifies the harness/lane infrastructure and the delegated non-root execution environment only. WP05 release remains **NOT ACCEPTED**: no WP10 target workload, no release/stop matrix, no fresh-process crash matrix, no no-resend recovery, no trusted-status lane; the Windows lane was not rerun; the 35 root-only auxiliary lanes are pending a future root-session qualification; P3c `0f29bb54921d11306f14fad1288851efd349c26a` was absent from the reviewer bundle/worktree (bundle tip P3b) and was used by no qualification fact; canonical Gagamba contains the P3c docs-only attestation outside the load-bearing review. Next unchanged: WP05 release/stop matrix, crash, no-resend recovery, trusted status, then full WP05 acceptance; WP08/WP10 owner integration deferred; wrong-architecture seccomp issue separate.
++
++Preservation audit (2026-10-19, canonical): Q0 `1e64875ce30f10c5c834188c330b6aae1fbac0ae`, Q1 `bf453ea6efd827b7ce965f3f5bfddb4db11af0d4`, Q2 `21e53ad787c6c9b891aaab9c1996f4627659dcdf`, Q3 `36a124d7dff98ecfaf956340767fe1768ad5b17f` are imported on `review/wp05-opencode-harness-final-qualification` at exact Q3. Independent canonical audit: historical R9 manifest 20/23 match with the three exact CR causes reproduced, R11 remediation 28/28, harness remediation 18/18, Q3 review 17/17; both Q2 logs show 537 passed / 35 skipped and zero failed; Q3 release-path 3/3; production-surface diff is empty. Recorded limitation: only the fifth Q1 focused-run log is committed; the six probes also ran in both Q2 full-profile runs, but the other four focused-run logs are not independently auditable. P3c `0f29bb54921d11306f14fad1288851efd349c26a` exists canonically but was absent from the reviewer bundle/worktree and was unused; it is an infrastructure-provenance limitation outside the load-bearing review. See [preservation checkpoint](reviews/gagamba-linux-m1-wp05-harness-qualification-preservation-checkpoint.md).
++
+ ## Current action — WP05 RELEASE PROTOCOL IMPLEMENTED; INDEPENDENT QUALIFICATION REQUIRED
+ 
+ Update 2026-10-18: The bounded WP05 release protocol/arbitration tranche is implemented at `4bd2f3a051c2727eb5d221b29a5c24ef2c4def73` (managed arbitration/release/status) and `08cda01bff6b2c455fa9e6b4fc46d2db8527ff49` (no-target native RELEASE coordinator/tests). Evidence: [WP05 release protocol implementation](evidence/linux-m1/wp05-release-protocol-implementation-2026-10-18.md). It adds `ReleaseArbiter`/`ReleaseDecision`, durable intent before the gate, single-use capability consumption, one nonblocking 128-byte RELEASE write, exact frame/golden vector (128 bytes / `90A07CDEF85B18B5B2A0360D7D01705CF7B9E4E9B2D52E7C56DA76A16201E59B`), coordinator one-shot reader and pre-exec stop, no-target qualification coordinator, status reader/order validation, bounded observation buffering, stop/release winner tests and deterministic crash-window barriers. Windows full M1: 366 passed, 160 skipped, 0 failed; non-root Linux full assembly: 453 passed, 73 skipped, 0 failed; v3/protocol focused 95/95; native release protocol 4/4; canonical manifest and seccomp hashes unchanged. The production integrated path still cannot release; no target was executed. WP04 native HELD/abort with the new coordinator was not rerun because the post-reboot WSL delegated cgroup was unavailable (atomic spawn EACCES before HELD) — environment prerequisite gap, not a product counterexample. Status: **WP05 RELEASE PROTOCOL IMPLEMENTED - INDEPENDENT QUALIFICATION REQUIRED**. WP05 remains unqualified; WP10 and the deferred seccomp-generator decision remain deferred.
+diff --git a/docs/reviews/gagamba-linux-m1-wp05-harness-qualification-preservation-checkpoint.md b/docs/reviews/gagamba-linux-m1-wp05-harness-qualification-preservation-checkpoint.md
+new file mode 100644
+index 0000000..4c66d91
+--- /dev/null
++++ b/docs/reviews/gagamba-linux-m1-wp05-harness-qualification-preservation-checkpoint.md
+@@ -0,0 +1,145 @@
++# Gagamba Linux M1 â€” WP05 Harness Qualification Preservation Checkpoint
++
++Date: 2026-10-19
++Status: canonical preservation record; not a replacement for the independent review
++
++## A. Implementation binding
++
++- Production baseline: `58cb1ba31c102e0e9d5488721e8c438adb55c614`
++- R11 code/test: `c48e358451c8b0dbe7aace281f64a2eced399ed7`
++- R12 implementation/evidence: `38f6981b2a60daab2df37c92913a6760c1bef131`
++- R12 tree: `6854675d6b37a49d5302d6104103bdbfbc268040`
++- Production surface diff baseline -> R12 and R12 -> Q3: empty.
++
++## B. Independent review
++
++Canonical review reference: `review/wp05-opencode-harness-final-qualification`
++
++| Checkpoint | Full SHA | Parent |
++| --- | --- | --- |
++| Q0 | `1e64875ce30f10c5c834188c330b6aae1fbac0ae` | R12 |
++| Q1 | `bf453ea6efd827b7ce965f3f5bfddb4db11af0d4` | Q0 |
++| Q2 | `21e53ad787c6c9b891aaab9c1996f4627659dcdf` | Q1 |
++| Q3 | `36a124d7dff98ecfaf956340767fe1768ad5b17f` | Q2 |
++
++The canonical reference resolves to Q3. Each checkpoint parent is the preceding
++checkpoint; R12 and the production baseline are ancestors of Q3; no intervening
++implementation commit or rewritten ancestry exists. `git fsck --no-dangling`
++completed with no errors. The reviewer branch remains unmerged; its test file
++remains reviewer-only.
++
++Final disposition preserved without expansion:
++
++**`WP05 HARNESS QUALIFIED (bounded)`**
++
++## C. Evidence verification
++
++Independent canonical audit of committed Git blobs:
++
++- Historical R9 manifest: 20 matching / 3 mismatching entries; the exact causes
++  reproduce as one CR before the final LF in `observer-observation.txt` and
++  `source-head.txt`, and all-lines CRLF in `sigpipe-observation.txt`.
++- R11 remediation manifest: 28/28.
++- Qualification-harness remediation manifest: 18/18.
++- Q3 review manifest: 17/17; it covers every review artifact except itself.
++- Q1 probe source SHA-256: `df21e395...`, matching the reviewer identity record.
++- Q2 run 1 and run 2 are distinct logs, each with eight phases, zero failures,
++  537 passed / 35 skipped (489 phase-1 passed/0 skipped; phase-2 48 passed/35
++  skipped). Skip classes: IntegratedBarrier 14, DomainAuthority 19,
++  RecoveryHarness 2, supported by the first-hand root-only EPERM probe.
++- Q3 release-path focused: 3/3, Test Run Successful.
++- Q0 readiness: 57/0, READINESS=PASS.
++- Frozen identities: seccomp 672 B / `2aa87901...`; Bubblewrap `523da3e7...`;
++  G2 manifest 873 B / `82161029848b1a821241af112ca806be8029d3cf2e7b95c6b23ce3e35850d5f3`; RELEASE 128 B / `90A07CDEF85B18B5B2A0360D7D01705CF7B9E4E9B2D52E7C56DA76A16201E59B`;
++  OwnershipSnapshot v3. No real target was executed.
++
++Recorded evidence limitations (not counterexamples):
++
++1. **Q1 repetition logs:** only the fifth focused-run log is committed. The six
++   probes also ran in both Q2 full-profile runs (489 includes the six reviewer
++   probes), but the other four focused-run logs are not independently auditable.
++   The committed probe behavior and the bounded acceptance do not depend on the
++   unlogged repetitions.
++2. **Q1 residue header:** the Q1 log's host-leaf `cgroup.procs` values are
++   consistent with the audit shell PIDs (the Q2 residue artifact explicitly
++   labels that context). No probe child, coordinator/bwrap/testhost, zombie or
++   child cgroup residue was observed.
++3. **P3c:** `0f29bb54921d11306f14fad1288851efd349c26a` exists canonically as the
++   post-P3b docs-only attestation, but was absent from the reviewer bundle/worktree
++   (bundle tip P3b) and was used by no qualification fact. The reviewer's Q0
++   record is correct for its accessible sources. This is an infrastructure
++   provenance limitation outside the load-bearing review and is not a harness
++   counterexample.
++
++The exact CRLF explanation is confirmed independently; the Q1 probe source,
++Q2 accounting, Q3 manifest and production-surface assertions are supported by
++committed evidence. `WP05 INDEPENDENT HARNESS EVIDENCE VERIFIED AND PRESERVED`
++is recorded with the Q1 log-coverage limitation above.
++
++## D. Accepted boundary
++
++Qualified: the WP05 qualification harness and lane infrastructure, including the
++test oracle, expected wrapper identity provenance, native pidfd observations,
++exit-code versus signal distinction, `WNOWAIT` non-consumption, fail-closed
++observer behavior, forged-release negative controls, process-global test
++isolation, WP04 supporting regressions, SIGPIPE qualification-host behavior, and
++supported-profile accounting, on the recorded non-root delegated Linux profile.
++
++Explicitly not qualified:
++
++- Full WP05 release implementation acceptance.
++- Release/stop race qualification.
++- Durable release intent and no-resend crash recovery.
++- Fresh-process crash checkpoint matrix.
++- Trusted native coordinator status qualification.
++- Actual WP10 target workload execution.
++- The remaining 35 root-only auxiliary rows.
++- Cross-host, cross-kernel or multi-distribution portability.
++- The Windows lane (not rerun; R11 Windows results remain historical producer
++  evidence).
++- Any meaning of P3c beyond the infrastructure-provenance limitation above.
++
++**WP05 release remains NOT ACCEPTED.**
++
++## E. Repository preservation
++
++- Review reference imported into canonical Gagamba at exact Q3; no force-update,
++  merge, rebase or cherry-pick.
++- R12 implementation and all prior review references unchanged.
++- Canonical work-queue and handoff pending edits preserved and committed in this
++  preservation branch; the review evidence is referenced through the review
++  branch rather than a broken relative link.
++- Preservation artifacts and this checkpoint are committed together. The
++  original reviewer evidence and manifests were not modified.
++- Unrelated untracked experiments and historical test-results directories remain
++  untouched. No production source or reviewer probe was changed.
++
++## F. Environment lifecycle
++
++- Reviewer evidence reports boot `69d053fb-0fd9-4209-aa5b-be128424ed34`, gaga
++  uid 1000, CapEff 0, `/sys/fs/cgroup/gaga-delegated/host` placement.
++- Current session remains available: session anchor PID 576 (`sleep infinity`,
++  `/init.scope`) is alive; host cgroup is empty; parent/host are `gaga:gaga 755`;
++  the delegated controllers are `memory pids`.
++- No cleanup was executed. Operator authorization for termination/removal was
++  not established, and the environment may be needed for the next WP05 release
++  qualification. Cleanup responsibility remains with the operator; the
++  documented cleanup must stop the anchor and remove the empty host/parent only
++  after the review session ends. Cleanup completion is independent of the
++  preservation validity.
++
++## G. Next milestone
++
++Independent WP05 release/stop arbitration, durable ReleaseIntent/no-resend
++recovery, fresh-process crash qualification, and trusted native status-channel
++qualification using the already qualified harness. WP08 owner orchestration and
++WP10 owner wiring/target execution remain deferred; the 35 root-only auxiliary
++rows and cross-host portability remain pending. No future task is marked complete
++by this checkpoint.
++
++
++## Final preservation status
++
++**WP05 INDEPENDENT HARNESS QUALIFICATION PRESERVED - BOUNDED ACCEPTANCE FROZEN**
++
++**WP05 RELEASE NOT ACCEPTED.**
+diff --git a/docs/work-queue.md b/docs/work-queue.md
+index 0e5a752..56f8ff9 100644
+--- a/docs/work-queue.md
++++ b/docs/work-queue.md
+@@ -2,6 +2,15 @@
+ 
+ Updated 2026-10-17. Status definitions: Complete = stated artifact exists; Ready = dependencies sufficient to start; Held = named prerequisite missing; Pending = later delivery. Slice-specific historical entries retain their original tested SHAs; the later AR-6 SHA has separate three-host native and package evidence. Complete lifecycle qualification does not imply restricted-execution security qualification.
+ 
++## Current priority: WP05 HARNESS QUALIFIED (BOUNDED) - INDEPENDENT OPENCODE REVIEW COMPLETE; RELEASE STILL NOT ACCEPTED
++
++Update 2026-10-19 (independent reviewer, OpenCode): The prepared OpenCode session (P1-P3b) was used end-to-end and the WP05 Linux M1 **test harness** at exact R12 `38f6981...` / tree `6854675d...` is **QUALIFIED (bounded)** on the Linux-native non-root delegated topology. Review branch `review/wp05-opencode-harness-final-qualification` (reviewer-only commits on a worktree from exact R12): Q0 `1e64875...` (readiness 57/0 first-hand via the audited root-only launcher, uid 1000, CapEff 0, host-leaf placement, byte-exact readiness blob `93c4dec4...`, hostile probe blob `d427c19f...`), Q1 `bf453ea...` (six new reviewer probes: pidfd scoping, WNOWAIT peek non-consumption, post-reap ECHILD fail-closed, late-observer zombie observation, stale-fd fail-closed, bare-exit-code unconditional rejection, and oracle mutation matrix 6/6 x 5 runs; evidence-integrity manifests recomputed: R9 23-entry 20/3 with CRLF causes byte-reproduced, remediation 28/28, harness-remediation 18/18; `build-native.sh` artifact staging reproduces all four producer hashes byte-exact), Q2 `21e53ad...` (supported profile twice with identical results: 489 phase-1 passed/0 skipped, WP04 31/31, owner-death 7/7, observer 3/3, SIGPIPE 1/1; 35 skips = 14 IntegratedBarrier + 19 DomainAuthority + 2 RecoveryHarness root-only environmental gates with first-hand EPERM proof at `root:root 555` vs delegated `gaga:gaga 755`, matching producer R11's 48/35), Q3 `36a124d7dff98ecfaf956340767fe1768ad5b17f` (focused release-path 3/3 with real wrapped coordinator; production surface diffs baseline->R12 and reviewer->R12 both EMPTY; SHA256SUMS; all committed blob hashes == worktree). Evidence: reviewer artifacts under `docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/` and review branch `review/wp05-opencode-harness-final-qualification` evidence `docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-2026-10-19.md` (both baked into the review branch). Disposition: `WP05 HARNESS QUALIFIED (BOUNDED)` - harness/lane infrastructure only, **WP05 release remains NOT ACCEPTED** (no WP10 workload, no release/stop matrix, no crash/no-resend, no trusted-status lane; Windows lane not rerun; 35 root-only auxiliary lanes pending any future root-session qualification; P3c `0f29bb54921d11306f14fad1288851efd349c26a` was absent from the reviewer bundle/worktree and unused; canonical Gagamba contains the docs-only attestation outside the load-bearing review). Page-owner follow-ups unchanged: WP05 release/stop matrix, fresh-process crash matrix, no-resend recovery, trusted status, full WP05 acceptance, WP08/WP10 owner integration; wrong-architecture seccomp issue separate.
++
++Preservation audit (2026-10-19, canonical): Q0 `1e64875ce30f10c5c834188c330b6aae1fbac0ae`, Q1 `bf453ea6efd827b7ce965f3f5bfddb4db11af0d4`, Q2 `21e53ad787c6c9b891aaab9c1996f4627659dcdf`, Q3 `36a124d7dff98ecfaf956340767fe1768ad5b17f` are imported on `review/wp05-opencode-harness-final-qualification` at exact Q3. Independent canonical audit: historical R9 manifest 20/23 match with the three exact CR causes reproduced, R11 remediation 28/28, harness remediation 18/18, Q3 review 17/17; both Q2 logs show 537 passed / 35 skipped and zero failed; Q3 release-path 3/3; production-surface diff is empty. Recorded limitation: only the fifth Q1 focused-run log is committed; the six probes also ran in both Q2 full-profile runs, but the other four focused-run logs are not independently auditable. P3c `0f29bb54921d11306f14fad1288851efd349c26a` exists canonically but was absent from the reviewer bundle/worktree and was unused; it is an infrastructure-provenance limitation outside the load-bearing review. See [preservation checkpoint](reviews/gagamba-linux-m1-wp05-harness-qualification-preservation-checkpoint.md).
++
++Status split after preservation: Completed - Q0-Q3 review history imported at exact Q3; WP05 harness/lane infrastructure independently qualified (bounded) on the supported non-root delegated Linux profile; readiness, hostile-probe, observer/isolation, WP04 supporting and SIGPIPE evidence preserved; manifests independently verified. Pending - WP05 release/stop arbitration; durable ReleaseIntent/no-resend recovery; fresh-process crash qualification; trusted native status-channel qualification; full WP05 release acceptance; WP08 owner orchestration; WP10 owner wiring and target execution; remaining 35 root-only auxiliary rows; Windows/cross-host/cross-kernel portability; conformance-foundation independent requalification; deferred wrong-architecture seccomp maintenance. No pending item is marked complete.
++
++
+ ## Current priority: WP05 RELEASE PROTOCOL IMPLEMENTED - INDEPENDENT QUALIFICATION REQUIRED; WP10 deferred
+ 
+ Update 2026-10-18: The bounded release protocol/arbitration tranche is implemented at `4bd2f3a` (managed arbitration/release/status) and `08cda01` (no-target native RELEASE coordinator/tests). Evidence: [WP05 release protocol implementation](evidence/linux-m1/wp05-release-protocol-implementation-2026-10-18.md). Windows full M1: 366 passed, 160 skipped, 0 failed; non-root Linux full assembly: 453 passed, 73 skipped, 0 failed; native release protocol 4/4; canonical manifest and seccomp hashes unchanged. The production integrated path still cannot release; no target was executed. WP04 native HELD/abort with the new coordinator remains environment-pending (delegated cgroup unavailable after WSL reboot). Status: **WP05 RELEASE PROTOCOL IMPLEMENTED - INDEPENDENT QUALIFICATION REQUIRED**. WP05, WP10 and the deferred seccomp-generator decision remain deferred.

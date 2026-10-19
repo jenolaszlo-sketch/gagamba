@@ -1,0 +1,41 @@
+Q3=36a124d7dff98ecfaf956340767fe1768ad5b17f
+R12=38f6981b2a60daab2df37c92913a6760c1bef131
+BASE=58cb1ba31c102e0e9d5488721e8c438adb55c614
+R12_TREE=6854675d6b37a49d5302d6104103bdbfbc268040
+ANCESTRY
+  R12_ANCESTOR exit=0
+  Q0_ANCESTOR exit=0
+  Q1_ANCESTOR exit=0
+  Q2_ANCESTOR exit=0
+  BASE_ANCESTOR exit=0
+MANIFEST_AUDIT
+MANIFEST R9-historical-23: entries=23 match=20 mismatch=3
+  MISMATCH docs/evidence/linux-m1/wp05-abort-oracle-provenance-remediation-artifacts/observer-observation.txt expected=904b3077edaafd9a9aeecaa499c1cf1d351d2a8b748c00022854866f304db26a actual=8880dc44de2d18c2c309a93651b8de3d06b67586c59a3857a0c5efbda0cb145d
+  MISMATCH docs/evidence/linux-m1/wp05-abort-oracle-provenance-remediation-artifacts/sigpipe-observation.txt expected=6b58a73aa968a91c0c546aac858e3e52541c12487ab1efaa0114cb44ac2814e8 actual=9113ce3ff5ebf208013421b67b1ce072973a2ea3abc7a0f8477afd99c5cf45d4
+  MISMATCH docs/evidence/linux-m1/wp05-abort-oracle-provenance-remediation-artifacts/source-head.txt expected=1de880bab5b6760af8214607025f8b7415a1cbf58df3061ed5d29e2ed1d44696 actual=29f98abfefb0dc200adab86ef2dd64cc262d95da9f11a6aa474ad9a5fa4917f2
+MANIFEST R11-remediation-28: entries=28 match=28 mismatch=0
+MANIFEST harness-remediation-18: entries=18 match=18 mismatch=0
+MANIFEST Q3-review-17: entries=17 match=17 mismatch=0
+Q2_ACCOUNTING
+  run1: phases=8 failed=0 passed=537 skipped=35 rows=[(0, 489, 0), (0, 31, 0), (0, 7, 0), (0, 1, 14), (0, 2, 19), (0, 3, 2), (0, 3, 0), (0, 1, 0)]
+  run1_blob=c76aa49e70d56f653d2f21d2cf7bebfe4c70815e
+  run2: phases=8 failed=0 passed=537 skipped=35 rows=[(0, 489, 0), (0, 31, 0), (0, 7, 0), (0, 1, 14), (0, 2, 19), (0, 3, 2), (0, 3, 0), (0, 1, 0)]
+  run2_blob=81795d8551e386253017ea1ba931ab1f43d3abb8
+FOCUSED
+  q1_probe_fifth: total/passed=[('6', '6')] successful=True
+  q3_release: total/passed=[('3', '3')] successful=True
+Q0
+  REVIEWER_ACCESS=UNVERIFIED | READINESS=PASS | SUMMARY pass=57 fail=0 | INDEPENDENT_REVIEWER_ACCESS=UNVERIFIED | INDEPENDENT_ACCEPTANCE=NOT_CLAIMED
+PROBE_IDENTITY
+  probe_sha256=df21e395cfd6f0536bc8abd520dc66826c07ab602e136931a95f2e3fadfb73ae recorded=df21e395cfd6f0536bc8abd520dc66826c07ab602e136931a95f2e3fadfb73ae match=True
+CRLF_EXACT
+  observer: single_CR=904b3077edaafd9a9aeecaa499c1cf1d351d2a8b748c00022854866f304db26a match=True all_CRLF=89df6646abdb5c04ac87abc1da8cfda6275a8054bb48cb812c530779d28e2a1f match=False
+  sigpipe: single_CR=6363b84e714c2429592db784167990aef8311588607ccada06d5433346eb548b match=False all_CRLF=6b58a73aa968a91c0c546aac858e3e52541c12487ab1efaa0114cb44ac2814e8 match=True
+  source_head: single_CR=1de880bab5b6760af8214607025f8b7415a1cbf58df3061ed5d29e2ed1d44696 match=True all_CRLF=8640526a0d93ea327e974e5dfcd5af730390c0227a15f41d263bce2171a417e7 match=False
+PRODUCTION
+  R12_to_Q3_empty=0
+  baseline_to_R12_empty=0
+Q1_LOG
+  -- host leaf cgroup.procs:
+  4127
+  4261

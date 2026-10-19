@@ -1,0 +1,33 @@
+CANONICAL_IMPORT_VERIFICATION
+ROOT=/mnt/c/Users/Laszlos/source/repos/Gagamba
+CURRENT_BRANCH=preservation/wp05-harness-independent-acceptance
+CURRENT_HEAD=0f29bb54921d11306f14fad1288851efd349c26a
+REVIEW_REF=36a124d7dff98ecfaf956340767fe1768ad5b17f
+PRESERVATION_REF=0f29bb54921d11306f14fad1288851efd349c26a
+Q0=1e64875ce30f10c5c834188c330b6aae1fbac0ae
+Q1=bf453ea6efd827b7ce965f3f5bfddb4db11af0d4
+Q2=21e53ad787c6c9b891aaab9c1996f4627659dcdf
+Q3=36a124d7dff98ecfaf956340767fe1768ad5b17f
+R12=38f6981b2a60daab2df37c92913a6760c1bef131
+R12_TREE=6854675d6b37a49d5302d6104103bdbfbc268040
+BASE=58cb1ba31c102e0e9d5488721e8c438adb55c614
+Q0_PARENT=38f6981b2a60daab2df37c92913a6760c1bef131
+Q1_PARENT=1e64875ce30f10c5c834188c330b6aae1fbac0ae
+Q2_PARENT=bf453ea6efd827b7ce965f3f5bfddb4db11af0d4
+Q3_PARENT=21e53ad787c6c9b891aaab9c1996f4627659dcdf
+R12_ANCESTOR_Q0=0
+Q0_ANCESTOR_Q1=0
+Q1_ANCESTOR_Q2=0
+Q2_ANCESTOR_Q3=0
+BASE_ANCESTOR_Q3=0
+FSCK_NO_DANGLING_EXIT=0
+R12_Q3_PRODUCTION_EMPTY=0
+BASE_R12_PRODUCTION_EMPTY=0
+Q3_REVIEW_DOC_EXIT=0
+Q3_MANIFEST_EXIT=0
+Q3_PROBE_EXIT=0
+REVIEW_REF_LOG
+36a124d (review/wp05-opencode-harness-final-qualification) WP05 OpenCode reviewer Q3: final review facts, manifest, bounded acceptance decision (review-only)
+21e53ad WP05 OpenCode reviewer Q2: 2x full supported-profile runs + skip classification (review-only)
+bf453ea WP05 OpenCode reviewer Q1: hostile harness probes + evidence integrity reconciliation (review-only)
+1e64875 docs(wp05): Q0 record independent Linux readiness for R12 harness qualification

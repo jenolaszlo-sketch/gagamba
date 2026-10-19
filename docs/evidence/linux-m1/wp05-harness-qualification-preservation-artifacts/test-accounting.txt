@@ -1,0 +1,41 @@
+WP05 qualified-harness test accounting (preservation audit)
+Date: 2026-10-19
+Source: committed review branch `review/wp05-opencode-harness-final-qualification`, Q3 `36a124d7dff98ecfaf956340767fe1768ad5b17f`
+
+Q0 readiness
+  57 passed / 0 failed; READINESS=PASS; exit status reported by the review runner.
+  Boot 69d053fb-0fd9-4209-aa5b-be128424ed34; uid 1000; CapEff 0;
+  cgroup 0::/gaga-delegated/host.
+
+Q1 reviewer probes
+  Committed fifth focused-run log: 6/6 passed, Test Run Successful.
+  Probe source SHA-256 df21e395... matches the committed test blob.
+  Both Q2 full-profile runs include the six untagged reviewer probes:
+  489 phase-1 rows = 483 producer rows + 6 reviewer probes.
+  Limitation: the other four reported focused-run logs are not committed; the
+  five-repetition count is not independently auditable. The probe behavior is
+  independently evidenced by the fifth run and both full runs.
+
+Q2 supported profile
+  Two distinct committed logs, identical accounting, zero failed:
+    phase 1 regular parallel: 489 passed / 0 skipped
+    WP04 NonRoot:            31 passed
+    OwnerDeath:               7 passed
+    IntegratedBarrier:        1 passed / 14 skipped
+    DomainAuthority:          2 passed / 19 skipped
+    RecoveryHarness:          3 passed / 2 skipped
+    Observer:                 3 passed
+    SIGPIPE:                  1 passed
+    Total:                  537 passed / 35 skipped
+  The 35 skips are IntegratedBarrier 14 + DomainAuthority 19 +
+  RecoveryHarness 2, classified as root-only child-cgroup creation gates with
+  the first-hand root:root 555 vs delegated gaga:gaga 755 EPERM probe.
+  The focused WP04/owner-death/observer/SIGPIPE rows are phase-2 lanes already
+  included above; they are not added again to the 537 total.
+
+Q3 focused release path
+  3 passed / 0 failed, Test Run Successful; real wrapped coordinator,
+  Bubblewrap and staged frozen artifacts.
+
+No full WP05 release acceptance, real WP10 target workload, release/stop,
+crash/no-resend or trusted-status qualification is included.
