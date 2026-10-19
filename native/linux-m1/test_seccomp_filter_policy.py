@@ -1,5 +1,6 @@
 """Focused semantic regression tests for the pinned WP04 seccomp policy."""
 
+import hashlib
 from pathlib import Path
 import unittest
 
@@ -37,6 +38,10 @@ from seccomp_filter_policy import (
 
 ROOT = Path(__file__).resolve().parent
 FILTER_HEX = ROOT / "seccomp-filter.hex"
+REPOSITORY = ROOT.parent.parent
+FILTER_BIN = REPOSITORY / "artifacts/linux-m1/wp04/seccomp-filter.bin"
+ADAPTER_SOURCE = REPOSITORY / "src/Gagamba.Execution.Linux.M1/Launch/BubblewrapAdapter.cs"
+BUILD_SCRIPT = REPOSITORY / "eng/linux-m1/build-native.sh"
 
 
 def evaluate(program: bytes, number: int, arch: int = AUDIT_ARCH_X86_64, args: tuple[int, ...] = ()) -> int:
@@ -78,7 +83,12 @@ def evaluate(program: bytes, number: int, arch: int = AUDIT_ARCH_X86_64, args: t
 
 
 def baseline_disposition(number: int, arch: int, args0: int = 0) -> int:
-    """Model the checked-in 424-byte policy before the R2 rule was added."""
+    """Model the checked-in 424-byte policy before the R2 rule was added.
+
+    This historical model retains the clone-tail fallthrough defect: for
+    non-clone syscalls it tests the syscall number against the namespace mask.
+    The regression tests use it to prove the original defect is detected.
+    """
     if arch != AUDIT_ARCH_X86_64:
         return SECCOMP_RET_KILL_THREAD
     if number >= X32_SYSCALL_BIT:
@@ -179,30 +189,44 @@ class SeccompFilterPolicyTests(unittest.TestCase):
             with self.subTest(denied_syscall=name, number=number):
                 self.assertEqual(evaluate(self.program, number), SECCOMP_RET_ERRNO | EPERM)
         self.assertEqual(evaluate(self.program, SYS_CLONE3), SECCOMP_RET_ERRNO | ENOSYS)
-        self.assertEqual(evaluate(self.program, 218), SECCOMP_RET_ERRNO | EPERM)  # set_tid_address legacy disposition
-        self.assertEqual(evaluate(self.program, 231), SECCOMP_RET_ERRNO | EPERM)  # exit_group legacy disposition
 
-    def test_only_constrained_startup_operations_change_the_old_filter_disposition(self) -> None:
-        argument_values = (0, 1, CLOSE_RANGE_FIRST, 0x80, 0x100, 0x400, 0x20000, CLONE_NAMESPACE_MASK, 0x1001, ARCH_SET_FS, 0x1003, 0xDEAD, 0xFFFFFFFF)
-        syscall_numbers = list(range(1024)) + [X32_SYSCALL_BIT - 1, X32_SYSCALL_BIT, 0x7FFFFFFF, 0x80000000]
-        self.assertEqual(baseline_disposition(SYS_CLOSE_RANGE, AUDIT_ARCH_X86_64, CLOSE_RANGE_FIRST), SECCOMP_RET_ERRNO | EPERM)
-        self.assertEqual(
-            evaluate(self.program, SYS_CLOSE_RANGE, args=(CLOSE_RANGE_FIRST, CLOSE_RANGE_LAST, CLOSE_RANGE_FLAGS)),
-            SECCOMP_RET_ALLOW,
-        )
-
+    def test_ordinary_syscalls_take_the_default_allow_path(self) -> None:
+        constrained = {SYS_ARCH_PRCTL, SYS_PRCTL, SYS_CLOSE_RANGE, SYS_CLONE, SYS_CLONE3}
+        denied = {item[1] for item in EXPLICIT_DENIALS}
+        syscall_numbers = list(range(2048)) + [X32_SYSCALL_BIT - 1]
         for number in syscall_numbers:
-            for args0 in argument_values:
-                with self.subTest(number=number, args0=hex(args0)):
-                    old = baseline_disposition(number, AUDIT_ARCH_X86_64, args0)
-                    actual = evaluate(self.program, number, args=(args0, 0))
-                    if (number == SYS_ARCH_PRCTL and args0 == ARCH_SET_FS) or (
-                        number == SYS_PRCTL and args0 in (PR_SET_DUMPABLE, PR_GET_DUMPABLE)
-                    ):
-                        self.assertEqual(old, SECCOMP_RET_ERRNO | EPERM)
-                        self.assertEqual(actual, SECCOMP_RET_ALLOW)
-                    else:
-                        self.assertEqual(actual, old)
+            if number in constrained or number in denied:
+                continue
+            with self.subTest(number=number):
+                self.assertEqual(evaluate(self.program, number), SECCOMP_RET_ALLOW)
+
+    def test_clone_tail_jump_does_not_interpret_syscall_numbers_as_clone_flags(self) -> None:
+        constrained = {SYS_ARCH_PRCTL, SYS_PRCTL, SYS_CLOSE_RANGE, SYS_CLONE, SYS_CLONE3}
+        denied = {item[1] for item in EXPLICIT_DENIALS}
+        affected = [
+            number
+            for number in range(1024)
+            if number & CLONE_NAMESPACE_MASK and number not in constrained and number not in denied
+        ]
+        for number in (186, 202, 218, 231, 234):
+            self.assertIn(number, affected)
+        for number in affected:
+            with self.subTest(number=number):
+                self.assertEqual(
+                    baseline_disposition(number, AUDIT_ARCH_X86_64),
+                    SECCOMP_RET_ERRNO | EPERM,
+                )
+                self.assertEqual(evaluate(self.program, number), SECCOMP_RET_ALLOW)
+
+    def test_generated_filter_matches_artifacts_and_production_pins(self) -> None:
+        data = build_filter()
+        digest = hashlib.sha256(data).hexdigest()
+        self.assertEqual(FILTER_HEX.read_text(encoding="ascii"), format_hex(data))
+        self.assertIn(f'FilterSha256 = "{digest}"', ADAPTER_SOURCE.read_text(encoding="utf-8"))
+        self.assertIn(digest, BUILD_SCRIPT.read_text(encoding="utf-8"))
+        if not FILTER_BIN.exists():
+            self.skipTest("artifacts/linux-m1/wp04/seccomp-filter.bin not built; run eng/linux-m1/build-native.sh")
+        self.assertEqual(FILTER_BIN.read_bytes(), data)
 
     def test_wrong_architecture_and_x32_remain_rejected(self) -> None:
         self.assertEqual(evaluate(self.program, 0, arch=0xC00000B7), SECCOMP_RET_KILL_THREAD)
