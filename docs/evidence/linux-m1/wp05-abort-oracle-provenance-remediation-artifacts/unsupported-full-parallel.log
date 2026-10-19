@@ -1,0 +1,98 @@
+Test run for /home/gaga/wp05-oracle-final/tests/Gagamba.Execution.Linux.M1.Tests/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.90]     Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-domain-retained", expectedStage: "AllocationIntent", expectedDomains: 1, expectedStagingDirectories: 0) [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-domain-retained", expectedStage: "AllocationIntent", expectedDomains: 1, expectedStagingDirectories: 0) [1 ms]
+[xUnit.net 00:00:00.93]     Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-staging-accounted", expectedStage: "AllocationRegistered", expectedDomains: 1, expectedStagingDirectories: 1) [SKIP]
+[xUnit.net 00:00:00.94]     Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-intent", expectedStage: "AllocationIntent", expectedDomains: 0, expectedStagingDirectories: 0) [SKIP]
+[xUnit.net 00:00:00.94]     Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-registered", expectedStage: "AllocationRegistered", expectedDomains: 1, expectedStagingDirectories: 0) [SKIP]
+[xUnit.net 00:00:00.94]     Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "mid-staging", expectedStage: "AllocationRegistered", expectedDomains: 1, expectedStagingDirectories: 1) [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-staging-accounted", expectedStage: "AllocationRegistered", expectedDomains: 1, expectedStagingDirectories: 1) [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-intent", expectedStage: "AllocationIntent", expectedDomains: 0, expectedStagingDirectories: 0) [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-registered", expectedStage: "AllocationRegistered", expectedDomains: 1, expectedStagingDirectories: 0) [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "mid-staging", expectedStage: "AllocationRegistered", expectedDomains: 1, expectedStagingDirectories: 1) [1 ms]
+[xUnit.net 00:00:00.94]     Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-copy", expectedStage: "AllocationRegistered", expectedDomains: 1, expectedStagingDirectories: 1) [SKIP]
+[xUnit.net 00:00:00.94]     Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-prepared-before-mint", expectedStage: "Prepared", expectedDomains: 1, expectedStagingDirectories: 1) [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-copy", expectedStage: "AllocationRegistered", expectedDomains: 1, expectedStagingDirectories: 1) [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-prepared-before-mint", expectedStage: "Prepared", expectedDomains: 1, expectedStagingDirectories: 1) [1 ms]
+[xUnit.net 00:00:00.97]     Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.AfterRegisteredBarrierIsDispatchedBeforeStagingAuthorityTransfer [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.AfterRegisteredBarrierIsDispatchedBeforeStagingAuthorityTransfer [1 ms]
+[xUnit.net 00:00:00.98]     Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.ScopeDisposalDoesNotCloseReusedOwnerPidfd [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.ScopeDisposalDoesNotCloseReusedOwnerPidfd [1 ms]
+[xUnit.net 00:00:00.98]     Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.FullOwnerTransactionCompletesWithoutOwnerDeath [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.FullOwnerTransactionCompletesWithoutOwnerDeath [1 ms]
+[xUnit.net 00:00:00.99]     Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RecoveryScopeWaitsForOwnerDomainRecoveryAuthorityBeforePreparationCompletes [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RecoveryScopeWaitsForOwnerDomainRecoveryAuthorityBeforePreparationCompletes [1 ms]
+[xUnit.net 00:00:00.99]     Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.UnconfirmedDirectoryRemainsUntouchedAndDebtIsIdempotent [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.UnconfirmedDirectoryRemainsUntouchedAndDebtIsIdempotent [1 ms]
+[xUnit.net 00:00:01.00]     Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.OwnerDoesNotCopyUntilScopeAcknowledgesStagingRetention [SKIP]
+[xUnit.net 00:00:01.00]     Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.AfterIntentBarrierIsDispatchedAtTheOwnerIntentBoundary [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.OwnerDoesNotCopyUntilScopeAcknowledgesStagingRetention [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.AfterIntentBarrierIsDispatchedAtTheOwnerIntentBoundary [1 ms]
+[xUnit.net 00:00:01.06]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ReviewerTrailingByteReproductionRefused [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ReviewerTrailingByteReproductionRefused [1 ms]
+[xUnit.net 00:00:01.07]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.OverlongPayloadRefused(extraBytes: 1) [SKIP]
+[xUnit.net 00:00:01.07]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.OverlongPayloadRefused(extraBytes: 9) [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.OverlongPayloadRefused(extraBytes: 1) [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.OverlongPayloadRefused(extraBytes: 9) [1 ms]
+[xUnit.net 00:00:01.08]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.MissingCloexecRefused [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.MissingCloexecRefused [1 ms]
+[xUnit.net 00:00:01.08]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ExecProbeProvesReceivedDescriptorsDoNotSurvive [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ExecProbeProvesReceivedDescriptorsDoNotSurvive [1 ms]
+[xUnit.net 00:00:01.09]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.SiblingControlRefused [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.SiblingControlRefused [1 ms]
+[xUnit.net 00:00:01.09]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.NullDescriptorsRefused [SKIP]
+[xUnit.net 00:00:01.10]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ValidTransferReceivesCloexecDescriptors [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.NullDescriptorsRefused [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ValidTransferReceivesCloexecDescriptors [1 ms]
+[xUnit.net 00:00:01.10]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ZeroLengthRecordWithDescriptorsRefusedWithoutLeak [SKIP]
+[xUnit.net 00:00:01.10]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.RejectionClosesReceivedDescriptors [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ZeroLengthRecordWithDescriptorsRefusedWithoutLeak [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.RejectionClosesReceivedDescriptors [1 ms]
+[xUnit.net 00:00:01.10]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.QueuedSecondTransferIsRejectedByProtocolStateWithoutFdLeak [SKIP]
+[xUnit.net 00:00:01.10]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.SwappedControlsRefused [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.QueuedSecondTransferIsRejectedByProtocolStateWithoutFdLeak [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.SwappedControlsRefused [1 ms]
+[xUnit.net 00:00:01.11]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.RepeatedScopeDisposalIsSafe [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.RepeatedScopeDisposalIsSafe [1 ms]
+[xUnit.net 00:00:01.11]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.TooFewDescriptorsRefused [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.TooFewDescriptorsRefused [1 ms]
+[xUnit.net 00:00:01.11]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.TruncatedPayloadRefused [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.TruncatedPayloadRefused [1 ms]
+[xUnit.net 00:00:01.13]     Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness.MissingDelegationRefused [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness.MissingDelegationRefused [1 ms]
+[xUnit.net 00:00:01.13]     Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness.CgroupMountAndBootIdentityAreReadable [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness.CgroupMountAndBootIdentityAreReadable [1 ms]
+[xUnit.net 00:00:01.15]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ParentAsChildRefused [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ParentAsChildRefused [1 ms]
+[xUnit.net 00:00:01.16]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ValidHandlesValidate [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ValidHandlesValidate [1 ms]
+[xUnit.net 00:00:01.17]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.AncillaryDataTruncationRefusedWithoutLeak [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.AncillaryDataTruncationRefusedWithoutLeak [1 ms]
+[xUnit.net 00:00:01.17]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.TooManyDescriptorsRefused [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.TooManyDescriptorsRefused [1 ms]
+[xUnit.net 00:00:06.47]     Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04CoordinatorExitBeforeHeldRefusesAndReconciles [FAIL]
+  Failed Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04CoordinatorExitBeforeHeldRefusesAndReconciles [5 s]
+  Error Message:
+   adopted children did not become reapable before the bound
+  Stack Trace:
+     at Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.ReconcileAfterOwnerDeath(IntegratedFixture fx) in /home/gaga/wp05-oracle-final/tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:line 570
+   at Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.AssertSetupRejectedAndReconciled(IntegratedFixture fx, OwnerPreparationOutcome outcome, String expectedError) in /home/gaga/wp05-oracle-final/tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:line 1123
+   at Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04CoordinatorExitBeforeHeldRefusesAndReconciles() in /home/gaga/wp05-oracle-final/tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:line 1027
+   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:07.37]     Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests.RealCoordinatorOverallExpiryWritesProtocolFailed30AndTheGateRefusesExpiredIntent [FAIL]
+[xUnit.net 00:00:07.41]     Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests.ForgedIdentityGateRefusalTouchesNoJournalAndNotTheRealTransport [FAIL]
+  Failed Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests.RealCoordinatorOverallExpiryWritesProtocolFailed30AndTheGateRefusesExpiredIntent [6 s]
+  Error Message:
+   waitid(P_PIDFD) errno 10
+  Stack Trace:
+     at Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests.RealCoordinatorOverallExpiryWritesProtocolFailed30AndTheGateRefusesExpiredIntent() in /home/gaga/wp05-oracle-final/tests/Gagamba.Execution.Linux.M1.Tests/Recovery/Wp05ReleasePathIndependentQualificationTests.cs:line 168
+--- End of stack trace from previous location ---
+  Failed Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests.ForgedIdentityGateRefusalTouchesNoJournalAndNotTheRealTransport [38 ms]
+  Error Message:
+   wrapper did not exit and reap exactly once: waitid(P_PIDFD) errno 10
+  Stack Trace:
+     at Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests.ForgedIdentityGateRefusalTouchesNoJournalAndNotTheRealTransport() in /home/gaga/wp05-oracle-final/tests/Gagamba.Execution.Linux.M1.Tests/Recovery/Wp05ReleasePathIndependentQualificationTests.cs:line 123
+--- End of stack trace from previous location ---
+
+Failed!  - Failed:     3, Passed:   517, Skipped:    35, Total:   555, Duration: 12 s - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)

@@ -1,0 +1,2 @@
+controller_exit137: Exited raw_code=1 exit_status=137 signal=none; final waitpid WIFEXITED exit=137; WNOWAIT status preserved
+controller_sigkill: Killed raw_code=2 exit_status=none signal=9; final waitpid WIFSIGNALED signal=9; WNOWAIT status preserved

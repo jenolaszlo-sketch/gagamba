@@ -1,0 +1,4 @@
+baseline_sigpipe_handler=0x1
+after_writeonce_sigpipe_handler=0x1
+child_sigpipe_handler_class=1
+sigpipe_disposition_restored

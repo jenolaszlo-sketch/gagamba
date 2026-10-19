@@ -1,0 +1,4 @@
+source_head=6e534c893a84e56e80ca2d53306f57b408ff6c19
+source_branch=remediation/wp05-abort-oracle-provenance
+tested_date=2026-10-19
+boot_id=83799c16-80f7-4588-b29a-1dc9efe920fb

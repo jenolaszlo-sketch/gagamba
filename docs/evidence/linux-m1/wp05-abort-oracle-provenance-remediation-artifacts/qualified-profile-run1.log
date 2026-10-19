@@ -1,0 +1,124 @@
+== regular parallel phase (process-global reaping classes excluded) ==
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+/home/gaga/.nuget/packages/microsoft.build.tasks.git/10.0.401/build/Microsoft.Build.Tasks.Git.targets(25,5): warning : Unable to locate repository with working directory that contains directory '/home/gaga/wp05-oracle-final/src/Gagamba.Execution'. [/home/gaga/wp05-oracle-final/src/Gagamba.Execution/Gagamba.Execution.csproj]
+/home/gaga/.nuget/packages/microsoft.sourcelink.common/10.0.401/build/Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [/home/gaga/wp05-oracle-final/src/Gagamba.Execution/Gagamba.Execution.csproj]
+  Gagamba.Execution -> /home/gaga/wp05-oracle-final/src/Gagamba.Execution/bin/Release/net10.0/Gagamba.Execution.dll
+/home/gaga/.nuget/packages/microsoft.build.tasks.git/10.0.401/build/Microsoft.Build.Tasks.Git.targets(25,5): warning : Unable to locate repository with working directory that contains directory '/home/gaga/wp05-oracle-final/src/Gagamba.Execution.Linux.M1'. [/home/gaga/wp05-oracle-final/src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj]
+/home/gaga/.nuget/packages/microsoft.sourcelink.common/10.0.401/build/Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [/home/gaga/wp05-oracle-final/src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj]
+  Gagamba.Execution.Linux.M1 -> /home/gaga/wp05-oracle-final/src/Gagamba.Execution.Linux.M1/bin/Release/net10.0/Gagamba.Execution.Linux.M1.dll
+/home/gaga/.nuget/packages/microsoft.build.tasks.git/10.0.401/build/Microsoft.Build.Tasks.Git.targets(25,5): warning : Unable to locate repository with working directory that contains directory '/home/gaga/wp05-oracle-final/src/Gagamba.Execution.Linux.M1.Owner'. [/home/gaga/wp05-oracle-final/src/Gagamba.Execution.Linux.M1.Owner/Gagamba.Execution.Linux.M1.Owner.csproj]
+/home/gaga/.nuget/packages/microsoft.sourcelink.common/10.0.401/build/Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [/home/gaga/wp05-oracle-final/src/Gagamba.Execution.Linux.M1.Owner/Gagamba.Execution.Linux.M1.Owner.csproj]
+  Gagamba.Execution.Linux.M1.Owner -> /home/gaga/wp05-oracle-final/src/Gagamba.Execution.Linux.M1.Owner/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Owner.dll
+/home/gaga/.nuget/packages/microsoft.build.tasks.git/10.0.401/build/Microsoft.Build.Tasks.Git.targets(25,5): warning : Unable to locate repository with working directory that contains directory '/home/gaga/wp05-oracle-final/tests/Gagamba.Execution.Linux.M1.Tests'. [/home/gaga/wp05-oracle-final/tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj]
+/home/gaga/.nuget/packages/microsoft.sourcelink.common/10.0.401/build/Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [/home/gaga/wp05-oracle-final/tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj]
+  Gagamba.Execution.Linux.M1.Tests -> /home/gaga/wp05-oracle-final/tests/Gagamba.Execution.Linux.M1.Tests/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Tests.dll
+Test run for /home/gaga/wp05-oracle-final/tests/Gagamba.Execution.Linux.M1.Tests/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:   473, Skipped:     0, Total:   473, Duration: 6 s - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+== process-global phase: Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests (dedicated test host) ==
+Test run for /home/gaga/wp05-oracle-final/tests/Gagamba.Execution.Linux.M1.Tests/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:    31, Skipped:     0, Total:    31, Duration: 7 s - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+== process-global phase: Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerDeathQualificationTests (dedicated test host) ==
+Test run for /home/gaga/wp05-oracle-final/tests/Gagamba.Execution.Linux.M1.Tests/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     7, Skipped:     0, Total:     7, Duration: 1 s - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+== process-global phase: Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests (dedicated test host) ==
+Test run for /home/gaga/wp05-oracle-final/tests/Gagamba.Execution.Linux.M1.Tests/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.77]     Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-domain-retained", expectedStage: "AllocationIntent", expectedDomains: 1, expectedStagingDirectories: 0) [SKIP]
+[xUnit.net 00:00:00.78]     Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-staging-accounted", expectedStage: "AllocationRegistered", expectedDomains: 1, expectedStagingDirectories: 1) [SKIP]
+[xUnit.net 00:00:00.78]     Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-intent", expectedStage: "AllocationIntent", expectedDomains: 0, expectedStagingDirectories: 0) [SKIP]
+[xUnit.net 00:00:00.78]     Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-registered", expectedStage: "AllocationRegistered", expectedDomains: 1, expectedStagingDirectories: 0) [SKIP]
+[xUnit.net 00:00:00.78]     Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "mid-staging", expectedStage: "AllocationRegistered", expectedDomains: 1, expectedStagingDirectories: 1) [SKIP]
+[xUnit.net 00:00:00.78]     Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-copy", expectedStage: "AllocationRegistered", expectedDomains: 1, expectedStagingDirectories: 1) [SKIP]
+[xUnit.net 00:00:00.78]     Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-prepared-before-mint", expectedStage: "Prepared", expectedDomains: 1, expectedStagingDirectories: 1) [SKIP]
+[xUnit.net 00:00:00.80]     Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.AfterRegisteredBarrierIsDispatchedBeforeStagingAuthorityTransfer [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-domain-retained", expectedStage: "AllocationIntent", expectedDomains: 1, expectedStagingDirectories: 0) [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-staging-accounted", expectedStage: "AllocationRegistered", expectedDomains: 1, expectedStagingDirectories: 1) [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-intent", expectedStage: "AllocationIntent", expectedDomains: 0, expectedStagingDirectories: 0) [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-registered", expectedStage: "AllocationRegistered", expectedDomains: 1, expectedStagingDirectories: 0) [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "mid-staging", expectedStage: "AllocationRegistered", expectedDomains: 1, expectedStagingDirectories: 1) [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-copy", expectedStage: "AllocationRegistered", expectedDomains: 1, expectedStagingDirectories: 1) [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-prepared-before-mint", expectedStage: "Prepared", expectedDomains: 1, expectedStagingDirectories: 1) [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.AfterRegisteredBarrierIsDispatchedBeforeStagingAuthorityTransfer [1 ms]
+[xUnit.net 00:00:00.83]     Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.ScopeDisposalDoesNotCloseReusedOwnerPidfd [SKIP]
+[xUnit.net 00:00:00.84]     Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.FullOwnerTransactionCompletesWithoutOwnerDeath [SKIP]
+[xUnit.net 00:00:00.84]     Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RecoveryScopeWaitsForOwnerDomainRecoveryAuthorityBeforePreparationCompletes [SKIP]
+[xUnit.net 00:00:00.84]     Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.UnconfirmedDirectoryRemainsUntouchedAndDebtIsIdempotent [SKIP]
+[xUnit.net 00:00:00.84]     Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.OwnerDoesNotCopyUntilScopeAcknowledgesStagingRetention [SKIP]
+[xUnit.net 00:00:00.84]     Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.AfterIntentBarrierIsDispatchedAtTheOwnerIntentBoundary [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.ScopeDisposalDoesNotCloseReusedOwnerPidfd [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.FullOwnerTransactionCompletesWithoutOwnerDeath [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RecoveryScopeWaitsForOwnerDomainRecoveryAuthorityBeforePreparationCompletes [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.UnconfirmedDirectoryRemainsUntouchedAndDebtIsIdempotent [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.OwnerDoesNotCopyUntilScopeAcknowledgesStagingRetention [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.AfterIntentBarrierIsDispatchedAtTheOwnerIntentBoundary [1 ms]
+
+Passed!  - Failed:     0, Passed:     1, Skipped:    14, Total:    15, Duration: 57 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+== process-global phase: Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests (dedicated test host) ==
+Test run for /home/gaga/wp05-oracle-final/tests/Gagamba.Execution.Linux.M1.Tests/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.80]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ReviewerTrailingByteReproductionRefused [SKIP]
+[xUnit.net 00:00:00.81]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.OverlongPayloadRefused(extraBytes: 1) [SKIP]
+[xUnit.net 00:00:00.81]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.OverlongPayloadRefused(extraBytes: 9) [SKIP]
+[xUnit.net 00:00:00.82]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.MissingCloexecRefused [SKIP]
+[xUnit.net 00:00:00.82]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ExecProbeProvesReceivedDescriptorsDoNotSurvive [SKIP]
+[xUnit.net 00:00:00.82]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.SiblingControlRefused [SKIP]
+[xUnit.net 00:00:00.82]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.NullDescriptorsRefused [SKIP]
+[xUnit.net 00:00:00.82]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ValidTransferReceivesCloexecDescriptors [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ReviewerTrailingByteReproductionRefused [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.OverlongPayloadRefused(extraBytes: 1) [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.OverlongPayloadRefused(extraBytes: 9) [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.MissingCloexecRefused [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ExecProbeProvesReceivedDescriptorsDoNotSurvive [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.SiblingControlRefused [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.NullDescriptorsRefused [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ValidTransferReceivesCloexecDescriptors [1 ms]
+[xUnit.net 00:00:00.86]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ZeroLengthRecordWithDescriptorsRefusedWithoutLeak [SKIP]
+[xUnit.net 00:00:00.86]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.RejectionClosesReceivedDescriptors [SKIP]
+[xUnit.net 00:00:00.86]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.QueuedSecondTransferIsRejectedByProtocolStateWithoutFdLeak [SKIP]
+[xUnit.net 00:00:00.86]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.SwappedControlsRefused [SKIP]
+[xUnit.net 00:00:00.86]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.RepeatedScopeDisposalIsSafe [SKIP]
+[xUnit.net 00:00:00.86]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.TooFewDescriptorsRefused [SKIP]
+[xUnit.net 00:00:00.86]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.TruncatedPayloadRefused [SKIP]
+[xUnit.net 00:00:00.86]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ParentAsChildRefused [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ZeroLengthRecordWithDescriptorsRefusedWithoutLeak [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.RejectionClosesReceivedDescriptors [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.QueuedSecondTransferIsRejectedByProtocolStateWithoutFdLeak [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.SwappedControlsRefused [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.RepeatedScopeDisposalIsSafe [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.TooFewDescriptorsRefused [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.TruncatedPayloadRefused [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ParentAsChildRefused [1 ms]
+[xUnit.net 00:00:00.86]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ValidHandlesValidate [SKIP]
+[xUnit.net 00:00:00.86]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.AncillaryDataTruncationRefusedWithoutLeak [SKIP]
+[xUnit.net 00:00:00.86]     Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.TooManyDescriptorsRefused [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ValidHandlesValidate [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.AncillaryDataTruncationRefusedWithoutLeak [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.TooManyDescriptorsRefused [1 ms]
+
+Passed!  - Failed:     0, Passed:     2, Skipped:    19, Total:    21, Duration: 59 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+== process-global phase: Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness (dedicated test host) ==
+Test run for /home/gaga/wp05-oracle-final/tests/Gagamba.Execution.Linux.M1.Tests/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.78]     Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness.MissingDelegationRefused [SKIP]
+[xUnit.net 00:00:00.79]     Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness.CgroupMountAndBootIdentityAreReadable [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness.MissingDelegationRefused [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness.CgroupMountAndBootIdentityAreReadable [1 ms]
+
+Passed!  - Failed:     0, Passed:     3, Skipped:     2, Total:     5, Duration: 50 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+== process-global phase: Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05TerminationObserverTests (dedicated test host) ==
+Test run for /home/gaga/wp05-oracle-final/tests/Gagamba.Execution.Linux.M1.Tests/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     2, Skipped:     0, Total:     2, Duration: 43 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+== process-global phase: Gagamba.Execution.Linux.M1.Tests.Launch.Wp05SigpipeDispositionTests (dedicated test host) ==
+Test run for /home/gaga/wp05-oracle-final/tests/Gagamba.Execution.Linux.M1.Tests/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:     1, Skipped:     0, Total:     1, Duration: 100 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
