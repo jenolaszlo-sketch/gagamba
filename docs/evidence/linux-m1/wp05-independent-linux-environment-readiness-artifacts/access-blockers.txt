@@ -1,0 +1,48 @@
+WP05 independent reviewer access - observed blockers and required action
+Date: 2026-10-19
+Status: UNVERIFIED; no independent reviewer run was performed
+
+Prior reviewer observations
+  - WSL launch failed in the reviewer context with Wsl/E_ACCESSDENIED.
+  - The canonical Gagamba checkout was not accessible under the reviewer
+    filesystem permissions.
+  - The reviewer checkout at that time did not contain the R12 objects.
+  These are historical observations from the independent review context; they
+  are not inferred from the producer context.
+
+Producer observations, not transferable
+  - The current producer context can launch Ubuntu WSL2 and run as gaga/uid 1000
+    inside a transient delegated cgroup.
+  - The canonical ACL currently grants Laszlos FullControl, inherited
+    CodexSandboxUsers ReadAndExecute+Synchronize, and SYSTEM/Administrators
+    FullControl.
+  - Producer access does not prove Luna's execution identity, WSL access,
+    filesystem access, delegated-cgroup access, or ability to run the preflight.
+
+Prepared source access
+  - Source bundle: C:\Users\Laszlos\source\repos\Solo\wp05-r12-source.bundle
+    size 2,052,989; SHA-256 38951b891be5673366c33c855610c7cd08b841353efbe108e78b41b9ad589eea
+  - Independent checkout: C:\Users\Laszlos\source\repos\Solo\wp05-r12-linux-qualification
+    branch review/wp05-harness-r12-linux-qualification at R12
+  - Bundle verification: complete history, six refs, restored R12 tree equal,
+    git fsck exit 0; see source-bundle-procedure.txt
+  - The final readiness bundle will add the infrastructure branch and evidence.
+  - These artifacts prove preparation, not reviewer access.
+
+Required external action
+  In the Luna execution context, use the prepared checkout (or restore the final
+  bundle) and run the preflight from a non-root uid inside an existing,
+  operator-delegated cgroup v2 memory/pids host leaf:
+    bash eng/linux-m1-independent-readiness.sh \
+      --source-rev 38f6981b2a60daab2df37c92913a6760c1bef131 \
+      --report <reviewer-writable-path>
+  If WSL or checkout access fails, record the exact command, identity, error and
+  whether the failure is WSL, filesystem/ACL, Git-object, or cgroup delegation.
+  Do not widen host ACLs, create a reusable privileged environment, or treat a
+  producer pass as reviewer readiness.
+
+Expected evidence from the reviewer
+  The reviewer's own output must show READINESS=PASS with zero failed checks,
+  REVIEWER_ACCESS=UNVERIFIED (or an explicitly recorded independent context),
+  exact R12, and cleanup of the reviewer's transient probe cgroup. The producer
+  cannot supply this result.

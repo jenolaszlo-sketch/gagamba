@@ -1,0 +1,74 @@
+WP05 independent Linux producer environment
+Date: 2026-10-19
+Context: DeepSeek producer check; NOT independent reviewer evidence
+
+Producer host
+  Windows host: Windows 11 x64
+  WSL distro: Ubuntu 26.04.1 LTS
+  kernel: Linux 6.6.114.1-microsoft-standard-WSL2 x86_64
+  boot_id: 00ddd357-8337-4ff3-b9f0-5b990cd9111d
+  libc: ldd (Ubuntu GLIBC 2.43-2ubuntu2.4) 2.43
+  git: git version 2.53.0
+  dotnet: 10.0.112
+  gcc: gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+  python: Python 3.14.4
+  bubblewrap: 0.11.1, /usr/bin/bwrap, mode 755 non-setuid,
+    SHA-256 523da3e7399044be5163aee6f57a77a6bef7454376e28f0a0627920bae1b76b6
+
+Producer identity
+  uid=1000(gaga) gid=1000(gaga) groups=1000(gaga)
+  CapInh=0000000000000000
+  CapPrm=0000000000000000
+  CapEff=0000000000000000
+  CapAmb=0000000000000000
+  CapBnd=000001ffffffffff
+  NoNewPrivs=0
+
+Cgroup environment
+  cgroup_type: cgroup2fs
+  root controllers: cpuset cpu io memory hugetlb pids rdma
+  delegated parent: /sys/fs/cgroup/gaga-delegated
+  delegated controllers: cpu memory pids
+  delegated subtree_control: memory pids
+  host leaf: /sys/fs/cgroup/gaga-delegated/host
+  initial state on this boot: delegated parent absent
+  producer check: transient root-created parent/host, chown gaga:gaga, mode 755
+  process placement: gaga preflight in gaga-delegated/host
+  post-run host cgroup.events: populated 0, frozen 0
+  post-run transient parent: removed
+  keepalive: none left; no reusable privileged asset
+
+Source
+  canonical path: C:\Users\Laszlos\source\repos\Gagamba
+  WSL source path: /mnt/c/Users/Laszlos/source/repos/Gagamba
+  exact R12 revision: 38f6981b2a60daab2df37c92913a6760c1bef131
+  R12 tree: 6854675d6b37a49d5302d6104103bdbfbc268040
+  run1 HEAD: 6792dc98fa577d23e073f5090862c52fc0f1ecf7 (I1)
+  run2 HEAD: f0d8cf81efa08a281635d7ca97e2c10ec26de29d (I2)
+  both HEADs contain exact R12; src/native/tests match R12
+  source bundle: C:\Users\Laszlos\source\repos\Solo\wp05-r12-source.bundle
+    size 2,052,989 bytes
+    SHA-256 38951b891be5673366c33c855610c7cd08b841353efbe108e78b41b9ad589eea
+  new review checkout: C:\Users\Laszlos\source\repos\Solo\wp05-r12-linux-qualification
+    branch review/wp05-harness-r12-linux-qualification at R12
+
+Producer preflight results
+  run1: PASS, 57 checks passed, 0 failed; report readiness-producer-run1.txt
+  run2: PASS, 57 checks passed, 0 failed; report readiness-producer-run2.txt
+  negative control on a dirty tracked checkout (docs modified before I2):
+    FAIL, 56 passed, 1 failed (source.clean_tracked); report
+    readiness-producer-dirty-source.txt. This is source sensitivity, not a
+    host failure; the clean I2 checkout rerun passed.
+  all runs: REVIEWER_ACCESS=UNVERIFIED, INDEPENDENT_ACCEPTANCE=NOT_CLAIMED
+
+Source representation note
+  The producer checkout is on /mnt/c. Git emitted CRLF normalization warnings
+  while comparing existing working-tree files; source.production_surfaces
+  passed against exact R12 and no tracked content changed. The reviewer should
+  prefer a Linux-native copy for execution performance and local evidence, but
+  the exact source bundle and R12 tree are verified.
+
+Scope
+  No build, qualification suite, target execution, release, stop matrix, crash
+  test, or acceptance was performed. This producer environment check does not
+  establish Luna's access or independent readiness.

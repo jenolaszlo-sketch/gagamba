@@ -1,0 +1,82 @@
+WP05 readiness commands (producer)
+Date: 2026-10-19
+All paths are producer paths unless marked as reviewer actions.
+
+Repository/source
+  git -C C:\Users\Laszlos\source\repos\Gagamba fetch `
+    "C:\Users\Laszlos\source\repos\Solo\wp05-abort-oracle-final-requalification" `
+    review/wp05-harness-linux-final-acceptance:review/wp05-harness-linux-final-acceptance
+  git -C C:\Users\Laszlos\source\repos\Gagamba switch -c `
+    infrastructure/wp05-independent-linux-readiness `
+    38f6981b2a60daab2df37c92913a6760c1bef131
+  git show -s --format='%H %T %s' 38f6981b2a60daab2df37c92913a6760c1bef131
+  git merge-base --is-ancestor d809ac969a84073d117d30b5a80437159741774c `
+    71d5a7e0af5141d74110eacc06ba478ab75a81ac
+  git merge-base --is-ancestor 38f6981b2a60daab2df37c92913a6760c1bef131 `
+    71d5a7e0af5141d74110eacc06ba478ab75a81ac
+
+Source bundle
+  git bundle create C:\Users\Laszlos\source\repos\Solo\wp05-r12-source.bundle `
+    refs/heads/remediation/wp05-identity-evidence-integrity `
+    refs/heads/review/wp05-release-seccomp-counterexample `
+    refs/heads/review/wp05-seccomp-kernel-requalification `
+    refs/heads/review/wp05-qualification-harness-requalification `
+    refs/heads/review/wp05-abort-oracle-final-requalification `
+    refs/heads/review/wp05-harness-linux-final-acceptance
+  git init C:\Windows\TEMP\opencode\wp05-r12-bundle-verify
+  git -C C:\Windows\TEMP\opencode\wp05-r12-bundle-verify bundle verify `
+    C:\Windows\TEMP\opencode\wp05-r12-source-readiness.bundle
+  git -C C:\Windows\TEMP\opencode\wp05-r12-bundle-verify fetch `
+    C:\Windows\TEMP\opencode\wp05-r12-source-readiness.bundle `
+    refs/heads/*:refs/remotes/bundle/*
+  git -C C:\Windows\TEMP\opencode\wp05-r12-bundle-verify checkout --detach `
+    38f6981b2a60daab2df37c92913a6760c1bef131
+  git -C C:\Windows\TEMP\opencode\wp05-r12-bundle-verify show -s --format=%T HEAD
+  git -C C:\Windows\TEMP\opencode\wp05-r12-bundle-verify fsck --no-progress
+  Get-FileHash -Algorithm SHA256 `
+    C:\Users\Laszlos\source\repos\Solo\wp05-r12-source.bundle
+
+Independent checkout
+  New-Item -ItemType Directory `
+    C:\Users\Laszlos\source\repos\Solo\wp05-r12-linux-qualification
+  git -C C:\Users\Laszlos\source\repos\Solo\wp05-r12-linux-qualification init --quiet
+  git -C C:\Users\Laszlos\source\repos\Solo\wp05-r12-linux-qualification fetch `
+    C:\Users\Laszlos\source\repos\Solo\wp05-r12-source.bundle `
+    refs/heads/*:refs/remotes/source/*
+  git -C C:\Users\Laszlos\source\repos\Solo\wp05-r12-linux-qualification checkout -b `
+    review/wp05-harness-r12-linux-qualification `
+    38f6981b2a60daab2df37c92913a6760c1bef131
+  git -C C:\Users\Laszlos\source\repos\Solo\wp05-r12-linux-qualification status --short
+  git -C C:\Users\Laszlos\source\repos\Solo\wp05-r12-linux-qualification `
+    diff --stat 38f6981b2a60daab2df37c92913a6760c1bef131 --
+
+Producer transient delegation and preflight
+  mkdir /sys/fs/cgroup/gaga-delegated
+  printf '+memory +pids\n' > /sys/fs/cgroup/gaga-delegated/cgroup.subtree_control
+  mkdir /sys/fs/cgroup/gaga-delegated/host
+  chown gaga:gaga /sys/fs/cgroup/gaga-delegated /sys/fs/cgroup/gaga-delegated/host `
+    /sys/fs/cgroup/gaga-delegated/cgroup.procs `
+    /sys/fs/cgroup/gaga-delegated/cgroup.subtree_control `
+    /sys/fs/cgroup/gaga-delegated/host/cgroup.procs `
+    /sys/fs/cgroup/gaga-delegated/host/cgroup.subtree_control
+  chmod 755 /sys/fs/cgroup/gaga-delegated /sys/fs/cgroup/gaga-delegated/host
+  wsl.exe -d Ubuntu -u root -- bash `
+    /mnt/c/Windows/TEMP/opencode/prepare-and-run-wp05-preflight.sh
+  # Inside the transient host leaf, as uid/gid 1000, with safe.directory set
+  # for the /mnt/c checkout:
+  bash <checkout>/eng/linux-m1-independent-readiness.sh `
+    --source-rev 38f6981b2a60daab2df37c92913a6760c1bef131
+  cat /sys/fs/cgroup/gaga-delegated/host/cgroup.events
+  rmdir /sys/fs/cgroup/gaga-delegated/host
+  rmdir /sys/fs/cgroup/gaga-delegated
+
+Reviewer action (not executed by producer)
+  Run the preflight as the reviewer's own non-root identity in its own
+  operator-delegated cgroup:
+  bash eng/linux-m1-independent-readiness.sh `
+    --source-rev 38f6981b2a60daab2df37c92913a6760c1bef131 `
+    --report <reviewer-writable-report>
+
+Checks not performed
+  No dotnet build, qualification suite, target execution, release/stop matrix,
+  crash test, or acceptance. No reviewer WSL/ACL/cgroup claim.

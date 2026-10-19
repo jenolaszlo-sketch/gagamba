@@ -1,0 +1,70 @@
+WP05 producer delegated-cgroup setup and cleanup
+Date: 2026-10-19
+Context: transient producer environment for the readiness preflight; not independent evidence
+
+Initial state
+  boot_id: 00ddd357-8337-4ff3-b9f0-5b990cd9111d
+  /sys/fs/cgroup/gaga-delegated: absent
+  The previous WSL boot's delegation was not reused. A fresh transient tree was
+  created for the producer check and removed afterward.
+
+Creation commands (root, producer only)
+  mkdir /sys/fs/cgroup/gaga-delegated
+  printf '+memory +pids\n' > /sys/fs/cgroup/gaga-delegated/cgroup.subtree_control
+  mkdir /sys/fs/cgroup/gaga-delegated/host
+  chown gaga:gaga /sys/fs/cgroup/gaga-delegated \
+    /sys/fs/cgroup/gaga-delegated/host \
+    /sys/fs/cgroup/gaga-delegated/cgroup.procs \
+    /sys/fs/cgroup/gaga-delegated/cgroup.subtree_control \
+    /sys/fs/cgroup/gaga-delegated/host/cgroup.procs \
+    /sys/fs/cgroup/gaga-delegated/host/cgroup.subtree_control
+  chmod 755 /sys/fs/cgroup/gaga-delegated /sys/fs/cgroup/gaga-delegated/host
+
+Observed creation state
+  delegated controllers: cpu memory pids
+  delegated subtree_control: memory pids
+  host cgroup.controllers: memory pids
+  host cgroup.events before placement: populated 0, frozen 0
+  host cgroup.procs before placement: empty
+
+Placement and run
+  The preflight was started in a subshell that wrote its own $BASHPID to
+  /sys/fs/cgroup/gaga-delegated/host/cgroup.procs and then exec'd:
+    setpriv --reuid=1000 --regid=1000 --clear-groups \
+      env HOME=/home/gaga TMPDIR=/tmp DOTNET_CLI_TELEMETRY_OPTOUT=1 \
+      GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=safe.directory \
+      GIT_CONFIG_VALUE_0='*' \
+      bash <checkout>/eng/linux-m1-independent-readiness.sh \
+      --source-rev 38f6981b2a60daab2df37c92913a6760c1bef131
+  observed cgroup.current_raw: /gaga-delegated/host
+  observed cgroup.current: /sys/fs/cgroup/gaga-delegated/host
+  observed identity: uid=1000 gid=1000; zero CapInh/CapPrm/CapEff/CapAmb
+  The preflight created and removed its own empty child:
+    /sys/fs/cgroup/gaga-delegated/gagamba-readiness-<producer-pid>
+
+Cleanup and post-run state
+  host cgroup.events: populated 0, frozen 0
+  no child cgroup below the delegated parent
+  /sys/fs/cgroup/gaga-delegated/host removed
+  /sys/fs/cgroup/gaga-delegated removed
+  no Gagamba process or keepalive was left in the delegated tree
+  no reusable privileged cgroup/asset remains
+
+Run history
+  run1 (I1 source HEAD): PASS, 57/0
+  run2 (I2 source HEAD): PASS, 57/0
+  pre-I2 dirty-source control: FAIL, 56/1 (source.clean_tracked), because
+    docs/testing-and-ci.md had uncommitted changes at the time; the clean I2
+    rerun passed. This was a source-cleanliness check, not a host failure.
+
+Script correction during preparation
+  The first provisional run treated the namespace-relative
+  /proc/self/cgroup path (/gaga-delegated/host) as a filesystem path and
+  incorrectly failed cgroup.placement. I2 resolves the raw path against
+  /sys/fs/cgroup and the delegated parent, and both passing reports show the
+  raw and resolved paths. No product or host-security change was made.
+
+Limits
+  This transient delegation was created by the producer context. It is not a
+  persistent operator delegation and does not prove Luna can create, access,
+  or use WSL or the cgroup host. Reviewer access remains UNVERIFIED.
