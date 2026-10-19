@@ -1,0 +1,22 @@
+q3-production-diff.txt
+captured: 2026-10-19T14:41:23Z
+HEAD(reviewer tip): 21e53ad787c6c9b891aaab9c1996f4627659dcdf
+R12: 38f6981b2a60daab2df37c92913a6760c1bef131
+baseline: 58cb1ba31c102e0e9d5488721e8c438adb55c614
+
+-- R12 HEAD tree hash + tracked cleanliness:
+tree 6854675d6b37a49d5302d6104103bdbfbc268040
+?? docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q3-production-diff.txt
+?? docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q3-release-path-focused.log
+
+-- production surface diff baseline..R12 (src/, native/, artifacts/):
+EMPTY: no production-surface change
+
+-- reviewer branch production-surface diff vs R12 (must also be empty):
+EMPTY: reviewer commits touch no production surface
+
+-- frozen native host artifacts (worktree):
+5e55e92b4228013e88a9fb34ac4674c5b9a485e831db7ff6d86f02df7c68c73b  artifacts/linux-m1/wp04/exec-coordinator
+2aa879019138c4d4066557213ce0037de70430aac3a05008eec5c8abd999d108  artifacts/linux-m1/wp04/seccomp-filter.bin
+bwrap: bubblewrap 0.11.1 755
+523da3e7399044be5163aee6f57a77a6bef7454376e28f0a0627920bae1b76b6  /usr/bin/bwrap

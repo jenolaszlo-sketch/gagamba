@@ -134,3 +134,191 @@ repository accessible to this reviewer; the bundle tip is P3b. Nothing in the
 qualification path used P3c content.
 
 The sections below are appended by later Q1-Q3 commits.
+
+## Q1 — Reviewer-authored hostile probes of the harness observation/oracle (commit `bf453ea`)
+
+### New review-only test file
+
+- `tests/Gagamba.Execution.Linux.M1.Tests/Recovery/Wp05OpencodeReviewerProbeTests.cs` —
+  six untagged reviewer probes; committed on the review branch only. Committed
+  content SHA-256: `df21e395cfd6f0536bc8abd520dc66826c07ab602e136931a95f2e3fadfb73ae`.
+  Untagged on purpose: the probes wait on specific pids/pidfds only, never on
+  process-global wait state, so they run in the regular parallel phase and were
+  qualified there (Q2) rather than in an isolated lane.
+
+- Probe semantics (test-only harness behavior):
+  1. `UnrelatedChildIsNeverAttributedToTheObservedPidfd` — pidfd scoping: an
+     unrelated live child is never observed as the wrapped child; it survives,
+     takes its own SIGKILL, and is reaped separately.
+  2. `PeekedStatusIsNotConsumedAndReapedPidfdObservationFailsClosed` — after the
+     WNOWAIT peek the raw waitpid still reaps (status not consumed), and a
+     second observation over a consumed pidfd returns Unknown with an error
+     (ECHILD fail-closed), never a fabricated valid record.
+  3. `ObserverStartedAfterZombieStillObservesExitStatus` — a late observer over a
+     retained zombie still observes Exited/137.
+  4. `ClosedPidfdObservationFailsClosedWithoutHang` — a closed/stale fd number
+     yields Unknown + an error immediately (poll EBADF fail-closed).
+  5. `BareWrapperExitCodeIsAlwaysRejected` — the preserved five-argument
+     compatibility overload rejects 0/133/137 unconditionally: a bare exit
+     status can never validate an abort.
+  6. `OracleAcceptsOnlyStructuredExit133OrSigkill9` — positive controls (Exited/133
+     and Killed/SIGKILL both accept, so the harness can construct valid
+     evidence), then mutations all reject: exit 137, non-SIGKILL signal 15,
+     Unknown kind, dumped kind, identity mismatch, un-stopped stop, injected
+     journal stop fact, consumed capability, non-refusal decision.
+
+- Execution: five focused runs as uid 1000, CapEff 0, host-leaf placement
+  (`0::/gaga-delegated/host`); six of six passed in every run (durations
+  51-55 ms; the fifth instrumented run is preserved in
+  `q1-reviewer-probe-run.log`). Residue audits after every run: zero zombies, no
+  leftover probe children, no coordinator/bwrap/testhost residue, no child
+  cgroups below the delegated parent, session anchor PID 576 intact.
+
+### Staged-artifact reproducibility (first-hand)
+
+`eng/linux-m1/build-native.sh` executed in the reviewer worktree (compile only;
+fixtures and coordinators never executed). All four native artifacts reproduce
+the producer's recorded hashes byte-exactly:
+
+- `tests/Fixtures/Gagamba.LinuxM1.Native/out/fixture`
+  `ee25a876bad5312afcece19821668b91db0c09f5a2f1aaac74f00c45806e2305`
+- `artifacts/linux-m1/wp04/exec-coordinator`
+  `5e55e92b4228013e88a9fb34ac4674c5b9a485e831db7ff6d86f02df7c68c73b`
+- `artifacts/linux-m1/wp04/seccomp-filter.bin`
+  `2aa879019138c4d4066557213ce0037de70430aac3a05008eec5c8abd999d108`
+- `artifacts/linux-m1/wp05/wp05-qualification-coordinator`
+  `e20903cce6061ecc2b152f9e7b4ccb389edeee54047d96f1f3b66dd5195be0b9`
+
+The full identity record is in `q1-reviewer-probe-identity.txt`.
+
+### Evidence-integrity reconciliation (first-hand, carried into this commit)
+
+All three disappearance-manifest audits were recomputed as reviewer artifacts
+committed in `bf453ea` (`q2-evidence-integrity-reconciliation.txt`,
+`q2-crlf-cause-reconstruction.txt`, `q2-crlf-exhaustive.txt`):
+
+- R9 era 23-entry manifest: 20 committed entries match, exactly 3 mismatch.
+  CRLF causes conclusively reproduced:
+  - `observer-observation.txt` and `source-head.txt`: committed LF bytes plus
+    one CR before the final newline (hit positions 251 and 175 respectively);
+  - `sigpipe-observation.txt`: all-lines CRLF.
+- R11/R12 remediation manifest: 28 of 28 committed entries match.
+- Qualification-harness-remediation manifest: 18 of 18 committed entries match.
+- `source-head.txt` inside that manifest records R7 (`6e534c8...`), the
+  historical revision at its creation — no relabeling.
+
+## Q2 — Full supported qualification profile, two fresh runs (commit `21e53ad`)
+
+Command per run: `bash eng/linux-m1-qualified-tests.sh` (Release configuration;
+the supported paid profile; the bare parallel assembly was explicitly not used
+as an acceptance profile), as uid 1000 with CapEff 0, placed at
+`0::/gaga-delegated/host`, boot `69d053fb-0fd9-4209-aa5b-be128424ed34`.
+Identical results in both runs, runner exit 0:
+
+| phase | run 1 | run 2 |
+| --- | --- | --- |
+| regular parallel (process-global excluded) | 489 passed / 0 skipped | 489 passed / 0 skipped |
+| NonRootQualificationTests (WP04, real delegation) | 31 passed | 31 passed |
+| OwnerDeathQualificationTests | 7 passed | 7 passed |
+| IntegratedBarrierTests | 1 pass / 14 skip | 1 pass / 14 skip |
+| DomainAuthorityTests | 2 pass / 19 skip | 2 pass / 19 skip |
+| RecoveryHarness | 3 pass / 2 skip | 3 pass / 2 skip |
+| Wp05TerminationObserverTests | 3 passed | 3 passed |
+| Wp05SigpipeDispositionTests | 1 passed | 1 passed |
+
+Skip classification (35 root-only environmental gates, identical in both runs):
+
+- `IntegratedBarrierTests`, `DomainAuthorityTests`, `RecoveryHarness` gate on
+  child-cgroup creation authority at the bare `/sys/fs/cgroup` root. First-hand
+  proof (`q2-root-only-gate-probe.txt`): as gaga, `/sys/fs/cgroup` is
+  `root:root 555`, `mkdir` fails EPERM, while the delegated parent and host leaf
+  are `gaga:gaga 755`. `OwnerDeathQualificationTests`, which gates on
+  delegated-cgroup capability rather than bare-root ownership, passes 7/7 in
+  the same topology.
+- Producer parity: the producer's own R11 supported-profile run reports the
+  same 14/19/2 root-only skips and phase-2 48 passed / 35 skipped
+  (`wp05-identity-evidence-integrity-remediation-2026-10-19.md`, lines 98-103).
+- Row arithmetic: producer R11 phase 1 was 483 rows; the reviewer worktree adds
+  six untagged probes -> 483 + 6 = 489, matching both runs above with 0 skips in
+  the parallel phase (the probes ran; they did not skip).
+- These 35 lanes are WP02-era/WP03-era/WP04 auxiliary classes, not WP05
+  release-path rows. Every WP05-scoped lane (release-path 3, observer 3,
+  sigpipe 1, WP04 31, plus the forged-abort/oracle and V3 rows inside the 489)
+  ran and passed.
+
+Post-run audits (both runs, `q2-residue-audit.txt`): no zombies, no probe
+children, no coordinator/bwrap/testhost residue, no child cgroups below the
+delegated parent, no `/tmp/gagamba*` residue from these runs, session anchor
+PID 576 alive.
+
+## Q3 — Final review facts (this commit)
+
+- Focused release-path class rerun with per-row console preserved:
+  `q3-release-path-focused.log` (3/3 passed; real wrapped coordinator, bwrap,
+  staged frozen artifacts).
+- Production surface diff (`q3-production-diff.txt`): baseline `58cb1ba` to R12
+  over `src/`, `native/`, `artifacts/` — EMPTY (first-hand). Reviewer branch
+  relative to R12 over the production surface — EMPTY (first-hand). R12 tree
+  hash `6854675d6b37a49d5302d6104103bdbfbc268040`.
+- Frozen native host artifacts: `exec-coordinator` `5e55e92b...`, filter
+  `2aa87901...` (672 B), bwrap 0.11.1 `523da3e7...` mode 755, all re-verified
+  this session.
+- Artifact manifest `SHA256SUMS` in this directory covers every committed
+  evidence artifact at this commit (excludes itself).
+- Cleanup: host leaf returns to empty after each launch; the delegated tree
+  survives only while the session anchor lives; no qualification cgroups remain.
+
+## Acceptance decision (bounded)
+
+**WP05 HARNESS QUALIFIED (bounded) — independent OpenCode reviewer position,
+2026-10-19.**
+
+The WP05 Linux M1 test harness as exercised at exact R12 in this delegated
+non-root operator topology is qualified:
+
+1. Readiness: 57/0 first-hand (Q0) with the audited root-only launcher boundary,
+   zero capabilities, host-leaf placement, and the exact documented session
+   topology.
+2. Evidence integrity: the R9-era manifest anomaly is conclusively explained
+   (CRLF), reproduced at byte level, recomputed, and the committed manifest
+   contents are correct; both later manifests reconcile 28/28 and 18/18.
+3. Harness behavior: six reviewer probes demonstrate that the test-only
+   observation/oracle machinery is pidfd-scoped, WNOWAIT-non-consuming,
+   fail-closed on consumed/stale handles, and that the accepted abort contract
+   rejects every forged or degraded input class (including the bare-exit path
+   and the 137-status path).
+4. Qualification runs: the full supported profile twice with identical results
+   (489-row parallel phase + seven process-global phases; phase-2 48/35);
+   every WP05-scoped lane passes; residue-free after each run.
+5. Reproducibility: native artifact staging reproduces producer hashes
+   byte-for-byte; the production surface is unchanged through the reviewer
+   branch.
+
+Scope and exclusions (explicit, per the remediation-evidence standard):
+
+- This qualifies the test harness and lane infrastructure, NOT WP05 release
+  acceptance: no WP10 target workload ran; no production behavior changed; the
+  Windows M1 lane was not rerun (the R11 Windows lane remains historical
+  producer evidence: 399 passed / 0 failed / 167 skipped).
+- The 35 root-only skips are environmental gates on WP02/WP03/WP04 auxiliary
+  lanes and are NOT WP05 release-path rows and cannot qualify in this topology;
+  they are recorded as pending for any future root-session qualification
+  instead of claimed as passed.
+- P3c `0f29bb54921d11306f14fad1288851efd349c26a` remains an unresolved producer
+  claim (nowhere resolvable); no readiness or qualification fact used its
+  content.
+- Seccomp policy was not requalified; its frozen identity was verified
+  byte-exact (672 B, `2aa87901...`) and used as-is.
+- Single-host caveat: all observations come from this workstation (WSL Ubuntu
+  guest on this boot of LAPTOP-KBD8D8JG); no cross-host independent
+  qualification was available. Recorded as pending future scope, never claimed
+  as passed.
+
+## Reviewer commit chain on `review/wp05-opencode-harness-final-qualification`
+
+| commit | slice |
+| --- | --- |
+| `1e64875ce30f10c5c834188c330b6aae1fbac0ae` | Q0 readiness record |
+| `bf453ea` | Q1 hostile probes + evidence-integrity reconciliation artifacts |
+| `21e53ad` | Q2 2x full supported-profile runs + skip classification |
+| (this commit) | Q3 final review facts, manifest, acceptance decision |
