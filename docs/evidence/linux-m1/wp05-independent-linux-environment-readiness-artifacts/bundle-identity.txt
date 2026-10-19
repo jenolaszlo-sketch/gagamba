@@ -1,0 +1,71 @@
+WP05 final readiness bundle and reviewer checkout fetch
+Date: 2026-10-19
+Scope: source/evidence bundle identity; no acceptance
+
+Final readiness bundle
+  path: C:\Users\Laszlos\source\repos\Solo\wp05-r12-readiness.bundle
+  size: 2,081,455 bytes
+  SHA-256: 0e9b5486035b558acb746c61e07c6934ff1a023dba8142809953c21a75d76bf3
+  format: Git bundle, complete history, SHA-1 object format
+  source: canonical infrastructure branch at I3 `79095223c2675934bec0ce52fe21718f28d3f471`
+  refs (7):
+    79095223c2675934bec0ce52fe21718f28d3f471 refs/heads/infrastructure/wp05-independent-linux-readiness
+    38f6981b2a60daab2df37c92913a6760c1bef131 refs/heads/remediation/wp05-identity-evidence-integrity
+    712e0fc2dc56c0b14f12ca75c7d48137dae8a500 refs/heads/review/wp05-release-seccomp-counterexample
+    5b6ab064ec0e329735aae969a3478577203d6616 refs/heads/review/wp05-seccomp-kernel-requalification
+    67e2d5b95ff2ff1a7d92fb2af27cb37bc0995bce refs/heads/review/wp05-qualification-harness-requalification
+    d809ac969a84073d117d30b5a80437159741774c refs/heads/review/wp05-abort-oracle-final-requalification
+    71d5a7e0af5141d74110eacc06ba478ab75a81ac refs/heads/review/wp05-harness-linux-final-acceptance
+
+Creation command
+  git bundle create C:\Users\Laszlos\source\repos\Solo\wp05-r12-readiness.bundle `
+    refs/heads/infrastructure/wp05-independent-linux-readiness `
+    refs/heads/remediation/wp05-identity-evidence-integrity `
+    refs/heads/review/wp05-release-seccomp-counterexample `
+    refs/heads/review/wp05-seccomp-kernel-requalification `
+    refs/heads/review/wp05-qualification-harness-requalification `
+    refs/heads/review/wp05-abort-oracle-final-requalification `
+    refs/heads/review/wp05-harness-linux-final-acceptance
+
+Verification (disposable empty repository)
+  git init C:\Windows\TEMP\opencode\wp05-r12-readiness-verify
+  git -C <verify> bundle verify <bundle>
+  git -C <verify> fetch <bundle> refs/heads/*:refs/remotes/final/*
+  git -C <verify> checkout --detach 79095223c2675934bec0ce52fe21718f28d3f471
+  git -C <verify> cat-file -e HEAD:eng/linux-m1-independent-readiness.sh
+  git -C <verify> cat-file -e HEAD:docs/evidence/linux-m1/wp05-independent-linux-environment-readiness-2026-10-19.md
+  git -C <verify> diff --quiet 38f6981b2a60daab2df37c92913a6760c1bef131 -- src native tests
+  git -C <verify> checkout --detach 38f6981b2a60daab2df37c92913a6760c1bef131
+  git -C <verify> show -s --format=%T HEAD
+  git -C <verify> fsck --no-progress
+
+Observed
+  bundle verify: seven refs; complete history; "is okay"; exit 0
+  fetch: all seven refs created; exit 0
+  infra checkout: 7909522; tree eb6665d342563d1737773fd08d67ebcf9881bc05
+  infra source: script and evidence present
+  production surfaces versus R12: empty diff; exit 0
+  R12 checkout: 38f6981; tree 6854675d6b37a49d5302d6104103bdbfbc268040
+  git fsck: exit 0
+
+Reviewer checkout fetch (not a reviewer run)
+  path: C:\Users\Laszlos\source\repos\Solo\wp05-r12-linux-qualification
+  fetch command:
+    git -C <checkout> fetch <bundle> refs/heads/*:refs/remotes/final/*
+  result: seven final/* refs; exit 0
+  checkout HEAD remains exact R12; status clean
+  final infra ref: 79095223c2675934bec0ce52fe21718f28d3f471
+  script blob: 93c4dec426372c2cd89be05f3e617ed20f3b24eb (matches canonical I3)
+  evidence object present
+
+Metadata note
+  This I3b file and the hash audit are canonical after I3; the bundle contains
+  the I3 evidence tree. The bundle is the source/evidence handoff; it is not an
+  acceptance artifact. Reviewer access remains UNVERIFIED.
+
+Reviewer worktree for the readiness script (template)
+  git -C C:\Users\Laszlos\source\repos\Solo\wp05-r12-linux-qualification worktree add `
+    C:\Users\Laszlos\source\repos\Solo\wp05-r12-readiness-worktree `
+    refs/remotes/final/infrastructure/wp05-independent-linux-readiness
+  Run the preflight from that worktree as the reviewer's own non-root identity
+  in its own operator-delegated cgroup; keep the main checkout at R12.
