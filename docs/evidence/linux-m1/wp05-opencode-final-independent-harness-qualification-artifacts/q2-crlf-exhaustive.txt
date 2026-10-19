@@ -1,0 +1,6 @@
+observer-observation.txt: committed_bytes=252 single_CR_insertion_matches=[251]
+  CR inserted after byte 251; before: b'al=9; WNOWAIT status preserved' after: b'\n'
+sigpipe-observation.txt: committed_bytes=124 single_CR_insertion_matches=[]
+  NO single-CR insertion reproduces the manifest hash -> cause NOT reproduced as stated
+source-head.txt: committed_bytes=176 single_CR_insertion_matches=[175]
+  CR inserted after byte 175; before: b'16-80f7-4588-b29a-1dc9efe920fb' after: b'\n'
