@@ -148,6 +148,19 @@ public sealed class Wp05ForgedAbortOracleTests
     }
 
     [Fact]
+    public void MissingOrUnusableExpectedIdentityIsRejected()
+    {
+        var missing = new OwnedWrapperIdentity(
+            Guid.Empty, Guid.Empty, Guid.Empty, PidFd: -1, Pid: 0);
+        Assert.NotNull(Wp05ForgedAbortOracle.Validate(
+            ValidDecision, capabilityLive: true, ValidJournal,
+            new AuthorizedStopEvidence(
+                missing, Stopped: true, WrapperReaped: true,
+                Error: string.Empty, NoTargetInitializationMarkerAbsent: true),
+            CoordinatorSelfExit));
+    }
+
+    [Fact]
     public void TerminationIdentityMismatchIsRejected()
     {
         Assert.NotNull(Wp05ForgedAbortOracle.Validate(

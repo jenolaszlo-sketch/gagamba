@@ -117,6 +117,9 @@ public sealed class Wp05ReleasePathIndependentQualificationTests
 
         using var terminationObserver = Wp05TerminationObserver.StartForReaper(
             execution.WrapperReaper, harness.Identity);
+        var expectedWrapperIdentity = terminationObserver.ExpectedIdentity;
+        Assert.True(expectedWrapperIdentity.IsUsable,
+            "the ownership-derived wrapper identity must be usable");
 
         var abort = await harness.Launcher.AbortAsync(
             execution, harness.PrimaryLease!, CancellationToken.None);
@@ -145,7 +148,7 @@ public sealed class Wp05ReleasePathIndependentQualificationTests
                 afterAbort.Snapshot?.Stop is not null,
                 afterAbort.Error),
             new AuthorizedStopEvidence(
-                termination.Identity,
+                expectedWrapperIdentity,
                 abort.Stopped,
                 abort.WrapperReaped,
                 abort.Error,

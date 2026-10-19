@@ -48,6 +48,8 @@ internal sealed class Wp05TerminationObserver : IDisposable
         _thread.Start();
     }
 
+    internal OwnedWrapperIdentity ExpectedIdentity => _identity;
+
     internal static Wp05TerminationObserver StartForReaper(
         PidFdChildReaper reaper, PreparationIdentity identity)
     {
@@ -57,8 +59,9 @@ internal sealed class Wp05TerminationObserver : IDisposable
         var handle = field.GetValue(reaper) as SafeFileHandle
             ?? throw new InvalidOperationException("wrapper reaper has no live pidfd");
         var pidFd = handle.DangerousGetHandle().ToInt32();
+        var pid = ReadPidFromPidFd(pidFd);
         var owned = new OwnedWrapperIdentity(
-            identity.ExecutionId, identity.GenerationId, identity.PreparationId, pidFd, 0);
+            identity.ExecutionId, identity.GenerationId, identity.PreparationId, pidFd, pid);
         return new Wp05TerminationObserver(pidFd, owned);
     }
 
@@ -66,6 +69,8 @@ internal sealed class Wp05TerminationObserver : IDisposable
         int pidFd, OwnedWrapperIdentity identity)
     {
         if (pidFd < 0) throw new ArgumentOutOfRangeException(nameof(pidFd));
+        if (!identity.IsUsable)
+            throw new ArgumentException("a usable expected wrapper identity is required", nameof(identity));
         return new Wp05TerminationObserver(pidFd, identity);
     }
 
@@ -80,6 +85,19 @@ internal sealed class Wp05TerminationObserver : IDisposable
         }
 
         return Unknown("termination observation timed out");
+    }
+
+    private static int ReadPidFromPidFd(int pidFd)
+    {
+        foreach (var line in File.ReadLines($"/proc/self/fdinfo/{pidFd}"))
+        {
+            if (!line.StartsWith("Pid:", StringComparison.Ordinal)) continue;
+            if (int.TryParse(line.AsSpan(4).Trim(), out var pid) && pid > 0) return pid;
+            break;
+        }
+
+        throw new InvalidOperationException(
+            $"pidfd {pidFd} did not expose a usable kernel Pid in fdinfo");
     }
 
     private void Run()
@@ -172,3 +190,4 @@ internal sealed class Wp05TerminationObserver : IDisposable
         _thread.Join(1000);
     }
 }
+

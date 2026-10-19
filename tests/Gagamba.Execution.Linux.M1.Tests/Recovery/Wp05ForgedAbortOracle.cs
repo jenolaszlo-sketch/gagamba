@@ -76,6 +76,8 @@ internal static class Wp05ForgedAbortOracle
         if (journal.HasStop)
             return "a stop fact was introduced by the forged abort";
 
+        if (!stop.Identity.IsUsable)
+            return "authorized stop identity is missing or unusable";
         if (!stop.Stopped)
             return $"authorized abort did not stop the domain: {stop.Error}";
         if (!stop.WrapperReaped)
@@ -130,3 +132,4 @@ internal static class Wp05ForgedAbortOracle
         return null;
     }
 }
+

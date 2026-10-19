@@ -5,6 +5,7 @@
 // consumers, mirroring the production pidfd/reaper relationship.
 using System.Runtime.InteropServices;
 using Gagamba.Execution.Linux.M1.Native;
+using Gagamba.Execution.Restricted;
 using Microsoft.Win32.SafeHandles;
 using Xunit;
 
@@ -81,6 +82,31 @@ public sealed class Wp05TerminationObserverTests
         Assert.Equal(pidFd, termination.Identity.PidFd);
     }
 
+    [Fact]
+    public void ExpectedIdentityComesFromOwnedPidFdBeforeObservation()
+    {
+        SkipUnlessLinux();
+        var pid = Spawn("/bin/sh", "sh", "-c", "exit 137");
+        Assert.True(PidFd.TryOpen(pid, out var pidFd, out var pidFdError), pidFdError);
+        var preparation = new PreparationIdentity(
+            Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), new byte[32]);
+        using var reaper = new PidFdChildReaper(
+            new SafeFileHandle((IntPtr)pidFd, ownsHandle: true));
+        using var observer = Wp05TerminationObserver.StartForReaper(reaper, preparation);
+
+        Assert.Equal(pid, observer.ExpectedIdentity.Pid);
+        Assert.Equal(pidFd, observer.ExpectedIdentity.PidFd);
+        Assert.Equal(preparation.ExecutionId, observer.ExpectedIdentity.ExecutionId);
+        Assert.Equal(preparation.GenerationId, observer.ExpectedIdentity.GenerationId);
+        Assert.Equal(preparation.PreparationId, observer.ExpectedIdentity.PreparationId);
+
+        var termination = observer.WaitForResult(10_000);
+        Assert.Equal(ObservedTerminationKind.Exited, termination.Kind);
+        Assert.Equal(pid, termination.Identity.Pid);
+        Assert.Equal(pidFd, termination.Identity.PidFd);
+        Assert.Equal(pid, NativeLaunchInterop.WaitPid(pid, out _, 0));
+    }
+
     private static int Spawn(string path, params string[] arguments)
     {
         var encoded = new IntPtr[arguments.Length + 1];
@@ -123,4 +149,5 @@ public sealed class Wp05TerminationObserverTests
 
     private static int WTERMSIG(int status) => status & 0x7F;
 }
+
 
