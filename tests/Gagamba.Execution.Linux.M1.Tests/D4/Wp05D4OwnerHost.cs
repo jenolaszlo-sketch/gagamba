@@ -65,7 +65,7 @@ public static class Wp05D4OwnerHost
         var goPath = args.GetValueOrDefault("go", string.Empty);
         D4Witness.Append(witnessPath, caseId, "OwnerStarted", "owner", Environment.ProcessId.ToString());
 
-        if (mode is "recover" or "replace-release" or "contend")
+        if (mode is "recover" or "replace-release" or "retry-release" or "contend")
         {
             return RunRecoveryMode(mode, args, caseId, resultPath, witnessPath, barrierPath, goPath);
         }
@@ -198,7 +198,7 @@ public static class Wp05D4OwnerHost
         var journalPath = Required(args, "journal");
         var journal = new OwnershipJournal(new JournalFileStorage(), journalPath);
         var initial = journal.ReadLatest();
-        if (mode is "recover" or "replace-release"
+        if ((mode is "recover" or "replace-release" or "retry-release")
             && !initial.Ok
             && initial.Error.Contains("seal", StringComparison.OrdinalIgnoreCase))
         {
@@ -288,7 +288,7 @@ public static class Wp05D4OwnerHost
                 ["release_attempted"] = "false",
             };
 
-            if (mode == "replace-release")
+            if (mode is "replace-release" or "retry-release")
             {
                 result["release_attempted"] = "true";
                 result["release_source"] = "new-test-only-capability";

@@ -90,6 +90,33 @@ public sealed class Wp05D4SupervisorTests
     }
 
     [Fact]
+    public async Task D4_2b_ReplacementRetryOverDurableIntentIsRefusedWithoutTransport()
+    {
+        SkipUnlessQualified();
+        var cancellation = TestContext.Current.CancellationToken;
+        using var c = new D4Case("D4-2b");
+        c.StartOwner("release", "--barrier-name", "after-intent");
+        await c.WaitReady(cancellation);
+        await c.WaitBarrier("after-intent", cancellation);
+        await c.KillOwner(cancellation);
+        var first = await c.StartReplacement("recover", cancellation);
+        Assert.Equal(0, first.ExitCode);
+        var retry = await c.StartReplacement("retry-release", cancellation);
+        Assert.Equal(0, retry.ExitCode);
+        var result = c.ReadResult(retry.ResultPath);
+        Assert.Equal("true", result["release_attempted"]);
+        Assert.Equal("Refused", result["replacement_decision"]);
+        Assert.Equal("NotCommitted", result["replacement_durable"]);
+        Assert.Equal("0", result["replacement_transport_attempts"]);
+        Assert.Equal(0, Count(D4Witness.Read(c.WitnessPath), "PreWriteWitnessAcknowledged"));
+        Assert.Equal(0, Count(D4Witness.Read(c.WitnessPath), "TestTransportAttempt"));
+        var latest = ReadJournal(c.JournalPath);
+        Assert.True(latest.Ok, latest.Error);
+        Assert.Equal(ReleaseTag.Intent, latest.Snapshot!.Release!.Tag);
+        c.AssertCgroupRemoved();
+    }
+
+    [Fact]
     public async Task D4_3_CrashAfterFd4BeforeCommittedKeepsIntentAndObservedWriteOnly()
     {
         SkipUnlessQualified();
