@@ -213,7 +213,8 @@ public sealed class Wp05D5NativeStatusTests
         var run = Run("exec_confirmed", 0);
         var reader = new CoordinatorStatusReader(run.Source!, Execution, Preparation, Digest);
         Assert.True(reader.TryReadNext(Monotonic() + 2_000_000_000L, out var observation, out var error), error);
-        var (journal, writer) = SeedJournal();
+        var (journal, writer, temp) = SeedJournal();
+        using (temp)
         using (writer)
         {
             var buffer = new ReleaseObservationBuffer();
@@ -280,7 +281,8 @@ public sealed class Wp05D5NativeStatusTests
         var reader = new CoordinatorStatusReader(run.Source!, Execution, Preparation, Digest);
         Assert.True(reader.TryReadNext(Monotonic() + 2_000_000_000L, out var exec, out var error), error);
         Assert.True(reader.TryReadNext(Monotonic() + 2_000_000_000L, out var root, out error), error);
-        var (journal, writer) = SeedJournal();
+        var (journal, writer, temp) = SeedJournal();
+        using (temp)
         using (writer)
         {
             var buffer = new ReleaseObservationBuffer();
@@ -304,7 +306,8 @@ public sealed class Wp05D5NativeStatusTests
         var reader = new CoordinatorStatusReader(run.Source!, Execution, Preparation, Digest);
         Assert.True(reader.TryReadNext(Monotonic() + 2_000_000_000L, out var exec, out var error), error);
         Assert.False(reader.TryReadNext(Monotonic() + 2_000_000_000L, out _, out _));
-        var (journal, writer) = SeedJournal();
+        var (journal, writer, temp) = SeedJournal();
+        using (temp)
         using (writer)
         {
             var buffer = new ReleaseObservationBuffer();
@@ -393,15 +396,27 @@ public sealed class Wp05D5NativeStatusTests
             process.StandardOutput.ReadToEnd() + process.StandardError.ReadToEnd(), string.Empty, null);
     }
 
-    private static (OwnershipJournal Journal, JournalWriterLease Writer) SeedJournal()
+    private static (OwnershipJournal Journal, JournalWriterLease Writer, D5Temp Temp) SeedJournal()
     {
-        var dir = Path.Combine(Path.GetTempPath(), "gagamba-d5-status-" + Guid.NewGuid().ToString("N"));
+        var temp = new D5Temp();
+        var dir = temp.Path;
         Directory.CreateDirectory(dir);
         var journal = new OwnershipJournal(new JournalFileStorage(), dir);
         Assert.True(journal.TryAcquireWriter(out var writer, out var error), error);
         Assert.True(journal.WriteNext(writer!, RecoveryTestSupport.V3Snapshot(
             release: RecoveryTestSupport.ReleaseCommitted())).Ok);
-        return (journal, writer!);
+        return (journal, writer!, temp);
+    }
+
+    private sealed class D5Temp : IDisposable
+    {
+        public string Path { get; } = System.IO.Path.Combine(
+            System.IO.Path.GetTempPath(), "gagamba-d5-status-" + Guid.NewGuid().ToString("N"));
+
+        public void Dispose()
+        {
+            try { Directory.Delete(Path, true); } catch { }
+        }
     }
 
     private static string ArtifactPath()
