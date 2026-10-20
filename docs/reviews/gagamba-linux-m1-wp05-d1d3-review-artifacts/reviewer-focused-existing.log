@@ -1,0 +1,24 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+/home/gaga/.nuget/packages/microsoft.build.tasks.git/10.0.401/build/Microsoft.Build.Tasks.Git.targets(25,5): warning : Repository '/home/gaga/qualification/gagamba-r12' has no remote. [/home/gaga/qualification/gagamba-r12/src/Gagamba.Execution/Gagamba.Execution.csproj]
+/home/gaga/.nuget/packages/microsoft.sourcelink.common/10.0.401/build/Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [/home/gaga/qualification/gagamba-r12/src/Gagamba.Execution/Gagamba.Execution.csproj]
+  Gagamba.Execution -> /home/gaga/qualification/gagamba-r12/src/Gagamba.Execution/bin/Release/net10.0/Gagamba.Execution.dll
+/home/gaga/.nuget/packages/microsoft.build.tasks.git/10.0.401/build/Microsoft.Build.Tasks.Git.targets(25,5): warning : Repository '/home/gaga/qualification/gagamba-r12' has no remote. [/home/gaga/qualification/gagamba-r12/src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj]
+/home/gaga/.nuget/packages/microsoft.sourcelink.common/10.0.401/build/Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [/home/gaga/qualification/gagamba-r12/src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj]
+  Gagamba.Execution.Linux.M1 -> /home/gaga/qualification/gagamba-r12/src/Gagamba.Execution.Linux.M1/bin/Release/net10.0/Gagamba.Execution.Linux.M1.dll
+/home/gaga/.nuget/packages/microsoft.build.tasks.git/10.0.401/build/Microsoft.Build.Tasks.Git.targets(25,5): warning : Repository '/home/gaga/qualification/gagamba-r12' has no remote. [/home/gaga/qualification/gagamba-r12/src/Gagamba.Execution.Linux.M1.Owner/Gagamba.Execution.Linux.M1.Owner.csproj]
+/home/gaga/.nuget/packages/microsoft.sourcelink.common/10.0.401/build/Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [/home/gaga/qualification/gagamba-r12/src/Gagamba.Execution.Linux.M1.Owner/Gagamba.Execution.Linux.M1.Owner.csproj]
+  Gagamba.Execution.Linux.M1.Owner -> /home/gaga/qualification/gagamba-r12/src/Gagamba.Execution.Linux.M1.Owner/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Owner.dll
+/home/gaga/.nuget/packages/microsoft.build.tasks.git/10.0.401/build/Microsoft.Build.Tasks.Git.targets(25,5): warning : Repository '/home/gaga/qualification/gagamba-r12' has no remote. [/home/gaga/qualification/gagamba-r12/tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj]
+/home/gaga/.nuget/packages/microsoft.sourcelink.common/10.0.401/build/Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [/home/gaga/qualification/gagamba-r12/tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj]
+  Gagamba.Execution.Linux.M1.Tests -> /home/gaga/qualification/gagamba-r12/tests/Gagamba.Execution.Linux.M1.Tests/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Tests.dll
+Test run for /home/gaga/qualification/gagamba-r12/tests/Gagamba.Execution.Linux.M1.Tests/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.90]     Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests.HeldProductionCoordinatorAcceptsSingleArbitratedReleaseAndReachesPreExecBoundary [SKIP]
+[xUnit.net 00:00:00.91]     Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests.RealCoordinatorOverallExpiryWritesProtocolFailed30AndTheGateRefusesExpiredIntent [SKIP]
+[xUnit.net 00:00:00.92]     Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests.ForgedIdentityGateRefusalTouchesNoJournalAndNotTheRealTransport [SKIP]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests.HeldProductionCoordinatorAcceptsSingleArbitratedReleaseAndReachesPreExecBoundary [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests.RealCoordinatorOverallExpiryWritesProtocolFailed30AndTheGateRefusesExpiredIntent [1 ms]
+  Skipped Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests.ForgedIdentityGateRefusalTouchesNoJournalAndNotTheRealTransport [1 ms]
+
+Passed!  - Failed:     0, Passed:    49, Skipped:     3, Total:    52, Duration: 237 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
