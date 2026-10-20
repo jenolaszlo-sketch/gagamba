@@ -1,0 +1,11 @@
+case=D5-CR3b ts=2026-10-20T09:15:50.5754411Z event=SupervisorStartedOwner source=supervisor pid=41456 baseline=-1 result=
+case=D5-CR3b ts=2026-10-20T09:15:50.5975092Z event=OwnerStarted source=owner pid=41456 baseline=-1 result=
+case=D5-CR3b ts=2026-10-20T09:15:50.6174870Z event=JournalWriterAcquired source=owner pid=41456 baseline=0 result=
+case=D5-CR3b ts=2026-10-20T09:15:50.7581212Z event=OwnerPrepared source=owner pid=41456 baseline=3 result=
+case=D5-CR3b ts=2026-10-20T09:15:50.7831986Z event=SupervisorBarrierObserved source=supervisor pid=41247 baseline=-1 result=after-stop
+case=D5-CR3b ts=2026-10-20T09:15:50.7848549Z event=SupervisorSigkill source=supervisor pid=41456 baseline=-1 result=41456:7041628
+case=D5-CR3b ts=2026-10-20T09:15:50.7882582Z event=OwnerTerminated source=supervisor pid=41456 baseline=-1 result=exit=137
+case=D5-CR3b ts=2026-10-20T09:15:50.8250421Z event=OwnerStarted source=owner pid=41468 baseline=-1 result=
+case=D5-CR3b ts=2026-10-20T09:15:50.8517586Z event=RecoveryStarted source=replacement pid=41468 baseline=4 result=
+case=D5-CR3b ts=2026-10-20T09:15:50.8811443Z event=RecoveryFinished source=replacement pid=41468 baseline=4 result=NotCommitted
+case=D5-CR3b ts=2026-10-20T09:15:50.8872056Z event=RecoveryProcessExited source=supervisor pid=41468 baseline=-1 result=0

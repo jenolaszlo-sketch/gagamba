@@ -1,0 +1,4 @@
+coordinator_pid=42458
+coordinator_fd5=pipe:[238552]
+owner_read_fd=159
+owner_read_link=pipe:[238552]

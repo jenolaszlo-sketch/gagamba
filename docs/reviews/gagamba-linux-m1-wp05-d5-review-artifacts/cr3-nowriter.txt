@@ -1,0 +1,9 @@
+mode=release-nowriter
+owner_pid=41285
+writer=not-acquired
+capability_source=new-test-only-capability
+decision_kind=Refused
+durable_release=NotCommitted
+delivery=NotAttempted
+transport_attempts=0
+journal_seq=3

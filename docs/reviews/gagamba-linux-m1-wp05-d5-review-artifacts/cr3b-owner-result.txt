@@ -1,0 +1,11 @@
+mode=stop-then-release
+owner_pid=41456
+stop_accepted=True
+stop_durable=True
+stop_accepted_at=70416466646801
+stop_deadline=70421466646801
+release_kind=Refused
+release_durable=NotCommitted
+release_delivery=NotAttempted
+journal_seq=4
+capability_live=True

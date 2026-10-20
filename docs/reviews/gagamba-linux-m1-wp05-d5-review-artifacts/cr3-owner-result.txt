@@ -1,0 +1,10 @@
+mode=release
+owner_pid=41262
+decision_kind=Released
+durable_release=MayHaveExecuted
+delivery=Delivered
+durable_committed=True
+live_execution_excluded=False
+journal_seq=5
+transport_attempts=1
+coordinator_exit=0
