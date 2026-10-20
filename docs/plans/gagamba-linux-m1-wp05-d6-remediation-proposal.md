@@ -143,3 +143,44 @@ D6 combined acceptance. C1-C4 decisions themselves must be recorded by their
 human holders; GLM review supports coherence, not approval. H1-H5 remain
 separate obligations. No production post-release FD5/WP10 wiring may ride on
 this proposal.
+
+## D6.1 revision - amendment prerequisites and requalification
+
+Status: **PROPOSED - NOT AUTHORIZED**
+
+The staged proposal remains C2 -> C1 -> C4 -> C3; C3 may be scheduled earlier
+because its durable deadline logic is largely independent, but every tranche
+still requires its own approved contract revision, tests-first change,
+independent review and human authorization.
+
+### Updated prerequisites
+
+- C2 must define consumption at first stop acceptance inside `_gate` on all
+  three paths and preserve release-first/Consumed history.
+- C1 depends on C2; use `AmbiguousPersistence`, lock-safe tail stop, retained
+  ambiguity and no journal I/O under `_gate`.
+- C4 uses the exact C1 ambiguous vocabulary and R12 reason taxonomy.
+- C3 must establish QPC/transaction-clock epoch corroboration, reject the
+  incompatible `OwnerDomainClock` epoch, correct Reconciler Failed/Unknown
+  aggregation, and resolve the already-empty row with Option B (kill-first,
+  no unnecessary WAIT) while keeping the zero-wait policy PENDING HUMAN.
+- No schema change is proposed. `ReleaseArbiter` and `Reconciler` are
+  uncomposed components at R12; no integrated owner runtime is claimed.
+
+### Future tranche gates
+
+For each tranche: approved contract revision first; deterministic unit,
+concurrency, fault and recovery tests; exact source identity; native/protocol
+regressions; independent GLM review; human acceptance; new source-bound
+evidence; rollback on any second write, no-resend weakening, false definite
+NotCommitted, live capability after stop, deadline reset, fabricated evidence,
+unjustified schema change or compatibility break.
+
+Future reruns must include affected D1-D3 probes, D2 clock/ambiguity/duplicate
+cases (with truth-inverting C2 assertions where the old contract asserted live
+capability), D4 supervisor/crash/no-resend including D4_6/D4_9, D5 CR-3/CR-3b,
+D5 native FD5, formal release-path rows and native/protocol regressions. Old
+R12 evidence is historical only; no automatic qualification transfer.
+
+C3 policy and all C1-C4 approvals remain pending human decisions. H1-H5,
+WP08/WP10, production status and full G3 remain outside this proposal.

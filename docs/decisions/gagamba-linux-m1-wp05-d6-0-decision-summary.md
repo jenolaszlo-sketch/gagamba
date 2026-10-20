@@ -79,3 +79,24 @@ authority, C1 uses it for ambiguous persistence, C4 documents retention,
 C3 enforces the stored deadline. No gate is accepted by this summary. Human
 approval is required individually; GLM review is advisory and separate from
 authorization.
+
+## D6.1 revision
+
+Status: **PROPOSED - NOT APPROVED**; C3 policy **PENDING HUMAN**.
+
+- **C1:** approve explicit `ReleaseDecisionKind.AmbiguousPersistence`, retained
+  uncertainty, lock-safe tail-of-call stop and C2 capability closure?
+- **C2:** approve irreversible capability consumption at first stop acceptance,
+  including clock-unavailable/overflow and failed durable stop?
+- **C3 policy:** approve Policy A (kill + one immediate observation) or an
+  independently bounded alternative? Not selected.
+- **C3 contract:** subject to policy, approve QPC/transaction-clock epoch
+  corroboration, fail-closed invalid/unavailable clocks, no-record cleanup-only
+  allowance and corrected Failed/Unknown Reconciler classification?
+- **C4:** approve concurrent-refusal semantics, sequential Duplicate and
+  retention asymmetry, using the C1 ambiguous kind?
+- **Implementation:** authorize no blanket remediation; approve tranches
+  separately (C2 -> C1 -> C4 -> C3; C3 may move earlier).
+
+All approvals remain **PENDING HUMAN**. No production remediation, target,
+qualification or gate is authorized. H1-H5 and WP08/WP10 remain deferred.

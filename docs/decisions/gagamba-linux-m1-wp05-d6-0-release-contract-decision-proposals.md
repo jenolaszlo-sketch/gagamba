@@ -376,3 +376,41 @@ post-release status and full G3 remain deferred.
 
 **PROPOSED - NOT APPROVED.** No production remediation is authorized. No
 C1-C4 item is resolved. No G3/WP05 release gate is accepted.
+
+## D6.1 revision - approval-ready proposed design
+
+Status: **PROPOSED - NOT APPROVED**. C3 expired-deadline policy:
+**PENDING HUMAN**. This revision folds GLM Q3 amendments into the proposal; it
+does not implement or approve them.
+
+- **C1:** use `ReleaseDecisionKind.AmbiguousPersistence`, a typed
+  journal-ambiguity result, retained under `_gate` after `_journalGate` is
+  released, then invoke `RequestStop` as a tail action with no gate held across
+  journal I/O. C2 is an implementation prerequisite. Concurrent opposing-order
+  test required.
+- **C2:** consume at first runtime stop acceptance inside `_gate` on normal,
+  clock-unavailable and overflow paths; no re-consume on duplicate; preserve
+  release-first/Consumed history; CE-03 declaration verbatim.
+- **C3:** QPC/transaction-clock epoch corroboration; reject the incompatible
+  `Stopwatch.StartNew()` epoch; expired => policy-gated kill+one observation;
+  invalid/unavailable => quarantine/Unknown; no-record path is cleanup-only;
+  already-empty Option B (kill-first, no unnecessary WAIT); Reconciler
+  aggregation must distinguish attempted/unconfirmed from operation failure.
+  No schema change. C3 remains `CONTRACT CHOICE REQUIRED - HUMAN DECISION
+  PENDING`.
+- **C4:** retain the explicit concurrent-refusal contract and exact R12 reason
+  taxonomy; C1 ambiguous result retained; no waiting state or new
+  `ConcurrentRefusal` kind.
+- **A-PKG-1:** original C1-C9 blob `73eb09af...` is reachable through
+  `review/wp05-release-plan-adversarial-review` at `e4b0a798...` and is not an
+  ancestor of D6.0.
+- **A-PKG-2:** `ReleaseArbiter` and `Reconciler` are uncomposed components with
+  zero production call sites at R12; changes affect component code, not an
+  integrated owner runtime. WP08/10 composition remains deferred.
+- **A-PKG-3:** add `AmbiguousWedgeThenClockUnavailableStop` as a composed
+  acceptance case.
+- **A-PKG-4:** already satisfied; no change.
+
+The four decision records, evidence/gate matrix and remediation proposal carry
+the corresponding detailed revisions. No contract is approved; no production
+remediation is authorized; H1-H5 and full G3 remain deferred.

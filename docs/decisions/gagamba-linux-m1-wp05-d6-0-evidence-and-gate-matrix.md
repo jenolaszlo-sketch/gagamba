@@ -59,3 +59,36 @@ H4: C1-C4 this package.
 H5: D5 plan commit-order documentation note; no historical rewrite.
 
 WP08/WP10, production post-release status and full G3 remain deferred.
+
+## D6.1 amendment reconciliation additions
+
+Status: **PROPOSED - NOT APPROVED**
+
+| Amendment | Where addressed | Planned proof |
+|---|---|---|
+| A-C1-1 | C1 §D6.1 lock-safe sequence | `AmbiguousReleaseStopLockOrderProbe`; no inversion/second FD4 |
+| A-C1-2 | C1 §D6.1 vocabulary; C4 §D6.1 taxonomy | `ReleaseDecisionKind.AmbiguousPersistence` retained; consumer inventory |
+| A-C1-3 | C1 §D6.1 capability window | C2 prerequisite; wedge/death recovery; no resend |
+| A-C2-1 | C2 §D6.1 consumption | normal/clock/overflow `IsLive == false`; duplicate no re-consume |
+| A-C2-2 | C2 §D6.1 release-first | Consumed/`ReleaseAlreadyCommitted`/history checks |
+| A-C2-3 | C2 §D6.1 CE-03 declaration | two-arbiter shared capability refused |
+| A-C3-1 | C3 §D6.1 clock epoch | QPC compatibility; incompatible clock rejected; same/cross-boot |
+| A-C3-2 | C3 §D6.1 outcome mapping | Failed vs Unknown aggregation matrix |
+| A-C3-3 | C3 §D6.1 no-record path | `RuntimeAcceptedStopWithoutDurableRecordAfterRestart` |
+| A-C3-4 | C3 §D6.1 Option B | already-empty kill/no-unnecessary-WAIT |
+| C3 policy | C3 §D6.1; human approval sheet | Policy A recommended, PENDING HUMAN |
+| A-C4-1 | C4 §D6.1 reason table | per-class refusal retention/taxonomy tests |
+| A-PKG-1 | main §D6.1; C1-C4 | branch/commit/blob binding check |
+| A-PKG-2 | main §D6.1; remediation | zero production callers; component-only |
+| A-PKG-3 | C1 §D6.1; this matrix | `AmbiguousWedgeThenClockUnavailableStop` |
+| A-PKG-4 | existing matrix declaration | no change; satisfied |
+
+Composed acceptance case `AmbiguousWedgeThenClockUnavailableStop` must verify
+ambiguous seal failure, no FD4/false NotCommitted, runtime stop requested,
+clock unavailable, C2 consumption, no fabricated StopRecord, retained
+ambiguity, owner death/conservative recovery and no resend.
+
+No gate status changes. C1 -> G3-A11/G3-B08, C2 -> G3-A02/A07, C3 ->
+G3-A10/R27, C4 -> G3-A05 remain diagnostic/blocked until human approvals and
+new qualification on a new production tree. C1-C4 remain unapproved;
+component-level evidence is not integrated qualification.
