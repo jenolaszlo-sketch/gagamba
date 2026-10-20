@@ -1,0 +1,24 @@
+# D5 explicit exclusions
+
+- D5-O05 (owner dies after native status emission before durable observation)
+  is HELD: no faithful fresh-process owner/FD5 seam exists at R12; no
+  same-process reconstruction was substituted.
+- Destructive descriptor cases not exercised:
+  inherited extra status writer deliberately delaying EOF, wrong FD passed as
+  status source, and an incorrectly inherited helper writer. The exercised
+  topology proves the normal owner-read/coordinator-FD5 pipe identity and
+  EOF/short/truncated/no-status behavior; it does not claim those destructive
+  negatives.
+- EINTR handling is implemented in the recording source and reader loops but
+  was not separately fault-injected as a native case.
+- Status frames are emitted by the test-only qualification coordinator. They
+  are not production target execution or production post-release status.
+- CR-1 uses the documented control-based termination standard; no new raw
+  wait4/pidfd witness is claimed.
+- CR-3's second owner uses a test-composed no-writer lease because R12 allows
+  one acquired journal writer. It receives a real R12 refusal and is not a
+  production authority bypass.
+- CR-3b: R12 has no `StopDecision.Accepted=false`; the tested refused
+  generation is release-after-durable-stop, not a refused stop request.
+- No production remediation, C1-C4 resolution, D6, G3 or WP05 release
+  acceptance is claimed.
