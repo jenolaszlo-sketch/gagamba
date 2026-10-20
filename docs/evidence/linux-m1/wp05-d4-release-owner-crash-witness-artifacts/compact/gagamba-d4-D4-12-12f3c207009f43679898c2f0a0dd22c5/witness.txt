@@ -1,0 +1,11 @@
+case=D4-12 ts=2026-10-20T02:34:28.1783227Z event=SupervisorStartedOwner source=supervisor pid=20782 baseline=-1 result=
+case=D4-12 ts=2026-10-20T02:34:28.1999173Z event=OwnerStarted source=owner pid=20782 baseline=-1 result=
+case=D4-12 ts=2026-10-20T02:34:28.2243827Z event=JournalWriterAcquired source=owner pid=20782 baseline=0 result=
+case=D4-12 ts=2026-10-20T02:34:28.3640025Z event=OwnerPrepared source=owner pid=20782 baseline=3 result=
+case=D4-12 ts=2026-10-20T02:34:28.3983887Z event=SupervisorBarrierObserved source=supervisor pid=20767 baseline=-1 result=after-intent
+case=D4-12 ts=2026-10-20T02:34:28.4275853Z event=OwnerStarted source=owner pid=20795 baseline=-1 result=
+case=D4-12 ts=2026-10-20T02:34:28.4557211Z event=RecoveryWriterRefused source=replacement pid=20795 baseline=-1 result=
+case=D4-12 ts=2026-10-20T02:34:28.4616972Z event=RecoveryProcessExited source=supervisor pid=20795 baseline=-1 result=3
+case=D4-12 ts=2026-10-20T02:34:28.4697230Z event=SupervisorSigkill source=supervisor pid=20782 baseline=-1 result=20782:4633388
+case=D4-12 ts=2026-10-20T02:34:28.4745542Z event=OwnerTerminated source=supervisor pid=20782 baseline=-1 result=exit=137
+case=D4-12 ts=2026-10-20T02:34:28.4837579Z event=SupervisorFenceProbe source=supervisor pid=20767 baseline=4 result=

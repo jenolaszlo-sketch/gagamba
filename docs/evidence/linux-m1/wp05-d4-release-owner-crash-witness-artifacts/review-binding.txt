@@ -1,0 +1,34 @@
+# D4 review binding and frozen identities
+
+Required-work authority at Q3:
+`d0f2220d5e10abb97343d069a5ff43c22c72bfd7`
+(`docs/reviews/gagamba-linux-m1-wp05-d4-d6-required-qualification-work.md`,
+blob `1768ec2a98e69349ca46137f4194fb0d49233772`).
+
+D1-D3 review:
+Q1 `3e6bb51c86146f0dd88d0058f587140a9dd2164f`; Q2
+`6baa78d16e7e75626ec9d94af79a3b0780391e35`; D1-D3 preservation
+`7dd5ffa6c2ecaacc37022adb9a7b6c333695eef0`.
+
+Plan review V3: `e4b0a798e944ddfb144901c63b0c444e7980533b`; required changes
+blob `73eb09af27c5dbc896739ebf48489862ec13e0a9`; counterexample register
+blob `0bbafa6b9725cce8a20858e1d64a8deec6134f15`.
+
+Frozen product/harness:
+- R12 `38f6981b2a60daab2df37c92913a6760c1bef131`, tree
+  `6854675d6b37a49d5302d6104103bdbfbc268040`.
+- Q3 harness `36a124d7dff98ecfaf956340767fe1768ad5b17f`.
+- seccomp filter 672 B,
+  `2aa879019138c4d4066557213ce0037de70430aac3a05008eec5c8abd999d108`.
+- Bubblewrap 0.11.1
+  `523da3e7399044be5163aee6f57a77a6bef7454376e28f0a0627920bae1b76b6`.
+- G2 manifest 873 B
+  `82161029848b1a821241af112ca806be8029d3cf2e7b95c6b23ce3e35850d5f3`;
+  RELEASE frame 128 B; OwnershipSnapshot v3.
+
+D4 source/test commits:
+- `26c73db350ed2d1c08d0be06763430aa0124ecad` design.
+- `acebcc83f541e1c4d4216578a2b9da45b2753b25` owner fixture.
+- `e36a9ea4c67c415d9bf7c913d217a32be8ddd0f4` supervisor/witness/crash probes.
+- `de1ee93fdfa9cc29cf82a79f6e6dac9bfea7d753` cross-process retry refusal;
+  evidence source.

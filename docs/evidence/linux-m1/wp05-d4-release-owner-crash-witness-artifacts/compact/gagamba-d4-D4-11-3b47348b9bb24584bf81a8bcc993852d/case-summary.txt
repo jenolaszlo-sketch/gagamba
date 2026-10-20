@@ -1,0 +1,9 @@
+case=gagamba-d4-D4-11-3b47348b9bb24584bf81a8bcc993852d
+owner_ready=present
+result=absent
+barrier=name=storage:write:gen.tmp pid=21072 sequence=-1 
+witness_events=14
+prewrite_events=0
+write_returned_events=0
+test_transport_events=0
+coordinator_exit_events=0

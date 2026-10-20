@@ -1,0 +1,29 @@
+# D4 crash boundary and no-resend matrix
+
+Source HEAD for evidence: `de1ee93fdfa9cc29cf82a79f6e6dac9bfea7d753`.
+All cases used a fresh test-only owner process. Replacement processes received
+only the journal path (and source path for the test-only capability
+diagnostic), never a capability, writer, HeldExecution or FD4 writer.
+
+| ID | Case | Actual boundary | Durable result before recovery | FD4 observation | Replacement / no-resend | Classification |
+|---|---|---|---|---|---|---|
+| D4-C01 | D4-10 | Test-only gate before intent seal creation | Prepared; no Release | none | Recovered NotCommitted; no Release | PASS - COMPONENT GATE |
+| D4-C02 | D4-11 | Gate at first candidate `WriteAll` after seal | Actual state uncertain; `ReadLatest` failed seal | none | Recovered `release_tag=none`; no Release | PASS - ACTUAL STATE PRESERVED |
+| D4-C03 | D4-2 | `after-intent` real barrier | Release Intent | none | Recovered Intent / MayHaveExecuted; no resend | PASS - REAL PROCESS |
+| D4-C04 | D4-5 | `after-consume` real barrier | Release Intent; capability consumed in dead owner | none | Recovered Intent; no release | PASS - REAL PROCESS |
+| D4-C05 | D4-3 | `after-write` real barrier | Release Intent; Committed absent | one pre-write witness and one `Delivered` return; coordinator acceptance unknown after kill | Recovered Intent; no second attempt | PASS - REAL FD4 WRITE OBSERVED |
+| D4-C06 | D4-4 | `after-committed` real barrier | Release Committed / Delivered | one pre-write and write return; acceptance unread after kill | Recovered Committed; no second attempt | PASS - REAL PROCESS |
+| D4-C07 | D4-7 | Durable stop barrier | StopRecord present; no Release | none | Recovered stop; no release | PASS - REAL PROCESS |
+| D4-C07 | D4-8 | Failed durable-stop write, then owner death | Runtime stop accepted; no durable Stop; no Release | none | Recovered no stop; diagnostic release with new test-only capability/interface transport; 0 original FD4 | PASS - DIAGNOSTIC ONLY |
+| D4-C07 | D4-13 | Gate at stop candidate write | Stop write in flight; no durable Stop observed; journal uncertain | none | Recovered no release/stop; no FD4 | PASS - COMPONENT GATE |
+| D4-C08 | D4-14 | Two recovery contenders | Empty journal (no release) | none | One writer acquired, one refused; no release | PASS - REAL PROCESS/LOCK |
+| CE-01 | D4-2b | Post-intent owner death + replacement retry | Intent | none | New test-only capability retry refused; 0 transport attempts | PASS - DIAGNOSTIC CONTRACT |
+| CE-02 | D4-6 | Ambiguous seal failure + owner death | Intent content durable behind seal; runtime NotCommitted | none | Recovered Intent / MayHaveExecuted; no resend | PASS - COMPONENT FAULT + REAL RECOVERY |
+| CE-03 | D4-8 | Failed durable stop + owner death | No durable Stop; runtime acceptance | none from original owner | Diagnostic release only with new test-only capability; 1 test-interface attempt, 0 FD4 | PASS - DIAGNOSTIC ONLY |
+| CE-04 | D4-9 | Owner process three-caller duplicate | One Intent then Committed | exactly one pre-write/write; coordinator exit 0 | Concurrent loser Refused; later caller Duplicate; one FD4 | PASS - REAL NATIVE |
+
+No case observed a second `PreWriteWitnessAcknowledged` event or a second
+`TestTransportAttempt` event. No case observed a second production-coordinator
+exit 0. In D4-3/D4-4 the owner died before reading the coordinator result;
+acceptance is therefore recorded as unknown, not inferred from the journal or
+the write return.

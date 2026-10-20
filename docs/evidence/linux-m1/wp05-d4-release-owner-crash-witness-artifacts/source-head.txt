@@ -1,0 +1,123 @@
+branch=implementation/wp05-d4-release-owner-witness
+head=de1ee93fdfa9cc29cf82a79f6e6dac9bfea7d753
+tree=7aac18d7b4ee8def90c0c55cda6c0db0644e98e4
+base_r12=38f6981b2a60daab2df37c92913a6760c1bef131
+tree_r12=6854675d6b37a49d5302d6104103bdbfbc268040
+preservation_base=7dd5ffa6c2ecaacc37022adb9a7b6c333695eef0
+recent_commits=
+de1ee93 test(wp05): add D4 cross-process intent retry refusal
+e36a9ea test(wp05): add D4 supervisor, witnesses and no-resend probes
+acebcc8 test(wp05): add D4 fresh-process release-owner fixture
+26c73db docs(wp05): assess D4 fresh-process release fixture feasibility
+7dd5ffa docs(wp05): preserve independently reproduced D1-D3 diagnostic review
+338a98a docs(wp05): record release fixture and counterexample probe evidence
+product_diff_src_native=
+product_diff_name_status=
+docs/evidence/linux-m1/wp05-harness-qualification-preservation-artifacts/.gitattributes
+docs/evidence/linux-m1/wp05-harness-qualification-preservation-artifacts/SHA256SUMS
+docs/evidence/linux-m1/wp05-harness-qualification-preservation-artifacts/canonical-import.txt
+docs/evidence/linux-m1/wp05-harness-qualification-preservation-artifacts/cleanup-status.txt
+docs/evidence/linux-m1/wp05-harness-qualification-preservation-artifacts/documentation-diff.txt
+docs/evidence/linux-m1/wp05-harness-qualification-preservation-artifacts/evidence-audit.txt
+docs/evidence/linux-m1/wp05-harness-qualification-preservation-artifacts/frozen-identities.txt
+docs/evidence/linux-m1/wp05-harness-qualification-preservation-artifacts/hash-audit.txt
+docs/evidence/linux-m1/wp05-harness-qualification-preservation-artifacts/review-import-inventory.txt
+docs/evidence/linux-m1/wp05-harness-qualification-preservation-artifacts/session-lifecycle.txt
+docs/evidence/linux-m1/wp05-harness-qualification-preservation-artifacts/test-accounting.txt
+docs/evidence/linux-m1/wp05-independent-linux-environment-readiness-2026-10-19.md
+docs/evidence/linux-m1/wp05-independent-linux-environment-readiness-artifacts/.gitattributes
+docs/evidence/linux-m1/wp05-independent-linux-environment-readiness-artifacts/SHA256SUMS
+docs/evidence/linux-m1/wp05-independent-linux-environment-readiness-artifacts/access-blockers.txt
+docs/evidence/linux-m1/wp05-independent-linux-environment-readiness-artifacts/bundle-identity.txt
+docs/evidence/linux-m1/wp05-independent-linux-environment-readiness-artifacts/commands.txt
+docs/evidence/linux-m1/wp05-independent-linux-environment-readiness-artifacts/environment-producer.txt
+docs/evidence/linux-m1/wp05-independent-linux-environment-readiness-artifacts/hash-audit.txt
+docs/evidence/linux-m1/wp05-independent-linux-environment-readiness-artifacts/readiness-producer-dirty-source.txt
+docs/evidence/linux-m1/wp05-independent-linux-environment-readiness-artifacts/readiness-producer-run1.txt
+docs/evidence/linux-m1/wp05-independent-linux-environment-readiness-artifacts/readiness-producer-run2.txt
+docs/evidence/linux-m1/wp05-independent-linux-environment-readiness-artifacts/readiness-producer.txt
+docs/evidence/linux-m1/wp05-independent-linux-environment-readiness-artifacts/repository-refs.txt
+docs/evidence/linux-m1/wp05-independent-linux-environment-readiness-artifacts/reviewer-checkout.txt
+docs/evidence/linux-m1/wp05-independent-linux-environment-readiness-artifacts/setup-cleanup.txt
+docs/evidence/linux-m1/wp05-independent-linux-environment-readiness-artifacts/source-bundle-procedure.txt
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-2026-10-19.md
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-artifacts/.gitattributes
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-artifacts/SHA256SUMS
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-artifacts/bundle-identity.txt
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-artifacts/cgroup-provisioning.log
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-artifacts/cgroup-session.txt
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-artifacts/filter-identity.txt
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-artifacts/final-bundle-fetch.txt
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-artifacts/hash-audit.txt
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-artifacts/infrastructure-reconciliation.txt
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-artifacts/linux-native-checkout.txt
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-artifacts/linux-native-verification.log
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-artifacts/preflight-placement-failure.log
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-artifacts/preflight-placement-failure.txt
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-artifacts/preflight-summary.txt
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-artifacts/readiness-artifact-run1.log
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-artifacts/readiness-artifact-run1.report
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-artifacts/readiness-artifact-run2.log
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-artifacts/readiness-artifact-run2.report
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-artifacts/readiness-root-launcher-run1.log
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-artifacts/readiness-root-launcher-run1.report
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-artifacts/readiness-root-launcher-run2.log
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-artifacts/readiness-root-launcher-run2.report
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-artifacts/readiness-run1.log
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-artifacts/readiness-run1.report
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-artifacts/readiness-run2.log
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-artifacts/readiness-run2.report
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-artifacts/reviewer-handoff.txt
+docs/evidence/linux-m1/wp05-opencode-linux-environment-preparation-artifacts/session-verification.txt
+docs/evidence/linux-m1/wp05-release-fixtures-counterexample-probes-2026-10-20.md
+docs/evidence/linux-m1/wp05-release-fixtures-counterexample-probes-artifacts/.gitattributes
+docs/evidence/linux-m1/wp05-release-fixtures-counterexample-probes-artifacts/SHA256SUMS
+docs/evidence/linux-m1/wp05-release-fixtures-counterexample-probes-artifacts/cgroup-host.procs
+docs/evidence/linux-m1/wp05-release-fixtures-counterexample-probes-artifacts/cleanup.txt
+docs/evidence/linux-m1/wp05-release-fixtures-counterexample-probes-artifacts/commands.txt
+docs/evidence/linux-m1/wp05-release-fixtures-counterexample-probes-artifacts/contract-probes-windows.log
+docs/evidence/linux-m1/wp05-release-fixtures-counterexample-probes-artifacts/contract-probes.log
+docs/evidence/linux-m1/wp05-release-fixtures-counterexample-probes-artifacts/coverage-map.txt
+docs/evidence/linux-m1/wp05-release-fixtures-counterexample-probes-artifacts/environment.txt
+docs/evidence/linux-m1/wp05-release-fixtures-counterexample-probes-artifacts/exclusions.txt
+docs/evidence/linux-m1/wp05-release-fixtures-counterexample-probes-artifacts/fixture-build.log
+docs/evidence/linux-m1/wp05-release-fixtures-counterexample-probes-artifacts/fixture-processes.txt
+docs/evidence/linux-m1/wp05-release-fixtures-counterexample-probes-artifacts/focused-existing.log
+docs/evidence/linux-m1/wp05-release-fixtures-counterexample-probes-artifacts/lease-process-windows.log
+docs/evidence/linux-m1/wp05-release-fixtures-counterexample-probes-artifacts/lease-process.log
+docs/evidence/linux-m1/wp05-release-fixtures-counterexample-probes-artifacts/lease-temp-residue.txt
+docs/evidence/linux-m1/wp05-release-fixtures-counterexample-probes-artifacts/lease-trace.txt
+docs/evidence/linux-m1/wp05-release-fixtures-counterexample-probes-artifacts/native-release-protocol.log
+docs/evidence/linux-m1/wp05-release-fixtures-counterexample-probes-artifacts/plan-c8.diff
+docs/evidence/linux-m1/wp05-release-fixtures-counterexample-probes-artifacts/review-binding.txt
+docs/evidence/linux-m1/wp05-release-fixtures-counterexample-probes-artifacts/source-head.txt
+docs/evidence/linux-m1/wp05-release-fixtures-counterexample-probes-artifacts/status.txt
+docs/evidence/linux-m1/wp05-release-fixtures-counterexample-probes-artifacts/test-results-summary.txt
+docs/evidence/linux-m1/wp05-release-fixtures-counterexample-probes-artifacts/testhost-processes.txt
+docs/handoff.md
+docs/plans/gagamba-linux-m1-wp05-d4-fixture-design.md
+docs/plans/gagamba-linux-m1-wp05-release-decision-queue.md
+docs/plans/gagamba-linux-m1-wp05-release-qualification-execution-plan.md
+docs/plans/gagamba-linux-m1-wp05-release-requirements-matrix.md
+docs/reviews/gagamba-linux-m1-wp05-d1-d3-independent-review-preservation-checkpoint.md
+docs/reviews/gagamba-linux-m1-wp05-harness-qualification-preservation-checkpoint.md
+docs/reviews/gagamba-linux-m1-wp05-release-plan-adversarial-preservation-checkpoint.md
+docs/reviews/gagamba-linux-m1-wp05-release-qualification-gap-audit.md
+docs/testing-and-ci.md
+docs/work-queue.md
+eng/linux-m1-independent-readiness.sh
+tests/Fixtures/Wp05D4Owner/Program.cs
+tests/Fixtures/Wp05D4Owner/Wp05D4Owner.csproj
+tests/Fixtures/Wp05LeaseFixture/Program.cs
+tests/Fixtures/Wp05LeaseFixture/Wp05LeaseFixture.csproj
+tests/Gagamba.Execution.Linux.M1.Tests/D4/Wp05D4OwnerHost.cs
+tests/Gagamba.Execution.Linux.M1.Tests/D4/Wp05D4SupervisorTests.cs
+tests/Gagamba.Execution.Linux.M1.Tests/Execution/Wp05ReleaseContractProbes.cs
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/Wp05LeaseFixtureHost.cs
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/Wp05LeaseProcessProbes.cs
+test_source_sha256=
+09b2fd82c1d93ef8cf8476ca81b6e15f03fb5025996bd4f3e6199378ec0234e0  tests/Gagamba.Execution.Linux.M1.Tests/D4/Wp05D4OwnerHost.cs
+70b8b602bc75f399d60d6b4657200312f51052dde7c4d58fa336dd9fea56677f  tests/Gagamba.Execution.Linux.M1.Tests/D4/Wp05D4SupervisorTests.cs
+70155896bb8c2db4d34ecebe92a15eb4858a9682c1e82cfbbf96376ff29c347c  tests/Fixtures/Wp05D4Owner/Wp05D4Owner.csproj
+b2223942f67b94b5fec8054d6ed1a66066ceb9d9e63b27cba8c5162ddf9f9dcf  tests/Fixtures/Wp05D4Owner/Program.cs
+99e4f60eab692f2e872b23ce17208167f65675257df9b23288670851cbd5dea3  docs/plans/gagamba-linux-m1-wp05-d4-fixture-design.md

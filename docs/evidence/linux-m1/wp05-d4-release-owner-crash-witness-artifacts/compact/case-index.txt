@@ -1,0 +1,15 @@
+gagamba-d4-D4-1-f88a601e87e3441f82fffe478cc2d686|prewrite=1|transport=0|decision_kind=Released;
+gagamba-d4-D4-10-ce500807504b42e3a48993277276816a|prewrite=0|transport=0|
+gagamba-d4-D4-11-3b47348b9bb24584bf81a8bcc993852d|prewrite=0|transport=0|
+gagamba-d4-D4-12-12f3c207009f43679898c2f0a0dd22c5|prewrite=0|transport=0|
+gagamba-d4-D4-13-ef520f16b3704675a5bab1b7a6864bee|prewrite=0|transport=0|
+gagamba-d4-D4-14-0ff20f2921fa4cd0a23d165e65234387|prewrite=0|transport=0|
+gagamba-d4-D4-2-33ff0cd56046486da0b0e9654af60a80|prewrite=0|transport=0|
+gagamba-d4-D4-2b-023eb698d55540c4bc018c7e01bae4bf|prewrite=0|transport=0|
+gagamba-d4-D4-3-0017dab6c00942928219bcca3fec129f|prewrite=1|transport=0|
+gagamba-d4-D4-4-3c852420e065475f889ed4dc4ea1474d|prewrite=1|transport=0|
+gagamba-d4-D4-5-ac1f141572f24296a96c04dcfef2fdc6|prewrite=0|transport=0|
+gagamba-d4-D4-6-1e69c9ba979f49d4824d18a7251f60fe|prewrite=0|transport=0|decision_kind=Refused;
+gagamba-d4-D4-7-701d500b344449dda53e847944789602|prewrite=0|transport=0|stop_accepted=True;
+gagamba-d4-D4-8-aacd00f3e9a942e99431c785a5f06b3b|prewrite=0|transport=1|stop_accepted=True;
+gagamba-d4-D4-9-bd899c7a0f4e49da96b36bba9cf1ea66|prewrite=1|transport=0|winner_kind=Released;

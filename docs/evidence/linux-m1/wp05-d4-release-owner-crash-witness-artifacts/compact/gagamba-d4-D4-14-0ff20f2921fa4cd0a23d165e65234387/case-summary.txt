@@ -1,0 +1,9 @@
+case=gagamba-d4-D4-14-0ff20f2921fa4cd0a23d165e65234387
+owner_ready=absent
+result=absent
+barrier=name=contend-held pid=20919 sequence=0 
+witness_events=6
+prewrite_events=0
+write_returned_events=0
+test_transport_events=0
+coordinator_exit_events=0

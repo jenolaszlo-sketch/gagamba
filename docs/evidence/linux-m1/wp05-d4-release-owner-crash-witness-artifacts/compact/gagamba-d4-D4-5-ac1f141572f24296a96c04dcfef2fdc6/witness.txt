@@ -1,0 +1,11 @@
+case=D4-5 ts=2026-10-20T02:34:34.7035820Z event=SupervisorStartedOwner source=supervisor pid=21051 baseline=-1 result=
+case=D4-5 ts=2026-10-20T02:34:34.7242882Z event=OwnerStarted source=owner pid=21051 baseline=-1 result=
+case=D4-5 ts=2026-10-20T02:34:34.7430541Z event=JournalWriterAcquired source=owner pid=21051 baseline=0 result=
+case=D4-5 ts=2026-10-20T02:34:34.8788763Z event=OwnerPrepared source=owner pid=21051 baseline=3 result=
+case=D4-5 ts=2026-10-20T02:34:34.9115254Z event=SupervisorBarrierObserved source=supervisor pid=20767 baseline=-1 result=after-consume
+case=D4-5 ts=2026-10-20T02:34:34.9136314Z event=SupervisorSigkill source=supervisor pid=21051 baseline=-1 result=21051:4634040
+case=D4-5 ts=2026-10-20T02:34:34.9173817Z event=OwnerTerminated source=supervisor pid=21051 baseline=-1 result=exit=137
+case=D4-5 ts=2026-10-20T02:34:34.9392245Z event=OwnerStarted source=owner pid=21063 baseline=-1 result=
+case=D4-5 ts=2026-10-20T02:34:34.9600581Z event=RecoveryStarted source=replacement pid=21063 baseline=4 result=
+case=D4-5 ts=2026-10-20T02:34:34.9667089Z event=RecoveryFinished source=replacement pid=21063 baseline=4 result=MayHaveExecuted
+case=D4-5 ts=2026-10-20T02:34:34.9718863Z event=RecoveryProcessExited source=supervisor pid=21063 baseline=-1 result=0

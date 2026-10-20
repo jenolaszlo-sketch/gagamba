@@ -1,0 +1,12 @@
+owner_pid=21009
+owner_start=21009:4633985
+journal=/home/gaga/qualification/evidence/wp05-d4-final/cases/gagamba-d4-D4-6-1e69c9ba979f49d4824d18a7251f60fe/journal
+source=/home/gaga/qualification/evidence/wp05-d4-final/cases/gagamba-d4-D4-6-1e69c9ba979f49d4824d18a7251f60fe/source
+staging=/home/gaga/qualification/evidence/wp05-d4-final/cases/gagamba-d4-D4-6-1e69c9ba979f49d4824d18a7251f60fe/staging
+child=d4-f73eb8c87a0c
+identity_exec=bf5439f4-45e3-4abc-9b22-6ca2e1cc0074
+identity_prep=8c65dd91-6629-4a43-b728-e519c81acdc4
+setup=46349893619778
+overall=46369893619778
+control_fd=84
+journal_seq=3

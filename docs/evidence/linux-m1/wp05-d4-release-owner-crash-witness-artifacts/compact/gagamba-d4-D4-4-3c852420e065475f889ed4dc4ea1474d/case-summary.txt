@@ -1,0 +1,9 @@
+case=gagamba-d4-D4-4-3c852420e065475f889ed4dc4ea1474d
+owner_ready=present
+result=absent
+barrier=name=after-committed pid=20898 sequence=-1 
+witness_events=14
+prewrite_events=1
+write_returned_events=1
+test_transport_events=0
+coordinator_exit_events=0

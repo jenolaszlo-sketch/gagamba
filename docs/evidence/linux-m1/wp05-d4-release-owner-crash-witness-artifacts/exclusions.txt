@@ -1,0 +1,32 @@
+# D4 explicit exclusions and limitations
+
+- No production source, production native code, release protocol, journal,
+  capability, snapshot schema, seccomp or Bubblewrap policy was modified.
+- No real target was executed. The production coordinator stops at the
+  pre-exec boundary.
+- No WP08 owner orchestration, WP10 target execution, production post-release
+  FD5 status, or owner integration was implemented.
+- No D5 native FD5 negative-status qualification and no D5 artifact-staging
+  claim. The three previously unavailable
+  `Wp05ReleasePathIndependentQualificationTests` ran in the D4 regression
+  filter after D4 built the native/WP04 artifacts; they are recorded as an
+  incidental regression, not D5 qualification.
+- C1-C4 remain unresolved. D4 observes behavior and does not decide or repair
+  the ambiguous-intent, stop-first capability, persisted stop deadline or
+  duplicate-retention contracts.
+- D4-8's replacement release is a test-only diagnostic that receives a newly
+  minted capability and a test-only interface transport. It is not a production
+  takeover and does not prove a privilege bypass.
+- D4-2b's retry release is a test-only diagnostic over a durable Intent; it is
+  refused without transport.
+- D4-10/D4-11/D4-13 use test-only `IJournalStorage` gates at real durable
+  operations. They are not kernel or ptrace breakpoints; the actual journal
+  files at the kill point are preserved.
+- D4-3/D4-4 record coordinator acceptance as unknown because the owner was
+  killed before reading it. No acceptance is inferred.
+- The production coordinator provides no receipt ledger and no post-release
+  status; no unlimited multi-delivery counter is claimed.
+- No full assembly, full G3 acceptance, cross-kernel or cross-distribution
+  portability claim is made.
+- The supervisor records test-only process identities and descriptors; it is
+  not an independent reviewer or acceptance authority.

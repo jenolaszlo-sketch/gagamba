@@ -1,0 +1,9 @@
+case=gagamba-d4-D4-10-ce500807504b42e3a48993277276816a
+owner_ready=present
+result=absent
+barrier=name=storage:create:gen.seal pid=20958 sequence=-1 
+witness_events=12
+prewrite_events=0
+write_returned_events=0
+test_transport_events=0
+coordinator_exit_events=0

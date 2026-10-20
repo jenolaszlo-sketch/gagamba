@@ -1,0 +1,81 @@
+# D4 commands and bindings
+
+Canonical repository/worktree:
+`C:\Users\Laszlos\source\repos\gagamba-d4`
+Branch: `implementation/wp05-d4-release-owner-witness`
+Preservation base: `7dd5ffa6c2ecaacc37022adb9a7b6c333695eef0`
+Product: R12 `38f6981b2a60daab2df37c92913a6760c1bef131`, tree
+`6854675d6b37a49d5302d6104103bdbfbc268040`.
+
+D4 commits:
+- D4.0 `26c73db350ed2d1c08d0be06763430aa0124ecad` - fixture design/feasibility.
+- D4.1 `acebcc83f541e1c4d4216578a2b9da45b2753b25` - fresh-process owner fixture.
+- D4.2 `e36a9ea4c67c415d9bf7c913d217a32be8ddd0f4` - supervisor, witnesses,
+  crash/no-resend probes.
+- D4.2b `de1ee93fdfa9cc29cf82a79f6e6dac9bfea7d753` - cross-process intent retry
+  refusal; evidence source HEAD.
+
+Q3 binding: `d0f2220d5e10abb97343d069a5ff43c22c72bfd7`;
+required-work blob `1768ec2a98e69349ca46137f4194fb0d49233772`.
+Q1: `3e6bb51c86146f0dd88d0058f587140a9dd2164f`.
+Q2: `6baa78d16e7e75626ec9d94af79a3b0780391e35`.
+
+## Linux source and native artifacts
+
+The Linux checkout `/home/gaga/qualification/gagamba-r12` was fetched from a
+bundle based on R12 to exact D4 HEAD `de1ee93`. It was clean at execution.
+
+```text
+sh eng/linux-m1/build-native.sh
+dotnet build tests/Fixtures/Wp05D4Owner/Wp05D4Owner.csproj -c Release --nologo
+```
+
+The native build produced the fixture and returned the frozen filter identity:
+
+```text
+2aa879019138c4d4066557213ce0037de70430aac3a05008eec5c8abd999d108  artifacts/linux-m1/wp04/seccomp-filter.bin
+```
+
+## D4 execution
+
+Executed as uid 1000 `gaga` via the root-only operator launcher in
+`/sys/fs/cgroup/gaga-delegated/host`; zero effective/permitted/inheritable/
+ambient capabilities. No target was executed.
+
+```text
+GAGAMBA_REPOSITORY_ROOT=/home/gaga/qualification/gagamba-r12 \
+D4_EVIDENCE=/home/gaga/qualification/evidence/wp05-d4-final/cases \
+dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj \
+  -c Release --nologo --filter FullyQualifiedName~Wp05D4SupervisorTests
+```
+
+The same command was rerun with a separate D4_EVIDENCE directory
+(`.../cases-run2`). Both runs: 15 passed, 0 failed, 0 skipped.
+
+## Focused regressions
+
+```text
+GAGAMBA_REPOSITORY_ROOT=/home/gaga/qualification/gagamba-r12 \
+dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj \
+  -c Release --nologo \
+  --filter 'FullyQualifiedName~Wp05ReleaseContractProbes|FullyQualifiedName~Wp05LeaseProcessProbes|FullyQualifiedName~Wp05ReleasePathIndependentQualificationTests|FullyQualifiedName~ReleaseArbiterTests|FullyQualifiedName~CoordinatorStatusReaderTests|FullyQualifiedName~Native.ReleaseProtocolTests|FullyQualifiedName~ReconcilerTests'
+```
+
+Result: 66 passed, 0 failed, 0 skipped. The three
+`Wp05ReleasePathIndependentQualificationTests` ran incidentally because D4
+built the previously missing native/WP04 artifacts; they are not a D5
+qualification claim.
+
+## Evidence generation
+
+```text
+bash /mnt/d/temp/wp05-d4-compact.sh
+GAGAMBA_DELEGATED_CGROUP=/sys/fs/cgroup/gaga-delegated \
+  bash /mnt/d/temp/wp05-d4-evidence.sh
+```
+
+The compact case set is `compact/`; it contains the supervisor/owner witness
+records, raw result files, barrier files, journal slots actually present, and
+case summaries. The source/staging binary copies from the full case directories
+are intentionally excluded from the committed artifact set; their roles and
+hashes are recorded in `compact/source-identities.txt` and `environment.txt`.

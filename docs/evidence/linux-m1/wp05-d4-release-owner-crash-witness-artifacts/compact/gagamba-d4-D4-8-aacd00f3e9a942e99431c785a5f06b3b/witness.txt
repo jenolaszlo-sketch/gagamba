@@ -1,0 +1,17 @@
+case=D4-8 ts=2026-10-20T02:34:33.7005601Z event=SupervisorStartedOwner source=supervisor pid=20979 baseline=-1 result=
+case=D4-8 ts=2026-10-20T02:34:33.7215107Z event=OwnerStarted source=owner pid=20979 baseline=-1 result=
+case=D4-8 ts=2026-10-20T02:34:33.7406239Z event=JournalWriterAcquired source=owner pid=20979 baseline=0 result=
+case=D4-8 ts=2026-10-20T02:34:33.8989438Z event=OwnerPrepared source=owner pid=20979 baseline=3 result=
+case=D4-8 ts=2026-10-20T02:34:33.9050904Z event=StopDurableWriteFailed source=test-only-storage pid=20979 baseline=-1 result=
+case=D4-8 ts=2026-10-20T02:34:33.9618580Z event=SupervisorBarrierObserved source=supervisor pid=20767 baseline=-1 result=after-stop
+case=D4-8 ts=2026-10-20T02:34:33.9637731Z event=SupervisorSigkill source=supervisor pid=20979 baseline=-1 result=20979:4633940
+case=D4-8 ts=2026-10-20T02:34:33.9682559Z event=OwnerTerminated source=supervisor pid=20979 baseline=-1 result=exit=137
+case=D4-8 ts=2026-10-20T02:34:33.9924709Z event=OwnerStarted source=owner pid=20991 baseline=-1 result=
+case=D4-8 ts=2026-10-20T02:34:34.0142430Z event=RecoveryStarted source=replacement pid=20991 baseline=3 result=
+case=D4-8 ts=2026-10-20T02:34:34.0206241Z event=RecoveryFinished source=replacement pid=20991 baseline=3 result=NotCommitted
+case=D4-8 ts=2026-10-20T02:34:34.0258411Z event=RecoveryProcessExited source=supervisor pid=20991 baseline=-1 result=0
+case=D4-8 ts=2026-10-20T02:34:34.0493375Z event=OwnerStarted source=owner pid=21000 baseline=-1 result=
+case=D4-8 ts=2026-10-20T02:34:34.0702151Z event=RecoveryStarted source=replacement pid=21000 baseline=3 result=
+case=D4-8 ts=2026-10-20T02:34:34.1128058Z event=TestTransportAttempt source=test-only-interface pid=21000 baseline=-1 result=attempt=1;bytes=128
+case=D4-8 ts=2026-10-20T02:34:34.1315375Z event=RecoveryFinished source=replacement pid=21000 baseline=3 result=NotCommitted
+case=D4-8 ts=2026-10-20T02:34:34.1402822Z event=RecoveryProcessExited source=supervisor pid=21000 baseline=-1 result=0

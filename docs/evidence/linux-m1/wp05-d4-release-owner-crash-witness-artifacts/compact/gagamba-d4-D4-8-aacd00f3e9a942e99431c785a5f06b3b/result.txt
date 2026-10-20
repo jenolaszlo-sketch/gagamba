@@ -1,0 +1,8 @@
+mode=stop-fail
+owner_pid=20979
+stop_accepted=True
+stop_durable=False
+stop_accepted_at=46339606863905
+stop_deadline=46344606863905
+journal_seq=3
+capability_live=True

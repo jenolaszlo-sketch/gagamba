@@ -1,0 +1,14 @@
+mode=recover
+owner_pid=20949
+writer=acquired
+baseline=4
+recovered=true
+sequence=4
+release_tag=none
+release_delivery=none
+stop=true
+stop_deadline=46344032915200
+classification_release=NotCommitted
+classification_exec=NotAttempted
+classification_root=NotStarted
+release_attempted=false

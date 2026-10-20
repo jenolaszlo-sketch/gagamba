@@ -1,0 +1,14 @@
+mode=recover
+owner_pid=20910
+writer=acquired
+baseline=5
+recovered=true
+sequence=5
+release_tag=Committed
+release_delivery=Delivered
+stop=false
+stop_deadline=0
+classification_release=MayHaveExecuted
+classification_exec=NotAttempted
+classification_root=Unknown
+release_attempted=false

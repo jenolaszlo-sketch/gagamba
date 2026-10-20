@@ -1,0 +1,25 @@
+# D4 test inventory and classification
+
+| Test | Boundary / property | Evidence source | Classification |
+|---|---|---|---|
+| D4_1_RealHeldReleaseHasOneFd4ObservationAndCleanup | Original owner, real HeldExecution, FD4, coordinator exit, replacement no-resend | Real production coordinator exit 0; test-only witness around `HeldExecution.TryWriteRelease` | PASS - REAL NATIVE OBSERVATION |
+| D4_2_CrashAfterDurableIntentRecoversAndDoesNotResend | SIGKILL after durable Intent | Real journal; replacement recovery | PASS - REAL PROCESS/JOURNAL |
+| D4_2b_ReplacementRetryOverDurableIntentIsRefusedWithoutTransport | CE-01 retention/retry across process lifetimes | Real journal; new test-only capability; test-only transport | PASS - TEST-ONLY AUTHORITY DIAGNOSTIC |
+| D4_3_CrashAfterFd4BeforeCommittedKeepsIntentAndObservedWriteOnly | SIGKILL after real FD4 return, before Committed | Real HeldExecution; witness pre-write/return; journal Intent | PASS - REAL FD4 WRITE OBSERVED; ACCEPTANCE UNKNOWN |
+| D4_4_CrashAfterCommittedPreservesCommitWithoutSecondWrite | SIGKILL after durable Committed | Real journal; replacement | PASS - REAL PROCESS/JOURNAL |
+| D4_5_CrashAfterConsumeBeforeWriteHasNoFd4Witness | Capability consumed, before FD4 | Real journal; witness | PASS - REAL PROCESS/JOURNAL |
+| D4_6_AmbiguousSealFailureRecoversIntentAndDoesNotResend | CE-02 ambiguous seal; owner death; recovery | Test-only storage fault in owner; real journal; replacement | PASS - COMPONENT FAULT + REAL RECOVERY |
+| D4_7_DurableStopRecoversWithoutRelease | Durable stop before owner death | Real journal; replacement | PASS - REAL PROCESS/JOURNAL |
+| D4_8_FailedDurableStopAllowsOnlyDiagnosticReplacementRelease | CE-03 non-durable runtime stop; fresh replacement release | Real journal; test-only write fault; new test-only capability and interface transport | PASS - DIAGNOSTIC ONLY; NOT A PRODUCTION TAKEOVER |
+| D4_9_OwnerConcurrentDuplicateHasOneFd4Attempt | CE-04 three-caller shape; one real FD4 write | Real HeldExecution; production coordinator exit 0 | PASS - REAL NATIVE OBSERVATION |
+| D4_10_PreIntentStorageGateLeavesNoIntentOrFd4 | D4-C01 pre-intent | Test-only storage gate; real journal | PASS - COMPONENT GATE + REAL PROCESS |
+| D4_11_DuringIntentStorageGatePreservesActualJournalState | D4-C02 during intent persistence | Test-only storage gate at first candidate write; real files | PASS - COMPONENT GATE; ACTUAL UNCERTAIN STATE PRESERVED |
+| D4_12_ReplacementCannotAcquireWhileOwnerIsAlive | Negative control: fence exclusion | Real journal lock; owner live | PASS - REAL PROCESS/LOCK |
+| D4_13_StopPersistenceGateDoesNotFabricateStopOrRelease | D4-C07 stop write in flight | Test-only storage gate; real journal | PASS - COMPONENT GATE + REAL PROCESS |
+| D4_14_TwoRecoveryContendersHaveOneEffectiveWriterAndNoRelease | D4-C08 competing recovery writers | Real journal lock in two processes | PASS - REAL PROCESS/LOCK |
+
+The D4 grid covers D4-C01 through D4-C08 and fresh-process CE-01, CE-02,
+CE-03 and CE-04. The D4.8 replacement release is deliberately labelled a
+test-only diagnostic because it receives a newly minted capability and no
+original FD4; it is not evidence of a production privilege bypass or an
+authorized WP08/WP10 takeover.

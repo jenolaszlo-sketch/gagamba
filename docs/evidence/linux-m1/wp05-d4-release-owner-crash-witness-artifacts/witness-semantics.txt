@@ -1,0 +1,62 @@
+# D4 witness semantics
+
+## Lane A - test-only interface witness
+
+`D4WitnessingTransport` implements `IReleaseWriteChannel` and wraps the real
+`HeldExecution`. For every attempt it appends:
+
+1. `PreWriteWitnessAcknowledged` before calling `HeldExecution.TryWriteRelease`;
+2. the actual `ReleasePipeWriteResult` in `WriteReturned` after the call;
+3. `CoordinatorExitObserved` only after the owner actually reads the real
+   production wrapper reaper (D4-1 and D4-9).
+
+The ledger is append-only and is written by the owner process. The supervisor
+also appends process/termination/recovery events. It is observer-only; it has
+no authority and does not modify the journal.
+
+`D4RecordingTransport` is a separate test-only interface transport used only
+for CE-01/CE-03 diagnostic authority probes. Its `TestTransportAttempt` event is
+never described as a physical FD4 write or native acceptance.
+
+## Lane B - real FD4/native path
+
+`ReleaseArbiter` is driven by a witness wrapper around the real
+`HeldExecution.TryWriteRelease`, which writes the exact 128-byte RELEASE frame
+over the real control pipe to the production pre-exec coordinator. D4-1 and
+D4-9 observed one write return classified `Delivered`, coordinator exit 0, and
+the durable Committed record. D4-3 observed one write return and durable Intent,
+but the owner was killed before reading the coordinator result; acceptance is
+`unknown`.
+
+`WriteReturned=Delivered` means the nonblocking system call returned the full
+frame. It does not by itself prove that the coordinator received or accepted it.
+Only the coordinator exit observation does, and only when the owner survives to
+observe it.
+
+## Ordering and ambiguity
+
+- A pre-write witness proves the owner reached the pre-write boundary; a crash
+  can still occur before the syscall.
+- A write return can occur before the supervisor observes it; that is why the
+  owner writes before/after events and the supervisor records the kill point.
+- A replacement recovery uses only the journal. It receives no witness writer,
+  no FD4 writer, no capability and no in-memory decision.
+- Missing acceptance after a crash is preserved as unknown. No `Committed` or
+  delivery claim is fabricated.
+
+## Negative controls exercised
+
+- Owner fence owned while live; supervisor does not hold it.
+- Replacement refused while the owner is alive.
+- Replacement fresh `TryAcquireWriter` succeeds only after death.
+- Owner FD4/control FD present before release; replacement has no FD4.
+- Two recovery contenders: one writer, one refusal.
+- Replacement retry over durable Intent: no transport attempt.
+- Failed durable stop: no FD4, and the diagnostic release test-interface
+  attempt is separately countable.
+- Witness files are append-only; a second attempt would add a second pre-write
+  line.
+
+Not exercised as D4 native negatives: a controlled real FD4 write failure and
+a real coordinator rejection with a killed owner. Those remain limitations, not
+passed cases.

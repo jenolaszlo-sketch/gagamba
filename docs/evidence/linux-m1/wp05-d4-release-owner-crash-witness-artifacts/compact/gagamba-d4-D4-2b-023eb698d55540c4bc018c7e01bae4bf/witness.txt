@@ -1,0 +1,15 @@
+case=D4-2b ts=2026-10-20T02:34:29.1266798Z event=SupervisorStartedOwner source=supervisor pid=20847 baseline=-1 result=
+case=D4-2b ts=2026-10-20T02:34:29.1461893Z event=OwnerStarted source=owner pid=20847 baseline=-1 result=
+case=D4-2b ts=2026-10-20T02:34:29.1629635Z event=JournalWriterAcquired source=owner pid=20847 baseline=0 result=
+case=D4-2b ts=2026-10-20T02:34:29.3033358Z event=OwnerPrepared source=owner pid=20847 baseline=3 result=
+case=D4-2b ts=2026-10-20T02:34:29.3366856Z event=SupervisorBarrierObserved source=supervisor pid=20767 baseline=-1 result=after-intent
+case=D4-2b ts=2026-10-20T02:34:29.3387903Z event=SupervisorSigkill source=supervisor pid=20847 baseline=-1 result=20847:4633483
+case=D4-2b ts=2026-10-20T02:34:29.3422944Z event=OwnerTerminated source=supervisor pid=20847 baseline=-1 result=exit=137
+case=D4-2b ts=2026-10-20T02:34:29.3685041Z event=OwnerStarted source=owner pid=20859 baseline=-1 result=
+case=D4-2b ts=2026-10-20T02:34:29.3913624Z event=RecoveryStarted source=replacement pid=20859 baseline=4 result=
+case=D4-2b ts=2026-10-20T02:34:29.3977574Z event=RecoveryFinished source=replacement pid=20859 baseline=4 result=MayHaveExecuted
+case=D4-2b ts=2026-10-20T02:34:29.4028307Z event=RecoveryProcessExited source=supervisor pid=20859 baseline=-1 result=0
+case=D4-2b ts=2026-10-20T02:34:29.4254101Z event=OwnerStarted source=owner pid=20868 baseline=-1 result=
+case=D4-2b ts=2026-10-20T02:34:29.4470004Z event=RecoveryStarted source=replacement pid=20868 baseline=4 result=
+case=D4-2b ts=2026-10-20T02:34:29.4744393Z event=RecoveryFinished source=replacement pid=20868 baseline=4 result=MayHaveExecuted
+case=D4-2b ts=2026-10-20T02:34:29.4807483Z event=RecoveryProcessExited source=supervisor pid=20868 baseline=-1 result=0
