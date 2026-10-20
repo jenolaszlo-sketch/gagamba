@@ -116,3 +116,59 @@ sole concurrency control.
 - Open: exact name of the retained decision for C1; C4 accepts an explicit
   ambiguous retained value.
 - GLM review required; approval: **NOT APPROVED**.
+
+## D6.1 revision - A-C4-1
+
+Status: **PROPOSED - NOT APPROVED**
+Verdict context: **DESIGN SUPPORTED FOR HUMAN DECISION - APPROVAL PENDING**
+
+### Exact refusal taxonomy (A-C4-1)
+
+The following R12 reason strings are the proposed discoverable taxonomy. They
+must be retained as the implementation's class identifiers/metadata, subject to
+normal source review; no new `ConcurrentRefusal` kind is proposed.
+
+| Class | R12 reason (exact where quoted) | Semantic boundary |
+|---|---|---|
+| Stop already won before intent | `release request refused: stop already won before durable intent` | runtime gate entry, retained |
+| Initial precondition/identity/deadline/prerequisite/capability | `release request refused before durable intent: identity, deadline, prerequisite or capability check failed` | pre-intent, non-retained |
+| Writer lease unavailable | `release request refused: writer lease is no longer live` | pre-intent journal serialization, non-retained |
+| No acknowledged snapshot | `release request refused: no acknowledged preparation snapshot ({latest.Error})` | pre-intent journal serialization, non-retained |
+| Preparation identity mismatch | `release intent refused: acknowledged preparation identity does not match the capability` | pre-intent journal validation, non-retained |
+| Existing Intent / transition plan refusal | `release intent refused: {intentError}` (structural includes `release intent already exists`; also `release intent is forbidden after a durable stop`) | semantic pre-gate, structurally no second Intent |
+| Definite journal write failure | `release intent was not durably acknowledged` | semantic pre-gate, non-retained |
+| C1 ambiguity | new `AmbiguousPersistence` result with a reason identifying seal ambiguity | semantic pre-gate persistence uncertainty; retained ambiguous |
+| Stop-winning gate refusal | `release gate refused: stop won during durable intent` | runtime gate, retained |
+| Post-intent expiry/prerequisite/liveness/capability | `release gate refused: expiry, prerequisite, liveness or capability check failed` | runtime gate, retained |
+| Capability consumption failure | `release gate refused: capability consumption rejected ({violation})` | runtime gate, retained |
+| Retained prior decision | `Duplicate` relabel; no new reason | retention path |
+
+Some journal validation/snapshot-liveness checks occur inside `_journalGate`
+(`ReleaseArbiter.cs:81-115`), but they are semantically **before** the runtime
+release-winning gate. Lock placement does not define the outside/gate taxonomy.
+A concurrent `Refused(NotCommitted)` is not evidence that another caller did
+not release. Existing Intent is structural and can never permit a second
+Intent/FD4.
+
+The optional `ConcurrentRefusal` kind is not introduced; `Refused` plus the
+reason/metadata is the recommended minimal form. The C1 ambiguous result is the
+explicit `ReleaseDecisionKind.AmbiguousPersistence` defined in the C1 record;
+C4 must use that vocabulary for retention and Duplicate relabeling.
+
+### Tests to add under later authorization
+
+- One deterministic test per reason class above (retained vs non-retained).
+- Winner A / concurrent B / later C with exact decisions and one Intent/write.
+- Sequential Duplicate and retention asymmetry.
+- Failed prerequisites, definite failure, ambiguous retained, existing Intent.
+- Stop-winning race and transport-failure retention.
+- Writer death/recovery/no resend.
+- Duplicate of AmbiguousPersistence; no retry.
+- Exact reason/metadata assertions so the taxonomy cannot silently drift.
+
+No waiting API, no additional synchronization, no schema change.
+
+### Human question
+
+Approve documented concurrent-refusal semantics, sequential Duplicate and the
+retention asymmetry? **PENDING HUMAN.**
