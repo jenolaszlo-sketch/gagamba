@@ -413,6 +413,9 @@ public sealed class Wp05D4SupervisorTests
         c.StartOwner("release", "--hold-before-release");
         await c.WaitReady(cancellation);
         await c.WaitBarrier("release-ready", cancellation);
+        var fence = await c.StartReplacement("recover", cancellation);
+        Assert.Equal(3, fence.ExitCode);
+        Assert.Equal("refused", c.ReadResult(fence.ResultPath)["writer"]);
         var earlyOwner = await c.StartReplacement("release-nowriter", cancellation);
         Assert.Equal(0, earlyOwner.ExitCode);
         var earlyResult = c.ReadResult(earlyOwner.ResultPath);
