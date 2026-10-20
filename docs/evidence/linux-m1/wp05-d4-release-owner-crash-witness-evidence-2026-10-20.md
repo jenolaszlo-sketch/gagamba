@@ -183,8 +183,11 @@ It contains:
   `exclusions.txt`, `review-binding.txt`, cleanup and `SHA256SUMS`.
 
 Test file SHA-256 values are recorded in `source-head.txt`. The artifact
-manifest must be verified against committed blobs after the evidence commit;
-the report intentionally does not claim a hash until that verification.
+manifest covers 133 preserved artifact entries and was checked against committed
+Git blob bytes by extracting the committed tree with `git archive` and running
+`sha256sum -c SHA256SUMS`: **133 entries, 0 mismatches**. The report SHA-256 is
+recorded in `report-sha256.txt` and is also verified. `commands.txt` records the
+regeneration path.
 
 ## I. Remaining work
 
