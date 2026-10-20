@@ -158,3 +158,100 @@ production tree and separately evidenced.
 
 Review status: independent GLM design review required. Approval: **NOT
 APPROVED**.
+
+## D6.1 revision - A-C1-1..A-C1-3
+
+Status: **PROPOSED - NOT APPROVED** (this revision supersedes the earlier
+D6.0 draft text; the D6.0 version remains recoverable at `23df1c5...`).
+
+### Exact ambiguity classification and vocabulary
+
+A definite failure and an ambiguous seal-release failure must be distinct at
+the arbiter boundary. The proposed minimal internal change is a typed
+journal-write outcome: `JournalIoResult`/the transition result carries an
+explicit ambiguity flag set only for the post-content `gen.seal` unlink
+failure (`OwnershipJournal.cs:486-489`); it is not set for a definite write,
+fsync, rename, or pre-content failure. String matching on the existing error
+text is not the contract.
+
+The selected proposed representation is
+`ReleaseDecisionKind.AmbiguousPersistence` (a new explicit kind), with:
+
+- `ReleaseDisposition.MayHaveExecuted`
+- `DeliveryResult.NotAttempted`
+- `DurableCommitted = false`
+- no FD4 write
+- retained in `_retainedRelease`
+- reason identifying journal ambiguity, not definite failure.
+
+`ReleaseDecisionKind.Stopped` is not reused: it denotes a stop result, not a
+journal persistence result. A separate uncertainty field remains a fallback
+only if implementation review demonstrates a concrete compatibility reason;
+the proposed default is the explicit kind.
+
+Consumer inventory to update/exhaustively verify: `ReleaseDecisionKind` and
+`ReleaseDecision.Kind` in `Execution/ReleaseDecision.cs`;
+`ReleaseArbiter` retained/return paths; `ReleaseArbiterTests`;
+`Wp05ReleaseContractProbes`; `Wp05ForgedAbortOracle*` and probe tests; and
+`Wp05ReleasePathIndependentQualificationTests`. No serializer or persisted
+journal field consumes this runtime kind at R12. Every switch/pattern match,
+log/projection and test expectation must be reviewed; adding an enum member is
+not assumed behavior-neutral.
+
+### Lock-safe sequence (A-C1-1)
+
+The revised proposed sequence is:
+
+1. `RequestRelease` has already completed its prechecks without `_gate`
+   (prechecks are outside the runtime gate). It enters `_journalGate` for the
+   intent attempt (`ReleaseArbiter.cs:81-115`).
+2. `WriteTransition` returns a typed ambiguous outcome. The release path leaves
+   the `_journalGate` block; it must not hold `_journalGate` while acquiring
+   `_gate`, and must not hold `_gate` across journal I/O.
+3. The release path acquires `_gate`, retains
+   `ReleaseDecisionKind.AmbiguousPersistence`, and releases `_gate`. This
+   retention is the visibility point for concurrent callers: a later caller
+   sees the retained ambiguous result and receives `Duplicate`; it cannot
+   start a new release.
+4. After `_gate` is released, the same call invokes the bounded stop as a
+   **tail action**. `RequestStop` may then take `_gate` for runtime acceptance
+   (C2 consumption), release it, and take `_journalGate` for best-effort
+   durable stop persistence. There is no nested `_gate` -> `_journalGate`
+   call originating inside the release journal block.
+5. The stop's failure or inability to persist never changes the retained
+   ambiguous result and never authorizes FD4. If the stop invocation cannot
+   complete, the result remains ambiguous and the owner/recovery boundary is
+   responsible for bounded cleanup.
+
+The exact visibility ordering is: durable journal attempt -> ambiguous typed
+result -> release of journal serialization -> runtime retention under `_gate`
+-> release of `_gate` -> stop tail action. C# monitor re-entrancy is not used
+as proof; the opposing-order concurrent test is required.
+
+### Capability state (A-C1-3)
+
+C1 relies on C2 as an implementation prerequisite. Between the ambiguous
+journal result and stop acceptance, the capability can still be live, but the
+sealed journal refuses every further release transition/acknowledged baseline,
+so no FD4 can be authorized. C2 consumes the capability at runtime stop
+acceptance. If stop persistence fails, the capability is still consumed; if
+the owner dies before stop completes, the replacement has no capability and
+must recover from the sealed journal. No RELEASE is resent. This transient
+window is documented, not claimed corrected in R12.
+
+### Tests to add under later authorization
+
+- `AmbiguousReleaseStopLockOrderProbe`: barriers at the journal/`_gate`
+  transition and stop acceptance; opposing ordering; detect inversion,
+  deadlock, journal I/O under `_gate`, second FD4, wrong retention.
+- `AmbiguousWedgeThenClockUnavailableStop`: compose ambiguous wedge with a
+  clock-unavailable stop; no FD4, no false definite NotCommitted, runtime stop,
+  C2 consumption, no fabricated StopRecord, retained ambiguity, owner death,
+  conservative recovery, no resend.
+- Definite/ambiguous distinction; both-slot Intent; retained Duplicate;
+  stop-failure; fresh writer/recovery; no second Intent/FD4.
+
+### Open human question
+
+Approve the explicit `AmbiguousPersistence` decision, retained ambiguity,
+lock-safe tail stop and C2-based capability closure? **PENDING HUMAN.**
