@@ -15,7 +15,7 @@ repeat of D1-D5 qualification.
 - D6.0 review Q3: `2a235c391673258023d3b3058ad7bbb31cc20406`.
 - D6.0 preservation/base: `947aebe7df2eefd116cfba8a4b3e1baee2067e0d`.
 - D6.1 branch: `design/wp05-d6-1-contract-amendments`.
-- D6.1 design commit: `ec973ccc403cdcc0bbfe749cf3d95fbcc2f9789d`.
+- D6.1 design commit: `bdd711d716fe2bcf0cd06183efc4d36ab030ece4`.
 - This handoff is the final documentation-only addendum on the same branch;
   the design commit remains the exact amendment source for focused review.
 
