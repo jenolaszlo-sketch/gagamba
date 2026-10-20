@@ -148,10 +148,17 @@ all durable deadline arithmetic. The recommended minimal resolution is:
   declare the accepted epoch; an incompatible clock is rejected rather than
   silently used.
 
-The exact interface shape (an epoch property on the Reconciler's narrow clock
-dependency or a corroborated-clock wrapper) is to be fixed in implementation
-review; no schema change is proposed. A duration-vs-deadline
-`StopAndAwaitEmpty` overload is optional; the epoch is the substantive issue.
+Proposed exact corroboration mechanism (subject to implementation review):
+introduce an internal `MonotonicEpoch` marker with one production value, `Qpc`;
+add a narrow `Epoch` member to the `IDomainClock` dependency used by
+`Reconciler`; have `LaunchDomainClock` and the replacement owner domain clock
+return `Qpc`; require `Reconciler` to accept only `Qpc` and route any other or
+unknown epoch to quarantine/Unknown. Test clocks must explicitly declare the
+accepted epoch; a `Stopwatch.StartNew()` relative clock cannot declare `Qpc`.
+No new durable field is required: boot identity is verified separately by the
+existing recovery planner, and the epoch marker is a runtime contract. A
+duration-vs-deadline `StopAndAwaitEmpty` overload is optional; the epoch is the
+substantive issue.
 
 When a StopRecord exists and the clock is corroborated:
 
