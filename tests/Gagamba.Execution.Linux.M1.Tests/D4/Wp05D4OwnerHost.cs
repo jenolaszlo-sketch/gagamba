@@ -65,7 +65,7 @@ public static class Wp05D4OwnerHost
         var goPath = args.GetValueOrDefault("go", string.Empty);
         D4Witness.Append(witnessPath, caseId, "OwnerStarted", "owner", Environment.ProcessId.ToString());
 
-        if (mode is "recover" or "replace-release" or "retry-release" or "contend")
+        if (mode is "recover" or "replace-release" or "retry-release" or "release-nowriter" or "contend")
         {
             return RunRecoveryMode(mode, args, caseId, resultPath, witnessPath, barrierPath, goPath);
         }
@@ -239,6 +239,9 @@ public static class Wp05D4OwnerHost
             }
         }
 
+        if (mode == "release-nowriter")
+            return RunNoWriterRelease(args, caseId, journalPath, journal, initial, resultPath, witnessPath);
+
         if (!journal.TryAcquireWriter(out var writer, out var acquireError))
         {
             D4Result.Write(resultPath, new Dictionary<string, string>
@@ -350,6 +353,63 @@ public static class Wp05D4OwnerHost
                 D4Barrier.Park(barrierPath, goPath, "after-replacement-release");
             return 0;
         }
+    }
+
+    private static int RunNoWriterRelease(
+        IReadOnlyDictionary<string, string> args,
+        string caseId,
+        string journalPath,
+        OwnershipJournal journal,
+        JournalReadResult initial,
+        string resultPath,
+        string witnessPath)
+    {
+        if (!initial.Ok || initial.Snapshot is null)
+        {
+            D4Result.Write(resultPath, new Dictionary<string, string>
+            {
+                ["mode"] = "release-nowriter",
+                ["writer"] = "not-acquired",
+                ["error"] = OneLine(initial.Error),
+            });
+            return 4;
+        }
+
+        var sourcePath = Required(args, "source");
+        var manifest = BuildManifestFromSource(sourcePath);
+        var digest = ManifestCodec.ComputeDigestBytes(manifest);
+        var preparation = initial.Snapshot.Preparation
+            ?? throw new InvalidOperationException("prepared snapshot has no preparation identity");
+        var identity = new PreparationIdentity(
+            preparation.ExecutionId, preparation.IssuerId, preparation.GenerationId,
+            preparation.PreparationId, digest);
+        var store = new PreparedTransaction.PreparationStore(
+            preparation.IssuerId, preparation.GenerationId, new D4Clock());
+        using var capability = store.Mint(
+            manifest, identity, MonotonicNanoseconds() + 60_000_000_000L, TestClosure.Empty());
+        using var lease = new JournalWriterLease(journal, journalPath, initial.Snapshot.Sequence);
+        var transport = new D4RecordingTransport(witnessPath, caseId, Environment.ProcessId);
+        var arbiter = new ReleaseArbiter(
+            capability, journal, lease, new D4Clock(),
+            () => new ReleasePrerequisites(true, true, true, true), transport);
+        var now = MonotonicNanoseconds();
+        var decision = arbiter.RequestRelease(
+            new ReleaseRequest(identity, now + 10_000_000_000L, now + 30_000_000_000L));
+        D4Result.Write(resultPath, new Dictionary<string, string>
+        {
+            ["mode"] = "release-nowriter",
+            ["owner_pid"] = Environment.ProcessId.ToString(),
+            ["writer"] = "not-acquired",
+            ["capability_source"] = "new-test-only-capability",
+            ["decision_kind"] = decision.Kind.ToString(),
+            ["durable_release"] = decision.DurableRelease.ToString(),
+            ["delivery"] = decision.Delivery.ToString(),
+            ["transport_attempts"] = transport.Attempts.ToString(),
+            ["journal_seq"] = initial.Snapshot.Sequence.ToString(),
+        });
+        D4Witness.Append(witnessPath, caseId, "NoWriterReleaseAttempt", "test-only-owner",
+            Environment.ProcessId.ToString(), result: decision.Kind.ToString());
+        return 0;
     }
 
     private static string OneLine(string value) =>
