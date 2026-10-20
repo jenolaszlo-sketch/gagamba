@@ -64,7 +64,7 @@ Cases:
 - Owner death/fresh writer: same stored deadline; no reset.
 - Repeated reconciliation: same absolute deadline; progress persistence does
   not reset it.
-- Domain already empty: no unnecessary stop; record/verify.
+- Domain already empty: no unnecessary WAIT under the D6.1 Option B draft; a kill may be issued before the population observation; record/verify.
 - Domain still populated after expiry: bounded zero-wait stop then conservative
   Unknown if not empty.
 - Partial cleanup/resume: completed bits persist; remaining deadline unchanged.
@@ -90,7 +90,7 @@ timing evidence.
 
 1. Within-window takeover uses remaining allowance.
 2. Late takeover uses less time; no extension.
-3. Expired deadline triggers zero-wait urgent stop.
+3. Expired-deadline behavior is policy-pending; Policy A recommends zero-wait kill + one observation, not selected.
 4. Restart does not reset allowance.
 5. Repeated reconciliation does not accumulate time.
 6. Zero/invalid deadline is Unknown/quarantine, no fresh 5s.
