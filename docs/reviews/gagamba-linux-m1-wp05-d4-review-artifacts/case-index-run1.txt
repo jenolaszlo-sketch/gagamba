@@ -1,0 +1,16 @@
+== case index run1-cg (prewrite/transport counts)
+D4-10|prewrite=0|test_transport=0|write_returned=0|coord_exit=0
+D4-11|prewrite=0|test_transport=0|write_returned=0|coord_exit=0
+D4-12|prewrite=0|test_transport=0|write_returned=0|coord_exit=0
+D4-13|prewrite=0|test_transport=0|write_returned=0|coord_exit=0
+D4-14|prewrite=0|test_transport=0|write_returned=0|coord_exit=0
+D4-1|prewrite=1|test_transport=0|write_returned=1|coord_exit=1
+D4-2b|prewrite=0|test_transport=0|write_returned=0|coord_exit=0
+D4-2|prewrite=0|test_transport=0|write_returned=0|coord_exit=0
+D4-3|prewrite=1|test_transport=0|write_returned=1|coord_exit=0
+D4-4|prewrite=1|test_transport=0|write_returned=1|coord_exit=0
+D4-5|prewrite=0|test_transport=0|write_returned=0|coord_exit=0
+D4-6|prewrite=0|test_transport=0|write_returned=0|coord_exit=0
+D4-7|prewrite=0|test_transport=0|write_returned=0|coord_exit=0
+D4-8|prewrite=0|test_transport=1|write_returned=0|coord_exit=0
+D4-9|prewrite=1|test_transport=0|write_returned=1|coord_exit=1

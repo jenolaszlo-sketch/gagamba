@@ -1,0 +1,62 @@
+== case=gagamba-d4-D4-6-5a0d5f4f912044d48757e62204d0b381
+-- result.txt
+mode=ambiguous-intent
+owner_pid=25313
+decision_kind=Refused
+durable_release=NotCommitted
+delivery=NotAttempted
+durable_committed=False
+journal_seq=-1
+transport_attempts=0
+-- owner.ready
+owner_pid=25313
+owner_start=25313:5042583
+journal=/home/gaga/qualification/evidence/d4-review/run1-cg/gagamba-d4-D4-6-5a0d5f4f912044d48757e62204d0b381/journal
+source=/home/gaga/qualification/evidence/d4-review/run1-cg/gagamba-d4-D4-6-5a0d5f4f912044d48757e62204d0b381/source
+staging=/home/gaga/qualification/evidence/d4-review/run1-cg/gagamba-d4-D4-6-5a0d5f4f912044d48757e62204d0b381/staging
+child=d4-1b11a3937c8d
+identity_exec=23a42d40-627d-4724-98b5-bd61a1af8aa6
+identity_prep=9dc679ef-7662-45e2-832b-37a80834fdf6
+setup=50435872989426
+overall=50455872989426
+control_fd=84
+journal_seq=3
+-- barrier.txt
+name=after-ambiguous
+pid=25313
+sequence=-1
+-- witness.txt
+case=D4-6 ts=2026-10-20T03:42:40.1250628Z event=SupervisorStartedOwner source=supervisor pid=25313 baseline=-1 result=
+case=D4-6 ts=2026-10-20T03:42:40.1463875Z event=OwnerStarted source=owner pid=25313 baseline=-1 result=
+case=D4-6 ts=2026-10-20T03:42:40.1657791Z event=JournalWriterAcquired source=owner pid=25313 baseline=0 result=
+case=D4-6 ts=2026-10-20T03:42:40.3039718Z event=OwnerPrepared source=owner pid=25313 baseline=3 result=
+case=D4-6 ts=2026-10-20T03:42:40.3183017Z event=AmbiguousSealFailureInjected source=test-only-storage pid=25313 baseline=-1 result=
+case=D4-6 ts=2026-10-20T03:42:40.3370967Z event=SupervisorBarrierObserved source=supervisor pid=25071 baseline=-1 result=after-ambiguous
+case=D4-6 ts=2026-10-20T03:42:40.3388311Z event=SupervisorSigkill source=supervisor pid=25313 baseline=-1 result=25313:5042583
+case=D4-6 ts=2026-10-20T03:42:40.3424700Z event=OwnerTerminated source=supervisor pid=25313 baseline=-1 result=exit=137
+case=D4-6 ts=2026-10-20T03:42:40.3666127Z event=OwnerStarted source=owner pid=25325 baseline=-1 result=
+case=D4-6 ts=2026-10-20T03:42:40.3772615Z event=RecoverySealObserved source=replacement pid=25325 baseline=-1 result=commit seal present: durability ambiguous, explicit recovery required
+case=D4-6 ts=2026-10-20T03:42:40.3929376Z event=RecoverySealConfirmed source=replacement pid=25325 baseline=-1 result=recovered
+case=D4-6 ts=2026-10-20T03:42:40.3960436Z event=RecoveryStarted source=replacement pid=25325 baseline=4 result=
+case=D4-6 ts=2026-10-20T03:42:40.4019379Z event=RecoveryFinished source=replacement pid=25325 baseline=4 result=MayHaveExecuted
+case=D4-6 ts=2026-10-20T03:42:40.4063906Z event=RecoveryProcessExited source=supervisor pid=25325 baseline=-1 result=0
+-- replacement files
+replacement-recover-7c88f50aba7f420093a07a8124098721.txt
+-- replacement-recover-7c88f50aba7f420093a07a8124098721.txt
+mode=recover
+owner_pid=25325
+writer=acquired
+baseline=4
+recovered=true
+sequence=4
+release_tag=Intent
+release_delivery=NotAttempted
+stop=false
+stop_deadline=0
+classification_release=MayHaveExecuted
+classification_exec=NotAttempted
+classification_root=Unknown
+release_attempted=false
+-- journal slots
+gen.a
+gen.b

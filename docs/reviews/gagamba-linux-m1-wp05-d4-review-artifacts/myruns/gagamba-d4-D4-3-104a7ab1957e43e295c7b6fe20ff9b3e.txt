@@ -1,0 +1,54 @@
+== case=gagamba-d4-D4-3-104a7ab1957e43e295c7b6fe20ff9b3e
+-- result.txt
+-- owner.ready
+owner_pid=25181
+owner_start=25181:5042128
+journal=/home/gaga/qualification/evidence/d4-review/run1-cg/gagamba-d4-D4-3-104a7ab1957e43e295c7b6fe20ff9b3e/journal
+source=/home/gaga/qualification/evidence/d4-review/run1-cg/gagamba-d4-D4-3-104a7ab1957e43e295c7b6fe20ff9b3e/source
+staging=/home/gaga/qualification/evidence/d4-review/run1-cg/gagamba-d4-D4-3-104a7ab1957e43e295c7b6fe20ff9b3e/staging
+child=d4-b7f395fcc51a
+identity_exec=c8d2c7bf-e3f4-4d1c-a75e-47e88973797e
+identity_prep=3ba87f40-284b-4bc3-9554-acdd62004b47
+setup=50431327779435
+overall=50451327779435
+control_fd=84
+journal_seq=3
+-- barrier.txt
+name=after-write
+pid=25181
+sequence=-1
+-- witness.txt
+case=D4-3 ts=2026-10-20T03:42:35.5796024Z event=SupervisorStartedOwner source=supervisor pid=25181 baseline=-1 result=
+case=D4-3 ts=2026-10-20T03:42:35.6003467Z event=OwnerStarted source=owner pid=25181 baseline=-1 result=
+case=D4-3 ts=2026-10-20T03:42:35.6195891Z event=JournalWriterAcquired source=owner pid=25181 baseline=0 result=
+case=D4-3 ts=2026-10-20T03:42:35.7578504Z event=OwnerPrepared source=owner pid=25181 baseline=3 result=
+case=D4-3 ts=2026-10-20T03:42:35.7737237Z event=PreWriteWitnessAcknowledged source=owner pid=25181 baseline=-1 result=attempt=1;bytes=128
+case=D4-3 ts=2026-10-20T03:42:35.7762913Z event=WriteReturned source=owner pid=25181 baseline=-1 result=Delivered
+case=D4-3 ts=2026-10-20T03:42:35.7875017Z event=SupervisorBarrierObserved source=supervisor pid=25071 baseline=-1 result=after-write
+case=D4-3 ts=2026-10-20T03:42:35.7889817Z event=SupervisorSigkill source=supervisor pid=25181 baseline=-1 result=25181:5042128
+case=D4-3 ts=2026-10-20T03:42:35.7921476Z event=OwnerTerminated source=supervisor pid=25181 baseline=-1 result=exit=137
+case=D4-3 ts=2026-10-20T03:42:35.7942667Z event=SupervisorFenceProbe source=supervisor pid=25071 baseline=4 result=
+case=D4-3 ts=2026-10-20T03:42:35.8189579Z event=OwnerStarted source=owner pid=25193 baseline=-1 result=
+case=D4-3 ts=2026-10-20T03:42:35.8409399Z event=RecoveryStarted source=replacement pid=25193 baseline=4 result=
+case=D4-3 ts=2026-10-20T03:42:35.8485449Z event=RecoveryFinished source=replacement pid=25193 baseline=4 result=MayHaveExecuted
+case=D4-3 ts=2026-10-20T03:42:35.8538096Z event=RecoveryProcessExited source=supervisor pid=25193 baseline=-1 result=0
+-- replacement files
+replacement-recover-aaea448fc2aa47a29bb41f7c0f999a8e.txt
+-- replacement-recover-aaea448fc2aa47a29bb41f7c0f999a8e.txt
+mode=recover
+owner_pid=25193
+writer=acquired
+baseline=4
+recovered=true
+sequence=4
+release_tag=Intent
+release_delivery=NotAttempted
+stop=false
+stop_deadline=0
+classification_release=MayHaveExecuted
+classification_exec=NotAttempted
+classification_root=Unknown
+release_attempted=false
+-- journal slots
+gen.a
+gen.b

@@ -1,0 +1,2 @@
+READY
+kid_pid=26898 exited=True exit_code=137

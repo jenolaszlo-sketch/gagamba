@@ -1,0 +1,44 @@
+== case=gagamba-d4-D4-9-6629ac7ac1f640bab94e02cebab23d7a
+-- result.txt
+mode=duplicate
+owner_pid=25397
+winner_kind=Released
+winner_durable=MayHaveExecuted
+concurrent_kind=Refused
+concurrent_durable=NotCommitted
+later_kind=Duplicate
+journal_seq=5
+transport_attempts=1
+coordinator_exit=0
+-- owner.ready
+owner_pid=25397
+owner_start=25397:5042695
+journal=/home/gaga/qualification/evidence/d4-review/run1-cg/gagamba-d4-D4-9-6629ac7ac1f640bab94e02cebab23d7a/journal
+source=/home/gaga/qualification/evidence/d4-review/run1-cg/gagamba-d4-D4-9-6629ac7ac1f640bab94e02cebab23d7a/source
+staging=/home/gaga/qualification/evidence/d4-review/run1-cg/gagamba-d4-D4-9-6629ac7ac1f640bab94e02cebab23d7a/staging
+child=d4-605b22a1ad8f
+identity_exec=09b28c88-472e-4c48-9965-41de57f58319
+identity_prep=f5c1597e-113d-43f2-9188-97d3ef3f343b
+setup=50436999150797
+overall=50456999150797
+control_fd=84
+journal_seq=3
+-- barrier.txt
+name=after-duplicate
+pid=25397
+sequence=-1
+-- witness.txt
+case=D4-9 ts=2026-10-20T03:42:41.2519135Z event=SupervisorStartedOwner source=supervisor pid=25397 baseline=-1 result=
+case=D4-9 ts=2026-10-20T03:42:41.2733960Z event=OwnerStarted source=owner pid=25397 baseline=-1 result=
+case=D4-9 ts=2026-10-20T03:42:41.2916526Z event=JournalWriterAcquired source=owner pid=25397 baseline=0 result=
+case=D4-9 ts=2026-10-20T03:42:41.4245069Z event=OwnerPrepared source=owner pid=25397 baseline=3 result=
+case=D4-9 ts=2026-10-20T03:42:41.4419782Z event=PreWriteWitnessAcknowledged source=owner pid=25397 baseline=-1 result=attempt=1;bytes=128
+case=D4-9 ts=2026-10-20T03:42:41.4456994Z event=WriteReturned source=owner pid=25397 baseline=-1 result=Delivered
+case=D4-9 ts=2026-10-20T03:42:41.4576366Z event=CoordinatorExitObserved source=owner pid=25397 baseline=-1 result=0
+case=D4-9 ts=2026-10-20T03:42:41.4616474Z event=SupervisorBarrierObserved source=supervisor pid=25071 baseline=-1 result=after-duplicate
+case=D4-9 ts=2026-10-20T03:42:41.4634272Z event=SupervisorSigkill source=supervisor pid=25397 baseline=-1 result=25397:5042695
+case=D4-9 ts=2026-10-20T03:42:41.4672688Z event=OwnerTerminated source=supervisor pid=25397 baseline=-1 result=exit=137
+-- replacement files
+-- journal slots
+gen.a
+gen.b

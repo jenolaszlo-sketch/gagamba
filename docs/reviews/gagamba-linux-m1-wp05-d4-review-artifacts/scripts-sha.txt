@@ -1,0 +1,17 @@
+== source hashes for review binding (re-extracted)
+HASH=bind.txt
+f0f3e4555828f8a8a0598078df6935fd8f7fdb49b3da29d9217eb5b3df3f62ac  bind.txt
+HASH=d4-review-payload.sh
+ab7f063ca83a15d493fa4ac4497de7d06765193582870a548e8c46b83e7828b4  d4-review-payload.sh
+HASH=d4-review-payload2.sh
+3614ee45f2d9114165f2c3c5536d05caae6134872798031bab24ee9176236a0a  d4-review-payload2.sh
+HASH=d4-controls2.sh
+80e79eb08150e7e60a3305395658a132c8cd3dee819764b7c3344471f7e7484e  d4-controls2.sh
+HASH=d4-controls3.sh
+9abd80814d0ef337502fbfbc035ca3c349dbb37715f87f4172fc849616f05535  d4-controls3.sh
+HASH=d4-manifest-verify.sh
+516a3e13589b3d31ed2ea6239f675c71f18d4f546219558e6e653e867ffc4bc1  d4-manifest-verify.sh
+HASH=d4-final-binding.sh
+26c18eb04b0f9e1d8a5633c4768be249fa73fa58e5ed1200b629375d303dfcdc  d4-final-binding.sh
+HASH=d4-myruns-collect.sh
+a620986f29b7e2cdd462ee682beb0860c3be7465783ac00aa5b4e57f385ec64e  d4-myruns-collect.sh

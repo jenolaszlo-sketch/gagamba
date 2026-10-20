@@ -1,0 +1,51 @@
+== case=gagamba-d4-D4-5-dc00a4ba7e2040f6b616846245466f0f
+-- result.txt
+-- owner.ready
+owner_pid=25355
+owner_start=25355:5042639
+journal=/home/gaga/qualification/evidence/d4-review/run1-cg/gagamba-d4-D4-5-dc00a4ba7e2040f6b616846245466f0f/journal
+source=/home/gaga/qualification/evidence/d4-review/run1-cg/gagamba-d4-D4-5-dc00a4ba7e2040f6b616846245466f0f/source
+staging=/home/gaga/qualification/evidence/d4-review/run1-cg/gagamba-d4-D4-5-dc00a4ba7e2040f6b616846245466f0f/staging
+child=d4-78676eb69f68
+identity_exec=7a757f3d-9075-41b2-ac81-ce482e31675e
+identity_prep=4700750b-fb07-4d31-9a04-0c1d01796ee7
+setup=50436440889548
+overall=50456440889548
+control_fd=84
+journal_seq=3
+-- barrier.txt
+name=after-consume
+pid=25355
+sequence=-1
+-- witness.txt
+case=D4-5 ts=2026-10-20T03:42:40.6917475Z event=SupervisorStartedOwner source=supervisor pid=25355 baseline=-1 result=
+case=D4-5 ts=2026-10-20T03:42:40.7131270Z event=OwnerStarted source=owner pid=25355 baseline=-1 result=
+case=D4-5 ts=2026-10-20T03:42:40.7327929Z event=JournalWriterAcquired source=owner pid=25355 baseline=0 result=
+case=D4-5 ts=2026-10-20T03:42:40.8660431Z event=OwnerPrepared source=owner pid=25355 baseline=3 result=
+case=D4-5 ts=2026-10-20T03:42:40.9001248Z event=SupervisorBarrierObserved source=supervisor pid=25071 baseline=-1 result=after-consume
+case=D4-5 ts=2026-10-20T03:42:40.9027829Z event=SupervisorSigkill source=supervisor pid=25355 baseline=-1 result=25355:5042639
+case=D4-5 ts=2026-10-20T03:42:40.9063948Z event=OwnerTerminated source=supervisor pid=25355 baseline=-1 result=exit=137
+case=D4-5 ts=2026-10-20T03:42:40.9290003Z event=OwnerStarted source=owner pid=25367 baseline=-1 result=
+case=D4-5 ts=2026-10-20T03:42:40.9525116Z event=RecoveryStarted source=replacement pid=25367 baseline=4 result=
+case=D4-5 ts=2026-10-20T03:42:40.9598203Z event=RecoveryFinished source=replacement pid=25367 baseline=4 result=MayHaveExecuted
+case=D4-5 ts=2026-10-20T03:42:40.9664562Z event=RecoveryProcessExited source=supervisor pid=25367 baseline=-1 result=0
+-- replacement files
+replacement-recover-a67b0b0b33004ce696895e3cebf0651e.txt
+-- replacement-recover-a67b0b0b33004ce696895e3cebf0651e.txt
+mode=recover
+owner_pid=25367
+writer=acquired
+baseline=4
+recovered=true
+sequence=4
+release_tag=Intent
+release_delivery=NotAttempted
+stop=false
+stop_deadline=0
+classification_release=MayHaveExecuted
+classification_exec=NotAttempted
+classification_root=Unknown
+release_attempted=false
+-- journal slots
+gen.a
+gen.b

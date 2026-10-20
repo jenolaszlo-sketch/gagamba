@@ -1,0 +1,54 @@
+== case=gagamba-d4-D4-11-b5bb5fbd47794b9e8d94047d62b1bf4a
+-- result.txt
+-- owner.ready
+owner_pid=25376
+owner_start=25376:5042667
+journal=/home/gaga/qualification/evidence/d4-review/run1-cg/gagamba-d4-D4-11-b5bb5fbd47794b9e8d94047d62b1bf4a/journal
+source=/home/gaga/qualification/evidence/d4-review/run1-cg/gagamba-d4-D4-11-b5bb5fbd47794b9e8d94047d62b1bf4a/source
+staging=/home/gaga/qualification/evidence/d4-review/run1-cg/gagamba-d4-D4-11-b5bb5fbd47794b9e8d94047d62b1bf4a/staging
+child=d4-e2e64931c6cf
+identity_exec=5ff3716b-4a58-4107-aa59-698bb9eb1393
+identity_prep=7fcb9729-cc7a-42fb-b15f-fb5ffc1cc97f
+setup=50436717284410
+overall=50456717284410
+control_fd=84
+journal_seq=3
+-- barrier.txt
+name=storage:write:gen.tmp
+pid=25376
+sequence=-1
+-- witness.txt
+case=D4-11 ts=2026-10-20T03:42:40.9709596Z event=SupervisorStartedOwner source=supervisor pid=25376 baseline=-1 result=
+case=D4-11 ts=2026-10-20T03:42:40.9913415Z event=OwnerStarted source=owner pid=25376 baseline=-1 result=
+case=D4-11 ts=2026-10-20T03:42:41.0092400Z event=JournalWriterAcquired source=owner pid=25376 baseline=0 result=
+case=D4-11 ts=2026-10-20T03:42:41.1451473Z event=OwnerPrepared source=owner pid=25376 baseline=3 result=
+case=D4-11 ts=2026-10-20T03:42:41.1532413Z event=StorageGateReached source=owner pid=25376 baseline=-1 result=write:gen.tmp
+case=D4-11 ts=2026-10-20T03:42:41.1808306Z event=SupervisorBarrierObserved source=supervisor pid=25071 baseline=-1 result=storage:write:gen.tmp
+case=D4-11 ts=2026-10-20T03:42:41.1827600Z event=SupervisorSigkill source=supervisor pid=25376 baseline=-1 result=25376:5042667
+case=D4-11 ts=2026-10-20T03:42:41.1862628Z event=OwnerTerminated source=supervisor pid=25376 baseline=-1 result=exit=137
+case=D4-11 ts=2026-10-20T03:42:41.2089900Z event=OwnerStarted source=owner pid=25388 baseline=-1 result=
+case=D4-11 ts=2026-10-20T03:42:41.2205247Z event=RecoverySealObserved source=replacement pid=25388 baseline=-1 result=commit seal present: durability ambiguous, explicit recovery required
+case=D4-11 ts=2026-10-20T03:42:41.2350898Z event=RecoverySealConfirmed source=replacement pid=25388 baseline=-1 result=recovered
+case=D4-11 ts=2026-10-20T03:42:41.2375522Z event=RecoveryStarted source=replacement pid=25388 baseline=3 result=
+case=D4-11 ts=2026-10-20T03:42:41.2429238Z event=RecoveryFinished source=replacement pid=25388 baseline=3 result=NotCommitted
+case=D4-11 ts=2026-10-20T03:42:41.2478737Z event=RecoveryProcessExited source=supervisor pid=25388 baseline=-1 result=0
+-- replacement files
+replacement-recover-077ed8a5e43e47f581693a5735429038.txt
+-- replacement-recover-077ed8a5e43e47f581693a5735429038.txt
+mode=recover
+owner_pid=25388
+writer=acquired
+baseline=3
+recovered=true
+sequence=3
+release_tag=none
+release_delivery=none
+stop=false
+stop_deadline=0
+classification_release=NotCommitted
+classification_exec=NotAttempted
+classification_root=NotStarted
+release_attempted=false
+-- journal slots
+gen.a
+gen.b

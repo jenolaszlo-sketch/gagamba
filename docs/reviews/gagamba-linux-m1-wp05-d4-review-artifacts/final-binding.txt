@@ -1,0 +1,13 @@
+== report hash as committed at 8254cf89f091eb5baf305d125e00cd2bf61a1ca1
+53c76c575fdf74c9543614bb629a39257b9255c81b2d963102aeb3157d79fa58  -
+== recorded
+53c76c575fdf74c9543614bb629a39257b9255c81b2d963102aeb3157d79fa58  EXPECT
+== test/fixture blob content hashes at de1ee93 (piped cat-file)
+tests/Gagamba.Execution.Linux.M1.Tests/D4/Wp05D4OwnerHost.cs 09b2fd82c1d93ef8cf8476ca81b6e15f03fb5025996bd4f3e6199378ec0234e0  -
+tests/Gagamba.Execution.Linux.M1.Tests/D4/Wp05D4SupervisorTests.cs 70b8b602bc75f399d60d6b4657200312f51052dde7c4d58fa336dd9fea56677f  -
+tests/Fixtures/Wp05D4Owner/Wp05D4Owner.csproj 70155896bb8c2db4d34ecebe92a15eb4858a9682c1e82cfbbf96376ff29c347c  -
+tests/Fixtures/Wp05D4Owner/Program.cs b2223942f67b94b5fec8054d6ed1a66066ceb9d9e63b27cba8c5162ddf9f9dcf  -
+docs/plans/gagamba-linux-m1-wp05-d4-fixture-design.md 99e4f60eab692f2e872b23ce17208167f65675257df9b23288670851cbd5dea3  -
+== tests tree diff de1ee93..8254cf89f091eb5baf305d125e00cd2bf61a1ca1 (should be empty)
+== tests diff exit=0
+== src diff de1ee93..8254cf89f091eb5baf305d125e00cd2bf61a1ca1 vs R12 (should be empty)

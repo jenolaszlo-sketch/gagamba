@@ -1,0 +1,4 @@
+elapsed_ms=10864
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:    66, Skipped:     0, Total:    66, Duration: 6 s - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)

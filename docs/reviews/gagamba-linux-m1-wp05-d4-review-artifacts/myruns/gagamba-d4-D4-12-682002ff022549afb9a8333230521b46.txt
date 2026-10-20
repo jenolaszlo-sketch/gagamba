@@ -1,0 +1,43 @@
+== case=gagamba-d4-D4-12-682002ff022549afb9a8333230521b46
+-- result.txt
+-- owner.ready
+owner_pid=25086
+owner_start=25086:5041990
+journal=/home/gaga/qualification/evidence/d4-review/run1-cg/gagamba-d4-D4-12-682002ff022549afb9a8333230521b46/journal
+source=/home/gaga/qualification/evidence/d4-review/run1-cg/gagamba-d4-D4-12-682002ff022549afb9a8333230521b46/source
+staging=/home/gaga/qualification/evidence/d4-review/run1-cg/gagamba-d4-D4-12-682002ff022549afb9a8333230521b46/staging
+child=d4-a2c977347a3c
+identity_exec=ee9e1602-7847-4ef5-bd13-050d57602a3e
+identity_prep=f2922e13-6e3b-4a8a-b779-515cc242240c
+setup=50429958239033
+overall=50449958239033
+control_fd=84
+journal_seq=3
+-- barrier.txt
+name=after-intent
+pid=25086
+sequence=-1
+-- witness.txt
+case=D4-12 ts=2026-10-20T03:42:34.2000909Z event=SupervisorStartedOwner source=supervisor pid=25086 baseline=-1 result=
+case=D4-12 ts=2026-10-20T03:42:34.2274689Z event=OwnerStarted source=owner pid=25086 baseline=-1 result=
+case=D4-12 ts=2026-10-20T03:42:34.2509525Z event=JournalWriterAcquired source=owner pid=25086 baseline=0 result=
+case=D4-12 ts=2026-10-20T03:42:34.4007810Z event=OwnerPrepared source=owner pid=25086 baseline=3 result=
+case=D4-12 ts=2026-10-20T03:42:34.4649327Z event=SupervisorBarrierObserved source=supervisor pid=25071 baseline=-1 result=after-intent
+case=D4-12 ts=2026-10-20T03:42:34.4912064Z event=OwnerStarted source=owner pid=25099 baseline=-1 result=
+case=D4-12 ts=2026-10-20T03:42:34.5191971Z event=RecoveryWriterRefused source=replacement pid=25099 baseline=-1 result=
+case=D4-12 ts=2026-10-20T03:42:34.5258467Z event=RecoveryProcessExited source=supervisor pid=25099 baseline=-1 result=3
+case=D4-12 ts=2026-10-20T03:42:34.5344609Z event=SupervisorSigkill source=supervisor pid=25086 baseline=-1 result=25086:5041990
+case=D4-12 ts=2026-10-20T03:42:34.5392721Z event=OwnerTerminated source=supervisor pid=25086 baseline=-1 result=exit=137
+case=D4-12 ts=2026-10-20T03:42:34.5486058Z event=SupervisorFenceProbe source=supervisor pid=25071 baseline=4 result=
+-- replacement files
+replacement-recover-a9fce1a8d90e494eb047ea332fed3023.txt
+-- replacement-recover-a9fce1a8d90e494eb047ea332fed3023.txt
+mode=recover
+owner_pid=25099
+writer=refused
+error=lock ownership.lock: IOException
+initial_journal_ok=True
+initial_journal_error=
+-- journal slots
+gen.a
+gen.b

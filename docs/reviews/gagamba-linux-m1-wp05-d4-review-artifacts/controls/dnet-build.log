@@ -1,0 +1,14 @@
+  Determining projects to restore...
+  Restored /home/gaga/qualification/evidence/d4-review/controls/dnetproj/dnetproj.csproj (in 270 ms).
+/home/gaga/.nuget/packages/microsoft.build.tasks.git/10.0.401/build/Microsoft.Build.Tasks.Git.targets(25,5): warning : Unable to locate repository with working directory that contains directory '/home/gaga/qualification/evidence/d4-review/controls/dnetproj'. [/home/gaga/qualification/evidence/d4-review/controls/dnetproj/dnetproj.csproj]
+/home/gaga/.nuget/packages/microsoft.sourcelink.common/10.0.401/build/Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [/home/gaga/qualification/evidence/d4-review/controls/dnetproj/dnetproj.csproj]
+  dnetproj -> /home/gaga/qualification/evidence/d4-review/controls/dnetproj/bin/Release/net10.0/dnetprobe.dll
+
+Build succeeded.
+
+/home/gaga/.nuget/packages/microsoft.build.tasks.git/10.0.401/build/Microsoft.Build.Tasks.Git.targets(25,5): warning : Unable to locate repository with working directory that contains directory '/home/gaga/qualification/evidence/d4-review/controls/dnetproj'. [/home/gaga/qualification/evidence/d4-review/controls/dnetproj/dnetproj.csproj]
+/home/gaga/.nuget/packages/microsoft.sourcelink.common/10.0.401/build/Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [/home/gaga/qualification/evidence/d4-review/controls/dnetproj/dnetproj.csproj]
+    2 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.83

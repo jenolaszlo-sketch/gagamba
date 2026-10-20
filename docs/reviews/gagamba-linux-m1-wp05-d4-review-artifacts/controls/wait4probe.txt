@@ -1,0 +1,1 @@
+kill_rc=0 kill_errno=0 wait_pid=26544 signaled=1termsig=9

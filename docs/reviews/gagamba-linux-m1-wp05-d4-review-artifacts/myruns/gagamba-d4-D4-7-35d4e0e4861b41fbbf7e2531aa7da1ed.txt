@@ -1,0 +1,59 @@
+== case=gagamba-d4-D4-7-35d4e0e4861b41fbbf7e2531aa7da1ed
+-- result.txt
+mode=stop
+owner_pid=25241
+stop_accepted=True
+stop_durable=True
+stop_accepted_at=50425067432024
+stop_deadline=50430067432024
+journal_seq=4
+capability_live=True
+-- owner.ready
+owner_pid=25241
+owner_start=25241:5042489
+journal=/home/gaga/qualification/evidence/d4-review/run1-cg/gagamba-d4-D4-7-35d4e0e4861b41fbbf7e2531aa7da1ed/journal
+source=/home/gaga/qualification/evidence/d4-review/run1-cg/gagamba-d4-D4-7-35d4e0e4861b41fbbf7e2531aa7da1ed/source
+staging=/home/gaga/qualification/evidence/d4-review/run1-cg/gagamba-d4-D4-7-35d4e0e4861b41fbbf7e2531aa7da1ed/staging
+child=d4-c8a3193e27fb
+identity_exec=f55b4092-cff1-4124-9617-2c56e0a3a0d4
+identity_prep=ee400cc8-4a48-464b-8637-1373e424bb44
+setup=50434931586828
+overall=50454931586828
+control_fd=84
+journal_seq=3
+-- barrier.txt
+name=after-stop
+pid=25241
+sequence=-1
+-- witness.txt
+case=D4-7 ts=2026-10-20T03:42:39.1851591Z event=SupervisorStartedOwner source=supervisor pid=25241 baseline=-1 result=
+case=D4-7 ts=2026-10-20T03:42:39.2065665Z event=OwnerStarted source=owner pid=25241 baseline=-1 result=
+case=D4-7 ts=2026-10-20T03:42:39.2245025Z event=JournalWriterAcquired source=owner pid=25241 baseline=0 result=
+case=D4-7 ts=2026-10-20T03:42:39.3592007Z event=OwnerPrepared source=owner pid=25241 baseline=3 result=
+case=D4-7 ts=2026-10-20T03:42:39.3959609Z event=SupervisorBarrierObserved source=supervisor pid=25071 baseline=-1 result=after-stop
+case=D4-7 ts=2026-10-20T03:42:39.3981404Z event=SupervisorSigkill source=supervisor pid=25241 baseline=-1 result=25241:5042489
+case=D4-7 ts=2026-10-20T03:42:39.4014234Z event=OwnerTerminated source=supervisor pid=25241 baseline=-1 result=exit=137
+case=D4-7 ts=2026-10-20T03:42:39.4246899Z event=OwnerStarted source=owner pid=25253 baseline=-1 result=
+case=D4-7 ts=2026-10-20T03:42:39.4478889Z event=RecoveryStarted source=replacement pid=25253 baseline=4 result=
+case=D4-7 ts=2026-10-20T03:42:39.4550744Z event=RecoveryFinished source=replacement pid=25253 baseline=4 result=NotCommitted
+case=D4-7 ts=2026-10-20T03:42:39.4606310Z event=RecoveryProcessExited source=supervisor pid=25253 baseline=-1 result=0
+-- replacement files
+replacement-recover-c5620f8c1e4f49188d559b9c736da46c.txt
+-- replacement-recover-c5620f8c1e4f49188d559b9c736da46c.txt
+mode=recover
+owner_pid=25253
+writer=acquired
+baseline=4
+recovered=true
+sequence=4
+release_tag=none
+release_delivery=none
+stop=true
+stop_deadline=50430067432024
+classification_release=NotCommitted
+classification_exec=NotAttempted
+classification_root=NotStarted
+release_attempted=false
+-- journal slots
+gen.a
+gen.b

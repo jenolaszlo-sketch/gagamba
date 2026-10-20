@@ -1,0 +1,87 @@
+== case=gagamba-d4-D4-8-21d1878b5c2e4b7c8625141f08113347
+-- result.txt
+mode=stop-fail
+owner_pid=25283
+stop_accepted=True
+stop_durable=False
+stop_accepted_at=50425629046719
+stop_deadline=50430629046719
+journal_seq=3
+capability_live=True
+-- owner.ready
+owner_pid=25283
+owner_start=25283:5042544
+journal=/home/gaga/qualification/evidence/d4-review/run1-cg/gagamba-d4-D4-8-21d1878b5c2e4b7c8625141f08113347/journal
+source=/home/gaga/qualification/evidence/d4-review/run1-cg/gagamba-d4-D4-8-21d1878b5c2e4b7c8625141f08113347/source
+staging=/home/gaga/qualification/evidence/d4-review/run1-cg/gagamba-d4-D4-8-21d1878b5c2e4b7c8625141f08113347/staging
+child=d4-b44dcb0bc332
+identity_exec=da5f6172-1b0d-4674-90e9-51e06a82f641
+identity_prep=7bbbc0af-3575-4b12-8b66-6fb8cb6146ea
+setup=50435492857245
+overall=50455492857245
+control_fd=84
+journal_seq=3
+-- barrier.txt
+name=after-stop
+pid=25283
+sequence=-1
+-- witness.txt
+case=D4-8 ts=2026-10-20T03:42:39.7445395Z event=SupervisorStartedOwner source=supervisor pid=25283 baseline=-1 result=
+case=D4-8 ts=2026-10-20T03:42:39.7648819Z event=OwnerStarted source=owner pid=25283 baseline=-1 result=
+case=D4-8 ts=2026-10-20T03:42:39.7846750Z event=JournalWriterAcquired source=owner pid=25283 baseline=0 result=
+case=D4-8 ts=2026-10-20T03:42:39.9204631Z event=OwnerPrepared source=owner pid=25283 baseline=3 result=
+case=D4-8 ts=2026-10-20T03:42:39.9275373Z event=StopDurableWriteFailed source=test-only-storage pid=25283 baseline=-1 result=
+case=D4-8 ts=2026-10-20T03:42:39.9522364Z event=SupervisorBarrierObserved source=supervisor pid=25071 baseline=-1 result=after-stop
+case=D4-8 ts=2026-10-20T03:42:39.9539784Z event=SupervisorSigkill source=supervisor pid=25283 baseline=-1 result=25283:5042544
+case=D4-8 ts=2026-10-20T03:42:39.9571465Z event=OwnerTerminated source=supervisor pid=25283 baseline=-1 result=exit=137
+case=D4-8 ts=2026-10-20T03:42:39.9802773Z event=OwnerStarted source=owner pid=25295 baseline=-1 result=
+case=D4-8 ts=2026-10-20T03:42:40.0027879Z event=RecoveryStarted source=replacement pid=25295 baseline=3 result=
+case=D4-8 ts=2026-10-20T03:42:40.0089435Z event=RecoveryFinished source=replacement pid=25295 baseline=3 result=NotCommitted
+case=D4-8 ts=2026-10-20T03:42:40.0154873Z event=RecoveryProcessExited source=supervisor pid=25295 baseline=-1 result=0
+case=D4-8 ts=2026-10-20T03:42:40.0387105Z event=OwnerStarted source=owner pid=25304 baseline=-1 result=
+case=D4-8 ts=2026-10-20T03:42:40.0608923Z event=RecoveryStarted source=replacement pid=25304 baseline=3 result=
+case=D4-8 ts=2026-10-20T03:42:40.1036808Z event=TestTransportAttempt source=test-only-interface pid=25304 baseline=-1 result=attempt=1;bytes=128
+case=D4-8 ts=2026-10-20T03:42:40.1164445Z event=RecoveryFinished source=replacement pid=25304 baseline=3 result=NotCommitted
+case=D4-8 ts=2026-10-20T03:42:40.1208500Z event=RecoveryProcessExited source=supervisor pid=25304 baseline=-1 result=0
+-- replacement files
+replacement-recover-e8b0af3b620e49249cea83b05939d13a.txt
+replacement-replace-release-696768d1d33143a5ae4738cbc8607446.txt
+-- replacement-recover-e8b0af3b620e49249cea83b05939d13a.txt
+mode=recover
+owner_pid=25295
+writer=acquired
+baseline=3
+recovered=true
+sequence=3
+release_tag=none
+release_delivery=none
+stop=false
+stop_deadline=0
+classification_release=NotCommitted
+classification_exec=NotAttempted
+classification_root=NotStarted
+release_attempted=false
+-- replacement-replace-release-696768d1d33143a5ae4738cbc8607446.txt
+mode=replace-release
+owner_pid=25304
+writer=acquired
+baseline=3
+recovered=true
+sequence=3
+release_tag=none
+release_delivery=none
+stop=false
+stop_deadline=0
+classification_release=NotCommitted
+classification_exec=NotAttempted
+classification_root=NotStarted
+release_attempted=true
+release_source=new-test-only-capability
+replacement_decision=Released
+replacement_durable=MayHaveExecuted
+replacement_delivery=Delivered
+replacement_transport_attempts=1
+replacement_journal_seq=5
+-- journal slots
+gen.a
+gen.b
