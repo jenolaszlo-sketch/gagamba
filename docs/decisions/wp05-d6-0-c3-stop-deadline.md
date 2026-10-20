@@ -1,6 +1,7 @@
 # WP05 D6.0 C3 - R27 Persisted Stop-Deadline Consumption
 
 Status: **PROPOSED - NOT APPROVED**
+C3 status: **CONTRACT CHOICE REQUIRED - HUMAN DECISION PENDING**
 Human expired-deadline policy choice: **PENDING**
 
 Decision owner: human WP05 release/security decision holder after GLM design
