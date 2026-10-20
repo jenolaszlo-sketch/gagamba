@@ -157,9 +157,11 @@ Artifacts: `docs/evidence/linux-m1/wp05-d5-native-status-qualification-artifacts
 Includes run logs, native-status raw frame directories, descriptor topology,
 D4/D5 compact case records, source/environment identity, cleanup and manifest.
 
-The `SHA256SUMS` covers the artifact directory; committed-byte verification is
-recorded after the evidence commit. Historical D4 evidence and the historical
-qualification-coordinator identity are not rewritten.
+The `SHA256SUMS` covers 254 preserved artifact entries and was verified
+against committed Git blob bytes by `git archive` plus `sha256sum -c`:
+**254 entries, 0 mismatches**. The report SHA-256 in `report-sha256.txt` also
+matches. Historical D4 evidence and the historical qualification-coordinator
+identity are not rewritten.
 
 ## I. Remaining work
 
