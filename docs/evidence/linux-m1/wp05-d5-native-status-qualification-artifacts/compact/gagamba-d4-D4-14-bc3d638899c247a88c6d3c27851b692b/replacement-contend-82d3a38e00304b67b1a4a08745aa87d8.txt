@@ -1,0 +1,6 @@
+mode=contend
+owner_pid=37396
+writer=refused
+error=lock ownership.lock: IOException
+initial_journal_ok=False
+initial_journal_error=no durable snapshot exists

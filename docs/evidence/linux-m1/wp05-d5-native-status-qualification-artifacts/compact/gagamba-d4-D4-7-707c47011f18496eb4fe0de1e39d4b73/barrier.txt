@@ -1,3 +1,0 @@
-name=after-stop
-pid=33857
-sequence=-1

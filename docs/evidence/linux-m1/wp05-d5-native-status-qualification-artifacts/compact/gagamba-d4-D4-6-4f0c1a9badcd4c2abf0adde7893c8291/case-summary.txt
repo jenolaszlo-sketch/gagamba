@@ -1,4 +1,0 @@
-case=gagamba-d4-D4-6-4f0c1a9badcd4c2abf0adde7893c8291
-owner_ready=present
-result=present
-witness_lines=14

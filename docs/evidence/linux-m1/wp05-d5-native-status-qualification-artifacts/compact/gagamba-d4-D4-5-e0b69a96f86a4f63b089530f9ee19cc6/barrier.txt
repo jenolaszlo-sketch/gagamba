@@ -1,3 +1,0 @@
-name=after-consume
-pid=33971
-sequence=-1

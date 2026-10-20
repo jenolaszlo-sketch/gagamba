@@ -21,7 +21,7 @@ QUALIFIED`.
   - D5.1 `ed49ed5` fixture corrections and cross-process probes.
   - D5.2 `dbef38a` native FD5 status probes.
   - D5.3 `fa028c2` native persistence/cleanup.
-  - D5.1b `30a8eb9` strengthened two-owner contention; evidence source HEAD.
+  - D5.1b `30a8eb9` strengthened two-owner contention.\n  - D5.1c `a990982` cross-owner fence refusal; evidence source HEAD.
 - Production `src`/production `native` diff against R12: **empty**.
 - Frozen Q3 harness and its test sources are unchanged.
 
@@ -118,7 +118,7 @@ release or FD5 status.
 
 ## F. Formal release-path conversion
 
-Each method was run separately at exact D5 source `30a8eb9` on the supported
+Each method was run separately at exact D5 source `a990982` on the supported
 profile with the generated native fixture, WP04 coordinator and frozen filter.
 
 | Row | Exact method | Requirement mapping | Result | Raw evidence |
@@ -157,9 +157,9 @@ Artifacts: `docs/evidence/linux-m1/wp05-d5-native-status-qualification-artifacts
 Includes run logs, native-status raw frame directories, descriptor topology,
 D4/D5 compact case records, source/environment identity, cleanup and manifest.
 
-The `SHA256SUMS` covers 255 preserved artifact entries and was verified
+The `SHA256SUMS` covers 256 preserved artifact entries and was verified
 against committed Git blob bytes by `git archive` plus `sha256sum -c`:
-**255 entries, 0 mismatches**. The report SHA-256 in `report-sha256.txt` also
+**256 entries, 0 mismatches**. The report SHA-256 in `report-sha256.txt` also
 matches. Historical D4 evidence and the historical qualification-coordinator
 identity are not rewritten.
 

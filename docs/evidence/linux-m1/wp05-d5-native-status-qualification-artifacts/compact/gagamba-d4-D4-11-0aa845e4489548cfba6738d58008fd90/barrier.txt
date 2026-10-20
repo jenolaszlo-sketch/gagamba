@@ -1,3 +1,0 @@
-name=storage:write:gen.tmp
-pid=33992
-sequence=-1

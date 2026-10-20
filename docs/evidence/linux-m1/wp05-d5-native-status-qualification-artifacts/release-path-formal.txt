@@ -1,6 +1,6 @@
 # D5 formal release-path rows
 
-Source HEAD `30a8eb9`; product R12; native fixture
+Source HEAD `a990982`; product R12; native fixture
 `ee25a876...`, WP04 coordinator `5e55e92...`, filter
 `2aa879019...`; test-only qualification coordinator not used by these
 production-pre-exec rows.

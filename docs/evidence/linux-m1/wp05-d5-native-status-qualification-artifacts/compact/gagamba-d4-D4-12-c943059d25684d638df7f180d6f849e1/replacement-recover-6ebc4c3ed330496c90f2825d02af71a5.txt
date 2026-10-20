@@ -1,0 +1,6 @@
+mode=recover
+owner_pid=37264
+writer=refused
+error=lock ownership.lock: IOException
+initial_journal_ok=True
+initial_journal_error=

@@ -1,6 +1,6 @@
 # D5 commands
 
-Source HEAD: `30a8eb9`. Product: R12 `38f6981...`, tree `6854675d...`.
+Source HEAD: `a990982`. Product: R12 `38f6981...`, tree `6854675d...`.
 Branch: `implementation/wp05-d5-native-status-qualification`.
 Preservation base: `5c58b06...`.
 

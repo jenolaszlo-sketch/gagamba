@@ -1,6 +1,6 @@
 # D5 CR completion matrix
 
-Evidence source HEAD: `30a8eb9`. D5.0 plan `c3cc27e`; D5.1 `ed49ed5`;
+Evidence source HEAD: `a990982`. D5.0 plan `c3cc27e`; D5.1 `ed49ed5`;
 D5.2 `dbef38a`; D5.3 `fa028c2`; D5.1b `30a8eb9`.
 
 | CR | Status | Evidence |

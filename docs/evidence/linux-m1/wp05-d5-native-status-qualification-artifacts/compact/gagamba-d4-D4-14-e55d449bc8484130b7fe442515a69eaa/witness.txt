@@ -1,6 +1,0 @@
-case=D4-14 ts=2026-10-20T07:52:49.5146861Z event=OwnerStarted source=owner pid=33818 baseline=-1 result=
-case=D4-14 ts=2026-10-20T07:52:49.5277275Z event=RecoveryStarted source=replacement pid=33818 baseline=0 result=
-case=D4-14 ts=2026-10-20T07:52:49.5396570Z event=SupervisorBarrierObserved source=supervisor pid=33636 baseline=-1 result=contend-held
-case=D4-14 ts=2026-10-20T07:52:49.5639624Z event=OwnerStarted source=owner pid=33827 baseline=-1 result=
-case=D4-14 ts=2026-10-20T07:52:49.5839395Z event=RecoveryWriterRefused source=replacement pid=33827 baseline=-1 result=
-case=D4-14 ts=2026-10-20T07:52:49.5882529Z event=RecoveryProcessExited source=supervisor pid=33827 baseline=-1 result=3

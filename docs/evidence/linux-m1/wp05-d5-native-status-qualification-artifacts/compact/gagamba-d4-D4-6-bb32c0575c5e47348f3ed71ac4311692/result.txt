@@ -1,0 +1,8 @@
+mode=ambiguous-intent
+owner_pid=37498
+decision_kind=Refused
+durable_release=NotCommitted
+delivery=NotAttempted
+durable_committed=False
+journal_seq=-1
+transport_attempts=0

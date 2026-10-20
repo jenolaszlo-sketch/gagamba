@@ -1,8 +1,0 @@
-mode=ambiguous-intent
-owner_pid=33929
-decision_kind=Refused
-durable_release=NotCommitted
-delivery=NotAttempted
-durable_committed=False
-journal_seq=-1
-transport_attempts=0

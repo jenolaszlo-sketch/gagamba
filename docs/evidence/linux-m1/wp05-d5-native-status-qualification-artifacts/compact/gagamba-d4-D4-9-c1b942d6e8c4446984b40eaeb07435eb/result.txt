@@ -1,0 +1,10 @@
+mode=duplicate
+owner_pid=37582
+winner_kind=Released
+winner_durable=MayHaveExecuted
+concurrent_kind=Refused
+concurrent_durable=NotCommitted
+later_kind=Duplicate
+journal_seq=5
+transport_attempts=1
+coordinator_exit=0
