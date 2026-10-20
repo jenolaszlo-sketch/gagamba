@@ -1,0 +1,8 @@
+6.6.114.1-microsoft-standard-WSL2
+69d053fb-0fd9-4209-aa5b-be128424ed34
+cgroup:
+cgroup.controllers
+cgroup.max.depth
+cgroup.max.descendants
+cgroup.pressure
+cgroup.procs

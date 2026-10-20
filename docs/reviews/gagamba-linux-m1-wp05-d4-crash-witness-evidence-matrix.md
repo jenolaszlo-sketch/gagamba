@@ -11,7 +11,8 @@ kernel `6.6.114.1-microsoft-standard-WSL2`, boot
 cgroup parent `/sys/fs/cgroup/gaga-delegated` with `memory pids` subtree
 control, .NET `10.0.112`, GCC `15.2.0`, Bubblewrap `0.11.1`), launched by the
 frozen `/root/wp05/run-as-gaga-in-host.sh` (cgroup probe + setpriv uid 1000 +
-caps none). Native artifact identities matched the frozen set:
+caps none); kernel/boot identity committed as
+`environment-review.txt` (captured on the same boot as the reruns). Native artifact identities matched the frozen set:
 
 - fixture `ee25a876bad5312afcece19821668b91db0c09f5a2f1aaac74f00c45806e2305`
 - exec coordinator `5e55e92b4228013e88a9fb34ac4674c5b9a485e831db7ff6d86f02df7c68c73b`
@@ -25,7 +26,7 @@ Bound source HEAD for execution: `de1ee93fdfa9cc29cf82a79f6e6dac9bfea7d753`
 
 | Run | Commands | Producer claim | Reviewer run | Wall |
 |---|---|---|---|---|
-| D4 supervisor run 1 | filter `FullyQualifiedName~Wp05D4SupervisorTests`, GAGAMBA_DELEGATED_CGROUP via launcher | 15/0/0 (xunit 7 s) | **15 passed / 0 failed / 0 skipped** (xunit 7 s) | 11.6 s |
+| D4 supervisor run 1 | filter `FullyQualifiedName~Wp05D4SupervisorTests`, GAGAMBA_DELEGATED_CGROUP via launcher | 15/0/0 (xunit 7 s) | **15 passed / 0 failed / 0 skipped** (xunit 7 s) | 11.5 s |
 | D4 supervisor run 2 | same, fresh `D4_EVIDENCE` dir | 15/0/0 | **15/0/0** | 11.3 s |
 | Focused regressions | producer's filter (66) | 66/0/0 | **66 passed / 0 failed / 0 skipped** (no skips) | 10.9 s |
 

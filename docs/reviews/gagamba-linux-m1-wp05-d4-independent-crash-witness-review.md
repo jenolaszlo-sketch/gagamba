@@ -27,9 +27,11 @@ CORRECTIONS AND D5 ITEMS REQUIRED - C1-C4 UNRESOLVED; RELEASE NOT QUALIFIED`.
   `de1ee93…` (D4.2b retry refusal; evidence source HEAD) -> `cebee05…`
   (evidence) -> `8254cf8…` (manifest-verification binding).
 - Production immutability re-verified on this branch:
-  `git diff 38f6981… 8254cf8… -- src` and `-- tests` between `de1ee93…` and
-  `8254cf8…` are both EMPTY; `git diff R12 de1ee93 -- src native artifacts`
-  name-status produced no production rows (test-only change set unchanged).
+  `git diff 338a98a… de1ee93… -- src native artifacts` is EMPTY (R12 tip
+  `338a98af269e6b5839f3ccc2e0881f016153b01e` is the parent of the first
+  D1–D3 commit) and `git diff de1ee93… 8254cf8… -- tests` is EMPTY (the
+  `tests` tree is identical at the evidence source HEAD and the manifest
+  binding tip).
   Frozen R12 tree `6854675d6b37a49d5302d6104103bdbfbc268040`;
   baseline `58cb1ba31c102e0e9d5488721e8c438adb55c614`.
 - Four load-bearing source files byte-verified inside the canonical repository
@@ -108,8 +110,8 @@ positions and decision kinds; `HelperInstallation.PinnedSha256`;
    mapped to the kernel-observed signal death, with `/proc/<pid>/stat`
    start-time identity (`pid:starttime`) recorded before the kill and
    `OwnerReady` in `owner.ready` asserted against the live descendant.
-   Superset control probe `wait4` reports `signaled=1 termsig=9` on this
-   kernel; see E.
+    Superset control probe `wait4` reports `signaled=1 termsig=9` on this
+    kernel; see D.
 6. **No second writes.** Case evidence (mine and the producer's) shows
    `TestTransportAttempt`/`PreWriteWitnessAcknowledged` counts consistent
    with at-most-once observed attempts; D4-4 (crash after durable
@@ -184,7 +186,7 @@ evidence instead of "bare exit 137". Findings:
    and `ProcessExitStatus.ExitCode` is documented and implemented as
    `128 + signal` for signal deaths, with the true signal recorded
    separately in `ProcessExitStatus.Signal` (public surface for the
-   launched-child `Process` object exposes `ExitCode` only).Fetched
+    launched-child `Process` object exposes `ExitCode` only). Fetched
    upstream source (`Process.Unix.cs`, `ProcessExitStatus.cs`).
 2. **Kernel truth (reviewer control).** A C probe on the supported WSL2
    profile (fork + `kill(2, SIGKILL)` + `wait4`) reports
@@ -200,8 +202,8 @@ evidence instead of "bare exit 137". Findings:
    (`dnet-self-exit-control.txt`). Bare `137` alone is not a complete
    disambiguation; the fixture's boundedness comes from three further
    properties: (a) the owner is a direct child started by the supervisor
-   itself, (b) the audited fixture source never self-returns 137 (all
-   fixture exits are 0/1/3 or `1` exception path; the fixture body has no
+   itself, (b) the audited fixture source never self-returns 137 (the
+   fixture's own bounded exit paths are 0, 1 and 3; the fixture body has no
    `Environment.Exit(137)` and does not forward/return 137), and (c) the
    journal flock fence-release assertion is real kernel corroboration of
    owner death (POSIX flock can only be reacquired once the owner's fds
@@ -219,11 +221,13 @@ evidence instead of "bare exit 137". Findings:
 
 - **xunit parallelism.** All 15 D4 facts share one class (one xunit
   collection) but xunit.v3 still parallelizes within a collection in
-  this profile — my run showed 15 tests started within ~90 ms of each
-  other. This explains the producer's "Duration: 7 s" summary inside a
-  longer shell wall time and is NOT counter-evidence (the per-case
-  cgroup/journal/witness trees are independent; the fixture never uses
-  `waitid(-1)`). It is, however, a Q3-harness standing consideration:
+  this profile — in my initial permission-failure probe all 15 facts
+  printed start stamps within ~3 ms of each other
+  (`[00:00:00.91–.93]`). This explains the producer's "Duration: 7 s"
+  summary inside a longer shell wall time and is NOT counter-evidence
+  (the per-case cgroup/journal/witness trees are independent; the
+  fixture never uses `waitid(-1)`). It is, however, a Q3-harness standing
+  consideration:
   the `Category=ProcessGlobalReaping` discipline should document that the
   same suite is designed to tolerate collection-level parallel fan-out,
   or the runner must serialize it (booking in CR-8).
@@ -246,9 +250,10 @@ evidence instead of "bare exit 137". Findings:
 - **Recovery ambiguity handling.** `ReadLatest`-failed seal cases route
   through `TryRecoverCommit` and classify `MayHaveExecuted`, but with the
   explicit "no attempt" gate (`release_attempted=false`) in every
-  counterpart, matching CE-02 semantics (Intent content durable behind
-  seal). My rerun artifact (`integrated journalslots-present`) confirms
-  runtime behavior identical to producer's.
+   counterpart, matching CE-02 semantics (Intent content durable behind
+   seal). My rerun journal-slot and witness counts (`myruns/`,
+   `case-index-run1.txt`) confirm runtime behavior identical to the
+   producer's.
 
 ## F. Regressions and incidental coverage
 
@@ -259,7 +264,7 @@ evidence instead of "bare exit 137". Findings:
   counts. The three previously `Unavailable`
   `Wp05ReleasePathIndependentQualificationTests` in my rerun ran against
   the native/WP04 artifacts whose hashes are frozen and unchanged; they
-  ran incidentally re-validated but are NOT consid­ered qualification
+  ran incidentally re-validated but are NOT considered qualification
   here, consistent with the required-work doc's "converted by generating
   their required artifacts" — the artifacts exist in the producer's tree
   (verified by frozen SHA identity), but their
@@ -272,7 +277,7 @@ evidence instead of "bare exit 137". Findings:
 ### G.1 Blocker-level risks: none found.
 
 No production change, no unbounded fallback, no unauthorized transport
-grant, no witness-rewrite semantics, and no spoofed supervisorownership.
+grant, no witness-rewrite semantics, and no spoofed supervisor ownership.
 The fixture imports real R12 arcs (intent → transport observation →
 committed), and its negative controls genuinely bind the fences.
 
@@ -310,7 +315,7 @@ committed), and its negative controls genuinely bind the fences.
 6. **CR-6 (stop deadline verification):** D4-7 checks
    `stop_accepted=True`/`stop_durable=True` but does not validate the
    recorded `StopDeadlineNanoseconds` policy against the allowed stop
-   window (`OwnershipSnapshotCodec.StopConfirmationAllowance-­Nanoseconds`);
+    window (`OwnershipSnapshotCodec.StopConfirmationAllowanceNanoseconds`);
    it only mirrors the journal's value. Privacy-observation only; not a
    fidelity rejection.
 7. **CR-7 (witness file races):** owner, replacement, and supervisor
@@ -365,7 +370,8 @@ committed), and its negative controls genuinely bind the fences.
 
 Full set in `docs/reviews/gagamba-linux-m1-wp05-d4-review-artifacts/`:
 
-- `d4-rerun-binding.txt`: branch, exact sources/artifact identities.
+- `final-binding.txt`, `checkout-identity.txt` and `scripts-sha.txt`:
+  branch/HEAD binding, bound source HEAD, and reviewer script SHA identities.
 - `drr-run1-cg.summary`, `drr-run2-cg.summary`: my reruns
   (15/0/0 ×2, wall 11.5 s / 11.3 s; xunit-reported duration 7 s each
   as consumed by VSTest);
