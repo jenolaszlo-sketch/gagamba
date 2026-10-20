@@ -60,10 +60,19 @@ supervisor (test process)
   `-- bounds and cleans test-owned cgroup/process/temp state
 ```
 
-The supervisor never acquires the journal writer or constructs release
+The supervisor never holds the journal writer for release purposes or
+constructs release authority. After owner death it may transiently acquire the
+fence solely to prove the owner released it; that probe is not release
 authority. The witness ledger is observer-only: it records pre-write intent,
 the actual `HeldExecution.TryWriteRelease` return, and (where read before
 death) coordinator stdout/exit. Missing observations remain unknown.
+
+D5 correction notes: the owner's `Environment.ProcessId > 0` caller-liveness
+prerequisite is a test-assembly-consistent surrogate, not a qualified
+WP08/WP10 owner-liveness check. The `go.txt` storage gate accepts any writer
+and has no uid/pid binding; it is fixture-only. The witness append uses one
+bounded O_APPEND line per event; it remains test-only and a missing event is
+never treated as proof that an effect did not occur.
 
 ## 4. Crash boundary plan
 

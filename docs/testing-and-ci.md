@@ -52,6 +52,8 @@ bash eng/linux-m1-qualified-tests.sh
 
 Use a Release build and the documented delegated non-root Linux environment. The script runs the regular assembly with `Category!=ProcessGlobalReaping&Category!=ProcessGlobalHostState` (parallel), then runs each tagged class in its own test-host process: `NonRootQualificationTests`, `OwnerDeathQualificationTests`, `IntegratedBarrierTests`, `DomainAuthorityTests`, `RecoveryHarness`, `Wp05TerminationObserverTests`, and `Wp05SigpipeDispositionTests`.
 
+`ProcessGlobalReaping` classes are isolated from the parallel phase but xUnit v3 may still fan out facts within one class. Such classes must use independent test-owned journals, process handles, cgroups, witness files and barrier files per fact; they must not rely on collection-level serialization. The D4/D5 supervisor classes follow this rule and are designed for within-class fan-out. This is a test documentation rule only; the frozen runner is not changed.
+
 ### Independent Linux readiness preflight
 
 Before handing a checkout to an independent Linux reviewer, run the environment and source preflight from the unprivileged delegated profile:

@@ -1,6 +1,7 @@
 // D4 test-only supervisor and real-process release probes. The supervisor
-// creates only test-owned processes and files; it never acquires release
-// authority or an owner journal lease. Linux-only.
+// creates only test-owned processes and files; it never holds the journal
+// writer for release purposes. After owner death it may transiently acquire
+// the fence only to prove the owner released it. Linux-only.
 using System.Diagnostics;
 using Gagamba.Execution.Linux.M1.Native;
 using Gagamba.Execution.Linux.M1.Recovery;
@@ -27,6 +28,7 @@ public sealed class Wp05D4SupervisorTests
         await c.WaitBarrier("release-ready", cancellation);
         Assert.True(c.OwnerAlive);
         Assert.Equal(c.Owner!.Id, c.ReadyOwnerPid);
+        Assert.Equal(c.OwnerStart, c.LiveOwnerStart);
         Assert.True(c.OwnerStart.Contains($"{c.Owner.Id}:", StringComparison.Ordinal));
         Assert.True(HasFdLink(c.Owner.Id, c.JournalLockPath), "owner must hold the journal lock FD");
         Assert.False(HasFdLink(Environment.ProcessId, c.JournalLockPath), "supervisor must not hold the journal lock");
@@ -227,10 +229,17 @@ public sealed class Wp05D4SupervisorTests
         var ownerResult = c.ReadResult();
         Assert.Equal("True", ownerResult["stop_accepted"]);
         Assert.Equal("True", ownerResult["stop_durable"]);
+        var acceptedAt = long.Parse(ownerResult["stop_accepted_at"]);
+        var persistedDeadline = long.Parse(ownerResult["stop_deadline"]);
+        Assert.Equal(
+            acceptedAt + OwnershipSnapshotCodec.StopConfirmationAllowanceNanoseconds,
+            persistedDeadline);
         await c.KillOwner(cancellation);
         var latest = ReadJournal(c.JournalPath);
         Assert.True(latest.Ok, latest.Error);
         Assert.NotNull(latest.Snapshot!.Stop);
+        Assert.Equal(acceptedAt, latest.Snapshot.Stop!.StopAcceptedAtNanoseconds);
+        Assert.Equal(persistedDeadline, latest.Snapshot.Stop.StopDeadlineNanoseconds);
         var replacement = await c.StartReplacement("recover", cancellation);
         var result = c.ReadResult(replacement.ResultPath);
         Assert.Equal("true", result["stop"]);
@@ -395,6 +404,68 @@ public sealed class Wp05D4SupervisorTests
         }
     }
 
+    [Fact]
+    public async Task D5_CR3_TwoIndependentOwnersHaveOneReleaseAndOneRefusal()
+    {
+        SkipUnlessQualified();
+        var cancellation = TestContext.Current.CancellationToken;
+        using var c = new D4Case("D5-CR3");
+        c.StartOwner("release", "--hold-before-release");
+        await c.WaitReady(cancellation);
+        await c.WaitBarrier("release-ready", cancellation);
+        var earlyOwner = await c.StartReplacement("recover", cancellation);
+        Assert.Equal(3, earlyOwner.ExitCode);
+        Assert.Equal("refused", c.ReadResult(earlyOwner.ResultPath)["writer"]);
+        c.ReleaseGo();
+        await c.WaitExit(cancellation);
+        Assert.Equal(0, c.Owner!.ExitCode);
+        var first = c.ReadResult();
+        Assert.Equal("Released", first["decision_kind"]);
+        Assert.Equal("1", first["transport_attempts"]);
+        var second = await c.StartReplacement("retry-release", cancellation);
+        Assert.Equal(0, second.ExitCode);
+        var secondResult = c.ReadResult(second.ResultPath);
+        Assert.Equal("true", secondResult["release_attempted"]);
+        Assert.Equal("Refused", secondResult["replacement_decision"]);
+        Assert.Equal("0", secondResult["replacement_transport_attempts"]);
+        Assert.Equal(1, Count(D4Witness.Read(c.WitnessPath), "PreWriteWitnessAcknowledged"));
+        Assert.Equal(0, Count(D4Witness.Read(c.WitnessPath), "TestTransportAttempt"));
+        var latest = ReadJournal(c.JournalPath);
+        Assert.True(latest.Ok, latest.Error);
+        Assert.Equal(ReleaseTag.Committed, latest.Snapshot!.Release!.Tag);
+        c.AssertCgroupRemoved();
+    }
+
+    [Fact]
+    public async Task D5_CR3b_DurableStopRefusesReleaseAcrossFreshLease()
+    {
+        SkipUnlessQualified();
+        var cancellation = TestContext.Current.CancellationToken;
+        using var c = new D4Case("D5-CR3b");
+        c.StartOwner("stop-then-release", "--barrier-name", "after-stop");
+        await c.WaitReady(cancellation);
+        await c.WaitBarrier("after-stop", cancellation);
+        var ownerResult = c.ReadResult();
+        Assert.Equal("True", ownerResult["stop_accepted"]);
+        Assert.Equal("True", ownerResult["stop_durable"]);
+        Assert.Equal("Refused", ownerResult["release_kind"]);
+        Assert.Equal("True", ownerResult["capability_live"]);
+        await c.KillOwner(cancellation);
+        var latest = ReadJournal(c.JournalPath);
+        Assert.True(latest.Ok, latest.Error);
+        Assert.NotNull(latest.Snapshot!.Stop);
+        Assert.Null(latest.Snapshot.Release);
+        var replacement = await c.StartReplacement("retry-release", cancellation);
+        Assert.Equal(0, replacement.ExitCode);
+        var result = c.ReadResult(replacement.ResultPath);
+        Assert.Equal("true", result["release_attempted"]);
+        Assert.Equal("Refused", result["replacement_decision"]);
+        Assert.Equal("0", result["replacement_transport_attempts"]);
+        Assert.Equal(0, Count(D4Witness.Read(c.WitnessPath), "PreWriteWitnessAcknowledged"));
+        Assert.Equal(0, Count(D4Witness.Read(c.WitnessPath), "TestTransportAttempt"));
+        c.AssertCgroupRemoved();
+    }
+
     private static void SkipUnlessQualified()
     {
         if (!OperatingSystem.IsLinux())
@@ -552,6 +623,7 @@ public sealed class Wp05D4SupervisorTests
         public Dictionary<string, string> Ready { get; private set; } = new();
         public int ReadyOwnerPid => int.Parse(Ready["owner_pid"]);
         public string OwnerStart => Ready["owner_start"];
+        public string LiveOwnerStart => _owner is null ? "none" : StartIdentity(_owner.Id);
         public string JournalLockPath => Path.Combine(JournalPath, "ownership.lock");
         public string ControlFd => Ready["control_fd"];
 

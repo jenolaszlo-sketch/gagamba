@@ -80,6 +80,29 @@ public static class Wp05D4OwnerHost
         session.Ready();
         session.Storage.Arm(storageGate, fault);
 
+        if (mode == "stop-then-release")
+        {
+            session.BarrierName = "none";
+            var stop = session.Arbiter.RequestStop(StopCauseKind.CallerStop);
+            var release = session.Arbiter.RequestRelease(session.Request);
+            D4Result.Write(resultPath, new Dictionary<string, string>
+            {
+                ["mode"] = mode,
+                ["owner_pid"] = Environment.ProcessId.ToString(),
+                ["stop_accepted"] = stop.Accepted.ToString(),
+                ["stop_durable"] = stop.DurableStop.ToString(),
+                ["stop_accepted_at"] = stop.StopAcceptedAtNanoseconds.ToString(),
+                ["stop_deadline"] = stop.StopDeadlineNanoseconds.ToString(),
+                ["release_kind"] = release.Kind.ToString(),
+                ["release_durable"] = release.DurableRelease.ToString(),
+                ["release_delivery"] = release.Delivery.ToString(),
+                ["journal_seq"] = session.LatestSequence().ToString(),
+                ["capability_live"] = session.Capability.IsLive.ToString(),
+            });
+            if (hold || barrierName != "none") D4Barrier.Park(barrierPath, goPath, "after-stop");
+            return 0;
+        }
+
         if (mode == "stop" || mode == "stop-fail")
         {
             if (mode == "stop-fail") session.Storage.ArmStopFailure();
@@ -680,7 +703,7 @@ public static class Wp05D4OwnerHost
             }
 
             return new OwnershipSnapshot(
-                OwnershipSnapshotCodec.LegacyVersion, 0, specification.ExecutionId,
+                OwnershipSnapshotCodec.CurrentVersion, 0, specification.ExecutionId,
                 specification.BootId, domain.CgroupMountId, domain.CgroupMountFsType,
                 domain.ParentDevice, domain.ParentInode, domain.ChildName,
                 domain.ChildDevice, domain.ChildInode, specification.LeaseGeneration,
@@ -959,10 +982,14 @@ internal static class D4Witness
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
         var line = $"case={OneLine(caseId)} ts={DateTime.UtcNow:O} event={OneLine(eventName)} source={OneLine(source)} "
             + $"pid={pid ?? "unknown"} baseline={baseline} result={OneLine(result ?? string.Empty)}";
-        using var stream = new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
-        using var writer = new StreamWriter(stream);
-        writer.WriteLine(line);
-        writer.Flush();
+        // One bounded O_APPEND write keeps concurrent process records
+        // individually parseable on the supported Linux filesystem. A missing
+        // record is never interpreted as proof that an effect did not occur.
+        var bytes = System.Text.Encoding.UTF8.GetBytes(line + "\n");
+        using var stream = new FileStream(
+            path, FileMode.Append, FileAccess.Write, FileShare.ReadWrite,
+            bufferSize: 4096, FileOptions.WriteThrough);
+        stream.Write(bytes, 0, bytes.Length);
         stream.Flush(flushToDisk: true);
     }
 
