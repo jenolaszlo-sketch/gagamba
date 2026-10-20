@@ -1,0 +1,12 @@
+case=D4-10 ts=2026-10-20T07:52:53.1283810Z event=SupervisorStartedOwner source=supervisor pid=33878 baseline=-1 result=
+case=D4-10 ts=2026-10-20T07:52:53.1512834Z event=OwnerStarted source=owner pid=33878 baseline=-1 result=
+case=D4-10 ts=2026-10-20T07:52:53.1692882Z event=JournalWriterAcquired source=owner pid=33878 baseline=0 result=
+case=D4-10 ts=2026-10-20T07:52:53.3081345Z event=OwnerPrepared source=owner pid=33878 baseline=3 result=
+case=D4-10 ts=2026-10-20T07:52:53.3161968Z event=StorageGateReached source=owner pid=33878 baseline=-1 result=create:gen.seal
+case=D4-10 ts=2026-10-20T07:52:53.3392730Z event=SupervisorBarrierObserved source=supervisor pid=33636 baseline=-1 result=storage:create:gen.seal
+case=D4-10 ts=2026-10-20T07:52:53.3416804Z event=SupervisorSigkill source=supervisor pid=33878 baseline=-1 result=33878:6543883
+case=D4-10 ts=2026-10-20T07:52:53.3456639Z event=OwnerTerminated source=supervisor pid=33878 baseline=-1 result=exit=137
+case=D4-10 ts=2026-10-20T07:52:53.3687909Z event=OwnerStarted source=owner pid=33890 baseline=-1 result=
+case=D4-10 ts=2026-10-20T07:52:53.3900898Z event=RecoveryStarted source=replacement pid=33890 baseline=3 result=
+case=D4-10 ts=2026-10-20T07:52:53.3983473Z event=RecoveryFinished source=replacement pid=33890 baseline=3 result=NotCommitted
+case=D4-10 ts=2026-10-20T07:52:53.4038945Z event=RecoveryProcessExited source=supervisor pid=33890 baseline=-1 result=0

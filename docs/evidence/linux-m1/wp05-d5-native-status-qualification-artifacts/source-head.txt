@@ -1,0 +1,22 @@
+branch=implementation/wp05-d5-native-status-qualification
+head=30a8eb90491c94a0ed3fa9a87130bdc55be1c187
+tree=07145109090b7a2b1cab4a90aba9c4acf8880de4
+base_r12=38f6981b2a60daab2df37c92913a6760c1bef131
+tree_r12=6854675d6b37a49d5302d6104103bdbfbc268040
+preservation=5c58b065c37a71c8f392a617f725822ffb64c171
+30a8eb9 test(wp05): strengthen two-owner release contention probe
+fa028c2 test(wp05): qualify native status persistence and cleanup
+dbef38a test(wp05): add native FD5 qualification status probes
+ed49ed5 test(wp05): apply D5 fixture corrections and cross-process probes
+c3cc27e docs(wp05): plan D5 native status qualification and fixture corrections
+5c58b06 docs(wp05): preserve independently reproduced D4 crash and witness review
+8254cf8 docs(wp05): bind D4 evidence manifest verification
+cebee05 docs(wp05): preserve D4 fresh-process release-owner diagnostic evidence
+product_diff_src_native=
+test_source_sha256=
+4a5b96baf8c8d99e43231d4ef8c9a1226d2e2c07452a562a8d0e6d2a1db7a031  tests/Gagamba.Execution.Linux.M1.Tests/D4/Wp05D4OwnerHost.cs
+f664b66d35373d64c31a5ce79b4bb3bf2f4708150415bd01462ba249bd93a290  tests/Gagamba.Execution.Linux.M1.Tests/D4/Wp05D4SupervisorTests.cs
+0b68a8ab8560bfa25f594bd68bc94f8c65db34e6c6b4c38c39742396e82119b7  tests/Gagamba.Execution.Linux.M1.Tests/D4/Wp05D5NativeStatusTests.cs
+16da6f3fd672a793549aea802bad70afed092247351fa3179d9fa39ff0b5fea3  tests/Fixtures/wp05-qualification-coordinator.c
+cd3a01a8a9e5f081b87737d643e7113db843ceaa60dcfa730e41c29c47ae1bee  eng/linux-m1/build-d5-status.sh
+d581d4d7ec5d0931a7bd5ba2a6bccf50256b2eee606697f0ff92db1799767684  docs/plans/gagamba-linux-m1-wp05-d5-execution-plan.md

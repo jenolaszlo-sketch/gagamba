@@ -1,0 +1,58 @@
+# D5 native FD5 matrix
+
+Coordinator source SHA-256:
+`16da6f3fd672a793549aea802bad70afed092247351fa3179d9fa39ff0b5fea3`
+
+D5 test binary SHA-256:
+`16d30538df254c04082fc56bdbfe9b2c992eae5861dfc278682e99d957aa17e3`
+
+Historical D4 qualification coordinator remains identified separately by
+`e20903cce6061ecc2b152f9e7b4ccb389edeee54047d96f1f3b66dd5195be0b9`;
+it was not relabeled.
+
+Positive cases (raw native FD5 frames in `native-status-run1`):
+
+| ID | Mode | Result |
+|---|---|---|
+| D5-S01 | exec_confirmed | Exec Confirmed; sequence 2; kind 4; payload 0 |
+| D5-S02 | exec_failed | FailedBeforeExec errno 2 |
+| D5-S03 | exec_confirmed_root | Exec Confirmed then Root Exited(7) |
+| D5-S04 | root_unconfirmed | Exec Unknown, Root Unknown, raw wait retained |
+| D5-S05 | exec_failed_root | FailedBeforeExec then Root NotStarted |
+| D5-S06 | protocol_failed | terminal ProtocolFailed code 30 |
+
+Negative cases (raw frames from the same native coordinator):
+
+| ID | Mode | Result |
+|---|---|---|
+| D5-N01 | d5_wrong_exec | rejected, no observation |
+| D5-N02 | d5_wrong_prep | rejected |
+| D5-N03 | d5_wrong_digest | rejected |
+| D5-N04 | d5_wrong_sequence | rejected |
+| D5-N05 | d5_replayed_sequence | first accepted; replay rejected |
+| D5-N06 | d5_duplicate_exec | first accepted; duplicate rejected |
+| D5-N07 | d5_root_after_terminal | terminal failure; later root rejected |
+| D5-N08 | d5_contradictory | Exec accepted; contradictory ExecFailed rejected |
+| D5-N09 | d5_wrong_magic | rejected |
+| D5-N10 | d5_wrong_version | rejected |
+| D5-N11 | d5_short_header | EOF before header; rejected |
+| D5-N12 | d5_truncated_payload | EOF in payload; rejected |
+| D5-N13 | d5_length_below_header | rejected before payload allocation |
+| D5-N14 | d5_length_above_max | rejected before payload allocation |
+| D5-N15 | d5_invalid_kind | rejected |
+| D5-N16 | d5_invalid_payload_length | rejected |
+| D5-N17 | d5_premature_eof | no frame; no observation |
+| D5-N18 | d5_no_status + short deadline | bounded failure; no observation |
+| D5-N19 | d5_extra_trailing | first valid frame accepted; trailing bytes never become a second observation |
+
+D5-O01..O04 exercise the real buffer/journal paths with native frames:
+pre-Committed flush is a no-op, post-Mark flush persists Exec/Root, journal
+failure leaves prior truth, and contradictory status does not overwrite.
+D5-O05 (owner death before status persistence) is HELD: no faithful
+fresh-process owner/FD5 seam exists.
+
+Release validation outcomes (native coordinator):
+- Exit 20: incomplete release input; no status acceptance.
+- Exit 21: extra release input; no status acceptance.
+- Exit 22: invalid release frame; no status acceptance.
+They are not FD5 status kinds and not successful release evidence.

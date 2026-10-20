@@ -1,0 +1,62 @@
+# D5 commands
+
+Source HEAD: `30a8eb9`. Product: R12 `38f6981...`, tree `6854675d...`.
+Branch: `implementation/wp05-d5-native-status-qualification`.
+Preservation base: `5c58b06...`.
+
+## Native artifact
+
+```text
+sh eng/linux-m1/build-d5-status.sh
+```
+
+Output:
+`artifacts/linux-m1/wp05-d5/wp05-qualification-coordinator`
+SHA-256 `16d30538df254c04082fc56bdbfe9b2c992eae5861dfc278682e99d957aa17e3`.
+
+## D4 corrections and CR-3/CR-3b
+
+```text
+GAGAMBA_REPOSITORY_ROOT=/home/gaga/qualification/gagamba-r12 \
+D4_EVIDENCE=/home/gaga/qualification/evidence/wp05-d5-final/d4-cases \
+dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj \
+  -c Release --nologo --filter FullyQualifiedName~Wp05D4SupervisorTests
+```
+
+Run twice. Both: 17 passed, 0 failed, 0 skipped.
+
+## Native FD5
+
+```text
+GAGAMBA_REPOSITORY_ROOT=/home/gaga/qualification/gagamba-r12 \
+D5_EVIDENCE=/home/gaga/qualification/evidence/wp05-d5-final/native-status \
+dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj \
+  -c Release --nologo --filter FullyQualifiedName~Wp05D5NativeStatusTests
+```
+
+Run twice. Both: 32 passed, 0 failed, 0 skipped.
+
+## Formal release-path rows
+
+Each exact method was run separately:
+
+```text
+dotnet test ... --filter 'FullyQualifiedName=Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests.HeldProductionCoordinatorAcceptsSingleArbitratedReleaseAndReachesPreExecBoundary'
+dotnet test ... --filter 'FullyQualifiedName=Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests.ForgedIdentityGateRefusalTouchesNoJournalAndNotTheRealTransport'
+dotnet test ... --filter 'FullyQualifiedName=Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests.RealCoordinatorOverallExpiryWritesProtocolFailed30AndTheGateRefusesExpiredIntent'
+```
+
+Each: 1 passed, 0 failed, 0 skipped; logs `release-path-1.log` to
+`release-path-3.log`.
+
+## Focused regressions
+
+```text
+dotnet test ... --filter 'FullyQualifiedName~Wp05ReleaseContractProbes|FullyQualifiedName~Wp05LeaseProcessProbes|FullyQualifiedName~Wp05ReleasePathIndependentQualificationTests|FullyQualifiedName~ReleaseArbiterTests|FullyQualifiedName~CoordinatorStatusReaderTests|FullyQualifiedName~Native.ReleaseProtocolTests|FullyQualifiedName~ReconcilerTests'
+```
+
+Result: 66 passed, 0 failed, 0 skipped.
+
+All test commands were run as uid 1000 `gaga` through
+`/root/wp05/run-as-gaga-in-host.sh` in `/sys/fs/cgroup/gaga-delegated/host`.
+No target was executed.

@@ -1,0 +1,4 @@
+mode=contend
+owner_pid=33818
+writer=acquired
+baseline=0

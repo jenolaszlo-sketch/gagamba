@@ -1,0 +1,7 @@
+mode=d5_premature_eof
+exit=0
+raw_bytes=0
+raw_hex=
+fd5=fd5=none
+output=wp05-release-accepted
+

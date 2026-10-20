@@ -1,0 +1,10 @@
+case=D4-9 ts=2026-10-20T07:52:54.9288853Z event=SupervisorStartedOwner source=supervisor pid=34013 baseline=-1 result=
+case=D4-9 ts=2026-10-20T07:52:54.9499390Z event=OwnerStarted source=owner pid=34013 baseline=-1 result=
+case=D4-9 ts=2026-10-20T07:52:54.9698252Z event=JournalWriterAcquired source=owner pid=34013 baseline=0 result=
+case=D4-9 ts=2026-10-20T07:52:55.1057313Z event=OwnerPrepared source=owner pid=34013 baseline=3 result=
+case=D4-9 ts=2026-10-20T07:52:55.1245395Z event=PreWriteWitnessAcknowledged source=owner pid=34013 baseline=-1 result=attempt=1;bytes=128
+case=D4-9 ts=2026-10-20T07:52:55.1278198Z event=WriteReturned source=owner pid=34013 baseline=-1 result=Delivered
+case=D4-9 ts=2026-10-20T07:52:55.1397228Z event=CoordinatorExitObserved source=owner pid=34013 baseline=-1 result=0
+case=D4-9 ts=2026-10-20T07:52:55.1913147Z event=SupervisorBarrierObserved source=supervisor pid=33636 baseline=-1 result=after-duplicate
+case=D4-9 ts=2026-10-20T07:52:55.1946138Z event=SupervisorSigkill source=supervisor pid=34013 baseline=-1 result=34013:6544063
+case=D4-9 ts=2026-10-20T07:52:55.1990386Z event=OwnerTerminated source=supervisor pid=34013 baseline=-1 result=exit=137

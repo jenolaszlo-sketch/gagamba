@@ -1,0 +1,23 @@
+date_utc=2026-10-20T07:55:30Z
+Linux LAPTOP-KBD8D8JG 6.6.114.1-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Mon Dec  1 20:46:23 UTC 2025 x86_64 GNU/Linux
+boot_id=69d053fb-0fd9-4209-aa5b-be128424ed34
+uid=1000(gaga) gid=1000(gaga) groups=1000(gaga)
+CapInh:	0000000000000000
+CapPrm:	0000000000000000
+CapEff:	0000000000000000
+CapAmb:	0000000000000000
+NoNewPrivs:	0
+cgroup_self=0::/gaga-delegated/host
+cgroup_parent=/sys/fs/cgroup/gaga-delegated
+10.0.112
+cc (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+bubblewrap 0.11.1
+ee25a876bad5312afcece19821668b91db0c09f5a2f1aaac74f00c45806e2305  tests/Fixtures/Gagamba.LinuxM1.Native/out/fixture
+5e55e92b4228013e88a9fb34ac4674c5b9a485e831db7ff6d86f02df7c68c73b  artifacts/linux-m1/wp04/exec-coordinator
+2aa879019138c4d4066557213ce0037de70430aac3a05008eec5c8abd999d108  artifacts/linux-m1/wp04/seccomp-filter.bin
+16d30538df254c04082fc56bdbfe9b2c992eae5861dfc278682e99d957aa17e3  artifacts/linux-m1/wp05-d5/wp05-qualification-coordinator
+ 735432 tests/Fixtures/Gagamba.LinuxM1.Native/out/fixture
+ 878792 artifacts/linux-m1/wp04/exec-coordinator
+    672 artifacts/linux-m1/wp04/seccomp-filter.bin
+ 743616 artifacts/linux-m1/wp05-d5/wp05-qualification-coordinator
+2358512 total

@@ -1,0 +1,34 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+/home/gaga/.nuget/packages/microsoft.build.tasks.git/10.0.401/build/Microsoft.Build.Tasks.Git.targets(25,5): warning : Repository '/home/gaga/qualification/gagamba-r12' has no remote. [/home/gaga/qualification/gagamba-r12/src/Gagamba.Execution/Gagamba.Execution.csproj]
+/home/gaga/.nuget/packages/microsoft.sourcelink.common/10.0.401/build/Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [/home/gaga/qualification/gagamba-r12/src/Gagamba.Execution/Gagamba.Execution.csproj]
+  Gagamba.Execution -> /home/gaga/qualification/gagamba-r12/src/Gagamba.Execution/bin/Release/net10.0/Gagamba.Execution.dll
+/home/gaga/.nuget/packages/microsoft.build.tasks.git/10.0.401/build/Microsoft.Build.Tasks.Git.targets(25,5): warning : Repository '/home/gaga/qualification/gagamba-r12' has no remote. [/home/gaga/qualification/gagamba-r12/src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj]
+/home/gaga/.nuget/packages/microsoft.sourcelink.common/10.0.401/build/Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [/home/gaga/qualification/gagamba-r12/src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj]
+  Gagamba.Execution.Linux.M1 -> /home/gaga/qualification/gagamba-r12/src/Gagamba.Execution.Linux.M1/bin/Release/net10.0/Gagamba.Execution.Linux.M1.dll
+/home/gaga/.nuget/packages/microsoft.build.tasks.git/10.0.401/build/Microsoft.Build.Tasks.Git.targets(25,5): warning : Repository '/home/gaga/qualification/gagamba-r12' has no remote. [/home/gaga/qualification/gagamba-r12/src/Gagamba.Execution.Linux.M1.Owner/Gagamba.Execution.Linux.M1.Owner.csproj]
+/home/gaga/.nuget/packages/microsoft.sourcelink.common/10.0.401/build/Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [/home/gaga/qualification/gagamba-r12/src/Gagamba.Execution.Linux.M1.Owner/Gagamba.Execution.Linux.M1.Owner.csproj]
+  Gagamba.Execution.Linux.M1.Owner -> /home/gaga/qualification/gagamba-r12/src/Gagamba.Execution.Linux.M1.Owner/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Owner.dll
+/home/gaga/.nuget/packages/microsoft.build.tasks.git/10.0.401/build/Microsoft.Build.Tasks.Git.targets(25,5): warning : Repository '/home/gaga/qualification/gagamba-r12' has no remote. [/home/gaga/qualification/gagamba-r12/tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj]
+/home/gaga/.nuget/packages/microsoft.sourcelink.common/10.0.401/build/Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [/home/gaga/qualification/gagamba-r12/tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj]
+  Gagamba.Execution.Linux.M1.Tests -> /home/gaga/qualification/gagamba-r12/tests/Gagamba.Execution.Linux.M1.Tests/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Tests.dll
+/home/gaga/.nuget/packages/microsoft.build.tasks.git/10.0.401/build/Microsoft.Build.Tasks.Git.targets(25,5): warning : Repository '/home/gaga/qualification/gagamba-r12' has no remote. [/home/gaga/qualification/gagamba-r12/tests/Fixtures/Wp05D4Owner/Wp05D4Owner.csproj]
+/home/gaga/.nuget/packages/microsoft.sourcelink.common/10.0.401/build/Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [/home/gaga/qualification/gagamba-r12/tests/Fixtures/Wp05D4Owner/Wp05D4Owner.csproj]
+  Wp05D4Owner -> /home/gaga/qualification/gagamba-r12/tests/Fixtures/Wp05D4Owner/bin/Release/net10.0/Wp05D4Owner.dll
+
+Build succeeded.
+
+/home/gaga/.nuget/packages/microsoft.build.tasks.git/10.0.401/build/Microsoft.Build.Tasks.Git.targets(25,5): warning : Repository '/home/gaga/qualification/gagamba-r12' has no remote. [/home/gaga/qualification/gagamba-r12/src/Gagamba.Execution/Gagamba.Execution.csproj]
+/home/gaga/.nuget/packages/microsoft.sourcelink.common/10.0.401/build/Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [/home/gaga/qualification/gagamba-r12/src/Gagamba.Execution/Gagamba.Execution.csproj]
+/home/gaga/.nuget/packages/microsoft.build.tasks.git/10.0.401/build/Microsoft.Build.Tasks.Git.targets(25,5): warning : Repository '/home/gaga/qualification/gagamba-r12' has no remote. [/home/gaga/qualification/gagamba-r12/src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj]
+/home/gaga/.nuget/packages/microsoft.sourcelink.common/10.0.401/build/Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [/home/gaga/qualification/gagamba-r12/src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj]
+/home/gaga/.nuget/packages/microsoft.build.tasks.git/10.0.401/build/Microsoft.Build.Tasks.Git.targets(25,5): warning : Repository '/home/gaga/qualification/gagamba-r12' has no remote. [/home/gaga/qualification/gagamba-r12/src/Gagamba.Execution.Linux.M1.Owner/Gagamba.Execution.Linux.M1.Owner.csproj]
+/home/gaga/.nuget/packages/microsoft.sourcelink.common/10.0.401/build/Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [/home/gaga/qualification/gagamba-r12/src/Gagamba.Execution.Linux.M1.Owner/Gagamba.Execution.Linux.M1.Owner.csproj]
+/home/gaga/.nuget/packages/microsoft.build.tasks.git/10.0.401/build/Microsoft.Build.Tasks.Git.targets(25,5): warning : Repository '/home/gaga/qualification/gagamba-r12' has no remote. [/home/gaga/qualification/gagamba-r12/tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj]
+/home/gaga/.nuget/packages/microsoft.sourcelink.common/10.0.401/build/Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [/home/gaga/qualification/gagamba-r12/tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj]
+/home/gaga/.nuget/packages/microsoft.build.tasks.git/10.0.401/build/Microsoft.Build.Tasks.Git.targets(25,5): warning : Repository '/home/gaga/qualification/gagamba-r12' has no remote. [/home/gaga/qualification/gagamba-r12/tests/Fixtures/Wp05D4Owner/Wp05D4Owner.csproj]
+/home/gaga/.nuget/packages/microsoft.sourcelink.common/10.0.401/build/Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [/home/gaga/qualification/gagamba-r12/tests/Fixtures/Wp05D4Owner/Wp05D4Owner.csproj]
+    10 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:07.47

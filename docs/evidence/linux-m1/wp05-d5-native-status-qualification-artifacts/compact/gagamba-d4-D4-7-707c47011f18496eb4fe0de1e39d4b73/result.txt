@@ -1,0 +1,8 @@
+mode=stop
+owner_pid=33857
+stop_accepted=True
+stop_durable=True
+stop_accepted_at=65438736655434
+stop_deadline=65443736655434
+journal_seq=4
+capability_live=True

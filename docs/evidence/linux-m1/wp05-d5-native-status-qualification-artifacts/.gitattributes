@@ -1,0 +1,6 @@
+*.log -text
+*.txt -text
+*.procs -text
+native-status-run1/*.bin -text
+native-status-run2/*.bin -text
+compact/**/journal/* -text

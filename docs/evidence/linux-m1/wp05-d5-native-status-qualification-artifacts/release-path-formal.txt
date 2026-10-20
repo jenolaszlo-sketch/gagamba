@@ -1,0 +1,18 @@
+# D5 formal release-path rows
+
+Source HEAD `30a8eb9`; product R12; native fixture
+`ee25a876...`, WP04 coordinator `5e55e92...`, filter
+`2aa879019...`; test-only qualification coordinator not used by these
+production-pre-exec rows.
+
+| Row | Method | Requirement mapping | Observed | Forbidden | Result |
+|---|---|---|---|---|---|
+| D5-RP-1 | HeldProductionCoordinatorAcceptsSingleArbitratedReleaseAndReachesPreExecBoundary | WP05 release gate, real FD4, production pre-exec coordinator (R01/R10/R12/R13) | HELD, one arbitrated release, coordinator exits 0 at pre-exec | target fork/exec; second release; post-release production status | PASS - NATIVE RELEASE-PATH OBSERVED |
+| D5-RP-2 | ForgedIdentityGateRefusalTouchesNoJournalAndNotTheRealTransport | identity gate refusal before durable intent/transport (R01/R02/R12) | refusal; no release intent; real transport untouched | accepted forged identity; FD4 write | PASS - NATIVE RELEASE-PATH OBSERVED |
+| D5-RP-3 | RealCoordinatorOverallExpiryWritesProtocolFailed30AndTheGateRefusesExpiredIntent | overall expiry/protocol failure and expired intent refusal (R05/R12/R15) | PROTOCOL_FAILED 30; gate refuses expired intent; no FD4 | accepted expired release; confirmed execution | PASS - NATIVE RELEASE-PATH OBSERVED |
+
+Each ran 1/1, 0 skipped. Logs: `release-path-1.log`,
+`release-path-2.log`, `release-path-3.log`.
+
+Boundary: these are bounded pre-exec facts. They do not prove target execution,
+production post-release FD5, or release qualification.

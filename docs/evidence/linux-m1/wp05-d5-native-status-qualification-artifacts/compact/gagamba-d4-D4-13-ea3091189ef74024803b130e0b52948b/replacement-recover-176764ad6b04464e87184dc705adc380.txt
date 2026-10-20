@@ -1,0 +1,14 @@
+mode=recover
+owner_pid=33737
+writer=acquired
+baseline=3
+recovered=true
+sequence=3
+release_tag=none
+release_delivery=none
+stop=false
+stop_deadline=0
+classification_release=NotCommitted
+classification_exec=NotAttempted
+classification_root=NotStarted
+release_attempted=false

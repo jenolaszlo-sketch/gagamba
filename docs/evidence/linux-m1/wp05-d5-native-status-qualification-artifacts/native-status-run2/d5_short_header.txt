@@ -1,0 +1,7 @@
+mode=d5_short_header
+exit=0
+raw_bytes=10
+raw_hex=47474D3143544C000100
+fd5=fd5=none
+output=wp05-release-accepted
+

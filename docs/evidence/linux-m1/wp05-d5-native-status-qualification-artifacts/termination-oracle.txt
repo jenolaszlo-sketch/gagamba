@@ -1,0 +1,20 @@
+# D5 termination-oracle standard (CR-1)
+
+Historical D4 independent review controls on the supported profile:
+`wait4` reports `signaled=1 termsig=9` for a SIGKILLed child; a .NET
+`Process.Kill()` child exits 137; a child that voluntarily `exit 137` also
+reports 137; a SIGTERM child exits 143.
+
+D5 retains the bounded control-based standard:
+
+1. The kill target is the supervisor's own direct child.
+2. The fixture is audited to use only normal exits 0, 1, 3 or 4.
+3. The kill is `Process.Kill(entireProcessTree:false)`, which is the tested
+   .NET SIGKILL path on this profile.
+4. Journal flock release after death corroborates real descriptor death.
+5. D5 does not claim that public `Process.ExitCode == 137` alone is a universal
+   `WIFSIGNALED` classifier.
+
+No new native wait4/pidfd witness was added in D5. A stronger raw-status
+witness remains a possible future hardening item; the review controls and
+fixture constraints above are the exact D5 scope.

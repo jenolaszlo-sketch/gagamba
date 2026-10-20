@@ -1,0 +1,28 @@
+# D5 CR completion matrix
+
+Evidence source HEAD: `30a8eb9`. D5.0 plan `c3cc27e`; D5.1 `ed49ed5`;
+D5.2 `dbef38a`; D5.3 `fa028c2`; D5.1b `30a8eb9`.
+
+| CR | Status | Evidence |
+|---|---|---|
+| CR-1 | Documented control-based standard; no raw wait4 witness added | `termination-oracle.txt` |
+| CR-2 | Corrected supervisor/design wording | source diff, D4 design |
+| CR-3 | Two-owner release/fence/retry probe implemented | `compact/...D5-CR3...` |
+| CR-3b | Durable-stop release refusal across fresh lease implemented | `compact/...D5-CR3b...` |
+| CR-4 | `Environment.ProcessId > 0` documented as test-only surrogate | D4 design correction |
+| CR-5 | `go.txt` documented fixture-only, no uid/pid binding | D4 design correction |
+| CR-6 | Stop deadline equality asserted against allowance | D4 supervisor log / D5-D4-7 |
+| CR-7 | Witness append changed to one O_APPEND write; limitations documented | source diff / D5 report |
+| CR-8 | ProcessGlobalReaping fan-out policy documented | `docs/testing-and-ci.md` |
+| CR-9 | Full `pid:starttime` compared to `owner.ready` | D5-D4-1 |
+| CR-10 | Informational only; no change | this table |
+| CR-11 | Snapshot mirror uses CurrentVersion 3 | source diff / D4 17-run |
+
+CR-3 limitation: R12 permits one acquired journal writer. The second owner's
+`RequestRelease` uses a test-composed no-writer lease and is refused; it is not
+a production authority bypass. Its fresh retry after the winner exits is also
+refused. Exactly one FD4 attempt was observed.
+
+CR-3b limitation: R12 has no `Accepted=false` stop path. The tested refused
+generation is release-after-durable-stop; failed-durable-stop remains the
+separate D4-8 diagnostic.

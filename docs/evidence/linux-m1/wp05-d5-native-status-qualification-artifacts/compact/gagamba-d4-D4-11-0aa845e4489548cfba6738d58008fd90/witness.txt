@@ -1,0 +1,14 @@
+case=D4-11 ts=2026-10-20T07:52:54.6418462Z event=SupervisorStartedOwner source=supervisor pid=33992 baseline=-1 result=
+case=D4-11 ts=2026-10-20T07:52:54.6640537Z event=OwnerStarted source=owner pid=33992 baseline=-1 result=
+case=D4-11 ts=2026-10-20T07:52:54.6828061Z event=JournalWriterAcquired source=owner pid=33992 baseline=0 result=
+case=D4-11 ts=2026-10-20T07:52:54.8221101Z event=OwnerPrepared source=owner pid=33992 baseline=3 result=
+case=D4-11 ts=2026-10-20T07:52:54.8311900Z event=StorageGateReached source=owner pid=33992 baseline=-1 result=write:gen.tmp
+case=D4-11 ts=2026-10-20T07:52:54.8532964Z event=SupervisorBarrierObserved source=supervisor pid=33636 baseline=-1 result=storage:write:gen.tmp
+case=D4-11 ts=2026-10-20T07:52:54.8550318Z event=SupervisorSigkill source=supervisor pid=33992 baseline=-1 result=33992:6544034
+case=D4-11 ts=2026-10-20T07:52:54.8582409Z event=OwnerTerminated source=supervisor pid=33992 baseline=-1 result=exit=137
+case=D4-11 ts=2026-10-20T07:52:54.8822034Z event=OwnerStarted source=owner pid=34004 baseline=-1 result=
+case=D4-11 ts=2026-10-20T07:52:54.8926369Z event=RecoverySealObserved source=replacement pid=34004 baseline=-1 result=commit seal present: durability ambiguous, explicit recovery required
+case=D4-11 ts=2026-10-20T07:52:54.9082901Z event=RecoverySealConfirmed source=replacement pid=34004 baseline=-1 result=recovered
+case=D4-11 ts=2026-10-20T07:52:54.9120747Z event=RecoveryStarted source=replacement pid=34004 baseline=3 result=
+case=D4-11 ts=2026-10-20T07:52:54.9189333Z event=RecoveryFinished source=replacement pid=34004 baseline=3 result=NotCommitted
+case=D4-11 ts=2026-10-20T07:52:54.9239754Z event=RecoveryProcessExited source=supervisor pid=34004 baseline=-1 result=0
