@@ -414,3 +414,27 @@ does not implement or approve them.
 The four decision records, evidence/gate matrix and remediation proposal carry
 the corresponding detailed revisions. No contract is approved; no production
 remediation is authorized; H1-H5 and full G3 remain deferred.
+
+### D6.1 revised cross-contract interactions
+
+| Pair | Before / event | Runtime winner | Durable truth / capability | API / recovery | Forbidden / test |
+|---|---|---|---|---|---|
+| C1 x C2 | Ambiguous Intent; release path exits `_journalGate`; tail stop; concurrent caller | Stop consumes capability at first acceptance | Sealed journal has Intent content but no acknowledged baseline; no second writer; StopRecord best-effort | Ambiguous result retained; later Duplicate; recovery Intent -> MayHaveExecuted; no resend | FD4; second intent; lock inversion; test `AmbiguousReleaseStopLockOrderProbe` |
+| C1 x C3 | Ambiguous wedge; stop; maybe no durable StopRecord | Runtime stop only if stop lands | No durable deadline if record not written; no fabricated window | Cleanup allowance separate; no release authority; quarantine/recovery | Fresh 5s; fabricated StopRecord; test no-record case |
+| C1 x C4 | Ambiguous result retained; concurrent/later callers | No release winner; ambiguity retained | Journal uncertain; C2 closes capability | Later Duplicate of ambiguous; no retry | New attempt/second write; retention test |
+| C2 x C3 | Stop wins; clock/deadline varying | Capability consumed independently of clock | StopRecord may be absent/invalid; C3 governs cleanup only | No reactivation; expired/invalid deadline conservative | Clock-dependent release; deadline reset; policy test |
+| C2 x C4 | Stop wins during competing release | Stop consumes; release-first history preserved | No second intent/write | Earlier release retained; stop refusal/duplicate taxonomy | History rewrite; second FD4; taxonomy test |
+| C3 x C4 | Recovery/retry of duplicate | No release authority from recovery | Persisted deadline fixed; no reset | Duplicate does not reset deadline; cleanup bounded | Deadline extension; resend; deterministic recovery test |
+
+Scenario checks remain: ambiguous + concurrent caller; stop while journal
+operation pending; release consume-before-transport; clock-unavailable stop;
+incompatible clock; expired deadline; no StopRecord; already-empty; concurrent
+loser/later retry; owner death after possible FD4; fresh lease recovery. Missing
+Committed evidence never authorizes another RELEASE.
+
+### D6.1 component and human boundaries
+
+`ReleaseArbiter` and `Reconciler` still have zero production callers at R12;
+the design is component-level. WP08 composition, WP10 target/status, H1-H5 and
+full G3 remain deferred. C1-C4 approvals and C3 zero-wait policy remain
+**PENDING HUMAN**.
