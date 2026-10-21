@@ -195,3 +195,17 @@ writer.
 Approve irreversible capability consumption at first stop acceptance,
 including clock-unavailable/overflow and failed durable stop? **PENDING
 HUMAN.**
+
+## D6.2 cross-reference - R3 stop ordering
+
+Status: **PROPOSED - NOT APPROVED**
+C2 contract status: **DESIGN SUPPORTED FOR HUMAN DECISION - NOT APPROVED**
+
+C2 semantics are unchanged. D6.2-R3 only defines what the ambiguous release
+caller may return when a stop wins the runtime gate before ambiguous retention.
+In that case the stop's first acceptance remains the C2 consumption point;
+the ambiguous caller's own report is conditional (`Refused` stop-won or
+`Duplicate` of a prior retained result), and its tail stop is idempotent. No
+new consumption path, no new waiting protocol and no schema change are
+introduced. The reader should treat this section as a cross-reference to C1
+D6.2-R3, not a reopening of C2.
