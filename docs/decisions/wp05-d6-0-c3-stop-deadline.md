@@ -347,14 +347,22 @@ types.
 
 ### R1 component outcome mapping
 
-The Reconciler maps the typed stop outcome before aggregation. The fallback
-`ObservePopulation` is retained only for diagnostics when the bounded stop
-performed no observation (`Kill=Failed`/`NotAttempted`); it must not upgrade an
-attempted-but-populated or observation-unknown stop into success.
+The Reconciler maps the typed stop outcome before aggregation. When the
+bounded stop performed no population observation (`Kill=Failed` or
+`Kill=NotAttempted`), the existing `ObservePopulation` fallback may
+independently establish `DomainEmpty = Confirmed` only from a trusted,
+authorized observation of Empty. A Populated, Unknown, unavailable or
+inconclusive observation leaves `DomainEmpty = Unknown`. The fallback never
+changes `DomainStop` or implies successful kill dispatch, and it must not
+upgrade an attempted-but-populated or observation-unknown stop into success.
+Existing journal-finalization requirements and aggregate precedence apply
+unchanged.
 
-| Typed stop outcome | `DomainStop` | `DomainEmpty` | Rule |
+| Typed stop outcome / fallback condition | `DomainStop` | `DomainEmpty` | Rule |
 |---|---|---|---|
-| `Kill=NotAttempted` | `Unknown` | `Unknown` | No live domain authority is normally handled by `RecoveryPlanner` as `QuarantinedUnknown` before this path; if reached, classify conservatively |
+| `Kill=NotAttempted`, trusted fallback observes Empty | `Unknown` | `Confirmed` | Confirms emptiness only; no successful kill dispatch or termination is inferred |
+| `Kill=NotAttempted`, fallback observes Populated | `Unknown` | `Unknown` | No empty inference or new kill attempt |
+| `Kill=NotAttempted`, fallback unavailable or inconclusive | `Unknown` | `Unknown` | No empty assumption |
 | `Kill=Failed` | `Failed` | `Confirmed` if a diagnostic observation is empty, otherwise `Unknown` | Definitive kill operation failure; aggregate remains `Failed` even if the domain is later observed empty |
 | `Kill=Unknown` | `Unknown` | `Unknown` | Dispatch not proven; no trusted resolution adopted in D6.2 |
 | `Kill=Accepted`, `Population=Empty` | `Confirmed` | `Confirmed` | Successful bounded wait established emptiness |
@@ -461,6 +469,9 @@ sleeps or error-string parsing as the oracle.
 | R1-T10 identity mismatch | `StatDomain`/lookup mismatch | `VerifyIdentity` refusal | `Refused` before stop; no destructive action |
 | R1-T11 mixed component results | e.g. Staging `Failed` + finalization `Unknown`; Staging `Unknown` + finalization `Unknown` | Mixed | `Failed` when any component Failed; otherwise `QuarantinedUnknown`; both details retained |
 | R1-T12 repeated reconciliation after uncertain finalization | First run finalization fault; repeat with same record | Same components, finalization retried | No deadline/cleanup reset; no fabricated bits; idempotent `QuarantinedUnknown` or confirmed only after real successful finalization |
+| R1-T13 kill not attempted, trusted fallback empty | Existing trusted fallback authority | `Kill=NotAttempted`, `ObservePopulation=Empty` | `DomainStop=Unknown`, `DomainEmpty=Confirmed`; use the existing progress persistence path; aggregate remains `QuarantinedUnknown` because `DomainStop` is Unknown; no kill dispatch or termination is inferred |
+| R1-T14 kill not attempted, fallback populated | Existing trusted fallback authority | `Kill=NotAttempted`, `ObservePopulation=Populated` | `DomainStop=Unknown`, `DomainEmpty=Unknown`; aggregate `QuarantinedUnknown`; no confirmed cleanup or new kill attempt |
+| R1-T15 kill not attempted, fallback unavailable or inconclusive | Fallback unavailable/inconclusive | `Kill=NotAttempted`, `ObservePopulation=Unknown` | `DomainStop=Unknown`, `DomainEmpty=Unknown`; aggregate `QuarantinedUnknown`; no empty assumption or fabricated completion evidence |
 
 No tests are implemented by D6.2.
 
