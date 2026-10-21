@@ -2,24 +2,22 @@
 
 Updated 2026-10-21. Status definitions: Complete = stated artifact exists; Ready = dependencies sufficient to start; Held = named prerequisite missing; Pending = later delivery. Slice-specific historical entries retain their original tested SHAs; the later AR-6 SHA has separate three-host native and package evidence. Complete lifecycle qualification does not imply restricted-execution security qualification.
 
-## Current priority: WP05 D6.3 - SINGLE-FINDING C3 NOTATTEMPTED / POPULATION OBSERVATION CONTRACT CORRECTION; D6.2-R1 OPEN; C3 POLICY AND C1-C4 APPROVAL PENDING; RELEASE NOT QUALIFIED
+## Current priority: WP05 D6.4 — R1-T13–T15 DETERMINISTIC FIXTURE SPECIFICATION; C3 POLICY AND C1-C4 APPROVAL PENDING; RELEASE NOT QUALIFIED
 
-Update 2026-10-21 (preservation engineer): the focused independent GLM D6.2 review is preserved. Disposition **`WP05 D6.2 FOCUSED INDEPENDENT REVIEW COMPLETE - OPTION B: DESIGN SUPPORTED WITH ONE REQUIRED DOCUMENTATION-ONLY CORRECTION (D6.2-R1); C2/C4 SUPPORT UNCHANGED; C3 POLICY AND C1-C4 APPROVAL PENDING; NO PRODUCTION REMEDIATION AUTHORIZED; RELEASE NOT QUALIFIED`** (verbatim from Q3 `3bce34b6b449a863f784949c0d7be5b0b56d4458`; producer HEAD `ae09afedddeb703e6bde226bd793b375896c3064`; see [the preservation checkpoint](reviews/gagamba-linux-m1-wp05-d6-2-independent-review-preservation-checkpoint.md) and the handoff entry). One required documentation correction carries forward as **`D6.2-R1 OPEN - C3 NOTATTEMPTED / OBSERVEPOPULATION OUTCOME CONSISTENCY`**: C3's mapping row 1 unconditionally forces `DomainEmpty = Unknown` for `Kill=NotAttempted`, contradicting the same section's retained `ObservePopulation` fallback rule that can independently confirm emptiness (and the conditional handling GLM verified for `Kill=Failed`); either resolution must be one sentence per the committed review, with the aggregate truth table unchanged for all other rows.
+Update 2026-10-21 (preservation engineer): Luna's D6.3 producer `4209581a03562b434badd7a5f9927663559911be` and Terra's independent review `cda2f22221c4db12ced3a4317362e80167270a63` are preserved as sibling histories under the D6.3 producer. Terra's exact disposition is **`WP05 D6.3 TERRA INDEPENDENT REVIEW COMPLETE - OPTION B: D6.2-R1 PARTIALLY ADDRESSED; SPECIFIC DOCUMENTATION CORRECTION REQUIRED; HUMAN C3 CONTRACT DECISION HELD; NO PRODUCTION REMEDIATION AUTHORIZED; RELEASE NOT QUALIFIED`**. The C3 NotAttempted mapping is corrected, but the acceptance rows R1-T13–T15 still lack a deterministic test-only `KillDispatchOutcome.NotAttempted` seam and fallback injection specification. See [the D6.3 preservation checkpoint](reviews/gagamba-linux-m1-wp05-d6-3-terra-review-preservation-checkpoint.md).
 
-**Next bounded task: WP05 D6.3 - C3 NotAttempted / Population Observation Contract Correction (documentation-only; NOT started, implemented or authorized here).**
+**Next bounded task: WP05 D6.4 — R1-T13–T15 Deterministic Fixture Specification (documentation-only; OPEN, not implemented, approved, or completed).**
 
 Scope:
 
-- Correct the `Kill=NotAttempted` outcome row.
-- Reconcile the `ObservePopulation` fallback.
-- Preserve the distinction between verified emptiness and kill success.
-- Update only directly affected acceptance rows, mappings and human-decision wording.
-- Keep existing aggregation precedence unless a source-grounded contradiction requires clarification.
-- No production implementation, no test modifications, no new API, no unrelated C1/C2/C4 changes.
-- Request a one-finding independent GLM re-review.
-- Human approvals only after the remaining design issue is independently closed; the C3 expired-deadline policy remains `C3 ZERO-WAIT POLICY - PENDING HUMAN`.
+- Specify a future test-only typed-outcome seam at the proposed Reconciler boundary that can provide `KillDispatchOutcome.NotAttempted` without invoking `WriteKill`.
+- Specify deterministic injection of the existing fallback population observation as Empty, Populated, and unavailable/inconclusive.
+- State assertions for `DomainStop`, `DomainEmpty`, aggregate precedence, durable progress, and absence of fabricated kill-success evidence.
+- Retain the current R1-T13–T15 expected classifications.
+- Documentation only; no test or production implementation and no new production API.
+- Follow with a single-finding independent review.
 
-All C1-C4 remain `PROPOSED - NOT APPROVED`; no production remediation is authorized; D6.3 must not be pre-marked complete or authorized; no release qualification is established.
+C1-C4 remain `PROPOSED - NOT APPROVED`; C3 remains `C3 ZERO-WAIT POLICY - PENDING HUMAN`. No production remediation or runtime qualification is authorized. H1-H5, WP08, WP10 and full G3 remain deferred; release is not qualified.
 
 ## Current priority: WP05 D6.2 CONTRACT PRECISION AMENDMENTS COMPLETE; FOCUSED INDEPENDENT REVIEW REQUIRED; C3 POLICY AND C1-C4 HUMAN APPROVAL PENDING; RELEASE NOT QUALIFIED
 
