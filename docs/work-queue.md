@@ -2,22 +2,25 @@
 
 Updated 2026-10-21. Status definitions: Complete = stated artifact exists; Ready = dependencies sufficient to start; Held = named prerequisite missing; Pending = later delivery. Slice-specific historical entries retain their original tested SHAs; the later AR-6 SHA has separate three-host native and package evidence. Complete lifecycle qualification does not imply restricted-execution security qualification.
 
-## Current priority: WP05 D6.4 — R1-T13–T15 DETERMINISTIC FIXTURE SPECIFICATION; C3 POLICY AND C1-C4 APPROVAL PENDING; RELEASE NOT QUALIFIED
+## Current priority: WP05 D6.5 — TEST-VARIANT ISOLATION AND SOURCE-EQUIVALENCE PRECISION; GLM R1/R2 OPEN; C3 POLICY AND C1-C4 APPROVAL PENDING; RELEASE NOT QUALIFIED
 
-Update 2026-10-21 (preservation engineer): Luna's D6.3 producer `4209581a03562b434badd7a5f9927663559911be` and Terra's independent review `cda2f22221c4db12ced3a4317362e80167270a63` are preserved as sibling histories under the D6.3 producer. Terra's exact disposition is **`WP05 D6.3 TERRA INDEPENDENT REVIEW COMPLETE - OPTION B: D6.2-R1 PARTIALLY ADDRESSED; SPECIFIC DOCUMENTATION CORRECTION REQUIRED; HUMAN C3 CONTRACT DECISION HELD; NO PRODUCTION REMEDIATION AUTHORIZED; RELEASE NOT QUALIFIED`**. The C3 NotAttempted mapping is corrected, but the acceptance rows R1-T13–T15 still lack a deterministic test-only `KillDispatchOutcome.NotAttempted` seam and fallback injection specification. See [the D6.3 preservation checkpoint](reviews/gagamba-linux-m1-wp05-d6-3-terra-review-preservation-checkpoint.md).
+Update 2026-10-21 (preservation engineer): Luna's D6.4 producer `design/wp05-d6-4-r1-fixture-clarification` @ `08938e96c69cfd573a284589c986f53f041c5803` and GLM's independent review `review/wp05-d6-4-glm-independent-fixture` @ `8b95c52abdebf8fd9a0235dd5a69082456e1984f` (review blob `632c311da26e511519c5fbb44cb86efe9b0bb6e1`) are preserved as sibling histories under the D6.4 producer. GLM's exact disposition is **`WP05 D6.4 GLM INDEPENDENT REVIEW COMPLETE - OPTION B: FIXTURE TESTABILITY PARTIALLY ADDRESSED; SPECIFIC DOCUMENTATION CORRECTION REQUIRED; C3 CONTRACT DECISION HELD; NO PRODUCTION REMEDIATION AUTHORIZED; RELEASE NOT QUALIFIED`**. The injection boundary, deterministic R1-T13–T15 cases, durable-progress expectations and the seeded-`DomainRemoval` zero-removal basis are independently verified; two required documentation corrections remain open: **`D6.4-R1 OPEN - TEST-VARIANT FRIEND ASSEMBLY DECLARATIONS`** (shared-source `TransactionStateModel.cs:11-12` friend grants must be conditionalized; the `Gagamba.Execution` friend for the D6.4 test assembly was unspecified) and **`D6.4-R2 OPEN - PRODUCTION/TEST SOURCE-GRAPH EQUIVALENCE`** (the test variant must compile the identical production M1 source inventory by construction; a test-built variant is not binary-identical production evidence). See [the D6.4 preservation checkpoint](reviews/gagamba-linux-m1-wp05-d6-4-glm-review-preservation-checkpoint.md).
 
-**Next bounded task: WP05 D6.4 — R1-T13–T15 Deterministic Fixture Specification (documentation-only; OPEN, not implemented, approved, or completed).**
+**Next bounded task: WP05 D6.5 — Test-Variant Isolation and Source-Equivalence Precision (documentation-only; OPEN, not implemented, approved, or completed).**
 
 Scope:
 
-- Specify a future test-only typed-outcome seam at the proposed Reconciler boundary that can provide `KillDispatchOutcome.NotAttempted` without invoking `WriteKill`.
-- Specify deterministic injection of the existing fallback population observation as Empty, Populated, and unavailable/inconclusive.
-- State assertions for `DomainStop`, `DomainEmpty`, aggregate precedence, durable progress, and absence of fabricated kill-success evidence.
-- Retain the current R1-T13–T15 expected classifications.
+- R1: document the exact conditional compilation of the M1 `InternalsVisibleTo` attributes (`TransactionStateModel.cs:11-12`) so the variant build emits only the `Gagamba.Execution.Linux.M1.D6_4.Tests` friend while the normal build emits the current M1.Tests and M1.Owner grants.
+- R1: specify the missing `Gagamba.Execution` friend grant for `Gagamba.Execution.Linux.M1.D6_4.Tests` (the linked `RecoveryTestSupport.cs` consumes `Gagamba.Execution` internals).
+- R1: state production/test assembly access boundaries, exact assembly names and compilation-symbol boundaries, the explicit exclusion of Owner from the test variant, and the practical limits of "compile-time-only isolation"; no general production-accessible synthetic stop-outcome mechanism.
+- R2: document how the production and test variant compile the identical production M1 source inventory by construction (no copied source trees), and which fixture-specific files, symbols and assembly metadata are additional.
+- R2: define source-graph verification in both directions — production purity (no marker type/overload in the regular M1 assembly; Owner resolves the regular M1 assembly) and variant source-graph identity — including detection of unintended substitution or omission of production Reconciler source.
+- R2: state the explicit limitation that a test-built variant is not binary-identical production evidence; behavioral conclusions are bounded accordingly.
+- Retain the verified injection-boundary and R1-T13–T15 outcome specifications unchanged.
 - Documentation only; no test or production implementation and no new production API.
-- Follow with a single-finding independent review.
+- Follow with a focused independent follow-up review of the R1/R2 corrections.
 
-C1-C4 remain `PROPOSED - NOT APPROVED`; C3 remains `C3 ZERO-WAIT POLICY - PENDING HUMAN`. No production remediation or runtime qualification is authorized. H1-H5, WP08, WP10 and full G3 remain deferred; release is not qualified.
+C1-C4 remain `PROPOSED - NOT APPROVED`; C3 remains `C3 ZERO-WAIT POLICY - PENDING HUMAN` (neither Policy A nor Policy B selected). No production remediation or runtime qualification is authorized. H1-H5, WP08, WP10 and full G3 remain deferred; release is not qualified.
 
 ## Current priority: WP05 D6.2 CONTRACT PRECISION AMENDMENTS COMPLETE; FOCUSED INDEPENDENT REVIEW REQUIRED; C3 POLICY AND C1-C4 HUMAN APPROVAL PENDING; RELEASE NOT QUALIFIED
 
