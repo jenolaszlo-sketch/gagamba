@@ -1,5 +1,22 @@
 # Current work queue
 
+
+## Current priority: WP05 D6.7 HUMAN CONTRACT DECISIONS RECORDED - C1-C4 APPROVED; C3 POLICY A SELECTED; POLICY B DEFERRED; IMPLEMENTATION NOT AUTHORIZED; RELEASE NOT QUALIFIED
+
+Update 2026-10-21: authoritative current status is recorded in [D6.7 human contract approvals](decisions/gagamba-linux-m1-wp05-d6-7-human-contract-approvals.md).
+
+| Decision | Current status |
+|---|---|
+| C1 — R09 ambiguous ReleaseIntent | HUMAN CONTRACT APPROVED |
+| C2 — R08 stop-first capability invalidation | HUMAN CONTRACT APPROVED |
+| C3 — R27 durable stop deadline and recovery | HUMAN CONTRACT APPROVED |
+| C4 — R02/R06 duplicate/concurrent release semantics | HUMAN CONTRACT APPROVED |
+| C3 expired-deadline choice | Policy A selected for Linux M1; Policy B deferred |
+
+D6.4–D6.6 design findings are closed in design only. Their independent review dispositions did not supply human approval. C1–C4 are no longer awaiting human approval as of D6.7. No implementation is authorized, no tests or release qualification are claimed, and WP05 remains NOT QUALIFIED. The proposed next implementation tranche is C2, subject to separate explicit authorization. Proposed sequence: C2 → C1 → C4 → C3. This is a recommendation, not blanket implementation authorization; every tranche requires its own authorization.
+
+The D6.6 current-priority block immediately below is retained as the historical status at the D6.6 preservation commit. Its pending statements are superseded as current status by this D6.7 entry.
+
 Updated 2026-10-21. Status definitions: Complete = stated artifact exists; Ready = dependencies sufficient to start; Held = named prerequisite missing; Pending = later delivery. Slice-specific historical entries retain their original tested SHAs; the later AR-6 SHA has separate three-host native and package evidence. Complete lifecycle qualification does not imply restricted-execution security qualification.
 
 ## Current priority: WP05 D6.6 GLM INDEPENDENT REVIEW PRESERVED - OPTION A; D6.4-R1, D6.4-R2 AND D6.5-R2a CLOSED IN DESIGN; C1-C4 HUMAN APPROVAL AND C3 POLICY SELECTION PENDING; RELEASE NOT QUALIFIED
