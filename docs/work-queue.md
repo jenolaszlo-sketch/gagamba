@@ -2,7 +2,25 @@
 
 Updated 2026-10-21. Status definitions: Complete = stated artifact exists; Ready = dependencies sufficient to start; Held = named prerequisite missing; Pending = later delivery. Slice-specific historical entries retain their original tested SHAs; the later AR-6 SHA has separate three-host native and package evidence. Complete lifecycle qualification does not imply restricted-execution security qualification.
 
-## Current priority: WP05 D6.5 — TEST-VARIANT ISOLATION AND SOURCE-EQUIVALENCE PRECISION; GLM R1/R2 OPEN; C3 POLICY AND C1-C4 APPROVAL PENDING; RELEASE NOT QUALIFIED
+## Current priority: WP05 D6.5 GLM INDEPENDENT REVIEW PRESERVED - OPTION B; D6.4-R1 VERIFIED ADDRESSED; D6.4-R2 PARTIALLY ADDRESSED; D6.5-R2a OPEN; C3 POLICY AND C1-C4 APPROVAL PENDING; RELEASE NOT QUALIFIED
+
+Update 2026-10-21 (preservation engineer): Luna's D6.5 producer `design/wp05-d6-5-fixture-isolation-equivalence` @ `6bd714d894ad8152a87692f749521abf79916bf5` and GLM's independent review `review/wp05-d6-5-glm-independent-isolation-equivalence` @ `1051018c272a578613309c07cb4d23d627216482` (review document `docs/reviews/gagamba-linux-m1-wp05-d6-5-glm-independent-isolation-equivalence-review.md`, blob `722613ebe1d4b0439e15704fcb203e19a07cd813`) are preserved as sibling histories under the D6.5 producer, with preservation at `preservation/wp05-d6-5-glm-independent-isolation-equivalence-review` (a direct child of the producer, not based on the review). GLM's exact disposition is **`WP05 D6.5 GLM INDEPENDENT REVIEW COMPLETE - OPTION B: D6.4-R1/R2 PARTIALLY ADDRESSED; SPECIFIC DOCUMENTATION CORRECTION REQUIRED; C3 CONTRACT DECISION HELD; NO PRODUCTION REMEDIATION AUTHORIZED; RELEASE NOT QUALIFIED`**. Finding statuses preserved separately: **`D6.4-R1 VERIFIED ADDRESSED`** (conditional friend-attribute block preserves the production `M1.Tests`/`M1.Owner` grants and emits only the `D6_4.Tests` friend in the variant; both `Gagamba.Execution` friend additions are necessary; unsigned IVT accurately described as name-based compiler access, not a runtime sandbox boundary); **`D6.4-R2 PARTIALLY ADDRESSED`** (same-project variant feasible; the `GlobalPropertiesToRemove`/`RemoveProperties` edge-removal mechanism is supported; static evaluation reproduced 44/44 identical M1 Compile paths and `TRACE;RELEASE` — static source-item evidence only, not completed variant compilation or binary equivalence); **`D6.5-R2a OPEN`** — the fixture-symbol `DefineConstants` delivery mechanism is unspecified and the natural global-property route is demonstrably infeasible. See [the D6.5 preservation checkpoint](reviews/gagamba-linux-m1-wp05-d6-5-glm-review-preservation-checkpoint.md).
+
+**Next bounded task: WP05 D6.6 — MSBuild Fixture-Symbol Delivery Correction (documentation-only; Pending, not implemented, approved, or completed).**
+
+The sole blocking correction (D6.5-R2a) requires:
+
+1. A dedicated custom MSBuild property enabling the fixture variant.
+2. Appending `GAGAMBA_WP05_D6_4_TEST_FIXTURE` inside the M1 project.
+3. Preserving `TRACE`, `RELEASE` and SDK-generated framework constants.
+4. Avoiding a global `DefineConstants` override.
+5. Preventing the carrier property from propagating into `Gagamba.Execution`.
+6. Specifying verification against actual compiler inputs and final defined constants.
+7. A focused independent GLM review afterward.
+
+C1-C4 remain `PROPOSED - NOT APPROVED`; C3 remains `C3 ZERO-WAIT POLICY - PENDING HUMAN` (neither Policy A nor Policy B selected). No production remediation or runtime qualification is authorized. H1-H5, WP08, WP10 and full G3 remain deferred; release is not qualified. D6.6 stays pending.
+
+## Prior priority: WP05 D6.5 — TEST-VARIANT ISOLATION AND SOURCE-EQUIVALENCE PRECISION; GLM R1/R2 OPEN; C3 POLICY AND C1-C4 APPROVAL PENDING; RELEASE NOT QUALIFIED
 
 Update 2026-10-21 (preservation engineer): Luna's D6.4 producer `design/wp05-d6-4-r1-fixture-clarification` @ `08938e96c69cfd573a284589c986f53f041c5803` and GLM's independent review `review/wp05-d6-4-glm-independent-fixture` @ `8b95c52abdebf8fd9a0235dd5a69082456e1984f` (review blob `632c311da26e511519c5fbb44cb86efe9b0bb6e1`) are preserved as sibling histories under the D6.4 producer. GLM's exact disposition is **`WP05 D6.4 GLM INDEPENDENT REVIEW COMPLETE - OPTION B: FIXTURE TESTABILITY PARTIALLY ADDRESSED; SPECIFIC DOCUMENTATION CORRECTION REQUIRED; C3 CONTRACT DECISION HELD; NO PRODUCTION REMEDIATION AUTHORIZED; RELEASE NOT QUALIFIED`**. The injection boundary, deterministic R1-T13–T15 cases, durable-progress expectations and the seeded-`DomainRemoval` zero-removal basis are independently verified; two required documentation corrections remain open: **`D6.4-R1 OPEN - TEST-VARIANT FRIEND ASSEMBLY DECLARATIONS`** (shared-source `TransactionStateModel.cs:11-12` friend grants must be conditionalized; the `Gagamba.Execution` friend for the D6.4 test assembly was unspecified) and **`D6.4-R2 OPEN - PRODUCTION/TEST SOURCE-GRAPH EQUIVALENCE`** (the test variant must compile the identical production M1 source inventory by construction; a test-built variant is not binary-identical production evidence). See [the D6.4 preservation checkpoint](reviews/gagamba-linux-m1-wp05-d6-4-glm-review-preservation-checkpoint.md).
 
