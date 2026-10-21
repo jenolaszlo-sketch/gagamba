@@ -438,3 +438,16 @@ Committed evidence never authorizes another RELEASE.
 the design is component-level. WP08 composition, WP10 target/status, H1-H5 and
 full G3 remain deferred. C1-C4 approvals and C3 zero-wait policy remain
 **PENDING HUMAN**.
+
+### D6.2 precision pointer
+
+Status: **PROPOSED - NOT APPROVED**
+
+D6.2 resolves only GLM D6.1-R1 through R4 in the C1/C3/C4 decision records and
+the [precision amendment reconciliation](gagamba-linux-m1-wp05-d6-2-precision-amendment-reconciliation.md).
+C2/C4 semantics are unchanged. C1 retention is now explicitly conditional;
+C3 uses a typed stop outcome and sealed clock basis; R4 separates the test-only
+fixture from R12. No contract is approved, no C3 policy is selected and no
+production remediation is authorized. See
+[the focused review handoff](gagamba-linux-m1-wp05-d6-2-focused-review-handoff.md)
+and [human addendum](gagamba-linux-m1-wp05-d6-2-human-approval-addendum.md).

@@ -2,6 +2,11 @@
 
 Status: **PROPOSED - NOT APPROVED**
 
+D6.2 amendment: the current questions are carried forward, with the C1 and C3
+questions requiring focused verification of the D6.2 precision amendments
+first. See [the D6.2 human approval addendum](gagamba-linux-m1-wp05-d6-2-human-approval-addendum.md).
+No answer in this historical sheet is an approval.
+
 All answers are **PENDING HUMAN**. The human WP05 release/security decision
 holder must answer each item separately. GLM review is advisory; it does not
 approve.

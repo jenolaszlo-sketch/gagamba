@@ -92,3 +92,66 @@ No gate status changes. C1 -> G3-A11/G3-B08, C2 -> G3-A02/A07, C3 ->
 G3-A10/R27, C4 -> G3-A05 remain diagnostic/blocked until human approvals and
 new qualification on a new production tree. C1-C4 remain unapproved;
 component-level evidence is not integrated qualification.
+
+## D6.2 amendment reconciliation additions
+
+Status: **PROPOSED - NOT APPROVED**
+Design status: **DESIGN TEXT ADDRESSED - AWAITING INDEPENDENT REVIEW**
+
+These are future test specifications, not executed D6.2 tests. No gate status
+changes: every gate remains diagnostic/blocked; no production, test, native or
+fixture change is authorized.
+
+| Amendment | Contract | Revised design section | Required future proof | Gate status |
+|---|---|---|---|---|
+| D6.1-R1 | C3 | C3 §D6.2 R1 typed stop outcome, mapping, JournalFinalization aggregation | R1-T1..T12: typed kill failure; attempted/populated; kill unknown; population unavailable; empty; stop-progress persistence failure; final persistence failure after confirmed empty; genuine operation failure; invalid authority; identity mismatch; mixed components; repeated uncertain finalization | G3-A10/R27 remains blocked |
+| D6.1-R2 | C3 | C3 §D6.2 R2 trusted clock, epoch/frequency, failure, tests | R2-A..F: compatible epoch; incompatible relative epoch; false enum-only provenance; cross-boot refusal; invalid conversion/overflow/unavailable; repeated no-reset | G3-A10/R27 remains blocked; C3 policy pending |
+| D6.1-R3 | C1 (C2/C4 cross-reference) | C1 §D6.2 R3 decision order, stop-won classification, barrier tests | R3-T1..T8: ambiguity-first; stop-first; already-retained; opposing committed writer; clock-unavailable collision; durable-stop persistence failure; repeated release; owner death; capability closure; no second FD4; conservative recovery | G3-A11/G3-B08 remains blocked |
+| D6.1-R4 | C1/evidence inventory | C1 §D6.2 R4 fixture provenance; this matrix | Exact fixture branch/commit/file/blob/digest and R12-vs-fixture source comparison; no copied fixture; no false ancestry | All gates unchanged |
+
+### R1 required test row names
+
+- Typed kill failure.
+- Kill attempted but domain populated.
+- Kill dispatch unknown.
+- Population observation unavailable.
+- Domain confirmed empty.
+- Stop progress persistence failure.
+- Final journal persistence failure after confirmed empty cleanup.
+- Genuine reconciliation operation failure.
+- Invalid cleanup authority.
+- Identity mismatch.
+- Mixed component outcomes.
+- Aggregate result discrimination and repeated uncertain finalization.
+
+### R2 required test row names
+
+- Compatible production epoch and exact remaining allowance.
+- Explicit incompatible construction-relative epoch rejected before subtraction.
+- False enum-only `Qpc` provenance / sealed production clock invariant.
+- Cross-boot refusal.
+- Invalid conversion, frequency mismatch, overflow, nonpositive/unavailable.
+- Repeated reconciliation/new process/partial cleanup without deadline reset.
+
+### R3 required test row names
+
+- Ambiguity-first retention.
+- Stop-first retention.
+- Already-retained decision.
+- Concurrent opposing-order committed writer.
+- Capability closure (C2 consumption).
+- No second FD4 and no second Intent.
+- Conservative recovery after ambiguity/owner death.
+- Clock-unavailable and durable-stop persistence collision cases.
+
+### R4 required binding proof
+
+- Exact fixture branch, full commit SHA, file path, blob and SHA-256.
+- `src` tree identity equal to R12 and no `native` diff.
+- Evidence `SHA256SUMS`/`source-head.txt` binding.
+- Explicit separation of R12 production consumers from test-only fixture
+  assets; no fixture copy or merge.
+
+C3 policy remains `C3 ZERO-WAIT POLICY - PENDING HUMAN`. C1/C3 remain subject
+to focused independent review and human decisions; C2/C4 remain supported for
+human decision, not approved. No test has been run by D6.2.

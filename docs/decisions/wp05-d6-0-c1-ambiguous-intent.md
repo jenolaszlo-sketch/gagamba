@@ -255,3 +255,204 @@ window is documented, not claimed corrected in R12.
 
 Approve the explicit `AmbiguousPersistence` decision, retained ambiguity,
 lock-safe tail stop and C2-based capability closure? **PENDING HUMAN.**
+
+## D6.2 revision - R3 retention collision and R4 fixture provenance
+
+Status: **PROPOSED - NOT APPROVED**
+Design status: **DESIGN TEXT ADDRESSED - AWAITING INDEPENDENT REVIEW**
+Human contract approval: **PENDING HUMAN**
+
+This section resolves only GLM D6.1-R3 and D6.1-R4. It does not redesign C1,
+change C2/C4 semantics, select the C3 policy, approve any contract, authorize
+remediation or qualify release. It explicitly supersedes the D6.1 statement
+that the ambiguous path unconditionally retains `AmbiguousPersistence`.
+
+### R3 first-retainer ordering
+
+The D6.1 sequence remains lock-safe: the journal attempt completes under
+`_journalGate`; the ambiguous result is returned; `_journalGate` is released;
+retention, if it occurs, is under `_gate`; the bounded stop is a tail action
+after `_gate` is released. No journal I/O occurs under `_gate`, and no
+`_gate`/`_journalGate` nesting is introduced (`ReleaseArbiter.cs:1-5,81-131,
+226-296`).
+
+Retention is **conditional**. The R12 after-intent `_gate` block checks the
+existing retained release first (`ReleaseArbiter.cs:120-123`), then
+`_stopAccepted` (`:125-131`), before any gate checks. Between the
+`_journalGate` release at `:115` and the ambiguous caller's `_gate`
+acquisition, a concurrent stop can win `_gate`, or another release caller can
+retain a stop-won refusal first. The ambiguous caller must obey those existing
+first-retainer rules.
+
+#### Case R3-A - ambiguity retention wins first
+
+1. The journal operation returns an ambiguous persistence result.
+2. The release caller obtains `_gate`; no retained release exists and no stop
+   has been accepted.
+3. The caller retains `AmbiguousPersistence` with `MayHaveExecuted`,
+   `DeliveryResult.NotAttempted`, `DurableCommitted=false` and no FD4.
+4. The caller releases `_gate`, then invokes the bounded stop as a tail action.
+5. If the tail stop encounters an already accepted stop, it returns the
+   retained stop duplicate; otherwise its first acceptance is the C2
+   consumption point. No lock inversion is introduced.
+6. Later release callers receive `Duplicate` of the retained ambiguous result.
+
+#### Case R3-B - stop acceptance wins first
+
+1. The journal becomes ambiguous; the failing release caller releases
+   `_journalGate`.
+2. A competing stop obtains `_gate` first, is accepted, and C2 consumes the
+   capability at first stop acceptance.
+3. The original release caller later enters `_gate` for retention and sees
+   `_stopAccepted`.
+4. The existing stop-won rule takes precedence. The stop already consumed the
+   capability at its first acceptance; the release caller's existing
+   consume attempt is a no-op. The caller retains the stop-won release refusal;
+   it does **not** retain a second, separately manufactured
+   `AmbiguousPersistence` result.
+5. The caller returns that retained stop-won refusal. A later release caller
+   receives `Duplicate` of it. The stop's own `_retainedStop` is a separate
+   slot and does not populate `_retainedRelease`; a prior `_retainedRelease`
+   would have been caught by the entry/after-intent duplicate rule before the
+   journal phase (R3-C).
+6. Its tail stop is idempotent. The journal ambiguity remains a real durable
+   evidence fact.
+
+The retained stop-won refusal is:
+
+| Field | Value |
+|---|---|
+| `ReleaseDecisionKind` | `Refused` |
+| `DurableRelease` | `MayHaveExecuted` |
+| `Delivery` | `DeliveryResult.NotAttempted` |
+| `DurableCommitted` | `false` |
+| `LiveExecutionExcluded` | `true` |
+| Reason | exact source string `release gate refused: stop won during durable intent` |
+| Retention | retained in `_retainedRelease`; later calls `Duplicate` |
+
+It is a runtime result, not a durable `NotCommitted` finding. It must not be
+read as proof that no durable Intent exists. A sealed journal may still
+recover to `MayHaveExecuted`; recovery remains conservative and no RELEASE is
+resent.
+
+#### Case R3-C - another decision is already retained
+
+If `_retainedRelease` already exists when the ambiguous caller reaches the
+after-intent retention point, it returns `Duplicate` of that retained decision
+and does not overwrite it. This is a defensive first-retainer rule, not a claim
+that the state is normally reachable after the journal phase. In the reviewed
+single-arbiter model, a prior `_retainedRelease` from an earlier release call
+is caught at the entry check before any second intent; a prior
+`AmbiguousPersistence` cannot be present for the same first ambiguous call; and
+the stop's `_retainedStop` is a separate slot that does not populate
+`_retainedRelease`. D6.2 does not manufacture a prior stop-won refusal or use
+an unreachable state as a test premise. It does not add a second
+retained-decision slot or a new durable record.
+
+#### R3 ordering summary
+
+| Ordering | First retainer | Ambiguous caller result | Later release callers | Tail stop | Capability | Durable journal |
+|---|---|---|---|---|---|---|
+| Ambiguity first | Ambiguous caller | `AmbiguousPersistence` | `Duplicate` of ambiguous | Duplicate/idempotent if stop already accepted | C2 consume at first stop acceptance | Sealed/Intent ambiguity preserved; recovery may be `MayHaveExecuted` |
+| Stop first | Stop acceptance | Stop-won `Refused` retained by the ambiguous caller (or `Duplicate` if a prior retained decision exists) | `Duplicate` of stop-won refusal | Idempotent | Consumed by stop; second consume has no effect | Sealed/Intent ambiguity preserved; stop-won refusal does not assert absent Intent |
+| Existing retained | Prior `_retainedRelease` at entry | Entry `Duplicate`; defensive after-intent rule only | `Duplicate` of prior | Idempotent | Unchanged | Unchanged; no second Intent/FD4 |
+
+### R3 lock and physical invariants
+
+- Journal I/O remains outside `_gate`; retention and first-retainer checks are
+  under `_gate`; the tail stop follows `_gate` release.
+- No blocking wait is added between release and stop callers merely to force
+  identical results; no monitor reentrancy is used as proof.
+- First-retainer rules are preserved. If a future contract requires changing
+  them, that is a new explicit human decision outside D6.2.
+- The journal ambiguity remains real regardless of which runtime result wins.
+  No definite NotCommitted statement may erase it.
+- No second Intent, no second FD4, C2 consumption remains irreversible, and
+  runtime stop remains idempotent.
+- `Duplicate` of a stop-won refusal does not establish absence of durable
+  Intent; recovery reads the journal conservatively and may classify
+  `MayHaveExecuted`.
+- No new durable journal schema or second durable record is introduced.
+
+### R3 required deterministic opposing-order tests
+
+Extend `AmbiguousReleaseStopLockOrderProbe` with deterministic barriers, not
+sleeps. The barrier names below are proposed test-only names; the exact
+`TestBarrier` strings are an implementation detail.
+
+| Test | Barrier placement | Expected winner / returned kind | Durable / capability state | FD4 / journal | Recovery / no-resend | Negative assertion |
+|---|---|---|---|---|---|---|
+| R3-T1 ambiguity-first | after `_journalGate` release, before ambiguous `_gate` retention | Ambiguous caller; `AmbiguousPersistence`; later release `Duplicate` | Journal sealed/Intent; C2 consumed at tail stop acceptance | 0 FD4; no second Intent | Recovery `MayHaveExecuted`; no resend | No lock inversion; no journal I/O under `_gate` |
+| R3-T2 stop-first | after `_journalGate` release, before ambiguous retention; hold stop at `_gate` | Stop; release `Refused` stop-won (or `Duplicate` if a prior retained decision exists); exact reason | Journal sealed/Intent; capability consumed by stop | 0 FD4; no second Intent | Recovery `MayHaveExecuted`; no resend | Release must not retain `AmbiguousPersistence` ahead of stop-won rule |
+| R3-T3 existing retained | prior release decision retained at entry; a separate defensive assertion covers the after-intent guard without claiming it is reachable | Prior retained result; ambiguous caller `Duplicate` at entry | Journal unchanged; capability state unchanged | 0 FD4; no overwrite | Recovery conservative; no resend | Prior decision not overwritten; defensive after-intent branch does not invent a reachable stop-won prior result |
+| R3-T4 concurrent committed writer opposing order | barrier between committed `_journalGate` write (`ReleaseArbiter.cs:185-223`) and ambiguous retention; test-only opposing composition | Committed writer completes its own durable evidence; ambiguous caller retention/refusal remains safe | No shared second Intent; committed evidence remains separate | 0 FD4 for ambiguous path; one release write max | Recovery classification remains separate | No `_gate`/`_journalGate` inversion, deadlock or shared-record corruption |
+| R3-T5 clock-unavailable stop collision | stop uses `now <= 0` path (`:237-244`) before ambiguous retention | Stop accepted; release `Refused`/`Duplicate`; exact stop-won reason | No durable StopRecord; capability consumed; journal ambiguity | 0 FD4; no fabricated deadline | Recovery `MayHaveExecuted`; no resend | No fresh five-second allowance |
+| R3-T6 durable-stop persistence failure | stop accepted, then journal write failure after gate release (`:270-289`) | Stop remains accepted; release `Refused`/`Duplicate` | Runtime stop only; capability consumed; journal ambiguity | 0 FD4; no durable StopRecord | Recovery `MayHaveExecuted`; no resend | Stop failure does not rewrite retained release result |
+| R3-T7 repeated release after winner retained | after retention, additional release callers | `Duplicate` of retained ambiguous or stop-won result | No new intent; capability state unchanged | 0 additional FD4 | No resend | No new retained decision |
+| R3-T8 owner death after ambiguous persistence | SIGKILL after ambiguous retention and/or after stop collision | Runtime winner retained as above; replacement gets no capability | Journal sealed/Intent; fresh writer recovers | 0 FD4; no second write | Seal recovery -> `MayHaveExecuted`; no resend | No capability resurrection; no second Intent |
+
+Common assertions for every row: bounded test watchdog; no deadlock; no
+`_gate` held across journal I/O; no second physical RELEASE; no second Intent;
+the durable journal is classified separately from the runtime result; C2
+capability consumption is exactly once at first stop acceptance; duplicate stop
+does not consume again.
+
+No tests are implemented by D6.2.
+
+### R4 fixture source provenance correction
+
+D6.1 cited `Wp05ReleaseContractProbes` in the consumer inventory as though it
+were part of frozen R12. It is not. The corrected binding is:
+
+| Item | Verified value |
+|---|---|
+| R12 production | `38f6981b2a60daab2df37c92913a6760c1bef131`, tree `6854675d6b37a49d5302d6104103bdbfbc268040`; the fixture file is absent |
+| Fixture branch | `implementation/wp05-release-qualification-fixtures` |
+| Fixture test commit | `dc4c372b180abef1b27038d94f49af90226fa548` (parent `dbfecada5d1f6e6c7b852dda5f48b6971e4c650c`), tree `1f1c8669affd63ae2fc48d20429241e505751000` |
+| Fixture evidence tip | `338a98af269e6b5839f3ccc2e0881f016153b01e` |
+| Test file | `tests/Gagamba.Execution.Linux.M1.Tests/Execution/Wp05ReleaseContractProbes.cs` |
+| Git blob | `ccde61763664a4ed56e6d1941c20d61cc0cf2b5f` |
+| SHA-256 of test file | `cd5cd00c4c4ef213239047a85ed8f26129e45bb5cad0ddd2c3fe646a407da2b4` |
+| Fixture `src` tree | `406f52da43b62920128151b2f5706c32d45b6db7`, identical to R12 `src` |
+| Fixture `native` | no diff from R12 |
+| Evidence manifest | `docs/evidence/linux-m1/wp05-release-fixtures-counterexample-probes-artifacts/SHA256SUMS` (blob `e203b5c3954d5c4e27b2cc17478208f9f174999c`) and `source-head.txt` (blob `e35e47640dd95394ec6bf4159dbad5f46ed67c37`) |
+| Evidence document | `docs/evidence/linux-m1/wp05-release-fixtures-counterexample-probes-2026-10-20.md` (blob `fd7dc44eb7815f5747ac860bf2e6eb6749bb17bc`) |
+| Diagnostics | `contract-probes.log` blob `03beaf8863099d96cdfb8ce82297398cbf9d6083`; 13/13 passed in the recorded fixture profile |
+
+Relevant test methods at that fixture commit (13 facts):
+
+`StopWithUnavailableClockIsLiveAcceptedWithoutDurableStop`,
+`StopDeadlineOverflowIsLiveAcceptedWithoutDurableStop`,
+`AmbiguousSealFailureLeavesUncertainIntentAndNoStop`,
+`DefiniteIntentFailureIsDistinctFromAmbiguousPersistence`,
+`StopFirstLeavesCapabilityLiveOnR12`,
+`DurableStopBlocksReleaseIntentFromSecondArbiter`,
+`StopPersistenceFailureAllowsSecondArbiterReleaseOnR12`,
+`ConcurrentDuplicateReleaseProducesOnePhysicalWrite`,
+`ReconcilerUsesCallerAllowanceAfterPersistedStopDeadlineExpired`,
+`StatusBufferDoesNotPersistBeforeDurableCommitted`,
+`StatusBeforeCommittedPersistenceFailureDoesNotCreateObservation`,
+`StatusReaderRejectsWrongIdentityAndSequence`,
+`StatusReaderRejectsEofAndMalformedFrames`.
+
+The fixture is test-only diagnostic evidence, not an R12 production symbol.
+It is not copied into R12 history, not merged, and not rerun by D6.2. The
+consumer inventory is now split into:
+
+- **R12 production consumers:** `ReleaseDecisionKind`/`ReleaseDecision.Kind` in
+  `Execution/ReleaseDecision.cs`; `ReleaseArbiter` retained/return paths
+  (`Execution/ReleaseArbiter.cs:50-52,120-131,177,301-303`); R12 tests
+  `ReleaseArbiterTests`, `Wp05ForgedAbortOracle*`,
+  `Wp05ReleasePathIndependentQualificationTests`; no production switch or
+  serializer consumes the runtime kind at R12.
+- **Test-only fixture asset:** `Wp05ReleaseContractProbes` at the fixture
+  commit above, used to reproduce the wedge/failed-stop diagnostics against
+  R12 behavior. Its evidence is evidence of R12 behavior only; it does not
+  qualify future changed production.
+
+### C1 D6.2 status
+
+- R3 design text: **ADDRESSED - AWAITING INDEPENDENT REVIEW**.
+- R4 design text: **ADDRESSED - AWAITING INDEPENDENT REVIEW**.
+- C1 contract: **PROPOSED - NOT APPROVED; HUMAN DECISION PENDING**.
+- No production, test or fixture change is authorized.

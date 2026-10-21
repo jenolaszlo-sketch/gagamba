@@ -184,3 +184,63 @@ R12 evidence is historical only; no automatic qualification transfer.
 
 C3 policy and all C1-C4 approvals remain pending human decisions. H1-H5,
 WP08/WP10, production status and full G3 remain outside this proposal.
+
+## D6.2 revision - precision prerequisites
+
+Status: **PROPOSED - NOT AUTHORIZED**
+
+D6.2 adds four precision prerequisites. It does not authorize any tranche,
+select the C3 policy, approve a contract or accept a gate. The staged order
+C2 -> C1 -> C4 -> C3 remains a proposal; C3 may be scheduled earlier only by a
+separate human authorization.
+
+### R1 - structured reconciliation outcomes (C3)
+
+Before C3 implementation, the design requires the typed internal
+`StopOutcome` mechanism in C3 §D6.2-R1 (`KillDispatchOutcome`,
+`StopPopulationObservation`, `TimedOut`), a complete component-to-aggregate
+truth table, and an explicit `JournalFinalization` row. The implementation
+must not classify by error strings, must not blanket-map failures to Unknown,
+and must preserve a component `Failed` when finalization is also uncertain.
+Required tests are R1-T1..T12 in C3 §D6.2-R1 and the evidence matrix. No
+production `DomainLease`/`Reconciler` change is authorized yet.
+
+### R2 - trusted clock provenance (C3)
+
+Before C3 implementation, the design requires the sealed internal production
+domain clock backed by `Stopwatch.GetTimestamp()` and the exact `OwnerClock`
+conversion, a constant `MonotonicClockBasis(MonotonicEpoch.Qpc,
+Stopwatch.Frequency)`, and Reconciler rejection of incompatible epoch or
+frequency before subtraction. Required tests are R2-A..F in C3 §D6.2-R2. The
+construction-relative `OwnerDomainClock` remains incompatible and dead code at
+R12; no active production failure is claimed. No clock implementation is
+authorized yet. The C3 expired-deadline policy remains
+`C3 ZERO-WAIT POLICY - PENDING HUMAN`; neither Policy A nor B is selected.
+
+### R3 - retention collision (C1, with C2/C4 cross-reference)
+
+Before C1 implementation, the design requires the first-retainer ordering in
+C1 §D6.2-R3: stop-first acceptance, ambiguity-first retention, and an already
+retained decision. The stop-won refusal is retained as
+`Refused(MayHaveExecuted, NotAttempted, DurableCommitted=false)` and never
+asserts absent durable Intent; later callers receive `Duplicate`. The journal
+remains the separate durable evidence. Required tests are R3-T1..T8. C2
+consumption and C4 retention semantics are unchanged; no new waiting protocol
+or second retained-decision slot is introduced.
+
+### R4 - fixture provenance (C1/evidence)
+
+Before any requalification that cites the diagnostic fixture, the inventory
+must use the exact fixture branch/commit/file/blob/digest and distinguish it
+from R12 production. The fixture branch
+`implementation/wp05-release-qualification-fixtures` at test commit
+`dc4c372b180abef1b27038d94f49af90226fa548` is test-only; its `src` tree is
+identical to R12 and its `native` diff is empty. It is not copied into R12,
+merged or rerun by D6.2.
+
+### D6.2 prerequisite outcome
+
+Each tranche still requires its own approved contract revision, tests-first
+implementation, independent review, human authorization and new source-bound
+evidence. No tranche may inherit R12 qualification. C3 policy and all C1-C4
+approvals remain pending; no gate is accepted.

@@ -100,3 +100,37 @@ Status: **PROPOSED - NOT APPROVED**; C3 policy **PENDING HUMAN**.
 
 All approvals remain **PENDING HUMAN**. No production remediation, target,
 qualification or gate is authorized. H1-H5 and WP08/WP10 remain deferred.
+
+## D6.2 revision
+
+Status: **PROPOSED - NOT APPROVED**
+Design status: **DESIGN TEXT ADDRESSED - AWAITING INDEPENDENT REVIEW**
+Human decisions: **PENDING HUMAN**
+
+D6.2 resolves only GLM D6.1-R1 through R4 in design text:
+
+- **C1:** retention is conditional, not unconditional. Stop-first,
+  ambiguity-first and already-retained ordering are specified; the stop-won
+  refusal is `Refused(MayHaveExecuted, NotAttempted,
+  DurableCommitted=false)` and does not erase journal ambiguity. Fixture
+  provenance is corrected to the test-only fixture branch/commit and separated
+  from R12. C1 remains amended and requires focused independent verification
+  before human approval.
+- **C2:** unchanged in substance. D6.2 only cross-references the stop-first
+  ordering; consumption, duplicate-stop idempotency, release-first behavior
+  and CE-03 remain as reviewed.
+- **C3:** R1 names the typed stop-outcome mechanism, the component mapping and
+  the complete aggregation/JournalFinalization truth table. R2 binds
+  `MonotonicEpoch.Qpc` to the sealed `Stopwatch.GetTimestamp()` production
+  clock with the `OwnerClock` conversion and rejects incompatible
+  epoch/frequency before arithmetic. C3 remains amended; focused independent
+  verification and the separate expired-deadline policy decision are pending.
+- **C4:** unchanged in substance. Sequential `Duplicate` of a stop-won
+  refusal is covered; no new `ConcurrentRefusal`, waiting protocol or schema
+  is introduced.
+
+C2 and C4 remain supported for human decision, not approved. C1 and C3 require
+focused D6.2 verification first. The C3 policy remains
+`C3 ZERO-WAIT POLICY - PENDING HUMAN`; no policy is selected. See
+[the D6.2 human approval addendum](gagamba-linux-m1-wp05-d6-2-human-approval-addendum.md).
+No production remediation, target, qualification or gate is authorized.

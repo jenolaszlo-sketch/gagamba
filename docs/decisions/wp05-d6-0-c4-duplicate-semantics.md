@@ -172,3 +172,25 @@ No waiting API, no additional synchronization, no schema change.
 
 Approve documented concurrent-refusal semantics, sequential Duplicate and the
 retention asymmetry? **PENDING HUMAN.**
+
+## D6.2 precision note - R3 and retry futility
+
+Status: **PROPOSED - NOT APPROVED**
+C4 contract status: **DESIGN SUPPORTED FOR HUMAN DECISION - NOT APPROVED**
+
+C4 semantics and taxonomy are unchanged. D6.2-R3 adds one precise sequential
+case: when a stop wins before ambiguous retention, the ambiguous caller may
+receive the retained stop-won `Refused(MayHaveExecuted, DeliveryResult.NotAttempted,
+DurableCommitted=false, LiveExecutionExcluded=true, "release gate refused:
+stop won during durable intent")`, or `Duplicate` of that prior retained
+result. This is the existing C4 `Duplicate`/retention rule; it does not assert
+that no durable Intent exists and does not change the one-physical-RELEASE
+invariant. No `ConcurrentRefusal` kind is introduced.
+
+Optional nonblocking clarification (not a required D6.2 amendment): for a live
+owner, the sealed-journal refusal
+`release request refused: no acknowledged preparation snapshot (commit seal
+present...)` is retry-futile until ownership/recovery changes; it is distinct
+from a missing snapshot before any relevant journal history exists. This is a
+retryability clarification only and does not change the C4 public contract,
+taxonomy, retention or waiting rules.

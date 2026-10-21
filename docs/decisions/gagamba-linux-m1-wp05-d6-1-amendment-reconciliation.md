@@ -2,6 +2,13 @@
 
 Status: **PROPOSED - NOT APPROVED**
 
+D6.2 note: the independent GLM D6.1 review found the R1-R4 rows only partially
+addressed or carrying a provenance defect. This D6.1 register is historical;
+the current design text is in
+[the D6.2 precision amendment reconciliation](gagamba-linux-m1-wp05-d6-2-precision-amendment-reconciliation.md)
+and the D6.2 sections of C1/C3. Do not cite this register alone as proof that
+R1-R4 are resolved.
+
 This register reconciles the D6.1 design text against GLM Q3
 (`2a235c39...`, required-changes blob `65392a0f...`). `DESIGN TEXT ADDRESSED`
 means the proposed contract text now contains the amendment; it does **not**
