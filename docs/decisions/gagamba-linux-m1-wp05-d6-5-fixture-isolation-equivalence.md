@@ -36,16 +36,33 @@ Static inspection at the D6.4 base found that the M1 project uses SDK default Co
 
 A static Release/net10.0 dotnet msbuild property and Compile-item evaluation compared the production project with the same project using the proposed distinct variant AssemblyName and isolated output properties. It returned 44 Compile paths in each evaluation, with identical full paths. The queried default DefineConstants value was TRACE;RELEASE. That path comparison did not add the fixture symbol and did not invoke compilation, tests, or binary inspection. A static scan found no existing preprocessor directives or D6.4 fixture-symbol uses in the M1 source.
 
-The future D6_4.Tests project references the same M1 project with a variant configuration that sets AssemblyName to Gagamba.Execution.Linux.M1.TestFixture, appends only GAGAMBA_WP05_D6_4_TEST_FIXTURE to the production DefineConstants set, sets IsPackable=false, and gives BaseIntermediateOutputPath, MSBuildProjectExtensionsPath, and BaseOutputPath distinct variant directories. Configuration and TargetFramework remain equal to production. The symbol must be appended without replacing SDK/configuration constants.
+The future D6_4.Tests project supplies GagambaWp05D64FixtureEnabled=true only on its ProjectReference to the shared M1 project, alongside the existing variant AssemblyName, IsPackable=false, and distinct BaseIntermediateOutputPath, MSBuildProjectExtensionsPath, and BaseOutputPath properties. Do not pass DefineConstants as a global property or send a semicolon-separated constant list through ProjectReference Properties or -p:.
 
-Scope these global properties to the M1 project instance. The M1-to-Gagamba.Execution ProjectReference must remove AssemblyName, DefineConstants, BaseIntermediateOutputPath, MSBuildProjectExtensionsPath, BaseOutputPath, and IsPackable from the child property set. Otherwise the M1 variant properties could leak into the shared core project. Verify that Gagamba.Execution resolves to its normal assembly identity and output path. Owner continues to resolve the regular M1 project; D6_4.Tests references the variant, normal Gagamba.Execution, and test packages, and has no Owner reference.
+Inside the M1 project, immediately after its existing unconditional PropertyGroup and before the ProjectReference ItemGroup, use this conditioned local append:
+
+~~~xml
+<PropertyGroup Condition="'$(GagambaWp05D64FixtureEnabled)' == 'true'">
+  <DefineConstants>$(DefineConstants);GAGAMBA_WP05_D6_4_TEST_FIXTURE</DefineConstants>
+</PropertyGroup>
+~~~
+
+This is evaluated in the M1 project itself. The SDK C# props have already supplied TRACE; the SDK C# targets append the active configuration symbol (RELEASE for the inspected Release configuration) to the same value, and the SDK AddImplicitDefineConstants target appends applicable framework/platform symbols after PrepareForBuild. The M1-local append therefore preserves both sets. The carrier is true only for the test-variant M1 instance; it is absent/false for normal production M1. The conditioned assignment adds exactly one fixed symbol and accepts no caller-supplied symbol text.
+
+On the M1-to-Gagamba.Execution ProjectReference, use the GlobalPropertiesToRemove item metadata with this complete list:
+
+~~~xml
+<ProjectReference Include="..\Gagamba.Execution\Gagamba.Execution.csproj"
+                  GlobalPropertiesToRemove="AssemblyName;DefineConstants;BaseIntermediateOutputPath;MSBuildProjectExtensionsPath;BaseOutputPath;IsPackable;GagambaWp05D64FixtureEnabled" />
+~~~
+
+GlobalPropertiesToRemove is consumed as RemoveProperties by the MSBuild task used for project-reference builds. Keep the previously specified removals; DefineConstants remains defense in depth even though the fixture delivery no longer sends it globally. This keeps the carrier and all variant-only identities/output settings off the shared core reference. Verify from the child project evaluation and build log that Gagamba.Execution receives no carrier, retains its normal identity and output/intermediate locations, and has no fixture compiler symbol. For Release/net10.0, the existing core project evaluates to AssemblyName Gagamba.Execution, OutputPath bin\Release\net10.0\, IntermediateOutputPath obj\Release\net10.0\, and MSBuildProjectExtensionsPath under src/Gagamba.Execution/obj. Owner continues to resolve regular M1; D6_4.Tests references the variant and normal Gagamba.Execution and has no Owner reference. Production and variant M1 outputs, intermediates, generated files, and NuGet assets remain disjoint.
 
 | Build dimension | Production M1 | D6.4 test variant |
 |---|---|---|
 | Project and shared source | Existing M1 csproj and source files | The same M1 csproj and exact same production source files |
 | Assembly identity | Gagamba.Execution.Linux.M1 | Gagamba.Execution.Linux.M1.TestFixture |
 | Target framework/configuration | net10.0; same selected configuration | Identical to production |
-| DefineConstants | Existing evaluated set; fixture symbol absent | Production set plus only GAGAMBA_WP05_D6_4_TEST_FIXTURE |
+| Compiler symbols | Production Csc symbol set, including configuration and applicable SDK symbols; fixture absent | Exactly the production Csc symbol set plus one GAGAMBA_WP05_D6_4_TEST_FIXTURE token |
 | Fixture marker and Reconciler seam | Absent; real bounded stop | Fixed marker and guarded substitution at the accepted stop-result boundary |
 | M1 friend set | M1.Tests and M1.Owner | D6_4.Tests only |
 | Output and intermediates | Existing production paths | Separate bin, obj, MSBuildProjectExtensionsPath, generated-file and package-asset paths |
@@ -82,27 +99,29 @@ The Gagamba.Execution friend attributes are emitted into that shared assembly's 
 
 The future verifier compares the actual production and variant builds, not only project-file text:
 
-1. Start from one clean source revision and use the same Configuration and TargetFramework. Record the commit, dirty state, evaluated AssemblyName, DefineConstants, output properties, and project-reference graph for each M1 project instance.
+1. Start from one clean source revision and use the same Configuration and TargetFramework. Record the commit, dirty state, evaluated AssemblyName, GagambaWp05D64FixtureEnabled state, DefineConstants, output properties, and project-reference graph for each M1 project instance. Evaluated DefineConstants is supporting evidence only; the final symbol acceptance check below uses the compiler invocation.
 2. Capture evaluated Compile items using MSBuild evaluation and capture the actual Csc source list from a build-generated binlog after generated compile inputs have been added.
 3. Normalize tracked sources to canonical Git-root-relative paths. Classify each input as shared M1 production source, explicitly allowlisted fixture/test input, or generated input. Hash each file's actual compiled bytes with SHA-256.
 4. Let P be the production M1 shared-source set and V be the test variant's shared-production-source set. Require P=V in both directions and equal hashes for every shared path. Any missing, copied, substituted, or unclassified M1 input fails. In the selected design the M1 fixture-only source-file allowlist is empty; fixture code occupies guarded regions in the shared files listed in section 3. RecoveryTestSupport.cs and acceptance test sources are allowlisted only for the separate D6_4.Tests project.
 5. Include every generated Csc input in the manifest. Record its generating target/tool, logical normalized path, and hash. The same TFM/configuration should keep framework/configuration generated sources equivalent. Allow only identified assembly-identity metadata differences required by the variant name. Any substantive generated source difference or unexplained compiler input fails; do not silently exclude obj or generated source files.
-6. Compare effective DefineConstants as sets: the variant may add exactly GAGAMBA_WP05_D6_4_TEST_FIXTURE. Scan all shared and generated inputs for that symbol; allow it only in the conditional friend block and the fixed fixture/Reconciler declarations in TransactionStateModel.cs and Reconciler.cs. Parse both builds with their actual preprocessor symbols and compare normalized active source outside those allowlisted regions. A source inventory comparison alone does not establish conditional-source equivalence.
+6. From the actual Csc task inputs in a build binlog, or the exact compiler command/response-file argument consumed by Csc, capture the final symbol tokens separately for production M1, test-variant M1, and Gagamba.Execution. Reconcile the Csc DefineConstants task input with its emitted /define argument when a response file is used. Let P be the production M1 compiler-symbol set and V the variant set. Require production to retain TRACE, RELEASE, and every applicable SDK-generated framework/platform symbol, with no fixture symbol. Require V=P plus exactly GAGAMBA_WP05_D6_4_TEST_FIXTURE: every member of P remains, the fixture token occurs exactly once, and no other token is added, removed, or duplicated. A dotnet msbuild -getProperty:DefineConstants evaluation alone is insufficient because it does not execute AddImplicitDefineConstants, which appends framework/platform symbols after PrepareForBuild.
 
-The future check must fail on either direction of source drift, an unexpected source-generation difference, a new fixture-symbol use, or a difference in active production code outside the named guarded regions. None of these build-time checks is implemented or executed in D6.5.
+7. Verify the M1 variant's project evaluation receives GagambaWp05D64FixtureEnabled=true and the normal production M1 evaluation does not. In the M1-to-Gagamba.Execution project-reference child evaluation, verify that carrier is absent after GlobalPropertiesToRemove processing; verify Gagamba.Execution's actual Csc input contains no fixture symbol and its configuration, TargetFramework, identity, and output paths match the normal shared-core project. Scan all shared and generated M1 inputs for the fixture symbol; allow it only in the conditional friend block and fixed fixture/Reconciler declarations in TransactionStateModel.cs and Reconciler.cs. Parse both M1 compilations with their captured symbols and compare normalized active source outside those allowlisted regions. A source inventory comparison alone does not establish conditional-source equivalence.
+
+The future check must fail if production loses any existing configuration or SDK symbol, the variant differs from P by anything other than one fixture token, the token is absent or duplicated, the carrier reaches the core reference, Gagamba.Execution compiles with the fixture token, any normal core identity/output property changes, source inputs drift in either direction, or active production source differs outside the named guarded regions. None of these build-time checks is implemented or executed in D6.5.
 
 ## 6. Production-purity and dependency-graph checks
 
 Future implementation must inspect evaluated configuration, build outputs, and emitted assembly metadata/identities:
 
-1. Regular M1 emits exactly the two existing M1.Tests and M1.Owner friends, no D6_4.Tests grant, no fixture symbol, marker type, fixture overload/field, or synthetic stop-selection branch.
-2. Test-variant M1 emits only the D6_4.Tests friend, has the variant assembly identity and fixture symbol, and contains the fixed marker/seam.
-3. Gagamba.Execution emits its existing friends plus both new friend names.
+1. Regular M1 has no true fixture carrier and its actual Csc input retains the production configuration and SDK symbols with no fixture token; its emitted friends remain exactly M1.Tests and M1.Owner, with no D6_4.Tests grant, marker type, fixture overload/field, or synthetic stop-selection branch.
+2. Test-variant M1 receives the true carrier, emits only the D6_4.Tests friend, has the variant identity and exactly the production compiler-symbol set plus one fixture token, and contains the fixed marker/seam.
+3. The M1-to-core ProjectReference removes GagambaWp05D64FixtureEnabled and the prior variant-only properties through GlobalPropertiesToRemove. The Gagamba.Execution child receives no carrier, has no fixture Csc token, and retains its normal Release/net10.0 identity and output/intermediate paths: Gagamba.Execution, src/Gagamba.Execution/bin/Release/net10.0, and src/Gagamba.Execution/obj/Release/net10.0 (with MSBuildProjectExtensionsPath under src/Gagamba.Execution/obj).
 4. The D6_4.Tests project resolves the test variant and normal Gagamba.Execution, and its project graph does not reference/build Owner.
 5. Owner resolves the regular production M1 assembly identity. Its project/dependency graph contains no fixture variant.
 6. Normal release/publish graphs and produced artifacts contain neither the test variant nor D6_4.Tests; the test variant is non-packable.
-7. Production and variant output, intermediate, generated, and package-asset paths are disjoint and no build can overwrite the other's artifacts.
-8. Checks inspect resolved identities and emitted metadata/compiler inputs, not just project names, filenames, or a documented compilation-symbol value.
+7. Production and variant M1 output, intermediate, generated, and package-asset paths are disjoint and no build can overwrite the other's artifacts; Owner resolves regular production M1, and the D6_4.Tests graph resolves the variant plus normal Gagamba.Execution without Owner.
+8. Checks inspect the M1-to-core ProjectReference metadata, child global properties, actual Csc symbols, resolved identities, and output paths, not just project names, filenames, or a documented compilation-symbol value.
 
 These are future requirements. D6.5 did not build either M1 assembly, inspect emitted binaries, or run tests.
 
