@@ -42,17 +42,23 @@ The accepted mapping remains unchanged:
 | Aggregate and finalization | `Reconciler.cs:423-471` gives required-component failure precedence, then Unknown, and prevents unavailable/failed finalization from yielding confirmed cleanup. | The cases assert `QuarantinedUnknown` because `DomainStop` is Unknown, with healthy journal finalization confirmed. |
 | Fake population and accounting | `Recovery/RecoveryTestSupport.cs:142-213` defines `FakeDomainBackend`: `Populated`, `ReadFault`, `KillAccepted`, and `KillWrites`; `ReadPopulation()` returns `Emptied`, `Populated`, or `Unknown`. `KillWrites` increments only after the disposed/fault checks. There is no read-call counter. | In the linked test-support source, add counters at method entry: `WriteKillCalls`, `ReadPopulationCalls`, and `RemoveChildCalls`. Assert zero, one, and zero respectively. No production backend counter is proposed. |
 | Journal | R12 `TryPersist` at `Reconciler.cs:165-210` uses `WriteMutation` for an existing snapshot and can use `WriteNext` only when no baseline exists. Test support provides `FakeJournalStorage` and v3 snapshot helpers. | Seed a valid v3 baseline before reconciliation, so the cases exercise the existing mutation path, then observe `journal.ReadLatest()`. No new record kind or schema. |
-| Friend access | `Execution/TransactionStateModel.cs:11-12` grants M1 internals to M1.Tests and M1.Owner; `Gagamba.Execution/Restricted/RestrictedManifest.cs:11-12` grants RestrictedManifest internals to normal M1 and M1.Tests. | The M1 test variant must grant internals only to `Gagamba.Execution.Linux.M1.D6_4.Tests` and omit Owner. Because the variant has a distinct assembly name, `RestrictedManifest.cs` needs a compile-time friend declaration for `Gagamba.Execution.Linux.M1.TestFixture`; that adds no runtime method or public API. |
+| Friend access | Execution/TransactionStateModel.cs:11-12 currently grants Gagamba.Execution.Linux.M1.Tests and Gagamba.Execution.Linux.M1.Owner unconditionally. Gagamba.Execution/Restricted/RestrictedManifest.cs:11-12 currently grants the regular M1 and M1.Tests assemblies. | Conditional M1 friend metadata must emit exactly the current two names in production and only Gagamba.Execution.Linux.M1.D6_4.Tests in the variant. Shared Gagamba.Execution metadata adds Gagamba.Execution.Linux.M1.TestFixture and Gagamba.Execution.Linux.M1.D6_4.Tests; the first serves the variant, the second the linked test support/test assembly. Both added names remain in production core metadata; see section 4 for exposure and checks.
 
 R12's `DomainPopulationResult` is defined at `Lifecycle/RestrictedDomain.cs:15-21`: known Empty is `Emptied`, known non-empty is `Populated`, and unavailable evidence is `Unknown(error)`. `RecoveryPlanner` and identity checks are not bypassed by this fixture. The diagnostic `Error` value is never parsed or used as a success oracle.
 
 ## 4. Chosen test-only mechanism
 
-**Proposed future test build only; not an R12 API and not implemented:** compile the M1 sources as a separate `Gagamba.Execution.Linux.M1.TestFixture` assembly with `GAGAMBA_WP05_D6_4_TEST_FIXTURE`, isolated `obj`/`bin` paths, and `IsPackable=false`. A dedicated `Gagamba.Execution.Linux.M1.D6_4.Tests` project references only that M1 variant (plus `Gagamba.Execution` and test packages), links the existing `tests/Gagamba.Execution.Linux.M1.Tests/Recovery/RecoveryTestSupport.cs` into its own test assembly, and does not reference/build Owner. The normal M1 and Owner projects keep their regular assembly and output paths; release/publish builds do not reference or package the fixture variant.
+**Proposed future test build only; not an R12 API and not implemented.** Use the existing src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj as the single M1 source project, evaluated once for production and once for the test variant. Static inspection at the D6.4 base found that the project sets TargetFramework=net10.0, nullable/implicit-using options, IsPackable=false, and a reference to Gagamba.Execution; it does not override Compile, AssemblyName, DefineConstants, or output paths. Directory.Build.props has no such overrides and there is no Directory.Build.targets. SDK default compile items supply the M1 source inventory. A static dotnet msbuild -getProperty/-getItem:Compile comparison at Configuration=Release and TargetFramework=net10.0, using production properties and the proposed distinct assembly/output properties, returned 44 Compile paths for each evaluation with identical full paths. The fixture symbol was not part of that path-only query. A static scan found no existing preprocessor directives or D6.4 fixture-symbol uses in the M1 source. No build, test, or binary check was run.
 
-Because the proposed D6.2 typed `StopOutcome` and classifier are not in R12, the future authorized implementation must first supply that typed classifier. In the fixture build only, add a marker `NotAttemptedStopTestFixture` that accepts no arbitrary result, delegate, or payload and returns only:
+The dedicated Gagamba.Execution.Linux.M1.D6_4.Tests project must reference that same M1 project with variant-specific properties: AssemblyName=Gagamba.Execution.Linux.M1.TestFixture; the production DefineConstants set plus only GAGAMBA_WP05_D6_4_TEST_FIXTURE; unique BaseIntermediateOutputPath, MSBuildProjectExtensionsPath, and BaseOutputPath; and IsPackable=false. Production and variant use the same configuration and target framework. Do not copy M1 source files or create a parallel production tree. The test project links RecoveryTestSupport.cs and its test sources into the dedicated test assembly; those are test-project inputs, not additional M1 variant sources.
 
-```csharp
+The variant properties must stay scoped to the M1 project instance. On the M1-to-Gagamba.Execution project reference, remove the variant-only global properties (AssemblyName, DefineConstants, the three isolated path properties, and IsPackable) before evaluating the dependency. This keeps the shared core project at its normal identity and output paths; the test project also references that normal core project. Confirm the evaluated project graph and resolved assembly paths. Owner continues to reference the regular M1 project with no variant properties. The normal production build uses its existing output directories, and variant outputs, intermediate files, generated files, and NuGet assets use disjoint paths.
+
+### Fixed marker and injection boundary
+
+The proposed D6.2 typed StopOutcome and classifier do not exist in R12. The future authorized implementation must supply them first. In the test variant only, place this fixed marker in the shared Reconciler.cs source under the fixture symbol. It accepts no arbitrary result, delegate, or payload:
+
+~~~csharp
 #if GAGAMBA_WP05_D6_4_TEST_FIXTURE
 internal sealed class NotAttemptedStopTestFixture
 {
@@ -63,22 +69,66 @@ internal sealed class NotAttemptedStopTestFixture
         Error: "D6.4 test fixture");
 }
 #endif
-```
+~~~
 
-Under the same compile symbol only, add a conditional Reconciler field and this test-only overload:
+Under that same symbol only, add the conditional Reconciler field and test-only overload:
 
-```csharp
+~~~csharp
 internal Reconciler(
     IDomainClock clock,
     TimeSpan stopAllowance,
     NotAttemptedStopTestFixture fixture);
-```
+~~~
 
-At the R12 stop-result boundary (`Reconciler.cs:224-231`), after `RecoveryPlanner.Plan()` and `liveLease.VerifyIdentity()` succeed, and only while DomainStop progress is unconfirmed, the fixture build selects `fixture.CreateOutcome()` instead of calling `liveLease.StopAndAwaitEmpty()`. In the future typed classifier this input must leave `DomainStop=Unknown`; the normal DomainEmpty fallback then calls the real `liveLease.ObservePopulation()`, which reaches the linked `FakeDomainBackend.ReadPopulation()`. The `Population=NotObserved` field records that the synthetic stop path did no population polling. The normal production build contains no fixture type, field, overload, branch, runtime flag, or injection API and always uses its real bounded stop.
+The synthetic result enters at the Reconciler stop-result boundary after RecoveryPlanner.Plan() and liveLease.VerifyIdentity() succeed, and only when DomainStop progress is unconfirmed. The fixture build selects fixture.CreateOutcome() instead of liveLease.StopAndAwaitEmpty(), so WriteKill is not called. The future typed classifier must leave DomainStop=Unknown for this fixed input. The ordinary DomainEmpty fallback then calls the real liveLease.ObservePopulation() exactly once, reaching the linked FakeDomainBackend.ReadPopulation(); the marker's Population=NotObserved records that the synthetic stop path performed no population read. Planning, identity, fallback classification, aggregation, and journal persistence remain on the shared production source path. The regular production build has no marker, field, overload, or selection branch and always invokes the bounded stop.
 
-The M1 test-variant assembly metadata grants internals only to `Gagamba.Execution.Linux.M1.D6_4.Tests` and omits `InternalsVisibleTo("Gagamba.Execution.Linux.M1.Owner")`; the normal M1 assembly retains its existing Owner friendship. `Gagamba.Execution/Restricted/RestrictedManifest.cs` currently grants internals to the normal M1 and M1.Tests assemblies. The separate `M1.TestFixture` variant also needs the compile-time-only friend declaration `InternalsVisibleTo("Gagamba.Execution.Linux.M1.TestFixture")` there so it can compile against `RestrictedManifest`. This metadata adds no runtime method or public surface. Normal Owner references the regular M1 assembly, not `M1.TestFixture`, and cannot construct the marker; the fixture variant is absent from its graph and from release artifacts. A future build check must confirm that the regular production M1 assembly contains no marker type or overload and that Owner resolves the regular M1 assembly.
+The marker cannot inject Accepted, Failed, arbitrary Unknown, or a caller-authored outcome. It changes only the stop result for R1-T13–T15; the test-build variant and support counters remain future work.
 
-The marker cannot inject Accepted, Failed, arbitrary Unknown, or a caller-authored result. It changes only the stop result for the three defensive cases; the ordinary planner, identity verification, live lease, fallback observation, aggregate, and journal paths remain active. The test-build variant and test-support counters are future implementation work. If the variant cannot be kept out of the Owner/release graph, or its Owner friend access cannot be excluded, this seam is unsafe and D6.4 must be held for a different reviewable design.
+### Friend metadata
+
+Select one shared-source conditional declaration in Execution/TransactionStateModel.cs; do not also emit duplicate generated assembly attributes:
+
+~~~csharp
+#if GAGAMBA_WP05_D6_4_TEST_FIXTURE
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo(
+    "Gagamba.Execution.Linux.M1.D6_4.Tests")]
+#else
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo(
+    "Gagamba.Execution.Linux.M1.Tests")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo(
+    "Gagamba.Execution.Linux.M1.Owner")]
+#endif
+~~~
+
+With the fixture symbol undefined, the production M1 assembly must retain exactly its existing M1.Tests and M1.Owner friend grants. With the symbol defined, the test-variant M1 assembly grants internals only to Gagamba.Execution.Linux.M1.D6_4.Tests; it emits neither the M1.Tests nor M1.Owner grant. The regular production M1 assembly does not friend D6_4.Tests.
+
+Gagamba.Execution/Restricted/RestrictedManifest.cs keeps its existing friends to Gagamba.Execution.Linux.M1 and Gagamba.Execution.Linux.M1.Tests and adds both Gagamba.Execution.Linux.M1.TestFixture and Gagamba.Execution.Linux.M1.D6_4.Tests. The variant needs the first grant to compile against internal RestrictedManifest contracts. GLM identified the second as required for the dedicated test assembly that compiles the linked recovery support and its internal contract use. The M1 variant's own IVT grant separately gives that test assembly access to M1's internal ownership and journal contracts.
+
+These InternalsVisibleTo attributes are emitted assembly metadata. The two additional Gagamba.Execution friend names remain in the shared production Gagamba.Execution metadata; they add no runtime method or public API, but they grant compile-time access to internals by those assembly names. The inspected projects have no strong-name signing configuration, so these names are not a cryptographic boundary and must not be described as a runtime sandbox. The residual risk is that another assembly using either friend name can compile against Gagamba.Execution internals. Production isolation comes from the synthetic fixture being absent from the regular M1 assembly and from Owner/release dependency graphs. The artifact and graph checks below must establish that boundary; they cannot remove the shared core's friend metadata exposure.
+
+### Source-graph and conditional-compilation verification
+
+For the same clean source revision, configuration, and target framework, capture the evaluated M1 Compile items for production and variant with dotnet msbuild -getProperty and -getItem:Compile. Also capture the actual Csc source inputs from a future build binlog after generated compile inputs are added. Record the effective project properties, compiler constants, resolved paths, source origin, and SHA-256 of each input's actual bytes.
+
+Normalize tracked source identities to canonical Git-root-relative paths. Let P be the production M1 shared-source set and V the test variant's shared-production-source set. Require set equality in both directions: P = V. Require matching SHA-256 for each shared file. Any missing, substituted, copied, or unclassified M1 source fails the check. The selected design has no fixture-only M1 source-file addition: the marker and guarded stop selection belong in Recovery/Reconciler.cs, and the conditional friend block belongs in Execution/TransactionStateModel.cs. RecoveryTestSupport.cs and the acceptance tests are separately enumerated inputs of D6_4.Tests, not members of V.
+
+Do not silently omit generated sources. The binlog-derived manifest must include every actual compiler input, including SDK-generated framework and assembly metadata, with its generating target, normalized logical path, and hash. Production and variant hold Configuration and TargetFramework equal. Allow only identified assembly-identity metadata differences required by the distinct M1 assembly name; framework/configuration metadata should otherwise match. The chosen design generates no fixture application source. Any other generated source difference, substantive generated code, or unclassified compiler input fails verification unless it is individually allowlisted and justified.
+
+The effective test-variant DefineConstants set must equal the production set plus exactly GAGAMBA_WP05_D6_4_TEST_FIXTURE. Scan all M1 source and generated inputs for that symbol. Its only allowed guarded regions are: the friend declaration in TransactionStateModel.cs; the fixed NotAttemptedStopTestFixture type; and the fixture-only Reconciler field, constructor, and stop-result selection branch in Reconciler.cs. Parse both configurations with their actual preprocessor symbols and compare normalized active source outside those allowlisted regions. Any other symbol use or code difference fails verification. A source-path comparison alone is insufficient.
+
+### Production-purity and graph checks
+
+These are future build-time checks, not checks claimed as completed by D6.4 or D6.5:
+
+1. Inspect emitted M1 assembly identities and IVT metadata: production has exactly the existing two M1 friends and no D6_4.Tests friend; the variant has only the D6_4.Tests friend.
+2. Inspect Gagamba.Execution metadata for the existing friends plus both required new names.
+3. Confirm the dedicated test project resolves the test-variant M1 identity and does not reference or build Owner.
+4. Confirm Owner resolves the regular production M1 identity and its project/dependency graph contains no test variant.
+5. Confirm the regular production M1 compiler options omit the fixture symbol and its binary has no NotAttemptedStopTestFixture, fixture-only overload, field, or selection branch.
+6. Confirm production and variant obj, bin, MSBuildProjectExtensionsPath, generated files, and package assets do not overlap or overwrite one another.
+7. Confirm the test variant and D6_4.Tests are non-packable and absent from normal release/publish dependency graphs and artifacts.
+
+**A test-built variant is not binary-identical evidence for the production assembly.** R1-T13–T15 evidence is bounded to the future typed classifier, shared production source logic whose identical source inventory is verified, controlled fixed stop-result injection, and real fallback observation and durable-progress behavior exercised through the variant. It does not establish binary identity, normal production stop-path execution, production Owner integration, native sandbox qualification, end-to-end release qualification, or behavior under untested build configurations. The fixture remains useful for these defensive cases because the planner, identity checks, classifier, fallback read, persistence, and aggregation execute in the shared Reconciler source; only the fixed stop result is substituted.
 ## 5. Deterministic R1-T13–T15 cases
 
 Shared setup for every case:
@@ -94,7 +144,7 @@ Shared setup for every case:
 | R1-T14 | `Populated=true`, `ReadFault=false` → `DomainPopulationResult.Populated` | `DomainStop=Unknown`; `DomainEmpty=Unknown`; `JournalFinalization=Confirmed`; aggregate `QuarantinedUnknown` | `CompletedCleanup=DomainRemoval` only (`0x08`); `DomainStop` and `DomainEmpty` remain clear; `WriteKillCalls=0`, `ReadPopulationCalls=1`, `RemoveChildCalls=0`; no `CleanupConfirmed`. |
 | R1-T15 | `ReadFault=true` → `DomainPopulationResult.Unknown(error)` while the live lease remains valid | `DomainStop=Unknown`; `DomainEmpty=Unknown`; `JournalFinalization=Confirmed`; aggregate `QuarantinedUnknown` | `CompletedCleanup=DomainRemoval` only (`0x08`); `DomainStop` and `DomainEmpty` remain clear; `WriteKillCalls=0`, `ReadPopulationCalls=1`, `RemoveChildCalls=0`; no `CleanupConfirmed`. |
 
-For all three cases, no allocations make Staging confirmed without a cleaner call; the seeded DomainRemoval bit skips removal. Assert the existing v3 record was mutated, its version and schema stayed the same, unrelated fields stayed unchanged, and cleanup remains Unknown. T13 adds only the truthful DomainEmpty progress bit. T14/T15 add neither domain bit. The healthy writer makes journal finalization confirmed; unavailable population evidence is not a journal failure.
+For all three cases, no allocations make Staging confirmed without a cleaner call; the seeded DomainRemoval bit skips removal. Assert the existing v3 record was mutated, its version and schema stayed the same, unrelated fields stayed unchanged, and final durable Cleanup state is Unknown (the seeded state is InProgress). T13 adds only the truthful DomainEmpty progress bit. T14/T15 add neither domain bit. The healthy writer makes journal finalization confirmed; unavailable population evidence is not a journal failure.
 
 Negative assertions for every case:
 
@@ -113,13 +163,15 @@ D6.4 changes only the R1-T13–T15 setup/assertion text and this handoff. It doe
 
 ## 7. Focused GLM review questions
 
-1. Does the exact R12 source support the documented stop-first, retained-lease fallback, identity, fake-backend, journal, and aggregation statements? Is the R12 Populated=`Failed` behavior clearly separated from the proposed D6.3 mapping?
-2. Does the dedicated test-build assembly, compile-time-only marker fixture, and conditional friend metadata keep synthetic outcomes inaccessible to the normal production assembly and Owner callers, including the known `InternalsVisibleTo` arrangement?
-3. Does the synthetic result enter at one unambiguous Reconciler stop-result boundary after planning and identity verification, bypass only `StopAndAwaitEmpty()`/`WriteKill()`, and still invoke the real fallback `ObservePopulation()` exactly once?
-4. Are the three fake backend inputs deterministic and correctly mapped to Empty, Populated, and Unknown without using a missing lease for T15?
-5. Are the component results, aggregate precedence, journal finalization, and durable bit expectations correct for a seeded v3 baseline with only DomainRemoval already confirmed?
-6. Do the proposed call counters and clock checks prove no kill, removal, retry, deadline reset, false cleanup success, or error-text inference?
-7. Does the proposal preserve the accepted C3 mapping, `Kill=Failed` behavior, journal schema, stop authority, C3 human policy choice, and all approval/qualification boundaries?
-8. Is the test-build separation concrete enough to implement without exposing a generic or Owner-controlled synthetic stop-result path? If not, identify the exact isolation defect and hold D6.4 rather than accepting an unsafe seam.
+1. Does the exact R12 source still support the stop-first, retained-lease fallback, identity, fake-backend, journal, and aggregation statements? Is R12 Populated=Failed clearly separated from the proposed mapping?
+2. Are the production and test-variant M1 friend sets explicit and achievable, and are both additional Gagamba.Execution friend names accounted for?
+3. Is the emitted-metadata exposure of the two shared-core friend grants accurately described, including the residual name-based access risk and the limit of production graph isolation?
+4. Is the same-project MSBuild strategy compatible with the inspected configuration, including variant-property isolation at the M1-to-core project-reference edge?
+5. Does the future bidirectional manifest compare canonical production-source paths and content hashes, account for generated sources, and fail on unallowlisted inputs?
+6. Are the fixture-symbol differences limited to the named friend block, fixed marker, and Reconciler seam, with other active production code verified as shared?
+7. Do the proposed artifact checks verify production purity, Owner identity, release graph exclusion, and nonoverlapping outputs without relying on project filenames alone?
+8. Is the test-built variant's binary-identity limitation stated clearly and its evidence scope bounded?
+9. Are the fixed injection boundary, real fallback, R1-T13–T15 results, durable bits, aggregate, and negative assertions unchanged?
+10. Does any source-grounded isolation or source-equivalence blocker remain, or are remaining details implementation refinements?
 
 **Handoff:** review this D6.4 documentation commit only. Do not approve C1–C4, select C3 Policy A/B, authorize implementation, accept G3, or qualify release.
