@@ -1,7 +1,17 @@
 # Current work queue
 
 
-## Current priority: WP05 D6.7 HUMAN CONTRACT DECISIONS RECORDED - C1-C4 APPROVED; C3 POLICY A SELECTED; POLICY B DEFERRED; IMPLEMENTATION NOT AUTHORIZED; RELEASE NOT QUALIFIED
+## Current priority: WP05 D6.7 HUMAN CONTRACT DECISIONS VERIFIED AND PRESERVED - C1-C4 APPROVED; C3 POLICY A SELECTED; POLICY B DEFERRED; IMPLEMENTATION AUTHORIZATION OUTSTANDING; RELEASE NOT QUALIFIED
+
+Update 2026-10-22 (preservation engineer): Luna's D6.7 producer `decisions/wp05-d6-7-human-contract-approvals` @ `01063c164391e0676ae1f6087d2c0865f7692511` and GLM's independent human decision integrity review `review/wp05-d6-7-glm-human-decision-integrity` @ `546f284fbdbbcaa76f8b5557328fcd2d502a86c0` (review document `docs/reviews/gagamba-linux-m1-wp05-d6-7-glm-human-decision-integrity-review.md`, blob `fa78dc9a8a0023961de95fff3358b8dd0add10a6`) are preserved as sibling histories under the D6.7 producer, with preservation at `preservation/wp05-d6-7-glm-human-decision-integrity-review` (a direct child of the producer, not based on the review). GLM's exact disposition is **`WP05 D6.7 GLM INDEPENDENT HUMAN DECISION INTEGRITY REVIEW COMPLETE - OPTION A: C1-C4 HUMAN APPROVALS AND C3 POLICY A VERIFIED AS ACCURATELY RECORDED; IMPLEMENTATION AUTHORIZATION OUTSTANDING; RELEASE NOT QUALIFIED`**.
+
+- **C1-C4 human contract approvals: verified and preserved.** All four decisions (C1 R09, C2 R08, C3 R27, C4 R02/R06) are recorded as human-approved; the D6.2 amendments and C1's conditional first-retainer ordering are preserved; C3 Policy A is selected for Linux M1; Policy B remains deferred as separately bounded future configurability. Zero blocking findings. Provenance is conversation-based; it is not a digital signature or an independently authenticated identity record, and the review verifies documentary accuracy only.
+- **No implementation authorization, test execution, source-bound runtime qualification, G3 acceptance, or WP05 release acceptance is granted or claimed.**
+- **Next proposed work: C2 — Bounded implementation authorization and tests-first execution plan** (requires its own explicit authorization; C2 implementation is not started or authorized). Proposed sequence: C2 → C1 → C4 → C3; this sequence is a recommendation only, not an implementation authorization.
+
+See [the D6.7 preservation checkpoint](reviews/gagamba-linux-m1-wp05-d6-7-glm-review-preservation-checkpoint.md).
+
+## Prior priority: WP05 D6.7 HUMAN CONTRACT DECISIONS RECORDED - C1-C4 APPROVED; C3 POLICY A SELECTED; POLICY B DEFERRED; IMPLEMENTATION NOT AUTHORIZED; RELEASE NOT QUALIFIED
 
 Update 2026-10-21: authoritative current status is recorded in [D6.7 human contract approvals](decisions/gagamba-linux-m1-wp05-d6-7-human-contract-approvals.md).
 
