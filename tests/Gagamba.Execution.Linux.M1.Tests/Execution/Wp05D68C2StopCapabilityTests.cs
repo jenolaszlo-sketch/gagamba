@@ -51,7 +51,9 @@ public sealed class Wp05D68C2StopCapabilityTests
 
     private sealed class Harness : IDisposable
     {
-        public Harness(ReleasePipeWriteResult result = ReleasePipeWriteResult.Delivered)
+        public Harness(
+            ReleasePipeWriteResult result = ReleasePipeWriteResult.Delivered,
+            long expiry = 1_000_000_000)
         {
             Clock = new CountingClock();
             Manifest = SampleManifest();
@@ -63,7 +65,7 @@ public sealed class Wp05D68C2StopCapabilityTests
                 ManifestCodec.ComputeDigestBytes(Manifest));
             Store = new PreparedTransaction.PreparationStore(
                 RecoveryTestSupport.Issuer, RecoveryTestSupport.Generation, Clock);
-            Capability = Store.Mint(Manifest, Identity, 1_000_000_000, TestClosure.Empty());
+            Capability = Store.Mint(Manifest, Identity, expiry, TestClosure.Empty());
             Storage = new FakeJournalStorage();
             Journal = new OwnershipJournal(Storage, "/wp05-d68-c2");
             Assert.True(Journal.TryAcquireWriter(out var lease, out var error), error);
@@ -155,7 +157,7 @@ public sealed class Wp05D68C2StopCapabilityTests
     }
 
     [Fact]
-    public void C2_T03_DeadlineOverflowStopConsumesCapabilityWithoutDurableStop()
+    public void C2_T03_ExpiredCapabilityOverflowStopAcceptedWithoutDurableStop()
     {
         using var h = new Harness();
         h.Clock.Value = long.MaxValue - 2_000_000_000L;
@@ -170,6 +172,32 @@ public sealed class Wp05D68C2StopCapabilityTests
 
         var release = h.Arbiter.RequestRelease(h.Request);
         Assert.Equal(ReleaseDecisionKind.Refused, release.Kind);
+        Assert.Equal(0, h.Transport.Attempts);
+    }
+
+    [Fact]
+    public void C2_T03b_LiveCapabilityOverflowStopConsumesCapability()
+    {
+        using var h = new Harness(expiry: long.MaxValue - 1);
+        var overflowNow = long.MaxValue - 2_000_000_000L;
+        h.Clock.Value = overflowNow;
+
+        Assert.True(h.Capability.ExpiresAtNs > overflowNow);
+        Assert.True(h.Capability.IsLive);
+        var baseline = h.Sequence();
+
+        var stop = h.Arbiter.RequestStop(StopCauseKind.CallerStop);
+
+        Assert.True(stop.Accepted);
+        Assert.False(stop.DurableStop);
+        Assert.Equal(overflowNow, stop.StopAcceptedAtNanoseconds);
+        Assert.Equal(0, stop.StopDeadlineNanoseconds);
+        Assert.Null(h.Latest().Stop);
+        Assert.False(h.Capability.IsLive);
+        Assert.False(h.Capability.TryConsume(out var violation));
+        Assert.Equal(InvariantViolation.Consumed, violation);
+        Assert.Null(h.Latest().Release);
+        Assert.Equal(baseline, h.Sequence());
         Assert.Equal(0, h.Transport.Attempts);
     }
 

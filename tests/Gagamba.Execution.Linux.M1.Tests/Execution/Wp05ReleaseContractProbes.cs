@@ -116,7 +116,7 @@ public sealed class Wp05ReleaseContractProbes
     }
 
     [Fact]
-    public void StopDeadlineOverflowConsumesCapabilityC2()
+    public void ExpiredCapabilityOverflowStopAcceptedC2()
     {
         using var harness = new Harness();
         harness.Clock.NowNanoseconds = long.MaxValue - 2_000_000_000L;
