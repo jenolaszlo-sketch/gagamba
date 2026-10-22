@@ -455,7 +455,7 @@ public sealed class Wp05D4SupervisorTests
         Assert.Equal("True", ownerResult["stop_accepted"]);
         Assert.Equal("True", ownerResult["stop_durable"]);
         Assert.Equal("Refused", ownerResult["release_kind"]);
-        Assert.Equal("True", ownerResult["capability_live"]);
+        Assert.Equal("False", ownerResult["capability_live"]);
         await c.KillOwner(cancellation);
         var latest = ReadJournal(c.JournalPath);
         Assert.True(latest.Ok, latest.Error);

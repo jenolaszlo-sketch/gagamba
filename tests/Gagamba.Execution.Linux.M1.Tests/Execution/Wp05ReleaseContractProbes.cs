@@ -95,7 +95,7 @@ public sealed class Wp05ReleaseContractProbes
     }
 
     [Fact]
-    public void StopWithUnavailableClockIsLiveAcceptedWithoutDurableStop()
+    public void StopWithUnavailableClockConsumesCapabilityC2()
     {
         using var harness = new Harness();
         harness.Clock.NowNanoseconds = 0;
@@ -105,17 +105,18 @@ public sealed class Wp05ReleaseContractProbes
         Assert.False(stop.DurableStop);
         Assert.Equal(0, stop.StopAcceptedAtNanoseconds);
         Assert.Equal(0, stop.StopDeadlineNanoseconds);
+        Assert.False(harness.Capability.IsLive);
 
         var release = harness.Arbiter.RequestRelease(harness.Request);
         Assert.Equal(ReleaseDecisionKind.Refused, release.Kind);
         Assert.Equal(ReleaseDisposition.NotCommitted, release.DurableRelease);
         Assert.Equal(0, harness.Transport.Attempts);
-        Assert.True(harness.Capability.IsLive);
+        Assert.False(harness.Capability.IsLive);
         Assert.Null(harness.Journal.ReadLatest().Snapshot!.Stop);
     }
 
     [Fact]
-    public void StopDeadlineOverflowIsLiveAcceptedWithoutDurableStop()
+    public void StopDeadlineOverflowConsumesCapabilityC2()
     {
         using var harness = new Harness();
         harness.Clock.NowNanoseconds = long.MaxValue - 2_000_000_000L;
@@ -125,6 +126,7 @@ public sealed class Wp05ReleaseContractProbes
         Assert.False(stop.DurableStop);
         Assert.Equal(long.MaxValue - 2_000_000_000L, stop.StopAcceptedAtNanoseconds);
         Assert.Equal(0, stop.StopDeadlineNanoseconds);
+        Assert.False(harness.Capability.IsLive);
 
         var release = harness.Arbiter.RequestRelease(harness.Request);
         Assert.Equal(ReleaseDecisionKind.Refused, release.Kind);
@@ -180,18 +182,19 @@ public sealed class Wp05ReleaseContractProbes
     }
 
     [Fact]
-    public void StopFirstLeavesCapabilityLiveOnR12()
+    public void StopFirstConsumesCapabilityC2()
     {
         using var harness = new Harness();
         var stop = harness.Arbiter.RequestStop(StopCauseKind.CallerStop);
         Assert.True(stop.Accepted);
         Assert.True(stop.DurableStop);
+        Assert.False(harness.Capability.IsLive);
 
         var release = harness.Arbiter.RequestRelease(harness.Request);
         Assert.Equal(ReleaseDecisionKind.Refused, release.Kind);
         Assert.Equal(ReleaseDisposition.NotCommitted, release.DurableRelease);
         Assert.Equal(0, harness.Transport.Attempts);
-        Assert.True(harness.Capability.IsLive);
+        Assert.False(harness.Capability.IsLive);
     }
 
     [Fact]
@@ -212,24 +215,27 @@ public sealed class Wp05ReleaseContractProbes
     }
 
     [Fact]
-    public void StopPersistenceFailureAllowsSecondArbiterReleaseOnR12()
+    public void StopPersistenceFailureConsumesCapabilityAndBlocksSecondArbiterC2()
     {
         using var harness = new Harness();
         harness.Storage.FailAt("write", 1);
+        var baseline = harness.Journal.ReadLatest().Snapshot!.Sequence;
 
         var stop = harness.Arbiter.RequestStop(StopCauseKind.CallerStop);
         Assert.True(stop.Accepted);
         Assert.False(stop.DurableStop);
-        Assert.True(harness.Capability.IsLive);
+        Assert.False(harness.Capability.IsLive);
         Assert.Null(harness.Journal.ReadLatest().Snapshot!.Stop);
 
         var second = new ReleaseArbiter(
             harness.Capability, harness.Journal, harness.Writer, harness.Clock,
             () => harness.Prerequisites, harness.Transport);
         var release = second.RequestRelease(harness.Request);
-        Assert.Equal(ReleaseDecisionKind.Released, release.Kind);
-        Assert.Equal(1, harness.Transport.Attempts);
-        Assert.Equal(ReleaseTag.Committed, harness.Journal.ReadLatest().Snapshot!.Release!.Tag);
+        Assert.Equal(ReleaseDecisionKind.Refused, release.Kind);
+        Assert.Equal(ReleaseDisposition.NotCommitted, release.DurableRelease);
+        Assert.Equal(0, harness.Transport.Attempts);
+        Assert.Null(harness.Journal.ReadLatest().Snapshot!.Release);
+        Assert.Equal(baseline, harness.Journal.ReadLatest().Snapshot!.Sequence);
     }
 
     [Fact]
