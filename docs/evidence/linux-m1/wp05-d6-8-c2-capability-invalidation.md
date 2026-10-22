@@ -1,7 +1,9 @@
 # WP05 D6.8 C2 - Stop-First Capability Invalidation Evidence
 
-Status: **IMPLEMENTATION AND DETERMINISTIC TEST EVIDENCE - INDEPENDENT GLM SOURCE
-REVIEW REQUIRED; LINUX RUNTIME QUALIFICATION PENDING; RELEASE NOT QUALIFIED**
+Status: **D6.8 IMPLEMENTATION AND DETERMINISTIC TEST EVIDENCE - D6.8.4 EVIDENCE
+CORRECTIONS APPLIED (F-01 LIVE-CAPABILITY OVERFLOW REGRESSION; F-02 WORDING
+CORRECTION); FOCUSED GLM FINDING-CLOSURE REVIEW PENDING; LINUX RUNTIME
+QUALIFICATION PENDING; RELEASE NOT QUALIFIED**
 
 Scope: WP05 D6.8 C2 / R08 only. C1, C3 and C4 are not implemented. No durable
 journal schema, coordinator protocol, FD4 transport, native sandbox, production
@@ -246,9 +248,10 @@ No test was skipped, deleted or weakened to obtain a green result.
 |---|---|---|---|
 | C2-T01 | `C2_T01_...`, `StopFirstConsumesCapabilityC2` | Accepted; durable stop; capability not live | pass |
 | C2-T02 | `C2_T02_...`, `StopWithUnavailableClockConsumesCapabilityC2` | Accepted; no durable stop; not live | pass |
-| C2-T03 | `C2_T03_...`, `StopDeadlineOverflowConsumesCapabilityC2` | Accepted; no durable stop; not live | pass (expiry-backed closure, see 5) |
+| C2-T03 | `C2_T03_ExpiredCapabilityOverflowStopAcceptedWithoutDurableStop`, `ExpiredCapabilityOverflowStopAcceptedC2` (D6.8.4 names; see 12.1) | Accepted; no durable stop; not live | pass (expired-capability closure; see 5 and 12.1) |
+| C2-T03b | `C2_T03b_LiveCapabilityOverflowStopConsumesCapability` (D6.8.4) | Live capability consumed on overflow acceptance; no durable StopRecord; no Intent; no FD4 | pass (red-proven against pre-fix R12 stop behavior; see 12.1) |
 | C2-T04 | `C2_T04_...`, `StopPersistenceFailureConsumesCapabilityAndBlocksSecondArbiterC2` | Runtime accepted; durable absent; not live | pass |
-| C2-T05 | `C2_T05_...` | Idempotent; no second consume; no fresh deadline | pass |
+| C2-T05 | `C2_T05_...` | Idempotent; no fresh deadline; exactly-once consumption by source order | pass (see 8 and 12.2) |
 | C2-T06 | `C2_T06_...` | Refused; no new Intent or FD4 | pass |
 | C2-T07 | `C2_T07_...` | Second arbiter refused; zero release writes | pass |
 | C2-T08 | `C2_T08_...` | Conservative `MayHaveExecuted`; no FD4 | pass |
@@ -264,10 +267,14 @@ capability is refused; zero transport attempts; no Intent or RELEASE record; the
 journal sequence is unchanged. The refusal is therefore proven to come from
 capability invalidation, not from a persisted StopRecord.
 
-C2-T05 additionally proves the duplicate path performs no store interaction:
-with a counting clock shared by arbiter and store, the duplicate stop consumes
-exactly one clock read (the entry snapshot) and no `TryConsume`/`IsLive` read,
-while accepted-at, deadline and reason equal the retained decision.
+C2-T05 confirms that a duplicate stop preserves the original StopDecision and
+does not establish a fresh deadline. The counting clock observes the expected
+entry clock read, but does not directly count TryConsume calls. Exactly-once
+invocation on the duplicate path is supported by the source-level early return
+before ConsumeStopCapability, while the PreparationStore independently
+enforces single-use capability semantics. (Corrected in D6.8.4 for GLM finding
+F-02; the original wording overstated what the clock count establishes. See
+12.2.)
 
 C2-T07/C2-T06 prove zero release writes. C2-T08 preserves the existing
 post-Intent conservative classification. C2-T09/T10 prove release-first history,
@@ -289,9 +296,11 @@ unbounded wait; independent GLM review is explicitly still pending.
 ## 9. Known limitations
 
 - Windows-only execution; Linux OS-level qualification outstanding.
-- Overflow-path capability closure relies on existing store expiry semantics
-  (`TryConsume -> Expired`, `IsLive -> false`) rather than the consumed flag;
-  reported explicitly for review.
+- The expired-capability overflow variants (`C2_T03`, the overflow probe; see
+  12.1 for their D6.8.4 names) close via existing store expiry semantics
+  (`TryConsume -> Expired`, `IsLive -> false`) rather than the consumed flag.
+  The D6.8.4 live-capability overflow regression (`C2_T03b`) separately proves
+  consumption on the overflow path; reported explicitly for review.
 - Failed durable stop plus owner death with a newly minted test-only capability
   remains the D4-8 diagnostic under recovery; that is C1/C3/C4/durable-recovery
   scope, not authorized here.
@@ -326,3 +335,113 @@ Review questions:
 `WP05 D6.8 C2 IMPLEMENTATION COMPLETE - STOP CAPABILITY CONSUMED AT FIRST
 RUNTIME ACCEPTANCE; DETERMINISTIC TESTS PASS; INDEPENDENT GLM SOURCE REVIEW
 REQUIRED; C1 C3 C4 IMPLEMENTATION NOT AUTHORIZED; RELEASE NOT QUALIFIED`
+
+## 12. D6.8.4 evidence correction addendum (F-01 / F-02)
+
+Added by the D6.8.4 correction series on branch
+`evidence/wp05-d6-8-4-c2-f01-f02`, based directly on the D6.8 preservation
+commit `7177b3b83658de74b795de0c072589c590119c0a`. This addendum addresses the
+two non-blocking findings raised by the GLM independent review
+(`959f2d3162bdfbecac2723f50acae8459b2fa310`; review document blob
+`dee4ca9244f5a8c5613152b9a3a9a90a96294ed2`). It does not rewrite the D6.8
+historical record above; the pre-correction evidence remains recoverable at its
+original commit `665b18fdca15f8ed30ae4ca93b490f29bf41a181`. The GLM review did
+not verify the new D6.8.4 test; it classified the gap as non-blocking finding
+F-01. Focused GLM finding-closure review is pending.
+
+Commit structure: D6.8.4a test commit
+`0aa201c3c5689690217ff5ae429de0bcda6943ff`
+(`test(wp05): prove live-capability invalidation on stop deadline overflow`;
+immediate parent `7177b3b8...`; two test files, +32/-4); D6.8.4b evidence commit
+`docs(wp05): address D6.8 GLM findings F-01 and F-02` (direct child of
+`0aa201c3...`; this document only). No production file, schema, build,
+packaging or CI change: the production `src/` tree remains
+`84cfabb8f82e3ac4061776cc9a9a8c4d5354a126` throughout D6.8.4.
+
+### 12.1 F-01 - live-capability overflow regression
+
+D6.8.1's `C2_T03_DeadlineOverflowStopConsumesCapabilityWithoutDurableStop` and
+`StopDeadlineOverflowConsumesCapabilityC2` used a capability expiring at
+`1_000_000_000` with the clock set to `long.MaxValue - 2_000_000_000L`, so the
+capability was already expired at stop acceptance and `IsLive == false` was
+satisfied by store expiry rather than by C2 consumption (GLM finding F-01).
+
+D6.8.4 adds `C2_T03b_LiveCapabilityOverflowStopConsumesCapability` in
+`Wp05D68C2StopCapabilityTests.cs`, using a small optional `expiry` parameter on
+the existing harness constructor (default unchanged at `1_000_000_000`; no
+fixture duplication). The capability is minted with
+`expiry = long.MaxValue - 1` while the clock is at its ordinary initial value
+(`1_000`), satisfying the store's mint contract
+(`expiresAtNs > clock.NowNanoseconds`, `PreparationStore.cs:96-99`). Only after
+minting does the test advance the clock to
+`overflowNow = long.MaxValue - 2_000_000_000L`. Immediately before
+`RequestStop` the test asserts `Capability.ExpiresAtNs > overflowNow` and
+`Capability.IsLive`, so the capability is provably live at stop acceptance and
+only the `checked` deadline addition
+(`now + StopConfirmationAllowanceNanoseconds = now + 5_000_000_000`) overflows.
+
+Required stop outcomes asserted: stop accepted; `DurableStop == false`;
+`StopAcceptedAtNanoseconds == overflowNow`; `StopDeadlineNanoseconds == 0`; no
+durable StopRecord (`Latest().Stop == null`); journal sequence unchanged (no
+ReleaseIntent); `Latest().Release == null`; zero transport attempts
+(`Transport.Attempts == 0`); `IsLive == false`; and the post-stop capability
+state is `Consumed`, not merely expired (`TryConsume` refuses with
+`InvariantViolation.Consumed`). The `TryConsume` verification runs after the
+stop and therefore cannot consume the capability before it.
+
+Rename for accuracy: the expiry-masked variants are retained as separate
+expired-capability behavior tests under honest names -
+`C2_T03_DeadlineOverflowStopConsumesCapabilityWithoutDurableStop` ->
+`C2_T03_ExpiredCapabilityOverflowStopAcceptedWithoutDurableStop`, and
+`StopDeadlineOverflowConsumesCapabilityC2` ->
+`ExpiredCapabilityOverflowStopAcceptedC2`. They are not represented as proof of
+live-capability consumption.
+
+Red/green proof (Windows 10.0.26200 x64, .NET SDK 10.0.401, host 10.0.12,
+net10.0 Release):
+
+| Execution | Source identity | Observed result |
+|---|---|---|
+| Red: D6.8.4a test patch applied uncommitted to a disposable checkout at tests-first `9bafb411035567e007d105587247a9b3712b7bf1` (unchanged pre-fix production; `src/` tree `406f52da43b62920128151b2f5706c32d45b6db7`) | pre-fix R12 stop behavior | Focused selection: **42 total, 30 passed, 12 failed** - the D6.8.1 red list (11 failures) plus `C2_T03b`. `C2_T03b` failed at `Wp05D68C2StopCapabilityTests.cs:196` (`Assert.False(h.Capability.IsLive)`) with `Assert.False() Failure / Expected: False / Actual: True`: pre-fix stop acceptance does not consume, so the live capability remained live after the overflow stop |
+| Green: D6.8.4a commit `0aa201c3c5689690217ff5ae429de0bcda6943ff` against unchanged D6.8 production (`src/` tree `84cfabb8f82e3ac4061776cc9a9a8c4d5354a126`) | D6.8 C2 production | `C2_T03b` passed on three consecutive executions; focused selection **42 passed / 0 failed** |
+
+The red failure is the discriminating `IsLive` assertion (GLM predicted exactly
+this red behavior); the green execution confirms consumption via the store's
+`Consumed` state. No production code was changed to make the test pass.
+
+### 12.2 F-02 - duplicate-stop evidence precision
+
+Original D6.8.1 wording in section 8 overstated the counting-clock result as
+proving the duplicate path performs "no `TryConsume`/`IsLive` read". That
+conclusion is too strong: `PreparationStore.TryConsume` returns `Consumed`
+(`PreparationStore.cs:185-189`) and `TryLookup` short-circuits on consumed
+entries (`PreparationStore.cs:153-157`) before their clock reads, so clock
+counting cannot distinguish an absent second `TryConsume` invocation from a
+refused second invocation that never reached the clock.
+
+The corrected paragraph (replacing the original text in section 8) distinguishes
+three different forms of evidence:
+
+- **Observed test result:** the duplicate stop performs the expected entry clock
+  read and preserves the original StopDecision, deadline and durable evidence.
+- **Source-level proof:** the duplicate-stop early return in
+  `ReleaseArbiter.RequestStop` (`ReleaseArbiter.cs:232-235`) precedes
+  `ConsumeStopCapability()` (`:237`), so duplicate-stop execution does not reach
+  the consumption call site; no other `TryConsume` call site is reachable from
+  `RequestStop`.
+- **Store invariant:** the issuing `PreparationStore` independently enforces
+  single-use authority even if another operation attempts to consume an
+  already-consumed capability.
+
+These are not conflated: exactly-once invocation is a source-order property;
+the clock count is a supporting observation only. No production instrumentation
+was added to count consumption calls, and no C2 semantics changed.
+
+### 12.3 D6.8.4 scope
+
+Test-only: `Wp05D68C2StopCapabilityTests.cs` (harness expiry parameter, T03
+rename, new T03b) and `Wp05ReleaseContractProbes.cs` (rename only).
+Evidence-only: this document (status, section 8 paragraph, coverage map,
+section 9 bullet, this addendum). No production, schema, coordinator, native,
+build, packaging or CI change. Linux runtime qualification remains outstanding;
+release is not qualified; C1, C3 and C4 implementation remains unauthorized.
