@@ -234,9 +234,11 @@ internal sealed class ReleaseArbiter
                 return _retainedStop with { Duplicate = true };
             }
 
+            ConsumeStopCapability();
+            _stopAccepted = true;
+
             if (now <= 0)
             {
-                _stopAccepted = true;
                 _retainedStop = new StopDecision(
                     true, false, _releaseRuntimeCommitted, false, cause, 0, 0,
                     "stop accepted live; monotonic clock unavailable so no durable stop evidence was written");
@@ -253,14 +255,12 @@ internal sealed class ReleaseArbiter
             }
             catch (OverflowException)
             {
-                _stopAccepted = true;
                 _retainedStop = new StopDecision(
                     true, false, _releaseRuntimeCommitted, false, cause, now, 0,
                     "stop accepted live; deadline overflow prevented durable stop evidence");
                 return _retainedStop;
             }
 
-            _stopAccepted = true;
             _retainedStop = new StopDecision(
                 true, false, _releaseRuntimeCommitted, false, cause, now, deadline,
                 "stop accepted; durable stop evidence pending");
@@ -305,6 +305,20 @@ internal sealed class ReleaseArbiter
     private void ConsumeCapability()
     {
         _ = _capability.TryConsume(out _);
+    }
+
+    private void ConsumeStopCapability()
+    {
+        if (_capability.TryConsume(out var violation))
+        {
+            return;
+        }
+
+        if (_capability.IsLive)
+        {
+            throw new InvalidOperationException(
+                $"stop capability invalidation failed: capability remains live after consumption refusal ({violation})");
+        }
     }
 
     private static DeliveryResult MapDelivery(ReleasePipeWriteResult result) => result switch
