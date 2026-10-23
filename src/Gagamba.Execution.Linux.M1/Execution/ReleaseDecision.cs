@@ -12,6 +12,7 @@ internal enum ReleaseDecisionKind : byte
     Released = 1,
     Duplicate = 2,
     Stopped = 3,
+    AmbiguousPersistence = 4,
 }
 
 /// <summary>WP05 fake prerequisites. Resource and capture work is deliberately

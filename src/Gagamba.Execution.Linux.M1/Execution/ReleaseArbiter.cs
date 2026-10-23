@@ -78,6 +78,7 @@ internal sealed class ReleaseArbiter
                 "release request refused before durable intent: identity, deadline, prerequisite or capability check failed");
         }
 
+        JournalIoResult intentWrite;
         lock (_journalGate)
         {
             if (!_writer.IsLive)
@@ -107,11 +108,77 @@ internal sealed class ReleaseArbiter
                     $"release intent refused: {intentError}");
             }
 
-            if (!_journal.WriteTransition(_writer, latest.Snapshot, intent!).Ok)
+            intentWrite = _journal.WriteTransition(_writer, latest.Snapshot, intent!);
+        }
+
+        if (!intentWrite.Ok)
+        {
+            if (intentWrite.FailureKind == JournalFailureKind.AmbiguousAfterContent)
             {
-                return Refused(ReleaseDisposition.NotCommitted,
-                    "release intent was not durably acknowledged");
+                // The journal gate has been released. This barrier exposes the
+                // approved stop-versus-retention ordering to deterministic tests.
+                Barrier("after-ambiguous-intent");
+
+                ReleaseDecision ambiguousDecision;
+                lock (_gate)
+                {
+                    if (_retainedRelease is not null)
+                    {
+                        ambiguousDecision = _retainedRelease with { Kind = ReleaseDecisionKind.Duplicate };
+                    }
+                    else if (_stopAccepted)
+                    {
+                        ConsumeCapability();
+                        _retainedRelease = Refused(
+                            ReleaseDisposition.MayHaveExecuted,
+                            "release gate refused: stop won during durable intent");
+                        ambiguousDecision = _retainedRelease;
+                    }
+                    else
+                    {
+                        _retainedRelease = new ReleaseDecision(
+                            ReleaseDecisionKind.AmbiguousPersistence,
+                            ReleaseDisposition.MayHaveExecuted,
+                            DeliveryResult.NotAttempted,
+                            DurableCommitted: false,
+                            LiveExecutionExcluded: true,
+                            "release decision retained because ambiguous journal persistence was reported");
+                        ambiguousDecision = _retainedRelease;
+                    }
+                }
+
+                // Both barriers and the C2 tail stop run after releasing _gate.
+                Barrier("after-ambiguous-retention");
+                StopDecision tailStop;
+                try
+                {
+                    tailStop = RequestStop(StopCauseKind.CallerStop);
+                }
+                catch (Exception ex)
+                {
+                    if (ambiguousDecision.Kind == ReleaseDecisionKind.AmbiguousPersistence)
+                    {
+                        RecordAmbiguousTailStopLimitation(ex.Message);
+                    }
+
+                    throw;
+                }
+
+                if ((!tailStop.Accepted || !tailStop.DurableStop)
+                    && ambiguousDecision.Kind == ReleaseDecisionKind.AmbiguousPersistence)
+                {
+                    RecordAmbiguousTailStopLimitation(tailStop.Reason);
+                    lock (_gate)
+                    {
+                        ambiguousDecision = _retainedRelease!;
+                    }
+                }
+
+                return ambiguousDecision;
             }
+
+            return Refused(ReleaseDisposition.NotCommitted,
+                "release intent was not durably acknowledged");
         }
 
         Barrier("after-intent");
@@ -297,6 +364,20 @@ internal sealed class ReleaseArbiter
     }
 
     private void Barrier(string name) => TestBarrier?.Invoke(name);
+
+    private void RecordAmbiguousTailStopLimitation(string limitation)
+    {
+        lock (_gate)
+        {
+            if (_retainedRelease is { Kind: ReleaseDecisionKind.AmbiguousPersistence } retained)
+            {
+                _retainedRelease = retained with
+                {
+                    Reason = $"{retained.Reason}; tail stop limitation: {limitation}",
+                };
+            }
+        }
+    }
 
     private ReleaseDecision Refused(ReleaseDisposition release, string reason) =>
         new(ReleaseDecisionKind.Refused, release, DeliveryResult.NotAttempted,

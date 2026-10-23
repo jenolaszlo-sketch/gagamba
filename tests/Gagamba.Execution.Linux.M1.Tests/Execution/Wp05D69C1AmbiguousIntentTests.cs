@@ -180,6 +180,7 @@ public sealed class Wp05D69C1AmbiguousIntentTests
         Assert.False(h.Capability.IsLive);
         Assert.Equal(0, h.Transport.Attempts);
         Assert.True(h.Storage.Exists(Directory, OwnershipJournal.SealName));
+        Assert.Contains("tail stop limitation", decision.Reason, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

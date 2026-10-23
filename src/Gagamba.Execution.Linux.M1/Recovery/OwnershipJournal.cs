@@ -65,11 +65,23 @@
 // the seal and reports uncertainty. Both outcomes satisfy the contract.
 namespace Gagamba.Execution.Linux.M1.Recovery;
 
-internal readonly record struct JournalIoResult(bool Ok, string Error)
+internal enum JournalFailureKind : byte
 {
-    internal static JournalIoResult Success { get; } = new(true, string.Empty);
+    // Other failures may leave sealed state requiring recovery; they are not safe-to-retry signals.
+    None = 0,
+    Unclassified = 1,
+    AmbiguousAfterContent = 2,
+}
 
-    internal static JournalIoResult Failure(string error) => new(false, error);
+internal readonly record struct JournalIoResult(bool Ok, string Error, JournalFailureKind FailureKind)
+{
+    internal static JournalIoResult Success { get; } = new(true, string.Empty, JournalFailureKind.None);
+
+    internal static JournalIoResult Failure(string error) =>
+        new(false, error, JournalFailureKind.Unclassified);
+
+    internal static JournalIoResult AmbiguousFailure(string error) =>
+        new(false, error, JournalFailureKind.AmbiguousAfterContent);
 }
 
 /// <summary>Discrete durable-storage seam so each durability step can be
@@ -486,7 +498,10 @@ internal sealed class OwnershipJournal
         var unsealed = _storage.Unlink(_directory, SealName);
         if (!unsealed.Ok)
         {
-            return JournalIoResult.Failure($"seal release failed, commit ambiguous: {unsealed.Error}");
+            var error = $"seal release failed, commit ambiguous: {unsealed.Error}";
+            return snapshot.Release?.Tag == ReleaseTag.Intent
+                ? JournalIoResult.AmbiguousFailure(error)
+                : JournalIoResult.Failure(error);
         }
 
         lease.AdvanceBaseline(expected);
