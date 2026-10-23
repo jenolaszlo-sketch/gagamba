@@ -135,6 +135,9 @@ public static class Wp05D4OwnerHost
                 ["durable_release"] = decision.DurableRelease.ToString(),
                 ["delivery"] = decision.Delivery.ToString(),
                 ["durable_committed"] = decision.DurableCommitted.ToString(),
+                ["live_execution_excluded"] = decision.LiveExecutionExcluded.ToString(),
+                ["decision_reason"] = OneLine(decision.Reason),
+                ["capability_live"] = session.Capability.IsLive.ToString(),
                 ["journal_seq"] = session.LatestSequence().ToString(),
                 ["transport_attempts"] = session.Attempts.ToString(),
             });

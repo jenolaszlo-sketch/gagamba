@@ -134,24 +134,30 @@ public sealed class Wp05ReleaseContractProbes
     }
 
     [Fact]
-    public void AmbiguousSealFailureLeavesUncertainIntentAndNoStop()
+    public void AmbiguousSealFailureRetainsUncertaintyAndRequestsTailStop()
     {
         using var harness = new Harness();
         harness.Storage.FailAt("unlink", 2);
 
         var decision = harness.Arbiter.RequestRelease(harness.Request);
-        Assert.Equal(ReleaseDecisionKind.Refused, decision.Kind);
-        Assert.Equal(ReleaseDisposition.NotCommitted, decision.DurableRelease);
+        Assert.Equal("AmbiguousPersistence", decision.Kind.ToString());
+        Assert.Equal(ReleaseDisposition.MayHaveExecuted, decision.DurableRelease);
+        Assert.Equal(DeliveryResult.NotAttempted, decision.Delivery);
+        Assert.False(decision.DurableCommitted);
+        Assert.True(decision.LiveExecutionExcluded);
+        Assert.Contains("ambiguous journal persistence", decision.Reason, StringComparison.OrdinalIgnoreCase);
         Assert.Equal(0, harness.Transport.Attempts);
-        Assert.True(harness.Capability.IsLive);
+        Assert.False(harness.Capability.IsLive);
 
         var latest = harness.Journal.ReadLatest();
         Assert.False(latest.Ok);
         Assert.Contains("seal", latest.Error);
+        Assert.True(harness.Storage.Exists("/wp05-release-probe", OwnershipJournal.SealName));
 
-        var stop = harness.Arbiter.RequestStop(StopCauseKind.CallerStop);
-        Assert.True(stop.Accepted);
-        Assert.False(stop.DurableStop);
+        var duplicate = harness.Arbiter.RequestRelease(harness.Request);
+        Assert.Equal(ReleaseDecisionKind.Duplicate, duplicate.Kind);
+        Assert.Equal(ReleaseDisposition.MayHaveExecuted, duplicate.DurableRelease);
+        Assert.Equal(0, harness.Transport.Attempts);
 
         harness.ReleaseWriter();
         var recovered = new OwnershipJournal(harness.Storage, "/wp05-release-probe");

@@ -200,8 +200,13 @@ public sealed class Wp05D4SupervisorTests
         await c.WaitReady(cancellation);
         await c.WaitBarrier("after-ambiguous", cancellation);
         var ownerResult = c.ReadResult();
-        Assert.Equal("Refused", ownerResult["decision_kind"]);
-        Assert.Equal("NotCommitted", ownerResult["durable_release"]);
+        Assert.Equal("AmbiguousPersistence", ownerResult["decision_kind"]);
+        Assert.Equal("MayHaveExecuted", ownerResult["durable_release"]);
+        Assert.Equal("NotAttempted", ownerResult["delivery"]);
+        Assert.Equal("False", ownerResult["durable_committed"]);
+        Assert.Equal("True", ownerResult["live_execution_excluded"]);
+        Assert.Equal("False", ownerResult["capability_live"]);
+        Assert.Contains("ambiguous journal persistence", ownerResult["decision_reason"], StringComparison.OrdinalIgnoreCase);
         Assert.Equal("0", ownerResult["transport_attempts"]);
         Assert.Equal(0, Count(D4Witness.Read(c.WitnessPath), "PreWriteWitnessAcknowledged"));
         await c.KillOwner(cancellation);
