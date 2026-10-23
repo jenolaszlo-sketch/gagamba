@@ -1,7 +1,18 @@
 # Current work queue
 
+## Current priority: WP05 D6.9 C1 IMPLEMENTATION COMPLETE - INDEPENDENT GLM SOURCE REVIEW REQUIRED; C3 C4 NOT AUTHORIZED; RELEASE NOT QUALIFIED
 
-## Current priority: WP05 D6.8.5 C2 WSL2 RUNTIME QUALIFICATION AND GLM INDEPENDENT REVIEW PRESERVED - GLM OPTION A; D6.8.5 WSL2 INDEPENDENT REVIEW COMPLETE; H-01 H-02 N-01 TRACKED; NATIVE-DISTRO QUALIFICATION OUTSTANDING; C1 NEXT PROPOSED IMPLEMENTATION TRANCHE; RELEASE NOT QUALIFIED
+Update 2026-10-23 (implementation engineer): the bounded C1 change is committed in tests-first order: b1825deb898fa6c2390e344d1e477c8cf0a206a3 then 6fcd8b5f52c7083bfba8a7139264641fc0d8da0f, directly from preservation base 6a60d2fc490acee18aa161b847a34343144c5b26. The third, documentation-only evidence commit follows production. Source/test trees are 9dd0f055eaf48d48bda8683dee3f8dc534a06e5d / ebcb976a164b212090fbe0958fe4b0c0b243f794. Producer evidence is [D6.9 C1 implementation evidence](evidence/linux-m1/wp05-d6-9-c1-ambiguous-intent-implementation.md).
+
+- Typed ambiguity is emitted only when final gen.seal removal fails after the candidate Intent has been mirrored and synced to both slots. The journal baseline is not acknowledged.
+- Deterministic C1 tests cover definite pre-content failure, both-slot sealed uncertainty, ambiguity-first and stop-first retention, tail stop, shared capability invalidation, duplicate/no-retry, recovery and no-resend, concurrency, and unchanged release-first success. Case C's unreachable post-intent retained history is justified by source inspection; reachable duplicate entry is tested.
+- Windows targeted regression run: 158 passed, 3 skipped, 0 failed; Release solution build: 0 warnings, 0 errors. WSL2 supported profile: 574 passed, 35 classified skips, 0 failed; C1 class 16/16; isolated D4_6 real-process recovery/no-resend 1/1. Earlier Windows-mounted build failure, missing-fixture run, and a mis-scoped Linux test command are retained in evidence.
+- **Next:** independent GLM source review against producer tip 6fcd8b5f52c7083bfba8a7139264641fc0d8da0f. Review must assess typed boundary, first-retainer ordering, lock safety, C2 invalidation, barriers, recovery, no-resend, enum consumers, and scope restrictions.
+- **Still open:** native-distro qualification, G3, WP08/WP10 Owner integration, and full WP05 release acceptance. WSL2 execution is not reported as C1 Linux qualification. C3/C4 and publication remain unauthorized.
+
+
+
+## Prior priority: WP05 D6.8.5 C2 WSL2 RUNTIME QUALIFICATION AND GLM INDEPENDENT REVIEW PRESERVED - GLM OPTION A; D6.8.5 WSL2 INDEPENDENT REVIEW COMPLETE; H-01 H-02 N-01 TRACKED; NATIVE-DISTRO QUALIFICATION OUTSTANDING; C1 NEXT PROPOSED IMPLEMENTATION TRANCHE; RELEASE NOT QUALIFIED
 
 Update 2026-10-23 (preservation engineer): the D6.8.5 WSL2 C2 runtime qualification and GLM's independent Option A review are preserved as sibling histories under the producer evidence commit `d4e8bf88ce1661717537aaa3fb392bfe24c04466` (immediate parent D6.8.4 preservation `87e9e6f5b165176b27f066ff85025605fdaf31c6`; producer tree `e15a4e222ab25ebc55a9de42798630a292525305`; evidence blob `f1cb6a9c6c80ceb7386eaabe7bf235bdb4f6e7ee`). GLM review `review/wp05-d6-8-5-glm-c2-linux-qualification` @ `89464f5f214615ba94051e438d9b4979483ae5bf` (immediate parent `d4e8bf88...`; review tree `41bf98212ab764b44ca8528badc9013c8a7979b9`; one review document, blob `f168fce6e1eb83f7d22a24096a3b02530f8eea66`). Preservation is on `preservation/wp05-d6-8-5-glm-c2-linux-qualification-review`, a separate direct child of the producer evidence commit and not based on GLM's review; [checkpoint](reviews/gagamba-linux-m1-wp05-d6-8-5-glm-review-preservation-checkpoint.md).
 
