@@ -1,5 +1,7 @@
 # Gagamba implementation plan
 
+2026-10-24 consumer-contract addendum: [RC-1 restricted consumer design](design/restricted-consumer-contract-rc1.md) and [RC-2A/RC-2B tracked work orders](plans/restricted-consumer-contract-implementation.md) introduce a separately reviewed dependency for Hufu AE4-B01. RC-1 is documentation only, pending independent GLM acceptance. RC-2A proposes portable immutable values/codec in the existing Execution package; RC-2B separately depends on accepted component implementations and real owner/native gates. This addendum does not authorize implementation, reopen C1–C4, qualify a release or modify the historical roadmap below. [Current handoff](handoff.md) records the exact status.
+
 Status: actionable planning baseline, 2026-10-03; progress notes 2026-10-04. GP-0 is complete as a document. GP-1A/GP-1B fixtures, GW-1A availability and GW-1B Windows launch slices 1–4 are implemented as spikes (14/19 launch legs green; four engine gates open). Runtime production implementation has not started. The [current queue](work-queue.md) and [handoff](handoff.md) record the exact checkpoint; local inventory is recorded in [test environments](test-environments.md).
 
 This is the canonical implementation sequence. The [design](design.md) defines the proposed semantics, the [research plan](research-plan.md) contains backend experiments, and the [testing and CI plan](testing-and-ci.md) defines evidence and automation. Later implementation findings may revise the design through recorded decisions.

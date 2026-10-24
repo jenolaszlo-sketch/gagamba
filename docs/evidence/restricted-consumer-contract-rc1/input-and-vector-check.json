@@ -1,0 +1,11 @@
+{
+  "commissionOriginalPath": "C:\\Users\\Laszlos\\.codex\\attachments\\46543222-ff1f-43d4-a131-c0431468928d\\Pasted text.txt",
+  "commissionOriginalBytes": 16505,
+  "commissionOriginalSha256": "2c4184245ffa329cb7500b6069eb84695053c900c281411c6fc9585436a1917b",
+  "commissionReadableCopy": "commission.md; UTF-8 without BOM, LF, trailing whitespace removed",
+  "goldenSource": "629a08d2ee82a9ac084d87ed73ad8d584661ea28:tests/Gagamba.Execution.Linux.M1.Tests/Contracts/ManifestTests.cs",
+  "goldenByteLength": 873,
+  "goldenSha256": "82161029848b1a821241af112ca806be8029d3cf2e7b95c6b23ce3e35850d5f3",
+  "method": "Python extracted the existing literal hex and checked SHA-256 only. Neither Gagamba encoder nor tests executed.",
+  "runtimeQualification": false
+}

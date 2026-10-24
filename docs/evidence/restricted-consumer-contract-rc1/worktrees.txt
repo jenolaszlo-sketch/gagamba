@@ -1,0 +1,214 @@
+worktree C:/Users/Laszlos/source/repos/Gagamba
+HEAD 97a3eaa914627bb4ccb9e20855403c37ac97e545
+branch refs/heads/review/gagamba-independent-assessment-design
+
+worktree C:/Users/Laszlos/source/repos/gagamba-d4
+HEAD 8254cf89f091eb5baf305d125e00cd2bf61a1ca1
+branch refs/heads/implementation/wp05-d4-release-owner-witness
+
+worktree C:/Users/Laszlos/source/repos/gagamba-d5
+HEAD a4fca00f3b2bd3f2b627d7044516d0ef8124b259
+branch refs/heads/implementation/wp05-d5-native-status-qualification
+
+worktree C:/Users/Laszlos/source/repos/gagamba-d6
+HEAD 23df1c566e7d8f072d924f374bf6891c726c03fe
+branch refs/heads/analysis/wp05-d6-0-release-contract-decisions
+
+worktree C:/Users/Laszlos/source/repos/gagamba-d6-1
+HEAD 750914d93edaf5490b42bf0787f20bb0c5089767
+branch refs/heads/design/wp05-d6-1-contract-amendments
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-d6-2
+HEAD ae09afedddeb703e6bde226bd793b375896c3064
+branch refs/heads/design/wp05-d6-2-contract-precision-amendments
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-d6-3
+HEAD 4209581a03562b434badd7a5f9927663559911be
+branch refs/heads/design/wp05-d6-3-c3-outcome-correction
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-d6-3-c3
+HEAD 8572e1a042fd12d4bcd0c06729066babf04a94ed
+branch refs/heads/design/wp05-d6-3-c3-outcome-reconciliation
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-d6-4
+HEAD 08938e96c69cfd573a284589c986f53f041c5803
+branch refs/heads/design/wp05-d6-4-r1-fixture-clarification
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-d6-5
+HEAD 6bd714d894ad8152a87692f749521abf79916bf5
+branch refs/heads/design/wp05-d6-5-fixture-isolation-equivalence
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-d6-6
+HEAD 4bcdac8ac0941f6ec70fb401db7f204f38a5770e
+branch refs/heads/design/wp05-d6-6-fixture-symbol-delivery
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-d6-7
+HEAD 01063c164391e0676ae1f6087d2c0865f7692511
+branch refs/heads/decisions/wp05-d6-7-human-contract-approvals
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-d6-8-4-c2
+HEAD 01da5d38a60a6f369c45a87f5bb18e2d8240081c
+branch refs/heads/evidence/wp05-d6-8-4-c2-f01-f02
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-d6-8-5-c2
+HEAD d4e8bf88ce1661717537aaa3fb392bfe24c04466
+branch refs/heads/qualification/wp05-d6-8-5-c2-linux
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-d6-8-c2
+HEAD 665b18fdca15f8ed30ae4ca93b490f29bf41a181
+branch refs/heads/implementation/wp05-d6-8-c2-stop-capability
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-d6-9-c1
+HEAD 629a08d2ee82a9ac084d87ed73ad8d584661ea28
+branch refs/heads/implementation/wp05-d6-9-c1-ambiguous-intent
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-nem-q2
+HEAD 54a91b66a9841932792770843a7cd93743e9f4b1
+branch refs/heads/fix/nem-q2-validated-findings
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-nem-q4
+HEAD 8909950de598c7866859f46e4c356f0aef941bf2
+branch refs/heads/preservation/nem-q3-independent-verification
+
+worktree C:/Users/Laszlos/source/repos/gagamba-preserve-d1d3
+HEAD 7dd5ffa6c2ecaacc37022adb9a7b6c333695eef0
+branch refs/heads/preservation/wp05-d1-d3-independent-fixture-review
+
+worktree C:/Users/Laszlos/source/repos/gagamba-preserve-d4
+HEAD 5c58b065c37a71c8f392a617f725822ffb64c171
+branch refs/heads/preservation/wp05-d4-independent-crash-witness-review
+
+worktree C:/Users/Laszlos/source/repos/gagamba-preserve-d5
+HEAD 578b2084cfa09be76e73d0fb26e09f8d823f9ae6
+branch refs/heads/preservation/wp05-d5-independent-native-status-review
+
+worktree C:/Users/Laszlos/source/repos/gagamba-preserve-d6
+HEAD 947aebe7df2eefd116cfba8a4b3e1baee2067e0d
+branch refs/heads/preservation/wp05-d6-0-independent-contract-design-review
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-preserve-d61
+HEAD d39dab60152a6f83724760b3122f61d6cf928be3
+branch refs/heads/preservation/wp05-d6-1-independent-contract-design-review
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-preserve-d62
+HEAD 31132513a983bb37cfd609f56541f6ab8d44af84
+branch refs/heads/preservation/wp05-d6-2-focused-independent-review
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-preserve-d63
+HEAD 004a12d62bd90bb11217e4e57fa8326f7afafecf
+branch refs/heads/preservation/wp05-d6-3-terra-independent-c3-review
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-preserve-d64
+HEAD 1fedce7199c1a3910ee5b1e0816670dfb7f470e9
+branch refs/heads/preservation/wp05-d6-4-glm-independent-fixture-review
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-preserve-d65
+HEAD 114801e4f2b698fb3d82496b2a9926220b206f4c
+branch refs/heads/preservation/wp05-d6-5-glm-independent-isolation-equivalence-review
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-preserve-d66
+HEAD 8fac756c3063d360de7c793fe959fc34845a8859
+branch refs/heads/preservation/wp05-d6-6-glm-independent-symbol-delivery-review
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-preserve-d67
+HEAD 5993989e148b2e305a410c582eeaa1321bb60637
+branch refs/heads/preservation/wp05-d6-7-glm-human-decision-integrity-review
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-preserve-d68-c2
+HEAD 7177b3b83658de74b795de0c072589c590119c0a
+branch refs/heads/preservation/wp05-d6-8-glm-independent-c2-review
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-preserve-d684
+HEAD 87e9e6f5b165176b27f066ff85025605fdaf31c6
+branch refs/heads/preservation/wp05-d6-8-4-glm-f01-f02-closure-review
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-preserve-d685
+HEAD 6a60d2fc490acee18aa161b847a34343144c5b26
+branch refs/heads/preservation/wp05-d6-8-5-glm-c2-linux-qualification-review
+
+worktree C:/Users/Laszlos/source/repos/gagamba-review-d1d3
+HEAD d0f2220d5e10abb97343d069a5ff43c22c72bfd7
+branch refs/heads/review/wp05-d1-d3-fixture-evidence-review
+
+worktree C:/Users/Laszlos/source/repos/gagamba-review-d4
+HEAD 310484a5e82d4a81b0909e07281511cb7bc4c315
+branch refs/heads/review/wp05-d4-crash-witness-qualification
+
+worktree C:/Users/Laszlos/source/repos/gagamba-review-d5
+HEAD 87cced6143fb3337829fab48a3c012b06c06508c
+branch refs/heads/review/wp05-d5-native-status-qualification
+
+worktree C:/Users/Laszlos/source/repos/gagamba-review-d6
+HEAD 2a235c391673258023d3b3058ad7bbb31cc20406
+branch refs/heads/review/wp05-d6-0-independent-contract-design
+
+worktree C:/Users/Laszlos/source/repos/gagamba-review-d6-2
+HEAD e63a6d4a18aad87b88f64939194b18dd102ad9bd
+branch refs/heads/review/wp05-d6-2-focused-contract-review
+
+worktree C:/Users/Laszlos/source/repos/gagamba-review-d61
+HEAD 8aded096f0ed55375c35915378232e95cb8ba33d
+branch refs/heads/review/wp05-d6-1-independent-contract-design
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-review-d61-glm
+HEAD 77f559a7dfc1702b33812d5c3d5c42ac925f0343
+branch refs/heads/review/wp05-d6-1-independent-contract-design-2
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-review-d62-glm
+HEAD 3bce34b6b449a863f784949c0d7be5b0b56d4458
+branch refs/heads/review/wp05-d6-2-focused-contract-precision
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-review-d63-terra
+HEAD cda2f22221c4db12ced3a4317362e80167270a63
+branch refs/heads/review/wp05-d6-3-terra-independent-c3-outcome
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-review-d64-glm
+HEAD 8b95c52abdebf8fd9a0235dd5a69082456e1984f
+branch refs/heads/review/wp05-d6-4-glm-independent-fixture
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-review-d65-glm
+HEAD 1051018c272a578613309c07cb4d23d627216482
+branch refs/heads/review/wp05-d6-5-glm-independent-isolation-equivalence
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-review-d66-glm
+HEAD 3c3d336c0a47ccb18627a5571298df8d0d1f0683
+branch refs/heads/review/wp05-d6-6-glm-independent-symbol-delivery
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-review-d67-glm
+HEAD 546f284fbdbbcaa76f8b5557328fcd2d502a86c0
+branch refs/heads/review/wp05-d6-7-glm-human-decision-integrity
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-review-d68-c2-glm
+HEAD 959f2d3162bdfbecac2723f50acae8459b2fa310
+branch refs/heads/review/wp05-d6-8-glm-independent-c2
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-review-d684-glm
+HEAD 55f3f7a10b4d6860b8e7e02776bb3da73f801db9
+branch refs/heads/review/wp05-d6-8-4-glm-f01-f02-closure
+
+worktree C:/Users/Laszlos/source/repos/Gagamba-review-d685-glm
+HEAD 89464f5f214615ba94051e438d9b4979483ae5bf
+branch refs/heads/review/wp05-d6-8-5-glm-c2-linux-qualification
+
+worktree C:/Users/Laszlos/source/repos/Solo/ar7-review-worktree
+HEAD 8e156774fec28d807b557acae487791289369609
+branch refs/heads/review/ar7-architecture
+
+worktree C:/Users/Laszlos/source/repos/Solo/gagamba-rc1-contract
+HEAD 629a08d2ee82a9ac084d87ed73ad8d584661ea28
+branch refs/heads/design/gagamba-rc1-restricted-consumer-contract
+
+worktree C:/Windows/Temp/opencode/gagamba-conformance
+HEAD 62d79e7f8765452289da229cf429029390535635
+branch refs/heads/qualification/conformance-foundation
+prunable gitdir file points to non-existent location
+
+worktree C:/Windows/Temp/opencode/gagamba-conformance-remediation
+HEAD b5827110167861f2dd12c69c54cdddd9ff1db326
+branch refs/heads/remediation/conformance-foundation-review-1
+prunable gitdir file points to non-existent location
+
+worktree C:/Windows/Temp/opencode/gagamba-conformance-review
+HEAD 3feb7c572d95b28c09dfb6795f1c92ba693fa22e
+branch refs/heads/review/conformance-foundation-independent
+prunable gitdir file points to non-existent location

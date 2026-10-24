@@ -1,5 +1,11 @@
 # Current work queue
 
+## Current consumer-contract work: RC-1 DESIGN READY WITH QUALIFICATIONS — INDEPENDENT GLM REVIEW PENDING
+
+Update 2026-10-24 (RC-1 contract author): [restricted consumer contract](design/restricted-consumer-contract-rc1.md) and [tracked implementation work orders](plans/restricted-consumer-contract-implementation.md) address the design of Hufu **AE4-B01** on an isolated branch from `629a08d2ee82a9ac084d87ed73ad8d584661ea28`. The selected boundary is passive immutable values/strict canonical codec in the existing net10.0 `Gagamba.Execution` package (RC-2A), followed separately by a real restricted control facade (RC-2B). See [review handoff](reviews/restricted-consumer-contract-rc1-handoff.md) and [source evidence](evidence/restricted-consumer-contract-rc1/README.md).
+
+Next action is independent GLM review of the exact committed design, then owner acceptance. **AE4-B01 remains open; RC-2A/RC-2B implementation, Hufu resumption and publication are not authorized by RC-1.** C1 still has producer evidence with independent review pending in the inspected inventory; C2 has preserved independent WSL2 component evidence; C3/C4 implementation and the existing M1 gates remain separate. No source, tests, package metadata or native workloads changed in this slice. Earlier current-priority headings below are preserved historical checkpoints, not superseding status.
+
 ## Current priority: WP05 D6.9 C1 IMPLEMENTATION COMPLETE - INDEPENDENT GLM SOURCE REVIEW REQUIRED; C3 C4 NOT AUTHORIZED; RELEASE NOT QUALIFIED
 
 Update 2026-10-23 (implementation engineer): the bounded C1 change is committed in tests-first order: b1825deb898fa6c2390e344d1e477c8cf0a206a3 then 6fcd8b5f52c7083bfba8a7139264641fc0d8da0f, directly from preservation base 6a60d2fc490acee18aa161b847a34343144c5b26. The third, documentation-only evidence commit follows production. Source/test trees are 9dd0f055eaf48d48bda8683dee3f8dc534a06e5d / ebcb976a164b212090fbe0958fe4b0c0b243f794. Producer evidence is [D6.9 C1 implementation evidence](evidence/linux-m1/wp05-d6-9-c1-ambiguous-intent-implementation.md).

@@ -1,0 +1,439 @@
+{
+  "version": 1,
+  "observedAtUtc": "2026-10-24T00:44:18.964657+00:00",
+  "selectedParent": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+  "hufuCommit": "37dcf33362e8e745800a530a478fd406795c3e58",
+  "hashDomain": "exact git show <commit>:<path> bytes, not CRLF working-tree text",
+  "host": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "architecture": "AMD64",
+    "authoringRuntime": "3.14.8",
+    "dotnetSdk": "not queried; no build/test performed",
+    "nativeHostQualification": "none; native workloads not run"
+  },
+  "trees": {
+    "src": "9dd0f055eaf48d48bda8683dee3f8dc534a06e5d",
+    "tests": "ebcb976a164b212090fbe0958fe4b0c0b243f794",
+    "native": "85631d2f04512376621d3d09f51d67fd90f45335"
+  },
+  "hufuTrees": {
+    "src": "2a9a9c60b833d6281f6e8528f767a7750c4411f4",
+    "tests": "955ca47e1d327f262dc516264fbe4bc0ac78429e"
+  },
+  "files": [
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "AGENTS.md",
+      "gitBlob": "1d1a4f08734f4fbad875334afc36c62b95180316",
+      "gitBlobBytes": 2054,
+      "sha256GitBlobBytes": "d2aca8898025dc61ae2c7802ab3b0f981691e736b7ae296a8e41926ca152e1d9",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "Directory.Build.props",
+      "gitBlob": "e559ad92a6e97adc7860724bbf836b810afefe8d",
+      "gitBlobBytes": 1739,
+      "sha256GitBlobBytes": "70592c6dd2872146ba95cdac4794a9809efb66af33bbdd0480055d470e8ed222",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "docs/handoff.md",
+      "gitBlob": "41b6a2568b2bf8315055ad3323ec0752de129888",
+      "gitBlobBytes": 160302,
+      "sha256GitBlobBytes": "821b477ece0c7848b01b8dfde3dc81d7b1ae5bbb741db9da9c4145c8d9d1796f",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "docs/work-queue.md",
+      "gitBlob": "9f28a3dd4381e7184489733b6d093da037aecb19",
+      "gitBlobBytes": 141936,
+      "sha256GitBlobBytes": "d235b851cb4d206949a9cbad26b9c3f40e360c5b76f4ecfc95c507ddd0327434",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "docs/implementation-plan.md",
+      "gitBlob": "b5d949564ff0b4403572f16f131e11a73b1a2650",
+      "gitBlobBytes": 19256,
+      "sha256GitBlobBytes": "7b05011a0732c518b97b226274ecbfa62f5f34c2690570d9a8ba16b16b441b88",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "docs/remediation-evidence-standard.md",
+      "gitBlob": "ab98eec3498089292ddd868c00506f0bb83a028f",
+      "gitBlobBytes": 10446,
+      "sha256GitBlobBytes": "7947b91e3e9bd92c74e50fe02751ba23161e1ab83fb1c661067238c2689d2e03",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "docs/plans/gagamba-linux-m1-implementation-plan.md",
+      "gitBlob": "57cca356e7692ceab2c521966f98c21fc3b52ff3",
+      "gitBlobBytes": 110312,
+      "sha256GitBlobBytes": "d0b6181924c5752b172fe1e4079d340695fd2646f45ae7caaefd06f646b2c977",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "docs/decisions/gagamba-linux-m1-wp05-d6-7-human-contract-approvals.md",
+      "gitBlob": "a0d1ad409b2d7fb0985abf7db0b0c5257cc6425e",
+      "gitBlobBytes": 13970,
+      "sha256GitBlobBytes": "ccd93d174cd838e4f885b000abab79dce532c1b1db9ab6d305ba45ff9a672f8f",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "docs/decisions/gagamba-linux-m1-wp05-d6-2-precision-amendment-reconciliation.md",
+      "gitBlob": "1a3338e4104e8f06e746c7d40b6b148a1ce87cab",
+      "gitBlobBytes": 13977,
+      "sha256GitBlobBytes": "e6214cbe04f00f2237c8473b4ed442d0f4ac75c0bf69f6497e7a945c5f1c24d6",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "docs/decisions/gagamba-linux-m1-wp05-d6-3-c3-outcome-correction.md",
+      "gitBlob": "2116cc54a37e73f3c8a995f51bad8372723b68da",
+      "gitBlobBytes": 3246,
+      "sha256GitBlobBytes": "15ead02af496bc908119f6e5bc0cb338035fff77d62a8b29fe0573e94d08ebc1",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "docs/evidence/linux-m1/wp05-d6-9-c1-ambiguous-intent-implementation.md",
+      "gitBlob": "32f65e19604ac26abdeda414502a98641dcfb0dc",
+      "gitBlobBytes": 19293,
+      "sha256GitBlobBytes": "52f8a80746822d56670bfd549cfe1ccb48c4a57ac1733eb7924519d645fb5b16",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "docs/evidence/linux-m1/wp05-d6-8-5-c2-linux-qualification.md",
+      "gitBlob": "f1cb6a9c6c80ceb7386eaabe7bf235bdb4f6e7ee",
+      "gitBlobBytes": 37846,
+      "sha256GitBlobBytes": "041f8c164e23e48643dea2b72f8bc3081329eeb53b50f286b26a0100eedac002",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d6-8-5-glm-review-preservation-checkpoint.md",
+      "gitBlob": "3f035bae2760e62a2a3345f429fdf53fbb035391",
+      "gitBlobBytes": 22349,
+      "sha256GitBlobBytes": "1b9667fe3e9b88ffaf552ff1774c237e6163f05455e66b2cef0629d53e0edf61",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "src/Gagamba.Execution/Gagamba.Execution.csproj",
+      "gitBlob": "54f84dcb4e81e4107b33931669738bf5952fa6db",
+      "gitBlobBytes": 569,
+      "sha256GitBlobBytes": "c84e337117a16830019921cc589b90e5215b07c542a2dcd52b3cb47ba20b0a95",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "src/Gagamba.Runtime/Gagamba.Runtime.csproj",
+      "gitBlob": "ab30708fe28c43cd92d31fc7215118bfc6d3bedf",
+      "gitBlobBytes": 1014,
+      "sha256GitBlobBytes": "021b1e9c641016ee8c7b933b6f2f65462838ab94d0ff6b8bbcb32eecc0159ab3",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj",
+      "gitBlob": "337c2f3bd896c3b0a09fcccf2844da2c78bc6031",
+      "gitBlobBytes": 353,
+      "sha256GitBlobBytes": "99db4cdfd9b6993ce3d23673856004a8d64eb9a9894ca749f51b7178d4c46d9f",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "src/Gagamba.Execution.Linux.M1.Owner/Gagamba.Execution.Linux.M1.Owner.csproj",
+      "gitBlob": "459f3ce45790d2d6ed52bd7ec387f5aab1bb803a",
+      "gitBlobBytes": 551,
+      "sha256GitBlobBytes": "c1369869960a93677dae17a642b28aed2c8c9ff732224dfe4bfbc0c49e7ddff2",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "src/Gagamba.Execution/Provider.cs",
+      "gitBlob": "29eb4e97bea2050899379eca43732b1e47ba242d",
+      "gitBlobBytes": 9885,
+      "sha256GitBlobBytes": "f3cf739f9ccf75d0cd355a54ce1433eef69ea999f1b62aa37da88b993d56da40",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "src/Gagamba.Execution/Restricted/RestrictedManifest.cs",
+      "gitBlob": "0d6e7233eb47c15664129eda2a5ab352fa20fee4",
+      "gitBlobBytes": 34964,
+      "sha256GitBlobBytes": "d1440ba292d2b1e15af658d7d7d154363827e5bdfd58d17cc2bb49f89c0d020b",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "src/Gagamba.Execution/Restricted/RestrictedTransaction.cs",
+      "gitBlob": "9b2dee811f2e10cfa2d98fcc000dc1cab207804a",
+      "gitBlobBytes": 11086,
+      "sha256GitBlobBytes": "3e2ef6ff5dcbbdad6ef7ce8da4a8fea8eb6b8c6d3a77788edd1f9548f3266117",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "src/Gagamba.Execution.Linux.M1/Preparation/PreparedTransaction.cs",
+      "gitBlob": "b8f6fbfb7d2cbc01eeeae6c161be1bf9566baacb",
+      "gitBlobBytes": 2883,
+      "sha256GitBlobBytes": "375d207a4819067c22b95be6fb32c0bc32dd18ea1257a500640b21f24ee201f7",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "src/Gagamba.Execution.Linux.M1/Preparation/PreparationStore.cs",
+      "gitBlob": "f327ec1dcf173733c18de13b39f3ec3ede56b79e",
+      "gitBlobBytes": 9298,
+      "sha256GitBlobBytes": "e0498f5f1897641a49bb46e1ac1d6f623655e2e1e5358d0a1be4a919bf48b49b",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerPreparationTransaction.cs",
+      "gitBlob": "a0f10e2b485b1d985819f77684da6c49b7d64c22",
+      "gitBlobBytes": 24704,
+      "sha256GitBlobBytes": "8306a66c5a09368d96487e9e94d103892bd8c292fdcd95d944c37abf1d30a462",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerPreparationSpecification.cs",
+      "gitBlob": "ad760a0c182bdb8ef7110bcb0c61fcf796f16ce2",
+      "gitBlobBytes": 14068,
+      "sha256GitBlobBytes": "6f11027c968d1c9c8256d85b61c1e206b3dcfa115e3560b17571f8a1e0d3ae1c",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerManifestWire.cs",
+      "gitBlob": "180473f3f5b79cba66bb26d7727c976695afb459",
+      "gitBlobBytes": 7894,
+      "sha256GitBlobBytes": "5fc820c00f5cf7126b93ac78e74039e9a9629d5cb4f56acfb352eb5b0d1a3d14",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "src/Gagamba.Execution.Linux.M1/Lifecycle/M1RecoveryScope.cs",
+      "gitBlob": "2ff994dd274d22ae3eec1ee490d7fd3a67611323",
+      "gitBlobBytes": 42907,
+      "sha256GitBlobBytes": "2f1240478c8e3d6dad6af9023241450e650ec227df0b66872675646b6f5b46f4",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "src/Gagamba.Execution.Linux.M1/Execution/ReleaseArbiter.cs",
+      "gitBlob": "ad2e15c04f0a2689963c5209097d3e124639af91",
+      "gitBlobBytes": 16687,
+      "sha256GitBlobBytes": "29b10530e4e8030ab0547ad138c23987bb5e2afe1387f9d351473ff12199ada3",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "src/Gagamba.Execution.Linux.M1/Execution/ReleaseDecision.cs",
+      "gitBlob": "e4e4f5284f836bcb85ad7489283bf775e5f1cb8a",
+      "gitBlobBytes": 1557,
+      "sha256GitBlobBytes": "da35aec990cc14af9d7bacfb8316c9a087578a4c457aa900190217118e31806a",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "src/Gagamba.Execution.Linux.M1/Recovery/OwnershipRecord.cs",
+      "gitBlob": "6b77827d4a56b03cd7b20ef7640c3315ee2b2bc2",
+      "gitBlobBytes": 25218,
+      "sha256GitBlobBytes": "01b60badb7f3fc6e4e68ac545bb2d40613c5438fe5e742bbae597af4f6cd1a0a",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "src/Gagamba.Execution.Linux.M1/Recovery/Reconciler.cs",
+      "gitBlob": "aa43d390ca9c59e390cffe3d77c1127e50456bcd",
+      "gitBlobBytes": 18561,
+      "sha256GitBlobBytes": "dcb79e126068973bcff4cbc077ebc7353f881c52ff0f0a28eac28967637e5317",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/Contracts/ManifestTests.cs",
+      "gitBlob": "7199991b4d2af14a06d6c6f9622eb20484df434b",
+      "gitBlobBytes": 28908,
+      "sha256GitBlobBytes": "44a855c87c5d509b5ed6a50550ddfd3bb8008b10515986fc93d174030b53f7cf",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/Contracts/ReferenceEncoder.cs",
+      "gitBlob": "2c5514f488042f804d61ffdb5d5a5cdd70fea371",
+      "gitBlobBytes": 8591,
+      "sha256GitBlobBytes": "613ef31ffb1feebfb176833524927408c30b8427c6bc8e563f6a3893e1db2445",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/PreparationIdentityTests.cs",
+      "gitBlob": "46b66ab50d418f74472704a90bafd9e5bd1cd3c3",
+      "gitBlobBytes": 7583,
+      "sha256GitBlobBytes": "275426ca3f459c7c9aa1e5015018c92b8391b5d5c1404b6c58b989f50df8e8db",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/PreparationOwnershipTests.cs",
+      "gitBlob": "43525706d48392570339824313776ac7bb122652",
+      "gitBlobBytes": 7903,
+      "sha256GitBlobBytes": "1feaef4b9a05dd46f988ef8394dae75f286d570e953ae1b9c1635b0981048ee2",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "tests/Fixtures/Gagamba.LinuxM1.Native/fixture.c",
+      "gitBlob": "5cc2ed4d4dca625686c46fd2c88e31d0b11f779d",
+      "gitBlobBytes": 850,
+      "sha256GitBlobBytes": "f81284738b76be9a35ff0605b1590bd9fbc186588bdbaf12753c49ac6bd9d6ea",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "native/linux-m1/exec-coordinator.c",
+      "gitBlob": "2607809202cab2c66349760e9cd8cca2e971addc",
+      "gitBlobBytes": 9972,
+      "sha256GitBlobBytes": "9c92e748cac72c54a0c7ece97f8aeb6e3932aab95bdd1c583fdac3464f527f37",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "native/linux-m1/protocol.h",
+      "gitBlob": "058c657fa1039822d26fcd9d405e601bcf24f2ad",
+      "gitBlobBytes": 765,
+      "sha256GitBlobBytes": "17334e67635fcdd42655bd599e016c85e20d8c2a5ec4ef31d2daef511954d811",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "native/linux-m1/release_protocol.h",
+      "gitBlob": "5c1fd56f4aeeec38381df5ff926e3e772a448293",
+      "gitBlobBytes": 1979,
+      "sha256GitBlobBytes": "ef454f777e4afb7c3896901b9aa77da0d127b8a616242d742d8083c8759f2a2b",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Gagamba",
+      "commit": "629a08d2ee82a9ac084d87ed73ad8d584661ea28",
+      "path": "native/linux-m1/seccomp-filter.hex",
+      "gitBlob": "7e2ad77260ca78a4e9e03575159143a64b64eb97",
+      "gitBlobBytes": 1345,
+      "sha256GitBlobBytes": "31f44eb5af638e7449a08d0d27f3431a8d2b7d2839cc2ce364d1215320e378d1",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Hufu",
+      "commit": "37dcf33362e8e745800a530a478fd406795c3e58",
+      "path": "docs/ae4-gagamba-restricted-execution-integration-design.md",
+      "gitBlob": "6e72e764ccd8119ce82f452b76f11a4055520387",
+      "gitBlobBytes": 63674,
+      "sha256GitBlobBytes": "0ce6dccf0950b11e536c33949196dc55cf65da3c795a6a228465fa5f1a6e07cb",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Hufu",
+      "commit": "37dcf33362e8e745800a530a478fd406795c3e58",
+      "path": "docs/ae4-gagamba-restricted-execution-stage-register.md",
+      "gitBlob": "5cbc4d3c67dbb77bf864d9dc67a5d7f3d6e81f9c",
+      "gitBlobBytes": 26400,
+      "sha256GitBlobBytes": "8f6ea1d76e1f784bb0bd6488f10a61ba7942e8184a77310fbc425d3a416dd83a",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Hufu",
+      "commit": "37dcf33362e8e745800a530a478fd406795c3e58",
+      "path": "docs/ae4-implementation-plan.md",
+      "gitBlob": "f0a1c56bdf7460cc810aef8d786f071b3711d826",
+      "gitBlobBytes": 21885,
+      "sha256GitBlobBytes": "1639eb84af3ae479c73e7ef92898fb288349326cad9ac31fabeed54514977987",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Hufu",
+      "commit": "37dcf33362e8e745800a530a478fd406795c3e58",
+      "path": "docs/ae4-implementation-contract-amendments.md",
+      "gitBlob": "4faec5aa3fd6b160b0ccae8dcad053db076efa77",
+      "gitBlobBytes": 15306,
+      "sha256GitBlobBytes": "d6da1139a36db3649797ca377375d2bab8a80cb4a69697b0f1a5665ac9308406",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Hufu",
+      "commit": "37dcf33362e8e745800a530a478fd406795c3e58",
+      "path": "docs/reviews/ae4-implementation-entry-check.md",
+      "gitBlob": "4d690388aededa3d916039b680e271d4b8c246e1",
+      "gitBlobBytes": 7664,
+      "sha256GitBlobBytes": "8f3af08315a258d6c790dcb0fa3a040303c6e25d83353889bcb73b529ecbe9fe",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Hufu",
+      "commit": "37dcf33362e8e745800a530a478fd406795c3e58",
+      "path": "src/Penghou.Hufu.Sandbox/Penghou.Hufu.Sandbox.csproj",
+      "gitBlob": "6eed7365420de8ddf5e906fc9ff7ec2363ef5f79",
+      "gitBlobBytes": 489,
+      "sha256GitBlobBytes": "6fd3b9da3f3b2699328b2b67197dd0065ae763a0442ed4b95d9de3e87b4221f6",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    },
+    {
+      "repository": "Hufu",
+      "commit": "37dcf33362e8e745800a530a478fd406795c3e58",
+      "path": "src/Penghou.Hufu.Sandbox/SandboxExecutionHost.cs",
+      "gitBlob": "07c534f463ff49ac0bf5f9f6de4fba2ff0ba9f97",
+      "gitBlobBytes": 13077,
+      "sha256GitBlobBytes": "b2b488a0c30510260f49e63970cc1aca6c9f7d42345a7c5f4ac2bb0ee502c423",
+      "inspection": "source/document evidence binding; relevant symbols/sections inspected, not runtime qualification"
+    }
+  ]
+}

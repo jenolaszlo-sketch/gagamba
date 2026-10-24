@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "byteDomain": "UTF-8 file bytes with CRLF converted to LF; equals committed text blob bytes",
+  "exclusion": "this hash manifest; its identity is bound by the final Git commit/tree",
+  "files": [
+    {
+      "path": "docs/design/restricted-consumer-contract-rc1.md",
+      "normalizedBytes": 52473,
+      "sha256": "164496f886bdc324816bf963a1ad3398c9bb8e702bee6d97dc1e687d6e7d15fe"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc1/README.md",
+      "normalizedBytes": 6026,
+      "sha256": "245d2dd4613a026ed6de193d99a7b21cdbf6f3c4c3e47567c58f5b14fce91ec1"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc1/commission.md",
+      "normalizedBytes": 16020,
+      "sha256": "23ea18622080db3400744e5fbfce379f52199218c9c5d9139ce842ee518bb181"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc1/input-and-vector-check.json",
+      "normalizedBytes": 761,
+      "sha256": "4339d59b70f580d174260c5e561bd455d2b0ccd8eba13944f6aa4b3ff4de2e1a"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc1/local-refs.txt",
+      "normalizedBytes": 15964,
+      "sha256": "31a5d0ae14ae1264e2778a24c12a610fe6a2b2e399bea32384d1796bbf57e67d"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc1/remote-heads.txt",
+      "normalizedBytes": 4896,
+      "sha256": "19db45b4dce11badd7868879da8b8cf1f3dbfb2ff246db40698ee5b3f7170c5e"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc1/source-manifest.json",
+      "normalizedBytes": 22839,
+      "sha256": "66c536c5bc09bb3ad43a6e7a6132e026159e90578368fe91cb410c30f08e070b"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc1/validation.json",
+      "normalizedBytes": 5103,
+      "sha256": "34b76101032407b7000824764af3b974ba8fb137fca0631bf308c147104120b2"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc1/worktrees.txt",
+      "normalizedBytes": 9119,
+      "sha256": "1bffc4c98f2e182dfa2dbcb9f43f27e6b32a745d5f34b2cf4c1480addb0654e4"
+    },
+    {
+      "path": "docs/handoff.md",
+      "normalizedBytes": 161751,
+      "sha256": "0bff6fa57ca58e16795f9d54bc7e16fe55c5c66e368e4f93be41c2ad1d4d5c40"
+    },
+    {
+      "path": "docs/implementation-plan.md",
+      "normalizedBytes": 19944,
+      "sha256": "c30a4b8ed35935c6796ada47894ab4d5883eae307021f22a79e111adc6f19b80"
+    },
+    {
+      "path": "docs/plans/restricted-consumer-contract-implementation.md",
+      "normalizedBytes": 24180,
+      "sha256": "6ea7c41bf4967e4de54b93e57f5b0256f626bf3b39ad8cf1aa7ea76ef7ae611e"
+    },
+    {
+      "path": "docs/reviews/restricted-consumer-contract-rc1-handoff.md",
+      "normalizedBytes": 9800,
+      "sha256": "fb70d649a503be1f7d2e68faa4cbf2b7a7d922de46ab6f89ffd13f03a26dd948"
+    },
+    {
+      "path": "docs/work-queue.md",
+      "normalizedBytes": 143313,
+      "sha256": "d4d64fb7f0e8019a0eef86ca4188c1fc31e00bfbe58a994c47e628730b64096b"
+    }
+  ]
+}

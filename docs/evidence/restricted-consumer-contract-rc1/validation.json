@@ -1,0 +1,138 @@
+{
+  "version": 1,
+  "checkedAtUtc": "2026-10-24T00:51:30.766534+00:00",
+  "scope": "documentation/static checks only; all proposed RC-T tests remain pending",
+  "commands": [
+    "C:\\Python314\\python.exe C:\\Users\\Laszlos\\source\\repos\\Solo\\artifacts\\gagamba-rc1-tools\\validate_docs.py",
+    "git diff --check 629a08d2ee82a9ac084d87ed73ad8d584661ea28"
+  ],
+  "priorValidationObservations": [
+    "Initial staged git diff --check found a trailing blank line in captured worktrees.txt. Removed only the terminal blank line; inventories unchanged. Revalidated combined staged/unstaged diff before commit."
+  ],
+  "checks": [
+    {
+      "check": "documentation-only path allowlist",
+      "passed": true,
+      "detail": [
+        "docs/design/restricted-consumer-contract-rc1.md",
+        "docs/evidence/restricted-consumer-contract-rc1/README.md",
+        "docs/evidence/restricted-consumer-contract-rc1/commission.md",
+        "docs/evidence/restricted-consumer-contract-rc1/document-sha256.json",
+        "docs/evidence/restricted-consumer-contract-rc1/input-and-vector-check.json",
+        "docs/evidence/restricted-consumer-contract-rc1/local-refs.txt",
+        "docs/evidence/restricted-consumer-contract-rc1/remote-heads.txt",
+        "docs/evidence/restricted-consumer-contract-rc1/source-manifest.json",
+        "docs/evidence/restricted-consumer-contract-rc1/validation.json",
+        "docs/evidence/restricted-consumer-contract-rc1/worktrees.txt",
+        "docs/handoff.md",
+        "docs/implementation-plan.md",
+        "docs/plans/restricted-consumer-contract-implementation.md",
+        "docs/reviews/restricted-consumer-contract-rc1-handoff.md",
+        "docs/work-queue.md"
+      ]
+    },
+    {
+      "check": "branch and direct baseline before commit",
+      "passed": true,
+      "detail": {
+        "branch": "design/gagamba-rc1-restricted-consumer-contract",
+        "parent": "629a08d2ee82a9ac084d87ed73ad8d584661ea28"
+      }
+    },
+    {
+      "check": "source Git blob SHA-256 verification",
+      "passed": true,
+      "detail": {
+        "files": 46
+      }
+    },
+    {
+      "check": "production test and native trees unchanged",
+      "passed": true,
+      "detail": {
+        "src": "9dd0f055eaf48d48bda8683dee3f8dc534a06e5d",
+        "tests": "ebcb976a164b212090fbe0958fe4b0c0b243f794",
+        "native": "85631d2f04512376621d3d09f51d67fd90f45335"
+      }
+    },
+    {
+      "check": "Hufu unchanged clean source",
+      "passed": true,
+      "detail": {
+        "commit": "37dcf33362e8e745800a530a478fd406795c3e58"
+      }
+    },
+    {
+      "check": "RC-D01 through RC-D09 present once",
+      "passed": true,
+      "detail": "9 decision sections"
+    },
+    {
+      "check": "RC-T01 through RC-T23 present once",
+      "passed": true,
+      "detail": "23 classified design cases, not test execution"
+    },
+    {
+      "check": "stage and review gates recorded",
+      "passed": true,
+      "detail": "static identifier presence only; not semantic approval"
+    },
+    {
+      "check": "new-document relative links resolve",
+      "passed": true,
+      "detail": "5 new Markdown files checked"
+    },
+    {
+      "check": "new-document fenced blocks and whitespace",
+      "passed": true,
+      "detail": {
+        "unbalancedFences": [],
+        "trailingWhitespace": []
+      }
+    },
+    {
+      "check": "historical roadmap queue handoff preserved",
+      "passed": true,
+      "detail": {
+        "additionsOnly": [
+          "docs/handoff.md",
+          "docs/implementation-plan.md",
+          "docs/work-queue.md"
+        ],
+        "unexpectedDeletions": []
+      }
+    },
+    {
+      "check": "git diff --check against parent (staged and unstaged)",
+      "passed": true,
+      "detail": "no whitespace errors"
+    },
+    {
+      "check": "preserved literal vector identity",
+      "passed": true,
+      "detail": "source literal SHA-256 only, not a Gagamba encoder/test run"
+    }
+  ],
+  "allPassed": true,
+  "changedPaths": [
+    "docs/design/restricted-consumer-contract-rc1.md",
+    "docs/evidence/restricted-consumer-contract-rc1/README.md",
+    "docs/evidence/restricted-consumer-contract-rc1/commission.md",
+    "docs/evidence/restricted-consumer-contract-rc1/document-sha256.json",
+    "docs/evidence/restricted-consumer-contract-rc1/input-and-vector-check.json",
+    "docs/evidence/restricted-consumer-contract-rc1/local-refs.txt",
+    "docs/evidence/restricted-consumer-contract-rc1/remote-heads.txt",
+    "docs/evidence/restricted-consumer-contract-rc1/source-manifest.json",
+    "docs/evidence/restricted-consumer-contract-rc1/validation.json",
+    "docs/evidence/restricted-consumer-contract-rc1/worktrees.txt",
+    "docs/handoff.md",
+    "docs/implementation-plan.md",
+    "docs/plans/restricted-consumer-contract-implementation.md",
+    "docs/reviews/restricted-consumer-contract-rc1-handoff.md",
+    "docs/work-queue.md"
+  ],
+  "nativeWorkloads": "not run",
+  "dotnetBuildTestPack": "not run",
+  "independentReview": "pending",
+  "finalCommitBinding": "external completion receipt and final git commit/tree; no self-referential hash"
+}
