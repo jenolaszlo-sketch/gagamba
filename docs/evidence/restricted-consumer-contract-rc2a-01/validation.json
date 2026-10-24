@@ -1,0 +1,262 @@
+{
+  "sourceCommit": "e93d642e1a36af25c0e145d328bebadd1bba4838",
+  "allPassed": true,
+  "checks": [
+    {
+      "check": "exact implementation commit",
+      "passed": true,
+      "detail": "e93d642e1a36af25c0e145d328bebadd1bba4838"
+    },
+    {
+      "check": "source and test trees preserved",
+      "passed": true,
+      "detail": {
+        "src": "5781fccef79763be0be7ba8a82d1fce1143c6b74",
+        "tests": "a13d10e5bcdea33daa817d4fd4c3598d828d6106",
+        "native": "85631d2f04512376621d3d09f51d67fd90f45335"
+      }
+    },
+    {
+      "check": "implementation blob README.md",
+      "passed": true,
+      "detail": "e4298c0c3b47bfab252fc53e544e52f829b26bc8"
+    },
+    {
+      "check": "implementation blob docs/design/restricted-consumer-contract-rc2a-01-api.md",
+      "passed": true,
+      "detail": "f1debd2476c3baa9e9652ff521413e0614f851a2"
+    },
+    {
+      "check": "implementation blob docs/evidence/restricted-consumer-contract-rc2a-01/field-map.md",
+      "passed": true,
+      "detail": "7b99ce362bcdb90e4b57949313696f087179acae"
+    },
+    {
+      "check": "implementation blob src/Gagamba.Execution/Restricted/Contracts/RestrictedManifestCodec.cs",
+      "passed": true,
+      "detail": "a8ae7d83d6382780931d6d8d9512fd8d3de28c59"
+    },
+    {
+      "check": "implementation blob src/Gagamba.Execution/Restricted/Contracts/RestrictedManifestView.cs",
+      "passed": true,
+      "detail": "c6dfc7e6c6fb500216ae4c2d366881625bb81792"
+    },
+    {
+      "check": "implementation blob src/Gagamba.Execution/Restricted/Contracts/RestrictedPreparationReference.cs",
+      "passed": true,
+      "detail": "5e427b08e277e3a207b8389a2bf5138d8b7374f8"
+    },
+    {
+      "check": "implementation blob src/Gagamba.Execution/Restricted/ManifestReader.cs",
+      "passed": true,
+      "detail": "ee1423ef2799accb48f6c785bbdae53d350db547"
+    },
+    {
+      "check": "implementation blob src/Gagamba.Execution/Restricted/ManifestValidation.cs",
+      "passed": true,
+      "detail": "ae5184af9a10d76303d18ad07747cf8653c6f0a1"
+    },
+    {
+      "check": "implementation blob src/Gagamba.Execution/Restricted/RestrictedManifest.cs",
+      "passed": true,
+      "detail": "8ff409eeb9ee52dd135e66578e59640b17d77af5"
+    },
+    {
+      "check": "implementation blob tests/Gagamba.Execution.Linux.M1.Tests/Contracts/RestrictedPublicProjectionTests.cs",
+      "passed": true,
+      "detail": "d45a22bd468a84fea879504bc8d1c059fe65248e"
+    },
+    {
+      "check": "implementation blob tests/Gagamba.Execution.Tests/Restricted/RestrictedContractTests.cs",
+      "passed": true,
+      "detail": "e6a4a74d6d377818a7530b8bb97664e67f0b8560"
+    },
+    {
+      "check": "exact committed test totals",
+      "passed": true,
+      "detail": "57 Execution + 38 selected deterministic M1, no failed/skipped cases"
+    },
+    {
+      "check": "original literal retained byte-for-byte",
+      "passed": true,
+      "detail": "873 bytes; 82161029848b1a821241af112ca806be8029d3cf2e7b95c6b23ce3e35850d5f3"
+    },
+    {
+      "check": "property map complete",
+      "passed": true,
+      "detail": "72 properties across 12 view types"
+    },
+    {
+      "check": "restricted public type inventory",
+      "passed": true,
+      "detail": [
+        "ManifestDecodeError",
+        "ManifestDecodeResult",
+        "RestrictedManifestCodec",
+        "BudgetValueKind",
+        "QualificationDisposition",
+        "RestrictedManifestView",
+        "AuthorityManifestView",
+        "ResourceManifestView",
+        "ResourceBudgetView",
+        "WritableStoreView",
+        "ExecutableMountPolicyView",
+        "CoreDumpPolicyView",
+        "OwnerAllocationLimitsView",
+        "ClosureIdentityView",
+        "ClosureObjectView",
+        "InvocationManifestView",
+        "ChannelManifestView",
+        "RestrictedPreparationReference"
+      ]
+    },
+    {
+      "check": "original contract and owner record preserved",
+      "passed": true,
+      "detail": "unchanged accepted contract"
+    },
+    {
+      "check": "implementation exact path scope",
+      "passed": true,
+      "detail": [
+        "README.md",
+        "docs/design/restricted-consumer-contract-rc2a-01-api.md",
+        "docs/evidence/restricted-consumer-contract-rc2a-01/field-map.md",
+        "src/Gagamba.Execution/Restricted/Contracts/RestrictedManifestCodec.cs",
+        "src/Gagamba.Execution/Restricted/Contracts/RestrictedManifestView.cs",
+        "src/Gagamba.Execution/Restricted/Contracts/RestrictedPreparationReference.cs",
+        "src/Gagamba.Execution/Restricted/ManifestReader.cs",
+        "src/Gagamba.Execution/Restricted/ManifestValidation.cs",
+        "src/Gagamba.Execution/Restricted/RestrictedManifest.cs",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Contracts/RestrictedPublicProjectionTests.cs",
+        "tests/Gagamba.Execution.Tests/Restricted/RestrictedContractTests.cs"
+      ]
+    },
+    {
+      "check": "no native/project/runtime/Hufu edits",
+      "passed": true,
+      "detail": "all unchanged; no dependency additions"
+    },
+    {
+      "check": "balanced fences README.md",
+      "passed": true,
+      "detail": "Markdown fence pairs"
+    },
+    {
+      "check": "no trailing whitespace README.md",
+      "passed": true,
+      "detail": "document text"
+    },
+    {
+      "check": "balanced fences docs\\design\\restricted-consumer-contract-rc2a-01-api.md",
+      "passed": true,
+      "detail": "Markdown fence pairs"
+    },
+    {
+      "check": "no trailing whitespace docs\\design\\restricted-consumer-contract-rc2a-01-api.md",
+      "passed": true,
+      "detail": "document text"
+    },
+    {
+      "check": "balanced fences docs\\handoff.md",
+      "passed": true,
+      "detail": "Markdown fence pairs"
+    },
+    {
+      "check": "no trailing whitespace docs\\handoff.md",
+      "passed": true,
+      "detail": "document text"
+    },
+    {
+      "check": "balanced fences docs\\work-queue.md",
+      "passed": true,
+      "detail": "Markdown fence pairs"
+    },
+    {
+      "check": "no trailing whitespace docs\\work-queue.md",
+      "passed": true,
+      "detail": "document text"
+    },
+    {
+      "check": "balanced fences docs\\plans\\restricted-consumer-contract-implementation.md",
+      "passed": true,
+      "detail": "Markdown fence pairs"
+    },
+    {
+      "check": "no trailing whitespace docs\\plans\\restricted-consumer-contract-implementation.md",
+      "passed": true,
+      "detail": "document text"
+    },
+    {
+      "check": "balanced fences docs\\evidence\\restricted-consumer-contract-rc2a-01\\api-inventory.md",
+      "passed": true,
+      "detail": "Markdown fence pairs"
+    },
+    {
+      "check": "no trailing whitespace docs\\evidence\\restricted-consumer-contract-rc2a-01\\api-inventory.md",
+      "passed": true,
+      "detail": "document text"
+    },
+    {
+      "check": "balanced fences docs\\evidence\\restricted-consumer-contract-rc2a-01\\field-map.md",
+      "passed": true,
+      "detail": "Markdown fence pairs"
+    },
+    {
+      "check": "no trailing whitespace docs\\evidence\\restricted-consumer-contract-rc2a-01\\field-map.md",
+      "passed": true,
+      "detail": "document text"
+    },
+    {
+      "check": "link source-binding.json",
+      "passed": true,
+      "detail": "docs\\evidence\\restricted-consumer-contract-rc2a-01\\README.md"
+    },
+    {
+      "check": "link ../../design/restricted-consumer-contract-rc2a-01-api.md",
+      "passed": true,
+      "detail": "docs\\evidence\\restricted-consumer-contract-rc2a-01\\README.md"
+    },
+    {
+      "check": "link api-inventory.md",
+      "passed": true,
+      "detail": "docs\\evidence\\restricted-consumer-contract-rc2a-01\\README.md"
+    },
+    {
+      "check": "link field-map.md",
+      "passed": true,
+      "detail": "docs\\evidence\\restricted-consumer-contract-rc2a-01\\README.md"
+    },
+    {
+      "check": "link test-results.json",
+      "passed": true,
+      "detail": "docs\\evidence\\restricted-consumer-contract-rc2a-01\\README.md"
+    },
+    {
+      "check": "link build-artifacts.json",
+      "passed": true,
+      "detail": "docs\\evidence\\restricted-consumer-contract-rc2a-01\\README.md"
+    },
+    {
+      "check": "balanced fences docs\\evidence\\restricted-consumer-contract-rc2a-01\\README.md",
+      "passed": true,
+      "detail": "Markdown fence pairs"
+    },
+    {
+      "check": "no trailing whitespace docs\\evidence\\restricted-consumer-contract-rc2a-01\\README.md",
+      "passed": true,
+      "detail": "document text"
+    },
+    {
+      "check": "all GLM findings reconciled",
+      "passed": true,
+      "detail": "R1-F01 through R1-F07; F02/F03 remain OPEN"
+    },
+    {
+      "check": "diff whitespace",
+      "passed": true,
+      "detail": "git diff --check"
+    }
+  ],
+  "qualification": "static evidence checks only; no independent implementation acceptance"
+}

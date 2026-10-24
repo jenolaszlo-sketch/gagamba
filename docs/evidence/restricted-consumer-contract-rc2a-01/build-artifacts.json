@@ -1,0 +1,21 @@
+{
+  "sourceCommit": "e93d642e1a36af25c0e145d328bebadd1bba4838",
+  "scope": "local Release test/build outputs only; no package or native qualification",
+  "files": [
+    {
+      "path": "src/Gagamba.Execution/bin/Release/net10.0/Gagamba.Execution.dll",
+      "bytes": 137728,
+      "sha256": "2b2450e9fe9406b26925a87a05ab8673e68633075f5831a4af9826584e768271"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Tests/bin/Release/net10.0/Gagamba.Execution.Tests.dll",
+      "bytes": 56320,
+      "sha256": "1afa0cb772067012b930bb824a12169cf7659af1847fffeacfda5142ca588eff"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Tests.dll",
+      "bytes": 617984,
+      "sha256": "7da0293cb3eeae8f325fc51f3a44780878484425fe6df125c7d2ff03b27d1b13"
+    }
+  ]
+}

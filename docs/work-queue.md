@@ -1,5 +1,9 @@
 # Current work queue
 
+## Current consumer-contract work: RC2A-01 IMPLEMENTED — INDEPENDENT REVIEW REQUIRED
+
+Update 2026-10-25: bounded passive source/focused tests commissioned in RC2A-01 are implemented at `e93d642e1a36af25c0e145d328bebadd1bba4838`, directly from accepted RC1-A. [Handoff and exact evidence](evidence/restricted-consumer-contract-rc2a-01/README.md): 95 committed pure tests passed, none failed/skipped; inclusive 65,536-byte encode/decode ceiling with mandatory oversized encode refusal. No pack/native/runtime/Hufu/dependency work. Next gate: independent implementation review, followed by separately commissioned RC2A-02 qualification; package/clean-consumer/mixed graph gates remain pending. R1-F02/F03 remain OPEN/deferred to RC-2B; **AE4-B01 remains OPEN**. Earlier current headings are historical checkpoints, not current completion claims.
+
 ## Current consumer-contract work: RC1-A APPROVED AND RECORDED — RC-2A ELIGIBLE FOR SEPARATE COMMISSION
 
 Update 2026-10-25: [owner acceptance](decisions/restricted-consumer-rc1-owner-acceptance.md) accepts RC-1 `d609c29d3048bc0fd91583068cb013fb906fdf90` with independent GLM qualifications at `feb9d7584c41712195d4b90754ed7a342ba74bb7`. The [progress tracker](plans/restricted-consumer-contract-implementation.md) records RC1-R complete and RC1-A approved; RC2A-01 is eligible for a separate commission, and RC2A-02 follows its finalization conditions. No implementation has begun. The 65,536-byte ceiling explicitly covers encoding and decoding; R1-F05 test additions are required. R1-F02/R1-F03 remain OPEN, deferred to RC-2B.

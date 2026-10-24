@@ -1,0 +1,53 @@
+{
+  "domain": "UTF-8 LF document bytes, matching repository text normalization; this manifest is bound by final Git tree",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256LfBytes": "e60bb7049a7cbd416799858d37c1660dec1e61956415fbe429514f8d44c1d6f7"
+    },
+    {
+      "path": "docs/handoff.md",
+      "sha256LfBytes": "dac0cee3e17ec3334ddcf707f899007d91493fba10ef862705ede62949e5a700"
+    },
+    {
+      "path": "docs/work-queue.md",
+      "sha256LfBytes": "cf256c8b47dacd5db7aabe8c84f9784f1f40fbdb4c7c701b77d7a4ed88c26316"
+    },
+    {
+      "path": "docs/plans/restricted-consumer-contract-implementation.md",
+      "sha256LfBytes": "d052540644493bde264eb9026788701fe1bb9baab1868c3408afd436d306ac42"
+    },
+    {
+      "path": "docs/design/restricted-consumer-contract-rc2a-01-api.md",
+      "sha256LfBytes": "83e66ced1b60a494ddab0feca7f2e4ee29c511ad705f1cafdb55b326c01d3ee8"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-01/api-inventory.md",
+      "sha256LfBytes": "4d3512ca6c4c55f2b6b5cc14e3dea5f4b01182b4dd85d2604e3cf988e27dba18"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-01/field-map.md",
+      "sha256LfBytes": "1506a273ae11da5adfb3e760c78b4ac7c30972d94fa3219afe6a2d5aac064317"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-01/README.md",
+      "sha256LfBytes": "0905a458c7ff45a7effa26f263341565e10711d274f021785ae6621f8cc1b26d"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-01/build-artifacts.json",
+      "sha256LfBytes": "5713fb70874286872481a3dc463811eb96ef54954123cda7caace58ea85c7a56"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-01/source-binding.json",
+      "sha256LfBytes": "b35e12c6ccaf74ef309501e4197038b4e7a573c26b6d8d0cfa0e63b0c48bd9e0"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-01/test-results.json",
+      "sha256LfBytes": "33ada54ab863ab8f3ec345d98f90959129a75df2e469de823751782d29e897de"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-01/validation.json",
+      "sha256LfBytes": "2d9fa6f05788880569d2969965e9d7d9e6362f99c7253c3ab6e7918843be1d6f"
+    }
+  ]
+}

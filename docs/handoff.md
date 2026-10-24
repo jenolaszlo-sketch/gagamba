@@ -1,5 +1,11 @@
 # Gagamba handoff
 
+## Current consumer-contract action — RC2A-01 IMPLEMENTED; INDEPENDENT REVIEW REQUIRED
+
+Update 2026-10-25: the current RC2A-01 user commission authorizes the bounded passive implementation and focused tests beyond the earlier plan's finalization-only staging. Implementation `e93d642e1a36af25c0e145d328bebadd1bba4838`, directly from accepted RC1-A `9a705335701f0c1923bd9867a2612b8a93afa8cb`, adds immutable complete public views, a five-field passive reference, strict decoder and the existing encoder's symmetric inclusive 65,536-byte public bound. [Implementation handoff](evidence/restricted-consumer-contract-rc2a-01/README.md), [frozen API](design/restricted-consumer-contract-rc2a-01-api.md). Exact committed Windows tests: 57 Execution + 38 selected pure M1 manifest/projection/identity cases passed, 0 failed/skipped; Release Execution build 0 warnings/errors. No runtime/native/Hufu/project/dependency change or pack occurred.
+
+Next: independent implementation review, then separately commissioned RC2A-02 qualification. R1-F01/F05 have focused producer implementation evidence; R1-F02/F03 remain OPEN for RC-2B, R1-F04 timing limitation remains explicit. **AE4-B01 remains OPEN; RC-2A acceptance, native/release qualification, Hufu resumption and publication are not established.** Original acceptance worktree and historical entries below remain unchanged.
+
 ## Current consumer-contract action — RC1-A OWNER ACCEPTANCE RECORDED; RC-1 ACCEPTED WITH QUALIFICATIONS; RC-2A NOT STARTED
 
 Update 2026-10-25 (owner-decision recorder): [RC1-A](decisions/restricted-consumer-rc1-owner-acceptance.md) records the user's explicit acceptance of RC-1 `d609c29d3048bc0fd91583068cb013fb906fdf90` with GLM review `feb9d7584c41712195d4b90754ed7a342ba74bb7` (**RC-1 ACCEPTED WITH QUALIFICATIONS**). The review remains separately preserved, unchanged. Mode=`work` and a 65,536-byte ceiling for both public encoding and decoding are approved. R1-F01/R1-F05 are carried into [RC-2A finalization and tests](plans/restricted-consumer-contract-implementation.md); R1-F02/R1-F03 remain open for RC-2B; R1-F04–R1-F07 retain their recorded qualifications/dispositions.

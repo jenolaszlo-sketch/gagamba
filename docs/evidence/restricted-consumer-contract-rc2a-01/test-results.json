@@ -1,0 +1,510 @@
+{
+  "sourceCommit": "e93d642e1a36af25c0e145d328bebadd1bba4838",
+  "runs": [
+    {
+      "name": "public-committed",
+      "sourceCommit": "e93d642e1a36af25c0e145d328bebadd1bba4838",
+      "counters": {
+        "total": "57",
+        "executed": "57",
+        "passed": "57",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "tests": [
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.SupportsIsExact(schema: 1, implementation: \"linux-m1-native-transaction\", expected: True)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.SupportsIsExact(schema: 65535, implementation: \"linux-m1-native-transaction\", expected: False)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.TagsAndForcedValuesRejectAtTheirField(offset: 230, value: 3, error: InvalidTag)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.TagsAndForcedValuesRejectAtTheirField(offset: 230, value: 0, error: InvalidValue)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Ar4CoreTests.InvocationAndRequirementsSnapshotCallerCollections",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.StrictUtf8DoesNotRepairMalformedSequences(hex: \"c0af\")",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Ar4CoreTests.InvalidInvocationFailsBeforeAnyProviderConsumesPreparation",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.TagsAndForcedValuesRejectAtTheirField(offset: 224, value: 0, error: InvalidValue)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.NegotiationTests.StrictCodingAgent_WindowsOnly",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Ar5OutputTests.ConcurrentBinaryStreamsObeySeparateAndTotalBudgets",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.SupportsIsExact(schema: 1, implementation: \"Linux-m1-native-transaction\", expected: False)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.UnknownImplementationAndMalformedWireRefuse",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.ProviderContractTests.DisposedProviderThrowsOnEveryMethod",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.ProviderContractTests.MacStrictAgentRejectsWithReasons",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.PassiveReferenceCopiesAndComparesContents",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Ar4CoreTests.SharedCapabilityMapsRejectMutationAndKeepNegotiationStable",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.NegotiationTests.OwnerDeath_NativeOnlyMeansWindows",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.TagsAndForcedValuesRejectAtTheirField(offset: 229, value: 0, error: InvalidValue)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Ar5OutputTests.HeldPipeEndsAfterFiniteGraceWithUnknownOutput",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Ar5OutputTests.DefaultOutputIsNotRetained",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.InputAndOutputArraysDoNotAliasViews",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.NullArgumentsAreProgrammingErrors",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.DecodeRefusesOversizedInputBeforeParsing",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.TagsAndForcedValuesRejectAtTheirField(offset: 466, value: 2, error: InvalidTag)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.TagsAndForcedValuesRejectAtTheirField(offset: 463, value: 0, error: InvalidValue)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.SupportsIsExact(schema: 1, implementation: \"\", expected: False)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.UnknownSchemasRefuse(schema: 2)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.NegotiationTests.OwnerDeath_ComposedAcceptedSeparatelyAndNeverEquated",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.NonmatchingAndAllZeroDigestsAreNotWildcards",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.ProviderContractTests.ForeignPreparationAndUnknownHandleFailClosed",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.TagsAndForcedValuesRejectAtTheirField(offset: 464, value: 0, error: InvalidValue)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.NegotiationTests.PreferredNeverDecides",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.TagsAndForcedValuesRejectAtTheirField(offset: 227, value: 0, error: InvalidValue)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.EveryTruncationRefusesWithoutPartialView",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.UnknownSchemasRefuse(schema: 65535)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.WrongDigestLengthIsProgrammingError(length: 33)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.SupportsIsExact(schema: 1, implementation: \" \", expected: False)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.TagsAndForcedValuesRejectAtTheirField(offset: 86, value: 2, error: InvalidTag)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.SupportsIsExact(schema: 0, implementation: \"linux-m1-native-transaction\", expected: False)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.NegotiationTests.RejectionNamesEveryUnmetRequirement",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.MatrixTests.AllPlatformsListEveryCapabilityWithEvidence",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.ProviderContractTests.HandlesStayOpaque",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.StrictUtf8DoesNotRepairMalformedSequences(hex: \"eda080\")",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.WrongDigestLengthIsProgrammingError(length: 31)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.WrongDigestLengthIsProgrammingError(length: 0)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.MatrixTests.NoMisleadingSandboxBooleans",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.ProviderContractTests.ComposedOwnerDeathFlowsThroughProvider",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.PublicSurfaceIsSealedReadOnlyAndPassive",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.PreservedGoldenRoundTripsAndVerifiesDigest",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.SupportsIsExact(schema: 2, implementation: \"linux-m1-native-transaction\", expected: False)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.ProviderContractTests.FullLifecycleThroughTheInterface",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.TagsAndForcedValuesRejectAtTheirField(offset: 248, value: 2, error: InvalidTag)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.UnsortedAndDuplicateSetsAreNotNormalized",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.SupportsIsExact(schema: 1, implementation: \"unknown\", expected: False)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.UnknownSchemasRefuse(schema: 0)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.Restricted.RestrictedContractTests.StrictUtf8DoesNotRepairMalformedSequences(hex: \"f4908080\")",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Tests.ProviderContractTests.DiscardReclaimsPreparationAndIsIdempotent",
+          "outcome": "Passed"
+        }
+      ],
+      "trxSha256": "3ef1fec0d0701936a682d02ae99d6e0689e6bb4d0e0001ea4ceccb8c735677b8",
+      "logSha256": "fe07f985c3d1f207598a57ef9915b07b78255781cab7f84d6688b43fb6a7c090"
+    },
+    {
+      "name": "internal-committed",
+      "sourceCommit": "e93d642e1a36af25c0e145d328bebadd1bba4838",
+      "counters": {
+        "total": "38",
+        "executed": "38",
+        "passed": "38",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "tests": [
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.Contracts.RestrictedPublicProjectionTests.SetPermutationsAndSupplementaryOrderingUseOneEncoder",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.Contracts.ManifestTests.SupplementaryUnicodeSortsByUtf8Bytes",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.PreparationIdentityTests.LookupValidatesExpiryAndState",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.Contracts.ManifestTests.ReferenceEncoderMatchesProductionOnPermutedNonAscii",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.Contracts.ManifestTests.HelperDependencyDuplicatesRejected",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.Contracts.ManifestTests.CollectionsAreStoredSorted",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.Contracts.ManifestTests.DigestIsStableAcrossEquivalentConstructions",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.Contracts.ManifestTests.CleanupAggregateValidated",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.Contracts.ManifestTests.EnumNumbersArePinned",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.Contracts.ManifestTests.ReferenceEncoderMatchesProductionOnSample",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.Contracts.ManifestTests.DuplicateKeysRolesNamespacesAndStoresAreRejected",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.Contracts.ManifestTests.EstablishmentShapes",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.Contracts.ManifestTests.StrictUtf8RejectsLoneSurrogates",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.PreparationIdentityTests.DuplicateConsumeRefused",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.PreparationIdentityTests.ExpiredRefused",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.Contracts.ManifestTests.MutatingSourceArraysCannotAlterDigest",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.Contracts.RestrictedPublicProjectionTests.ArgumentEnvironmentBoundUsesUtf8Bytes(bytes: 16385)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.Contracts.RestrictedPublicProjectionTests.CompleteUtf8ByteCeilingIsInclusiveAndSymmetric(size: 65537)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.Contracts.RestrictedPublicProjectionTests.CompleteUtf8ByteCeilingIsInclusiveAndSymmetric(size: 65536)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.PreparationIdentityTests.DigestMismatchRefused",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.Contracts.ManifestTests.AbsentZeroUnlimitedAndPendingAreDistinct",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.PreparationIdentityTests.MintBindsDigestAndResolvesSameReference",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.Contracts.ManifestTests.NonAsciiKeysSortByUtf8Bytes",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.PreparationIdentityTests.ForeignGenerationRefused",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.Contracts.ManifestTests.GuidRfcByteOrderVector",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.PreparationIdentityTests.MintPastExpiryRefused",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.Contracts.ManifestTests.CanonicalGoldenBytes",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.Contracts.RestrictedPublicProjectionTests.AllRepresentableDistinctionsRemainDistinct",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.Contracts.ManifestTests.CoreDumpNetworkAndMountPolicyEnforced",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.Contracts.ManifestTests.CollectionPermutationsProduceIdenticalBytes",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.Contracts.RestrictedPublicProjectionTests.EveryModelPropertySurvivesProjectionAndDecode",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.PreparationIdentityTests.AbortedCapabilityRefused",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.Contracts.RestrictedPublicProjectionTests.CallerCollectionsAndDigestArraysAreCopiedBeforeProjection",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.PreparationIdentityTests.FabricatedIdentifierRefused",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.PreparationIdentityTests.ForeignIssuerRefused",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.Contracts.RestrictedPublicProjectionTests.ArgumentEnvironmentBoundUsesUtf8Bytes(bytes: 16384)",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.Contracts.RestrictedPublicProjectionTests.InternalProjectionRejectsUndefinedEnumsAndInvalidUtf8",
+          "outcome": "Passed"
+        },
+        {
+          "name": "Gagamba.Execution.Linux.M1.Tests.Contracts.ManifestTests.InvalidDigestsAndIdentitiesAreRejected",
+          "outcome": "Passed"
+        }
+      ],
+      "trxSha256": "060c5e6ef7574df7849ca6faded7e4174c279f462949a98434495e5be1c8a56b",
+      "logSha256": "9b970a5f22e8c638c7a54ecf785665926aea5d9176340643e6ecf84965dd1075"
+    }
+  ],
+  "totalPassed": 95,
+  "totalFailed": 0,
+  "totalSkipped": 0,
+  "newFocusedTests": {
+    "public": 37,
+    "internal": 9
+  },
+  "build": {
+    "command": "dotnet build src/Gagamba.Execution/Gagamba.Execution.csproj -c Release --no-restore -warnaserror",
+    "result": "0 warnings, 0 errors; same source tree as implementation commit; committed test runs also rebuilt affected projects"
+  },
+  "attempts": [
+    {
+      "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\artifacts\\rc2a-01\\baseline-no-audit.log",
+      "bytes": 1611,
+      "sha256": "40440a5f5b1d42bd6941d1a5b6c55003619650041a88ead08c3a4e5228529f3e",
+      "text": "  Determining projects to restore...\n  Restored C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\tests\\Gagamba.Execution.Tests\\Gagamba.Execution.Tests.csproj (in 170 ms).\n  Restored C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\src\\Gagamba.Execution\\Gagamba.Execution.csproj (in 168 ms).\n  Gagamba.Execution -> C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\src\\Gagamba.Execution\\bin\\Release\\net10.0\\Gagamba.Execution.dll\nC:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\tests\\Gagamba.Execution.Tests\\Restricted\\RestrictedContractTests.cs(6,36): error CS0234: The type or namespace name 'Contracts' does not exist in the namespace 'Gagamba.Execution.Restricted' (are you missing an assembly reference?) [C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\tests\\Gagamba.Execution.Tests\\Gagamba.Execution.Tests.csproj]\nC:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\tests\\Gagamba.Execution.Tests\\Restricted\\RestrictedContractTests.cs(17,20): error CS0246: The type or namespace name 'RestrictedManifestView' could not be found (are you missing a using directive or an assembly reference?) [C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\tests\\Gagamba.Execution.Tests\\Gagamba.Execution.Tests.csproj]\nC:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\tests\\Gagamba.Execution.Tests\\Restricted\\RestrictedContractTests.cs(207,47): error CS0246: The type or namespace name 'ManifestDecodeError' could not be found (are you missing a using directive or an assembly reference?) [C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\tests\\Gagamba.Execution.Tests\\Gagamba.Execution.Tests.csproj]\n"
+    },
+    {
+      "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\artifacts\\rc2a-01\\baseline.log",
+      "bytes": 989,
+      "sha256": "b32bac77d515c476aed5bf7b8be4279e028c00a1fc24a82bd805cefa6a092e76",
+      "text": "  Determining projects to restore...\nC:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\tests\\Gagamba.Execution.Tests\\Gagamba.Execution.Tests.csproj : error NU1900: Warning As Error: Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json.\nC:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\src\\Gagamba.Execution\\Gagamba.Execution.csproj : error NU1900: Warning As Error: Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json. [C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\tests\\Gagamba.Execution.Tests\\Gagamba.Execution.Tests.csproj]\n  Failed to restore C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\src\\Gagamba.Execution\\Gagamba.Execution.csproj (in 5.68 sec).\n  Failed to restore C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\tests\\Gagamba.Execution.Tests\\Gagamba.Execution.Tests.csproj (in 5.8 sec).\n"
+    },
+    {
+      "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\artifacts\\rc2a-01\\build-final.log",
+      "bytes": 221,
+      "sha256": "3bf59071ad0719ccb518c1aa821f4a17b027a33191391d19b9ff9713f9f27297",
+      "text": "  Gagamba.Execution -> C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\src\\Gagamba.Execution\\bin\\Release\\net10.0\\Gagamba.Execution.dll\n\nBuild succeeded.\n    0 Warning(s)\n    0 Error(s)\n\nTime Elapsed 00:00:00.59\n"
+    },
+    {
+      "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\artifacts\\rc2a-01\\internal-committed.log",
+      "bytes": 1264,
+      "sha256": "9b970a5f22e8c638c7a54ecf785665926aea5d9176340643e6ecf84965dd1075",
+      "text": "  Gagamba.Execution -> C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\src\\Gagamba.Execution\\bin\\Release\\net10.0\\Gagamba.Execution.dll\n  Gagamba.Execution.Linux.M1 -> C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\src\\Gagamba.Execution.Linux.M1\\bin\\Release\\net10.0\\Gagamba.Execution.Linux.M1.dll\n  Gagamba.Execution.Linux.M1.Owner -> C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\src\\Gagamba.Execution.Linux.M1.Owner\\bin\\Release\\net10.0\\Gagamba.Execution.Linux.M1.Owner.dll\n  Gagamba.Execution.Linux.M1.Tests -> C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\tests\\Gagamba.Execution.Linux.M1.Tests\\bin\\Release\\net10.0\\Gagamba.Execution.Linux.M1.Tests.dll\nTest run for C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\tests\\Gagamba.Execution.Linux.M1.Tests\\bin\\Release\\net10.0\\Gagamba.Execution.Linux.M1.Tests.dll (.NETCoreApp,Version=v10.0)\nA total of 1 test files matched the specified pattern.\nData collector 'Blame' message: All tests finished running, Sequence file will not be generated.\nResults File: C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\artifacts\\rc2a-01\\internal-committed.trx\n\nPassed!  - Failed:     0, Passed:    38, Skipped:     0, Total:    38, Duration: 85 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)\n"
+    },
+    {
+      "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\artifacts\\rc2a-01\\internal-first.log",
+      "bytes": 38,
+      "sha256": "c7fd45e64cd6cdaa042a2a46d142280d20a9cd705d3cdd4a339502399c9986a4",
+      "text": "  Determining projects to restore...\n"
+    },
+    {
+      "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\artifacts\\rc2a-01\\internal-unsandboxed.log",
+      "bytes": 1801,
+      "sha256": "0731cc40c14a7b3ebefb76470b6fac26fa7280618c03dcb03277d51d786575cc",
+      "text": "  Determining projects to restore...\n  Restored C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\src\\Gagamba.Execution.Linux.M1.Owner\\Gagamba.Execution.Linux.M1.Owner.csproj (in 156 ms).\n  Restored C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\tests\\Gagamba.Execution.Linux.M1.Tests\\Gagamba.Execution.Linux.M1.Tests.csproj (in 156 ms).\n  Restored C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj (in 156 ms).\n  1 of 4 projects are up-to-date for restore.\n  Gagamba.Execution -> C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\src\\Gagamba.Execution\\bin\\Release\\net10.0\\Gagamba.Execution.dll\n  Gagamba.Execution.Linux.M1 -> C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\src\\Gagamba.Execution.Linux.M1\\bin\\Release\\net10.0\\Gagamba.Execution.Linux.M1.dll\n  Gagamba.Execution.Linux.M1.Owner -> C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\src\\Gagamba.Execution.Linux.M1.Owner\\bin\\Release\\net10.0\\Gagamba.Execution.Linux.M1.Owner.dll\n  Gagamba.Execution.Linux.M1.Tests -> C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\tests\\Gagamba.Execution.Linux.M1.Tests\\bin\\Release\\net10.0\\Gagamba.Execution.Linux.M1.Tests.dll\nTest run for C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\tests\\Gagamba.Execution.Linux.M1.Tests\\bin\\Release\\net10.0\\Gagamba.Execution.Linux.M1.Tests.dll (.NETCoreApp,Version=v10.0)\nA total of 1 test files matched the specified pattern.\nData collector 'Blame' message: All tests finished running, Sequence file will not be generated.\nResults File: C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\artifacts\\rc2a-01\\internal-unsandboxed.trx\n\nPassed!  - Failed:     0, Passed:    38, Skipped:     0, Total:    38, Duration: 199 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)\n"
+    },
+    {
+      "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\artifacts\\rc2a-01\\public-committed.log",
+      "bytes": 859,
+      "sha256": "fe07f985c3d1f207598a57ef9915b07b78255781cab7f84d6688b43fb6a7c090",
+      "text": "  Gagamba.Execution -> C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\src\\Gagamba.Execution\\bin\\Release\\net10.0\\Gagamba.Execution.dll\n  Gagamba.Execution.Tests -> C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\tests\\Gagamba.Execution.Tests\\bin\\Release\\net10.0\\Gagamba.Execution.Tests.dll\nTest run for C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\tests\\Gagamba.Execution.Tests\\bin\\Release\\net10.0\\Gagamba.Execution.Tests.dll (.NETCoreApp,Version=v10.0)\nA total of 1 test files matched the specified pattern.\nData collector 'Blame' message: All tests finished running, Sequence file will not be generated.\nResults File: C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\artifacts\\rc2a-01\\public-committed.trx\n\nPassed!  - Failed:     0, Passed:    57, Skipped:     0, Total:    57, Duration: 108 ms - Gagamba.Execution.Tests.dll (net10.0)\n"
+    },
+    {
+      "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\artifacts\\rc2a-01\\public-final.log",
+      "bytes": 855,
+      "sha256": "184cbc7a240e8b3c2a5e81df5355eef749b7c8485577c1a2b685ad55e7044b76",
+      "text": "  Gagamba.Execution -> C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\src\\Gagamba.Execution\\bin\\Release\\net10.0\\Gagamba.Execution.dll\n  Gagamba.Execution.Tests -> C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\tests\\Gagamba.Execution.Tests\\bin\\Release\\net10.0\\Gagamba.Execution.Tests.dll\nTest run for C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\tests\\Gagamba.Execution.Tests\\bin\\Release\\net10.0\\Gagamba.Execution.Tests.dll (.NETCoreApp,Version=v10.0)\nA total of 1 test files matched the specified pattern.\nData collector 'Blame' message: All tests finished running, Sequence file will not be generated.\nResults File: C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\artifacts\\rc2a-01\\public-final.trx\n\nPassed!  - Failed:     0, Passed:    57, Skipped:     0, Total:    57, Duration: 103 ms - Gagamba.Execution.Tests.dll (net10.0)\n"
+    },
+    {
+      "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\artifacts\\rc2a-01\\public-first.log",
+      "bytes": 922,
+      "sha256": "1c6ed40c1b1b76216e7506d94f556dce65e70619475ec98bc39ed090d959f3d5",
+      "text": "  Gagamba.Execution -> C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\src\\Gagamba.Execution\\bin\\Release\\net10.0\\Gagamba.Execution.dll\n  Gagamba.Execution.Tests -> C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\tests\\Gagamba.Execution.Tests\\bin\\Release\\net10.0\\Gagamba.Execution.Tests.dll\nTest run for C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\tests\\Gagamba.Execution.Tests\\bin\\Release\\net10.0\\Gagamba.Execution.Tests.dll (.NETCoreApp,Version=v10.0)\nA total of 1 test files matched the specified pattern.\nvstest.console process failed to connect to testhost process after 90 seconds. This may occur due to machine slowness, please set environment variable VSTEST_CONNECTION_TIMEOUT to increase timeout. The process with id 32528 was still running when this message was reported.\nResults File: C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\artifacts\\rc2a-01\\public-first.trx\n\nTest Run Aborted.\n"
+    },
+    {
+      "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\artifacts\\rc2a-01\\public-unsandboxed.log",
+      "bytes": 1919,
+      "sha256": "c5d208fafe751236893dde9793a357961c2034667cd1d73cd6be17fb4348c52b",
+      "text": "  Gagamba.Execution -> C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\src\\Gagamba.Execution\\bin\\Release\\net10.0\\Gagamba.Execution.dll\n  Gagamba.Execution.Tests -> C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\tests\\Gagamba.Execution.Tests\\bin\\Release\\net10.0\\Gagamba.Execution.Tests.dll\nTest run for C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\tests\\Gagamba.Execution.Tests\\bin\\Release\\net10.0\\Gagamba.Execution.Tests.dll (.NETCoreApp,Version=v10.0)\nA total of 1 test files matched the specified pattern.\n[xUnit.net 00:00:00.79]     Gagamba.Execution.Tests.Restricted.RestrictedContractTests.UnsortedAndDuplicateSetsAreNotNormalized [FAIL]\nData collector 'Blame' message: All tests finished running, Sequence file will not be generated.\n  Failed Gagamba.Execution.Tests.Restricted.RestrictedContractTests.UnsortedAndDuplicateSetsAreNotNormalized [1 ms]\n  Error Message:\n   Assert.Equal() Failure: Values differ\nExpected: Duplicate\nActual:   NonCanonicalOrder\n  Stack Trace:\n     at Gagamba.Execution.Tests.Restricted.RestrictedContractTests.Refuses(Byte[] bytes, ManifestDecodeError error) in C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\tests\\Gagamba.Execution.Tests\\Restricted\\RestrictedContractTests.cs:line 211\n   at Gagamba.Execution.Tests.Restricted.RestrictedContractTests.UnsortedAndDuplicateSetsAreNotNormalized() in C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\tests\\Gagamba.Execution.Tests\\Restricted\\RestrictedContractTests.cs:line 131\n   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)\n   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)\nResults File: C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01\\artifacts\\rc2a-01\\public-unsandboxed.trx\n\nFailed!  - Failed:     1, Passed:    23, Skipped:     0, Total:    24, Duration: 112 ms - Gagamba.Execution.Tests.dll (net10.0)\n"
+    }
+  ]
+}

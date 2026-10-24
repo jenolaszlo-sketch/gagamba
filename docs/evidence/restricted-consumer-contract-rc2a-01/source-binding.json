@@ -1,0 +1,132 @@
+{
+  "date": "2026-10-25 (Asia/Manila)",
+  "branch": "implementation/gagamba-rc2a-01",
+  "worktree": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01",
+  "baselineCommit": "9a705335701f0c1923bd9867a2612b8a93afa8cb",
+  "baselineTree": "f6a7e141bf7f38c976655c0772b7ee817a7ce148",
+  "acceptedDesign": "d609c29d3048bc0fd91583068cb013fb906fdf90",
+  "independentDesignReview": "feb9d7584c41712195d4b90754ed7a342ba74bb7",
+  "implementationCommit": "e93d642e1a36af25c0e145d328bebadd1bba4838",
+  "implementationTree": "68f922ea552fd81c60fa4b168834752d6668c56a",
+  "baselineTrees": {
+    "src": "9dd0f055eaf48d48bda8683dee3f8dc534a06e5d",
+    "tests": "ebcb976a164b212090fbe0958fe4b0c0b243f794",
+    "native": "85631d2f04512376621d3d09f51d67fd90f45335"
+  },
+  "implementationTrees": {
+    "src": "5781fccef79763be0be7ba8a82d1fce1143c6b74",
+    "tests": "a13d10e5bcdea33daa817d4fd4c3598d828d6106",
+    "native": "85631d2f04512376621d3d09f51d67fd90f45335"
+  },
+  "implementationWorktreeCleanAtPostCommitTests": true,
+  "originalOwnerWorktree": "clean before and after; HEAD unchanged at 9a705335701f0c1923bd9867a2612b8a93afa8cb",
+  "canonicalCheckout": "unrelated review branch with pre-existing untracked artifacts; no source edits here",
+  "sourceDocuments": [
+    {
+      "revision": "d609c29d3048bc0fd91583068cb013fb906fdf90",
+      "path": "docs/design/restricted-consumer-contract-rc1.md",
+      "blob": "4b300b01397e7f68d978fadbc36164dda17c8721"
+    },
+    {
+      "revision": "9a705335701f0c1923bd9867a2612b8a93afa8cb",
+      "path": "docs/decisions/restricted-consumer-rc1-owner-acceptance.md",
+      "blob": "9e7576d294fa7477b7206e752a3981a1d794bb4a"
+    },
+    {
+      "revision": "9a705335701f0c1923bd9867a2612b8a93afa8cb",
+      "path": "docs/plans/restricted-consumer-contract-implementation.md",
+      "blob": "0e6f329f9653b67161f07b425d49529a14145423"
+    },
+    {
+      "revision": "feb9d7584c41712195d4b90754ed7a342ba74bb7",
+      "path": "docs/reviews/restricted-consumer-contract-rc1-glm-review.md",
+      "blob": "c2617370806f7ba0ac7bb4006fc92d3a880df2dc"
+    }
+  ],
+  "changedFileBindings": [
+    {
+      "path": "README.md",
+      "blob": "e4298c0c3b47bfab252fc53e544e52f829b26bc8",
+      "bytes": 8846,
+      "sha256GitBlobBytes": "e60bb7049a7cbd416799858d37c1660dec1e61956415fbe429514f8d44c1d6f7"
+    },
+    {
+      "path": "docs/design/restricted-consumer-contract-rc2a-01-api.md",
+      "blob": "f1debd2476c3baa9e9652ff521413e0614f851a2",
+      "bytes": 5991,
+      "sha256GitBlobBytes": "83e66ced1b60a494ddab0feca7f2e4ee29c511ad705f1cafdb55b326c01d3ee8"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-01/field-map.md",
+      "blob": "7b99ce362bcdb90e4b57949313696f087179acae",
+      "bytes": 6981,
+      "sha256GitBlobBytes": "1506a273ae11da5adfb3e760c78b4ac7c30972d94fa3219afe6a2d5aac064317"
+    },
+    {
+      "path": "src/Gagamba.Execution/Restricted/Contracts/RestrictedManifestCodec.cs",
+      "blob": "a8ae7d83d6382780931d6d8d9512fd8d3de28c59",
+      "bytes": 2895,
+      "sha256GitBlobBytes": "1330e1de419e07793b85ab252378b642264af5dfa0213499c7fbb2965aa5bc8a"
+    },
+    {
+      "path": "src/Gagamba.Execution/Restricted/Contracts/RestrictedManifestView.cs",
+      "blob": "c6dfc7e6c6fb500216ae4c2d366881625bb81792",
+      "bytes": 10526,
+      "sha256GitBlobBytes": "7d3c953f7e0711b365b27034aac82995873ef644c3934cbde29f4bcb03cdeec6"
+    },
+    {
+      "path": "src/Gagamba.Execution/Restricted/Contracts/RestrictedPreparationReference.cs",
+      "blob": "5e427b08e277e3a207b8389a2bf5138d8b7374f8",
+      "bytes": 2350,
+      "sha256GitBlobBytes": "965b9ed435c714d7694250832a782072ef6b888fdedfa3ffe882a5db519c0a8b"
+    },
+    {
+      "path": "src/Gagamba.Execution/Restricted/ManifestReader.cs",
+      "blob": "ee1423ef2799accb48f6c785bbdae53d350db547",
+      "bytes": 9054,
+      "sha256GitBlobBytes": "a38cc867ae20b2ea1c2249073f2708c674d1fe182f6d074fafa5e10ab78bafcd"
+    },
+    {
+      "path": "src/Gagamba.Execution/Restricted/ManifestValidation.cs",
+      "blob": "ae5184af9a10d76303d18ad07747cf8653c6f0a1",
+      "bytes": 1939,
+      "sha256GitBlobBytes": "9d4cbcfe49b2cebae59485d3128cb1953ac0e42210786cccd0748fe5694cb392"
+    },
+    {
+      "path": "src/Gagamba.Execution/Restricted/RestrictedManifest.cs",
+      "blob": "8ff409eeb9ee52dd135e66578e59640b17d77af5",
+      "bytes": 36020,
+      "sha256GitBlobBytes": "25fa0071d7df56df67ab1c38c23d1d597bd7158a22b24ac212dcaee814f464e7"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/Contracts/RestrictedPublicProjectionTests.cs",
+      "blob": "d45a22bd468a84fea879504bc8d1c059fe65248e",
+      "bytes": 11368,
+      "sha256GitBlobBytes": "ca673940535a69cf4e955efc892dbde1579f931cdc2473b8177d7694f6f2aaaa"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Tests/Restricted/RestrictedContractTests.cs",
+      "blob": "e6a4a74d6d377818a7530b8bb97664e67f0b8560",
+      "bytes": 13301,
+      "sha256GitBlobBytes": "506d08d42e5345df0906639a567db761ba59815694a0b3b158256ff8dd525e25"
+    }
+  ],
+  "originalCommission": {
+    "path": "C:\\Users\\Laszlos\\.codex\\attachments\\5468e88e-dcf2-4d17-b9d3-f9fb9bc38229\\Pasted text.txt",
+    "bytes": 11291,
+    "sha256": "a9850419a28b20c53351e83ed35f78976af465c682ef105ef164ba05e1a8ccd7"
+  },
+  "host": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "architecture": "AMD64",
+    "sdk": "10.0.401",
+    "runtime": "Microsoft.NETCore.App 10.0.12",
+    "testFramework": "xUnit v3 3.2.0",
+    "adapter": "xunit.runner.visualstudio 3.1.4",
+    "testSdk": "Microsoft.NET.Test.Sdk 18.0.1"
+  },
+  "evidenceCommitRule": "Documentation-only immediate child of implementationCommit; final hash/tree and clean state in external completion receipt and final report. No circular self-hash.",
+  "nativeWorkloads": "none; cleanup not applicable; no remaining RC2A test processes observed",
+  "package": "not packed, installed, tagged or published",
+  "remoteInventory": "pinned local objects/ancestry revalidated; no fetch/push/merge or fresh remote claims"
+}
