@@ -1,5 +1,11 @@
 # Gagamba handoff
 
+## Current consumer-contract action — RC1-A OWNER ACCEPTANCE RECORDED; RC-1 ACCEPTED WITH QUALIFICATIONS; RC-2A NOT STARTED
+
+Update 2026-10-25 (owner-decision recorder): [RC1-A](decisions/restricted-consumer-rc1-owner-acceptance.md) records the user's explicit acceptance of RC-1 `d609c29d3048bc0fd91583068cb013fb906fdf90` with GLM review `feb9d7584c41712195d4b90754ed7a342ba74bb7` (**RC-1 ACCEPTED WITH QUALIFICATIONS**). The review remains separately preserved, unchanged. Mode=`work` and a 65,536-byte ceiling for both public encoding and decoding are approved. R1-F01/R1-F05 are carried into [RC-2A finalization and tests](plans/restricted-consumer-contract-implementation.md); R1-F02/R1-F03 remain open for RC-2B; R1-F04–R1-F07 retain their recorded qualifications/dispositions.
+
+Next: a separate commission for RC2A-01 contract finalization, then tests-first RC2A-02 after its conditions are satisfied, followed by the applicable independent implementation review. This decision task authorizes no implementation, Hufu resumption or publication. **AE4-B01 remains OPEN**; D4a needs independently accepted version-pinned RC-2A and consumer dependency/delta review; D4b needs RC-2B and its other gates. C1–C4 decisions are unchanged; production restricted execution is not qualified. See [decision evidence](evidence/restricted-consumer-rc1-owner-acceptance/README.md). Older pending-review headings below remain historical checkpoints.
+
 ## Current consumer-contract action — RC-1 DESIGN READY WITH QUALIFICATIONS; GLM REVIEW PENDING; AE4-B01 OPEN
 
 Update 2026-10-24 (RC-1 contract author): the [restricted consumer contract](design/restricted-consumer-contract-rc1.md) defines the proposed passive value/codec package boundary and a later restricted facade without exposing preparation capabilities or changing approved C1–C4 semantics. [RC-2A/RC-2B work orders and progress](plans/restricted-consumer-contract-implementation.md) keep pure consumer work separate from owner/native readiness. [GLM handoff](reviews/restricted-consumer-contract-rc1-handoff.md) binds the source and records review questions; [evidence](evidence/restricted-consumer-contract-rc1/README.md) contains fresh remote/local inventories and document checks.

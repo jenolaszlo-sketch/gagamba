@@ -1,0 +1,46 @@
+{
+  "byteDomain": "LF-normalized working-tree UTF-8 bytes; verified against Git blobs before and after commit",
+  "exclusion": "this hash manifest; bound by final commit/tree",
+  "files": [
+    {
+      "path": "docs/decisions/restricted-consumer-rc1-owner-acceptance.md",
+      "bytes": 15695,
+      "sha256": "c1a4b4e151816901696e21818b0d1b14af4f7849890b5ac441731b6ac035deed"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-rc1-owner-acceptance/README.md",
+      "bytes": 5429,
+      "sha256": "4bd3706e360d457798df62f504e1748edee4f0f62f606a74642e8cdbaee6c6f0"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-rc1-owner-acceptance/owner-instruction.md",
+      "bytes": 7463,
+      "sha256": "349f4e08d5dd96d9ed00651d09b5b6535fa6c8bfbc4e5fd8c654c8e279079abe"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-rc1-owner-acceptance/source-binding.json",
+      "bytes": 4973,
+      "sha256": "3cd265d506b7ff7869d6adfa8ee23b73634eaf5b527dfb5a5524bf57d6ef986d"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-rc1-owner-acceptance/validation.json",
+      "bytes": 5366,
+      "sha256": "e2044244f3cece3d007f227878df92c8603b33a2a5576795fd772d473fa4a2bd"
+    },
+    {
+      "path": "docs/handoff.md",
+      "bytes": 163199,
+      "sha256": "427efb1d0003e7b1e2a3363e621e0a884d45baf84b4e2bd2d5de773fd6fa283b"
+    },
+    {
+      "path": "docs/plans/restricted-consumer-contract-implementation.md",
+      "bytes": 29443,
+      "sha256": "bf1c733d4fa5f81c82eb972f2a5b5835ae4292bea815ff76fdd3412e0b8ac434"
+    },
+    {
+      "path": "docs/work-queue.md",
+      "bytes": 144380,
+      "sha256": "8fe6d4761313c59d8201b0284de50cca7b6738a74d4db338edb6879f95bf892c"
+    }
+  ]
+}

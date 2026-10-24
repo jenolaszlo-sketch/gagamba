@@ -1,9 +1,14 @@
 # Restricted consumer contract implementation work orders
 
-Date: 2026-10-24. Governing proposal:
-[RC-1](../design/restricted-consumer-contract-rc1.md).
+Date: 2026-10-24; owner-acceptance update 2026-10-25 (Asia/Manila).
+Governing design: [RC-1](../design/restricted-consumer-contract-rc1.md) at
+`d609c29d3048bc0fd91583068cb013fb906fdf90`, independently accepted with
+qualifications by GLM at `feb9d7584c41712195d4b90754ed7a342ba74bb7`, followed by
+[RC1-A owner acceptance](../decisions/restricted-consumer-rc1-owner-acceptance.md).
 Consumer dependency: Hufu AE4-B01. **Planning only; neither RC-2A nor RC-2B is
-authorized by this document.** No code or test was changed or executed for RC-1.
+authorized by this document or RC1-A.** No code or test was changed or executed
+for RC-1/RC1-A. The original plan remains in the accepted design commit; this
+revision records owner dispositions and future requirements, not test completion.
 
 ## 1. Progress and gates
 
@@ -12,15 +17,15 @@ work happens. DONE means the named bounded deliverable, not native qualification
 Preserve failed attempts and historical entries. A blocked dependency is not a
 test failure or permission to replace a real provider with a fake.
 
-| ID | Deliverable / owner | Status at RC-1 | Completion evidence / dependency |
+| ID | Deliverable / owner | Status as of RC1-A | Completion evidence / dependency |
 |---|---|---|---|
 | RC1-01 | Verify current Gagamba/Hufu inventory; Astra | DONE | Source manifest, remote/worktree inventories; selected 629a08d / 37dcf33 |
-| RC1-02 | D01–D09 architecture and consumer delta; Astra | DONE, PROPOSED | RC-1 contract; no independent acceptance |
+| RC1-02 | D01–D09 architecture and consumer delta; Astra | ACCEPTED WITH QUALIFICATIONS | RC-1 `d609c29`; GLM `feb9d75`; RC1-A owner record |
 | RC1-03 | Test matrix, staged work orders and evidence; Astra | DONE, DOCUMENTATION ONLY | This plan and review handoff |
-| RC1-R | Independent contract review; GLM | PENDING | Exact RC-1 commit/tree; Accept / Accept with qualifications / Amend / Reject |
-| RC1-A | Owner accepts contract and dispositions | PENDING | Explicit record, including Mode, public surface, codec ceiling and facade qualifications |
-| RC2A-01 | Revalidate accepted parent/scope and pin API inventory | NOT_STARTED | RC1-R + RC1-A + separate implementation assignment |
-| RC2A-02 | Tests-first pure contract negatives/vectors | NOT_STARTED | RC2A-01 |
+| RC1-R | Independent contract review; GLM | COMPLETE — ACCEPTED WITH QUALIFICATIONS | `feb9d7584c41712195d4b90754ed7a342ba74bb7`; original findings preserved separately |
+| RC1-A | Owner accepts contract and dispositions | APPROVED AND RECORDED | [Owner decision](../decisions/restricted-consumer-rc1-owner-acceptance.md): Mode=`work`, passive public surface, encode/decode ceiling and all seven findings |
+| RC2A-01 | Revalidate accepted parent/scope and pin API inventory | ELIGIBLE FOR SEPARATE COMMISSION; NOT_STARTED | RC1-R/RC1-A complete; separate assignment, named refusal contract and R1-F01/R1-F05 test requirements still required |
+| RC2A-02 | Tests-first pure contract negatives/vectors | ELIGIBLE AFTER RC2A-01 CONDITIONS; NOT_STARTED | Separate assignment plus completed RC2A-01 contract finalization |
 | RC2A-03 | Shared validation/reader, public views and passive reference | NOT_STARTED | RC2A-02 baseline evidence |
 | RC2A-04 | Focused regressions, local package, clean consumer | NOT_STARTED | RC2A-03; exact local artifact/source identity |
 | RC2A-R | Independent implementation/package review | PENDING | RC2A-04; no native qualification inferred |
@@ -42,18 +47,44 @@ N-01 evidence-index issue remain separately tracked in existing records. Native
 distribution breadth and production offline/network/inode/runtime/core/package
 gaps remain open. There is no dependency from RC-2A onto native G3/G4/G5.
 
+RC1-A preserves GLM's original identifiers: R1-F01 is an accepted mandatory
+encode-side correction; R1-F05 adds required tests; R1-F04 is the passive
+reference's no-temporal-fields qualification; R1-F06 records Hufu's evidence
+location; R1-F07 requires no corrective action. R1-F02/R1-F03 remain **OPEN,
+DEFERRED TO RC-2B**. The decision's reconciliation table is authoritative for
+owner dispositions; none of these statuses means implementation tests passed.
+
 ## 2. RC-2A — smallest public value/codec tranche
 
 ### Entry contract
 
-Require the exact accepted RC-1 commit, GLM report and resolved mandatory
-findings, owner acceptance and an explicit implementation assignment. Recheck
+Require RC-1 `d609c29d3048bc0fd91583068cb013fb906fdf90`, the separate GLM report
+`feb9d7584c41712195d4b90754ed7a342ba74bb7`, the RC1-A decision and an explicit
+implementation assignment. RC1-A accepts the design and mandatory clarification;
+it does not commission code. Recheck
 source/worktrees/remotes; if C1/C3/C4 or schema source changed, bind a new baseline
 and review the delta. Work in an isolated branch. Preserve existing evidence.
 
-The commission must name Execution's passive API, schema 1, 65,536-byte public
-codec ceiling, inspection-only construction, passive preparation reference and
-the accepted test subset. It must not silently commission facade interface code.
+The commission must name Execution's passive API, schema 1, **65,536-byte public
+encoding and decoding ceiling**, inspection-only construction, passive preparation
+reference and the accepted test subset. Mode=`work` is explicitly owner-approved
+for the first consumer, with existing source semantics and no additional modes.
+It must not silently commission facade interface code.
+
+RC2A-01 must freeze the exact named refusal/result/exception behavior of public
+Encode for oversized views (R1-F01), wrong-length VerifySha256 input and Supports
+boundary arguments (R1-F05) before RC2A-02. Encoding whose complete canonical
+bytes exceed 65,536 must refuse without a truncated/partial result or grammar
+change. Preserve accepted in-bound bytes and existing validation/refusal rules.
+Retain R1-F04 in consumer-facing package docs: passive references have no temporal
+fields; D4a uses explicit enrolled/synthetic timing and D4b later uses actual
+provider-origin timing. No expiry or liveness can be inferred from the reference.
+
+The RC2A-01 exit record must bind the revalidated source/schema, public API,
+concrete refusal behavior, required test-to-assertion map and deferred RC-2B/native
+exclusions. If any mandatory detail is unresolved, RC2A-02 remains held. The
+smallest next commission may authorize RC2A-01 then tests-first RC2A-02; this
+planning update starts neither.
 
 ### File scope
 
@@ -85,9 +116,14 @@ do not republish or overwrite preview.4. Stop if necessary work exceeds scope.
    misuse. Record whether each baseline fails compilation (missing public API)
    or behavior (reader/validation absent); do not call all failures runtime bugs.
    Preserve existing golden bytes and independently encoded expected values.
+   Include R1-F05: expected SHA-256 lengths 0/31/33 refuse, matching/nonmatching
+   32-byte controls, all-zero 32 bytes treated as present, Supports positive and
+   boundary arguments, and exact-limit/oversized Encode cases (T04/T05/T15).
 3. Implement passive projections and reference, one shared validator and strict
    reader; the wrapper delegates encoding to existing `ManifestCodec`. Enforce
-   length/count bounds before allocation. Do not return partially parsed values.
+   length/count bounds before allocation. Do not return partially parsed values
+   or a partial/truncated encoding. Enforce the complete encode-side size guard
+   as well as decode-side input size (R1-F01), without a competing encoder.
 4. Run focused public tests and exact existing deterministic ManifestTests /
    preparation tests relevant to the change. Add per-field mutation cases and
    malformed byte mutation coverage. Check public surface for control handles,
@@ -130,6 +166,10 @@ All required RC-2A subcases in section 4 pass with positive controls; required
 cases are not skipped; no valid golden byte/digest changes; public values cannot
 modify their source/internal model; one canonical encoder; bounded strict reader;
 exact local package works from a clean consumer without internal/native access.
+Encoding and decoding at 65,536 bytes obey the accepted canonical round trip;
+65,537 bytes refuse without partial output. The named R1-F05 digest and Supports
+cases pass under the API behavior frozen in RC2A-01. R1-F04 remains documented;
+no temporal or control authority is added to the passive reference.
 Scope has no native activation or C1–C4 behavior change. Independent reviewer
 accepts exact source/API/package and qualifications. The Hufu graph/delta result
 is explicit even if it requires an additional bounded follow-up.
@@ -151,6 +191,13 @@ which permit target release. Accepted relevant C1–C4 implementations, real
 resources/readbacks/capture/owner/recovery and production clock support cannot be
 replaced by WP05 fake prerequisites. RC-2A package acceptance is necessary but
 does not satisfy any native gate.
+
+RC1-A leaves R1-F02 and R1-F03 **OPEN, DEFERRED TO RC-2B**. B1/B3 must specify
+the observable pre-mint queued-stop latch and prevent a pending stop from yielding
+a releasable capability (T18). B1 must explicitly decide pre-retention correlation
+mismatch retention/consumption and subsequent matching-call admissibility (T23).
+This plan records GLM's questions without silently choosing its recommendation
+or implementing either behavior in RC-2A. Existing C1–C4 decisions remain settled.
 
 G3 permits WP10's internal fixed fixture only. WP10, WP11/G4 and WP12/G5 remain
 required before the separately authorized consumer milestone. A Gagamba consumer
@@ -193,8 +240,8 @@ RC-1 review accepts their design, not their outcome. Do not count an I model as 
 | RC-T01 | Decode the preserved literal golden and each new documented vector; assert every scalar/nested/list value, encode exact original bytes, verify expected SHA-256. Retain independently authored ReferenceEncoder agreement | V + I, 2A |
 | RC-T02 | Build equivalent internal accepted manifests with permutations of every set, fresh backing arrays and supplementary-plane strings; project/decode through public codec; identical bytes/digest. Reordered argv is a negative counterexample | I + V output, 2A; no public builder required |
 | RC-T03 | Change each serialized field independently while remaining structurally valid; assert different bytes and test digest, with an explicit per-field inventory. For fixed/forced fields (version/implementation/path/denial/pending tags), assert rejection instead. Nonmanifest IDs/metadata do not change manifest digest but must fail their separate association checks | I + V, 2A; metadata/live association I/N in 2B |
-| RC-T04 | Schema 0, 2 and 65535; unknown implementation; valid v1 positive control. Typed refusal, no partial view/migration or native work | V, 2A |
-| RC-T05 | Truncate at every byte boundary; append bytes; corrupt bool/presence/enum tags; oversized/overflowing lengths/counts; invalid UTF-8; unsorted sets. Every malformed input refuses without large allocation or normalization; canonical counterpart succeeds | V, 2A |
+| RC-T04 | Schema 0, 2 and 65535; unknown implementation; valid v1 positive control. Typed decode refusal, no partial view/migration or native work. R1-F05: Supports exact v1/implementation positive control, unsupported schema and unknown/empty/whitespace/case-variant implementation IDs; null follows the accepted programming-error convention. Freeze exact assertions in RC2A-01 | V, 2A |
+| RC-T05 | Truncate at every byte boundary; append bytes; corrupt bool/presence/enum tags; oversized/overflowing lengths/counts; invalid UTF-8; unsorted sets. Every malformed input refuses without large allocation or normalization; canonical counterpart succeeds. R1-F05: VerifySha256 rejects expected lengths 0/31/33; matching 32-byte digest verifies, nonmatching 32-byte digest does not; all-zero 32 bytes is present, not absence/wildcard. No RC-2B correlation API added | V, 2A |
 | RC-T06 | Null core pattern versus present nonempty; empty env value versus empty key; absent/exact-zero/unlimited budgets; absent inode budget zero; duplicate role/path/key/set entry refusal; duplicate argv retained; UTF-8 byte order distinct from UTF-16; input enumeration order normalized only before encoding | V + I, 2A |
 | RC-T07 | Mutate all input/output byte arrays and caller collections after decode/projection; values/digest unchanged; no setters/public capability constructors. Later attempt mutation/substitution after real preparation; owner still holds original copied objects and view | V + I in 2A; N in 2B |
 | RC-T08 | Pair a changed manifest with original preparation reference: pure digest mismatch; internal store mint/bind negative and existing positive control. Later pass another operation's view, same tuple forged data or replaced source objects; release refuses with no target initialization | V + I in 2A; I + N in 2B |
@@ -204,15 +251,15 @@ RC-1 review accepts their design, not their outcome. Do not count an I model as 
 | RC-T12 | Clean exact-version NuGet consumer decodes/re-encodes/digests using public API only. Isolated cache/local feed; no source references, friend identity, reflection or fixture packages. Validate planned mixed Runtime dependency graph separately | V + packaging, 2A |
 | RC-T13 | RC-2A schema/implementation mismatch refuses without needing native files. Later swap one native/managed artifact hash, role, RID, build/protocol version, dependency or test-only coordinator; matching accepted closure succeeds, mismatch refuses before preparation/target | V subset in 2A; I + N required for full case in 2B |
 | RC-T14 | Preserve independent C1 ambiguity+NotAttempted delivery, duplicate without durable commit, concurrent Refused with winner, root/helper differences, nonzero target exit, capture truncation, absent stop time, populated/unknown domain and cleanup/finalization uncertainty. Tagged payloads reject contradictions; native receipts reproduce the mappings | I (existing vocabulary baseline may be inspected) + public result V + N, 2B; public result types are not in 2A |
-| RC-T15 | Exact 65,536-byte accepted structurally valid input vs 65,537 refusal; exact 16,384 argv/env UTF-8 limit vs overflow; u32 count with tiny remaining buffer; checked cursor arithmetic. Bounded allocations and no stack recursion | V + I, 2A; justifies hostile decoder boundary |
+| RC-T15 | R1-F01/R1-F05: structurally valid exact-65,536-byte encode/decode positive round trip; 65,537 bytes refuse for decode and complete encode, with named failure and no truncated/partial result or grammar change. Use an internal deterministic projection seam to test the encode guard, not a public oversized-view factory. Also exact 16,384 argv/env UTF-8 limit vs overflow, u32 count with tiny remaining buffer, checked cursor arithmetic, bounded allocations and no stack recursion | V + I, 2A; hostile codec boundaries |
 | RC-T16 | Exhaustive field-to-public-property and field-to-wire assertion map; data-only construction cannot issue provider-origin prepared/established objects; no new execution field omitted from digest or matcher inventory | V + I, 2A; provider-origin native association in 2B |
 | RC-T17 | Local package DLL/nuspec/API inventory and unique version match exact source; required dependency closure restores without external/source fallback; no M1 native load on Windows parsing. Wrong package/version/mixed assembly graph fails qualification | V + packaging, 2A; justifies real consumer gap |
-| RC-T18 | Both release/stop orders, queued stop before mint, clock unavailable/overflow, failed StopRecord persistence, repeated stop, C1 first-retainer cuts. One physical attempt maximum; accepted stop never restores capability; stop ACK stages remain distinct | I + N, 2B; exact C1/C2/C4 suites remain prerequisites |
+| RC-T18 | Both release/stop orders, queued stop before mint, clock unavailable/overflow, failed StopRecord persistence, repeated stop, C1 first-retainer cuts. R1-F02 remains open: RC-2B must specify/test observable pre-mint stop state and no releasable mint after stop wins. One physical attempt maximum; accepted stop never restores capability; stop ACK stages remain distinct | I + N, 2B; exact C1/C2/C4 suites remain prerequisites |
 | RC-T19 | Original C3 deadline remaining/expired/incompatible epoch/frequency/boot/no valid StopRecord; Policy A identity-checked kill plus one immediate observation, no new wait; separate journal failure/uncertainty; repeated reconcile cannot extend | I + N, 2B and separate C3 workstream |
 | RC-T20 | Controller dies while Held/running/host evidence call hung; scope survives and signals stop. Owner dies with scope retained; scope dies with owner alive; all holders lost; reconnect authentication and no-release checks. Record actual stop/emptiness/cleanup or Unknown, never disk-only adoption | I + N, 2B; justifies Hufu A01/A03 obligations |
 | RC-T21 | Test/private coordinator substitution, helper closure mismatch, missing capture/readback and unsupported deployment all refuse. Golden codec fixture is rejected as executable enrollment. Production offline profile stays disabled despite experimental acceptance | I + N, 2B |
 | RC-T22 | Slow/absent observers, full status/capture buffers, aggregate overflow, read failure, final-drain expiry and capture-store failure. Independent safety stop remains callable; no unbounded queue, raw handle/path leak or disclosure claim | I + N, 2B |
-| RC-T23 | Lost prepare/release/stop/dispose acknowledgements, changed approval correlation, cancelled waits and concurrent repeated calls. A changed correlation after retention keeps Duplicate/original facts plus a binding-mismatch diagnostic. No replay, deadline reset, terminal rewrite or cleanup-on-dispose fiction | I + N, 2B |
+| RC-T23 | Lost prepare/release/stop/dispose acknowledgements, changed approval correlation, cancelled waits and concurrent repeated calls. A changed correlation after retention keeps Duplicate/original facts plus a binding-mismatch diagnostic. R1-F03 remains open: RC-2B must decide/test whether pre-retention mismatch is retained/consuming and whether a later matching call can proceed. No replay, deadline reset, terminal rewrite or cleanup-on-dispose fiction | I + N, 2B |
 
 RC-2A acceptance covers its designated V/I/package subcases only. RC-T07–T13
 have later live/selection/native portions that remain pending. RC-T14 and
@@ -229,19 +276,28 @@ record native cleanup as not applicable because no workload was started.
 
 Producer validation and independent review are separate commits/artifacts with
 exact source binding. New source changes invalidate affected earlier evidence.
-GLM's current assignment is RC-1 review only; do not present this producer's
-document checks as independent acceptance or commission an implementation through
-the review prompt.
+GLM's RC-1 design review is complete at `feb9d7584c41712195d4b90754ed7a342ba74bb7`;
+RC1-A records owner acceptance with qualifications. Neither is an independent
+implementation review. The separately commissioned RC-2A work must receive its
+own source/package-bound GLM review. Do not present documentation checks as code
+acceptance or commission implementation through a review prompt.
 
 ## 6. Hufu resumption decision
 
-AE4-B01 remains **OPEN** after RC-1. After RC-2A independent acceptance, give Sol:
+AE4-B01 remains **OPEN** after RC-1 and RC1-A. After RC-2A independent acceptance, give Sol:
 
 - Accepted RC-1 and RC-2A source/API/version and resolved review findings.
 - Actual package bytes/hash, dependency graph, canonical vectors and strict
   validation/immutability evidence from the clean consumer.
 - Accepted Mode/profile parameter mapping and every Hufu semantic delta from RC-1.
 - Exact test subset and explicit absence of a live provider/native qualification.
+
+Carry R1-F04's temporal-source limitation and R1-F06's evidence location:
+`C:\Users\Laszlos\source\repos\Solo\hufu-ae4-implementation`, branch
+`implementation/ae4-integration-plan`, at
+`37dcf33362e8e745800a530a478fd406795c3e58` when reviewed. Recheck the exact
+consumer revision at HUFU-R; absence of these documents on canonical Hufu main
+does not invalidate the dedicated branch's evidence.
 
 Sol then reassesses the contract part of AE4-B01 and requests authorization for
 AE4-D4a under Hufu's own design/owner gates. It is not an automatic resume. Hufu

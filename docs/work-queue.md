@@ -1,5 +1,11 @@
 # Current work queue
 
+## Current consumer-contract work: RC1-A APPROVED AND RECORDED — RC-2A ELIGIBLE FOR SEPARATE COMMISSION
+
+Update 2026-10-25: [owner acceptance](decisions/restricted-consumer-rc1-owner-acceptance.md) accepts RC-1 `d609c29d3048bc0fd91583068cb013fb906fdf90` with independent GLM qualifications at `feb9d7584c41712195d4b90754ed7a342ba74bb7`. The [progress tracker](plans/restricted-consumer-contract-implementation.md) records RC1-R complete and RC1-A approved; RC2A-01 is eligible for a separate commission, and RC2A-02 follows its finalization conditions. No implementation has begun. The 65,536-byte ceiling explicitly covers encoding and decoding; R1-F05 test additions are required. R1-F02/R1-F03 remain OPEN, deferred to RC-2B.
+
+**AE4-B01 remains OPEN.** RC-2B, Hufu D4a/D4b resumption and package publication remain separately gated; production restricted execution is not qualified. This is architectural acceptance, not native or implementation evidence. The original design and separate GLM review remain unchanged; prior status entries below are historical.
+
 ## Current consumer-contract work: RC-1 DESIGN READY WITH QUALIFICATIONS — INDEPENDENT GLM REVIEW PENDING
 
 Update 2026-10-24 (RC-1 contract author): [restricted consumer contract](design/restricted-consumer-contract-rc1.md) and [tracked implementation work orders](plans/restricted-consumer-contract-implementation.md) address the design of Hufu **AE4-B01** on an isolated branch from `629a08d2ee82a9ac084d87ed73ad8d584661ea28`. The selected boundary is passive immutable values/strict canonical codec in the existing net10.0 `Gagamba.Execution` package (RC-2A), followed separately by a real restricted control facade (RC-2B). See [review handoff](reviews/restricted-consumer-contract-rc1-handoff.md) and [source evidence](evidence/restricted-consumer-contract-rc1/README.md).

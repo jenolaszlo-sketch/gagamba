@@ -1,0 +1,149 @@
+{
+  "recordDate": "2026-10-25 (Asia/Manila)",
+  "checkedAtUtc": "2026-10-24T23:37:23.671790+00:00",
+  "scope": "static documentation validation; no RC-2A implementation/test or native qualification",
+  "commands": [
+    "C:\\Python314\\python.exe C:\\Users\\Laszlos\\source\\repos\\Solo\\artifacts\\gagamba-rc1-owner-acceptance-tools\\record_and_validate.py",
+    "git diff --check d609c29d3048bc0fd91583068cb013fb906fdf90"
+  ],
+  "checks": [
+    {
+      "check": "all seven original GLM IDs have owner dispositions",
+      "passed": true,
+      "detail": [
+        "R1-F01",
+        "R1-F02",
+        "R1-F03",
+        "R1-F04",
+        "R1-F05",
+        "R1-F06",
+        "R1-F07"
+      ]
+    },
+    {
+      "check": "review identity and disposition verified",
+      "passed": true,
+      "detail": {
+        "reviewCommit": "feb9d7584c41712195d4b90754ed7a342ba74bb7",
+        "reviewBlob": "c2617370806f7ba0ac7bb4006fc92d3a880df2dc",
+        "reviewSha256": "05bec9dd52b42bd070e59e489126dabd8bdf9feded4ac4bb7d76bc92aede057a"
+      }
+    },
+    {
+      "check": "dedicated branch from exact accepted design",
+      "passed": true,
+      "detail": {
+        "branch": "decisions/gagamba-rc1-owner-acceptance",
+        "parent": "d609c29d3048bc0fd91583068cb013fb906fdf90"
+      }
+    },
+    {
+      "check": "documentation-only exact path allowlist",
+      "passed": true,
+      "detail": [
+        "docs/decisions/restricted-consumer-rc1-owner-acceptance.md",
+        "docs/evidence/restricted-consumer-rc1-owner-acceptance/README.md",
+        "docs/evidence/restricted-consumer-rc1-owner-acceptance/document-sha256.json",
+        "docs/evidence/restricted-consumer-rc1-owner-acceptance/owner-instruction.md",
+        "docs/evidence/restricted-consumer-rc1-owner-acceptance/source-binding.json",
+        "docs/evidence/restricted-consumer-rc1-owner-acceptance/validation.json",
+        "docs/handoff.md",
+        "docs/plans/restricted-consumer-contract-implementation.md",
+        "docs/work-queue.md"
+      ]
+    },
+    {
+      "check": "original accepted design unchanged",
+      "passed": true,
+      "detail": "d609c29d3048bc0fd91583068cb013fb906fdf90"
+    },
+    {
+      "check": "production tests native projects package metadata unchanged",
+      "passed": true,
+      "detail": {
+        "src": "9dd0f055eaf48d48bda8683dee3f8dc534a06e5d",
+        "tests": "ebcb976a164b212090fbe0958fe4b0c0b243f794",
+        "native": "85631d2f04512376621d3d09f51d67fd90f45335"
+      }
+    },
+    {
+      "check": "separate review and Hufu and original design preserved",
+      "passed": true,
+      "detail": {
+        "reviewBranch": "review/gagamba-rc1-glm-independent-contract",
+        "hufuCommit": "37dcf33362e8e745800a530a478fd406795c3e58"
+      }
+    },
+    {
+      "check": "passive contract and explicit mode recorded",
+      "passed": true,
+      "detail": "static text anchors; manual scope review also performed"
+    },
+    {
+      "check": "encoding and decoding ceiling carried into RC2A-01",
+      "passed": true,
+      "detail": "inclusive 65,536; oversized refusal, no partial/truncated output"
+    },
+    {
+      "check": "R1-F05 additions carried into required tests",
+      "passed": true,
+      "detail": "wrong-length SHA-256, Supports boundary cases, oversized Encode"
+    },
+    {
+      "check": "RC2A and RC2B gates and open findings preserved",
+      "passed": true,
+      "detail": "no RC-2B findings closed; no code start recorded"
+    },
+    {
+      "check": "AE4-B01 open and resumption remains conditional",
+      "passed": true,
+      "detail": "version-pinned RC-2A, consumer graph/delta review and separate authorization"
+    },
+    {
+      "check": "security nonclaims and historical decisions preserved",
+      "passed": true,
+      "detail": "static text anchors; no runtime/security acceptance inferred"
+    },
+    {
+      "check": "documentation links resolve",
+      "passed": true,
+      "detail": "6 new/updated document scopes"
+    },
+    {
+      "check": "Markdown fences balanced",
+      "passed": true,
+      "detail": "new/updated documents"
+    },
+    {
+      "check": "historical handoff and queue preserved",
+      "passed": true,
+      "detail": "additions only; old review-pending entries explicitly historical"
+    },
+    {
+      "check": "git diff --check against parent",
+      "passed": true,
+      "detail": "no whitespace errors"
+    },
+    {
+      "check": "changed document whitespace",
+      "passed": true,
+      "detail": "no trailing whitespace"
+    }
+  ],
+  "allPassed": true,
+  "changedPaths": [
+    "docs/decisions/restricted-consumer-rc1-owner-acceptance.md",
+    "docs/evidence/restricted-consumer-rc1-owner-acceptance/README.md",
+    "docs/evidence/restricted-consumer-rc1-owner-acceptance/document-sha256.json",
+    "docs/evidence/restricted-consumer-rc1-owner-acceptance/owner-instruction.md",
+    "docs/evidence/restricted-consumer-rc1-owner-acceptance/source-binding.json",
+    "docs/evidence/restricted-consumer-rc1-owner-acceptance/validation.json",
+    "docs/handoff.md",
+    "docs/plans/restricted-consumer-contract-implementation.md",
+    "docs/work-queue.md"
+  ],
+  "implementation": "not started",
+  "buildTestPackNative": "not run",
+  "GLMReview": "preserved separately, not copied or rewritten",
+  "finalCommitAndTree": "external completion receipt after commit; avoids self-reference"
+}

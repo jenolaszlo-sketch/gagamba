@@ -1,0 +1,106 @@
+{
+  "recordDate": "2026-10-25 (Asia/Manila)",
+  "observedAtUtc": "2026-10-24T23:37:21.361043+00:00",
+  "decisionBranch": "decisions/gagamba-rc1-owner-acceptance",
+  "requiredParent": "d609c29d3048bc0fd91583068cb013fb906fdf90",
+  "designTree": "d09ee7d079e44ecb645e7173bc99e11979ffee39",
+  "reviewCommit": "feb9d7584c41712195d4b90754ed7a342ba74bb7",
+  "reviewTree": "639e5345c8e47abc625fe6228d147cf7ad0bc094",
+  "reviewParent": "d609c29d3048bc0fd91583068cb013fb906fdf90",
+  "reviewBranch": "review/gagamba-rc1-glm-independent-contract",
+  "reviewWorktree": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc1-glm-review",
+  "reviewDisposition": "RC-1 ACCEPTED WITH QUALIFICATIONS",
+  "sourceTrees": {
+    "src": "9dd0f055eaf48d48bda8683dee3f8dc534a06e5d",
+    "tests": "ebcb976a164b212090fbe0958fe4b0c0b243f794",
+    "native": "85631d2f04512376621d3d09f51d67fd90f45335"
+  },
+  "hufu": {
+    "commit": "37dcf33362e8e745800a530a478fd406795c3e58",
+    "worktree": "C:\\Users\\Laszlos\\source\\repos\\Solo\\hufu-ae4-implementation",
+    "branch": "implementation/ae4-integration-plan",
+    "scope": "read-only Git identity/status recheck; consumer document interpretation from the accepted RC-1/review evidence"
+  },
+  "host": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "architecture": "AMD64",
+    "authoringPython": "3.14.8",
+    "dotnetSdk": "not queried; documentation only",
+    "nativeQualification": "none"
+  },
+  "ownerInstruction": {
+    "path": "C:\\Users\\Laszlos\\.codex\\attachments\\de6c3e6c-a09e-4793-b579-5e25c3cda0d4\\Pasted text.txt",
+    "bytes": 7682,
+    "sha256OriginalBytes": "7de258cef65a912f11a99bc3e9d78e0027a072ae697b7939dc3b44a335c7a45d",
+    "readableCopy": "owner-instruction.md",
+    "readableCopySha256": "349f4e08d5dd96d9ed00651d09b5b6535fa6c8bfbc4e5fd8c654c8e279079abe",
+    "normalization": "UTF-8 without BOM; LF; trailing whitespace removed; one terminal newline",
+    "authority": "explicit user instruction in this conversation; not a cryptographic signature"
+  },
+  "hashDomain": "exact Git blob bytes for source documents; not CRLF checkout text",
+  "sourceDocuments": [
+    {
+      "commit": "d609c29d3048bc0fd91583068cb013fb906fdf90",
+      "path": "AGENTS.md",
+      "gitBlob": "1d1a4f08734f4fbad875334afc36c62b95180316",
+      "gitBlobBytes": 2054,
+      "sha256GitBlobBytes": "d2aca8898025dc61ae2c7802ab3b0f981691e736b7ae296a8e41926ca152e1d9"
+    },
+    {
+      "commit": "d609c29d3048bc0fd91583068cb013fb906fdf90",
+      "path": "docs/handoff.md",
+      "gitBlob": "8d025af2e991eb9457f3c33d171b5ccdc64ea927",
+      "gitBlobBytes": 161751,
+      "sha256GitBlobBytes": "0bff6fa57ca58e16795f9d54bc7e16fe55c5c66e368e4f93be41c2ad1d4d5c40"
+    },
+    {
+      "commit": "d609c29d3048bc0fd91583068cb013fb906fdf90",
+      "path": "docs/work-queue.md",
+      "gitBlob": "f6e4197e58d3e267f1a81320c67704cb3799f5e3",
+      "gitBlobBytes": 143313,
+      "sha256GitBlobBytes": "d4d64fb7f0e8019a0eef86ca4188c1fc31e00bfbe58a994c47e628730b64096b"
+    },
+    {
+      "commit": "d609c29d3048bc0fd91583068cb013fb906fdf90",
+      "path": "docs/remediation-evidence-standard.md",
+      "gitBlob": "ab98eec3498089292ddd868c00506f0bb83a028f",
+      "gitBlobBytes": 10446,
+      "sha256GitBlobBytes": "7947b91e3e9bd92c74e50fe02751ba23161e1ab83fb1c661067238c2689d2e03"
+    },
+    {
+      "commit": "d609c29d3048bc0fd91583068cb013fb906fdf90",
+      "path": "docs/decisions/gagamba-linux-m1-wp05-d6-7-human-contract-approvals.md",
+      "gitBlob": "a0d1ad409b2d7fb0985abf7db0b0c5257cc6425e",
+      "gitBlobBytes": 13970,
+      "sha256GitBlobBytes": "ccd93d174cd838e4f885b000abab79dce532c1b1db9ab6d305ba45ff9a672f8f"
+    },
+    {
+      "commit": "d609c29d3048bc0fd91583068cb013fb906fdf90",
+      "path": "docs/design/restricted-consumer-contract-rc1.md",
+      "gitBlob": "4b300b01397e7f68d978fadbc36164dda17c8721",
+      "gitBlobBytes": 52473,
+      "sha256GitBlobBytes": "164496f886bdc324816bf963a1ad3398c9bb8e702bee6d97dc1e687d6e7d15fe"
+    },
+    {
+      "commit": "d609c29d3048bc0fd91583068cb013fb906fdf90",
+      "path": "docs/plans/restricted-consumer-contract-implementation.md",
+      "gitBlob": "561718d7fc08c9b8ed4bf2ccf37f1cccefcc3259",
+      "gitBlobBytes": 24180,
+      "sha256GitBlobBytes": "6ea7c41bf4967e4de54b93e57f5b0256f626bf3b39ad8cf1aa7ea76ef7ae611e"
+    },
+    {
+      "commit": "d609c29d3048bc0fd91583068cb013fb906fdf90",
+      "path": "docs/reviews/restricted-consumer-contract-rc1-handoff.md",
+      "gitBlob": "ba2ef4b7961673cefbf1106abd12f0246f8ec599",
+      "gitBlobBytes": 9800,
+      "sha256GitBlobBytes": "fb70d649a503be1f7d2e68faa4cbf2b7a7d922de46ab6f89ffd13f03a26dd948"
+    },
+    {
+      "commit": "feb9d7584c41712195d4b90754ed7a342ba74bb7",
+      "path": "docs/reviews/restricted-consumer-contract-rc1-glm-review.md",
+      "gitBlob": "c2617370806f7ba0ac7bb4006fc92d3a880df2dc",
+      "gitBlobBytes": 40909,
+      "sha256GitBlobBytes": "05bec9dd52b42bd070e59e489126dabd8bdf9feded4ac4bb7d76bc92aede057a"
+    }
+  ]
+}
