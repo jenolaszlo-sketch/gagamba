@@ -696,10 +696,10 @@ internal static class ManifestCodec
         return canonical;
     }
 
-    internal static byte[] Encode(RestrictedManifest manifest)
+    internal static byte[] Encode(RestrictedManifest manifest, int? maxCanonicalBytes = null)
     {
         ArgumentNullException.ThrowIfNull(manifest);
-        using var stream = new MemoryStream();
+        using var stream = new CanonicalStream(maxCanonicalBytes ?? int.MaxValue);
         WriteU16(stream, manifest.SchemaVersion);
         WriteString(stream, manifest.ImplementationId);
         WriteAuthority(stream, manifest.Authority);
@@ -740,6 +740,8 @@ internal static class ManifestCodec
 
     private static void WriteString(MemoryStream stream, string value)
     {
+        if (stream is CanonicalStream bounded)
+            bounded.CheckAdditional(4L + StrictUtf8.GetByteCount(value));
         var bytes = StrictUtf8.GetBytes(value);
         WriteU32(stream, checked((uint)bytes.Length));
         stream.Write(bytes, 0, bytes.Length);
@@ -885,5 +887,22 @@ internal static class ManifestCodec
         WriteU64(stream, channels.StdoutLimitBytes);
         WriteU64(stream, channels.StderrLimitBytes);
         WriteU64(stream, channels.AggregateLimitBytes);
+    }
+
+    // The same writer/grammar serves legacy internal encoding and the bounded public boundary.
+    // Check before growing storage or returning any output; inclusive ceiling, no truncation.
+    private sealed class CanonicalStream(int maximum) : MemoryStream
+    {
+        internal void CheckAdditional(long count)
+        {
+            if (count > maximum - Position)
+                throw new ArgumentException("Complete canonical encoding exceeds the byte limit.", "manifest");
+        }
+
+        public override void WriteByte(byte value) { CheckAdditional(1); base.WriteByte(value); }
+        public override void Write(byte[] buffer, int offset, int count)
+        { CheckAdditional(count); base.Write(buffer, offset, count); }
+        public override void Write(ReadOnlySpan<byte> buffer)
+        { CheckAdditional(buffer.Length); base.Write(buffer); }
     }
 }

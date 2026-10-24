@@ -19,6 +19,22 @@ Standalone scope, three-platform scope and local-first testing are user-selected
 
 ## Packages
 
+The RC2A-01 source adds passive schema-1 inspection in
+`Gagamba.Execution.Restricted.Contracts`: immutable manifest views, strict
+canonical encode/decode, SHA-256 verification and a passive preparation
+reference. This source API is pending independent implementation review; no
+published preview is claimed to contain it. Both public codec boundaries have
+an inclusive 65,536-byte ceiling; oversized encoding throws `ArgumentException`,
+and oversized decoding returns `InputTooLarge`. See the
+[frozen API contract](docs/design/restricted-consumer-contract-rc2a-01-api.md).
+
+A preparation reference contains four GUIDs and a digest, with no temporal
+fields, lookup, release or execution authority. It establishes no expiry or
+liveness. D4a timing must come from explicit enrolled/synthetic binding data;
+later D4b timing must come from the actual provider-origin prepared execution.
+Neither a valid manifest nor a matching SHA-256 digest establishes permission
+or native confinement. Mode `work` is descriptive and dispatches nothing.
+
 Published to NuGet.org (current preview line: `0.1.0-preview.*`). Reference
 `Gagamba.Runtime` and it pulls the contract and all providers:
 
