@@ -89,6 +89,7 @@ internal sealed class WireRefusalCase : QualificationCase
     private readonly Func<QualificationWireBuild> buildRefusal;
     private readonly Func<QualificationWireBuild> buildCanonical;
     private readonly string offsetKey;
+    private readonly int offsetDelta;
 
     internal WireRefusalCase(
         string caseId,
@@ -99,12 +100,14 @@ internal sealed class WireRefusalCase : QualificationCase
         ManifestDecodeError expectedError,
         Func<QualificationWireBuild> buildRefusal,
         string offsetKey,
-        Func<QualificationWireBuild>? buildCanonical = null)
+        Func<QualificationWireBuild>? buildCanonical = null,
+        int offsetDelta = 0)
         : base(caseId, fieldId, mutationClass, caseClass, description)
     {
         ExpectedError = expectedError;
         this.buildRefusal = buildRefusal;
         this.offsetKey = offsetKey;
+        this.offsetDelta = offsetDelta;
         this.buildCanonical = buildCanonical ?? (() => QualificationWireTemplate.Golden().Build());
     }
 
@@ -113,7 +116,7 @@ internal sealed class WireRefusalCase : QualificationCase
     internal override void Execute()
     {
         var built = buildRefusal();
-        var expectedOffset = built.OffsetOf(offsetKey);
+        var expectedOffset = built.OffsetOf(offsetKey) + offsetDelta;
         Assert.InRange(expectedOffset, 0, built.Bytes.Length);
         var result = RestrictedManifestCodec.Decode(built.Bytes);
         Assert.Null(result.Value);
@@ -126,6 +129,21 @@ internal sealed class WireRefusalCase : QualificationCase
         var view = Assert.IsType<RestrictedManifestView>(accepted.Value);
         Assert.Equal(canonical.Bytes, RestrictedManifestCodec.Encode(view));
     }
+}
+
+/// <summary>Explicit assertion body for family-level cases (sweeps, multi-input
+/// catalogs) whose expected behavior is committed in the body.</summary>
+internal sealed class ActionCase : QualificationCase
+{
+    private readonly Action action;
+
+    internal ActionCase(string caseId, string fieldId, string mutationClass, string caseClass, string description, Action action)
+        : base(caseId, fieldId, mutationClass, caseClass, description)
+    {
+        this.action = action;
+    }
+
+    internal override void Execute() => action();
 }
 
 /// <summary>Public API misuse (programming error) with the documented exception.</summary>
