@@ -1,0 +1,2918 @@
+{
+  "schema": "gagamba.rc2a-02a.flip-sweep/1",
+  "sourceCommit": "71a28afe2623516fb4176e6a4ce7988a3d70df06",
+  "goldenBytes": 873,
+  "mutations": 222615,
+  "accepted": 114378,
+  "refused": 108237,
+  "invalidValueAtZero": 0,
+  "durationMs": 3387,
+  "errorCounts": {
+    "UnsupportedSchema": 510,
+    "UnsupportedImplementation": 3684,
+    "Truncated": 138,
+    "InvalidLengthOrCount": 49211,
+    "InvalidUtf8": 34042,
+    "InvalidTag": 10700,
+    "InvalidValue": 7605,
+    "NonCanonicalOrder": 2345,
+    "Duplicate": 2
+  },
+  "immutableSlots": [
+    "schema",
+    "implementation",
+    "invocation.toolPath",
+    "invocation.inputPath",
+    "invocation.workDirectory",
+    "authority.noAmbientEnvironment",
+    "authority.noIpcEndpoints",
+    "authority.noExtraFds",
+    "mount.toolExecutable",
+    "core.disabled",
+    "channels.stdinEof",
+    "authority.networkQualification",
+    "resources.inodeQualification"
+  ],
+  "survivors": [
+    {
+      "position": 41,
+      "slot": "namespaces.item[0]",
+      "acceptedValueCount": 108
+    },
+    {
+      "position": 42,
+      "slot": "namespaces.item[0]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 43,
+      "slot": "namespaces.item[0]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 48,
+      "slot": "namespaces.item[1]",
+      "acceptedValueCount": 3
+    },
+    {
+      "position": 49,
+      "slot": "namespaces.item[1]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 50,
+      "slot": "namespaces.item[1]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 51,
+      "slot": "namespaces.item[1]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 52,
+      "slot": "namespaces.item[1]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 57,
+      "slot": "namespaces.item[2]",
+      "acceptedValueCount": 2
+    },
+    {
+      "position": 58,
+      "slot": "namespaces.item[2]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 59,
+      "slot": "namespaces.item[2]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 64,
+      "slot": "namespaces.item[3]",
+      "acceptedValueCount": 7
+    },
+    {
+      "position": 65,
+      "slot": "namespaces.item[3]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 66,
+      "slot": "namespaces.item[3]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 71,
+      "slot": "namespaces.item[4]",
+      "acceptedValueCount": 5
+    },
+    {
+      "position": 72,
+      "slot": "namespaces.item[4]",
+      "acceptedValueCount": 116
+    },
+    {
+      "position": 73,
+      "slot": "namespaces.item[4]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 74,
+      "slot": "namespaces.item[4]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 79,
+      "slot": "namespaces.item[5]",
+      "acceptedValueCount": 10
+    },
+    {
+      "position": 80,
+      "slot": "namespaces.item[5]",
+      "acceptedValueCount": 12
+    },
+    {
+      "position": 81,
+      "slot": "namespaces.item[5]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 86,
+      "slot": "authority.noNewPrivs",
+      "acceptedValueCount": 1
+    },
+    {
+      "position": 87,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 88,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 89,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 90,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 91,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 92,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 93,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 94,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 95,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 96,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 97,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 98,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 99,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 100,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 101,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 102,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 103,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 104,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 105,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 106,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 107,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 108,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 109,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 110,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 111,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 112,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 113,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 114,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 115,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 116,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 117,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 118,
+      "slot": "authority.filterSha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 119,
+      "slot": "authority.filterLength",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 120,
+      "slot": "authority.filterLength",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 121,
+      "slot": "authority.filterLength",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 122,
+      "slot": "authority.filterLength",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 123,
+      "slot": "authority.filterLength",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 124,
+      "slot": "authority.filterLength",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 125,
+      "slot": "authority.filterLength",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 126,
+      "slot": "authority.filterLength",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 135,
+      "slot": "readOnly.item[0]",
+      "acceptedValueCount": 47
+    },
+    {
+      "position": 136,
+      "slot": "readOnly.item[0]",
+      "acceptedValueCount": 104
+    },
+    {
+      "position": 137,
+      "slot": "readOnly.item[0]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 138,
+      "slot": "readOnly.item[0]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 139,
+      "slot": "readOnly.item[0]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 140,
+      "slot": "readOnly.item[0]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 141,
+      "slot": "readOnly.item[0]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 142,
+      "slot": "readOnly.item[0]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 143,
+      "slot": "readOnly.item[0]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 144,
+      "slot": "readOnly.item[0]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 145,
+      "slot": "readOnly.item[0]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 146,
+      "slot": "readOnly.item[0]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 152,
+      "slot": "readOnly.item[1]",
+      "acceptedValueCount": 16
+    },
+    {
+      "position": 153,
+      "slot": "readOnly.item[1]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 154,
+      "slot": "readOnly.item[1]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 155,
+      "slot": "readOnly.item[1]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 156,
+      "slot": "readOnly.item[1]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 157,
+      "slot": "readOnly.item[2]",
+      "acceptedValueCount": 1
+    },
+    {
+      "position": 161,
+      "slot": "readOnly.item[2]",
+      "acceptedValueCount": 80
+    },
+    {
+      "position": 162,
+      "slot": "readOnly.item[2]",
+      "acceptedValueCount": 22
+    },
+    {
+      "position": 163,
+      "slot": "readOnly.item[2]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 164,
+      "slot": "readOnly.item[2]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 165,
+      "slot": "readOnly.item[2]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 174,
+      "slot": "stores.item[0].path",
+      "acceptedValueCount": 47
+    },
+    {
+      "position": 175,
+      "slot": "stores.item[0].path",
+      "acceptedValueCount": 116
+    },
+    {
+      "position": 176,
+      "slot": "stores.item[0].path",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 177,
+      "slot": "stores.item[0].path",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 178,
+      "slot": "stores.item[0].path",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 179,
+      "slot": "stores.item[0].path",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 180,
+      "slot": "stores.item[0].path",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 181,
+      "slot": "stores.item[0].path",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 182,
+      "slot": "stores.item[0].bytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 183,
+      "slot": "stores.item[0].bytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 184,
+      "slot": "stores.item[0].bytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 185,
+      "slot": "stores.item[0].bytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 186,
+      "slot": "stores.item[0].bytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 187,
+      "slot": "stores.item[0].bytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 188,
+      "slot": "stores.item[0].bytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 189,
+      "slot": "stores.item[0].bytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 190,
+      "slot": "stores.item[0].hasInode",
+      "acceptedValueCount": 1
+    },
+    {
+      "position": 203,
+      "slot": "stores.item[1].path",
+      "acceptedValueCount": 80
+    },
+    {
+      "position": 204,
+      "slot": "stores.item[1].path",
+      "acceptedValueCount": 27
+    },
+    {
+      "position": 205,
+      "slot": "stores.item[1].path",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 206,
+      "slot": "stores.item[1].path",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 207,
+      "slot": "stores.item[1].bytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 208,
+      "slot": "stores.item[1].bytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 209,
+      "slot": "stores.item[1].bytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 210,
+      "slot": "stores.item[1].bytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 211,
+      "slot": "stores.item[1].bytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 212,
+      "slot": "stores.item[1].bytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 213,
+      "slot": "stores.item[1].bytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 214,
+      "slot": "stores.item[1].bytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 215,
+      "slot": "stores.item[1].hasInode",
+      "acceptedValueCount": 1
+    },
+    {
+      "position": 228,
+      "slot": "mount.scratchNoexec",
+      "acceptedValueCount": 1
+    },
+    {
+      "position": 231,
+      "slot": "budget.Memory.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 232,
+      "slot": "budget.Memory.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 233,
+      "slot": "budget.Memory.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 234,
+      "slot": "budget.Memory.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 235,
+      "slot": "budget.Memory.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 236,
+      "slot": "budget.Memory.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 237,
+      "slot": "budget.Memory.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 238,
+      "slot": "budget.Memory.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 243,
+      "slot": "budget.Memory.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 244,
+      "slot": "budget.Memory.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 245,
+      "slot": "budget.Memory.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 246,
+      "slot": "budget.Memory.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 247,
+      "slot": "budget.Memory.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 248,
+      "slot": "budget.Memory.qualification",
+      "acceptedValueCount": 1
+    },
+    {
+      "position": 249,
+      "slot": "budget.Swap.kind",
+      "acceptedValueCount": 2
+    },
+    {
+      "position": 250,
+      "slot": "budget.Swap.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 251,
+      "slot": "budget.Swap.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 252,
+      "slot": "budget.Swap.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 253,
+      "slot": "budget.Swap.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 254,
+      "slot": "budget.Swap.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 255,
+      "slot": "budget.Swap.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 256,
+      "slot": "budget.Swap.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 257,
+      "slot": "budget.Swap.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 262,
+      "slot": "budget.Swap.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 263,
+      "slot": "budget.Swap.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 264,
+      "slot": "budget.Swap.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 265,
+      "slot": "budget.Swap.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 266,
+      "slot": "budget.Swap.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 267,
+      "slot": "budget.Swap.qualification",
+      "acceptedValueCount": 1
+    },
+    {
+      "position": 269,
+      "slot": "budget.Tasks.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 270,
+      "slot": "budget.Tasks.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 271,
+      "slot": "budget.Tasks.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 272,
+      "slot": "budget.Tasks.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 273,
+      "slot": "budget.Tasks.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 274,
+      "slot": "budget.Tasks.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 275,
+      "slot": "budget.Tasks.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 276,
+      "slot": "budget.Tasks.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 281,
+      "slot": "budget.Tasks.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 282,
+      "slot": "budget.Tasks.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 283,
+      "slot": "budget.Tasks.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 284,
+      "slot": "budget.Tasks.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 285,
+      "slot": "budget.Tasks.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 286,
+      "slot": "budget.Tasks.qualification",
+      "acceptedValueCount": 1
+    },
+    {
+      "position": 288,
+      "slot": "budget.FileDescriptors.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 289,
+      "slot": "budget.FileDescriptors.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 290,
+      "slot": "budget.FileDescriptors.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 291,
+      "slot": "budget.FileDescriptors.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 292,
+      "slot": "budget.FileDescriptors.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 293,
+      "slot": "budget.FileDescriptors.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 294,
+      "slot": "budget.FileDescriptors.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 295,
+      "slot": "budget.FileDescriptors.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 300,
+      "slot": "budget.FileDescriptors.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 301,
+      "slot": "budget.FileDescriptors.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 302,
+      "slot": "budget.FileDescriptors.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 303,
+      "slot": "budget.FileDescriptors.qualification",
+      "acceptedValueCount": 1
+    },
+    {
+      "position": 305,
+      "slot": "budget.TmpBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 306,
+      "slot": "budget.TmpBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 307,
+      "slot": "budget.TmpBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 308,
+      "slot": "budget.TmpBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 309,
+      "slot": "budget.TmpBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 310,
+      "slot": "budget.TmpBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 311,
+      "slot": "budget.TmpBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 312,
+      "slot": "budget.TmpBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 317,
+      "slot": "budget.TmpBytes.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 318,
+      "slot": "budget.TmpBytes.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 319,
+      "slot": "budget.TmpBytes.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 320,
+      "slot": "budget.TmpBytes.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 321,
+      "slot": "budget.TmpBytes.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 322,
+      "slot": "budget.TmpBytes.qualification",
+      "acceptedValueCount": 1
+    },
+    {
+      "position": 324,
+      "slot": "budget.ShmBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 325,
+      "slot": "budget.ShmBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 326,
+      "slot": "budget.ShmBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 327,
+      "slot": "budget.ShmBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 328,
+      "slot": "budget.ShmBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 329,
+      "slot": "budget.ShmBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 330,
+      "slot": "budget.ShmBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 331,
+      "slot": "budget.ShmBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 336,
+      "slot": "budget.ShmBytes.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 337,
+      "slot": "budget.ShmBytes.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 338,
+      "slot": "budget.ShmBytes.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 339,
+      "slot": "budget.ShmBytes.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 340,
+      "slot": "budget.ShmBytes.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 341,
+      "slot": "budget.ShmBytes.qualification",
+      "acceptedValueCount": 1
+    },
+    {
+      "position": 343,
+      "slot": "budget.StdoutBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 344,
+      "slot": "budget.StdoutBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 345,
+      "slot": "budget.StdoutBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 346,
+      "slot": "budget.StdoutBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 347,
+      "slot": "budget.StdoutBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 348,
+      "slot": "budget.StdoutBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 349,
+      "slot": "budget.StdoutBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 350,
+      "slot": "budget.StdoutBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 355,
+      "slot": "budget.StdoutBytes.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 356,
+      "slot": "budget.StdoutBytes.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 357,
+      "slot": "budget.StdoutBytes.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 358,
+      "slot": "budget.StdoutBytes.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 359,
+      "slot": "budget.StdoutBytes.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 360,
+      "slot": "budget.StdoutBytes.qualification",
+      "acceptedValueCount": 1
+    },
+    {
+      "position": 362,
+      "slot": "budget.StderrBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 363,
+      "slot": "budget.StderrBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 364,
+      "slot": "budget.StderrBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 365,
+      "slot": "budget.StderrBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 366,
+      "slot": "budget.StderrBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 367,
+      "slot": "budget.StderrBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 368,
+      "slot": "budget.StderrBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 369,
+      "slot": "budget.StderrBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 374,
+      "slot": "budget.StderrBytes.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 375,
+      "slot": "budget.StderrBytes.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 376,
+      "slot": "budget.StderrBytes.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 377,
+      "slot": "budget.StderrBytes.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 378,
+      "slot": "budget.StderrBytes.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 379,
+      "slot": "budget.StderrBytes.qualification",
+      "acceptedValueCount": 1
+    },
+    {
+      "position": 381,
+      "slot": "budget.CaptureAggregateBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 382,
+      "slot": "budget.CaptureAggregateBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 383,
+      "slot": "budget.CaptureAggregateBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 384,
+      "slot": "budget.CaptureAggregateBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 385,
+      "slot": "budget.CaptureAggregateBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 386,
+      "slot": "budget.CaptureAggregateBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 387,
+      "slot": "budget.CaptureAggregateBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 388,
+      "slot": "budget.CaptureAggregateBytes.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 393,
+      "slot": "budget.CaptureAggregateBytes.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 394,
+      "slot": "budget.CaptureAggregateBytes.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 395,
+      "slot": "budget.CaptureAggregateBytes.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 396,
+      "slot": "budget.CaptureAggregateBytes.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 397,
+      "slot": "budget.CaptureAggregateBytes.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 398,
+      "slot": "budget.CaptureAggregateBytes.qualification",
+      "acceptedValueCount": 1
+    },
+    {
+      "position": 400,
+      "slot": "budget.SetupTimeoutNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 401,
+      "slot": "budget.SetupTimeoutNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 402,
+      "slot": "budget.SetupTimeoutNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 403,
+      "slot": "budget.SetupTimeoutNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 404,
+      "slot": "budget.SetupTimeoutNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 405,
+      "slot": "budget.SetupTimeoutNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 406,
+      "slot": "budget.SetupTimeoutNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 407,
+      "slot": "budget.SetupTimeoutNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 412,
+      "slot": "budget.SetupTimeoutNs.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 413,
+      "slot": "budget.SetupTimeoutNs.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 414,
+      "slot": "budget.SetupTimeoutNs.qualification",
+      "acceptedValueCount": 1
+    },
+    {
+      "position": 416,
+      "slot": "budget.OverallTimeoutNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 417,
+      "slot": "budget.OverallTimeoutNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 418,
+      "slot": "budget.OverallTimeoutNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 419,
+      "slot": "budget.OverallTimeoutNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 420,
+      "slot": "budget.OverallTimeoutNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 421,
+      "slot": "budget.OverallTimeoutNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 422,
+      "slot": "budget.OverallTimeoutNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 423,
+      "slot": "budget.OverallTimeoutNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 428,
+      "slot": "budget.OverallTimeoutNs.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 429,
+      "slot": "budget.OverallTimeoutNs.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 430,
+      "slot": "budget.OverallTimeoutNs.qualification",
+      "acceptedValueCount": 1
+    },
+    {
+      "position": 432,
+      "slot": "budget.StopAllowanceNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 433,
+      "slot": "budget.StopAllowanceNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 434,
+      "slot": "budget.StopAllowanceNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 435,
+      "slot": "budget.StopAllowanceNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 436,
+      "slot": "budget.StopAllowanceNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 437,
+      "slot": "budget.StopAllowanceNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 438,
+      "slot": "budget.StopAllowanceNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 439,
+      "slot": "budget.StopAllowanceNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 444,
+      "slot": "budget.StopAllowanceNs.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 445,
+      "slot": "budget.StopAllowanceNs.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 446,
+      "slot": "budget.StopAllowanceNs.qualification",
+      "acceptedValueCount": 1
+    },
+    {
+      "position": 448,
+      "slot": "budget.FinalDrainNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 449,
+      "slot": "budget.FinalDrainNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 450,
+      "slot": "budget.FinalDrainNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 451,
+      "slot": "budget.FinalDrainNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 452,
+      "slot": "budget.FinalDrainNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 453,
+      "slot": "budget.FinalDrainNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 454,
+      "slot": "budget.FinalDrainNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 455,
+      "slot": "budget.FinalDrainNs.value",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 460,
+      "slot": "budget.FinalDrainNs.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 461,
+      "slot": "budget.FinalDrainNs.unit",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 462,
+      "slot": "budget.FinalDrainNs.qualification",
+      "acceptedValueCount": 1
+    },
+    {
+      "position": 465,
+      "slot": "core.runtimeDumpsDisabled",
+      "acceptedValueCount": 1
+    },
+    {
+      "position": 467,
+      "slot": "owner.stagingBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 468,
+      "slot": "owner.stagingBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 469,
+      "slot": "owner.stagingBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 470,
+      "slot": "owner.stagingBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 471,
+      "slot": "owner.stagingBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 472,
+      "slot": "owner.stagingBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 473,
+      "slot": "owner.stagingBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 474,
+      "slot": "owner.stagingBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 475,
+      "slot": "owner.stagingObjects",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 476,
+      "slot": "owner.stagingObjects",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 477,
+      "slot": "owner.stagingObjects",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 478,
+      "slot": "owner.stagingObjects",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 479,
+      "slot": "owner.configBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 480,
+      "slot": "owner.configBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 481,
+      "slot": "owner.configBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 482,
+      "slot": "owner.configBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 483,
+      "slot": "owner.configBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 484,
+      "slot": "owner.configBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 485,
+      "slot": "owner.configBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 486,
+      "slot": "owner.configBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 487,
+      "slot": "owner.coordinatorStatusBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 488,
+      "slot": "owner.coordinatorStatusBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 489,
+      "slot": "owner.coordinatorStatusBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 490,
+      "slot": "owner.coordinatorStatusBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 491,
+      "slot": "owner.coordinatorStatusBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 492,
+      "slot": "owner.coordinatorStatusBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 493,
+      "slot": "owner.coordinatorStatusBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 494,
+      "slot": "owner.coordinatorStatusBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 495,
+      "slot": "owner.helperStatusBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 496,
+      "slot": "owner.helperStatusBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 497,
+      "slot": "owner.helperStatusBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 498,
+      "slot": "owner.helperStatusBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 499,
+      "slot": "owner.helperStatusBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 500,
+      "slot": "owner.helperStatusBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 501,
+      "slot": "owner.helperStatusBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 502,
+      "slot": "owner.helperStatusBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 503,
+      "slot": "owner.journalBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 504,
+      "slot": "owner.journalBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 505,
+      "slot": "owner.journalBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 506,
+      "slot": "owner.journalBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 507,
+      "slot": "owner.journalBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 508,
+      "slot": "owner.journalBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 509,
+      "slot": "owner.journalBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 510,
+      "slot": "owner.journalBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 511,
+      "slot": "owner.receiptBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 512,
+      "slot": "owner.receiptBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 513,
+      "slot": "owner.receiptBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 514,
+      "slot": "owner.receiptBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 515,
+      "slot": "owner.receiptBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 516,
+      "slot": "owner.receiptBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 517,
+      "slot": "owner.receiptBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 518,
+      "slot": "owner.receiptBytes",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 527,
+      "slot": "objects.item[0].role",
+      "acceptedValueCount": 104
+    },
+    {
+      "position": 528,
+      "slot": "objects.item[0].role",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 529,
+      "slot": "objects.item[0].role",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 530,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 531,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 532,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 533,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 534,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 535,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 536,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 537,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 538,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 539,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 540,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 541,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 542,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 543,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 544,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 545,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 546,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 547,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 548,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 549,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 550,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 551,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 552,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 553,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 554,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 555,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 556,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 557,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 558,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 559,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 560,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 561,
+      "slot": "objects.item[0].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 562,
+      "slot": "objects.item[0].length",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 563,
+      "slot": "objects.item[0].length",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 564,
+      "slot": "objects.item[0].length",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 565,
+      "slot": "objects.item[0].length",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 566,
+      "slot": "objects.item[0].length",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 567,
+      "slot": "objects.item[0].length",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 568,
+      "slot": "objects.item[0].length",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 569,
+      "slot": "objects.item[0].length",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 574,
+      "slot": "objects.item[0].destination",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 575,
+      "slot": "objects.item[0].destination",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 576,
+      "slot": "objects.item[0].destination",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 577,
+      "slot": "objects.item[0].destination",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 582,
+      "slot": "objects.item[0].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 583,
+      "slot": "objects.item[0].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 584,
+      "slot": "objects.item[0].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 585,
+      "slot": "objects.item[0].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 586,
+      "slot": "objects.item[0].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 587,
+      "slot": "objects.item[0].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 588,
+      "slot": "objects.item[0].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 589,
+      "slot": "objects.item[0].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 590,
+      "slot": "objects.item[0].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 591,
+      "slot": "objects.item[0].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 592,
+      "slot": "objects.item[0].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 593,
+      "slot": "objects.item[0].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 594,
+      "slot": "objects.item[0].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 595,
+      "slot": "objects.item[0].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 600,
+      "slot": "objects.item[1].role",
+      "acceptedValueCount": 18
+    },
+    {
+      "position": 601,
+      "slot": "objects.item[1].role",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 602,
+      "slot": "objects.item[1].role",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 603,
+      "slot": "objects.item[1].role",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 604,
+      "slot": "objects.item[1].role",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 605,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 606,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 607,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 608,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 609,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 610,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 611,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 612,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 613,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 614,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 615,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 616,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 617,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 618,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 619,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 620,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 621,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 622,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 623,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 624,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 625,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 626,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 627,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 628,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 629,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 630,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 631,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 632,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 633,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 634,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 635,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 636,
+      "slot": "objects.item[1].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 637,
+      "slot": "objects.item[1].length",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 638,
+      "slot": "objects.item[1].length",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 639,
+      "slot": "objects.item[1].length",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 640,
+      "slot": "objects.item[1].length",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 641,
+      "slot": "objects.item[1].length",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 642,
+      "slot": "objects.item[1].length",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 643,
+      "slot": "objects.item[1].length",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 644,
+      "slot": "objects.item[1].length",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 649,
+      "slot": "objects.item[1].destination",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 650,
+      "slot": "objects.item[1].destination",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 651,
+      "slot": "objects.item[1].destination",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 652,
+      "slot": "objects.item[1].destination",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 653,
+      "slot": "objects.item[1].destination",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 654,
+      "slot": "objects.item[1].destination",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 659,
+      "slot": "objects.item[1].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 660,
+      "slot": "objects.item[1].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 661,
+      "slot": "objects.item[1].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 662,
+      "slot": "objects.item[1].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 663,
+      "slot": "objects.item[1].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 664,
+      "slot": "objects.item[1].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 669,
+      "slot": "objects.item[2].role",
+      "acceptedValueCount": 22
+    },
+    {
+      "position": 670,
+      "slot": "objects.item[2].role",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 671,
+      "slot": "objects.item[2].role",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 672,
+      "slot": "objects.item[2].role",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 673,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 674,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 675,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 676,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 677,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 678,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 679,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 680,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 681,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 682,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 683,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 684,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 685,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 686,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 687,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 688,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 689,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 690,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 691,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 692,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 693,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 694,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 695,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 696,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 697,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 698,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 699,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 700,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 701,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 702,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 703,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 704,
+      "slot": "objects.item[2].sha",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 705,
+      "slot": "objects.item[2].length",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 706,
+      "slot": "objects.item[2].length",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 707,
+      "slot": "objects.item[2].length",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 708,
+      "slot": "objects.item[2].length",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 709,
+      "slot": "objects.item[2].length",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 710,
+      "slot": "objects.item[2].length",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 711,
+      "slot": "objects.item[2].length",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 712,
+      "slot": "objects.item[2].length",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 717,
+      "slot": "objects.item[2].destination",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 718,
+      "slot": "objects.item[2].destination",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 719,
+      "slot": "objects.item[2].destination",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 720,
+      "slot": "objects.item[2].destination",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 721,
+      "slot": "objects.item[2].destination",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 726,
+      "slot": "objects.item[2].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 727,
+      "slot": "objects.item[2].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 728,
+      "slot": "objects.item[2].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 729,
+      "slot": "objects.item[2].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 730,
+      "slot": "objects.item[2].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 731,
+      "slot": "objects.item[2].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 732,
+      "slot": "objects.item[2].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 733,
+      "slot": "objects.item[2].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 734,
+      "slot": "objects.item[2].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 735,
+      "slot": "objects.item[2].buildIdentity",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 744,
+      "slot": "helpers.item[0]",
+      "acceptedValueCount": 121
+    },
+    {
+      "position": 745,
+      "slot": "helpers.item[0]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 746,
+      "slot": "helpers.item[0]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 747,
+      "slot": "helpers.item[0]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 748,
+      "slot": "helpers.item[0]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 753,
+      "slot": "helpers.item[1]",
+      "acceptedValueCount": 29
+    },
+    {
+      "position": 754,
+      "slot": "helpers.item[1]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 755,
+      "slot": "helpers.item[1]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 756,
+      "slot": "helpers.item[1]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 757,
+      "slot": "helpers.item[1]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 771,
+      "slot": "invocation.mode",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 772,
+      "slot": "invocation.mode",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 773,
+      "slot": "invocation.mode",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 774,
+      "slot": "invocation.mode",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 793,
+      "slot": "argv.item[0]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 794,
+      "slot": "argv.item[0]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 795,
+      "slot": "argv.item[0]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 796,
+      "slot": "argv.item[0]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 801,
+      "slot": "argv.item[1]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 802,
+      "slot": "argv.item[1]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 803,
+      "slot": "argv.item[1]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 804,
+      "slot": "argv.item[1]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 805,
+      "slot": "argv.item[1]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 806,
+      "slot": "argv.item[1]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 815,
+      "slot": "env.key[0]",
+      "acceptedValueCount": 75
+    },
+    {
+      "position": 816,
+      "slot": "env.key[0]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 817,
+      "slot": "env.key[0]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 818,
+      "slot": "env.key[0]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 823,
+      "slot": "env.value[0]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 824,
+      "slot": "env.value[0]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 825,
+      "slot": "env.value[0]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 826,
+      "slot": "env.value[0]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 831,
+      "slot": "env.key[1]",
+      "acceptedValueCount": 54
+    },
+    {
+      "position": 832,
+      "slot": "env.key[1]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 833,
+      "slot": "env.key[1]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 834,
+      "slot": "env.key[1]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 839,
+      "slot": "env.value[1]",
+      "acceptedValueCount": 127
+    },
+    {
+      "position": 849,
+      "slot": "channels.stdoutLimit",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 850,
+      "slot": "channels.stdoutLimit",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 851,
+      "slot": "channels.stdoutLimit",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 852,
+      "slot": "channels.stdoutLimit",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 853,
+      "slot": "channels.stdoutLimit",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 854,
+      "slot": "channels.stdoutLimit",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 855,
+      "slot": "channels.stdoutLimit",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 856,
+      "slot": "channels.stdoutLimit",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 857,
+      "slot": "channels.stderrLimit",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 858,
+      "slot": "channels.stderrLimit",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 859,
+      "slot": "channels.stderrLimit",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 860,
+      "slot": "channels.stderrLimit",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 861,
+      "slot": "channels.stderrLimit",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 862,
+      "slot": "channels.stderrLimit",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 863,
+      "slot": "channels.stderrLimit",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 864,
+      "slot": "channels.stderrLimit",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 865,
+      "slot": "channels.aggregateLimit",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 866,
+      "slot": "channels.aggregateLimit",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 867,
+      "slot": "channels.aggregateLimit",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 868,
+      "slot": "channels.aggregateLimit",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 869,
+      "slot": "channels.aggregateLimit",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 870,
+      "slot": "channels.aggregateLimit",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 871,
+      "slot": "channels.aggregateLimit",
+      "acceptedValueCount": 255
+    },
+    {
+      "position": 872,
+      "slot": "channels.aggregateLimit",
+      "acceptedValueCount": 255
+    }
+  ]
+}

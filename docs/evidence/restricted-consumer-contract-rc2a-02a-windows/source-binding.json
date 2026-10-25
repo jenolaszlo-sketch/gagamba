@@ -1,0 +1,159 @@
+{
+    "scope":  "RC2A-02A Windows qualification source binding",
+    "baseline":  {
+                     "commit":  "49ebbfec4abc7e5e1da2bd492f3ff4e43e14ca4e",
+                     "tree":  "6e94bee4c39801dfa256c158b300b066c0f2f217",
+                     "role":  "owner-acceptance commit; qualification branch created directly from it",
+                     "branch":  "qualification/gagamba-rc2a-02a-windows"
+                 },
+    "acceptedRc2a01":  {
+                           "commit":  "68b01fbb53eefca9c8ca2f83ff50641521020a2a",
+                           "tree":  "54f659d01937da29bc9a5f82566a8349af264664",
+                           "srcTree":  "b8c167e3d7340a562221591bdc2b6df7adb372d1",
+                           "testsTree":  "ceaa7aca8121a1acef5300e074a1f6bc73c0a781",
+                           "nativeTree":  "85631d2f04512376621d3d09f51d67fd90f45335",
+                           "reviewCommit":  "8e41babfc96afa2e617a53b63e50903d54001194",
+                           "reviewTree":  "fd30ef218b2ff5d1422d2e3abddd59c50e11aead",
+                           "reviewBlob":  "d329fcc49d289696bf1c4163f8f346c56115ba8c",
+                           "reviewBlobSha256":  "77d2404c61dbf1af76e8448b966f03482186d95fff5bf6a676a32fe6c7d8e4d0",
+                           "apiContractBlob":  "2d6b9d12cab02f092c6b6e0b690138cf6726f12b"
+                       },
+    "testSource":  {
+                       "commit":  "71a28afe2623516fb4176e6a4ce7988a3d70df06",
+                       "tree":  "70b932148cbfa59b0e424229879eebd36df2d80c",
+                       "srcTree":  "b8c167e3d7340a562221591bdc2b6df7adb372d1",
+                       "testsTree":  "5c3268286575cb55891fae9288627657f2d30ddf",
+                       "nativeTree":  "85631d2f04512376621d3d09f51d67fd90f45335",
+                       "workingTreeCleanDuringRuns":  true
+                   },
+    "commits":  [
+                    {
+                        "commit":  "bd553ecaf3a91f8de9443bea06fd52e3f666bb0d",
+                        "subject":  "test(rc2a-02a): add independent wire template and qualification harness self-tests"
+                    },
+                    {
+                        "commit":  "18aa0db10ae435fcd902e2a32a049d4707dd585e",
+                        "subject":  "test(rc2a-02a): qualify canonical vectors and the A5 refusal catalog"
+                    },
+                    {
+                        "commit":  "49b5eb4e754b82546bac45d1e24f058e64a0613a",
+                        "subject":  "test(rc2a-02a): complete the 72-field mutation matrix"
+                    },
+                    {
+                        "commit":  "71a28afe2623516fb4176e6a4ce7988a3d70df06",
+                        "subject":  "test(rc2a-02a): add boundary, sweep and review follow-up qualification"
+                    }
+                ],
+    "fileInventory":  [
+                          {
+                              "path":  "tests/Gagamba.Execution.Linux.M1.Tests/Qualification/QualificationPrimitives.cs",
+                              "gitBlob":  "da2c77503b80b8e80c9ec53714d9631f9c9687b5",
+                              "bytes":  3774,
+                              "sha256":  "61ef7cabf3b3375b7b11019967c7ffe38a31ca29fbc96919f78cf77370c6734a"
+                          },
+                          {
+                              "path":  "tests/Gagamba.Execution.Linux.M1.Tests/Qualification/QualificationWireTemplate.cs",
+                              "gitBlob":  "268b19efc733b757638f0dcd66ef74a89996ed00",
+                              "bytes":  16415,
+                              "sha256":  "0b91eaaf2a8d84d419b841d4c290fa9239a379a4ff64f52c90e43ac06e1c0b04"
+                          },
+                          {
+                              "path":  "tests/Gagamba.Execution.Linux.M1.Tests/Qualification/QualificationGolden.cs",
+                              "gitBlob":  "601835eb394dfa099567d288fe785a5886767445",
+                              "bytes":  2297,
+                              "sha256":  "a0f2c67af307172e4000cfd2923855eab5e11c2131c5508f77819ca75bb81b23"
+                          },
+                          {
+                              "path":  "tests/Gagamba.Execution.Linux.M1.Tests/Qualification/QualificationModelTools.cs",
+                              "gitBlob":  "95f1daeee0c3a97016bf495ce51d605da772dc35",
+                              "bytes":  6761,
+                              "sha256":  "4c5c071daf8a69fef5f298a6417a473cc68f1a3855b4b47c36698dc679f33f9a"
+                          },
+                          {
+                              "path":  "tests/Gagamba.Execution.Linux.M1.Tests/Qualification/QualificationCaseInfrastructure.cs",
+                              "gitBlob":  "edd539ea88bee693028fd8d2cb733c25b8c4f6ea",
+                              "bytes":  9519,
+                              "sha256":  "75ea063bbe53601ab4b8d513e5ca5ff97e218156e7902c562c6f25e1ffcdcc9d"
+                          },
+                          {
+                              "path":  "tests/Gagamba.Execution.Linux.M1.Tests/Qualification/QualificationHarnessSelfTests.cs",
+                              "gitBlob":  "588db4a81b8be0b9b0b9389ed95fb73e3e479323",
+                              "bytes":  6761,
+                              "sha256":  "1a2e0aa6f66daa4e924defb0151b61ca35f7a20bfcd676ec41e71b84613db603"
+                          },
+                          {
+                              "path":  "tests/Gagamba.Execution.Linux.M1.Tests/Qualification/QualificationRefusalFactories.cs",
+                              "gitBlob":  "7335830ce3c9331afb0ecac949006fcfba83af22",
+                              "bytes":  4164,
+                              "sha256":  "b742e4a59192475796915f290801c29f90ce63d9094bcfa222c7d9957f351deb"
+                          },
+                          {
+                              "path":  "tests/Gagamba.Execution.Linux.M1.Tests/Qualification/QualificationRefusalCatalog.cs",
+                              "gitBlob":  "5ad55eb348f4df9d3d7d05f1d2db6b148a7e280c",
+                              "bytes":  27483,
+                              "sha256":  "5d4f716a4e3290acb2ca0c2b525ab307b5c70f6a7d6c75ce791c379661926f8d"
+                          },
+                          {
+                              "path":  "tests/Gagamba.Execution.Linux.M1.Tests/Qualification/Q2A_V_A5RefusalCatalogTests.cs",
+                              "gitBlob":  "9e1ee506b3f1ddfd78f4117a717350b9fdea611e",
+                              "bytes":  1462,
+                              "sha256":  "5f988b1c0b7476d180512d70db7290dcb5382630b63f872cbfe7deccf629541f"
+                          },
+                          {
+                              "path":  "tests/Gagamba.Execution.Linux.M1.Tests/Qualification/QualificationVectorRecipes.cs",
+                              "gitBlob":  "7e3b132f70628089f58d28ddc8263a703593ee54",
+                              "bytes":  17484,
+                              "sha256":  "9b2d1c5ab409ca31e0c7c65f78139255e685c5391aece77994d43ba364ac1c35"
+                          },
+                          {
+                              "path":  "tests/Gagamba.Execution.Linux.M1.Tests/Qualification/QualificationVectorVerifier.cs",
+                              "gitBlob":  "8435e873bc63d92b2fd759c23b08bfdd7a4a2b3b",
+                              "bytes":  6081,
+                              "sha256":  "fe806f52d23f84aa8274682240920e5be95cb42d9fb5ed8c98c7adea7116a886"
+                          },
+                          {
+                              "path":  "tests/Gagamba.Execution.Linux.M1.Tests/Qualification/QualificationVectorBytes.Generated.cs",
+                              "gitBlob":  "f9d1aadeef589f911aa6ba1e51ad65b54ce6efdd",
+                              "bytes":  250500,
+                              "sha256":  "96b6183252d074ebc34e33e12dbb5b701decf242c82e5c804e8893d58270f121"
+                          },
+                          {
+                              "path":  "tests/Gagamba.Execution.Linux.M1.Tests/Qualification/Q2A_V_VectorQualificationTests.cs",
+                              "gitBlob":  "b3171eaca984d2c4b51e61df95d2a69330b9ebf9",
+                              "bytes":  7667,
+                              "sha256":  "9d28243f6a32ecbaace4668ba06c494806b26d5cd3f71210aa5b7f532aea7bce"
+                          },
+                          {
+                              "path":  "tests/Gagamba.Execution.Linux.M1.Tests/Qualification/QualificationFieldMatrix.cs",
+                              "gitBlob":  "c4697606c152a2b6f661361b8b53f32678f742b5",
+                              "bytes":  54870,
+                              "sha256":  "193555993071ee980c6e0b48bc57cc61ac35c29cff4fe92884a32c4c87509636"
+                          },
+                          {
+                              "path":  "tests/Gagamba.Execution.Linux.M1.Tests/Qualification/Q2A_F_FieldMutationTests.cs",
+                              "gitBlob":  "fa171c1a66488577313ea16f17f3b40d002dc325",
+                              "bytes":  8308,
+                              "sha256":  "4dcfa1b3fc5453c4dd73f327a68de432663c6920c52f9c429066f5fabee1a9a9"
+                          },
+                          {
+                              "path":  "tests/Gagamba.Execution.Linux.M1.Tests/Qualification/Q2A_B_BoundaryTests.cs",
+                              "gitBlob":  "e00916bf30622e0ea9fbf4c4b287ca48d64f1865",
+                              "bytes":  19191,
+                              "sha256":  "3b23fa553f955ae9aba65ff0f2da8489dea45c8ec302b1229498c6172b247783"
+                          },
+                          {
+                              "path":  "tests/Gagamba.Execution.Linux.M1.Tests/Qualification/QualificationEvidenceExports.cs",
+                              "gitBlob":  "5fcc8c51fc12b0a4806c931a6c09d58b1c468789",
+                              "bytes":  10690,
+                              "sha256":  "659312308e5553133d40ce3a9962dd23399e92eb34bf5ad5e56f02286f693e68"
+                          },
+                          {
+                              "path":  "tests/Gagamba.Execution.Tests/Restricted/Rc2a02PublicBoundaryTests.cs",
+                              "gitBlob":  "a0e6693938e7f26470f9a6d740696ed9a2296133",
+                              "bytes":  4318,
+                              "sha256":  "4fbe780bcc72e6cd190c0bca2d9aceb6ee145ae1edd8ad8b77e8292f7387fea6"
+                          }
+                      ],
+    "productionChange":  false,
+    "productionChangeBasis":  "The src and native subtree identities at the test source commit equal the accepted RC2A-01 identities; only test source files were added."
+}

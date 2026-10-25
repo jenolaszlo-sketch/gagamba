@@ -1,0 +1,111 @@
+{
+    "family":  "Q2A-B",
+    "sourceCommit":  "71a28afe2623516fb4176e6a4ce7988a3d70df06",
+    "run":  "runs/windows-required-set.trx",
+    "total":  20,
+    "passed":  20,
+    "failed":  0,
+    "skipped":  0,
+    "cases":  [
+                  {
+                      "name":  "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_B_BoundaryTests.Q2A_B_04_ManifestSize1000000IsRefusedBeforeParsing",
+                      "outcome":  "Passed",
+                      "duration":  "00:00:00.0061716"
+                  },
+                  {
+                      "name":  "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_B_BoundaryTests.Q2A_B_09_Argenv16385OnTheWireRefusesInvalidValueAtTheInvocationEnd",
+                      "outcome":  "Passed",
+                      "duration":  "00:00:00.0007394"
+                  },
+                  {
+                      "name":  "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_B_BoundaryTests.Q2A_B_15_ComputeSha256MatchesIndependentShaForEveryVector",
+                      "outcome":  "Passed",
+                      "duration":  "00:00:00.0017348"
+                  },
+                  {
+                      "name":  "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_B_BoundaryTests.Q2A_B_18_SingleByteFlipSweepEnforcesCanonicalRigidity",
+                      "outcome":  "Passed",
+                      "duration":  "00:00:02.8704372"
+                  },
+                  {
+                      "name":  "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_B_BoundaryTests.Q2A_B_10_NonAsciiBoundaryIsMeasuredInUtf8Bytes",
+                      "outcome":  "Passed",
+                      "duration":  "00:00:00.0008502"
+                  },
+                  {
+                      "name":  "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_B_BoundaryTests.Q2A_B_06_TrailingDataRefusesAtReaderEnd",
+                      "outcome":  "Passed",
+                      "duration":  "00:00:00.0003235"
+                  },
+                  {
+                      "name":  "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_B_BoundaryTests.Q2A_B_01_ManifestSize65535IsAccepted",
+                      "outcome":  "Passed",
+                      "duration":  "00:00:00.0064486"
+                  },
+                  {
+                      "name":  "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_B_BoundaryTests.Q2A_B_12_EmptyArgvItemRefusesOnTheWire",
+                      "outcome":  "Passed",
+                      "duration":  "00:00:00.0005057"
+                  },
+                  {
+                      "name":  "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_B_BoundaryTests.Q2A_B_02_ManifestSize65536IsAccepted",
+                      "outcome":  "Passed",
+                      "duration":  "00:00:00.0090113"
+                  },
+                  {
+                      "name":  "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_B_BoundaryTests.Q2A_B_08_Argenv16385RefusesConstruction",
+                      "outcome":  "Passed",
+                      "duration":  "00:00:00.0004458"
+                  },
+                  {
+                      "name":  "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_B_BoundaryTests.Q2A_B_03_ManifestSize65537IsRefusedSymmetrically",
+                      "outcome":  "Passed",
+                      "duration":  "00:00:00.0009493"
+                  },
+                  {
+                      "name":  "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_B_BoundaryTests.Q2A_B_13_ZeroLengthArgvListIsAcceptedAndEncodesAZeroCount",
+                      "outcome":  "Passed",
+                      "duration":  "00:00:00.0366135"
+                  },
+                  {
+                      "name":  "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_B_BoundaryTests.Q2A_B_14_EmptyArgvItemAndZeroLengthArgvListAreDistinct",
+                      "outcome":  "Passed",
+                      "duration":  "00:00:00.0014748"
+                  },
+                  {
+                      "name":  "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_B_BoundaryTests.Q2A_B_19_ReencodeBranchAssessmentProbe",
+                      "outcome":  "Passed",
+                      "duration":  "00:00:00.0157048"
+                  },
+                  {
+                      "name":  "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_B_BoundaryTests.Q2A_B_16_IdentifierBehaviorMatchesTheQualifiedCases",
+                      "outcome":  "Passed",
+                      "duration":  "00:00:00.0008673"
+                  },
+                  {
+                      "name":  "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_B_BoundaryTests.Q2A_B_07_ArgenvBoundaryIsAcceptedAtTheInclusiveCeiling(bytes: 16383)",
+                      "outcome":  "Passed",
+                      "duration":  "00:00:00.0013740"
+                  },
+                  {
+                      "name":  "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_B_BoundaryTests.Q2A_B_07_ArgenvBoundaryIsAcceptedAtTheInclusiveCeiling(bytes: 16384)",
+                      "outcome":  "Passed",
+                      "duration":  "00:00:00.0024865"
+                  },
+                  {
+                      "name":  "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_B_BoundaryTests.Q2A_B_11_EmptyArgvItemRefusesConstruction",
+                      "outcome":  "Passed",
+                      "duration":  "00:00:00.0005410"
+                  },
+                  {
+                      "name":  "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_B_BoundaryTests.Q2A_B_17_EveryProperGoldenPrefixRefusesWithoutPartialValue",
+                      "outcome":  "Passed",
+                      "duration":  "00:00:00.0075261"
+                  },
+                  {
+                      "name":  "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_B_BoundaryTests.Q2A_B_05_EmptyInputRefusesEmptyInputAtZero",
+                      "outcome":  "Passed",
+                      "duration":  "00:00:00.0002081"
+                  }
+              ]
+}

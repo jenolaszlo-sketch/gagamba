@@ -436,3 +436,34 @@ execution authorization for any declared run.
    failed attempts and limitations (E5).
 5. Stop; hand off for independent review (3.F) and owner disposition of any
    findings. No further work is authorized by passing alone.
+
+## 8. RC2A-02A execution correction (2026-10-25)
+
+The RC2A-02A Windows execution discovered that the literal Section 3 B6
+characterization ("no mutation outside the two raw 32-byte digest fields is
+accepted") does not match the accepted decoder. Observed: of 222,615 single-byte
+mutations over the 873-byte golden (each byte position set to each of its 255
+alternative values), 114,378 are accepted. Accepted mutations include raw digest
+bytes, other scalar values, free-text content, free boolean/enum tag bytes, and
+length-prefix bytes that re-segment the same byte string into a different, fully
+canonical manifest (for example golden byte 157 set to 0x3B). Every accepted
+mutation re-encodes byte-for-byte, so no noncanonical image was accepted.
+
+Corrected row (effective for RC2A-02A and later executions):
+
+> A single-byte flip sweep over the golden asserts **canonical rigidity**: for
+> each mutation, either the decoder refuses with a code and an in-range exact
+> offset, or it accepts the mutation and Encode(Decode(x)) equals x
+> byte-for-byte. The survivor set is classified against the committed
+> immutable-region map (schema, implementation ID, fixed path strings,
+> forced-true booleans, pending-only qualification tags), which must contain no
+> survivor; the complete survivor profile (positions, slots, accepted value
+> counts) is preserved as evidence. The claim that only digest-field mutations
+> are accepted is withdrawn.
+
+This correction was found during execution and is recorded per the Section 3 rule
+that a wrong expectation is not silently adjusted. It changes no production
+behavior, does not relax the decoder contract, and affects no other row. Evidence:
+`docs/evidence/restricted-consumer-contract-rc2a-02a-windows/findings.md`
+(Q2A02A-F01), `exports/flip-sweep-survivors.json` and the preserved first failing
+run under `runs/failed-attempts/`.

@@ -1,0 +1,11 @@
+captured_at_local=2026-10-25T14:39:25.1852608+08:00
+os=Microsoft Windows NT 10.0.26200.0
+os_architecture=AMD64
+machine=LAPTOP-KBD8D8JG
+dotnet_version=10.0.401
+dotnet_sdks=10.0.401 [C:\Program Files\dotnet\sdk]
+dotnet_runtimes=Microsoft.AspNetCore.App 8.0.31 [C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App]; Microsoft.AspNetCore.App 9.0.20 [C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App]; Microsoft.AspNetCore.App 10.0.12 [C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App]; Microsoft.NETCore.App 8.0.31 [C:\Program Files\dotnet\shared\Microsoft.NETCore.App]; Microsoft.NETCore.App 9.0.20 [C:\Program Files\dotnet\shared\Microsoft.NETCore.App]; Microsoft.NETCore.App 10.0.12 [C:\Program Files\dotnet\shared\Microsoft.NETCore.App]; Microsoft.WindowsDesktop.App 8.0.31 [C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App]; Microsoft.WindowsDesktop.App 9.0.20 [C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App]; Microsoft.WindowsDesktop.App 10.0.12 [C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App]
+powershell=5.1.26100.9711
+git_commit=71a28afe2623516fb4176e6a4ce7988a3d70df06
+git_tree=70b932148cbfa59b0e424229879eebd36df2d80c
+test_framework=xunit.v3 3.2.0; xunit.runner.visualstudio 3.1.4; Microsoft.NET.Test.Sdk 18.0.1; net10.0

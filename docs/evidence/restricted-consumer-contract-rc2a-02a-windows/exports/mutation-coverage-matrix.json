@@ -1,0 +1,4201 @@
+{
+  "schema": "gagamba.rc2a-02a.mutation-coverage/1",
+  "sourceCommit": "71a28afe2623516fb4176e6a4ce7988a3d70df06",
+  "fieldCount": 72,
+  "caseCount": 279,
+  "classes": [
+    "valid",
+    "boundary",
+    "presence",
+    "tag",
+    "forced",
+    "order",
+    "duplicate",
+    "length",
+    "utf8",
+    "cross",
+    "empty",
+    "supported-id",
+    "misuse",
+    "trace"
+  ],
+  "fields": [
+    {
+      "index": 1,
+      "fieldId": "RestrictedManifest.SchemaVersion",
+      "kind": "schema",
+      "applicable": {
+        "supported-id": [
+          "Q2A-F-01-supported-id"
+        ]
+      },
+      "notApplicable": {
+        "valid": "Only schema 1 is accepted; there is no valid alternative schema.",
+        "boundary": "The boundary mutation class does not apply to a schema field.",
+        "presence": "The presence mutation class does not apply to a schema field.",
+        "tag": "Schema version is a u16 field, not a one-byte tag.",
+        "forced": "Schema refusal is UnsupportedSchema, recorded under supported-id.",
+        "order": "The order mutation class does not apply to a schema field.",
+        "duplicate": "The duplicate mutation class does not apply to a schema field.",
+        "length": "The length mutation class does not apply to a schema field.",
+        "utf8": "The utf8 mutation class does not apply to a schema field.",
+        "cross": "The cross mutation class does not apply to a schema field.",
+        "empty": "The empty mutation class does not apply to a schema field.",
+        "misuse": "The misuse mutation class does not apply to a schema field.",
+        "trace": "The trace mutation class does not apply to a schema field."
+      },
+      "caseCount": 1
+    },
+    {
+      "index": 2,
+      "fieldId": "RestrictedManifest.ImplementationId",
+      "kind": "implementation-id",
+      "applicable": {
+        "supported-id": [
+          "Q2A-F-02-supported-id"
+        ],
+        "utf8": [
+          "Q2A-F-02-utf8"
+        ],
+        "length": [
+          "Q2A-F-02-length"
+        ],
+        "misuse": [
+          "Q2A-F-02-misuse"
+        ]
+      },
+      "notApplicable": {
+        "valid": "The valid mutation class does not apply to a implementation-id field.",
+        "boundary": "The boundary mutation class does not apply to a implementation-id field.",
+        "presence": "The presence mutation class does not apply to a implementation-id field.",
+        "tag": "The tag mutation class does not apply to a implementation-id field.",
+        "forced": "Implementation refusal is UnsupportedImplementation/InvalidValue, recorded under supported-id.",
+        "order": "The order mutation class does not apply to a implementation-id field.",
+        "duplicate": "The duplicate mutation class does not apply to a implementation-id field.",
+        "cross": "The cross mutation class does not apply to a implementation-id field.",
+        "empty": "The empty mutation class does not apply to a implementation-id field.",
+        "trace": "The trace mutation class does not apply to a implementation-id field."
+      },
+      "caseCount": 4
+    },
+    {
+      "index": 3,
+      "fieldId": "RestrictedManifest.Authority",
+      "kind": "composite",
+      "applicable": {
+        "trace": [
+          "Q2A-F-03-trace"
+        ]
+      },
+      "notApplicable": {
+        "valid": "Composite value; valid mutations are covered by its subfield rows.",
+        "boundary": "The boundary mutation class does not apply to a composite field.",
+        "presence": "The presence mutation class does not apply to a composite field.",
+        "tag": "Composite value; tag mutations are covered by its subfield rows.",
+        "forced": "The forced mutation class does not apply to a composite field.",
+        "order": "The order mutation class does not apply to a composite field.",
+        "duplicate": "The duplicate mutation class does not apply to a composite field.",
+        "length": "The length mutation class does not apply to a composite field.",
+        "utf8": "The utf8 mutation class does not apply to a composite field.",
+        "cross": "The cross mutation class does not apply to a composite field.",
+        "empty": "The empty mutation class does not apply to a composite field.",
+        "supported-id": "The supported-id mutation class does not apply to a composite field.",
+        "misuse": "The misuse mutation class does not apply to a composite field."
+      },
+      "caseCount": 1
+    },
+    {
+      "index": 4,
+      "fieldId": "RestrictedManifest.Resources",
+      "kind": "composite",
+      "applicable": {
+        "trace": [
+          "Q2A-F-04-trace"
+        ]
+      },
+      "notApplicable": {
+        "valid": "Composite value; valid mutations are covered by its subfield rows.",
+        "boundary": "The boundary mutation class does not apply to a composite field.",
+        "presence": "The presence mutation class does not apply to a composite field.",
+        "tag": "Composite value; tag mutations are covered by its subfield rows.",
+        "forced": "The forced mutation class does not apply to a composite field.",
+        "order": "The order mutation class does not apply to a composite field.",
+        "duplicate": "The duplicate mutation class does not apply to a composite field.",
+        "length": "The length mutation class does not apply to a composite field.",
+        "utf8": "The utf8 mutation class does not apply to a composite field.",
+        "cross": "The cross mutation class does not apply to a composite field.",
+        "empty": "The empty mutation class does not apply to a composite field.",
+        "supported-id": "The supported-id mutation class does not apply to a composite field.",
+        "misuse": "The misuse mutation class does not apply to a composite field."
+      },
+      "caseCount": 1
+    },
+    {
+      "index": 5,
+      "fieldId": "RestrictedManifest.Closure",
+      "kind": "composite",
+      "applicable": {
+        "trace": [
+          "Q2A-F-05-trace"
+        ]
+      },
+      "notApplicable": {
+        "valid": "Composite value; valid mutations are covered by its subfield rows.",
+        "boundary": "The boundary mutation class does not apply to a composite field.",
+        "presence": "The presence mutation class does not apply to a composite field.",
+        "tag": "Composite value; tag mutations are covered by its subfield rows.",
+        "forced": "The forced mutation class does not apply to a composite field.",
+        "order": "The order mutation class does not apply to a composite field.",
+        "duplicate": "The duplicate mutation class does not apply to a composite field.",
+        "length": "The length mutation class does not apply to a composite field.",
+        "utf8": "The utf8 mutation class does not apply to a composite field.",
+        "cross": "The cross mutation class does not apply to a composite field.",
+        "empty": "The empty mutation class does not apply to a composite field.",
+        "supported-id": "The supported-id mutation class does not apply to a composite field.",
+        "misuse": "The misuse mutation class does not apply to a composite field."
+      },
+      "caseCount": 1
+    },
+    {
+      "index": 6,
+      "fieldId": "RestrictedManifest.Invocation",
+      "kind": "composite",
+      "applicable": {
+        "trace": [
+          "Q2A-F-06-trace"
+        ]
+      },
+      "notApplicable": {
+        "valid": "Composite value; valid mutations are covered by its subfield rows.",
+        "boundary": "The boundary mutation class does not apply to a composite field.",
+        "presence": "The presence mutation class does not apply to a composite field.",
+        "tag": "Composite value; tag mutations are covered by its subfield rows.",
+        "forced": "The forced mutation class does not apply to a composite field.",
+        "order": "The order mutation class does not apply to a composite field.",
+        "duplicate": "The duplicate mutation class does not apply to a composite field.",
+        "length": "The length mutation class does not apply to a composite field.",
+        "utf8": "The utf8 mutation class does not apply to a composite field.",
+        "cross": "The cross mutation class does not apply to a composite field.",
+        "empty": "The empty mutation class does not apply to a composite field.",
+        "supported-id": "The supported-id mutation class does not apply to a composite field.",
+        "misuse": "The misuse mutation class does not apply to a composite field."
+      },
+      "caseCount": 1
+    },
+    {
+      "index": 7,
+      "fieldId": "RestrictedManifest.Channels",
+      "kind": "composite",
+      "applicable": {
+        "trace": [
+          "Q2A-F-07-trace"
+        ]
+      },
+      "notApplicable": {
+        "valid": "Composite value; valid mutations are covered by its subfield rows.",
+        "boundary": "The boundary mutation class does not apply to a composite field.",
+        "presence": "The presence mutation class does not apply to a composite field.",
+        "tag": "Composite value; tag mutations are covered by its subfield rows.",
+        "forced": "The forced mutation class does not apply to a composite field.",
+        "order": "The order mutation class does not apply to a composite field.",
+        "duplicate": "The duplicate mutation class does not apply to a composite field.",
+        "length": "The length mutation class does not apply to a composite field.",
+        "utf8": "The utf8 mutation class does not apply to a composite field.",
+        "cross": "The cross mutation class does not apply to a composite field.",
+        "empty": "The empty mutation class does not apply to a composite field.",
+        "supported-id": "The supported-id mutation class does not apply to a composite field.",
+        "misuse": "The misuse mutation class does not apply to a composite field."
+      },
+      "caseCount": 1
+    },
+    {
+      "index": 8,
+      "fieldId": "AuthorityManifest.Namespaces",
+      "kind": "collection-ordered",
+      "applicable": {
+        "valid": [
+          "Q2A-F-08-valid"
+        ],
+        "boundary": [
+          "Q2A-F-08-boundary-empty",
+          "Q2A-F-08-boundary-multi"
+        ],
+        "order": [
+          "Q2A-F-08-order"
+        ],
+        "duplicate": [
+          "Q2A-F-08-duplicate"
+        ],
+        "length": [
+          "Q2A-F-08-length"
+        ],
+        "utf8": [
+          "Q2A-F-08-utf8"
+        ],
+        "empty": [
+          "Q2A-F-08-empty"
+        ]
+      },
+      "notApplicable": {
+        "presence": "The presence mutation class does not apply to a collection-ordered field.",
+        "tag": "The tag mutation class does not apply to a collection-ordered field.",
+        "forced": "The forced mutation class does not apply to a collection-ordered field.",
+        "cross": "The cross mutation class does not apply to a collection-ordered field.",
+        "supported-id": "The supported-id mutation class does not apply to a collection-ordered field.",
+        "misuse": "The misuse mutation class does not apply to a collection-ordered field.",
+        "trace": "The trace mutation class does not apply to a collection-ordered field."
+      },
+      "caseCount": 8
+    },
+    {
+      "index": 9,
+      "fieldId": "AuthorityManifest.Capabilities",
+      "kind": "collection-empty",
+      "applicable": {
+        "length": [
+          "Q2A-F-09-length"
+        ],
+        "forced": [
+          "Q2A-F-09-forced"
+        ]
+      },
+      "notApplicable": {
+        "valid": "The capability set is forced empty; no nonempty value is representable.",
+        "boundary": "The boundary mutation class does not apply to a collection-empty field.",
+        "presence": "The presence mutation class does not apply to a collection-empty field.",
+        "tag": "The tag mutation class does not apply to a collection-empty field.",
+        "order": "Ordering is not applicable to a forced-empty set.",
+        "duplicate": "Duplicates are not applicable to a forced-empty set.",
+        "utf8": "Item encoding is not reachable because any item refuses.",
+        "cross": "The cross mutation class does not apply to a collection-empty field.",
+        "empty": "An empty item would first refuse as a nonempty-set violation.",
+        "supported-id": "The supported-id mutation class does not apply to a collection-empty field.",
+        "misuse": "The misuse mutation class does not apply to a collection-empty field.",
+        "trace": "The trace mutation class does not apply to a collection-empty field."
+      },
+      "caseCount": 2
+    },
+    {
+      "index": 10,
+      "fieldId": "AuthorityManifest.NoNewPrivs",
+      "kind": "bool-free",
+      "applicable": {
+        "valid": [
+          "Q2A-F-10-valid"
+        ],
+        "tag": [
+          "Q2A-F-10-tag"
+        ]
+      },
+      "notApplicable": {
+        "boundary": "The boundary mutation class does not apply to a bool-free field.",
+        "presence": "The presence mutation class does not apply to a bool-free field.",
+        "forced": "The forced mutation class does not apply to a bool-free field.",
+        "order": "The order mutation class does not apply to a bool-free field.",
+        "duplicate": "The duplicate mutation class does not apply to a bool-free field.",
+        "length": "The length mutation class does not apply to a bool-free field.",
+        "utf8": "The utf8 mutation class does not apply to a bool-free field.",
+        "cross": "The cross mutation class does not apply to a bool-free field.",
+        "empty": "The empty mutation class does not apply to a bool-free field.",
+        "supported-id": "The supported-id mutation class does not apply to a bool-free field.",
+        "misuse": "The misuse mutation class does not apply to a bool-free field.",
+        "trace": "The trace mutation class does not apply to a bool-free field."
+      },
+      "caseCount": 2
+    },
+    {
+      "index": 11,
+      "fieldId": "AuthorityManifest.FilterSha256",
+      "kind": "bytes32",
+      "applicable": {
+        "valid": [
+          "Q2A-F-11-valid"
+        ]
+      },
+      "notApplicable": {
+        "boundary": "The boundary mutation class does not apply to a bytes32 field.",
+        "presence": "The presence mutation class does not apply to a bytes32 field.",
+        "tag": "The tag mutation class does not apply to a bytes32 field.",
+        "forced": "The forced mutation class does not apply to a bytes32 field.",
+        "order": "The order mutation class does not apply to a bytes32 field.",
+        "duplicate": "The duplicate mutation class does not apply to a bytes32 field.",
+        "length": "Fixed 32-byte fields have no length prefix; short input is the truncation family (B6).",
+        "utf8": "Raw digest bytes are not UTF-8 text.",
+        "cross": "The cross mutation class does not apply to a bytes32 field.",
+        "empty": "The empty mutation class does not apply to a bytes32 field.",
+        "supported-id": "The supported-id mutation class does not apply to a bytes32 field.",
+        "misuse": "The misuse mutation class does not apply to a bytes32 field.",
+        "trace": "The trace mutation class does not apply to a bytes32 field."
+      },
+      "caseCount": 1
+    },
+    {
+      "index": 12,
+      "fieldId": "AuthorityManifest.FilterLength",
+      "kind": "u64",
+      "applicable": {
+        "valid": [
+          "Q2A-F-12-valid"
+        ],
+        "boundary": [
+          "Q2A-F-12-boundary-min",
+          "Q2A-F-12-boundary-max"
+        ]
+      },
+      "notApplicable": {
+        "presence": "The presence mutation class does not apply to a u64 field.",
+        "tag": "The tag mutation class does not apply to a u64 field.",
+        "forced": "The forced mutation class does not apply to a u64 field.",
+        "order": "The order mutation class does not apply to a u64 field.",
+        "duplicate": "The duplicate mutation class does not apply to a u64 field.",
+        "length": "The length mutation class does not apply to a u64 field.",
+        "utf8": "Numeric fields are not UTF-8 text.",
+        "cross": "The cross mutation class does not apply to a u64 field.",
+        "empty": "The empty mutation class does not apply to a u64 field.",
+        "supported-id": "The supported-id mutation class does not apply to a u64 field.",
+        "misuse": "The misuse mutation class does not apply to a u64 field.",
+        "trace": "The trace mutation class does not apply to a u64 field."
+      },
+      "caseCount": 3
+    },
+    {
+      "index": 13,
+      "fieldId": "AuthorityManifest.ReadOnlyDestinations",
+      "kind": "collection-ordered",
+      "applicable": {
+        "valid": [
+          "Q2A-F-13-valid"
+        ],
+        "boundary": [
+          "Q2A-F-13-boundary-empty",
+          "Q2A-F-13-boundary-multi"
+        ],
+        "order": [
+          "Q2A-F-13-order"
+        ],
+        "duplicate": [
+          "Q2A-F-13-duplicate"
+        ],
+        "length": [
+          "Q2A-F-13-length"
+        ],
+        "utf8": [
+          "Q2A-F-13-utf8"
+        ],
+        "empty": [
+          "Q2A-F-13-empty"
+        ]
+      },
+      "notApplicable": {
+        "presence": "The presence mutation class does not apply to a collection-ordered field.",
+        "tag": "The tag mutation class does not apply to a collection-ordered field.",
+        "forced": "The forced mutation class does not apply to a collection-ordered field.",
+        "cross": "The cross mutation class does not apply to a collection-ordered field.",
+        "supported-id": "The supported-id mutation class does not apply to a collection-ordered field.",
+        "misuse": "The misuse mutation class does not apply to a collection-ordered field.",
+        "trace": "The trace mutation class does not apply to a collection-ordered field."
+      },
+      "caseCount": 8
+    },
+    {
+      "index": 14,
+      "fieldId": "AuthorityManifest.WritableStores",
+      "kind": "collection-ordered",
+      "applicable": {
+        "valid": [
+          "Q2A-F-14-valid"
+        ],
+        "boundary": [
+          "Q2A-F-14-boundary-empty",
+          "Q2A-F-14-boundary-multi"
+        ],
+        "order": [
+          "Q2A-F-14-order"
+        ],
+        "duplicate": [
+          "Q2A-F-14-duplicate"
+        ],
+        "length": [
+          "Q2A-F-14-length"
+        ],
+        "utf8": [
+          "Q2A-F-14-utf8"
+        ],
+        "empty": [
+          "Q2A-F-14-empty"
+        ]
+      },
+      "notApplicable": {
+        "presence": "The presence mutation class does not apply to a collection-ordered field.",
+        "tag": "The tag mutation class does not apply to a collection-ordered field.",
+        "forced": "The forced mutation class does not apply to a collection-ordered field.",
+        "cross": "The cross mutation class does not apply to a collection-ordered field.",
+        "supported-id": "The supported-id mutation class does not apply to a collection-ordered field.",
+        "misuse": "The misuse mutation class does not apply to a collection-ordered field.",
+        "trace": "The trace mutation class does not apply to a collection-ordered field."
+      },
+      "caseCount": 8
+    },
+    {
+      "index": 15,
+      "fieldId": "AuthorityManifest.NoAmbientEnvironment",
+      "kind": "bool-forced",
+      "applicable": {
+        "tag": [
+          "Q2A-F-15-tag"
+        ],
+        "forced": [
+          "Q2A-F-15-forced"
+        ]
+      },
+      "notApplicable": {
+        "valid": "The valid mutation class does not apply to a bool-forced field.",
+        "boundary": "The boundary mutation class does not apply to a bool-forced field.",
+        "presence": "The presence mutation class does not apply to a bool-forced field.",
+        "order": "The order mutation class does not apply to a bool-forced field.",
+        "duplicate": "The duplicate mutation class does not apply to a bool-forced field.",
+        "length": "The length mutation class does not apply to a bool-forced field.",
+        "utf8": "The utf8 mutation class does not apply to a bool-forced field.",
+        "cross": "The cross mutation class does not apply to a bool-forced field.",
+        "empty": "The empty mutation class does not apply to a bool-forced field.",
+        "supported-id": "The supported-id mutation class does not apply to a bool-forced field.",
+        "misuse": "The misuse mutation class does not apply to a bool-forced field.",
+        "trace": "The trace mutation class does not apply to a bool-forced field."
+      },
+      "caseCount": 2
+    },
+    {
+      "index": 16,
+      "fieldId": "AuthorityManifest.NoIpcEndpoints",
+      "kind": "bool-forced",
+      "applicable": {
+        "tag": [
+          "Q2A-F-16-tag"
+        ],
+        "forced": [
+          "Q2A-F-16-forced"
+        ]
+      },
+      "notApplicable": {
+        "valid": "The valid mutation class does not apply to a bool-forced field.",
+        "boundary": "The boundary mutation class does not apply to a bool-forced field.",
+        "presence": "The presence mutation class does not apply to a bool-forced field.",
+        "order": "The order mutation class does not apply to a bool-forced field.",
+        "duplicate": "The duplicate mutation class does not apply to a bool-forced field.",
+        "length": "The length mutation class does not apply to a bool-forced field.",
+        "utf8": "The utf8 mutation class does not apply to a bool-forced field.",
+        "cross": "The cross mutation class does not apply to a bool-forced field.",
+        "empty": "The empty mutation class does not apply to a bool-forced field.",
+        "supported-id": "The supported-id mutation class does not apply to a bool-forced field.",
+        "misuse": "The misuse mutation class does not apply to a bool-forced field.",
+        "trace": "The trace mutation class does not apply to a bool-forced field."
+      },
+      "caseCount": 2
+    },
+    {
+      "index": 17,
+      "fieldId": "AuthorityManifest.NoExtraInheritedFds",
+      "kind": "bool-forced",
+      "applicable": {
+        "tag": [
+          "Q2A-F-17-tag"
+        ],
+        "forced": [
+          "Q2A-F-17-forced"
+        ]
+      },
+      "notApplicable": {
+        "valid": "The valid mutation class does not apply to a bool-forced field.",
+        "boundary": "The boundary mutation class does not apply to a bool-forced field.",
+        "presence": "The presence mutation class does not apply to a bool-forced field.",
+        "order": "The order mutation class does not apply to a bool-forced field.",
+        "duplicate": "The duplicate mutation class does not apply to a bool-forced field.",
+        "length": "The length mutation class does not apply to a bool-forced field.",
+        "utf8": "The utf8 mutation class does not apply to a bool-forced field.",
+        "cross": "The cross mutation class does not apply to a bool-forced field.",
+        "empty": "The empty mutation class does not apply to a bool-forced field.",
+        "supported-id": "The supported-id mutation class does not apply to a bool-forced field.",
+        "misuse": "The misuse mutation class does not apply to a bool-forced field.",
+        "trace": "The trace mutation class does not apply to a bool-forced field."
+      },
+      "caseCount": 2
+    },
+    {
+      "index": 18,
+      "fieldId": "AuthorityManifest.MountPolicy",
+      "kind": "composite",
+      "applicable": {
+        "trace": [
+          "Q2A-F-18-trace"
+        ]
+      },
+      "notApplicable": {
+        "valid": "Composite value; valid mutations are covered by its subfield rows.",
+        "boundary": "The boundary mutation class does not apply to a composite field.",
+        "presence": "The presence mutation class does not apply to a composite field.",
+        "tag": "Composite value; tag mutations are covered by its subfield rows.",
+        "forced": "The forced mutation class does not apply to a composite field.",
+        "order": "The order mutation class does not apply to a composite field.",
+        "duplicate": "The duplicate mutation class does not apply to a composite field.",
+        "length": "The length mutation class does not apply to a composite field.",
+        "utf8": "The utf8 mutation class does not apply to a composite field.",
+        "cross": "The cross mutation class does not apply to a composite field.",
+        "empty": "The empty mutation class does not apply to a composite field.",
+        "supported-id": "The supported-id mutation class does not apply to a composite field.",
+        "misuse": "The misuse mutation class does not apply to a composite field."
+      },
+      "caseCount": 1
+    },
+    {
+      "index": 19,
+      "fieldId": "AuthorityManifest.NetworkQualification",
+      "kind": "enum-pending",
+      "applicable": {
+        "tag": [
+          "Q2A-F-19-tag"
+        ],
+        "forced": [
+          "Q2A-F-19-forced"
+        ]
+      },
+      "notApplicable": {
+        "valid": "The valid mutation class does not apply to a enum-pending field.",
+        "boundary": "The boundary mutation class does not apply to a enum-pending field.",
+        "presence": "The presence mutation class does not apply to a enum-pending field.",
+        "order": "The order mutation class does not apply to a enum-pending field.",
+        "duplicate": "The duplicate mutation class does not apply to a enum-pending field.",
+        "length": "The length mutation class does not apply to a enum-pending field.",
+        "utf8": "The utf8 mutation class does not apply to a enum-pending field.",
+        "cross": "The cross mutation class does not apply to a enum-pending field.",
+        "empty": "The empty mutation class does not apply to a enum-pending field.",
+        "supported-id": "The supported-id mutation class does not apply to a enum-pending field.",
+        "misuse": "The misuse mutation class does not apply to a enum-pending field.",
+        "trace": "The trace mutation class does not apply to a enum-pending field."
+      },
+      "caseCount": 2
+    },
+    {
+      "index": 20,
+      "fieldId": "ResourceManifest.Memory",
+      "kind": "budget",
+      "applicable": {
+        "valid": [
+          "Q2A-F-20-valid"
+        ],
+        "boundary": [
+          "Q2A-F-20-boundary-min",
+          "Q2A-F-20-boundary-max"
+        ],
+        "presence": [
+          "Q2A-F-20-presence-absent",
+          "Q2A-F-20-presence-exact-zero",
+          "Q2A-F-20-presence-unlimited"
+        ],
+        "cross": [
+          "Q2A-F-20-cross"
+        ]
+      },
+      "notApplicable": {
+        "tag": "The tag mutation class does not apply to a budget field.",
+        "forced": "The forced mutation class does not apply to a budget field.",
+        "order": "The order mutation class does not apply to a budget field.",
+        "duplicate": "The duplicate mutation class does not apply to a budget field.",
+        "length": "The length mutation class does not apply to a budget field.",
+        "utf8": "The utf8 mutation class does not apply to a budget field.",
+        "empty": "The empty mutation class does not apply to a budget field.",
+        "supported-id": "The supported-id mutation class does not apply to a budget field.",
+        "misuse": "The misuse mutation class does not apply to a budget field.",
+        "trace": "The trace mutation class does not apply to a budget field."
+      },
+      "caseCount": 7
+    },
+    {
+      "index": 21,
+      "fieldId": "ResourceManifest.Swap",
+      "kind": "budget",
+      "applicable": {
+        "valid": [
+          "Q2A-F-21-valid"
+        ],
+        "boundary": [
+          "Q2A-F-21-boundary-min",
+          "Q2A-F-21-boundary-max"
+        ],
+        "presence": [
+          "Q2A-F-21-presence-absent",
+          "Q2A-F-21-presence-exact-zero",
+          "Q2A-F-21-presence-unlimited"
+        ],
+        "cross": [
+          "Q2A-F-21-cross"
+        ]
+      },
+      "notApplicable": {
+        "tag": "The tag mutation class does not apply to a budget field.",
+        "forced": "The forced mutation class does not apply to a budget field.",
+        "order": "The order mutation class does not apply to a budget field.",
+        "duplicate": "The duplicate mutation class does not apply to a budget field.",
+        "length": "The length mutation class does not apply to a budget field.",
+        "utf8": "The utf8 mutation class does not apply to a budget field.",
+        "empty": "The empty mutation class does not apply to a budget field.",
+        "supported-id": "The supported-id mutation class does not apply to a budget field.",
+        "misuse": "The misuse mutation class does not apply to a budget field.",
+        "trace": "The trace mutation class does not apply to a budget field."
+      },
+      "caseCount": 7
+    },
+    {
+      "index": 22,
+      "fieldId": "ResourceManifest.Tasks",
+      "kind": "budget",
+      "applicable": {
+        "valid": [
+          "Q2A-F-22-valid"
+        ],
+        "boundary": [
+          "Q2A-F-22-boundary-min",
+          "Q2A-F-22-boundary-max"
+        ],
+        "presence": [
+          "Q2A-F-22-presence-absent",
+          "Q2A-F-22-presence-exact-zero",
+          "Q2A-F-22-presence-unlimited"
+        ],
+        "cross": [
+          "Q2A-F-22-cross"
+        ]
+      },
+      "notApplicable": {
+        "tag": "The tag mutation class does not apply to a budget field.",
+        "forced": "The forced mutation class does not apply to a budget field.",
+        "order": "The order mutation class does not apply to a budget field.",
+        "duplicate": "The duplicate mutation class does not apply to a budget field.",
+        "length": "The length mutation class does not apply to a budget field.",
+        "utf8": "The utf8 mutation class does not apply to a budget field.",
+        "empty": "The empty mutation class does not apply to a budget field.",
+        "supported-id": "The supported-id mutation class does not apply to a budget field.",
+        "misuse": "The misuse mutation class does not apply to a budget field.",
+        "trace": "The trace mutation class does not apply to a budget field."
+      },
+      "caseCount": 7
+    },
+    {
+      "index": 23,
+      "fieldId": "ResourceManifest.FileDescriptors",
+      "kind": "budget",
+      "applicable": {
+        "valid": [
+          "Q2A-F-23-valid"
+        ],
+        "boundary": [
+          "Q2A-F-23-boundary-min",
+          "Q2A-F-23-boundary-max"
+        ],
+        "presence": [
+          "Q2A-F-23-presence-absent",
+          "Q2A-F-23-presence-exact-zero",
+          "Q2A-F-23-presence-unlimited"
+        ],
+        "cross": [
+          "Q2A-F-23-cross"
+        ]
+      },
+      "notApplicable": {
+        "tag": "The tag mutation class does not apply to a budget field.",
+        "forced": "The forced mutation class does not apply to a budget field.",
+        "order": "The order mutation class does not apply to a budget field.",
+        "duplicate": "The duplicate mutation class does not apply to a budget field.",
+        "length": "The length mutation class does not apply to a budget field.",
+        "utf8": "The utf8 mutation class does not apply to a budget field.",
+        "empty": "The empty mutation class does not apply to a budget field.",
+        "supported-id": "The supported-id mutation class does not apply to a budget field.",
+        "misuse": "The misuse mutation class does not apply to a budget field.",
+        "trace": "The trace mutation class does not apply to a budget field."
+      },
+      "caseCount": 7
+    },
+    {
+      "index": 24,
+      "fieldId": "ResourceManifest.TmpBytes",
+      "kind": "budget",
+      "applicable": {
+        "valid": [
+          "Q2A-F-24-valid"
+        ],
+        "boundary": [
+          "Q2A-F-24-boundary-min",
+          "Q2A-F-24-boundary-max"
+        ],
+        "presence": [
+          "Q2A-F-24-presence-absent",
+          "Q2A-F-24-presence-exact-zero",
+          "Q2A-F-24-presence-unlimited"
+        ],
+        "cross": [
+          "Q2A-F-24-cross"
+        ]
+      },
+      "notApplicable": {
+        "tag": "The tag mutation class does not apply to a budget field.",
+        "forced": "The forced mutation class does not apply to a budget field.",
+        "order": "The order mutation class does not apply to a budget field.",
+        "duplicate": "The duplicate mutation class does not apply to a budget field.",
+        "length": "The length mutation class does not apply to a budget field.",
+        "utf8": "The utf8 mutation class does not apply to a budget field.",
+        "empty": "The empty mutation class does not apply to a budget field.",
+        "supported-id": "The supported-id mutation class does not apply to a budget field.",
+        "misuse": "The misuse mutation class does not apply to a budget field.",
+        "trace": "The trace mutation class does not apply to a budget field."
+      },
+      "caseCount": 7
+    },
+    {
+      "index": 25,
+      "fieldId": "ResourceManifest.ShmBytes",
+      "kind": "budget",
+      "applicable": {
+        "valid": [
+          "Q2A-F-25-valid"
+        ],
+        "boundary": [
+          "Q2A-F-25-boundary-min",
+          "Q2A-F-25-boundary-max"
+        ],
+        "presence": [
+          "Q2A-F-25-presence-absent",
+          "Q2A-F-25-presence-exact-zero",
+          "Q2A-F-25-presence-unlimited"
+        ],
+        "cross": [
+          "Q2A-F-25-cross"
+        ]
+      },
+      "notApplicable": {
+        "tag": "The tag mutation class does not apply to a budget field.",
+        "forced": "The forced mutation class does not apply to a budget field.",
+        "order": "The order mutation class does not apply to a budget field.",
+        "duplicate": "The duplicate mutation class does not apply to a budget field.",
+        "length": "The length mutation class does not apply to a budget field.",
+        "utf8": "The utf8 mutation class does not apply to a budget field.",
+        "empty": "The empty mutation class does not apply to a budget field.",
+        "supported-id": "The supported-id mutation class does not apply to a budget field.",
+        "misuse": "The misuse mutation class does not apply to a budget field.",
+        "trace": "The trace mutation class does not apply to a budget field."
+      },
+      "caseCount": 7
+    },
+    {
+      "index": 26,
+      "fieldId": "ResourceManifest.StdoutBytes",
+      "kind": "budget",
+      "applicable": {
+        "valid": [
+          "Q2A-F-26-valid"
+        ],
+        "boundary": [
+          "Q2A-F-26-boundary-min",
+          "Q2A-F-26-boundary-max"
+        ],
+        "presence": [
+          "Q2A-F-26-presence-absent",
+          "Q2A-F-26-presence-exact-zero",
+          "Q2A-F-26-presence-unlimited"
+        ],
+        "cross": [
+          "Q2A-F-26-cross"
+        ]
+      },
+      "notApplicable": {
+        "tag": "The tag mutation class does not apply to a budget field.",
+        "forced": "The forced mutation class does not apply to a budget field.",
+        "order": "The order mutation class does not apply to a budget field.",
+        "duplicate": "The duplicate mutation class does not apply to a budget field.",
+        "length": "The length mutation class does not apply to a budget field.",
+        "utf8": "The utf8 mutation class does not apply to a budget field.",
+        "empty": "The empty mutation class does not apply to a budget field.",
+        "supported-id": "The supported-id mutation class does not apply to a budget field.",
+        "misuse": "The misuse mutation class does not apply to a budget field.",
+        "trace": "The trace mutation class does not apply to a budget field."
+      },
+      "caseCount": 7
+    },
+    {
+      "index": 27,
+      "fieldId": "ResourceManifest.StderrBytes",
+      "kind": "budget",
+      "applicable": {
+        "valid": [
+          "Q2A-F-27-valid"
+        ],
+        "boundary": [
+          "Q2A-F-27-boundary-min",
+          "Q2A-F-27-boundary-max"
+        ],
+        "presence": [
+          "Q2A-F-27-presence-absent",
+          "Q2A-F-27-presence-exact-zero",
+          "Q2A-F-27-presence-unlimited"
+        ],
+        "cross": [
+          "Q2A-F-27-cross"
+        ]
+      },
+      "notApplicable": {
+        "tag": "The tag mutation class does not apply to a budget field.",
+        "forced": "The forced mutation class does not apply to a budget field.",
+        "order": "The order mutation class does not apply to a budget field.",
+        "duplicate": "The duplicate mutation class does not apply to a budget field.",
+        "length": "The length mutation class does not apply to a budget field.",
+        "utf8": "The utf8 mutation class does not apply to a budget field.",
+        "empty": "The empty mutation class does not apply to a budget field.",
+        "supported-id": "The supported-id mutation class does not apply to a budget field.",
+        "misuse": "The misuse mutation class does not apply to a budget field.",
+        "trace": "The trace mutation class does not apply to a budget field."
+      },
+      "caseCount": 7
+    },
+    {
+      "index": 28,
+      "fieldId": "ResourceManifest.CaptureAggregateBytes",
+      "kind": "budget",
+      "applicable": {
+        "valid": [
+          "Q2A-F-28-valid"
+        ],
+        "boundary": [
+          "Q2A-F-28-boundary-min",
+          "Q2A-F-28-boundary-max"
+        ],
+        "presence": [
+          "Q2A-F-28-presence-absent",
+          "Q2A-F-28-presence-exact-zero",
+          "Q2A-F-28-presence-unlimited"
+        ],
+        "cross": [
+          "Q2A-F-28-cross"
+        ]
+      },
+      "notApplicable": {
+        "tag": "The tag mutation class does not apply to a budget field.",
+        "forced": "The forced mutation class does not apply to a budget field.",
+        "order": "The order mutation class does not apply to a budget field.",
+        "duplicate": "The duplicate mutation class does not apply to a budget field.",
+        "length": "The length mutation class does not apply to a budget field.",
+        "utf8": "The utf8 mutation class does not apply to a budget field.",
+        "empty": "The empty mutation class does not apply to a budget field.",
+        "supported-id": "The supported-id mutation class does not apply to a budget field.",
+        "misuse": "The misuse mutation class does not apply to a budget field.",
+        "trace": "The trace mutation class does not apply to a budget field."
+      },
+      "caseCount": 7
+    },
+    {
+      "index": 29,
+      "fieldId": "ResourceManifest.SetupTimeoutNs",
+      "kind": "budget",
+      "applicable": {
+        "valid": [
+          "Q2A-F-29-valid"
+        ],
+        "boundary": [
+          "Q2A-F-29-boundary-min",
+          "Q2A-F-29-boundary-max"
+        ],
+        "presence": [
+          "Q2A-F-29-presence-absent",
+          "Q2A-F-29-presence-exact-zero",
+          "Q2A-F-29-presence-unlimited"
+        ],
+        "cross": [
+          "Q2A-F-29-cross"
+        ]
+      },
+      "notApplicable": {
+        "tag": "The tag mutation class does not apply to a budget field.",
+        "forced": "The forced mutation class does not apply to a budget field.",
+        "order": "The order mutation class does not apply to a budget field.",
+        "duplicate": "The duplicate mutation class does not apply to a budget field.",
+        "length": "The length mutation class does not apply to a budget field.",
+        "utf8": "The utf8 mutation class does not apply to a budget field.",
+        "empty": "The empty mutation class does not apply to a budget field.",
+        "supported-id": "The supported-id mutation class does not apply to a budget field.",
+        "misuse": "The misuse mutation class does not apply to a budget field.",
+        "trace": "The trace mutation class does not apply to a budget field."
+      },
+      "caseCount": 7
+    },
+    {
+      "index": 30,
+      "fieldId": "ResourceManifest.OverallTimeoutNs",
+      "kind": "budget",
+      "applicable": {
+        "valid": [
+          "Q2A-F-30-valid"
+        ],
+        "boundary": [
+          "Q2A-F-30-boundary-min",
+          "Q2A-F-30-boundary-max"
+        ],
+        "presence": [
+          "Q2A-F-30-presence-absent",
+          "Q2A-F-30-presence-exact-zero",
+          "Q2A-F-30-presence-unlimited"
+        ],
+        "cross": [
+          "Q2A-F-30-cross"
+        ]
+      },
+      "notApplicable": {
+        "tag": "The tag mutation class does not apply to a budget field.",
+        "forced": "The forced mutation class does not apply to a budget field.",
+        "order": "The order mutation class does not apply to a budget field.",
+        "duplicate": "The duplicate mutation class does not apply to a budget field.",
+        "length": "The length mutation class does not apply to a budget field.",
+        "utf8": "The utf8 mutation class does not apply to a budget field.",
+        "empty": "The empty mutation class does not apply to a budget field.",
+        "supported-id": "The supported-id mutation class does not apply to a budget field.",
+        "misuse": "The misuse mutation class does not apply to a budget field.",
+        "trace": "The trace mutation class does not apply to a budget field."
+      },
+      "caseCount": 7
+    },
+    {
+      "index": 31,
+      "fieldId": "ResourceManifest.StopAllowanceNs",
+      "kind": "budget",
+      "applicable": {
+        "valid": [
+          "Q2A-F-31-valid"
+        ],
+        "boundary": [
+          "Q2A-F-31-boundary-min",
+          "Q2A-F-31-boundary-max"
+        ],
+        "presence": [
+          "Q2A-F-31-presence-absent",
+          "Q2A-F-31-presence-exact-zero",
+          "Q2A-F-31-presence-unlimited"
+        ],
+        "cross": [
+          "Q2A-F-31-cross"
+        ]
+      },
+      "notApplicable": {
+        "tag": "The tag mutation class does not apply to a budget field.",
+        "forced": "The forced mutation class does not apply to a budget field.",
+        "order": "The order mutation class does not apply to a budget field.",
+        "duplicate": "The duplicate mutation class does not apply to a budget field.",
+        "length": "The length mutation class does not apply to a budget field.",
+        "utf8": "The utf8 mutation class does not apply to a budget field.",
+        "empty": "The empty mutation class does not apply to a budget field.",
+        "supported-id": "The supported-id mutation class does not apply to a budget field.",
+        "misuse": "The misuse mutation class does not apply to a budget field.",
+        "trace": "The trace mutation class does not apply to a budget field."
+      },
+      "caseCount": 7
+    },
+    {
+      "index": 32,
+      "fieldId": "ResourceManifest.FinalDrainNs",
+      "kind": "budget",
+      "applicable": {
+        "valid": [
+          "Q2A-F-32-valid"
+        ],
+        "boundary": [
+          "Q2A-F-32-boundary-min",
+          "Q2A-F-32-boundary-max"
+        ],
+        "presence": [
+          "Q2A-F-32-presence-absent",
+          "Q2A-F-32-presence-exact-zero",
+          "Q2A-F-32-presence-unlimited"
+        ],
+        "cross": [
+          "Q2A-F-32-cross"
+        ]
+      },
+      "notApplicable": {
+        "tag": "The tag mutation class does not apply to a budget field.",
+        "forced": "The forced mutation class does not apply to a budget field.",
+        "order": "The order mutation class does not apply to a budget field.",
+        "duplicate": "The duplicate mutation class does not apply to a budget field.",
+        "length": "The length mutation class does not apply to a budget field.",
+        "utf8": "The utf8 mutation class does not apply to a budget field.",
+        "empty": "The empty mutation class does not apply to a budget field.",
+        "supported-id": "The supported-id mutation class does not apply to a budget field.",
+        "misuse": "The misuse mutation class does not apply to a budget field.",
+        "trace": "The trace mutation class does not apply to a budget field."
+      },
+      "caseCount": 7
+    },
+    {
+      "index": 33,
+      "fieldId": "ResourceManifest.InodeQualification",
+      "kind": "enum-pending",
+      "applicable": {
+        "tag": [
+          "Q2A-F-33-tag"
+        ],
+        "forced": [
+          "Q2A-F-33-forced"
+        ]
+      },
+      "notApplicable": {
+        "valid": "The valid mutation class does not apply to a enum-pending field.",
+        "boundary": "The boundary mutation class does not apply to a enum-pending field.",
+        "presence": "The presence mutation class does not apply to a enum-pending field.",
+        "order": "The order mutation class does not apply to a enum-pending field.",
+        "duplicate": "The duplicate mutation class does not apply to a enum-pending field.",
+        "length": "The length mutation class does not apply to a enum-pending field.",
+        "utf8": "The utf8 mutation class does not apply to a enum-pending field.",
+        "cross": "The cross mutation class does not apply to a enum-pending field.",
+        "empty": "The empty mutation class does not apply to a enum-pending field.",
+        "supported-id": "The supported-id mutation class does not apply to a enum-pending field.",
+        "misuse": "The misuse mutation class does not apply to a enum-pending field.",
+        "trace": "The trace mutation class does not apply to a enum-pending field."
+      },
+      "caseCount": 2
+    },
+    {
+      "index": 34,
+      "fieldId": "ResourceManifest.CoreDumps",
+      "kind": "composite",
+      "applicable": {
+        "trace": [
+          "Q2A-F-34-trace"
+        ]
+      },
+      "notApplicable": {
+        "valid": "Composite value; valid mutations are covered by its subfield rows.",
+        "boundary": "The boundary mutation class does not apply to a composite field.",
+        "presence": "The presence mutation class does not apply to a composite field.",
+        "tag": "Composite value; tag mutations are covered by its subfield rows.",
+        "forced": "The forced mutation class does not apply to a composite field.",
+        "order": "The order mutation class does not apply to a composite field.",
+        "duplicate": "The duplicate mutation class does not apply to a composite field.",
+        "length": "The length mutation class does not apply to a composite field.",
+        "utf8": "The utf8 mutation class does not apply to a composite field.",
+        "cross": "The cross mutation class does not apply to a composite field.",
+        "empty": "The empty mutation class does not apply to a composite field.",
+        "supported-id": "The supported-id mutation class does not apply to a composite field.",
+        "misuse": "The misuse mutation class does not apply to a composite field."
+      },
+      "caseCount": 1
+    },
+    {
+      "index": 35,
+      "fieldId": "ResourceManifest.OwnerAllocation",
+      "kind": "composite",
+      "applicable": {
+        "trace": [
+          "Q2A-F-35-trace"
+        ]
+      },
+      "notApplicable": {
+        "valid": "Composite value; valid mutations are covered by its subfield rows.",
+        "boundary": "The boundary mutation class does not apply to a composite field.",
+        "presence": "The presence mutation class does not apply to a composite field.",
+        "tag": "Composite value; tag mutations are covered by its subfield rows.",
+        "forced": "The forced mutation class does not apply to a composite field.",
+        "order": "The order mutation class does not apply to a composite field.",
+        "duplicate": "The duplicate mutation class does not apply to a composite field.",
+        "length": "The length mutation class does not apply to a composite field.",
+        "utf8": "The utf8 mutation class does not apply to a composite field.",
+        "cross": "The cross mutation class does not apply to a composite field.",
+        "empty": "The empty mutation class does not apply to a composite field.",
+        "supported-id": "The supported-id mutation class does not apply to a composite field.",
+        "misuse": "The misuse mutation class does not apply to a composite field."
+      },
+      "caseCount": 1
+    },
+    {
+      "index": 36,
+      "fieldId": "ResourceBudget.Kind",
+      "kind": "budget-kind",
+      "applicable": {
+        "valid": [
+          "Q2A-F-36-valid-absent",
+          "Q2A-F-36-valid-unlimited"
+        ],
+        "tag": [
+          "Q2A-F-36-tag"
+        ],
+        "cross": [
+          "Q2A-F-36-cross",
+          "Q2A-F-36-cross-unlimited"
+        ]
+      },
+      "notApplicable": {
+        "boundary": "The boundary mutation class does not apply to a budget-kind field.",
+        "presence": "The presence mutation class does not apply to a budget-kind field.",
+        "forced": "Budget kind has no forced single value; cross-field rules are recorded under cross.",
+        "order": "The order mutation class does not apply to a budget-kind field.",
+        "duplicate": "The duplicate mutation class does not apply to a budget-kind field.",
+        "length": "The length mutation class does not apply to a budget-kind field.",
+        "utf8": "The utf8 mutation class does not apply to a budget-kind field.",
+        "empty": "The empty mutation class does not apply to a budget-kind field.",
+        "supported-id": "The supported-id mutation class does not apply to a budget-kind field.",
+        "misuse": "The misuse mutation class does not apply to a budget-kind field.",
+        "trace": "The trace mutation class does not apply to a budget-kind field."
+      },
+      "caseCount": 5
+    },
+    {
+      "index": 37,
+      "fieldId": "ResourceBudget.Value",
+      "kind": "u64",
+      "applicable": {
+        "valid": [
+          "Q2A-F-37-valid"
+        ],
+        "boundary": [
+          "Q2A-F-37-boundary-min",
+          "Q2A-F-37-boundary-max"
+        ]
+      },
+      "notApplicable": {
+        "presence": "The presence mutation class does not apply to a u64 field.",
+        "tag": "The tag mutation class does not apply to a u64 field.",
+        "forced": "The forced mutation class does not apply to a u64 field.",
+        "order": "The order mutation class does not apply to a u64 field.",
+        "duplicate": "The duplicate mutation class does not apply to a u64 field.",
+        "length": "The length mutation class does not apply to a u64 field.",
+        "utf8": "Numeric fields are not UTF-8 text.",
+        "cross": "The cross mutation class does not apply to a u64 field.",
+        "empty": "The empty mutation class does not apply to a u64 field.",
+        "supported-id": "The supported-id mutation class does not apply to a u64 field.",
+        "misuse": "The misuse mutation class does not apply to a u64 field.",
+        "trace": "The trace mutation class does not apply to a u64 field."
+      },
+      "caseCount": 3
+    },
+    {
+      "index": 38,
+      "fieldId": "ResourceBudget.Unit",
+      "kind": "text-free",
+      "applicable": {
+        "valid": [
+          "Q2A-F-38-valid"
+        ],
+        "utf8": [
+          "Q2A-F-38-utf8"
+        ],
+        "length": [
+          "Q2A-F-38-length"
+        ],
+        "empty": [
+          "Q2A-F-38-empty"
+        ]
+      },
+      "notApplicable": {
+        "boundary": "The boundary mutation class does not apply to a text-free field.",
+        "presence": "The presence mutation class does not apply to a text-free field.",
+        "tag": "The tag mutation class does not apply to a text-free field.",
+        "forced": "The forced mutation class does not apply to a text-free field.",
+        "order": "The order mutation class does not apply to a text-free field.",
+        "duplicate": "The duplicate mutation class does not apply to a text-free field.",
+        "cross": "The cross mutation class does not apply to a text-free field.",
+        "supported-id": "The supported-id mutation class does not apply to a text-free field.",
+        "misuse": "The misuse mutation class does not apply to a text-free field.",
+        "trace": "The trace mutation class does not apply to a text-free field."
+      },
+      "caseCount": 4
+    },
+    {
+      "index": 39,
+      "fieldId": "ResourceBudget.Qualification",
+      "kind": "enum-free",
+      "applicable": {
+        "valid": [
+          "Q2A-F-39-valid"
+        ],
+        "tag": [
+          "Q2A-F-39-tag"
+        ]
+      },
+      "notApplicable": {
+        "boundary": "The boundary mutation class does not apply to a enum-free field.",
+        "presence": "The presence mutation class does not apply to a enum-free field.",
+        "forced": "The forced mutation class does not apply to a enum-free field.",
+        "order": "The order mutation class does not apply to a enum-free field.",
+        "duplicate": "The duplicate mutation class does not apply to a enum-free field.",
+        "length": "The length mutation class does not apply to a enum-free field.",
+        "utf8": "The utf8 mutation class does not apply to a enum-free field.",
+        "cross": "The cross mutation class does not apply to a enum-free field.",
+        "empty": "The empty mutation class does not apply to a enum-free field.",
+        "supported-id": "The supported-id mutation class does not apply to a enum-free field.",
+        "misuse": "The misuse mutation class does not apply to a enum-free field.",
+        "trace": "The trace mutation class does not apply to a enum-free field."
+      },
+      "caseCount": 2
+    },
+    {
+      "index": 40,
+      "fieldId": "WritableStore.Path",
+      "kind": "text-free",
+      "applicable": {
+        "valid": [
+          "Q2A-F-40-valid"
+        ],
+        "utf8": [
+          "Q2A-F-40-utf8"
+        ],
+        "length": [
+          "Q2A-F-40-length"
+        ],
+        "empty": [
+          "Q2A-F-40-empty"
+        ]
+      },
+      "notApplicable": {
+        "boundary": "The boundary mutation class does not apply to a text-free field.",
+        "presence": "The presence mutation class does not apply to a text-free field.",
+        "tag": "The tag mutation class does not apply to a text-free field.",
+        "forced": "The forced mutation class does not apply to a text-free field.",
+        "order": "The order mutation class does not apply to a text-free field.",
+        "duplicate": "The duplicate mutation class does not apply to a text-free field.",
+        "cross": "The cross mutation class does not apply to a text-free field.",
+        "supported-id": "The supported-id mutation class does not apply to a text-free field.",
+        "misuse": "The misuse mutation class does not apply to a text-free field.",
+        "trace": "The trace mutation class does not apply to a text-free field."
+      },
+      "caseCount": 4
+    },
+    {
+      "index": 41,
+      "fieldId": "WritableStore.Bytes",
+      "kind": "u64",
+      "applicable": {
+        "valid": [
+          "Q2A-F-41-valid"
+        ],
+        "boundary": [
+          "Q2A-F-41-boundary-min",
+          "Q2A-F-41-boundary-max"
+        ]
+      },
+      "notApplicable": {
+        "presence": "The presence mutation class does not apply to a u64 field.",
+        "tag": "The tag mutation class does not apply to a u64 field.",
+        "forced": "The forced mutation class does not apply to a u64 field.",
+        "order": "The order mutation class does not apply to a u64 field.",
+        "duplicate": "The duplicate mutation class does not apply to a u64 field.",
+        "length": "The length mutation class does not apply to a u64 field.",
+        "utf8": "Numeric fields are not UTF-8 text.",
+        "cross": "The cross mutation class does not apply to a u64 field.",
+        "empty": "The empty mutation class does not apply to a u64 field.",
+        "supported-id": "The supported-id mutation class does not apply to a u64 field.",
+        "misuse": "The misuse mutation class does not apply to a u64 field.",
+        "trace": "The trace mutation class does not apply to a u64 field."
+      },
+      "caseCount": 3
+    },
+    {
+      "index": 42,
+      "fieldId": "WritableStore.HasInodeBudget",
+      "kind": "bool-free",
+      "applicable": {
+        "valid": [
+          "Q2A-F-42-valid"
+        ],
+        "tag": [
+          "Q2A-F-42-tag"
+        ]
+      },
+      "notApplicable": {
+        "boundary": "The boundary mutation class does not apply to a bool-free field.",
+        "presence": "The presence mutation class does not apply to a bool-free field.",
+        "forced": "The forced mutation class does not apply to a bool-free field.",
+        "order": "The order mutation class does not apply to a bool-free field.",
+        "duplicate": "The duplicate mutation class does not apply to a bool-free field.",
+        "length": "The length mutation class does not apply to a bool-free field.",
+        "utf8": "The utf8 mutation class does not apply to a bool-free field.",
+        "cross": "The cross mutation class does not apply to a bool-free field.",
+        "empty": "The empty mutation class does not apply to a bool-free field.",
+        "supported-id": "The supported-id mutation class does not apply to a bool-free field.",
+        "misuse": "The misuse mutation class does not apply to a bool-free field.",
+        "trace": "The trace mutation class does not apply to a bool-free field."
+      },
+      "caseCount": 2
+    },
+    {
+      "index": 43,
+      "fieldId": "WritableStore.InodeBudget",
+      "kind": "store-inode",
+      "applicable": {
+        "valid": [
+          "Q2A-F-43-valid"
+        ],
+        "boundary": [
+          "Q2A-F-43-boundary-min",
+          "Q2A-F-43-boundary-max"
+        ],
+        "cross": [
+          "Q2A-F-43-cross"
+        ]
+      },
+      "notApplicable": {
+        "presence": "The presence mutation class does not apply to a store-inode field.",
+        "tag": "Inode budget is a u64 value, not a tag.",
+        "forced": "The forced mutation class does not apply to a store-inode field.",
+        "order": "The order mutation class does not apply to a store-inode field.",
+        "duplicate": "The duplicate mutation class does not apply to a store-inode field.",
+        "length": "The length mutation class does not apply to a store-inode field.",
+        "utf8": "The utf8 mutation class does not apply to a store-inode field.",
+        "empty": "The empty mutation class does not apply to a store-inode field.",
+        "supported-id": "The supported-id mutation class does not apply to a store-inode field.",
+        "misuse": "The misuse mutation class does not apply to a store-inode field.",
+        "trace": "The trace mutation class does not apply to a store-inode field."
+      },
+      "caseCount": 4
+    },
+    {
+      "index": 44,
+      "fieldId": "ExecutableMountPolicy.ToolExecutable",
+      "kind": "bool-forced",
+      "applicable": {
+        "tag": [
+          "Q2A-F-44-tag"
+        ],
+        "forced": [
+          "Q2A-F-44-forced"
+        ]
+      },
+      "notApplicable": {
+        "valid": "The valid mutation class does not apply to a bool-forced field.",
+        "boundary": "The boundary mutation class does not apply to a bool-forced field.",
+        "presence": "The presence mutation class does not apply to a bool-forced field.",
+        "order": "The order mutation class does not apply to a bool-forced field.",
+        "duplicate": "The duplicate mutation class does not apply to a bool-forced field.",
+        "length": "The length mutation class does not apply to a bool-forced field.",
+        "utf8": "The utf8 mutation class does not apply to a bool-forced field.",
+        "cross": "The cross mutation class does not apply to a bool-forced field.",
+        "empty": "The empty mutation class does not apply to a bool-forced field.",
+        "supported-id": "The supported-id mutation class does not apply to a bool-forced field.",
+        "misuse": "The misuse mutation class does not apply to a bool-forced field.",
+        "trace": "The trace mutation class does not apply to a bool-forced field."
+      },
+      "caseCount": 2
+    },
+    {
+      "index": 45,
+      "fieldId": "ExecutableMountPolicy.ScratchNoexec",
+      "kind": "bool-free",
+      "applicable": {
+        "valid": [
+          "Q2A-F-45-valid"
+        ],
+        "tag": [
+          "Q2A-F-45-tag"
+        ]
+      },
+      "notApplicable": {
+        "boundary": "The boundary mutation class does not apply to a bool-free field.",
+        "presence": "The presence mutation class does not apply to a bool-free field.",
+        "forced": "The forced mutation class does not apply to a bool-free field.",
+        "order": "The order mutation class does not apply to a bool-free field.",
+        "duplicate": "The duplicate mutation class does not apply to a bool-free field.",
+        "length": "The length mutation class does not apply to a bool-free field.",
+        "utf8": "The utf8 mutation class does not apply to a bool-free field.",
+        "cross": "The cross mutation class does not apply to a bool-free field.",
+        "empty": "The empty mutation class does not apply to a bool-free field.",
+        "supported-id": "The supported-id mutation class does not apply to a bool-free field.",
+        "misuse": "The misuse mutation class does not apply to a bool-free field.",
+        "trace": "The trace mutation class does not apply to a bool-free field."
+      },
+      "caseCount": 2
+    },
+    {
+      "index": 46,
+      "fieldId": "CoreDumpPolicy.CoreDisabled",
+      "kind": "bool-forced",
+      "applicable": {
+        "tag": [
+          "Q2A-F-46-tag"
+        ],
+        "forced": [
+          "Q2A-F-46-forced"
+        ]
+      },
+      "notApplicable": {
+        "valid": "The valid mutation class does not apply to a bool-forced field.",
+        "boundary": "The boundary mutation class does not apply to a bool-forced field.",
+        "presence": "The presence mutation class does not apply to a bool-forced field.",
+        "order": "The order mutation class does not apply to a bool-forced field.",
+        "duplicate": "The duplicate mutation class does not apply to a bool-forced field.",
+        "length": "The length mutation class does not apply to a bool-forced field.",
+        "utf8": "The utf8 mutation class does not apply to a bool-forced field.",
+        "cross": "The cross mutation class does not apply to a bool-forced field.",
+        "empty": "The empty mutation class does not apply to a bool-forced field.",
+        "supported-id": "The supported-id mutation class does not apply to a bool-forced field.",
+        "misuse": "The misuse mutation class does not apply to a bool-forced field.",
+        "trace": "The trace mutation class does not apply to a bool-forced field."
+      },
+      "caseCount": 2
+    },
+    {
+      "index": 47,
+      "fieldId": "CoreDumpPolicy.RuntimeDumpsDisabled",
+      "kind": "bool-free",
+      "applicable": {
+        "valid": [
+          "Q2A-F-47-valid"
+        ],
+        "tag": [
+          "Q2A-F-47-tag"
+        ]
+      },
+      "notApplicable": {
+        "boundary": "The boundary mutation class does not apply to a bool-free field.",
+        "presence": "The presence mutation class does not apply to a bool-free field.",
+        "forced": "The forced mutation class does not apply to a bool-free field.",
+        "order": "The order mutation class does not apply to a bool-free field.",
+        "duplicate": "The duplicate mutation class does not apply to a bool-free field.",
+        "length": "The length mutation class does not apply to a bool-free field.",
+        "utf8": "The utf8 mutation class does not apply to a bool-free field.",
+        "cross": "The cross mutation class does not apply to a bool-free field.",
+        "empty": "The empty mutation class does not apply to a bool-free field.",
+        "supported-id": "The supported-id mutation class does not apply to a bool-free field.",
+        "misuse": "The misuse mutation class does not apply to a bool-free field.",
+        "trace": "The trace mutation class does not apply to a bool-free field."
+      },
+      "caseCount": 2
+    },
+    {
+      "index": 48,
+      "fieldId": "CoreDumpPolicy.CorePatternObserved",
+      "kind": "text-optional",
+      "applicable": {
+        "valid": [
+          "Q2A-F-48-valid"
+        ],
+        "presence": [
+          "Q2A-F-48-presence-absent",
+          "Q2A-F-48-presence-present"
+        ],
+        "tag": [
+          "Q2A-F-48-tag"
+        ],
+        "utf8": [
+          "Q2A-F-48-utf8"
+        ],
+        "length": [
+          "Q2A-F-48-length"
+        ],
+        "empty": [
+          "Q2A-F-48-empty"
+        ]
+      },
+      "notApplicable": {
+        "boundary": "Pattern text has no numeric boundary; absence/presence and length classes apply.",
+        "forced": "The forced mutation class does not apply to a text-optional field.",
+        "order": "The order mutation class does not apply to a text-optional field.",
+        "duplicate": "The duplicate mutation class does not apply to a text-optional field.",
+        "cross": "The cross mutation class does not apply to a text-optional field.",
+        "supported-id": "The supported-id mutation class does not apply to a text-optional field.",
+        "misuse": "The misuse mutation class does not apply to a text-optional field.",
+        "trace": "The trace mutation class does not apply to a text-optional field."
+      },
+      "caseCount": 7
+    },
+    {
+      "index": 49,
+      "fieldId": "OwnerAllocationLimits.StagingBytes",
+      "kind": "u64",
+      "applicable": {
+        "valid": [
+          "Q2A-F-49-valid"
+        ],
+        "boundary": [
+          "Q2A-F-49-boundary-min",
+          "Q2A-F-49-boundary-max"
+        ]
+      },
+      "notApplicable": {
+        "presence": "The presence mutation class does not apply to a u64 field.",
+        "tag": "The tag mutation class does not apply to a u64 field.",
+        "forced": "The forced mutation class does not apply to a u64 field.",
+        "order": "The order mutation class does not apply to a u64 field.",
+        "duplicate": "The duplicate mutation class does not apply to a u64 field.",
+        "length": "The length mutation class does not apply to a u64 field.",
+        "utf8": "Numeric fields are not UTF-8 text.",
+        "cross": "The cross mutation class does not apply to a u64 field.",
+        "empty": "The empty mutation class does not apply to a u64 field.",
+        "supported-id": "The supported-id mutation class does not apply to a u64 field.",
+        "misuse": "The misuse mutation class does not apply to a u64 field.",
+        "trace": "The trace mutation class does not apply to a u64 field."
+      },
+      "caseCount": 3
+    },
+    {
+      "index": 50,
+      "fieldId": "OwnerAllocationLimits.StagingObjects",
+      "kind": "u32",
+      "applicable": {
+        "valid": [
+          "Q2A-F-50-valid"
+        ],
+        "boundary": [
+          "Q2A-F-50-boundary-min",
+          "Q2A-F-50-boundary-max"
+        ]
+      },
+      "notApplicable": {
+        "presence": "The presence mutation class does not apply to a u32 field.",
+        "tag": "The tag mutation class does not apply to a u32 field.",
+        "forced": "The forced mutation class does not apply to a u32 field.",
+        "order": "The order mutation class does not apply to a u32 field.",
+        "duplicate": "The duplicate mutation class does not apply to a u32 field.",
+        "length": "The length mutation class does not apply to a u32 field.",
+        "utf8": "Numeric fields are not UTF-8 text.",
+        "cross": "The cross mutation class does not apply to a u32 field.",
+        "empty": "The empty mutation class does not apply to a u32 field.",
+        "supported-id": "The supported-id mutation class does not apply to a u32 field.",
+        "misuse": "The misuse mutation class does not apply to a u32 field.",
+        "trace": "The trace mutation class does not apply to a u32 field."
+      },
+      "caseCount": 3
+    },
+    {
+      "index": 51,
+      "fieldId": "OwnerAllocationLimits.ConfigBytes",
+      "kind": "u64",
+      "applicable": {
+        "valid": [
+          "Q2A-F-51-valid"
+        ],
+        "boundary": [
+          "Q2A-F-51-boundary-min",
+          "Q2A-F-51-boundary-max"
+        ]
+      },
+      "notApplicable": {
+        "presence": "The presence mutation class does not apply to a u64 field.",
+        "tag": "The tag mutation class does not apply to a u64 field.",
+        "forced": "The forced mutation class does not apply to a u64 field.",
+        "order": "The order mutation class does not apply to a u64 field.",
+        "duplicate": "The duplicate mutation class does not apply to a u64 field.",
+        "length": "The length mutation class does not apply to a u64 field.",
+        "utf8": "Numeric fields are not UTF-8 text.",
+        "cross": "The cross mutation class does not apply to a u64 field.",
+        "empty": "The empty mutation class does not apply to a u64 field.",
+        "supported-id": "The supported-id mutation class does not apply to a u64 field.",
+        "misuse": "The misuse mutation class does not apply to a u64 field.",
+        "trace": "The trace mutation class does not apply to a u64 field."
+      },
+      "caseCount": 3
+    },
+    {
+      "index": 52,
+      "fieldId": "OwnerAllocationLimits.CoordinatorStatusBytes",
+      "kind": "u64",
+      "applicable": {
+        "valid": [
+          "Q2A-F-52-valid"
+        ],
+        "boundary": [
+          "Q2A-F-52-boundary-min",
+          "Q2A-F-52-boundary-max"
+        ]
+      },
+      "notApplicable": {
+        "presence": "The presence mutation class does not apply to a u64 field.",
+        "tag": "The tag mutation class does not apply to a u64 field.",
+        "forced": "The forced mutation class does not apply to a u64 field.",
+        "order": "The order mutation class does not apply to a u64 field.",
+        "duplicate": "The duplicate mutation class does not apply to a u64 field.",
+        "length": "The length mutation class does not apply to a u64 field.",
+        "utf8": "Numeric fields are not UTF-8 text.",
+        "cross": "The cross mutation class does not apply to a u64 field.",
+        "empty": "The empty mutation class does not apply to a u64 field.",
+        "supported-id": "The supported-id mutation class does not apply to a u64 field.",
+        "misuse": "The misuse mutation class does not apply to a u64 field.",
+        "trace": "The trace mutation class does not apply to a u64 field."
+      },
+      "caseCount": 3
+    },
+    {
+      "index": 53,
+      "fieldId": "OwnerAllocationLimits.HelperStatusBytes",
+      "kind": "u64",
+      "applicable": {
+        "valid": [
+          "Q2A-F-53-valid"
+        ],
+        "boundary": [
+          "Q2A-F-53-boundary-min",
+          "Q2A-F-53-boundary-max"
+        ]
+      },
+      "notApplicable": {
+        "presence": "The presence mutation class does not apply to a u64 field.",
+        "tag": "The tag mutation class does not apply to a u64 field.",
+        "forced": "The forced mutation class does not apply to a u64 field.",
+        "order": "The order mutation class does not apply to a u64 field.",
+        "duplicate": "The duplicate mutation class does not apply to a u64 field.",
+        "length": "The length mutation class does not apply to a u64 field.",
+        "utf8": "Numeric fields are not UTF-8 text.",
+        "cross": "The cross mutation class does not apply to a u64 field.",
+        "empty": "The empty mutation class does not apply to a u64 field.",
+        "supported-id": "The supported-id mutation class does not apply to a u64 field.",
+        "misuse": "The misuse mutation class does not apply to a u64 field.",
+        "trace": "The trace mutation class does not apply to a u64 field."
+      },
+      "caseCount": 3
+    },
+    {
+      "index": 54,
+      "fieldId": "OwnerAllocationLimits.JournalBytes",
+      "kind": "u64",
+      "applicable": {
+        "valid": [
+          "Q2A-F-54-valid"
+        ],
+        "boundary": [
+          "Q2A-F-54-boundary-min",
+          "Q2A-F-54-boundary-max"
+        ]
+      },
+      "notApplicable": {
+        "presence": "The presence mutation class does not apply to a u64 field.",
+        "tag": "The tag mutation class does not apply to a u64 field.",
+        "forced": "The forced mutation class does not apply to a u64 field.",
+        "order": "The order mutation class does not apply to a u64 field.",
+        "duplicate": "The duplicate mutation class does not apply to a u64 field.",
+        "length": "The length mutation class does not apply to a u64 field.",
+        "utf8": "Numeric fields are not UTF-8 text.",
+        "cross": "The cross mutation class does not apply to a u64 field.",
+        "empty": "The empty mutation class does not apply to a u64 field.",
+        "supported-id": "The supported-id mutation class does not apply to a u64 field.",
+        "misuse": "The misuse mutation class does not apply to a u64 field.",
+        "trace": "The trace mutation class does not apply to a u64 field."
+      },
+      "caseCount": 3
+    },
+    {
+      "index": 55,
+      "fieldId": "OwnerAllocationLimits.ReceiptBytes",
+      "kind": "u64",
+      "applicable": {
+        "valid": [
+          "Q2A-F-55-valid"
+        ],
+        "boundary": [
+          "Q2A-F-55-boundary-min",
+          "Q2A-F-55-boundary-max"
+        ]
+      },
+      "notApplicable": {
+        "presence": "The presence mutation class does not apply to a u64 field.",
+        "tag": "The tag mutation class does not apply to a u64 field.",
+        "forced": "The forced mutation class does not apply to a u64 field.",
+        "order": "The order mutation class does not apply to a u64 field.",
+        "duplicate": "The duplicate mutation class does not apply to a u64 field.",
+        "length": "The length mutation class does not apply to a u64 field.",
+        "utf8": "Numeric fields are not UTF-8 text.",
+        "cross": "The cross mutation class does not apply to a u64 field.",
+        "empty": "The empty mutation class does not apply to a u64 field.",
+        "supported-id": "The supported-id mutation class does not apply to a u64 field.",
+        "misuse": "The misuse mutation class does not apply to a u64 field.",
+        "trace": "The trace mutation class does not apply to a u64 field."
+      },
+      "caseCount": 3
+    },
+    {
+      "index": 56,
+      "fieldId": "ClosureIdentity.Objects",
+      "kind": "collection-ordered",
+      "applicable": {
+        "valid": [
+          "Q2A-F-56-valid"
+        ],
+        "boundary": [
+          "Q2A-F-56-boundary-empty",
+          "Q2A-F-56-boundary-single"
+        ],
+        "order": [
+          "Q2A-F-56-order"
+        ],
+        "duplicate": [
+          "Q2A-F-56-duplicate"
+        ],
+        "length": [
+          "Q2A-F-56-length"
+        ],
+        "utf8": [
+          "Q2A-F-56-utf8"
+        ],
+        "empty": [
+          "Q2A-F-56-empty"
+        ]
+      },
+      "notApplicable": {
+        "presence": "The presence mutation class does not apply to a collection-ordered field.",
+        "tag": "The tag mutation class does not apply to a collection-ordered field.",
+        "forced": "The forced mutation class does not apply to a collection-ordered field.",
+        "cross": "The cross mutation class does not apply to a collection-ordered field.",
+        "supported-id": "The supported-id mutation class does not apply to a collection-ordered field.",
+        "misuse": "The misuse mutation class does not apply to a collection-ordered field.",
+        "trace": "The trace mutation class does not apply to a collection-ordered field."
+      },
+      "caseCount": 8
+    },
+    {
+      "index": 57,
+      "fieldId": "ClosureIdentity.HelperDependencies",
+      "kind": "collection-ordered",
+      "applicable": {
+        "valid": [
+          "Q2A-F-57-valid"
+        ],
+        "boundary": [
+          "Q2A-F-57-boundary-empty",
+          "Q2A-F-57-boundary-single"
+        ],
+        "order": [
+          "Q2A-F-57-order"
+        ],
+        "duplicate": [
+          "Q2A-F-57-duplicate"
+        ],
+        "length": [
+          "Q2A-F-57-length"
+        ],
+        "utf8": [
+          "Q2A-F-57-utf8"
+        ],
+        "empty": [
+          "Q2A-F-57-empty"
+        ]
+      },
+      "notApplicable": {
+        "presence": "The presence mutation class does not apply to a collection-ordered field.",
+        "tag": "The tag mutation class does not apply to a collection-ordered field.",
+        "forced": "The forced mutation class does not apply to a collection-ordered field.",
+        "cross": "The cross mutation class does not apply to a collection-ordered field.",
+        "supported-id": "The supported-id mutation class does not apply to a collection-ordered field.",
+        "misuse": "The misuse mutation class does not apply to a collection-ordered field.",
+        "trace": "The trace mutation class does not apply to a collection-ordered field."
+      },
+      "caseCount": 8
+    },
+    {
+      "index": 58,
+      "fieldId": "ClosureObject.Role",
+      "kind": "text-free",
+      "applicable": {
+        "valid": [
+          "Q2A-F-58-valid"
+        ],
+        "utf8": [
+          "Q2A-F-58-utf8"
+        ],
+        "length": [
+          "Q2A-F-58-length"
+        ],
+        "empty": [
+          "Q2A-F-58-empty"
+        ]
+      },
+      "notApplicable": {
+        "boundary": "The boundary mutation class does not apply to a text-free field.",
+        "presence": "The presence mutation class does not apply to a text-free field.",
+        "tag": "The tag mutation class does not apply to a text-free field.",
+        "forced": "The forced mutation class does not apply to a text-free field.",
+        "order": "The order mutation class does not apply to a text-free field.",
+        "duplicate": "The duplicate mutation class does not apply to a text-free field.",
+        "cross": "The cross mutation class does not apply to a text-free field.",
+        "supported-id": "The supported-id mutation class does not apply to a text-free field.",
+        "misuse": "The misuse mutation class does not apply to a text-free field.",
+        "trace": "The trace mutation class does not apply to a text-free field."
+      },
+      "caseCount": 4
+    },
+    {
+      "index": 59,
+      "fieldId": "ClosureObject.Sha256",
+      "kind": "bytes32",
+      "applicable": {
+        "valid": [
+          "Q2A-F-59-valid"
+        ]
+      },
+      "notApplicable": {
+        "boundary": "The boundary mutation class does not apply to a bytes32 field.",
+        "presence": "The presence mutation class does not apply to a bytes32 field.",
+        "tag": "The tag mutation class does not apply to a bytes32 field.",
+        "forced": "The forced mutation class does not apply to a bytes32 field.",
+        "order": "The order mutation class does not apply to a bytes32 field.",
+        "duplicate": "The duplicate mutation class does not apply to a bytes32 field.",
+        "length": "Fixed 32-byte fields have no length prefix; short input is the truncation family (B6).",
+        "utf8": "Raw digest bytes are not UTF-8 text.",
+        "cross": "The cross mutation class does not apply to a bytes32 field.",
+        "empty": "The empty mutation class does not apply to a bytes32 field.",
+        "supported-id": "The supported-id mutation class does not apply to a bytes32 field.",
+        "misuse": "The misuse mutation class does not apply to a bytes32 field.",
+        "trace": "The trace mutation class does not apply to a bytes32 field."
+      },
+      "caseCount": 1
+    },
+    {
+      "index": 60,
+      "fieldId": "ClosureObject.Length",
+      "kind": "u64",
+      "applicable": {
+        "valid": [
+          "Q2A-F-60-valid"
+        ],
+        "boundary": [
+          "Q2A-F-60-boundary-min",
+          "Q2A-F-60-boundary-max"
+        ]
+      },
+      "notApplicable": {
+        "presence": "The presence mutation class does not apply to a u64 field.",
+        "tag": "The tag mutation class does not apply to a u64 field.",
+        "forced": "The forced mutation class does not apply to a u64 field.",
+        "order": "The order mutation class does not apply to a u64 field.",
+        "duplicate": "The duplicate mutation class does not apply to a u64 field.",
+        "length": "The length mutation class does not apply to a u64 field.",
+        "utf8": "Numeric fields are not UTF-8 text.",
+        "cross": "The cross mutation class does not apply to a u64 field.",
+        "empty": "The empty mutation class does not apply to a u64 field.",
+        "supported-id": "The supported-id mutation class does not apply to a u64 field.",
+        "misuse": "The misuse mutation class does not apply to a u64 field.",
+        "trace": "The trace mutation class does not apply to a u64 field."
+      },
+      "caseCount": 3
+    },
+    {
+      "index": 61,
+      "fieldId": "ClosureObject.Destination",
+      "kind": "text-free",
+      "applicable": {
+        "valid": [
+          "Q2A-F-61-valid"
+        ],
+        "utf8": [
+          "Q2A-F-61-utf8"
+        ],
+        "length": [
+          "Q2A-F-61-length"
+        ],
+        "empty": [
+          "Q2A-F-61-empty"
+        ]
+      },
+      "notApplicable": {
+        "boundary": "The boundary mutation class does not apply to a text-free field.",
+        "presence": "The presence mutation class does not apply to a text-free field.",
+        "tag": "The tag mutation class does not apply to a text-free field.",
+        "forced": "The forced mutation class does not apply to a text-free field.",
+        "order": "The order mutation class does not apply to a text-free field.",
+        "duplicate": "The duplicate mutation class does not apply to a text-free field.",
+        "cross": "The cross mutation class does not apply to a text-free field.",
+        "supported-id": "The supported-id mutation class does not apply to a text-free field.",
+        "misuse": "The misuse mutation class does not apply to a text-free field.",
+        "trace": "The trace mutation class does not apply to a text-free field."
+      },
+      "caseCount": 4
+    },
+    {
+      "index": 62,
+      "fieldId": "ClosureObject.BuildIdentity",
+      "kind": "text-free",
+      "applicable": {
+        "valid": [
+          "Q2A-F-62-valid"
+        ],
+        "utf8": [
+          "Q2A-F-62-utf8"
+        ],
+        "length": [
+          "Q2A-F-62-length"
+        ],
+        "empty": [
+          "Q2A-F-62-empty"
+        ]
+      },
+      "notApplicable": {
+        "boundary": "The boundary mutation class does not apply to a text-free field.",
+        "presence": "The presence mutation class does not apply to a text-free field.",
+        "tag": "The tag mutation class does not apply to a text-free field.",
+        "forced": "The forced mutation class does not apply to a text-free field.",
+        "order": "The order mutation class does not apply to a text-free field.",
+        "duplicate": "The duplicate mutation class does not apply to a text-free field.",
+        "cross": "The cross mutation class does not apply to a text-free field.",
+        "supported-id": "The supported-id mutation class does not apply to a text-free field.",
+        "misuse": "The misuse mutation class does not apply to a text-free field.",
+        "trace": "The trace mutation class does not apply to a text-free field."
+      },
+      "caseCount": 4
+    },
+    {
+      "index": 63,
+      "fieldId": "InvocationManifest.ToolPath",
+      "kind": "text-fixed",
+      "applicable": {
+        "forced": [
+          "Q2A-F-63-forced"
+        ],
+        "utf8": [
+          "Q2A-F-63-utf8"
+        ],
+        "length": [
+          "Q2A-F-63-length"
+        ]
+      },
+      "notApplicable": {
+        "valid": "Fixed path fields admit exactly one value; alternatives are forced refusals.",
+        "boundary": "The boundary mutation class does not apply to a text-fixed field.",
+        "presence": "The presence mutation class does not apply to a text-fixed field.",
+        "tag": "The tag mutation class does not apply to a text-fixed field.",
+        "order": "The order mutation class does not apply to a text-fixed field.",
+        "duplicate": "The duplicate mutation class does not apply to a text-fixed field.",
+        "cross": "The cross mutation class does not apply to a text-fixed field.",
+        "empty": "The empty mutation class does not apply to a text-fixed field.",
+        "supported-id": "The supported-id mutation class does not apply to a text-fixed field.",
+        "misuse": "The misuse mutation class does not apply to a text-fixed field.",
+        "trace": "The trace mutation class does not apply to a text-fixed field."
+      },
+      "caseCount": 3
+    },
+    {
+      "index": 64,
+      "fieldId": "InvocationManifest.Mode",
+      "kind": "text-free",
+      "applicable": {
+        "valid": [
+          "Q2A-F-64-valid"
+        ],
+        "utf8": [
+          "Q2A-F-64-utf8"
+        ],
+        "length": [
+          "Q2A-F-64-length"
+        ],
+        "empty": [
+          "Q2A-F-64-empty"
+        ]
+      },
+      "notApplicable": {
+        "boundary": "The boundary mutation class does not apply to a text-free field.",
+        "presence": "The presence mutation class does not apply to a text-free field.",
+        "tag": "The tag mutation class does not apply to a text-free field.",
+        "forced": "The forced mutation class does not apply to a text-free field.",
+        "order": "The order mutation class does not apply to a text-free field.",
+        "duplicate": "The duplicate mutation class does not apply to a text-free field.",
+        "cross": "The cross mutation class does not apply to a text-free field.",
+        "supported-id": "The supported-id mutation class does not apply to a text-free field.",
+        "misuse": "The misuse mutation class does not apply to a text-free field.",
+        "trace": "The trace mutation class does not apply to a text-free field."
+      },
+      "caseCount": 4
+    },
+    {
+      "index": 65,
+      "fieldId": "InvocationManifest.InputPath",
+      "kind": "text-fixed",
+      "applicable": {
+        "forced": [
+          "Q2A-F-65-forced"
+        ],
+        "utf8": [
+          "Q2A-F-65-utf8"
+        ],
+        "length": [
+          "Q2A-F-65-length"
+        ]
+      },
+      "notApplicable": {
+        "valid": "Fixed path fields admit exactly one value; alternatives are forced refusals.",
+        "boundary": "The boundary mutation class does not apply to a text-fixed field.",
+        "presence": "The presence mutation class does not apply to a text-fixed field.",
+        "tag": "The tag mutation class does not apply to a text-fixed field.",
+        "order": "The order mutation class does not apply to a text-fixed field.",
+        "duplicate": "The duplicate mutation class does not apply to a text-fixed field.",
+        "cross": "The cross mutation class does not apply to a text-fixed field.",
+        "empty": "The empty mutation class does not apply to a text-fixed field.",
+        "supported-id": "The supported-id mutation class does not apply to a text-fixed field.",
+        "misuse": "The misuse mutation class does not apply to a text-fixed field.",
+        "trace": "The trace mutation class does not apply to a text-fixed field."
+      },
+      "caseCount": 3
+    },
+    {
+      "index": 66,
+      "fieldId": "InvocationManifest.Argv",
+      "kind": "argv",
+      "applicable": {
+        "valid": [
+          "Q2A-F-66-valid"
+        ],
+        "boundary": [
+          "Q2A-F-66-boundary-empty",
+          "Q2A-F-66-boundary-multi"
+        ],
+        "length": [
+          "Q2A-F-66-length"
+        ],
+        "utf8": [
+          "Q2A-F-66-utf8"
+        ],
+        "empty": [
+          "Q2A-F-66-empty"
+        ]
+      },
+      "notApplicable": {
+        "presence": "The presence mutation class does not apply to a argv field.",
+        "tag": "The tag mutation class does not apply to a argv field.",
+        "forced": "The forced mutation class does not apply to a argv field.",
+        "order": "Argv order is significant data, not a canonical ordering constraint.",
+        "duplicate": "Duplicate argv entries are explicitly valid; recorded under valid.",
+        "cross": "The cross mutation class does not apply to a argv field.",
+        "supported-id": "The supported-id mutation class does not apply to a argv field.",
+        "misuse": "The misuse mutation class does not apply to a argv field.",
+        "trace": "The trace mutation class does not apply to a argv field."
+      },
+      "caseCount": 6
+    },
+    {
+      "index": 67,
+      "fieldId": "InvocationManifest.Environment",
+      "kind": "env",
+      "applicable": {
+        "valid": [
+          "Q2A-F-67-valid"
+        ],
+        "boundary": [
+          "Q2A-F-67-boundary-empty",
+          "Q2A-F-67-boundary-multi"
+        ],
+        "order": [
+          "Q2A-F-67-order"
+        ],
+        "duplicate": [
+          "Q2A-F-67-duplicate"
+        ],
+        "length": [
+          "Q2A-F-67-length"
+        ],
+        "utf8": [
+          "Q2A-F-67-utf8"
+        ],
+        "empty": [
+          "Q2A-F-67-empty"
+        ]
+      },
+      "notApplicable": {
+        "presence": "The presence mutation class does not apply to a env field.",
+        "tag": "The tag mutation class does not apply to a env field.",
+        "forced": "The forced mutation class does not apply to a env field.",
+        "cross": "The cross mutation class does not apply to a env field.",
+        "supported-id": "The supported-id mutation class does not apply to a env field.",
+        "misuse": "The misuse mutation class does not apply to a env field.",
+        "trace": "The trace mutation class does not apply to a env field."
+      },
+      "caseCount": 8
+    },
+    {
+      "index": 68,
+      "fieldId": "InvocationManifest.WorkDirectory",
+      "kind": "text-fixed",
+      "applicable": {
+        "forced": [
+          "Q2A-F-68-forced"
+        ],
+        "utf8": [
+          "Q2A-F-68-utf8"
+        ],
+        "length": [
+          "Q2A-F-68-length"
+        ]
+      },
+      "notApplicable": {
+        "valid": "Fixed path fields admit exactly one value; alternatives are forced refusals.",
+        "boundary": "The boundary mutation class does not apply to a text-fixed field.",
+        "presence": "The presence mutation class does not apply to a text-fixed field.",
+        "tag": "The tag mutation class does not apply to a text-fixed field.",
+        "order": "The order mutation class does not apply to a text-fixed field.",
+        "duplicate": "The duplicate mutation class does not apply to a text-fixed field.",
+        "cross": "The cross mutation class does not apply to a text-fixed field.",
+        "empty": "The empty mutation class does not apply to a text-fixed field.",
+        "supported-id": "The supported-id mutation class does not apply to a text-fixed field.",
+        "misuse": "The misuse mutation class does not apply to a text-fixed field.",
+        "trace": "The trace mutation class does not apply to a text-fixed field."
+      },
+      "caseCount": 3
+    },
+    {
+      "index": 69,
+      "fieldId": "ChannelManifest.StdinEof",
+      "kind": "bool-forced",
+      "applicable": {
+        "tag": [
+          "Q2A-F-69-tag"
+        ],
+        "forced": [
+          "Q2A-F-69-forced"
+        ]
+      },
+      "notApplicable": {
+        "valid": "The valid mutation class does not apply to a bool-forced field.",
+        "boundary": "The boundary mutation class does not apply to a bool-forced field.",
+        "presence": "The presence mutation class does not apply to a bool-forced field.",
+        "order": "The order mutation class does not apply to a bool-forced field.",
+        "duplicate": "The duplicate mutation class does not apply to a bool-forced field.",
+        "length": "The length mutation class does not apply to a bool-forced field.",
+        "utf8": "The utf8 mutation class does not apply to a bool-forced field.",
+        "cross": "The cross mutation class does not apply to a bool-forced field.",
+        "empty": "The empty mutation class does not apply to a bool-forced field.",
+        "supported-id": "The supported-id mutation class does not apply to a bool-forced field.",
+        "misuse": "The misuse mutation class does not apply to a bool-forced field.",
+        "trace": "The trace mutation class does not apply to a bool-forced field."
+      },
+      "caseCount": 2
+    },
+    {
+      "index": 70,
+      "fieldId": "ChannelManifest.StdoutLimitBytes",
+      "kind": "u64",
+      "applicable": {
+        "valid": [
+          "Q2A-F-70-valid"
+        ],
+        "boundary": [
+          "Q2A-F-70-boundary-min",
+          "Q2A-F-70-boundary-max"
+        ]
+      },
+      "notApplicable": {
+        "presence": "The presence mutation class does not apply to a u64 field.",
+        "tag": "The tag mutation class does not apply to a u64 field.",
+        "forced": "The forced mutation class does not apply to a u64 field.",
+        "order": "The order mutation class does not apply to a u64 field.",
+        "duplicate": "The duplicate mutation class does not apply to a u64 field.",
+        "length": "The length mutation class does not apply to a u64 field.",
+        "utf8": "Numeric fields are not UTF-8 text.",
+        "cross": "The cross mutation class does not apply to a u64 field.",
+        "empty": "The empty mutation class does not apply to a u64 field.",
+        "supported-id": "The supported-id mutation class does not apply to a u64 field.",
+        "misuse": "The misuse mutation class does not apply to a u64 field.",
+        "trace": "The trace mutation class does not apply to a u64 field."
+      },
+      "caseCount": 3
+    },
+    {
+      "index": 71,
+      "fieldId": "ChannelManifest.StderrLimitBytes",
+      "kind": "u64",
+      "applicable": {
+        "valid": [
+          "Q2A-F-71-valid"
+        ],
+        "boundary": [
+          "Q2A-F-71-boundary-min",
+          "Q2A-F-71-boundary-max"
+        ]
+      },
+      "notApplicable": {
+        "presence": "The presence mutation class does not apply to a u64 field.",
+        "tag": "The tag mutation class does not apply to a u64 field.",
+        "forced": "The forced mutation class does not apply to a u64 field.",
+        "order": "The order mutation class does not apply to a u64 field.",
+        "duplicate": "The duplicate mutation class does not apply to a u64 field.",
+        "length": "The length mutation class does not apply to a u64 field.",
+        "utf8": "Numeric fields are not UTF-8 text.",
+        "cross": "The cross mutation class does not apply to a u64 field.",
+        "empty": "The empty mutation class does not apply to a u64 field.",
+        "supported-id": "The supported-id mutation class does not apply to a u64 field.",
+        "misuse": "The misuse mutation class does not apply to a u64 field.",
+        "trace": "The trace mutation class does not apply to a u64 field."
+      },
+      "caseCount": 3
+    },
+    {
+      "index": 72,
+      "fieldId": "ChannelManifest.AggregateLimitBytes",
+      "kind": "u64",
+      "applicable": {
+        "valid": [
+          "Q2A-F-72-valid"
+        ],
+        "boundary": [
+          "Q2A-F-72-boundary-min",
+          "Q2A-F-72-boundary-max"
+        ]
+      },
+      "notApplicable": {
+        "presence": "The presence mutation class does not apply to a u64 field.",
+        "tag": "The tag mutation class does not apply to a u64 field.",
+        "forced": "The forced mutation class does not apply to a u64 field.",
+        "order": "The order mutation class does not apply to a u64 field.",
+        "duplicate": "The duplicate mutation class does not apply to a u64 field.",
+        "length": "The length mutation class does not apply to a u64 field.",
+        "utf8": "Numeric fields are not UTF-8 text.",
+        "cross": "The cross mutation class does not apply to a u64 field.",
+        "empty": "The empty mutation class does not apply to a u64 field.",
+        "supported-id": "The supported-id mutation class does not apply to a u64 field.",
+        "misuse": "The misuse mutation class does not apply to a u64 field.",
+        "trace": "The trace mutation class does not apply to a u64 field."
+      },
+      "caseCount": 3
+    }
+  ],
+  "cases": [
+    {
+      "caseId": "Q2A-F-01-supported-id",
+      "fieldId": "RestrictedManifest.SchemaVersion",
+      "mutationClass": "supported-id",
+      "rowClass": "malformed",
+      "description": "Schema 1 is accepted; schemas 0, 2 and 65,535 refuse UnsupportedSchema at offset zero"
+    },
+    {
+      "caseId": "Q2A-F-02-supported-id",
+      "fieldId": "RestrictedManifest.ImplementationId",
+      "mutationClass": "supported-id",
+      "rowClass": "malformed",
+      "description": "Exact implementation ID accepted; whitespace, case-variant, trailing-NUL and unknown IDs refuse UnsupportedImplementation at offset two; empty refuses InvalidValue at offset two"
+    },
+    {
+      "caseId": "Q2A-F-02-utf8",
+      "fieldId": "RestrictedManifest.ImplementationId",
+      "mutationClass": "utf8",
+      "rowClass": "malformed",
+      "description": "Malformed implementation bytes refuse InvalidUtf8 at offset two"
+    },
+    {
+      "caseId": "Q2A-F-02-length",
+      "fieldId": "RestrictedManifest.ImplementationId",
+      "mutationClass": "length",
+      "rowClass": "malformed",
+      "description": "Inflated implementation length refuses InvalidLengthOrCount at offset two"
+    },
+    {
+      "caseId": "Q2A-F-02-misuse",
+      "fieldId": "RestrictedManifest.ImplementationId",
+      "mutationClass": "misuse",
+      "rowClass": "misuse",
+      "description": "Supports throws ArgumentNullException for a null implementation ID at supported and unsupported schemas"
+    },
+    {
+      "caseId": "Q2A-F-03-trace",
+      "fieldId": "RestrictedManifest.Authority",
+      "mutationClass": "trace",
+      "rowClass": "trace",
+      "description": "Public view property inventory for RestrictedManifest.Authority equals the committed field-map subfields"
+    },
+    {
+      "caseId": "Q2A-F-04-trace",
+      "fieldId": "RestrictedManifest.Resources",
+      "mutationClass": "trace",
+      "rowClass": "trace",
+      "description": "Public view property inventory for RestrictedManifest.Resources equals the committed field-map subfields"
+    },
+    {
+      "caseId": "Q2A-F-05-trace",
+      "fieldId": "RestrictedManifest.Closure",
+      "mutationClass": "trace",
+      "rowClass": "trace",
+      "description": "Public view property inventory for RestrictedManifest.Closure equals the committed field-map subfields"
+    },
+    {
+      "caseId": "Q2A-F-06-trace",
+      "fieldId": "RestrictedManifest.Invocation",
+      "mutationClass": "trace",
+      "rowClass": "trace",
+      "description": "Public view property inventory for RestrictedManifest.Invocation equals the committed field-map subfields"
+    },
+    {
+      "caseId": "Q2A-F-07-trace",
+      "fieldId": "RestrictedManifest.Channels",
+      "mutationClass": "trace",
+      "rowClass": "trace",
+      "description": "Public view property inventory for RestrictedManifest.Channels equals the committed field-map subfields"
+    },
+    {
+      "caseId": "Q2A-F-08-valid",
+      "fieldId": "AuthorityManifest.Namespaces",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-08-boundary-empty",
+      "fieldId": "AuthorityManifest.Namespaces",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-empty\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-08-boundary-multi",
+      "fieldId": "AuthorityManifest.Namespaces",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-multi\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-08-order",
+      "fieldId": "AuthorityManifest.Namespaces",
+      "mutationClass": "order",
+      "rowClass": "noncanonical",
+      "description": "Out-of-order set entry refuses NonCanonicalOrder at the second item start"
+    },
+    {
+      "caseId": "Q2A-F-08-duplicate",
+      "fieldId": "AuthorityManifest.Namespaces",
+      "mutationClass": "duplicate",
+      "rowClass": "noncanonical",
+      "description": "Adjacent duplicate set entry refuses Duplicate at the second item start"
+    },
+    {
+      "caseId": "Q2A-F-08-length",
+      "fieldId": "AuthorityManifest.Namespaces",
+      "mutationClass": "length",
+      "rowClass": "malformed",
+      "description": "Inflated count refuses InvalidLengthOrCount at the count start"
+    },
+    {
+      "caseId": "Q2A-F-08-utf8",
+      "fieldId": "AuthorityManifest.Namespaces",
+      "mutationClass": "utf8",
+      "rowClass": "malformed",
+      "description": "Malformed UTF-8 in a set item refuses InvalidUtf8 at the item start"
+    },
+    {
+      "caseId": "Q2A-F-08-empty",
+      "fieldId": "AuthorityManifest.Namespaces",
+      "mutationClass": "empty",
+      "rowClass": "malformed",
+      "description": "Empty set item refuses InvalidValue at the item start"
+    },
+    {
+      "caseId": "Q2A-F-09-length",
+      "fieldId": "AuthorityManifest.Capabilities",
+      "mutationClass": "length",
+      "rowClass": "malformed",
+      "description": "Inflated capability count refuses InvalidLengthOrCount at the count start"
+    },
+    {
+      "caseId": "Q2A-F-09-forced",
+      "fieldId": "AuthorityManifest.Capabilities",
+      "mutationClass": "forced",
+      "rowClass": "noncanonical",
+      "description": "Any capability entry refuses InvalidValue at the capability count start"
+    },
+    {
+      "caseId": "Q2A-F-10-valid",
+      "fieldId": "AuthorityManifest.NoNewPrivs",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-10-tag",
+      "fieldId": "AuthorityManifest.NoNewPrivs",
+      "mutationClass": "tag",
+      "rowClass": "malformed",
+      "description": "Boolean tag above one refuses InvalidTag at the field start"
+    },
+    {
+      "caseId": "Q2A-F-11-valid",
+      "fieldId": "AuthorityManifest.FilterSha256",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-12-valid",
+      "fieldId": "AuthorityManifest.FilterLength",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-12-boundary-min",
+      "fieldId": "AuthorityManifest.FilterLength",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-min\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-12-boundary-max",
+      "fieldId": "AuthorityManifest.FilterLength",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-max\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-13-valid",
+      "fieldId": "AuthorityManifest.ReadOnlyDestinations",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-13-boundary-empty",
+      "fieldId": "AuthorityManifest.ReadOnlyDestinations",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-empty\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-13-boundary-multi",
+      "fieldId": "AuthorityManifest.ReadOnlyDestinations",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-multi\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-13-order",
+      "fieldId": "AuthorityManifest.ReadOnlyDestinations",
+      "mutationClass": "order",
+      "rowClass": "noncanonical",
+      "description": "Out-of-order set entry refuses NonCanonicalOrder at the second item start"
+    },
+    {
+      "caseId": "Q2A-F-13-duplicate",
+      "fieldId": "AuthorityManifest.ReadOnlyDestinations",
+      "mutationClass": "duplicate",
+      "rowClass": "noncanonical",
+      "description": "Adjacent duplicate set entry refuses Duplicate at the second item start"
+    },
+    {
+      "caseId": "Q2A-F-13-length",
+      "fieldId": "AuthorityManifest.ReadOnlyDestinations",
+      "mutationClass": "length",
+      "rowClass": "malformed",
+      "description": "Inflated count refuses InvalidLengthOrCount at the count start"
+    },
+    {
+      "caseId": "Q2A-F-13-utf8",
+      "fieldId": "AuthorityManifest.ReadOnlyDestinations",
+      "mutationClass": "utf8",
+      "rowClass": "malformed",
+      "description": "Malformed UTF-8 in a set item refuses InvalidUtf8 at the item start"
+    },
+    {
+      "caseId": "Q2A-F-13-empty",
+      "fieldId": "AuthorityManifest.ReadOnlyDestinations",
+      "mutationClass": "empty",
+      "rowClass": "malformed",
+      "description": "Empty set item refuses InvalidValue at the item start"
+    },
+    {
+      "caseId": "Q2A-F-14-valid",
+      "fieldId": "AuthorityManifest.WritableStores",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-14-boundary-empty",
+      "fieldId": "AuthorityManifest.WritableStores",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-empty\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-14-boundary-multi",
+      "fieldId": "AuthorityManifest.WritableStores",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-multi\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-14-order",
+      "fieldId": "AuthorityManifest.WritableStores",
+      "mutationClass": "order",
+      "rowClass": "noncanonical",
+      "description": "Out-of-order set entry refuses NonCanonicalOrder at the second item start"
+    },
+    {
+      "caseId": "Q2A-F-14-duplicate",
+      "fieldId": "AuthorityManifest.WritableStores",
+      "mutationClass": "duplicate",
+      "rowClass": "noncanonical",
+      "description": "Adjacent duplicate set entry refuses Duplicate at the second item start"
+    },
+    {
+      "caseId": "Q2A-F-14-length",
+      "fieldId": "AuthorityManifest.WritableStores",
+      "mutationClass": "length",
+      "rowClass": "malformed",
+      "description": "Inflated count refuses InvalidLengthOrCount at the count start"
+    },
+    {
+      "caseId": "Q2A-F-14-utf8",
+      "fieldId": "AuthorityManifest.WritableStores",
+      "mutationClass": "utf8",
+      "rowClass": "malformed",
+      "description": "Malformed UTF-8 in a set item refuses InvalidUtf8 at the item start"
+    },
+    {
+      "caseId": "Q2A-F-14-empty",
+      "fieldId": "AuthorityManifest.WritableStores",
+      "mutationClass": "empty",
+      "rowClass": "malformed",
+      "description": "Empty set item refuses InvalidValue at the item start"
+    },
+    {
+      "caseId": "Q2A-F-15-tag",
+      "fieldId": "AuthorityManifest.NoAmbientEnvironment",
+      "mutationClass": "tag",
+      "rowClass": "malformed",
+      "description": "Boolean tag above one refuses InvalidTag at the field start"
+    },
+    {
+      "caseId": "Q2A-F-15-forced",
+      "fieldId": "AuthorityManifest.NoAmbientEnvironment",
+      "mutationClass": "forced",
+      "rowClass": "noncanonical",
+      "description": "Forced-true value false refuses InvalidValue at the field start"
+    },
+    {
+      "caseId": "Q2A-F-16-tag",
+      "fieldId": "AuthorityManifest.NoIpcEndpoints",
+      "mutationClass": "tag",
+      "rowClass": "malformed",
+      "description": "Boolean tag above one refuses InvalidTag at the field start"
+    },
+    {
+      "caseId": "Q2A-F-16-forced",
+      "fieldId": "AuthorityManifest.NoIpcEndpoints",
+      "mutationClass": "forced",
+      "rowClass": "noncanonical",
+      "description": "Forced-true value false refuses InvalidValue at the field start"
+    },
+    {
+      "caseId": "Q2A-F-17-tag",
+      "fieldId": "AuthorityManifest.NoExtraInheritedFds",
+      "mutationClass": "tag",
+      "rowClass": "malformed",
+      "description": "Boolean tag above one refuses InvalidTag at the field start"
+    },
+    {
+      "caseId": "Q2A-F-17-forced",
+      "fieldId": "AuthorityManifest.NoExtraInheritedFds",
+      "mutationClass": "forced",
+      "rowClass": "noncanonical",
+      "description": "Forced-true value false refuses InvalidValue at the field start"
+    },
+    {
+      "caseId": "Q2A-F-18-trace",
+      "fieldId": "AuthorityManifest.MountPolicy",
+      "mutationClass": "trace",
+      "rowClass": "trace",
+      "description": "Public view property inventory for AuthorityManifest.MountPolicy equals the committed field-map subfields"
+    },
+    {
+      "caseId": "Q2A-F-19-tag",
+      "fieldId": "AuthorityManifest.NetworkQualification",
+      "mutationClass": "tag",
+      "rowClass": "malformed",
+      "description": "Qualification tag above one refuses InvalidTag at the field start"
+    },
+    {
+      "caseId": "Q2A-F-19-forced",
+      "fieldId": "AuthorityManifest.NetworkQualification",
+      "mutationClass": "forced",
+      "rowClass": "noncanonical",
+      "description": "Mandatory (non-pending) qualification refuses InvalidValue at the field start"
+    },
+    {
+      "caseId": "Q2A-F-20-presence-absent",
+      "fieldId": "ResourceManifest.Memory",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-absent budget Memory is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-20-presence-exact-zero",
+      "fieldId": "ResourceManifest.Memory",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-exact-zero budget Memory is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-20-presence-unlimited",
+      "fieldId": "ResourceManifest.Memory",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-unlimited budget Memory is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-20-valid",
+      "fieldId": "ResourceManifest.Memory",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid budget Memory is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-20-boundary-min",
+      "fieldId": "ResourceManifest.Memory",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary-min budget Memory is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-20-boundary-max",
+      "fieldId": "ResourceManifest.Memory",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary-max budget Memory is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-20-cross",
+      "fieldId": "ResourceManifest.Memory",
+      "mutationClass": "cross",
+      "rowClass": "noncanonical",
+      "description": "Budget Memory with a non-Exact kind and nonzero value refuses InvalidValue at the budget start"
+    },
+    {
+      "caseId": "Q2A-F-21-presence-absent",
+      "fieldId": "ResourceManifest.Swap",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-absent budget Swap is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-21-presence-exact-zero",
+      "fieldId": "ResourceManifest.Swap",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-exact-zero budget Swap is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-21-presence-unlimited",
+      "fieldId": "ResourceManifest.Swap",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-unlimited budget Swap is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-21-valid",
+      "fieldId": "ResourceManifest.Swap",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid budget Swap is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-21-boundary-min",
+      "fieldId": "ResourceManifest.Swap",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary-min budget Swap is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-21-boundary-max",
+      "fieldId": "ResourceManifest.Swap",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary-max budget Swap is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-21-cross",
+      "fieldId": "ResourceManifest.Swap",
+      "mutationClass": "cross",
+      "rowClass": "noncanonical",
+      "description": "Budget Swap with a non-Exact kind and nonzero value refuses InvalidValue at the budget start"
+    },
+    {
+      "caseId": "Q2A-F-22-presence-absent",
+      "fieldId": "ResourceManifest.Tasks",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-absent budget Tasks is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-22-presence-exact-zero",
+      "fieldId": "ResourceManifest.Tasks",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-exact-zero budget Tasks is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-22-presence-unlimited",
+      "fieldId": "ResourceManifest.Tasks",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-unlimited budget Tasks is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-22-valid",
+      "fieldId": "ResourceManifest.Tasks",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid budget Tasks is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-22-boundary-min",
+      "fieldId": "ResourceManifest.Tasks",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary-min budget Tasks is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-22-boundary-max",
+      "fieldId": "ResourceManifest.Tasks",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary-max budget Tasks is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-22-cross",
+      "fieldId": "ResourceManifest.Tasks",
+      "mutationClass": "cross",
+      "rowClass": "noncanonical",
+      "description": "Budget Tasks with a non-Exact kind and nonzero value refuses InvalidValue at the budget start"
+    },
+    {
+      "caseId": "Q2A-F-23-presence-absent",
+      "fieldId": "ResourceManifest.FileDescriptors",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-absent budget FileDescriptors is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-23-presence-exact-zero",
+      "fieldId": "ResourceManifest.FileDescriptors",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-exact-zero budget FileDescriptors is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-23-presence-unlimited",
+      "fieldId": "ResourceManifest.FileDescriptors",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-unlimited budget FileDescriptors is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-23-valid",
+      "fieldId": "ResourceManifest.FileDescriptors",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid budget FileDescriptors is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-23-boundary-min",
+      "fieldId": "ResourceManifest.FileDescriptors",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary-min budget FileDescriptors is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-23-boundary-max",
+      "fieldId": "ResourceManifest.FileDescriptors",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary-max budget FileDescriptors is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-23-cross",
+      "fieldId": "ResourceManifest.FileDescriptors",
+      "mutationClass": "cross",
+      "rowClass": "noncanonical",
+      "description": "Budget FileDescriptors with a non-Exact kind and nonzero value refuses InvalidValue at the budget start"
+    },
+    {
+      "caseId": "Q2A-F-24-presence-absent",
+      "fieldId": "ResourceManifest.TmpBytes",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-absent budget TmpBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-24-presence-exact-zero",
+      "fieldId": "ResourceManifest.TmpBytes",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-exact-zero budget TmpBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-24-presence-unlimited",
+      "fieldId": "ResourceManifest.TmpBytes",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-unlimited budget TmpBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-24-valid",
+      "fieldId": "ResourceManifest.TmpBytes",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid budget TmpBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-24-boundary-min",
+      "fieldId": "ResourceManifest.TmpBytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary-min budget TmpBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-24-boundary-max",
+      "fieldId": "ResourceManifest.TmpBytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary-max budget TmpBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-24-cross",
+      "fieldId": "ResourceManifest.TmpBytes",
+      "mutationClass": "cross",
+      "rowClass": "noncanonical",
+      "description": "Budget TmpBytes with a non-Exact kind and nonzero value refuses InvalidValue at the budget start"
+    },
+    {
+      "caseId": "Q2A-F-25-presence-absent",
+      "fieldId": "ResourceManifest.ShmBytes",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-absent budget ShmBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-25-presence-exact-zero",
+      "fieldId": "ResourceManifest.ShmBytes",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-exact-zero budget ShmBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-25-presence-unlimited",
+      "fieldId": "ResourceManifest.ShmBytes",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-unlimited budget ShmBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-25-valid",
+      "fieldId": "ResourceManifest.ShmBytes",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid budget ShmBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-25-boundary-min",
+      "fieldId": "ResourceManifest.ShmBytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary-min budget ShmBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-25-boundary-max",
+      "fieldId": "ResourceManifest.ShmBytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary-max budget ShmBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-25-cross",
+      "fieldId": "ResourceManifest.ShmBytes",
+      "mutationClass": "cross",
+      "rowClass": "noncanonical",
+      "description": "Budget ShmBytes with a non-Exact kind and nonzero value refuses InvalidValue at the budget start"
+    },
+    {
+      "caseId": "Q2A-F-26-presence-absent",
+      "fieldId": "ResourceManifest.StdoutBytes",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-absent budget StdoutBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-26-presence-exact-zero",
+      "fieldId": "ResourceManifest.StdoutBytes",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-exact-zero budget StdoutBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-26-presence-unlimited",
+      "fieldId": "ResourceManifest.StdoutBytes",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-unlimited budget StdoutBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-26-valid",
+      "fieldId": "ResourceManifest.StdoutBytes",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid budget StdoutBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-26-boundary-min",
+      "fieldId": "ResourceManifest.StdoutBytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary-min budget StdoutBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-26-boundary-max",
+      "fieldId": "ResourceManifest.StdoutBytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary-max budget StdoutBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-26-cross",
+      "fieldId": "ResourceManifest.StdoutBytes",
+      "mutationClass": "cross",
+      "rowClass": "noncanonical",
+      "description": "Budget StdoutBytes with a non-Exact kind and nonzero value refuses InvalidValue at the budget start"
+    },
+    {
+      "caseId": "Q2A-F-27-presence-absent",
+      "fieldId": "ResourceManifest.StderrBytes",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-absent budget StderrBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-27-presence-exact-zero",
+      "fieldId": "ResourceManifest.StderrBytes",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-exact-zero budget StderrBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-27-presence-unlimited",
+      "fieldId": "ResourceManifest.StderrBytes",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-unlimited budget StderrBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-27-valid",
+      "fieldId": "ResourceManifest.StderrBytes",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid budget StderrBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-27-boundary-min",
+      "fieldId": "ResourceManifest.StderrBytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary-min budget StderrBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-27-boundary-max",
+      "fieldId": "ResourceManifest.StderrBytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary-max budget StderrBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-27-cross",
+      "fieldId": "ResourceManifest.StderrBytes",
+      "mutationClass": "cross",
+      "rowClass": "noncanonical",
+      "description": "Budget StderrBytes with a non-Exact kind and nonzero value refuses InvalidValue at the budget start"
+    },
+    {
+      "caseId": "Q2A-F-28-presence-absent",
+      "fieldId": "ResourceManifest.CaptureAggregateBytes",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-absent budget CaptureAggregateBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-28-presence-exact-zero",
+      "fieldId": "ResourceManifest.CaptureAggregateBytes",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-exact-zero budget CaptureAggregateBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-28-presence-unlimited",
+      "fieldId": "ResourceManifest.CaptureAggregateBytes",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-unlimited budget CaptureAggregateBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-28-valid",
+      "fieldId": "ResourceManifest.CaptureAggregateBytes",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid budget CaptureAggregateBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-28-boundary-min",
+      "fieldId": "ResourceManifest.CaptureAggregateBytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary-min budget CaptureAggregateBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-28-boundary-max",
+      "fieldId": "ResourceManifest.CaptureAggregateBytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary-max budget CaptureAggregateBytes is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-28-cross",
+      "fieldId": "ResourceManifest.CaptureAggregateBytes",
+      "mutationClass": "cross",
+      "rowClass": "noncanonical",
+      "description": "Budget CaptureAggregateBytes with a non-Exact kind and nonzero value refuses InvalidValue at the budget start"
+    },
+    {
+      "caseId": "Q2A-F-29-presence-absent",
+      "fieldId": "ResourceManifest.SetupTimeoutNs",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-absent budget SetupTimeoutNs is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-29-presence-exact-zero",
+      "fieldId": "ResourceManifest.SetupTimeoutNs",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-exact-zero budget SetupTimeoutNs is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-29-presence-unlimited",
+      "fieldId": "ResourceManifest.SetupTimeoutNs",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-unlimited budget SetupTimeoutNs is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-29-valid",
+      "fieldId": "ResourceManifest.SetupTimeoutNs",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid budget SetupTimeoutNs is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-29-boundary-min",
+      "fieldId": "ResourceManifest.SetupTimeoutNs",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary-min budget SetupTimeoutNs is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-29-boundary-max",
+      "fieldId": "ResourceManifest.SetupTimeoutNs",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary-max budget SetupTimeoutNs is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-29-cross",
+      "fieldId": "ResourceManifest.SetupTimeoutNs",
+      "mutationClass": "cross",
+      "rowClass": "noncanonical",
+      "description": "Budget SetupTimeoutNs with a non-Exact kind and nonzero value refuses InvalidValue at the budget start"
+    },
+    {
+      "caseId": "Q2A-F-30-presence-absent",
+      "fieldId": "ResourceManifest.OverallTimeoutNs",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-absent budget OverallTimeoutNs is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-30-presence-exact-zero",
+      "fieldId": "ResourceManifest.OverallTimeoutNs",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-exact-zero budget OverallTimeoutNs is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-30-presence-unlimited",
+      "fieldId": "ResourceManifest.OverallTimeoutNs",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-unlimited budget OverallTimeoutNs is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-30-valid",
+      "fieldId": "ResourceManifest.OverallTimeoutNs",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid budget OverallTimeoutNs is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-30-boundary-min",
+      "fieldId": "ResourceManifest.OverallTimeoutNs",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary-min budget OverallTimeoutNs is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-30-boundary-max",
+      "fieldId": "ResourceManifest.OverallTimeoutNs",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary-max budget OverallTimeoutNs is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-30-cross",
+      "fieldId": "ResourceManifest.OverallTimeoutNs",
+      "mutationClass": "cross",
+      "rowClass": "noncanonical",
+      "description": "Budget OverallTimeoutNs with a non-Exact kind and nonzero value refuses InvalidValue at the budget start"
+    },
+    {
+      "caseId": "Q2A-F-31-presence-absent",
+      "fieldId": "ResourceManifest.StopAllowanceNs",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-absent budget StopAllowanceNs is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-31-presence-exact-zero",
+      "fieldId": "ResourceManifest.StopAllowanceNs",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-exact-zero budget StopAllowanceNs is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-31-presence-unlimited",
+      "fieldId": "ResourceManifest.StopAllowanceNs",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-unlimited budget StopAllowanceNs is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-31-valid",
+      "fieldId": "ResourceManifest.StopAllowanceNs",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid budget StopAllowanceNs is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-31-boundary-min",
+      "fieldId": "ResourceManifest.StopAllowanceNs",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary-min budget StopAllowanceNs is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-31-boundary-max",
+      "fieldId": "ResourceManifest.StopAllowanceNs",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary-max budget StopAllowanceNs is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-31-cross",
+      "fieldId": "ResourceManifest.StopAllowanceNs",
+      "mutationClass": "cross",
+      "rowClass": "noncanonical",
+      "description": "Budget StopAllowanceNs with a non-Exact kind and nonzero value refuses InvalidValue at the budget start"
+    },
+    {
+      "caseId": "Q2A-F-32-presence-absent",
+      "fieldId": "ResourceManifest.FinalDrainNs",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-absent budget FinalDrainNs is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-32-presence-exact-zero",
+      "fieldId": "ResourceManifest.FinalDrainNs",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-exact-zero budget FinalDrainNs is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-32-presence-unlimited",
+      "fieldId": "ResourceManifest.FinalDrainNs",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence-unlimited budget FinalDrainNs is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-32-valid",
+      "fieldId": "ResourceManifest.FinalDrainNs",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid budget FinalDrainNs is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-32-boundary-min",
+      "fieldId": "ResourceManifest.FinalDrainNs",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary-min budget FinalDrainNs is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-32-boundary-max",
+      "fieldId": "ResourceManifest.FinalDrainNs",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary-max budget FinalDrainNs is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-32-cross",
+      "fieldId": "ResourceManifest.FinalDrainNs",
+      "mutationClass": "cross",
+      "rowClass": "noncanonical",
+      "description": "Budget FinalDrainNs with a non-Exact kind and nonzero value refuses InvalidValue at the budget start"
+    },
+    {
+      "caseId": "Q2A-F-33-tag",
+      "fieldId": "ResourceManifest.InodeQualification",
+      "mutationClass": "tag",
+      "rowClass": "malformed",
+      "description": "Qualification tag above one refuses InvalidTag at the field start"
+    },
+    {
+      "caseId": "Q2A-F-33-forced",
+      "fieldId": "ResourceManifest.InodeQualification",
+      "mutationClass": "forced",
+      "rowClass": "noncanonical",
+      "description": "Mandatory (non-pending) qualification refuses InvalidValue at the field start"
+    },
+    {
+      "caseId": "Q2A-F-34-trace",
+      "fieldId": "ResourceManifest.CoreDumps",
+      "mutationClass": "trace",
+      "rowClass": "trace",
+      "description": "Public view property inventory for ResourceManifest.CoreDumps equals the committed field-map subfields"
+    },
+    {
+      "caseId": "Q2A-F-35-trace",
+      "fieldId": "ResourceManifest.OwnerAllocation",
+      "mutationClass": "trace",
+      "rowClass": "trace",
+      "description": "Public view property inventory for ResourceManifest.OwnerAllocation equals the committed field-map subfields"
+    },
+    {
+      "caseId": "Q2A-F-36-valid-absent",
+      "fieldId": "ResourceBudget.Kind",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid-absent\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-36-valid-unlimited",
+      "fieldId": "ResourceBudget.Kind",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid-unlimited\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-36-tag",
+      "fieldId": "ResourceBudget.Kind",
+      "mutationClass": "tag",
+      "rowClass": "malformed",
+      "description": "Budget kind tag above two refuses InvalidTag at the budget start"
+    },
+    {
+      "caseId": "Q2A-F-36-cross",
+      "fieldId": "ResourceBudget.Kind",
+      "mutationClass": "cross",
+      "rowClass": "noncanonical",
+      "description": "Absent budget kind with a nonzero value refuses InvalidValue at the budget start"
+    },
+    {
+      "caseId": "Q2A-F-36-cross-unlimited",
+      "fieldId": "ResourceBudget.Kind",
+      "mutationClass": "cross",
+      "rowClass": "noncanonical",
+      "description": "Unlimited budget kind with a nonzero value refuses InvalidValue at the budget start"
+    },
+    {
+      "caseId": "Q2A-F-37-valid",
+      "fieldId": "ResourceBudget.Value",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-37-boundary-min",
+      "fieldId": "ResourceBudget.Value",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-min\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-37-boundary-max",
+      "fieldId": "ResourceBudget.Value",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-max\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-38-valid",
+      "fieldId": "ResourceBudget.Unit",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-38-utf8",
+      "fieldId": "ResourceBudget.Unit",
+      "mutationClass": "utf8",
+      "rowClass": "malformed",
+      "description": "Malformed UTF-8 refuses InvalidUtf8 at the field start"
+    },
+    {
+      "caseId": "Q2A-F-38-length",
+      "fieldId": "ResourceBudget.Unit",
+      "mutationClass": "length",
+      "rowClass": "malformed",
+      "description": "Inflated declared length refuses InvalidLengthOrCount at the field start"
+    },
+    {
+      "caseId": "Q2A-F-38-empty",
+      "fieldId": "ResourceBudget.Unit",
+      "mutationClass": "empty",
+      "rowClass": "malformed",
+      "description": "Empty non-allowed text refuses InvalidValue at the field start"
+    },
+    {
+      "caseId": "Q2A-F-39-valid",
+      "fieldId": "ResourceBudget.Qualification",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-39-tag",
+      "fieldId": "ResourceBudget.Qualification",
+      "mutationClass": "tag",
+      "rowClass": "malformed",
+      "description": "Qualification tag above one refuses InvalidTag at the field start"
+    },
+    {
+      "caseId": "Q2A-F-40-valid",
+      "fieldId": "WritableStore.Path",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-40-utf8",
+      "fieldId": "WritableStore.Path",
+      "mutationClass": "utf8",
+      "rowClass": "malformed",
+      "description": "Malformed UTF-8 refuses InvalidUtf8 at the field start"
+    },
+    {
+      "caseId": "Q2A-F-40-length",
+      "fieldId": "WritableStore.Path",
+      "mutationClass": "length",
+      "rowClass": "malformed",
+      "description": "Inflated declared length refuses InvalidLengthOrCount at the field start"
+    },
+    {
+      "caseId": "Q2A-F-40-empty",
+      "fieldId": "WritableStore.Path",
+      "mutationClass": "empty",
+      "rowClass": "malformed",
+      "description": "Empty non-allowed text refuses InvalidValue at the field start"
+    },
+    {
+      "caseId": "Q2A-F-41-valid",
+      "fieldId": "WritableStore.Bytes",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-41-boundary-min",
+      "fieldId": "WritableStore.Bytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-min\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-41-boundary-max",
+      "fieldId": "WritableStore.Bytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-max\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-42-valid",
+      "fieldId": "WritableStore.HasInodeBudget",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-42-tag",
+      "fieldId": "WritableStore.HasInodeBudget",
+      "mutationClass": "tag",
+      "rowClass": "malformed",
+      "description": "Boolean tag above one refuses InvalidTag at the field start"
+    },
+    {
+      "caseId": "Q2A-F-43-valid",
+      "fieldId": "WritableStore.InodeBudget",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-43-boundary-min",
+      "fieldId": "WritableStore.InodeBudget",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-min\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-43-boundary-max",
+      "fieldId": "WritableStore.InodeBudget",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-max\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-43-cross",
+      "fieldId": "WritableStore.InodeBudget",
+      "mutationClass": "cross",
+      "rowClass": "noncanonical",
+      "description": "Inode budget absent with a nonzero value refuses InvalidValue at the inode budget start"
+    },
+    {
+      "caseId": "Q2A-F-44-tag",
+      "fieldId": "ExecutableMountPolicy.ToolExecutable",
+      "mutationClass": "tag",
+      "rowClass": "malformed",
+      "description": "Boolean tag above one refuses InvalidTag at the field start"
+    },
+    {
+      "caseId": "Q2A-F-44-forced",
+      "fieldId": "ExecutableMountPolicy.ToolExecutable",
+      "mutationClass": "forced",
+      "rowClass": "noncanonical",
+      "description": "Forced-true value false refuses InvalidValue at the field start"
+    },
+    {
+      "caseId": "Q2A-F-45-valid",
+      "fieldId": "ExecutableMountPolicy.ScratchNoexec",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-45-tag",
+      "fieldId": "ExecutableMountPolicy.ScratchNoexec",
+      "mutationClass": "tag",
+      "rowClass": "malformed",
+      "description": "Boolean tag above one refuses InvalidTag at the field start"
+    },
+    {
+      "caseId": "Q2A-F-46-tag",
+      "fieldId": "CoreDumpPolicy.CoreDisabled",
+      "mutationClass": "tag",
+      "rowClass": "malformed",
+      "description": "Boolean tag above one refuses InvalidTag at the field start"
+    },
+    {
+      "caseId": "Q2A-F-46-forced",
+      "fieldId": "CoreDumpPolicy.CoreDisabled",
+      "mutationClass": "forced",
+      "rowClass": "noncanonical",
+      "description": "Forced-true value false refuses InvalidValue at the field start"
+    },
+    {
+      "caseId": "Q2A-F-47-valid",
+      "fieldId": "CoreDumpPolicy.RuntimeDumpsDisabled",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-47-tag",
+      "fieldId": "CoreDumpPolicy.RuntimeDumpsDisabled",
+      "mutationClass": "tag",
+      "rowClass": "malformed",
+      "description": "Boolean tag above one refuses InvalidTag at the field start"
+    },
+    {
+      "caseId": "Q2A-F-48-valid",
+      "fieldId": "CoreDumpPolicy.CorePatternObserved",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-48-presence-absent",
+      "fieldId": "CoreDumpPolicy.CorePatternObserved",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence mutation \u0027presence-absent\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-48-presence-present",
+      "fieldId": "CoreDumpPolicy.CorePatternObserved",
+      "mutationClass": "presence",
+      "rowClass": "valid",
+      "description": "presence mutation \u0027presence-present\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-48-tag",
+      "fieldId": "CoreDumpPolicy.CorePatternObserved",
+      "mutationClass": "tag",
+      "rowClass": "malformed",
+      "description": "Core-pattern presence tag above one refuses InvalidTag at the presence byte"
+    },
+    {
+      "caseId": "Q2A-F-48-utf8",
+      "fieldId": "CoreDumpPolicy.CorePatternObserved",
+      "mutationClass": "utf8",
+      "rowClass": "malformed",
+      "description": "Malformed core-pattern UTF-8 refuses InvalidUtf8 at the field start"
+    },
+    {
+      "caseId": "Q2A-F-48-length",
+      "fieldId": "CoreDumpPolicy.CorePatternObserved",
+      "mutationClass": "length",
+      "rowClass": "malformed",
+      "description": "Inflated core-pattern length refuses InvalidLengthOrCount at the field start"
+    },
+    {
+      "caseId": "Q2A-F-48-empty",
+      "fieldId": "CoreDumpPolicy.CorePatternObserved",
+      "mutationClass": "empty",
+      "rowClass": "malformed",
+      "description": "Empty observed core pattern refuses InvalidValue at the field start"
+    },
+    {
+      "caseId": "Q2A-F-49-valid",
+      "fieldId": "OwnerAllocationLimits.StagingBytes",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-49-boundary-min",
+      "fieldId": "OwnerAllocationLimits.StagingBytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-min\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-49-boundary-max",
+      "fieldId": "OwnerAllocationLimits.StagingBytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-max\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-50-valid",
+      "fieldId": "OwnerAllocationLimits.StagingObjects",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-50-boundary-min",
+      "fieldId": "OwnerAllocationLimits.StagingObjects",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-min\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-50-boundary-max",
+      "fieldId": "OwnerAllocationLimits.StagingObjects",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-max\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-51-valid",
+      "fieldId": "OwnerAllocationLimits.ConfigBytes",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-51-boundary-min",
+      "fieldId": "OwnerAllocationLimits.ConfigBytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-min\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-51-boundary-max",
+      "fieldId": "OwnerAllocationLimits.ConfigBytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-max\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-52-valid",
+      "fieldId": "OwnerAllocationLimits.CoordinatorStatusBytes",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-52-boundary-min",
+      "fieldId": "OwnerAllocationLimits.CoordinatorStatusBytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-min\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-52-boundary-max",
+      "fieldId": "OwnerAllocationLimits.CoordinatorStatusBytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-max\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-53-valid",
+      "fieldId": "OwnerAllocationLimits.HelperStatusBytes",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-53-boundary-min",
+      "fieldId": "OwnerAllocationLimits.HelperStatusBytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-min\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-53-boundary-max",
+      "fieldId": "OwnerAllocationLimits.HelperStatusBytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-max\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-54-valid",
+      "fieldId": "OwnerAllocationLimits.JournalBytes",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-54-boundary-min",
+      "fieldId": "OwnerAllocationLimits.JournalBytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-min\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-54-boundary-max",
+      "fieldId": "OwnerAllocationLimits.JournalBytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-max\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-55-valid",
+      "fieldId": "OwnerAllocationLimits.ReceiptBytes",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-55-boundary-min",
+      "fieldId": "OwnerAllocationLimits.ReceiptBytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-min\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-55-boundary-max",
+      "fieldId": "OwnerAllocationLimits.ReceiptBytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-max\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-56-valid",
+      "fieldId": "ClosureIdentity.Objects",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-56-boundary-empty",
+      "fieldId": "ClosureIdentity.Objects",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-empty\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-56-boundary-single",
+      "fieldId": "ClosureIdentity.Objects",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-single\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-56-order",
+      "fieldId": "ClosureIdentity.Objects",
+      "mutationClass": "order",
+      "rowClass": "noncanonical",
+      "description": "Out-of-order set entry refuses NonCanonicalOrder at the second item start"
+    },
+    {
+      "caseId": "Q2A-F-56-duplicate",
+      "fieldId": "ClosureIdentity.Objects",
+      "mutationClass": "duplicate",
+      "rowClass": "noncanonical",
+      "description": "Adjacent duplicate set entry refuses Duplicate at the second item start"
+    },
+    {
+      "caseId": "Q2A-F-56-length",
+      "fieldId": "ClosureIdentity.Objects",
+      "mutationClass": "length",
+      "rowClass": "malformed",
+      "description": "Inflated count refuses InvalidLengthOrCount at the count start"
+    },
+    {
+      "caseId": "Q2A-F-56-utf8",
+      "fieldId": "ClosureIdentity.Objects",
+      "mutationClass": "utf8",
+      "rowClass": "malformed",
+      "description": "Malformed UTF-8 in a set item refuses InvalidUtf8 at the item start"
+    },
+    {
+      "caseId": "Q2A-F-56-empty",
+      "fieldId": "ClosureIdentity.Objects",
+      "mutationClass": "empty",
+      "rowClass": "malformed",
+      "description": "Empty set item refuses InvalidValue at the item start"
+    },
+    {
+      "caseId": "Q2A-F-57-valid",
+      "fieldId": "ClosureIdentity.HelperDependencies",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-57-boundary-empty",
+      "fieldId": "ClosureIdentity.HelperDependencies",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-empty\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-57-boundary-single",
+      "fieldId": "ClosureIdentity.HelperDependencies",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-single\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-57-order",
+      "fieldId": "ClosureIdentity.HelperDependencies",
+      "mutationClass": "order",
+      "rowClass": "noncanonical",
+      "description": "Out-of-order set entry refuses NonCanonicalOrder at the second item start"
+    },
+    {
+      "caseId": "Q2A-F-57-duplicate",
+      "fieldId": "ClosureIdentity.HelperDependencies",
+      "mutationClass": "duplicate",
+      "rowClass": "noncanonical",
+      "description": "Adjacent duplicate set entry refuses Duplicate at the second item start"
+    },
+    {
+      "caseId": "Q2A-F-57-length",
+      "fieldId": "ClosureIdentity.HelperDependencies",
+      "mutationClass": "length",
+      "rowClass": "malformed",
+      "description": "Inflated count refuses InvalidLengthOrCount at the count start"
+    },
+    {
+      "caseId": "Q2A-F-57-utf8",
+      "fieldId": "ClosureIdentity.HelperDependencies",
+      "mutationClass": "utf8",
+      "rowClass": "malformed",
+      "description": "Malformed UTF-8 in a set item refuses InvalidUtf8 at the item start"
+    },
+    {
+      "caseId": "Q2A-F-57-empty",
+      "fieldId": "ClosureIdentity.HelperDependencies",
+      "mutationClass": "empty",
+      "rowClass": "malformed",
+      "description": "Empty set item refuses InvalidValue at the item start"
+    },
+    {
+      "caseId": "Q2A-F-58-valid",
+      "fieldId": "ClosureObject.Role",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-58-utf8",
+      "fieldId": "ClosureObject.Role",
+      "mutationClass": "utf8",
+      "rowClass": "malformed",
+      "description": "Malformed UTF-8 refuses InvalidUtf8 at the field start"
+    },
+    {
+      "caseId": "Q2A-F-58-length",
+      "fieldId": "ClosureObject.Role",
+      "mutationClass": "length",
+      "rowClass": "malformed",
+      "description": "Inflated declared length refuses InvalidLengthOrCount at the field start"
+    },
+    {
+      "caseId": "Q2A-F-58-empty",
+      "fieldId": "ClosureObject.Role",
+      "mutationClass": "empty",
+      "rowClass": "malformed",
+      "description": "Empty non-allowed text refuses InvalidValue at the field start"
+    },
+    {
+      "caseId": "Q2A-F-59-valid",
+      "fieldId": "ClosureObject.Sha256",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-60-valid",
+      "fieldId": "ClosureObject.Length",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-60-boundary-min",
+      "fieldId": "ClosureObject.Length",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-min\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-60-boundary-max",
+      "fieldId": "ClosureObject.Length",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-max\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-61-valid",
+      "fieldId": "ClosureObject.Destination",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-61-utf8",
+      "fieldId": "ClosureObject.Destination",
+      "mutationClass": "utf8",
+      "rowClass": "malformed",
+      "description": "Malformed UTF-8 refuses InvalidUtf8 at the field start"
+    },
+    {
+      "caseId": "Q2A-F-61-length",
+      "fieldId": "ClosureObject.Destination",
+      "mutationClass": "length",
+      "rowClass": "malformed",
+      "description": "Inflated declared length refuses InvalidLengthOrCount at the field start"
+    },
+    {
+      "caseId": "Q2A-F-61-empty",
+      "fieldId": "ClosureObject.Destination",
+      "mutationClass": "empty",
+      "rowClass": "malformed",
+      "description": "Empty non-allowed text refuses InvalidValue at the field start"
+    },
+    {
+      "caseId": "Q2A-F-62-valid",
+      "fieldId": "ClosureObject.BuildIdentity",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-62-utf8",
+      "fieldId": "ClosureObject.BuildIdentity",
+      "mutationClass": "utf8",
+      "rowClass": "malformed",
+      "description": "Malformed UTF-8 refuses InvalidUtf8 at the field start"
+    },
+    {
+      "caseId": "Q2A-F-62-length",
+      "fieldId": "ClosureObject.BuildIdentity",
+      "mutationClass": "length",
+      "rowClass": "malformed",
+      "description": "Inflated declared length refuses InvalidLengthOrCount at the field start"
+    },
+    {
+      "caseId": "Q2A-F-62-empty",
+      "fieldId": "ClosureObject.BuildIdentity",
+      "mutationClass": "empty",
+      "rowClass": "malformed",
+      "description": "Empty non-allowed text refuses InvalidValue at the field start"
+    },
+    {
+      "caseId": "Q2A-F-63-forced",
+      "fieldId": "InvocationManifest.ToolPath",
+      "mutationClass": "forced",
+      "rowClass": "noncanonical",
+      "description": "Wrong fixed path value refuses InvalidValue at the field start"
+    },
+    {
+      "caseId": "Q2A-F-63-utf8",
+      "fieldId": "InvocationManifest.ToolPath",
+      "mutationClass": "utf8",
+      "rowClass": "malformed",
+      "description": "Malformed UTF-8 refuses InvalidUtf8 at the field start"
+    },
+    {
+      "caseId": "Q2A-F-63-length",
+      "fieldId": "InvocationManifest.ToolPath",
+      "mutationClass": "length",
+      "rowClass": "malformed",
+      "description": "Inflated declared length refuses InvalidLengthOrCount at the field start"
+    },
+    {
+      "caseId": "Q2A-F-64-valid",
+      "fieldId": "InvocationManifest.Mode",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-64-utf8",
+      "fieldId": "InvocationManifest.Mode",
+      "mutationClass": "utf8",
+      "rowClass": "malformed",
+      "description": "Malformed UTF-8 refuses InvalidUtf8 at the field start"
+    },
+    {
+      "caseId": "Q2A-F-64-length",
+      "fieldId": "InvocationManifest.Mode",
+      "mutationClass": "length",
+      "rowClass": "malformed",
+      "description": "Inflated declared length refuses InvalidLengthOrCount at the field start"
+    },
+    {
+      "caseId": "Q2A-F-64-empty",
+      "fieldId": "InvocationManifest.Mode",
+      "mutationClass": "empty",
+      "rowClass": "malformed",
+      "description": "Empty non-allowed text refuses InvalidValue at the field start"
+    },
+    {
+      "caseId": "Q2A-F-65-forced",
+      "fieldId": "InvocationManifest.InputPath",
+      "mutationClass": "forced",
+      "rowClass": "noncanonical",
+      "description": "Wrong fixed path value refuses InvalidValue at the field start"
+    },
+    {
+      "caseId": "Q2A-F-65-utf8",
+      "fieldId": "InvocationManifest.InputPath",
+      "mutationClass": "utf8",
+      "rowClass": "malformed",
+      "description": "Malformed UTF-8 refuses InvalidUtf8 at the field start"
+    },
+    {
+      "caseId": "Q2A-F-65-length",
+      "fieldId": "InvocationManifest.InputPath",
+      "mutationClass": "length",
+      "rowClass": "malformed",
+      "description": "Inflated declared length refuses InvalidLengthOrCount at the field start"
+    },
+    {
+      "caseId": "Q2A-F-66-valid",
+      "fieldId": "InvocationManifest.Argv",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-66-boundary-empty",
+      "fieldId": "InvocationManifest.Argv",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-empty\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-66-boundary-multi",
+      "fieldId": "InvocationManifest.Argv",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-multi\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-66-length",
+      "fieldId": "InvocationManifest.Argv",
+      "mutationClass": "length",
+      "rowClass": "malformed",
+      "description": "Inflated argv count refuses InvalidLengthOrCount at the count start"
+    },
+    {
+      "caseId": "Q2A-F-66-utf8",
+      "fieldId": "InvocationManifest.Argv",
+      "mutationClass": "utf8",
+      "rowClass": "malformed",
+      "description": "Malformed UTF-8 in an argv item refuses InvalidUtf8 at the item start"
+    },
+    {
+      "caseId": "Q2A-F-66-empty",
+      "fieldId": "InvocationManifest.Argv",
+      "mutationClass": "empty",
+      "rowClass": "malformed",
+      "description": "Empty argv item refuses InvalidValue at the item start"
+    },
+    {
+      "caseId": "Q2A-F-67-valid",
+      "fieldId": "InvocationManifest.Environment",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-67-boundary-empty",
+      "fieldId": "InvocationManifest.Environment",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-empty\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-67-boundary-multi",
+      "fieldId": "InvocationManifest.Environment",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-multi\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-67-order",
+      "fieldId": "InvocationManifest.Environment",
+      "mutationClass": "order",
+      "rowClass": "noncanonical",
+      "description": "Out-of-order environment key refuses NonCanonicalOrder at the second key start"
+    },
+    {
+      "caseId": "Q2A-F-67-duplicate",
+      "fieldId": "InvocationManifest.Environment",
+      "mutationClass": "duplicate",
+      "rowClass": "noncanonical",
+      "description": "Adjacent duplicate environment key refuses Duplicate at the second key start"
+    },
+    {
+      "caseId": "Q2A-F-67-length",
+      "fieldId": "InvocationManifest.Environment",
+      "mutationClass": "length",
+      "rowClass": "malformed",
+      "description": "Inflated environment count refuses InvalidLengthOrCount at the count start"
+    },
+    {
+      "caseId": "Q2A-F-67-utf8",
+      "fieldId": "InvocationManifest.Environment",
+      "mutationClass": "utf8",
+      "rowClass": "malformed",
+      "description": "Malformed UTF-8 in an environment key refuses InvalidUtf8 at the key start"
+    },
+    {
+      "caseId": "Q2A-F-67-empty",
+      "fieldId": "InvocationManifest.Environment",
+      "mutationClass": "empty",
+      "rowClass": "malformed",
+      "description": "Empty environment key refuses InvalidValue at the key start"
+    },
+    {
+      "caseId": "Q2A-F-68-forced",
+      "fieldId": "InvocationManifest.WorkDirectory",
+      "mutationClass": "forced",
+      "rowClass": "noncanonical",
+      "description": "Wrong fixed path value refuses InvalidValue at the field start"
+    },
+    {
+      "caseId": "Q2A-F-68-utf8",
+      "fieldId": "InvocationManifest.WorkDirectory",
+      "mutationClass": "utf8",
+      "rowClass": "malformed",
+      "description": "Malformed UTF-8 refuses InvalidUtf8 at the field start"
+    },
+    {
+      "caseId": "Q2A-F-68-length",
+      "fieldId": "InvocationManifest.WorkDirectory",
+      "mutationClass": "length",
+      "rowClass": "malformed",
+      "description": "Inflated declared length refuses InvalidLengthOrCount at the field start"
+    },
+    {
+      "caseId": "Q2A-F-69-tag",
+      "fieldId": "ChannelManifest.StdinEof",
+      "mutationClass": "tag",
+      "rowClass": "malformed",
+      "description": "Boolean tag above one refuses InvalidTag at the field start"
+    },
+    {
+      "caseId": "Q2A-F-69-forced",
+      "fieldId": "ChannelManifest.StdinEof",
+      "mutationClass": "forced",
+      "rowClass": "noncanonical",
+      "description": "Forced-true value false refuses InvalidValue at the field start"
+    },
+    {
+      "caseId": "Q2A-F-70-valid",
+      "fieldId": "ChannelManifest.StdoutLimitBytes",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-70-boundary-min",
+      "fieldId": "ChannelManifest.StdoutLimitBytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-min\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-70-boundary-max",
+      "fieldId": "ChannelManifest.StdoutLimitBytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-max\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-71-valid",
+      "fieldId": "ChannelManifest.StderrLimitBytes",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-71-boundary-min",
+      "fieldId": "ChannelManifest.StderrLimitBytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-min\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-71-boundary-max",
+      "fieldId": "ChannelManifest.StderrLimitBytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-max\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-72-valid",
+      "fieldId": "ChannelManifest.AggregateLimitBytes",
+      "mutationClass": "valid",
+      "rowClass": "valid",
+      "description": "valid mutation \u0027valid\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-72-boundary-min",
+      "fieldId": "ChannelManifest.AggregateLimitBytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-min\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    },
+    {
+      "caseId": "Q2A-F-72-boundary-max",
+      "fieldId": "ChannelManifest.AggregateLimitBytes",
+      "mutationClass": "boundary",
+      "rowClass": "valid",
+      "description": "boundary mutation \u0027boundary-max\u0027 is accepted, re-encodes identically and is visible in the decoded view"
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+{
+    "byteDomain":  "LF-normalized bytes (CRLF converted to LF) of the exact committed file content; evidence artifacts covered by SHA256SUMS use the same domain",
+    "exclusion":  "this manifest and SHA256SUMS itself; every other committed evidence artifact is listed in SHA256SUMS",
+    "files":  [
+                  {
+                      "path":  "docs/design/restricted-consumer-contract-rc2a-01-api.md",
+                      "bytes":  6338,
+                      "sha256":  "df5390c890f2dc59e9fee33fd08c4b173ebf31de32b6cf2bf506991061cae521"
+                  },
+                  {
+                      "path":  "docs/decisions/restricted-consumer-rc2a-01-owner-acceptance.md",
+                      "bytes":  11641,
+                      "sha256":  "84ec983fcbd88667544e335b15829ab5406798a35ed66d99bbc55ccda019b304"
+                  },
+                  {
+                      "path":  "docs/plans/restricted-consumer-contract-rc2a-02-qualification.md",
+                      "bytes":  29821,
+                      "sha256":  "7e60fce6894d1b4470236043f8f7a9f755bb97b92ae0cc35d5fb5574df7f8ecc"
+                  },
+                  {
+                      "path":  "docs/evidence/restricted-consumer-contract-rc2a-01/field-map.md",
+                      "bytes":  6981,
+                      "sha256":  "1506a273ae11da5adfb3e760c78b4ac7c30972d94fa3219afe6a2d5aac064317"
+                  },
+                  {
+                      "path":  "docs/evidence/restricted-consumer-contract-rc2a-01/README.md",
+                      "bytes":  19380,
+                      "sha256":  "2275b0cad9eaa89edd86f8b3e27dbc57c3e93a4e52dd22e5ae31ea329ca0e583"
+                  },
+                  {
+                      "path":  "docs/plans/restricted-consumer-contract-implementation.md",
+                      "bytes":  32127,
+                      "sha256":  "c20eceffaadf4a2dffdd2aa571fa602d733247f1b9a4aa158fabf232c6d6e8ad"
+                  },
+                  {
+                      "path":  "docs/handoff.md",
+                      "bytes":  170590,
+                      "sha256":  "d00781bbda9f882342bb4140dfea9f59499d5f87d4e5849ec39a3e595c26f0c2"
+                  },
+                  {
+                      "path":  "docs/work-queue.md",
+                      "bytes":  151204,
+                      "sha256":  "c8a9d758d6f1b265f6b1a3609d64ef0fbf98e5b0258f1b5bf9fad1926eb21fcc"
+                  },
+                  {
+                      "path":  "docs/evidence/restricted-consumer-contract-rc2a-02a-windows/README.md",
+                      "bytes":  18641,
+                      "sha256":  "76e71c958781226fac75544026db275bbdeb2fbb174d56617bc62c1fc4940885"
+                  },
+                  {
+                      "path":  "docs/evidence/restricted-consumer-contract-rc2a-02a-windows/findings.md",
+                      "bytes":  7954,
+                      "sha256":  "c1243256fc8d66c2154e8d3339dadc3eec81e8c74ff66fcf7f1c8c8e27d310e0"
+                  },
+                  {
+                      "path":  "docs/evidence/restricted-consumer-contract-rc2a-02a-windows/reencode-branch-assessment.md",
+                      "bytes":  5348,
+                      "sha256":  "57c0014badbe5cddbc7db96b97f32b3986220e95f774a43289d8e7099961e354"
+                  },
+                  {
+                      "path":  "docs/evidence/restricted-consumer-contract-rc2a-02a-windows/traceability-matrix.md",
+                      "bytes":  7815,
+                      "sha256":  "b7fdbf46acf74ab3b64ce9f4a0878199094d1816757ee9dca4647f0bcac155e1"
+                  },
+                  {
+                      "path":  "docs/evidence/restricted-consumer-contract-rc2a-02a-windows/reviewer-handoff.md",
+                      "bytes":  6464,
+                      "sha256":  "cba29fe1e3f789290cb68cb8dec4a6a9002fe7703682d92fbf5f6283ff23b4c3"
+                  },
+                  {
+                      "path":  "docs/evidence/restricted-consumer-contract-rc2a-02a-windows/source-binding.json",
+                      "bytes":  10668,
+                      "sha256":  "615bd62992b177f14203023b5332df46fd51bec2219047c1e9bd34920db70536"
+                  },
+                  {
+                      "path":  "docs/evidence/restricted-consumer-contract-rc2a-02a-windows/test-results.json",
+                      "bytes":  592579,
+                      "sha256":  "2355457dea3696329ee7acc8e8d940d06a19d4210b7a95e8d4801b5ff0683a4f"
+                  },
+                  {
+                      "path":  "docs/evidence/restricted-consumer-contract-rc2a-02a-windows/boundary-results.json",
+                      "bytes":  6047,
+                      "sha256":  "a28ae52431ed0923c0f9641cd908a3855de20946f4f806658c56f393354763ac"
+                  },
+                  {
+                      "path":  "docs/evidence/restricted-consumer-contract-rc2a-02a-windows/family-results.json",
+                      "bytes":  2559,
+                      "sha256":  "3dd9773e002079ec94cb9b9f55cace3a777bf60977c7674761c3a9807eb1ff42"
+                  },
+                  {
+                      "path":  "docs/evidence/restricted-consumer-contract-rc2a-02a-windows/exports/mutation-coverage-matrix.json",
+                      "bytes":  173763,
+                      "sha256":  "150a9c667a0b5854efc0b3f1a3bc1d77eedb937ccd191e44958d9da581d4f55c"
+                  },
+                  {
+                      "path":  "docs/evidence/restricted-consumer-contract-rc2a-02a-windows/exports/vector-manifest.json",
+                      "bytes":  46389,
+                      "sha256":  "c10df2023b2f00c2ab42f2ad82859a4440c204c6c960226ec9d7b62f4bd447f2"
+                  },
+                  {
+                      "path":  "docs/evidence/restricted-consumer-contract-rc2a-02a-windows/exports/flip-sweep-survivors.json",
+                      "bytes":  62559,
+                      "sha256":  "651343926c04b2f8fc847a9d3c6d08b78b94f8d2e5d091572e4961846cc944d3"
+                  }
+              ],
+    "gitOnlyBindings":  [
+                            {
+                                "path":  "docs/reviews/restricted-consumer-rc2a-01-glm-independent.md",
+                                "note":  "Preserved independent review is not checked out in this worktree; bound by exact Git blob bytes and the owner-acceptance record.",
+                                "gitCommit":  "8e41babfc96afa2e617a53b63e50903d54001194",
+                                "gitBlob":  "d329fcc49d289696bf1c4163f8f346c56115ba8c",
+                                "bytes":  16888,
+                                "sha256":  "77d2404c61dbf1af76e8448b966f03482186d95fff5bf6a676a32fe6c7d8e4d0"
+                            }
+                        ],
+    "followUp":  {
+                     "R2A-F02":  "docs/design/restricted-consumer-contract-rc2a-01-api.md is present in the files list above (clarified API document rebound).",
+                     "R2A-F03":  "No binary-reproducibility, package-identity or deployment claim is made; only test outcomes and committed vector bytes/digests are claimed.",
+                     "R2A-F04":  "Combined null-manifest + wrong-length digest assertion is executed as Q2A_B_23 (public boundary tests).",
+                     "R2A-F01":  "Re-encode branch assessment is committed as reencode-branch-assessment.md."
+                 }
+}

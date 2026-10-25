@@ -1,0 +1,72 @@
+{
+    "sourceCommit":  "71a28afe2623516fb4176e6a4ce7988a3d70df06",
+    "runsIncluded":  [
+                         "runs/windows-required-set.trx",
+                         "runs/windows-public.trx"
+                     ],
+    "families":  [
+                     {
+                         "total":  7,
+                         "passed":  7,
+                         "skipped":  0,
+                         "failed":  0,
+                         "family":  "Q2A-Harness"
+                     },
+                     {
+                         "total":  57,
+                         "passed":  57,
+                         "skipped":  0,
+                         "failed":  0,
+                         "family":  "existing-public-regression"
+                     },
+                     {
+                         "total":  10,
+                         "passed":  10,
+                         "skipped":  0,
+                         "failed":  0,
+                         "family":  "Q2A-B-public"
+                     },
+                     {
+                         "total":  2,
+                         "passed":  2,
+                         "skipped":  0,
+                         "failed":  0,
+                         "family":  "Q2A-E"
+                     },
+                     {
+                         "total":  27,
+                         "passed":  27,
+                         "skipped":  0,
+                         "failed":  0,
+                         "family":  "Q2A-V"
+                     },
+                     {
+                         "total":  79,
+                         "passed":  79,
+                         "skipped":  0,
+                         "failed":  0,
+                         "family":  "Q2A-V-A5"
+                     },
+                     {
+                         "total":  38,
+                         "passed":  38,
+                         "skipped":  0,
+                         "failed":  0,
+                         "family":  "RC2A-01-regression-internal"
+                     },
+                     {
+                         "total":  20,
+                         "passed":  20,
+                         "skipped":  0,
+                         "failed":  0,
+                         "family":  "Q2A-B"
+                     },
+                     {
+                         "total":  284,
+                         "passed":  284,
+                         "skipped":  0,
+                         "failed":  0,
+                         "family":  "Q2A-F"
+                     }
+                 ]
+}
