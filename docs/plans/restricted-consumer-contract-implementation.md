@@ -1,12 +1,28 @@
 # Restricted consumer contract implementation work orders
 
 Date: 2026-10-24; owner-acceptance update 2026-10-25; RC2A-B acceptance update
-2026-10-25; RC2A-02A acceptance update 2026-10-25 (Asia/Manila). Governing design: [RC-1](../design/restricted-consumer-contract-rc1.md) at
+2026-10-25; RC2A-02A acceptance update 2026-10-25; RC2A-02B owner acceptance
+update 2026-10-25 (Asia/Manila). Governing design: [RC-1](../design/restricted-consumer-contract-rc1.md) at
 `d609c29d3048bc0fd91583068cb013fb906fdf90`, independently accepted with
 qualifications by GLM at `feb9d7584c41712195d4b90754ed7a342ba74bb7`, followed by
 [RC1-A owner acceptance](../decisions/restricted-consumer-rc1-owner-acceptance.md).
 Consumer dependency: Hufu AE4-B01. **Planning only; RC-2B, package qualification
 and Hufu resumption are not authorized by this document, RC1-A or RC2A-B.**
+
+## Current RC2A-02B status — owner accepted with qualifications (2026-10-25)
+
+**RC2A-02B ACCEPTED WITH QUALIFICATIONS** for Windows 11 native and WSL2
+Ubuntu managed-code value/codec scope. The [owner decision](../decisions/restricted-consumer-contract-rc2a-02b-owner-acceptance.md)
+is based on qualification `dd16baec48663d40cd29504d98e57e30dd0855df`, Q1
+`5bc396c2e5619906ae202afe0a4244dfd6024d9e`, R1 final
+`1cd22b9b109ddba4673b11487bceea62d2e92117`, and Q2
+`60de1f2d34a7df337a426501cb3954fdd3216a6b`. Each platform retains public
+67/0/0 and precise required 457/0/0 results; required reruns are identical and
+Windows/WSL2 test-name/outcome multisets match. Q2 verified the two Q1 findings
+resolved and the evidence bindings. Native Linux/macOS remain not run; Q2A-S /
+RC-D04 remains open; full RC2A-02 remains unaccepted. The older status entries
+below preserve the state at their recorded checkpoints and are superseded by
+this decision.
 
 RC2A-B update: RC2A-01 is **owner-accepted with follow-up** at
 `68b01fbb53eefca9c8ca2f83ff50641521020a2a` (tree
@@ -81,7 +97,7 @@ test failure or permission to replace a real provider with a fake.
 | RC1-A | Owner accepts contract and dispositions | APPROVED AND RECORDED | [Owner decision](../decisions/restricted-consumer-rc1-owner-acceptance.md): Mode=`work`, passive public surface, encode/decode ceiling and all seven findings |
 | RC2A-01 | Revalidate/finalize API; commissioned passive implementation and focused tests | **ACCEPTED WITH FOLLOW-UP (RC2A-B)** | HEAD `68b01fbb53eefca9c8ca2f83ff50641521020a2a`, tree `54f659d01937da29bc9a5f82566a8349af264664`; [owner decision](../decisions/restricted-consumer-rc2a-01-owner-acceptance.md); implementation only — qualification not complete |
 | RC2A-R | Independent implementation/package review | **IMPLEMENTATION REVIEW COMPLETE — ACCEPT WITH FOLLOW-UP**; package review pending | GLM review preserved verbatim at `8e41babfc96afa2e617a53b63e50903d54001194` (blob `d329fcc49d289696bf1c4163f8f346c56115ba8c`, SHA-256 `77d2404c61dbf1af76e8448b966f03482186d95fff5bf6a676a32fe6c7d8e4d0`); R2A-F01–F04 dispositioned in the owner decision; package review remains RC2A-04 work |
-| RC2A-02 | Separately commissioned tests-first qualification | **RC2A-02A ACCEPTED WITH QUALIFICATIONS (WINDOWS); RC2A-02B IMPLEMENTED / QUALIFIED LOCALLY (WINDOWS + WSL2), NATIVE LINUX/macOS NOT RUN, READY FOR INDEPENDENT REVIEW; FULL RC2A-02 NOT YET ACCEPTED** | [RC2A-02A owner decision](../decisions/restricted-consumer-contract-rc2a-02a-owner-acceptance.md): qualified source `71a28afe2623516fb4176e6a4ce7988a3d70df06`, evidence `c1a01761f8d58136a381ad87269635c6c14ad093`; independent review `7b6344551c2d4b42832df39822eaf4b8a1c01495` (SUPPORTED WITH QUALIFICATIONS). [RC2A-02B evidence](../evidence/restricted-consumer-contract-rc2a-02b-portability/README.md): Windows + WSL2 67/0/0 and 457/0/0 twice; native Linux/macOS not run; Q2A-S / RC-D04 OPEN; independent review pending |
+| RC2A-02 | Separately commissioned tests-first qualification | **RC2A-02A ACCEPTED WITH QUALIFICATIONS (WINDOWS); RC2A-02B ACCEPTED WITH QUALIFICATIONS (WINDOWS + WSL2); FULL RC2A-02 NOT YET ACCEPTED; Q2A-S / RC-D04 OPEN** | [RC2A-02A owner decision](../decisions/restricted-consumer-contract-rc2a-02a-owner-acceptance.md). [RC2A-02B owner decision](../decisions/restricted-consumer-contract-rc2a-02b-owner-acceptance.md): qualification `dd16baec48663d40cd29504d98e57e30dd0855df`, Q1 `5bc396c2e5619906ae202afe0a4244dfd6024d9e`, R1 `1cd22b9b109ddba4673b11487bceea62d2e92117`, Q2 `60de1f2d34a7df337a426501cb3954fdd3216a6b`; Q2 verified both Q1 findings resolved and all evidence bindings. Windows and WSL2: public 67/0/0, precise required 457/0/0 with identical reruns and matching test-name/outcome multisets. Native Linux/macOS not run; Q2A-S / RC-D04 remains open for full RC2A-02. |
 | RC2A-03 | Shared validation/reader, public views and passive reference | SOURCE IMPLEMENTED UNDER RC2A-01; qualification pending | `e93d642`; no separate qualification acceptance inferred |
 | RC2A-04 | Focused regressions, local package, clean consumer | Focused RC2A-01 regressions pass; PACKAGE/CONSUMER NOT_STARTED | No pack authorized by current commission; remaining qualification gates pending |
 | HUFU-R | Sol reassesses AE4-B01 and requests D4a authorization | BLOCKED | Accepted RC2A source/package, Hufu design/delta decisions and compatible dependency graph |

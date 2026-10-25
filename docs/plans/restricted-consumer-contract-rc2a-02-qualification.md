@@ -1,11 +1,11 @@
 # RC2A-02 tests-first qualification specification
 
-Date: 2026-10-25 (Asia/Manila). Status: **RC2A-02A ACCEPTED WITH QUALIFICATIONS;
-RC2A-02B NOT STARTED, REQUIRES SEPARATE AUTHORIZATION; FULL RC2A-02 NOT YET
-ACCEPTED** — see §9 for execution status, the open Q2A-S / RC-D04 obligation and
-the RC2A-02B entry-condition checklist. The original specification below is
-preserved unchanged. This document plans only; it runs no test, builds no
-package and changes no production or test source.
+Date: 2026-10-25 (Asia/Manila). Current status: **RC2A-02A ACCEPTED WITH
+QUALIFICATIONS; RC2A-02B ACCEPTED WITH QUALIFICATIONS; FULL RC2A-02 NOT YET
+ACCEPTED** — see §11 for the current owner decision, §9 for the open Q2A-S /
+RC-D04 obligation, and §10 for the portability execution record. The original
+specification and execution history below remain preserved. This document plans
+only; it runs no test, builds no package and changes no production or test source.
 
 Governing inputs, all verified in the canonical Gagamba repository:
 
@@ -575,3 +575,80 @@ LINUX AND macOS NOT RUN / READY FOR INDEPENDENT REVIEW.**
 - Independent review of RC2A-02B: **PENDING**. No RC2A-02B owner acceptance is
   recorded; full RC2A-02 remains **NOT YET ACCEPTED**; RC2A-03/04 and all other
   gates remain unchanged.
+
+## 11. RC2A-02B owner acceptance (2026-10-25)
+
+**RC2A-02B ACCEPTED WITH QUALIFICATIONS. Full RC2A-02 remains NOT YET
+ACCEPTED.** This section supersedes the earlier “review pending / no owner
+acceptance” status in §10; that entry is retained as the qualification-time
+record. No qualification suite was rerun for this documentation-only decision.
+
+The accepted bounded scope is Windows 11 native and WSL2 Ubuntu managed-code
+value/codec qualification. On each platform, the public suite passed 67/67 and
+the precise required suite passed 457/457 with no failures or skips; each
+required-suite rerun had an identical test-name/outcome multiset. The Windows
+and WSL2 public and required test-name/outcome multisets match. WSL2 is not
+native Linux. The Windows broad-filter run is provenance evidence only: 473
+passed, 0 failed, 41 skipped; the precise `Tests.Qualification.` filter remains
+the qualification selection mechanism.
+
+The decision is based on these exact histories:
+
+| Role | Branch | Commit | Tree | Parent |
+|---|---|---|---|---|
+| RC2A-02A owner-accepted starting baseline | `decisions/gagamba-rc2a-02a-owner-acceptance` | `e5fff9e8d5a31520f8b5a2c235a05b666a08e16c` | `8c04e9e2f0379f7b9a3ef280c3e20e5b0ec44f2e` | `c1a01761f8d58136a381ad87269635c6c14ad093` |
+| RC2A-02B qualification | `qualification/gagamba-rc2a-02b` | `dd16baec48663d40cd29504d98e57e30dd0855df` | `96e86aac2d284637805809b54da72e76bf46f1fc` | `5b4292d0fefc576664df61692dfad5cef6362879` |
+| Q1 independent review, preserved unmerged | `review/gagamba-rc2a-02b-q1` | `5bc396c2e5619906ae202afe0a4244dfd6024d9e` | `8ebbccb7b3787ce8e57bc74bbc93a8c1edb9e650` | `dd16baec48663d40cd29504d98e57e30dd0855df` |
+| R1 correction | `remediation/gagamba-rc2a-02b-r1` | `12d914d319b1df3eedafc5439bc547dacb578651` | `35cc347f8e436bd1fec9997cb50ede81e561767c` | `dd16baec48663d40cd29504d98e57e30dd0855df` |
+| R1 final evidence tip | `remediation/gagamba-rc2a-02b-r1` | `1cd22b9b109ddba4673b11487bceea62d2e92117` | `2f2bae947dee368ae073dd3fe7877380ca8854ff` | `12d914d319b1df3eedafc5439bc547dacb578651` |
+| Q2 independent verification, preserved unmerged | `review/gagamba-rc2a-02b-q2` | `60de1f2d34a7df337a426501cb3954fdd3216a6b` | `c556b0ad7bad69e5b7ca0815f9a1a17d36e51407` | `1cd22b9b109ddba4673b11487bceea62d2e92117` |
+
+The qualification evidence `dd16baec` binds the executed source to
+`e5fff9e8` (tree `8c04e9e2`); the unchanged source, test and native subtrees are
+`b8c167e3d7340a562221591bdc2b6df7adb372d1`,
+`5c3268286575cb55891fae9288627657f2d30ddf`, and
+`85631d2f04512376621d3d09f51d67fd90f45335`, respectively. Q2 independently
+verified 29/29 `results.json` artifact references, 43/43 `SHA256SUMS` entries,
+and 9/9 applicable document digest bindings. The raw qualification evidence,
+counts and outcomes were unchanged by R1; source provenance and evidence
+integrity hold.
+
+### Q1 dispositions
+
+- **R1-01 — stale Windows artifact hashes: RESOLVED.** R1 corrected all 14
+  identified digests from committed bytes and checked the full artifact set;
+  Q2 independently verified all 29 references and all 43 manifest entries.
+- **R1-02 — inaccurate broad-filter explanation: RESOLVED.** README and related
+  evidence documentation now reflect the raw Windows TRX: five additional
+  classes beyond the precise qualification set, two managed-code classes
+  passing 16 tests total and three Linux-native classes skipped (41 total);
+  aggregate 473/0/41. The precise filter remains authoritative for
+  qualification.
+- **Authorization-provenance note: PRESERVED AS DISCLOSED.** Q1’s audit-trail
+  note remains visible in its report and the R1/Q2 disposition; this decision
+  does not rewrite either review or treat the note as a test result.
+
+Q1 (`5bc396c2`) and Q2 (`60de1f2d`) remain separate, unchanged review histories;
+neither is merged or copied into this owner-decision branch. Q2’s verdict is
+**VERIFIED WITH QUALIFICATIONS** and recommends this bounded owner acceptance.
+
+### Qualifications, exclusions and remaining gates
+
+- Native Linux: **NOT RUN**. macOS: **NOT RUN**. The plan permits recording
+  unavailable native hosts as not run; it does not require provisioning them
+  for this bounded acceptance. WSL2 is not native Linux.
+- Native confinement and sandbox behavior, package and clean-consumer
+  compatibility, mixed dependency graphs, binary reproducibility, and Hufu
+  integration are **NOT ESTABLISHED** by this stage.
+- **Q2A-S / RC-D04 remains OPEN.** Per §9 and the prior owner decision, this
+  public-surface/misuse and passive-reference obligation must be completed or
+  receive a separate explicit owner disposition before full RC2A-02 acceptance.
+  Its stage is not silently assigned to RC2A-02B.
+- RC2A-03 and RC2A-04 retain their separate pending qualification gates. The
+  RC2A-04 package/clean-consumer work, RC-2B obligations R1-F02/F03, R1-F06
+  HUFU-R recheck, AE4-B01, Hufu resumption, native sandbox qualification and
+  publication retain their existing status and authorization boundaries.
+
+This decision accepts **RC2A-02B only**. It does not accept full RC2A-02,
+authorize RC2A-03 or later milestones, close any listed obligation, or expand
+the supported claim beyond Windows and WSL2 managed-code value/codec scope.

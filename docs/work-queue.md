@@ -1,6 +1,12 @@
 # Current work queue
 
-## Current consumer-contract work: RC2A-02B IMPLEMENTED / QUALIFIED LOCALLY (WINDOWS + WSL2) / NATIVE LINUX AND macOS NOT RUN / READY FOR INDEPENDENT REVIEW; FULL RC2A-02 NOT YET ACCEPTED; Q2A-S / RC-D04 OPEN
+## Current consumer-contract work: RC2A-02B ACCEPTED WITH QUALIFICATIONS (WINDOWS + WSL2); FULL RC2A-02 NOT YET ACCEPTED; Q2A-S / RC-D04 OPEN
+
+Owner decision recorded 2026-10-25: [RC2A-02B is ACCEPTED WITH QUALIFICATIONS](decisions/restricted-consumer-contract-rc2a-02b-owner-acceptance.md) for Windows 11 native and WSL2 Ubuntu managed-code value/codec scope. Qualification `dd16baec48663d40cd29504d98e57e30dd0855df`; Q1 `5bc396c2e5619906ae202afe0a4244dfd6024d9e`; R1 final `1cd22b9b109ddba4673b11487bceea62d2e92117`; Q2 `60de1f2d34a7df337a426501cb3954fdd3216a6b`. Public results are 67/0/0 and precise required results 457/0/0 on both platforms, with identical reruns and matching test-name/outcome multisets. Q2 independently verified both Q1 findings resolved and the evidence hashes/provenance. Windows broad-filter provenance is 473 passed / 0 failed / 41 skipped: beyond the precise set, two managed-code classes added 16 passes and three Linux-native classes added 41 skips. The precise `Tests.Qualification.` filter remains authoritative. Native Linux/macOS are NOT RUN; WSL2 is not native Linux. Native confinement, package/clean-consumer compatibility, mixed graphs, binary reproducibility and Hufu integration are not established. Q2A-S / RC-D04 remains OPEN. RC2A-03/04 and later work remain separately pending/unauthorized; full RC2A-02 is not accepted.
+
+The following qualification entry is retained as the prior execution-time status record; its “review pending” status is superseded by the owner decision above.
+
+## Prior qualification entry: RC2A-02B IMPLEMENTED / QUALIFIED LOCALLY (WINDOWS + WSL2) / NATIVE LINUX AND macOS NOT RUN / READY FOR INDEPENDENT REVIEW; FULL RC2A-02 NOT YET ACCEPTED; Q2A-S / RC-D04 OPEN
 
 Update 2026-10-25 (RC2A-02B qualification agent): the portability stage is executed at baseline `e5fff9e8d5a31520f8b5a2c235a05b666a08e16c` (tree `8c04e9e2f0379f7b9a3ef280c3e20e5b0ec44f2e`, owner-acceptance tip, direct child of the accepted qualification evidence `c1a01761f8d58136a381ad87269635c6c14ad093`) on branch `qualification/gagamba-rc2a-02b`. The tested implementation `71a28afe2623516fb4176e6a4ce7988a3d70df06` is unchanged; `src`/`tests`/`native` remain `b8c167e3d7340a562221591bdc2b6df7adb372d1` / `5c3268286575cb55891fae9288627657f2d30ddf` / `85631d2f04512376621d3d09f51d67fd90f45335`. [Evidence](evidence/restricted-consumer-contract-rc2a-02b-portability/README.md).
 

@@ -29,23 +29,28 @@
     },
     {
       "path": "docs/plans/restricted-consumer-contract-rc2a-02-qualification.md",
-      "bytes": 36297,
-      "sha256": "6d7d899379291b9160594c74c8b78b69f5d10c8e9f3fdbc049fbe7703971aa7c"
+      "bytes": 41565,
+      "sha256": "65122e69186bbadf7d1bdb68106ecc45cbad107dab9be06b403efbb5a2ffc4a2"
     },
     {
       "path": "docs/plans/restricted-consumer-contract-implementation.md",
-      "bytes": 34947,
-      "sha256": "e7c1ffdb15a79cf3fdf5fb611d6d406dbc50a34203c3e1ebb3e22cf476e7825e"
+      "bytes": 36036,
+      "sha256": "f755c08004391b68d38e8dcc2855b10a0fd645dac8110ba6c8213ed099346dca"
     },
     {
       "path": "docs/work-queue.md",
-      "bytes": 157227,
-      "sha256": "7f5c7a287c83e994fd523a6478fa9052ae2e5eab1bc8695d9673bae1ac33a3fb"
+      "bytes": 158756,
+      "sha256": "e04ee913cb637b6b99328fd427925684cb19af4640e93986a242f4f1fb012e90"
     },
     {
       "path": "docs/handoff.md",
-      "bytes": 177109,
-      "sha256": "bdf6f336577e10307f1ab2952e14a24d3b3144a4724fc9efc045539de5626b11"
+      "bytes": 178762,
+      "sha256": "bd93ce86b3b68be942efa263dcf207fa6478181d5e7fb5b46e1d4f1da0793bfa"
+    },
+    {
+      "path": "docs/decisions/restricted-consumer-contract-rc2a-02b-owner-acceptance.md",
+      "bytes": 6986,
+      "sha256": "97edb7855080fc9bc51dfda8306008d9b8f5b01cc705bd8e3ffb605f9eded7ca"
     }
   ],
   "documentationCorrection": {
