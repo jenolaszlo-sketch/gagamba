@@ -1,0 +1,6 @@
+Test run for C:\Users\Laszlos\source\repos\Solo\rc2a-02c-q2-review\tests\Gagamba.Execution.Tests\bin\Release\net10.0\Gagamba.Execution.Tests.dll (.NETCoreApp,Version=v10.0)
+Logging Vstest Diagnostics in file: C:\Users\Laszlos\source\repos\Solo\rc2a-02c-q2-review\docs\reviews\rc2a-02c-q2-evidence\windows\elevated\vstest-diag.log
+A total of 1 test files matched the specified pattern.
+Results File: C:\Users\Laszlos\source\repos\Solo\rc2a-02c-q2-review\docs\reviews\rc2a-02c-q2-evidence\windows\elevated\rc2a-02c-q2-independent.trx
+
+Passed!  - Failed:     0, Passed:     3, Skipped:     0, Total:     3, Duration: 269 ms - Gagamba.Execution.Tests.dll (net10.0)

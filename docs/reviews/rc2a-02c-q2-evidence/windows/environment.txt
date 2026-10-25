@@ -1,0 +1,10 @@
+Computer=LAPTOP-KBD8D8JG
+OS.ProductName=Windows 10 Home Single Language
+OS.DisplayVersion=25H2
+OS.CurrentBuild=26200
+OS.UBR=9711
+PowerShell=7.6.5
+Architecture=AMD64
+DotnetVersion=10.0.401
+ReviewedCommit=62b75f5866d0c339816712baeb04baa386b06f85
+TestedCommit=c4837b0b434fc75ebc3e08d278bdc09c3965a181
