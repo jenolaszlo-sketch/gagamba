@@ -1,0 +1,62 @@
+{
+  "byteDomain": "LF-normalized working-tree bytes (CRLF byte pairs converted to LF; no text decoding); verified against Git blobs after commit",
+  "exclusion": "this hash manifest and SHA256SUMS; both are bound by the final commit/tree",
+  "files": [
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-02b-portability/README.md",
+      "bytes": 8630,
+      "sha256": "5dcd9c6f6c427e669f3acbf17484056164984d627375f00b3e7191a966ba465f"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-02b-portability/qualification-matrix.md",
+      "bytes": 5825,
+      "sha256": "902e27127073bff247991fbf6e35772b0107e8e54a9d4ceee663ae4563d0a9f1"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-02b-portability/reviewer-handoff.md",
+      "bytes": 5480,
+      "sha256": "a3369cc3a3c64c8c36e49e691cca52233382e4f67361ddfde537a72627a5fed8"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-02b-portability/source-binding.json",
+      "bytes": 5345,
+      "sha256": "f6d0fbdac4373143b9deec6e028f47dfec56c5cc1820dd912ed94752987e1692"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-02b-portability/results.json",
+      "bytes": 14118,
+      "sha256": "e47404cefe1cec67fd07c476fb93355f8ed21fedc7d2358440a8d2b6df82519d"
+    },
+    {
+      "path": "docs/plans/restricted-consumer-contract-rc2a-02-qualification.md",
+      "bytes": 36297,
+      "sha256": "6d7d899379291b9160594c74c8b78b69f5d10c8e9f3fdbc049fbe7703971aa7c"
+    },
+    {
+      "path": "docs/plans/restricted-consumer-contract-implementation.md",
+      "bytes": 34947,
+      "sha256": "e7c1ffdb15a79cf3fdf5fb611d6d406dbc50a34203c3e1ebb3e22cf476e7825e"
+    },
+    {
+      "path": "docs/work-queue.md",
+      "bytes": 157227,
+      "sha256": "7f5c7a287c83e994fd523a6478fa9052ae2e5eab1bc8695d9673bae1ac33a3fb"
+    },
+    {
+      "path": "docs/handoff.md",
+      "bytes": 177109,
+      "sha256": "bdf6f336577e10307f1ab2952e14a24d3b3144a4724fc9efc045539de5626b11"
+    }
+  ],
+  "documentationCorrection": {
+    "scope": "docs/plans/restricted-consumer-contract-rc2a-02-qualification.md appended sections 9-10",
+    "issue": "earlier shell appends wrote invalid single-byte punctuation bytes (0xA7 for the section sign, 0x97 for the em dash) and one identifier typo (R2A-A01)",
+    "correction": "repaired to valid UTF-8 and fixed the typo; no requirement, result or acceptance statement changed; historical evidence and the independent review are untouched",
+    "manifestDomain": "this manifest now hashes the raw LF-normalized bytes, so invalid-UTF-8 text cannot be silently replaced by a decoder"
+  },
+  "historicalBindingsPreserved": {
+    "rc2a02aQualificationEvidence": "docs/evidence/restricted-consumer-contract-rc2a-02a-windows/document-sha256.json remains authoritative at commit c1a01761f8d58136a381ad87269635c6c14ad093 for the pre-acceptance versions of the plan and tracking documents.",
+    "rc2a02aOwnerAcceptance": "docs/evidence/restricted-consumer-contract-rc2a-02a-owner-acceptance/document-sha256.json remains authoritative at commit e5fff9e8d5a31520f8b5a2c235a05b666a08e16c for the acceptance versions of the plan and tracking documents (their byte domain used UTF-8 decoding, which is why the invalid punctuation above was not visible there; this record binds raw bytes).",
+    "independentReview": "docs/reviews/restricted-consumer-contract-rc2a-02a-glm-q1.md and its evidence remain authoritative on review/gagamba-rc2a-02a-glm-q1 at 7b6344551c2d4b42832df39822eaf4b8a1c01495; not copied or modified here."
+  }
+}

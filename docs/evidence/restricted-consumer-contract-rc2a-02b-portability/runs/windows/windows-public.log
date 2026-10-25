@@ -1,0 +1,8 @@
+﻿  Gagamba.Execution -> C:\Users\Laszlos\source\repos\Solo\gagamba-rc2a-02b\src\Gagamba.Execution\bin\Release\net10.0\Gagamba.Execution.dll
+  Gagamba.Execution.Tests -> C:\Users\Laszlos\source\repos\Solo\gagamba-rc2a-02b\tests\Gagamba.Execution.Tests\bin\Release\net10.0\Gagamba.Execution.Tests.dll
+Test run for C:\Users\Laszlos\source\repos\Solo\gagamba-rc2a-02b\tests\Gagamba.Execution.Tests\bin\Release\net10.0\Gagamba.Execution.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+Data collector 'Blame' message: All tests finished running, Sequence file will not be generated.
+Results File: C:\Users\Laszlos\source\repos\Solo\gagamba-rc2a-02b\artifacts\rc2a-02\02b-windows\windows-public.trx
+
+Passed!  - Failed:     0, Passed:    67, Skipped:     0, Total:    67, Duration: 224 ms - Gagamba.Execution.Tests.dll (net10.0)

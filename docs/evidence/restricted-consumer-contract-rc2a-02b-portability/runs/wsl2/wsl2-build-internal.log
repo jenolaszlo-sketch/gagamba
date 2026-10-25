@@ -1,0 +1,15 @@
+  Determining projects to restore...
+  Restored /tmp/rc2a02b-repo/src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj (in 330 ms).
+  Restored /tmp/rc2a02b-repo/src/Gagamba.Execution.Linux.M1.Owner/Gagamba.Execution.Linux.M1.Owner.csproj (in 330 ms).
+  Restored /tmp/rc2a02b-repo/tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj (in 400 ms).
+  1 of 4 projects are up-to-date for restore.
+  Gagamba.Execution -> /tmp/rc2a02b-artifacts/bin/Gagamba.Execution/release/Gagamba.Execution.dll
+  Gagamba.Execution.Linux.M1 -> /tmp/rc2a02b-artifacts/bin/Gagamba.Execution.Linux.M1/release/Gagamba.Execution.Linux.M1.dll
+  Gagamba.Execution.Linux.M1.Owner -> /tmp/rc2a02b-artifacts/bin/Gagamba.Execution.Linux.M1.Owner/release/Gagamba.Execution.Linux.M1.Owner.dll
+  Gagamba.Execution.Linux.M1.Tests -> /tmp/rc2a02b-artifacts/bin/Gagamba.Execution.Linux.M1.Tests/release/Gagamba.Execution.Linux.M1.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:07.84

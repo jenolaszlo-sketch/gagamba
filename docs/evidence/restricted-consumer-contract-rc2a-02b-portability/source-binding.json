@@ -1,0 +1,91 @@
+{
+  "recordDate": "2026-10-25 (Asia/Manila)",
+  "observedAtUtc": "2026-10-25T10:05:38Z",
+  "stage": "RC2A-02B portability qualification",
+  "status": "IMPLEMENTED / QUALIFIED LOCALLY (WINDOWS + WSL2) / NATIVE LINUX AND macOS NOT RUN / READY FOR INDEPENDENT REVIEW",
+  "qualificationBranch": "qualification/gagamba-rc2a-02b",
+  "qualificationWorktree": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-02b",
+  "start": {
+    "commit": "e5fff9e8d5a31520f8b5a2c235a05b666a08e16c",
+    "tree": "8c04e9e2f0379f7b9a3ef280c3e20e5b0ec44f2e",
+    "role": "owner-acceptance tip (direct child of accepted qualification evidence); accepted baseline designated for RC2A-02B"
+  },
+  "acceptedUpstream": {
+    "qualificationEvidence": "c1a01761f8d58136a381ad87269635c6c14ad093",
+    "qualificationEvidenceTree": "8c51c3c2e06e6544f3ad0e8aceabfed8457d8c19",
+    "testedImplementation": "71a28afe2623516fb4176e6a4ce7988a3d70df06",
+    "testedImplementationTree": "70b932148cbfa59b0e424229879eebd36df2d80c",
+    "independentReview": "7b6344551c2d4b42832df39822eaf4b8a1c01495",
+    "ownerAcceptance": "e5fff9e8d5a31520f8b5a2c235a05b666a08e16c"
+  },
+  "subtreeIdentities": {
+    "src": "b8c167e3d7340a562221591bdc2b6df7adb372d1",
+    "tests": "5c3268286575cb55891fae9288627657f2d30ddf",
+    "native": "85631d2f04512376621d3d09f51d67fd90f45335",
+    "unchangedFromAcceptedRc2a01": true
+  },
+  "executedSource": {
+    "windows-native": {
+      "kind": "git worktree of the canonical repository",
+      "commit": "e5fff9e8d5a31520f8b5a2c235a05b666a08e16c",
+      "worktree": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-02b",
+      "cleanAtExecutionStart": true
+    },
+    "wsl2": {
+      "kind": "local clone of the canonical repository, checked out at the accepted commit",
+      "commit": "e5fff9e8d5a31520f8b5a2c235a05b666a08e16c",
+      "clonePath": "/tmp/rc2a02b-repo (ephemeral; not committed)",
+      "cleanTrackedTreeAtRun": true,
+      "originUrl": "https://github.com/jenolaszlo-sketch/gagamba.git",
+      "originNote": "origin URL set to the canonical repository URL only to satisfy Microsoft.SourceLink; no fetch occurred; the executed tree is the accepted commit"
+    }
+  },
+  "changedFileInventory": {
+    "policy": "documentation and evidence only; the commit name-status inventory is authoritative",
+    "expected": [
+      "docs/evidence/restricted-consumer-contract-rc2a-02b-portability/README.md",
+      "docs/evidence/restricted-consumer-contract-rc2a-02b-portability/qualification-matrix.md",
+      "docs/evidence/restricted-consumer-contract-rc2a-02b-portability/reviewer-handoff.md",
+      "docs/evidence/restricted-consumer-contract-rc2a-02b-portability/source-binding.json",
+      "docs/evidence/restricted-consumer-contract-rc2a-02b-portability/results.json",
+      "docs/evidence/restricted-consumer-contract-rc2a-02b-portability/document-sha256.json",
+      "docs/evidence/restricted-consumer-contract-rc2a-02b-portability/SHA256SUMS",
+      "docs/evidence/restricted-consumer-contract-rc2a-02b-portability/run-wsl2.sh",
+      "docs/evidence/restricted-consumer-contract-rc2a-02b-portability/runs/windows/**",
+      "docs/evidence/restricted-consumer-contract-rc2a-02b-portability/runs/wsl2/**",
+      "docs/plans/restricted-consumer-contract-rc2a-02-qualification.md",
+      "docs/plans/restricted-consumer-contract-implementation.md",
+      "docs/work-queue.md",
+      "docs/handoff.md"
+    ],
+    "productionTestNativeChanges": "none"
+  },
+  "historicalEvidenceUntouched": [
+    "docs/evidence/restricted-consumer-contract-rc2a-02a-windows/**",
+    "docs/evidence/restricted-consumer-contract-rc2a-02a-owner-acceptance/**",
+    "docs/reviews/restricted-consumer-contract-rc2a-02a-glm-q1.md and its evidence (preserved on the review branch)",
+    "docs/decisions/restricted-consumer-contract-rc2a-02a-owner-acceptance.md"
+  ],
+  "platforms": {
+    "windows-native": { "available": true, "executed": true },
+    "wsl2": { "available": true, "executed": true, "label": "wsl2 (Ubuntu 26.04.1 under WSL2; not native Linux)" },
+    "native-linux": { "available": false, "executed": false, "reason": "no native Linux host accessible; WSL2 is not a native host" },
+    "macos": { "available": false, "executed": false, "reason": "no macOS host available" }
+  },
+  "scope": {
+    "q2asRcd04": "NOT IN SCOPE; remains OPEN (plan does not assign it to RC2A-02B)",
+    "nativeConfinement": "not qualified",
+    "packageCleanConsumerMixedGraph": "not qualified",
+    "binaryReproducibility": "not claimed",
+    "hufuAe4B01": "OPEN; Hufu resumption not authorized",
+    "fullRc2a02": "NOT YET ACCEPTED"
+  },
+  "executionDecisions": [
+    "Precise Tests.Qualification. filter used for qualification on every platform; literal ~Qualification filter executed on Windows only (selects pre-existing Linux-native classes elsewhere), per the accepted F02 disposition and plan §3 P1/P4.",
+    "WSL2 results are labeled wsl2 and never presented as native Linux.",
+    "Start baseline is the owner-acceptance tip e5fff9e, a later accepted tip permitted by plan §9.1; src/tests/native are unchanged from 71a28afe/c1a01761."
+  ],
+  "buildTestPackNative": "builds and managed-code tests executed (Windows and WSL2); no pack, no native fixture/workload",
+  "independentReview": "not yet performed",
+  "ownerAcceptanceRc2a02b": "not yet recorded"
+}

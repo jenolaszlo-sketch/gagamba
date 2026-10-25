@@ -1,0 +1,14 @@
+  Determining projects to restore...
+  Restored /tmp/rc2a02b-attempt1-src/src/Gagamba.Execution/Gagamba.Execution.csproj (in 254 ms).
+/root/.nuget/packages/microsoft.build.tasks.git/10.0.401/build/Microsoft.Build.Tasks.Git.targets(25,5): error : Unable to locate repository with working directory that contains directory '/tmp/rc2a02b-attempt1-src/src/Gagamba.Execution'. [/tmp/rc2a02b-attempt1-src/src/Gagamba.Execution/Gagamba.Execution.csproj]
+/root/.nuget/packages/microsoft.sourcelink.common/10.0.401/build/Microsoft.SourceLink.Common.targets(56,5): error : Source control information is not available - the generated source link is empty. [/tmp/rc2a02b-attempt1-src/src/Gagamba.Execution/Gagamba.Execution.csproj]
+  Gagamba.Execution -> /tmp/rc2a02b-attempt1-art/bin/Gagamba.Execution/release/Gagamba.Execution.dll
+
+Build FAILED.
+
+/root/.nuget/packages/microsoft.build.tasks.git/10.0.401/build/Microsoft.Build.Tasks.Git.targets(25,5): error : Unable to locate repository with working directory that contains directory '/tmp/rc2a02b-attempt1-src/src/Gagamba.Execution'. [/tmp/rc2a02b-attempt1-src/src/Gagamba.Execution/Gagamba.Execution.csproj]
+/root/.nuget/packages/microsoft.sourcelink.common/10.0.401/build/Microsoft.SourceLink.Common.targets(56,5): error : Source control information is not available - the generated source link is empty. [/tmp/rc2a02b-attempt1-src/src/Gagamba.Execution/Gagamba.Execution.csproj]
+    0 Warning(s)
+    2 Error(s)
+
+Time Elapsed 00:00:03.85

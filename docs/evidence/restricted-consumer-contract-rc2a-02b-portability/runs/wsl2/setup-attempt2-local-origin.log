@@ -1,0 +1,14 @@
+  Determining projects to restore...
+  Restored /tmp/rc2a02b-repo/src/Gagamba.Execution/Gagamba.Execution.csproj (in 255 ms).
+/root/.nuget/packages/microsoft.build.tasks.git/10.0.401/build/Microsoft.Build.Tasks.Git.targets(25,5): error : The URL of repository remote 'origin' is invalid: '/mnt/c/Users/Laszlos/source/repos/Gagamba'. [/tmp/rc2a02b-repo/src/Gagamba.Execution/Gagamba.Execution.csproj]
+/root/.nuget/packages/microsoft.sourcelink.common/10.0.401/build/Microsoft.SourceLink.Common.targets(56,5): error : Source control information is not available - the generated source link is empty. [/tmp/rc2a02b-repo/src/Gagamba.Execution/Gagamba.Execution.csproj]
+  Gagamba.Execution -> /tmp/rc2a02b-attempt2-art/bin/Gagamba.Execution/release/Gagamba.Execution.dll
+
+Build FAILED.
+
+/root/.nuget/packages/microsoft.build.tasks.git/10.0.401/build/Microsoft.Build.Tasks.Git.targets(25,5): error : The URL of repository remote 'origin' is invalid: '/mnt/c/Users/Laszlos/source/repos/Gagamba'. [/tmp/rc2a02b-repo/src/Gagamba.Execution/Gagamba.Execution.csproj]
+/root/.nuget/packages/microsoft.sourcelink.common/10.0.401/build/Microsoft.SourceLink.Common.targets(56,5): error : Source control information is not available - the generated source link is empty. [/tmp/rc2a02b-repo/src/Gagamba.Execution/Gagamba.Execution.csproj]
+    0 Warning(s)
+    2 Error(s)
+
+Time Elapsed 00:00:01.48

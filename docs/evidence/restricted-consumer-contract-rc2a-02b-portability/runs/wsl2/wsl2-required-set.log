@@ -1,0 +1,9 @@
+Test run for /tmp/rc2a02b-artifacts/bin/Gagamba.Execution.Linux.M1.Tests/release/Gagamba.Execution.Linux.M1.Tests.dll (.NETCoreApp,Version=v10.0)
+VSTest version 18.0.2 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+Data collector 'Blame' message: All tests finished running, Sequence file will not be generated.
+Results File: /tmp/rc2a02b-out/wsl2-required-set.trx
+
+Passed!  - Failed:     0, Passed:   457, Skipped:     0, Total:   457, Duration: 3 s - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)

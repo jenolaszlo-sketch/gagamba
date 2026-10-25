@@ -1,0 +1,10 @@
+﻿  Gagamba.Execution -> C:\Users\Laszlos\source\repos\Solo\gagamba-rc2a-02b\src\Gagamba.Execution\bin\Release\net10.0\Gagamba.Execution.dll
+  Gagamba.Execution.Linux.M1 -> C:\Users\Laszlos\source\repos\Solo\gagamba-rc2a-02b\src\Gagamba.Execution.Linux.M1\bin\Release\net10.0\Gagamba.Execution.Linux.M1.dll
+  Gagamba.Execution.Linux.M1.Owner -> C:\Users\Laszlos\source\repos\Solo\gagamba-rc2a-02b\src\Gagamba.Execution.Linux.M1.Owner\bin\Release\net10.0\Gagamba.Execution.Linux.M1.Owner.dll
+  Gagamba.Execution.Linux.M1.Tests -> C:\Users\Laszlos\source\repos\Solo\gagamba-rc2a-02b\tests\Gagamba.Execution.Linux.M1.Tests\bin\Release\net10.0\Gagamba.Execution.Linux.M1.Tests.dll
+Test run for C:\Users\Laszlos\source\repos\Solo\gagamba-rc2a-02b\tests\Gagamba.Execution.Linux.M1.Tests\bin\Release\net10.0\Gagamba.Execution.Linux.M1.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+Data collector 'Blame' message: All tests finished running, Sequence file will not be generated.
+Results File: C:\Users\Laszlos\source\repos\Solo\gagamba-rc2a-02b\artifacts\rc2a-02\02b-windows\windows-required-set.trx
+
+Passed!  - Failed:     0, Passed:   457, Skipped:     0, Total:   457, Duration: 3 s - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)

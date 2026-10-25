@@ -1,0 +1,217 @@
+{
+  "schema": "gagamba.rc2a-02b.portability-results/1",
+  "recordDate": "2026-10-25 (Asia/Manila)",
+  "status": "IMPLEMENTED / QUALIFIED LOCALLY (WINDOWS + WSL2) / NATIVE LINUX AND macOS NOT RUN / READY FOR INDEPENDENT REVIEW",
+  "baseline": {
+    "startCommit": "e5fff9e8d5a31520f8b5a2c235a05b666a08e16c",
+    "startTree": "8c04e9e2f0379f7b9a3ef280c3e20e5b0ec44f2e",
+    "startRole": "owner-acceptance tip (direct child of the accepted qualification evidence commit); designated accepted baseline for RC2A-02B",
+    "acceptedQualificationEvidence": "c1a01761f8d58136a381ad87269635c6c14ad093",
+    "testedImplementation": "71a28afe2623516fb4176e6a4ce7988a3d70df06",
+    "independentReview": "7b6344551c2d4b42832df39822eaf4b8a1c01495",
+    "srcTree": "b8c167e3d7340a562221591bdc2b6df7adb372d1",
+    "testsTree": "5c3268286575cb55891fae9288627657f2d30ddf",
+    "nativeTree": "85631d2f04512376621d3d09f51d67fd90f45335"
+  },
+  "platformAvailability": [
+    {
+      "platform": "windows-native",
+      "available": true,
+      "executed": true,
+      "label": "Windows 11 native, AMD64",
+      "notes": "primary platform; literal committed-plan filter also executed here (native classes skip on Windows)"
+    },
+    {
+      "platform": "wsl2",
+      "available": true,
+      "executed": true,
+      "label": "wsl2 (Ubuntu 26.04.1 LTS under WSL2; NOT native Linux)",
+      "notes": "managed-code runs from a local clone checked out at the accepted commit; origin URL set to the canonical GitHub URL only to satisfy SourceLink"
+    },
+    {
+      "platform": "native-linux",
+      "available": false,
+      "executed": false,
+      "label": "not run",
+      "reason": "no native Linux host is accessible from this environment (no SSH host/config; WSL2 is not a native Linux host and is labeled separately)"
+    },
+    {
+      "platform": "macos",
+      "available": false,
+      "executed": false,
+      "label": "not run",
+      "reason": "no macOS host is available"
+    }
+  ],
+  "runDefinitions": {
+    "preciseQualificationFilter": "FullyQualifiedName~Contracts.ManifestTests|FullyQualifiedName~Contracts.RestrictedPublicProjectionTests|FullyQualifiedName~PreparationIdentityTests|FullyQualifiedName~Tests.Qualification.",
+    "literalPlanFilter": "FullyQualifiedName~Contracts.ManifestTests|FullyQualifiedName~Contracts.RestrictedPublicProjectionTests|FullyQualifiedName~PreparationIdentityTests|FullyQualifiedName~Qualification",
+    "scopeDecision": "The precise filter is used for qualification evidence on every platform because the literal plan filter selects pre-existing Linux-native classes on non-Windows hosts (Q2A02A-F02); the literal filter is executed only on Windows, where those classes skip. This preserves P1's pure-test intent and P4's managed-code scope."
+  },
+  "runs": [
+    {
+      "id": "W1",
+      "platform": "windows-native",
+      "role": "public contract suite",
+      "command": "dotnet test tests/Gagamba.Execution.Tests/Gagamba.Execution.Tests.csproj -c Release --no-restore --logger 'trx;LogFileName=windows-public.trx' --results-directory artifacts/rc2a-02/02b-windows --blame-hang-timeout 60s",
+      "exitCode": 0,
+      "counters": { "total": 67, "passed": 67, "failed": 0, "skipped": 0 },
+      "artifacts": {
+        "trx": { "path": "runs/windows/windows-public.trx", "sha256": "be1e235875ea5f245296982e9733a7b40f1271174557e62311987ab959f3567c" },
+        "log": { "path": "runs/windows/windows-public.log", "sha256": "48065acf0d96bdcd4ef765e1bc5b94560b33007679e9d63fb9a519d65bccaf49" },
+        "exit": { "path": "runs/windows/windows-public.exit.txt", "sha256": "11918c0c24a8c1cfc005438c46dd510eae27ed0e3f28c397b420d6b1e72ab140" }
+      }
+    },
+    {
+      "id": "W2",
+      "platform": "windows-native",
+      "role": "required qualification set (precise filter)",
+      "command": "dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Release --no-restore --filter '<preciseQualificationFilter>' --logger 'trx;LogFileName=windows-required-set.trx' --results-directory artifacts/rc2a-02/02b-windows --blame-hang-timeout 60s",
+      "exitCode": 0,
+      "counters": { "total": 457, "passed": 457, "failed": 0, "skipped": 0 },
+      "artifacts": {
+        "trx": { "path": "runs/windows/windows-required-set.trx", "sha256": "bce3dfa77768a15425c8a4c44a9d937caab506fb75ddf56fbf64600031ce458f" },
+        "log": { "path": "runs/windows/windows-required-set.log", "sha256": "e71e10ebabd3da18093d974413cd89f814606dd9fc5a936d5cd75c647d383eab" },
+        "exit": { "path": "runs/windows/windows-required-set.exit.txt", "sha256": "050a1e4eccdb4fac65db072744ce90df72d72741fb2d750028f8c113841d4421" }
+      }
+    },
+    {
+      "id": "W3",
+      "platform": "windows-native",
+      "role": "deterministic rerun of W2 (--no-build)",
+      "command": "dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Release --no-build --filter '<preciseQualificationFilter>' --logger 'trx;LogFileName=windows-required-set-rerun.trx' --results-directory artifacts/rc2a-02/02b-windows --blame-hang-timeout 60s",
+      "exitCode": 0,
+      "counters": { "total": 457, "passed": 457, "failed": 0, "skipped": 0 },
+      "artifacts": {
+        "trx": { "path": "runs/windows/windows-required-set-rerun.trx", "sha256": "270d2a189ae5b8da77556c581cbe50dd98b408d50159e75e5b116d2da0e84bb0" },
+        "log": { "path": "runs/windows/windows-required-set-rerun.log", "sha256": "36de2d786916f8d28721727fc28ae17225ef37d08856bbe29f43fb0a5eef6310" },
+        "exit": { "path": "runs/windows/windows-required-set-rerun.exit.txt", "sha256": "f79c91d32f54d73aa9fafdb1362f865de6554af3eba9cc92591c2ad21844faa2" }
+      }
+    },
+    {
+      "id": "W4",
+      "platform": "windows-native",
+      "role": "literal committed-plan filter (provenance only; selects 41 pre-existing Linux-native skips)",
+      "command": "dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Release --no-build --filter '<literalPlanFilter>' --logger 'trx;LogFileName=windows-plan-filter.trx' --results-directory artifacts/rc2a-02/02b-windows --blame-hang-timeout 60s",
+      "exitCode": 0,
+      "counters": { "total": 514, "passed": 473, "failed": 0, "skipped": 41 },
+      "skippedClasses": {
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests": 31,
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerDeathQualificationTests": 7,
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests": 3
+      },
+      "artifacts": {
+        "trx": { "path": "runs/windows/windows-plan-filter.trx", "sha256": "ecc09ae28191c8a44382b106eea48099ffeed5c54db07d784ebbb13010836301" },
+        "log": { "path": "runs/windows/windows-plan-filter.log", "sha256": "6fcf03815c026dd4f47deb47b09c00e37dd75ed0e0df5a1d6a25d19677d9f17f" },
+        "exit": { "path": "runs/windows/windows-plan-filter.exit.txt", "sha256": "15315da001708a5205cfff581aefa25b3c1dc1d205984cfe979ac1a9598ddce4" }
+      }
+    },
+    {
+      "id": "S1",
+      "platform": "wsl2",
+      "role": "public contract suite",
+      "command": "dotnet test tests/Gagamba.Execution.Tests/Gagamba.Execution.Tests.csproj -c Release --no-build --artifacts-path /tmp/rc2a02b-artifacts --logger 'trx;LogFileName=wsl2-public.trx' --results-directory /tmp/rc2a02b-out --blame-hang-timeout 60s",
+      "exitCode": 0,
+      "counters": { "total": 67, "passed": 67, "failed": 0, "skipped": 0 },
+      "artifacts": {
+        "trx": { "path": "runs/wsl2/wsl2-public.trx", "sha256": "9fc19f491381ad0ffcb107b508e276d54559c8174f3d06609aadbf2e792d48ea" },
+        "log": { "path": "runs/wsl2/wsl2-public.log", "sha256": "d53275d6722f16fafe76b59512da86a5f8e6c9745baf172faf8d3e487c7e31cf" },
+        "exit": { "path": "runs/wsl2/wsl2-public.exit", "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa" }
+      }
+    },
+    {
+      "id": "S2",
+      "platform": "wsl2",
+      "role": "required qualification set (precise filter)",
+      "command": "dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Release --no-build --artifacts-path /tmp/rc2a02b-artifacts --filter '<preciseQualificationFilter>' --logger 'trx;LogFileName=wsl2-required-set.trx' --results-directory /tmp/rc2a02b-out --blame-hang-timeout 60s",
+      "exitCode": 0,
+      "counters": { "total": 457, "passed": 457, "failed": 0, "skipped": 0 },
+      "artifacts": {
+        "trx": { "path": "runs/wsl2/wsl2-required-set.trx", "sha256": "74a814ab4bff48d536a7cc3f7ee47c3aa23327233688af7e27d36f757fc5d9b1" },
+        "log": { "path": "runs/wsl2/wsl2-required-set.log", "sha256": "877300b02cd822429e3119c3d4589dfbc94d062c3ae21768df9b23f96be1369a" },
+        "exit": { "path": "runs/wsl2/wsl2-required-set.exit", "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa" }
+      }
+    },
+    {
+      "id": "S3",
+      "platform": "wsl2",
+      "role": "deterministic rerun of S2 (--no-build)",
+      "command": "dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Release --no-build --artifacts-path /tmp/rc2a02b-artifacts --filter '<preciseQualificationFilter>' --logger 'trx;LogFileName=wsl2-required-set-rerun.trx' --results-directory /tmp/rc2a02b-out --blame-hang-timeout 60s",
+      "exitCode": 0,
+      "counters": { "total": 457, "passed": 457, "failed": 0, "skipped": 0 },
+      "artifacts": {
+        "trx": { "path": "runs/wsl2/wsl2-required-set-rerun.trx", "sha256": "0dc3467f6ad158c01754386a0886ac00caedcc14be4dac66eac23bfb09dca0c6" },
+        "log": { "path": "runs/wsl2/wsl2-required-set-rerun.log", "sha256": "afdec25215922ba4be266834767d016d7eae9628274c135b08a041abad491e5e" },
+        "exit": { "path": "runs/wsl2/wsl2-required-set-rerun.exit", "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa" }
+      }
+    }
+  ],
+  "builds": [
+    {
+      "platform": "windows-native",
+      "command": "dotnet build src/Gagamba.Execution/Gagamba.Execution.csproj -c Release --no-restore -warnaserror",
+      "exitCode": 0,
+      "warnings": 0,
+      "errors": 0,
+      "log": { "path": "runs/windows/build-execution.log", "sha256": "73b421651771ca90bca6310ba8f5b31e6f3dce2539696e026703a79c75ea79b6" }
+    },
+    {
+      "platform": "wsl2",
+      "command": "dotnet build src/Gagamba.Execution/Gagamba.Execution.csproj -c Release -warnaserror --artifacts-path /tmp/rc2a02b-artifacts",
+      "exitCode": 0,
+      "warnings": 0,
+      "errors": 0,
+      "log": { "path": "runs/wsl2/wsl2-build-execution.log", "sha256": "253a5ec256fb560c68ed0d0a900b49d889daf3d1248312c2a8e5045b8c242d40" }
+    }
+  ],
+  "determinism": {
+    "windowsRequiredVsRerun": "identical test-name/outcome multisets (457/457)",
+    "wsl2RequiredVsRerun": "identical test-name/outcome multisets (457/457)",
+    "windowsVsWsl2Public": "identical test-name/outcome multisets (67/67)",
+    "windowsVsWsl2Required": "identical test-name/outcome multisets (457/457)"
+  },
+  "environments": {
+    "windows": { "file": "runs/windows/windows-environment.txt", "sha256": "f021ed4ac513b8c926dae9fea95e6bba54dbecb73ea8729465ddf7b54e584fa6", "os": "Microsoft Windows NT 10.0.26200.0", "arch": "AMD64", "sdk": "10.0.401", "runtime": "Microsoft.NETCore.App 10.0.12" },
+    "wsl2": { "file": "runs/wsl2/wsl2-environment.txt", "sha256": "800ec1161c6352f403b20daba8b4f23adbb6711ac3fc02f42b988a404551f80f", "os": "Ubuntu 26.04.1 LTS", "kernel": "6.6.114.1-microsoft-standard-WSL2", "arch": "x86_64", "sdk": "10.0.113", "runtime": "Microsoft.NETCore.App 10.0.13" }
+  },
+  "environmentSetupAttempts": [
+    {
+      "id": "S0-A",
+      "platform": "wsl2",
+      "role": "setup attempt only (not a qualification run)",
+      "attempt": "build from a git archive of the accepted commit (no Git metadata)",
+      "exitCode": 1,
+      "error": "SourceLink: unable to locate repository / source control information is not available",
+      "artifacts": {
+        "log": { "path": "runs/wsl2/setup-attempt1-archive-sourcelink.log", "sha256": "e407879079656aff54ea67977ddca0c015bd8077bf8cf7dc6dce60848f5bbcd7" },
+        "exit": { "path": "runs/wsl2/setup-attempt1-archive-sourcelink.exit", "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865" }
+      },
+      "resolution": "executed from a local clone checked out at the accepted commit so Git metadata is present"
+    },
+    {
+      "id": "S0-B",
+      "platform": "wsl2",
+      "role": "setup attempt only (not a qualification run)",
+      "attempt": "build from the local clone whose origin URL is a local filesystem path",
+      "exitCode": 1,
+      "error": "SourceLink: the URL of repository remote 'origin' is invalid (local path)",
+      "artifacts": {
+        "log": { "path": "runs/wsl2/setup-attempt2-local-origin.log", "sha256": "ad232ea33cb425757d35c0487c519b21479a9c170776a740e6739d0d268e9f37" },
+        "exit": { "path": "runs/wsl2/setup-attempt2-local-origin.exit", "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865" }
+      },
+      "resolution": "origin URL set to the canonical GitHub repository URL (metadata only; no fetch); the accepted source tree is unchanged"
+    }
+  ],
+  "scopeAndLimitations": {
+    "q2asRcd04": "NOT IN SCOPE and remains OPEN; the plan does not assign Q2A-S / RC-D04 to RC2A-02B",
+    "nativeLinux": "not run (no host); neither pass nor failure; no Linux-native qualification is claimed",
+    "macos": "not run (no host); neither pass nor failure; no macOS qualification is claimed",
+    "wsl2Labeling": "WSL2 results are labeled wsl2 and are never reported as native Linux results",
+    "nativeConfinement": "not qualified; these are pure managed-code value/codec runs",
+    "binaryReproducibility": "not claimed (R2A-F03 disclosure retained)",
+    "packageCleanConsumerMixedGraph": "not qualified",
+    "hufu": "AE4-B01 remains OPEN; Hufu resumption not authorized",
+    "independentReview": "NOT YET PERFORMED for RC2A-02B",
+    "ownerAcceptance": "NOT YET RECORDED for RC2A-02B; full RC2A-02 remains NOT YET ACCEPTED"
+  }
+}

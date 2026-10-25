@@ -37,6 +37,23 @@ silently assigned to RC2A-02B). Package/clean-consumer/mixed-graph gates
 (RC2A-04), native qualification, RC-2B (R1-F02/F03 OPEN), AE4-B01 and Hufu
 resumption remain unauthorized and unqualified.
 
+RC2A-02B update: the portability stage is **IMPLEMENTED / QUALIFIED LOCALLY
+(WINDOWS + WSL2) / NATIVE LINUX AND macOS NOT RUN / READY FOR INDEPENDENT
+REVIEW** at baseline `e5fff9e8d5a31520f8b5a2c235a05b666a08e16c` (tree
+`8c04e9e2f0379f7b9a3ef280c3e20e5b0ec44f2e`), executing the unchanged tested
+implementation `71a28afe2623516fb4176e6a4ce7988a3d70df06`. Windows native and
+WSL2 Ubuntu both reproduce the public suite 67/0/0 and the precise required set
+457/0/0 with identical test-name/outcome multisets; the Windows literal
+committed-plan filter is 473/0/41 (pre-existing Linux-native skips). Native
+Linux and macOS were not run (no hosts) and no cross-platform success beyond the
+executed environments is claimed. Evidence:
+[RC2A-02B portability qualification](../evidence/restricted-consumer-contract-rc2a-02b-portability/README.md).
+Q2A-S / RC-D04 remains OPEN; independent review of RC2A-02B is PENDING; no
+RC2A-02B owner acceptance is recorded and full RC2A-02 remains NOT YET ACCEPTED.
+RC2A-03/04, native qualification, packaging/publication, RC-2B (R1-F02/F03
+OPEN), R1-F06 HUFU-R recheck, AE4-B01 and Hufu resumption remain NOT AUTHORIZED
+/ NOT QUALIFIED.
+
 ## 1. Progress and gates
 
 Current RC2A-01 source after explicit user clarification is
@@ -64,7 +81,7 @@ test failure or permission to replace a real provider with a fake.
 | RC1-A | Owner accepts contract and dispositions | APPROVED AND RECORDED | [Owner decision](../decisions/restricted-consumer-rc1-owner-acceptance.md): Mode=`work`, passive public surface, encode/decode ceiling and all seven findings |
 | RC2A-01 | Revalidate/finalize API; commissioned passive implementation and focused tests | **ACCEPTED WITH FOLLOW-UP (RC2A-B)** | HEAD `68b01fbb53eefca9c8ca2f83ff50641521020a2a`, tree `54f659d01937da29bc9a5f82566a8349af264664`; [owner decision](../decisions/restricted-consumer-rc2a-01-owner-acceptance.md); implementation only — qualification not complete |
 | RC2A-R | Independent implementation/package review | **IMPLEMENTATION REVIEW COMPLETE — ACCEPT WITH FOLLOW-UP**; package review pending | GLM review preserved verbatim at `8e41babfc96afa2e617a53b63e50903d54001194` (blob `d329fcc49d289696bf1c4163f8f346c56115ba8c`, SHA-256 `77d2404c61dbf1af76e8448b966f03482186d95fff5bf6a676a32fe6c7d8e4d0`); R2A-F01–F04 dispositioned in the owner decision; package review remains RC2A-04 work |
-| RC2A-02 | Separately commissioned tests-first qualification | **RC2A-02A ACCEPTED WITH QUALIFICATIONS (WINDOWS); RC2A-02B NOT STARTED; FULL RC2A-02 NOT YET ACCEPTED** | [RC2A-02A owner decision](../decisions/restricted-consumer-contract-rc2a-02a-owner-acceptance.md): qualified source `71a28afe2623516fb4176e6a4ce7988a3d70df06`, evidence `c1a01761f8d58136a381ad87269635c6c14ad093`; independent review `7b6344551c2d4b42832df39822eaf4b8a1c01495` (SUPPORTED WITH QUALIFICATIONS); Q2A-S / RC-D04 OPEN; RC2A-02B requires separate authorization per the [qualification plan §9](restricted-consumer-contract-rc2a-02-qualification.md) |
+| RC2A-02 | Separately commissioned tests-first qualification | **RC2A-02A ACCEPTED WITH QUALIFICATIONS (WINDOWS); RC2A-02B IMPLEMENTED / QUALIFIED LOCALLY (WINDOWS + WSL2), NATIVE LINUX/macOS NOT RUN, READY FOR INDEPENDENT REVIEW; FULL RC2A-02 NOT YET ACCEPTED** | [RC2A-02A owner decision](../decisions/restricted-consumer-contract-rc2a-02a-owner-acceptance.md): qualified source `71a28afe2623516fb4176e6a4ce7988a3d70df06`, evidence `c1a01761f8d58136a381ad87269635c6c14ad093`; independent review `7b6344551c2d4b42832df39822eaf4b8a1c01495` (SUPPORTED WITH QUALIFICATIONS). [RC2A-02B evidence](../evidence/restricted-consumer-contract-rc2a-02b-portability/README.md): Windows + WSL2 67/0/0 and 457/0/0 twice; native Linux/macOS not run; Q2A-S / RC-D04 OPEN; independent review pending |
 | RC2A-03 | Shared validation/reader, public views and passive reference | SOURCE IMPLEMENTED UNDER RC2A-01; qualification pending | `e93d642`; no separate qualification acceptance inferred |
 | RC2A-04 | Focused regressions, local package, clean consumer | Focused RC2A-01 regressions pass; PACKAGE/CONSUMER NOT_STARTED | No pack authorized by current commission; remaining qualification gates pending |
 | HUFU-R | Sol reassesses AE4-B01 and requests D4a authorization | BLOCKED | Accepted RC2A source/package, Hufu design/delta decisions and compatible dependency graph |

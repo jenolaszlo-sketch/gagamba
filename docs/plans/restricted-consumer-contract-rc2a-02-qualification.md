@@ -490,8 +490,8 @@ QUALIFICATIONS.**
 - P3 dispositions: F02 (native-filter wording) **ACCEPT, DOCUMENTATION
   FOLLOW-UP**; F03 (two large vectors digest-bound only) **ACCEPT AS
   DISCLOSED**; F04 (Q2A-S / RC-D04 deferred) **ACCEPT, DEFERRED
-  QUALIFICATION**. Details and provenance are in the owner decision ง6.
-- Q2A02A-F01 is accepted as a **correct plan correction** (ง8 above): the
+  QUALIFICATION**. Details and provenance are in the owner decision ยง6.
+- Q2A02A-F01 is accepted as a **correct plan correction** (ยง8 above): the
   corrected invariant is canonical rigidity plus immutable-region containment;
   canonical representation is production-enforced and distinct from authority or
   sandbox enforcement.
@@ -506,7 +506,7 @@ Q2A-S to RC2A-02B, which is portability. Q2A-S / RC-D04 therefore remains an
 future qualification stage. It must be completed, or receive a separate explicit
 owner disposition, before full RC2A-02 acceptance.
 
-**RC2A-02B (portability qualification): NOT STARTED — REQUIRES SEPARATE OWNER
+**RC2A-02B (portability qualification): NOT STARTED โ€” REQUIRES SEPARATE OWNER
 AUTHORIZATION.**
 
 **Full RC2A-02: NOT YET ACCEPTED.**
@@ -524,17 +524,54 @@ AUTHORIZATION.**
    not silently absorbed.
 4. Host availability is established per declared platform. Windows is the
    primary platform; Linux/macOS runs require real native hosts, and any WSL2
-   run is labeled `wsl2` and never reported as native Linux (ง3 P2).
-5. The ง3 P1 run definitions are executed with full provenance capture: exact
+   run is labeled `wsl2` and never reported as native Linux (ยง3 P2).
+5. The ยง3 P1 run definitions are executed with full provenance capture: exact
    command, exit code, TRX, log, artifact SHA-256, OS name/version,
    architecture, .NET SDK/runtime, test-framework versions.
 6. Every declared platform produces separate evidence under
-   `artifacts/rc2a-02/<platform>/` with a per-platform summary (ง3 P3); a
+   `artifacts/rc2a-02/<platform>/` with a per-platform summary (ยง3 P3); a
    platform not run is recorded as "not run" with the reason and is neither a
    pass nor a failure.
-7. ง3 P4 scope boundaries are maintained: pure managed-code portability only;
+7. ยง3 P4 scope boundaries are maintained: pure managed-code portability only;
    no native confinement, cgroup, sandbox, package or deployment claim.
-8. The specific R2A-A01 / RC2A-02A-qualified assertions are re-executed on each
+8. The specific RC2A-02A-qualified assertions are re-executed on each
    declared platform, not merely inferred from the Windows run.
-9. After execution, the ง3 F1/F2 independent-review exit is performed for the
+9. After execution, the ยง3 F1/F2 independent-review exit is performed for the
    RC2A-02B evidence, and its disposition is preserved without rewriting.
+
+## 10. RC2A-02B portability execution record (2026-10-25)
+
+Status: **RC2A-02B IMPLEMENTED / QUALIFIED LOCALLY (WINDOWS + WSL2) / NATIVE
+LINUX AND macOS NOT RUN / READY FOR INDEPENDENT REVIEW.**
+
+- Baseline: `e5fff9e8d5a31520f8b5a2c235a05b666a08e16c` (tree
+  `8c04e9e2f0379f7b9a3ef280c3e20e5b0ec44f2e`), the owner-acceptance tip and
+  direct child of the accepted qualification evidence `c1a01761`; tested
+  implementation `71a28afe2623516fb4176e6a4ce7988a3d70df06` unchanged.
+- Executed (pure managed-code value/codec tests only):
+  - **Windows 11 native** (AMD64; SDK 10.0.401, runtime 10.0.12): Execution
+    Release build 0 warnings/0 errors; public suite 67/0/0; precise required set
+    457/0/0 and an identical rerun; the literal committed-plan filter 473/0/41
+    (the same three pre-existing Linux-native skip classes as RC2A-02A).
+  - **WSL2 Ubuntu 26.04.1**, always labeled `wsl2` and never native Linux (SDK
+    10.0.113, runtime 10.0.13): Execution Release build 0 warnings/0 errors;
+    public suite 67/0/0; precise required set 457/0/0 and an identical rerun.
+    The Windows and WSL2 test-name/outcome multisets are identical (67 and 457).
+  - **Native Linux: NOT RUN** (no native host accessible). **macOS: NOT RUN**
+    (no host). Per ยง3 P2 these are neither pass nor failure, and no
+    cross-platform success is implied beyond the executed environments.
+- Evidence:
+  [RC2A-02B portability qualification](../evidence/restricted-consumer-contract-rc2a-02b-portability/README.md)
+  (matrix, `results.json`, source binding, raw per-platform logs/TRX/exit files,
+  `SHA256SUMS`, document digests and reviewer handoff).
+- Execution-scope decision: the precise `Tests.Qualification.` filter is used
+  for qualification on every platform; the literal `~Qualification` filter is
+  executed on Windows only, because it selects pre-existing Linux-native
+  classes (Q2A02A-F02) that ยง3 P1 ("filters select pure tests only") and ยง3 P4
+  exclude. This follows the owner-accepted F02 disposition and does not change
+  the accepted specification.
+- **Q2A-S / RC-D04: NOT IN SCOPE; remains OPEN** (RC2A02A-GLM-F04) for full
+  RC2A-02 acceptance.
+- Independent review of RC2A-02B: **PENDING**. No RC2A-02B owner acceptance is
+  recorded; full RC2A-02 remains **NOT YET ACCEPTED**; RC2A-03/04 and all other
+  gates remain unchanged.

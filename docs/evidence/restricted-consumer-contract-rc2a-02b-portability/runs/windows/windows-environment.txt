@@ -1,0 +1,14 @@
+﻿captured_at_local=2026-10-25T18:03:34+08:00
+environment=windows-native
+os=Microsoft Windows NT 10.0.26200.0
+os_architecture=AMD64
+machine=LAPTOP-KBD8D8JG
+dotnet_version=10.0.401
+sdk=10.0.401 [C:\Program Files\dotnet\sdk]
+runtime=Microsoft.NETCore.App 8.0.31 [C:\Program Files\dotnet\shared\Microsoft.NETCore.App]
+runtime=Microsoft.NETCore.App 9.0.20 [C:\Program Files\dotnet\shared\Microsoft.NETCore.App]
+runtime=Microsoft.NETCore.App 10.0.12 [C:\Program Files\dotnet\shared\Microsoft.NETCore.App]
+test_framework=xunit.v3 3.2.0; xunit.runner.visualstudio 3.1.4; Microsoft.NET.Test.Sdk 18.0.1; net10.0
+executed_commit=e5fff9e8d5a31520f8b5a2c235a05b666a08e16c
+executed_tree=8c04e9e2f0379f7b9a3ef280c3e20e5b0ec44f2e
+worktree_clean=True
