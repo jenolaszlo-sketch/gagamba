@@ -52,12 +52,11 @@ public static class RestrictedManifestCodec
     public static ImmutableArray<byte> ComputeSha256(RestrictedManifestView manifest) =>
         ImmutableArray.Create(SHA256.HashData(Encode(manifest)));
 
-    /// <exception cref="ArgumentException">Expected digest length is not exactly 32 bytes.</exception>
+    /// <summary>Returns false for a digest of the wrong length or a nonmatching digest.</summary>
     public static bool VerifySha256(RestrictedManifestView manifest, ReadOnlySpan<byte> expectedSha256)
     {
         ArgumentNullException.ThrowIfNull(manifest);
-        if (expectedSha256.Length != 32)
-            throw new ArgumentException("Exactly 32 bytes are required.", nameof(expectedSha256));
+        if (expectedSha256.Length != 32) return false;
         return CryptographicOperations.FixedTimeEquals(ComputeSha256(manifest).AsSpan(), expectedSha256);
     }
 }

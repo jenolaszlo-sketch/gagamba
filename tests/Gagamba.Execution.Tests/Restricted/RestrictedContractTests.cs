@@ -41,8 +41,8 @@ public sealed class RestrictedContractTests
     [InlineData(0)]
     [InlineData(31)]
     [InlineData(33)]
-    public void WrongDigestLengthIsProgrammingError(int length) =>
-        Assert.Equal("expectedSha256", Assert.Throws<ArgumentException>(() => RestrictedManifestCodec.VerifySha256(View(), new byte[length])).ParamName);
+    public void WrongDigestLengthReturnsFalse(int length) =>
+        Assert.False(RestrictedManifestCodec.VerifySha256(View(), new byte[length]));
 
     [Fact]
     public void NonmatchingAndAllZeroDigestsAreNotWildcards()
@@ -69,6 +69,8 @@ public sealed class RestrictedContractTests
     public void NullArgumentsAreProgrammingErrors()
     {
         Assert.Throws<ArgumentNullException>(() => RestrictedManifestCodec.Supports(0, null!));
+        Assert.Throws<ArgumentNullException>(() => RestrictedManifestCodec.Supports(1, null!));
+        Assert.Throws<ArgumentNullException>(() => RestrictedManifestCodec.Supports(ushort.MaxValue, null!));
         Assert.Throws<ArgumentNullException>(() => RestrictedManifestCodec.Encode(null!));
         Assert.Throws<ArgumentNullException>(() => RestrictedManifestCodec.ComputeSha256(null!));
         Assert.Throws<ArgumentNullException>(() => RestrictedManifestCodec.VerifySha256(null!, new byte[32]));

@@ -4,11 +4,17 @@ Date: 2026-10-25 (Asia/Manila). Governing inputs: RC-1 `d609c29d3048bc0fd9158306
 
 This document freezes concrete choices left to RC2A-01 before focused tests and implementation. It does not amend schema 1 or the owner decision.
 
+Owner clarification, 2026-10-25: the user explicitly selected the three refusal
+rules below and requested their documentation and deterministic tests, with the
+golden vector/canonical encoding preserved. Wrong-length `VerifySha256` input
+returns false. This supersedes the earlier ArgumentException choice at implementation
+`e93d642e1a36af25c0e145d328bebadd1bba4838`; RC-1 is not reopened.
+
 ## API and failures
 
 Namespace: `Gagamba.Execution.Restricted.Contracts`, existing net10.0 Execution assembly. Root/nested sealed get-only views mirror every RC-D02 property, with names obtained by appending `View` to the corresponding internal type (`RestrictedManifestView`, `AuthorityManifestView`, `ResourceManifestView`, `ResourceBudgetView`, `WritableStoreView`, `ExecutableMountPolicyView`, `CoreDumpPolicyView`, `OwnerAllocationLimitsView`, `ClosureIdentityView`, `ClosureObjectView`, `InvocationManifestView`, `ChannelManifestView`). Collections/digests use `ImmutableArray<T>`. Public enums `BudgetValueKind` and `QualificationDisposition` preserve internal names, byte underlying types and numbers. No public view constructors, builders, setters or factories. Views retain existing immutable internal values; no second encodable model. View equality is object identity; only the passive reference has required content equality.
 
-`RestrictedManifestCodec` has exactly the constants and five methods in RC-D03. `Supports` uses exact ordinal schema/implementation matching; every unknown, empty, whitespace or case-variant ID returns false. Null ID throws `ArgumentNullException`, even with an unsupported schema. Null manifest arguments throw `ArgumentNullException`. `VerifySha256` requires exactly 32 expected bytes, otherwise throws `ArgumentException` with parameter `expectedSha256`; valid-length matching/nonmatching inputs return true/false using constant-time comparison. All-zero is an ordinary present digest. SHA-256 covers complete canonical bytes only.
+`RestrictedManifestCodec` has exactly the constants and five methods in RC-D03. `Supports` uses exact ordinal schema/implementation matching; every unknown, empty, whitespace or case-variant ID returns false. Null ID throws `ArgumentNullException`, even with an unsupported schema. Null manifest arguments throw `ArgumentNullException`. `VerifySha256` returns false for every expected digest length other than 32; valid-length matching/nonmatching inputs return true/false using constant-time comparison. All-zero is an ordinary present digest. SHA-256 covers complete canonical bytes only.
 
 `Encode` validates through the shared canonical validator and delegates to the existing `ManifestCodec`. Complete length >65,536 throws `ArgumentException` with parameter `manifest`; no buffer is returned. Exactly 65,536 succeeds. Internal view projection applies the same validation and guard, so oversized values never become accepted public views. Focused tests exercise both projection rejection and the shared encoder guard; no oversized public factory is added. Internal legacy encoding without a transport ceiling retains its existing behavior. `ComputeSha256` and `VerifySha256` use the same public encoding boundary.
 
