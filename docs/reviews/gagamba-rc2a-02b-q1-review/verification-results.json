@@ -1,0 +1,245 @@
+{
+  "reviewedCommits": {
+    "e5fff9e8d5a31520f8b5a2c235a05b666a08e16c": {
+      "tree": "8c04e9e2f0379f7b9a3ef280c3e20e5b0ec44f2e",
+      "expectedTree": "8c04e9e2f0379f7b9a3ef280c3e20e5b0ec44f2e",
+      "treeMatches": true,
+      "parents": "c1a01761f8d58136a381ad87269635c6c14ad093"
+    },
+    "5b4292d0fefc576664df61692dfad5cef6362879": {
+      "tree": "3f76b861e689d04a17c64f8a3e71e57851c21f58",
+      "expectedTree": "3f76b861e689d04a17c64f8a3e71e57851c21f58",
+      "treeMatches": true,
+      "parents": "e5fff9e8d5a31520f8b5a2c235a05b666a08e16c"
+    },
+    "dd16baec48663d40cd29504d98e57e30dd0855df": {
+      "tree": "96e86aac2d284637805809b54da72e76bf46f1fc",
+      "expectedTree": "96e86aac2d284637805809b54da72e76bf46f1fc",
+      "treeMatches": true,
+      "parents": "5b4292d0fefc576664df61692dfad5cef6362879"
+    }
+  },
+  "commitChainMatches": true,
+  "sourceSubtreesAtAcceptedBaseline": {
+    "src": {
+      "actual": "b8c167e3d7340a562221591bdc2b6df7adb372d1",
+      "expected": "b8c167e3d7340a562221591bdc2b6df7adb372d1",
+      "matches": true
+    },
+    "tests": {
+      "actual": "5c3268286575cb55891fae9288627657f2d30ddf",
+      "expected": "5c3268286575cb55891fae9288627657f2d30ddf",
+      "matches": true
+    },
+    "native": {
+      "actual": "85631d2f04512376621d3d09f51d67fd90f45335",
+      "expected": "85631d2f04512376621d3d09f51d67fd90f45335",
+      "matches": true
+    }
+  },
+  "sourceChangesFromBaselineToEvidence": [],
+  "evidencePathsChangedByFinalBindingCommit": [
+    "docs/evidence/restricted-consumer-contract-rc2a-02b-portability/SHA256SUMS"
+  ],
+  "changedPathCountFromBaselineToFinal": 48,
+  "gitEvidence": {
+    "executionParentIsBaseline": true,
+    "finalParentIsExecution": true,
+    "noSrcTestsNativeChanges": true
+  },
+  "sha256sums": {
+    "entryCount": 43,
+    "allCommittedBlobHashesMatch": true,
+    "mismatches": []
+  },
+  "documentBindings": {
+    "entryCount": 9,
+    "allLfNormalizedBindingsMatch": true,
+    "mismatches": []
+  },
+  "resultsJsonArtifactSha256": {
+    "referenceCount": 29,
+    "mismatchCount": 14,
+    "mismatches": [
+      {
+        "path": "runs/windows/windows-public.trx",
+        "resultsJsonSha256": "be1e235875ea5f245296982e9733a7b40f1271174557e62311987ab959f3567c",
+        "committedBlobSha256": "a675daa1534899997fcd8fb21d47929fe85ff3610f9401e61278158fb010e79d",
+        "matchesExecutionCommitManifest": true
+      },
+      {
+        "path": "runs/windows/windows-public.log",
+        "resultsJsonSha256": "48065acf0d96bdcd4ef765e1bc5b94560b33007679e9d63fb9a519d65bccaf49",
+        "committedBlobSha256": "263624ce7494a641ddc034ca0920db69ffead3d05c9d19e3119de474ea7d6015",
+        "matchesExecutionCommitManifest": true
+      },
+      {
+        "path": "runs/windows/windows-public.exit.txt",
+        "resultsJsonSha256": "11918c0c24a8c1cfc005438c46dd510eae27ed0e3f28c397b420d6b1e72ab140",
+        "committedBlobSha256": "45ad8c9cee33fd85ae12285a12748110ad68fab190ccead18bf71a7f7364dec0",
+        "matchesExecutionCommitManifest": true
+      },
+      {
+        "path": "runs/windows/windows-required-set.trx",
+        "resultsJsonSha256": "bce3dfa77768a15425c8a4c44a9d937caab506fb75ddf56fbf64600031ce458f",
+        "committedBlobSha256": "5006d59ff15772450df41bb033619df8a2b9d7d2fdc69c1d77503b319fe3f3af",
+        "matchesExecutionCommitManifest": true
+      },
+      {
+        "path": "runs/windows/windows-required-set.log",
+        "resultsJsonSha256": "e71e10ebabd3da18093d974413cd89f814606dd9fc5a936d5cd75c647d383eab",
+        "committedBlobSha256": "b5383bf88a279eaa4f6f54844ef49cd18bcde826eb30c8294996d1427802461f",
+        "matchesExecutionCommitManifest": true
+      },
+      {
+        "path": "runs/windows/windows-required-set.exit.txt",
+        "resultsJsonSha256": "050a1e4eccdb4fac65db072744ce90df72d72741fb2d750028f8c113841d4421",
+        "committedBlobSha256": "30c923aa518d702f7d10ff6b119396ebb4ddf37f3fa19062bf2735324daa9894",
+        "matchesExecutionCommitManifest": true
+      },
+      {
+        "path": "runs/windows/windows-required-set-rerun.trx",
+        "resultsJsonSha256": "270d2a189ae5b8da77556c581cbe50dd98b408d50159e75e5b116d2da0e84bb0",
+        "committedBlobSha256": "54bc21c6d1d7c70a8a3e66a7202c2dd9e8642698cb0d9f4a85451b6e6c20222d",
+        "matchesExecutionCommitManifest": true
+      },
+      {
+        "path": "runs/windows/windows-required-set-rerun.log",
+        "resultsJsonSha256": "36de2d786916f8d28721727fc28ae17225ef37d08856bbe29f43fb0a5eef6310",
+        "committedBlobSha256": "0022cb4c0b5995f15d8b7ef4ea6c3c5da4a66870c4127942719f32e79276b9ee",
+        "matchesExecutionCommitManifest": true
+      },
+      {
+        "path": "runs/windows/windows-required-set-rerun.exit.txt",
+        "resultsJsonSha256": "f79c91d32f54d73aa9fafdb1362f865de6554af3eba9cc92591c2ad21844faa2",
+        "committedBlobSha256": "9843b543f9497d8696944ccbc77d34a073281a2517906b5ff36902584f9077a9",
+        "matchesExecutionCommitManifest": true
+      },
+      {
+        "path": "runs/windows/windows-plan-filter.trx",
+        "resultsJsonSha256": "ecc09ae28191c8a44382b106eea48099ffeed5c54db07d784ebbb13010836301",
+        "committedBlobSha256": "93cf05b960133d8c19b9a1507ded16ff9e9832c40ccf1eea7c5f3077005025cd",
+        "matchesExecutionCommitManifest": true
+      },
+      {
+        "path": "runs/windows/windows-plan-filter.log",
+        "resultsJsonSha256": "6fcf03815c026dd4f47deb47b09c00e37dd75ed0e0df5a1d6a25d19677d9f17f",
+        "committedBlobSha256": "7faa28f4005c724d9d24c101d04c93acda2064b8e38ece46707940738e960f93",
+        "matchesExecutionCommitManifest": true
+      },
+      {
+        "path": "runs/windows/windows-plan-filter.exit.txt",
+        "resultsJsonSha256": "15315da001708a5205cfff581aefa25b3c1dc1d205984cfe979ac1a9598ddce4",
+        "committedBlobSha256": "1a598cb3a472be4e7be1ffd905f315e8b30008ff8d154dd55917849ae9185b46",
+        "matchesExecutionCommitManifest": true
+      },
+      {
+        "path": "runs/windows/build-execution.log",
+        "resultsJsonSha256": "73b421651771ca90bca6310ba8f5b31e6f3dce2539696e026703a79c75ea79b6",
+        "committedBlobSha256": "2eee7922d5da3c72597ab70004bdd8068f26214f37b51f0f01a0ec5550383356",
+        "matchesExecutionCommitManifest": true
+      },
+      {
+        "path": "runs/windows/windows-environment.txt",
+        "resultsJsonSha256": "f021ed4ac513b8c926dae9fea95e6bba54dbecb73ea8729465ddf7b54e584fa6",
+        "committedBlobSha256": "0aee498bcb594d310a83d9db271e652bed10b64cd2138cc94fd5f675859c011d",
+        "matchesExecutionCommitManifest": true
+      }
+    ]
+  },
+  "producerRawTrx": {
+    "counts": {
+      "windowsPublic": {
+        "total": 67,
+        "passed": 67,
+        "failed": 0,
+        "skipped_or_not_executed": 0
+      },
+      "windowsRequired": {
+        "total": 457,
+        "passed": 457,
+        "failed": 0,
+        "skipped_or_not_executed": 0
+      },
+      "windowsRequiredRerun": {
+        "total": 457,
+        "passed": 457,
+        "failed": 0,
+        "skipped_or_not_executed": 0
+      },
+      "windowsBroadPlanFilter": {
+        "total": 514,
+        "passed": 473,
+        "failed": 0,
+        "skipped_or_not_executed": 41
+      },
+      "wsl2Public": {
+        "total": 67,
+        "passed": 67,
+        "failed": 0,
+        "skipped_or_not_executed": 0
+      },
+      "wsl2Required": {
+        "total": 457,
+        "passed": 457,
+        "failed": 0,
+        "skipped_or_not_executed": 0
+      },
+      "wsl2RequiredRerun": {
+        "total": 457,
+        "passed": 457,
+        "failed": 0,
+        "skipped_or_not_executed": 0
+      }
+    },
+    "windowsRequiredEqualsRerun": true,
+    "wsl2RequiredEqualsRerun": true,
+    "windowsPublicEqualsWsl2Public": true,
+    "windowsRequiredEqualsWsl2Required": true,
+    "broadFilterIncludesAllPreciseTests": true,
+    "broadFilterExtraCount": 57,
+    "broadFilterExtraOutcomes": {
+      "NotExecuted": 41,
+      "Passed": 16
+    },
+    "broadFilterExtraClassesAndOutcomes": {
+      "OwnerDeathQualificationTests/NotExecuted": 7,
+      "NonRootQualificationTests/NotExecuted": 31,
+      "CoordinatorProtocolQualificationTests/Passed": 11,
+      "Wp05V3IndependentQualificationTests/Passed": 5,
+      "Wp05ReleasePathIndependentQualificationTests/NotExecuted": 3
+    },
+    "preciseFilterComponentCounts": {
+      "Tests.Qualification.": 419,
+      "Contracts.ManifestTests": 19,
+      "Contracts.RestrictedPublicProjectionTests": 9,
+      "PreparationIdentityTests": 10
+    },
+    "preciseFilterComponentsCoverAllRequiredTests": true
+  },
+  "independentWindowsRuns": {
+    "counts": {
+      "public": {
+        "total": 67,
+        "passed": 67,
+        "failed": 0,
+        "skipped_or_not_executed": 0
+      },
+      "required": {
+        "total": 457,
+        "passed": 457,
+        "failed": 0,
+        "skipped_or_not_executed": 0
+      },
+      "requiredRerun": {
+        "total": 457,
+        "passed": 457,
+        "failed": 0,
+        "skipped_or_not_executed": 0
+      }
+    },
+    "publicEqualsProducerWindows": true,
+    "requiredEqualsProducerWindows": true,
+    "requiredRerunEqualsRequired": true
+  }
+}

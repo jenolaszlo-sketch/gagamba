@@ -1,0 +1,17 @@
+  Gagamba.Execution -> C:\Users\Laszlos\source\repos\Solo\gagamba-rc2a-02b-q1-review\src\Gagamba.Execution\bin\Release\net10.0\Gagamba.Execution.dll
+  Gagamba.Execution.Tests -> C:\Users\Laszlos\source\repos\Solo\gagamba-rc2a-02b-q1-review\tests\Gagamba.Execution.Tests\bin\Release\net10.0\Gagamba.Execution.Tests.dll
+Test run for C:\Users\Laszlos\source\repos\Solo\gagamba-rc2a-02b-q1-review\tests\Gagamba.Execution.Tests\bin\Release\net10.0\Gagamba.Execution.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+System.AggregateException: One or more errors occurred. (vstest.console process failed to connect to datacollector process after 90 seconds. This may occur due to machine slowness, please set environment variable VSTEST_CONNECTION_TIMEOUT to increase timeout.)
+ ---> Microsoft.VisualStudio.TestPlatform.ObjectModel.TestPlatformException: vstest.console process failed to connect to datacollector process after 90 seconds. This may occur due to machine slowness, please set environment variable VSTEST_CONNECTION_TIMEOUT to increase timeout.
+   at Microsoft.VisualStudio.TestPlatform.CrossPlatEngine.DataCollection.ProxyDataCollectionManager.Initialize() in /_/src/vstest/src/Microsoft.TestPlatform.CrossPlatEngine/DataCollection/ProxyDataCollectionManager.cs:line 250
+   at Microsoft.VisualStudio.TestPlatform.CrossPlatEngine.Client.ProxyExecutionManagerWithDataCollection.Initialize(Boolean skipDefaultAdapters) in /_/src/vstest/src/Microsoft.TestPlatform.CrossPlatEngine/Client/ProxyExecutionManagerWithDataCollection.cs:line 95
+   at Microsoft.VisualStudio.TestPlatform.CrossPlatEngine.Client.Parallel.ParallelProxyExecutionManager.<>c__DisplayClass29_0.<StartTestRunOnConcurrentManager>b__0() in /_/src/vstest/src/Microsoft.TestPlatform.CrossPlatEngine/Client/Parallel/ParallelProxyExecutionManager.cs:line 442
+   at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunFromThreadPoolDispatchLoop(Thread threadPoolThread, ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+   --- End of inner exception stack trace ---
+Results File: C:\Users\Laszlos\source\repos\Solo\gagamba-rc2a-02b-q1-review\docs\reviews\gagamba-rc2a-02b-q1-artifacts\windows\q1-review-windows-public.trx
+
+Test Run Aborted.
