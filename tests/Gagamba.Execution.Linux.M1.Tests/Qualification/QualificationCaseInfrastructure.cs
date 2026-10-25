@@ -80,6 +80,59 @@ internal sealed class ValidMutationCase : QualificationCase
     }
 }
 
+/// <summary>One or more accepted model mutations with the same full assertion
+/// path as ValidMutationCase; variants that intentionally reproduce the baseline
+/// value (for example a zero minimum where the baseline is already zero) declare
+/// RequireChange=false and still assert decode, projection and visible value.</summary>
+internal sealed class VariantMutationCase : QualificationCase
+{
+    private readonly Func<RestrictedManifest> baseline;
+    private readonly Func<RestrictedManifest, RestrictedManifest> mutate;
+    private readonly bool requireChange;
+    private readonly Action<RestrictedManifest, RestrictedManifestView> domainCheck;
+
+    internal VariantMutationCase(
+        string caseId,
+        string fieldId,
+        string mutationClass,
+        string description,
+        Func<RestrictedManifest> baseline,
+        Func<RestrictedManifest, RestrictedManifest> mutate,
+        bool requireChange,
+        Action<RestrictedManifest, RestrictedManifestView> domainCheck)
+        : base(caseId, fieldId, mutationClass, "valid", description)
+    {
+        this.baseline = baseline;
+        this.mutate = mutate;
+        this.requireChange = requireChange;
+        this.domainCheck = domainCheck;
+    }
+
+    internal override void Execute()
+    {
+        var before = baseline();
+        var beforeBytes = QualificationModelTools.ReferenceEncode(before);
+        var mutated = mutate(before);
+        var view = new RestrictedManifestView(mutated);
+        var production = RestrictedManifestCodec.Encode(view);
+        Assert.Equal(QualificationModelTools.ReferenceEncode(mutated), production);
+        if (requireChange)
+        {
+            Assert.False(beforeBytes.AsSpan().SequenceEqual(production), "A valid mutation must change the canonical bytes.");
+            Assert.NotEqual(
+                QualificationModelTools.ReferenceDigestHex(before),
+                QualificationModelTools.ReferenceDigestHex(mutated));
+        }
+
+        var decoded = RestrictedManifestCodec.Decode(production);
+        Assert.Null(decoded.Error);
+        var decodedView = Assert.IsType<RestrictedManifestView>(decoded.Value);
+        QualificationModelTools.AssertGraph(mutated, decodedView);
+        Assert.Equal(production, RestrictedManifestCodec.Encode(decodedView));
+        domainCheck(mutated, decodedView);
+    }
+}
+
 /// <summary>Structurally malformed, noncanonical or forced-value wire input.
 /// Asserts the exact refusal code and the exact construction-recorded offset,
 /// and that the canonical positive counterpart decodes and re-encodes

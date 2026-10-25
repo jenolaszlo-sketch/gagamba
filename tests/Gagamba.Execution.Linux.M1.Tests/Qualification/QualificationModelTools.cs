@@ -120,6 +120,24 @@ internal static class QualificationModelTools
         }
     }
 
+    internal static ResourceBudgetView ViewBudget(ResourceManifestView resources, string name) => name switch
+    {
+        "Memory" => resources.Memory,
+        "Swap" => resources.Swap,
+        "Tasks" => resources.Tasks,
+        "FileDescriptors" => resources.FileDescriptors,
+        "TmpBytes" => resources.TmpBytes,
+        "ShmBytes" => resources.ShmBytes,
+        "StdoutBytes" => resources.StdoutBytes,
+        "StderrBytes" => resources.StderrBytes,
+        "CaptureAggregateBytes" => resources.CaptureAggregateBytes,
+        "SetupTimeoutNs" => resources.SetupTimeoutNs,
+        "OverallTimeoutNs" => resources.OverallTimeoutNs,
+        "StopAllowanceNs" => resources.StopAllowanceNs,
+        "FinalDrainNs" => resources.FinalDrainNs,
+        _ => throw new ArgumentOutOfRangeException(nameof(name), name, "Unknown budget name."),
+    };
+
     internal static byte[] Diffusion32(byte seed)
     {
         var bytes = new byte[32];

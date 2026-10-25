@@ -52,17 +52,20 @@ internal static class QualificationRefusalFactories
     internal static WireRefusalCase Tag(string caseId, string fieldId, string slot, byte tag, string description) =>
         Defect(caseId, fieldId, "tag", description, slot, w => w.Tag(tag), ManifestDecodeError.InvalidTag);
 
-    internal static WireRefusalCase LengthInflation(string caseId, string fieldId, string slot, string description) =>
+    internal static WireRefusalCase LengthInflation(string caseId, string fieldId, string slot, string description,
+        Func<QualificationWireTemplate>? template = null) =>
         Defect(caseId, fieldId, "length", description, slot, w => w.U32(uint.MaxValue),
-            ManifestDecodeError.InvalidLengthOrCount);
+            ManifestDecodeError.InvalidLengthOrCount, template: template);
 
-    internal static WireRefusalCase MalformedUtf8(string caseId, string fieldId, string slot, string hex, string description) =>
+    internal static WireRefusalCase MalformedUtf8(string caseId, string fieldId, string slot, string hex, string description,
+        Func<QualificationWireTemplate>? template = null) =>
         Defect(caseId, fieldId, "utf8", description, slot, w => w.TextRaw(Convert.FromHexString(hex)),
-            ManifestDecodeError.InvalidUtf8);
+            ManifestDecodeError.InvalidUtf8, template: template);
 
-    internal static WireRefusalCase EmptyText(string caseId, string fieldId, string slot, string description) =>
+    internal static WireRefusalCase EmptyText(string caseId, string fieldId, string slot, string description,
+        Func<QualificationWireTemplate>? template = null) =>
         Defect(caseId, fieldId, "empty", description, slot, w => w.Text(string.Empty),
-            ManifestDecodeError.InvalidValue);
+            ManifestDecodeError.InvalidValue, template: template);
 
     internal static WireRefusalCase WrongFixedText(string caseId, string fieldId, string slot, string value, string description) =>
         Defect(caseId, fieldId, "forced", description, slot, w => w.Text(value),
