@@ -362,7 +362,7 @@ public sealed class RestrictedContractTests
                     publicFields = type.GetFields(declaredPublic).Select(field => $"{FormatType(field.FieldType)} {field.Name}")
                         .OrderBy(name => name, StringComparer.Ordinal)
                 }).ToArray(),
-                referenceInheritedMethods = referenceType.GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                referenceInheritedMethods = referenceType.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
                     .Where(method => method.DeclaringType != referenceType)
                     .Select(method => new { declaringType = method.DeclaringType?.FullName, signature = FormatMethod(method) })
                     .OrderBy(method => method.declaringType, StringComparer.Ordinal)
