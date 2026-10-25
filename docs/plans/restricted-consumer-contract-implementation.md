@@ -1,7 +1,7 @@
 # Restricted consumer contract implementation work orders
 
 Date: 2026-10-24; owner-acceptance update 2026-10-25; RC2A-B acceptance update
-2026-10-25 (Asia/Manila). Governing design: [RC-1](../design/restricted-consumer-contract-rc1.md) at
+2026-10-25; RC2A-02A acceptance update 2026-10-25 (Asia/Manila). Governing design: [RC-1](../design/restricted-consumer-contract-rc1.md) at
 `d609c29d3048bc0fd91583068cb013fb906fdf90`, independently accepted with
 qualifications by GLM at `feb9d7584c41712195d4b90754ed7a342ba74bb7`, followed by
 [RC1-A owner acceptance](../decisions/restricted-consumer-rc1-owner-acceptance.md).
@@ -19,6 +19,23 @@ carried into the [RC2A-02 qualification
 specification](restricted-consumer-contract-rc2a-02-qualification.md);
 R2A-F03 is accepted as disclosed. RC2A-02 remains **PLANNED, NOT STARTED** and
 requires separate execution authorization. [Owner decision](../decisions/restricted-consumer-rc2a-01-owner-acceptance.md).
+
+RC2A-02A update: the Windows managed-code consumer-contract qualification is
+**ACCEPTED WITH QUALIFICATIONS** at tested source
+`71a28afe2623516fb4176e6a4ce7988a3d70df06` (tree
+`70b932148cbfa59b0e424229879eebd36df2d80c`) with documentation-only evidence at
+`c1a01761f8d58136a381ad87269635c6c14ad093` (tree
+`8c51c3c2e06e6544f3ad0e8aceabfed8457d8c19`), based on the independent GLM review
+`RC2A-02A-GLM-Q1` preserved on `review/gagamba-rc2a-02a-glm-q1` at
+`7b6344551c2d4b42832df39822eaf4b8a1c01495` (verdict **SUPPORTED WITH
+QUALIFICATIONS**; no confirmed production or qualification defect; P3 items
+F02/F03/F04 dispositioned in the [owner decision](../decisions/restricted-consumer-contract-rc2a-02a-owner-acceptance.md)).
+**RC2A-02B portability is NOT STARTED and requires separate owner
+authorization; full RC2A-02 is NOT YET ACCEPTED; Q2A-S / RC-D04 remains OPEN**
+as an obligation of full RC2A-02 acceptance (stage assignment by the owner; not
+silently assigned to RC2A-02B). Package/clean-consumer/mixed-graph gates
+(RC2A-04), native qualification, RC-2B (R1-F02/F03 OPEN), AE4-B01 and Hufu
+resumption remain unauthorized and unqualified.
 
 ## 1. Progress and gates
 
@@ -47,7 +64,7 @@ test failure or permission to replace a real provider with a fake.
 | RC1-A | Owner accepts contract and dispositions | APPROVED AND RECORDED | [Owner decision](../decisions/restricted-consumer-rc1-owner-acceptance.md): Mode=`work`, passive public surface, encode/decode ceiling and all seven findings |
 | RC2A-01 | Revalidate/finalize API; commissioned passive implementation and focused tests | **ACCEPTED WITH FOLLOW-UP (RC2A-B)** | HEAD `68b01fbb53eefca9c8ca2f83ff50641521020a2a`, tree `54f659d01937da29bc9a5f82566a8349af264664`; [owner decision](../decisions/restricted-consumer-rc2a-01-owner-acceptance.md); implementation only — qualification not complete |
 | RC2A-R | Independent implementation/package review | **IMPLEMENTATION REVIEW COMPLETE — ACCEPT WITH FOLLOW-UP**; package review pending | GLM review preserved verbatim at `8e41babfc96afa2e617a53b63e50903d54001194` (blob `d329fcc49d289696bf1c4163f8f346c56115ba8c`, SHA-256 `77d2404c61dbf1af76e8448b966f03482186d95fff5bf6a676a32fe6c7d8e4d0`); R2A-F01–F04 dispositioned in the owner decision; package review remains RC2A-04 work |
-| RC2A-02 | Separately commissioned tests-first qualification | **PLANNED, NOT STARTED** | [Qualification specification](restricted-consumer-contract-rc2a-02-qualification.md) committed with R2A follow-ups folded in; execution requires separate owner authorization; focused RC2A-01 tests do not complete this stage |
+| RC2A-02 | Separately commissioned tests-first qualification | **RC2A-02A ACCEPTED WITH QUALIFICATIONS (WINDOWS); RC2A-02B NOT STARTED; FULL RC2A-02 NOT YET ACCEPTED** | [RC2A-02A owner decision](../decisions/restricted-consumer-contract-rc2a-02a-owner-acceptance.md): qualified source `71a28afe2623516fb4176e6a4ce7988a3d70df06`, evidence `c1a01761f8d58136a381ad87269635c6c14ad093`; independent review `7b6344551c2d4b42832df39822eaf4b8a1c01495` (SUPPORTED WITH QUALIFICATIONS); Q2A-S / RC-D04 OPEN; RC2A-02B requires separate authorization per the [qualification plan §9](restricted-consumer-contract-rc2a-02-qualification.md) |
 | RC2A-03 | Shared validation/reader, public views and passive reference | SOURCE IMPLEMENTED UNDER RC2A-01; qualification pending | `e93d642`; no separate qualification acceptance inferred |
 | RC2A-04 | Focused regressions, local package, clean consumer | Focused RC2A-01 regressions pass; PACKAGE/CONSUMER NOT_STARTED | No pack authorized by current commission; remaining qualification gates pending |
 | HUFU-R | Sol reassesses AE4-B01 and requests D4a authorization | BLOCKED | Accepted RC2A source/package, Hufu design/delta decisions and compatible dependency graph |

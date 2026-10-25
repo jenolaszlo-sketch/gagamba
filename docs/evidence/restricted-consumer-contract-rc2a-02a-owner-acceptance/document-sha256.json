@@ -1,0 +1,81 @@
+{
+  "byteDomain": "LF-normalized working-tree UTF-8 bytes; verified against Git blobs after commit",
+  "exclusion": "this hash manifest and the Git-bound review artifacts; this manifest is bound by the final commit/tree",
+  "files": [
+    {
+      "path": "docs/decisions/restricted-consumer-contract-rc2a-02a-owner-acceptance.md",
+      "bytes": 14805,
+      "sha256": "e37316867609a3fa1ff164cd6ba24a9ec28c8ebd8e53379c92ec56c0b518f3eb"
+    },
+    {
+      "path": "docs/plans/restricted-consumer-contract-rc2a-02-qualification.md",
+      "bytes": 33976,
+      "sha256": "b142ceb164e78ec7eaff84758893fd32e8094dc2d0441093b0a50ad3dfa09d8e"
+    },
+    {
+      "path": "docs/plans/restricted-consumer-contract-implementation.md",
+      "bytes": 33624,
+      "sha256": "caec54250ce5fb5f353abf76819fac843322770bfebf4bf1a18adce5646e8b37"
+    },
+    {
+      "path": "docs/work-queue.md",
+      "bytes": 154644,
+      "sha256": "6b2c34e2fbc56f7cd3a7f7cf62b7fa3c77df62bddcfd23eadf79af129129f130"
+    },
+    {
+      "path": "docs/handoff.md",
+      "bytes": 174496,
+      "sha256": "ae3e8f6c118cda3077172bb079dbb4a3d31632fc8b02f8a205c1f5431d0034b1"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-02a-owner-acceptance/README.md",
+      "bytes": 5666,
+      "sha256": "2fd6484b4338b05e6e5cf440830a7362882115be4f104643de4cd8531a2e71d9"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-02a-owner-acceptance/owner-instruction.md",
+      "bytes": 2773,
+      "sha256": "04659bd77a723af0316327f17aa79787162b3df8a0014cddb99f62df43efeef1"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-02a-owner-acceptance/source-binding.json",
+      "bytes": 5411,
+      "sha256": "5c635d613355c515772f4b76fcb5d3b484856c5c99595fd3d0e6fb9ca1dcc4ad"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-02a-owner-acceptance/validation.json",
+      "bytes": 10024,
+      "sha256": "e2aeab45473e4cf0dcbd74b7126e6afef5cfb2bfdeab6886d2d6c3ceaec6a56e"
+    }
+  ],
+  "gitBoundArtifacts": [
+    {
+      "path": "docs/reviews/restricted-consumer-contract-rc2a-02a-glm-q1.md",
+      "note": "independent review, preserved on review/gagamba-rc2a-02a-glm-q1; not present on this branch",
+      "gitCommit": "7b6344551c2d4b42832df39822eaf4b8a1c01495",
+      "gitBlob": "475af1fb1cd9d849e68fbbeede071a8631d620df",
+      "bytes": 30224,
+      "sha256": "a69b4db573a67f8f93e038eb26223a891f5f60c96eadcdcf273f8127b62ca80d"
+    },
+    {
+      "path": "docs/reviews/restricted-consumer-contract-rc2a-02a-glm-q1-evidence/probe-output.txt",
+      "note": "independent review probe output; preserved on the review branch",
+      "gitCommit": "7b6344551c2d4b42832df39822eaf4b8a1c01495",
+      "gitBlob": "41e1b7c0db3e8e706207aec7d5fce365d920fce5",
+      "bytes": 21632,
+      "sha256": "164c40bb1bf61bf6da19468205395a9cf702fc98f1b82da1744f002f9d1e29e3"
+    },
+    {
+      "path": "docs/reviews/restricted-consumer-contract-rc2a-02a-glm-q1-evidence/reproduction-record.md",
+      "note": "independent review reproduction record; preserved on the review branch",
+      "gitCommit": "7b6344551c2d4b42832df39822eaf4b8a1c01495",
+      "gitBlob": "9995e066d03f0a1dae61e92ce7dd31d2b0dddef6",
+      "bytes": 4251,
+      "sha256": "b16d596b593bfd010fefb170e50033ac0a1a97be4c5016b9ef80be22e6651bbf"
+    }
+  ],
+  "historicalBindingsPreserved": {
+    "rc2a02aQualificationEvidence": "docs/evidence/restricted-consumer-contract-rc2a-02a-windows/document-sha256.json remains authoritative at commit c1a01761f8d58136a381ad87269635c6c14ad093 and continues to bind the pre-acceptance versions of the qualification plan and tracking documents; this manifest binds the updated versions.",
+    "rc2a01AcceptanceEvidence": "docs/evidence/restricted-consumer-rc2a-01-owner-acceptance/document-sha256.json remains authoritative at its own commit; unchanged by this record."
+  }
+}

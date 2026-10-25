@@ -1,7 +1,10 @@
 # RC2A-02 tests-first qualification specification
 
-Date: 2026-10-25 (Asia/Manila). Status: **SPECIFIED â€” NOT STARTED â€” REQUIRES A SEPARATE
-EXECUTION AUTHORIZATION**. This document plans only; it runs no test, builds no
+Date: 2026-10-25 (Asia/Manila). Status: **RC2A-02A ACCEPTED WITH QUALIFICATIONS;
+RC2A-02B NOT STARTED, REQUIRES SEPARATE AUTHORIZATION; FULL RC2A-02 NOT YET
+ACCEPTED** â€” see Â§9 for execution status, the open Q2A-S / RC-D04 obligation and
+the RC2A-02B entry-condition checklist. The original specification below is
+preserved unchanged. This document plans only; it runs no test, builds no
 package and changes no production or test source.
 
 Governing inputs, all verified in the canonical Gagamba repository:
@@ -467,3 +470,71 @@ behavior, does not relax the decoder contract, and affects no other row. Evidenc
 `docs/evidence/restricted-consumer-contract-rc2a-02a-windows/findings.md`
 (Q2A02A-F01), `exports/flip-sweep-survivors.json` and the preserved first failing
 run under `runs/failed-attempts/`.
+
+## 9. Execution status and owner acceptance (2026-10-25)
+
+**RC2A-02A (Windows managed-code contract qualification): ACCEPTED WITH
+QUALIFICATIONS.**
+
+- Owner decision:
+  [RC2A-02A owner acceptance](../decisions/restricted-consumer-contract-rc2a-02a-owner-acceptance.md).
+- Qualified implementation: test source
+  `71a28afe2623516fb4176e6a4ce7988a3d70df06` (tree
+  `70b932148cbfa59b0e424229879eebd36df2d80c`); evidence
+  `c1a01761f8d58136a381ad87269635c6c14ad093` (documentation-only). Production
+  `src` and `native` subtrees remain the accepted RC2A-01 identities.
+- Independent review `RC2A-02A-GLM-Q1` at
+  `7b6344551c2d4b42832df39822eaf4b8a1c01495` (preserved on
+  `review/gagamba-rc2a-02a-glm-q1`, unmerged): verdict **SUPPORTED WITH
+  QUALIFICATIONS**, no confirmed production or qualification defect.
+- P3 dispositions: F02 (native-filter wording) **ACCEPT, DOCUMENTATION
+  FOLLOW-UP**; F03 (two large vectors digest-bound only) **ACCEPT AS
+  DISCLOSED**; F04 (Q2A-S / RC-D04 deferred) **ACCEPT, DEFERRED
+  QUALIFICATION**. Details and provenance are in the owner decision §6.
+- Q2A02A-F01 is accepted as a **correct plan correction** (§8 above): the
+  corrected invariant is canonical rigidity plus immutable-region containment;
+  canonical representation is production-enforced and distinct from authority or
+  sandbox enforcement.
+
+**Q2A-S / RC-D04: OPEN.** The public surface/misuse family (Q2A-S) and the
+RC-D04 passive-reference rows plus the R1-F04 negative temporal-surface check
+were not executed in RC2A-02A; the executed traceability matrix in the RC2A-02A
+evidence discloses the deferral. The plan's execution sections (A vectors, B
+mutations, C boundaries, D portability, E evidence, F review) do not assign
+Q2A-S to RC2A-02B, which is portability. Q2A-S / RC-D04 therefore remains an
+**OPEN obligation of full RC2A-02 acceptance**, to be assigned by the owner to a
+future qualification stage. It must be completed, or receive a separate explicit
+owner disposition, before full RC2A-02 acceptance.
+
+**RC2A-02B (portability qualification): NOT STARTED — REQUIRES SEPARATE OWNER
+AUTHORIZATION.**
+
+**Full RC2A-02: NOT YET ACCEPTED.**
+
+### 9.1 RC2A-02B entry-condition checklist (preparation only; not an authorization)
+
+1. A separate, explicit owner authorization for RC2A-02B exists. This checklist
+   and this document are not that authorization.
+2. A dedicated branch/worktree is created from the accepted RC2A-02A evidence
+   tip `c1a01761f8d58136a381ad87269635c6c14ad093` (or a later accepted tip
+   designated by the owner), with the start `src`/`tests`/`native` identities
+   recorded and the worktree clean.
+3. The Q2A-S / RC-D04 disposition is confirmed for this stage, either by an
+   explicit owner assignment or by a separate deferred-stage decision; it is
+   not silently absorbed.
+4. Host availability is established per declared platform. Windows is the
+   primary platform; Linux/macOS runs require real native hosts, and any WSL2
+   run is labeled `wsl2` and never reported as native Linux (§3 P2).
+5. The §3 P1 run definitions are executed with full provenance capture: exact
+   command, exit code, TRX, log, artifact SHA-256, OS name/version,
+   architecture, .NET SDK/runtime, test-framework versions.
+6. Every declared platform produces separate evidence under
+   `artifacts/rc2a-02/<platform>/` with a per-platform summary (§3 P3); a
+   platform not run is recorded as "not run" with the reason and is neither a
+   pass nor a failure.
+7. §3 P4 scope boundaries are maintained: pure managed-code portability only;
+   no native confinement, cgroup, sandbox, package or deployment claim.
+8. The specific R2A-A01 / RC2A-02A-qualified assertions are re-executed on each
+   declared platform, not merely inferred from the Windows run.
+9. After execution, the §3 F1/F2 independent-review exit is performed for the
+   RC2A-02B evidence, and its disposition is preserved without rewriting.

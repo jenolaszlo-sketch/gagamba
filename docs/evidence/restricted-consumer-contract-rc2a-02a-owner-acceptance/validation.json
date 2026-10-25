@@ -1,0 +1,152 @@
+{
+  "recordDate": "2026-10-25 (Asia/Manila)",
+  "checkedAtUtc": "2026-10-25T08:20:00Z",
+  "scope": "static documentation and Git/byte-identity validation for the RC2A-02A owner acceptance; no build, no test, no pack, no native qualification, no RC2A-02B work",
+  "commands": [
+    "git cat-file -p 7b6344551c2d4b42832df39822eaf4b8a1c01495",
+    "git show -s --format='%H %T %P' 7b6344551c2d4b42832df39822eaf4b8a1c01495",
+    "git status --porcelain (review worktree)",
+    "git ls-tree 7b63445 docs/reviews/ docs/reviews/restricted-consumer-contract-rc2a-02a-glm-q1-evidence/ review/",
+    "git rev-parse 7b63445:docs/reviews/restricted-consumer-contract-rc2a-02a-glm-q1.md",
+    "git cat-file blob <review report blob> (binary extraction; SHA-256 over exact blob bytes)",
+    "git cat-file blob <probe-output blob>; git cat-file blob <reproduction-record blob> (binary extraction; SHA-256 over exact blob bytes)",
+    "git rev-parse c1a01761:src c1a01761:tests c1a01761:native",
+    "git worktree add ... -b decisions/gagamba-rc2a-02a-owner-acceptance c1a01761f8d58136a381ad87269635c6c14ad093",
+    "git diff --name-status (decision worktree vs c1a01761)",
+    "git diff --name-status -- src tests native",
+    "relative-link resolution scan over the changed documents",
+    "Select-String disposition and deferred-obligation presence checks",
+    "LF-normalized SHA-256 computation over each changed document (CRLF->LF, UTF-8)"
+  ],
+  "checks": [
+    {
+      "check": "review commit identity and ancestry",
+      "passed": true,
+      "detail": "review commit 7b6344551c2d4b42832df39822eaf4b8a1c01495 has root tree 6c75b4ddfd233f6e94f079b12c1a253198a4c7e2 and direct parent c1a01761f8d58136a381ad87269635c6c14ad093; matches the owner-stated review tree prefix 6c75b4dd"
+    },
+    {
+      "check": "review worktree clean and independent",
+      "passed": true,
+      "detail": "git status --porcelain empty in Solo\\gagamba-rc2a-02a-glm-q1-review; branch review/gagamba-rc2a-02a-glm-q1 is not merged into the decision branch and was not modified by this record"
+    },
+    {
+      "check": "review report exists and is bound",
+      "passed": true,
+      "detail": "docs/reviews/restricted-consumer-contract-rc2a-02a-glm-q1.md; blob 475af1fb1cd9d849e68fbbeede071a8631d620df; exact byte SHA-256 a69b4db573a67f8f93e038eb26223a891f5f60c96eadcdcf273f8127b62ca80d; 30,224 bytes"
+    },
+    {
+      "check": "review supporting evidence exists and is bound",
+      "passed": true,
+      "detail": "directory tree 94d9211d9b11ca9c9ac9e94a5e699c54718f00e2; probe-output.txt blob 41e1b7c0db3e8e706207aec7d5fce365d920fce5 SHA-256 164c40bb1bf61bf6da19468205395a9cf702fc98f1b82da1744f002f9d1e29e3 (21,632 bytes); reproduction-record.md blob 9995e066d03f0a1dae61e92ce7dd31d2b0dddef6 SHA-256 b16d596b593bfd010fefb170e50033ac0a1a97be4c5016b9ef80be22e6651bbf (4,251 bytes)"
+    },
+    {
+      "check": "review report content: verdict and findings",
+      "passed": true,
+      "detail": "report contains the verdict SUPPORTED WITH QUALIFICATIONS, findings RC2A02A-GLM-F01..F05, the three P3 qualifications F02/F03/F04, and RC2A02A-GLM-F05 stating no confirmed production defect"
+    },
+    {
+      "check": "no confirmed production or qualification defects reported",
+      "passed": true,
+      "detail": "review verdict text and finding F05 confirm no confirmed production defect; the three findings are P3 test-wording/evidence-limitation/deferred-qualification items"
+    },
+    {
+      "check": "decision branch created from required parent",
+      "passed": true,
+      "detail": "decisions/gagamba-rc2a-02a-owner-acceptance was created at c1a01761f8d58136a381ad87269635c6c14ad093; the acceptance-record commit will have that commit as its direct parent"
+    },
+    {
+      "check": "accepted qualification source and evidence identities",
+      "passed": true,
+      "detail": "test source 71a28afe2623516fb4176e6a4ce7988a3d70df06 / tree 70b932148cbfa59b0e424229879eebd36df2d80c; evidence c1a01761f8d58136a381ad87269635c6c14ad093 / tree 8c51c3c2e06e6544f3ad0e8aceabfed8457d8c19; evidence parent = tested source; evidence diff is documentation-only"
+    },
+    {
+      "check": "production and native trees unchanged",
+      "passed": true,
+      "detail": "src b8c167e3d7340a562221591bdc2b6df7adb372d1 and native 85631d2f04512376621d3d09f51d67fd90f45335 equal the accepted RC2A-01 identities; tests tree at the tested source is 5c3268286575cb55891fae9288627657f2d30ddf"
+    },
+    {
+      "check": "documentation-only change set",
+      "passed": true,
+      "detail": "git status/diff show only docs/decisions/restricted-consumer-contract-rc2a-02a-owner-acceptance.md, docs/evidence/restricted-consumer-contract-rc2a-02a-owner-acceptance/**, docs/plans/restricted-consumer-contract-rc2a-02-qualification.md, docs/plans/restricted-consumer-contract-implementation.md, docs/work-queue.md, docs/handoff.md; git diff --name-status -- src tests native is empty"
+    },
+    {
+      "check": "all three P3 findings have explicit dispositions",
+      "passed": true,
+      "detail": "owner decision section 6: F02 ACCEPT, DOCUMENTATION FOLLOW-UP; F03 ACCEPT AS DISCLOSED; F04 ACCEPT, DEFERRED QUALIFICATION; each with source reference, severity, decision, follow-up and remaining uncertainty"
+    },
+    {
+      "check": "F02 wording provenance retained",
+      "passed": true,
+      "detail": "owner decision quotes the original finding wording and states the clarification (two filter-matched classes execute and pass; 41 skips from three classes); historical evidence and the independent review were not edited; recorded counts unchanged"
+    },
+    {
+      "check": "F03 reconstruction verification recorded",
+      "passed": true,
+      "detail": "materialization of all 23 vectors is demonstrated by the committed recipes plus the reproduced required-set suite (457/457/0 twice; review record); the absence of a standalone committed byte export for Q2A-V-19/V-20 is recorded as a limitation"
+    },
+    {
+      "check": "F04 scope verified from the committed specification",
+      "passed": true,
+      "detail": "qualification plan section 3 defines Q2A-S (public surface/misuse) and section 4 maps RC-D04 and R1-F04 to Q2A-S; no execution section assigns Q2A-S to RC2A-02B (portability); recorded OPEN for full RC2A-02 acceptance with owner-designated stage"
+    },
+    {
+      "check": "deferred obligations remain visible",
+      "passed": true,
+      "detail": "owner decision section 8 and updated tracking list Q2A-S/RC-D04 OPEN, RC2A-02B NOT STARTED, RC2A-03/04 pending, R1-F02/F03 OPEN for RC-2B, R1-F06 HUFU-R recheck, AE4-B01 OPEN, Hufu resumption not authorized, publication not authorized, native sandbox qualification not performed, C1-R/C3-I/C4-I/M1-G3/M1-G4G5/RC2B-01..03/RC2B-R/HUFU-D4B unchanged"
+    },
+    {
+      "check": "RC2A-02B entry-condition checklist recorded",
+      "passed": true,
+      "detail": "qualification plan section 9.1 records the preparation-only checklist (separate authorization, accepted tip, Q2A-S disposition, native host availability, P1 run definitions with provenance, P2 labeling, P3 separate evidence, P4 scope boundaries, per-platform re-execution, independent review)"
+    },
+    {
+      "check": "relative links resolve",
+      "passed": true,
+      "detail": "0 broken relative links across the changed documents"
+    },
+    {
+      "check": "no new execution claimed",
+      "passed": true,
+      "detail": "this record performed documentation and Git/byte checks only; all cited test counts are the independent review's recorded reproduction; no build, test, pack or native workload was run"
+    },
+    {
+      "check": "document digest manifest binds changed documents",
+      "passed": true,
+      "detail": "document-sha256.json lists LF-normalized SHA-256 for the decision, evidence README, owner instruction, source binding, validation record, qualification plan, implementation plan, work queue and handoff; it excludes itself and is bound by the final commit/tree"
+    },
+    {
+      "check": "post-commit verification planned and executed after commit",
+      "passed": true,
+      "detail": "after commit: decision commit direct parent = c1a01761f8d58136a381ad87269635c6c14ad093; committed blobs re-hashed over LF-normalized bytes match document-sha256.json; review branch still independent; all worktrees clean; results recorded in the completion report"
+    }
+  ],
+  "allPassed": true,
+  "changedPaths": [
+    "docs/decisions/restricted-consumer-contract-rc2a-02a-owner-acceptance.md",
+    "docs/evidence/restricted-consumer-contract-rc2a-02a-owner-acceptance/README.md",
+    "docs/evidence/restricted-consumer-contract-rc2a-02a-owner-acceptance/owner-instruction.md",
+    "docs/evidence/restricted-consumer-contract-rc2a-02a-owner-acceptance/source-binding.json",
+    "docs/evidence/restricted-consumer-contract-rc2a-02a-owner-acceptance/validation.json",
+    "docs/evidence/restricted-consumer-contract-rc2a-02a-owner-acceptance/document-sha256.json",
+    "docs/plans/restricted-consumer-contract-rc2a-02-qualification.md",
+    "docs/plans/restricted-consumer-contract-implementation.md",
+    "docs/work-queue.md",
+    "docs/handoff.md"
+  ],
+  "decisionCommit": "documentation-only commit on decisions/gagamba-rc2a-02a-owner-acceptance; final commit/tree recorded in the completion report to avoid self-reference",
+  "acceptedQualification": {
+    "testedSource": "71a28afe2623516fb4176e6a4ce7988a3d70df06",
+    "evidence": "c1a01761f8d58136a381ad87269635c6c14ad093"
+  },
+  "preservedReview": {
+    "commit": "7b6344551c2d4b42832df39822eaf4b8a1c01495",
+    "tree": "6c75b4ddfd233f6e94f079b12c1a253198a4c7e2",
+    "reportBlob": "475af1fb1cd9d849e68fbbeede071a8631d620df",
+    "reportSha256": "a69b4db573a67f8f93e038eb26223a891f5f60c96eadcdcf273f8127b62ca80d",
+    "verdict": "SUPPORTED WITH QUALIFICATIONS"
+  },
+  "buildTestPackNative": "not run",
+  "rc2a02bExecution": "not authorized by this record",
+  "fullRc2a02": "NOT YET ACCEPTED",
+  "q2asRcd04": "OPEN"
+}
