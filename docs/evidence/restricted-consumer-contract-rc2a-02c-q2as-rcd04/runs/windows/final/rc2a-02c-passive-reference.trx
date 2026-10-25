@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="25eb75f8-5c31-404b-91d8-bc78bf55bd7e" name="Laszlos@LAPTOP-KBD8D8JG 2026-10-25 21:36:41" runUser="LAPTOP-KBD8D8JG\Laszlos" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-25T21:36:41.4346063+08:00" queuing="2026-10-25T21:36:41.4346065+08:00" start="2026-10-25T21:36:39.7752540+08:00" finish="2026-10-25T21:36:41.4398400+08:00" />
+  <TestSettings name="default" id="8c00545f-b055-4e46-8dec-a35c88624516">
+    <Deployment runDeploymentRoot="Laszlos_LAPTOP-KBD8D8JG_2026-10-25_21_36_41" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="34bae06f-9c8c-4969-854d-db981f9bfa1e" testId="b4995bcd-665b-7c5d-6d81-a51ab70db4f1" testName="Gagamba.Execution.Tests.Restricted.RestrictedContractTests.PassiveReferenceCopiesAndComparesContents" computerName="LAPTOP-KBD8D8JG" duration="00:00:00.0026641" startTime="2026-10-25T21:36:41.3019698+08:00" endTime="2026-10-25T21:36:41.3046727+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="34bae06f-9c8c-4969-854d-db981f9bfa1e" />
+    <UnitTestResult executionId="c777db4a-c63f-4aa7-82bc-2a4370105e7c" testId="3547ab19-ba14-243f-8f69-b453eba02738" testName="Gagamba.Execution.Tests.Restricted.RestrictedContractTests.PublicSurfaceIsSealedReadOnlyAndPassive" computerName="LAPTOP-KBD8D8JG" duration="00:00:00.0524142" startTime="2026-10-25T21:36:41.2491129+08:00" endTime="2026-10-25T21:36:41.3016129+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c777db4a-c63f-4aa7-82bc-2a4370105e7c" />
+    <UnitTestResult executionId="0f9fd316-4b12-4a3e-89e1-6599733ffc50" testId="0b61b008-9366-503f-cee4-7d060f006d20" testName="Gagamba.Execution.Tests.Restricted.RestrictedContractTests.PassiveReferenceRejectsInvalidInputsByParameterName" computerName="LAPTOP-KBD8D8JG" duration="00:00:00.0196918" startTime="2026-10-25T21:36:41.2169330+08:00" endTime="2026-10-25T21:36:41.2437970+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0f9fd316-4b12-4a3e-89e1-6599733ffc50" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Gagamba.Execution.Tests.Restricted.RestrictedContractTests.PassiveReferenceRejectsInvalidInputsByParameterName" storage="c:\users\laszlos\source\repos\solo\rc2a-02c\tests\gagamba.execution.tests\bin\release\net10.0\gagamba.execution.tests.dll" id="0b61b008-9366-503f-cee4-7d060f006d20">
+      <Execution id="0f9fd316-4b12-4a3e-89e1-6599733ffc50" />
+      <TestMethod codeBase="C:\Users\Laszlos\source\repos\Solo\rc2a-02c\tests\Gagamba.Execution.Tests\bin\Release\net10.0\Gagamba.Execution.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Gagamba.Execution.Tests.Restricted.RestrictedContractTests" name="PassiveReferenceRejectsInvalidInputsByParameterName" />
+    </UnitTest>
+    <UnitTest name="Gagamba.Execution.Tests.Restricted.RestrictedContractTests.PublicSurfaceIsSealedReadOnlyAndPassive" storage="c:\users\laszlos\source\repos\solo\rc2a-02c\tests\gagamba.execution.tests\bin\release\net10.0\gagamba.execution.tests.dll" id="3547ab19-ba14-243f-8f69-b453eba02738">
+      <Execution id="c777db4a-c63f-4aa7-82bc-2a4370105e7c" />
+      <TestMethod codeBase="C:\Users\Laszlos\source\repos\Solo\rc2a-02c\tests\Gagamba.Execution.Tests\bin\Release\net10.0\Gagamba.Execution.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Gagamba.Execution.Tests.Restricted.RestrictedContractTests" name="PublicSurfaceIsSealedReadOnlyAndPassive" />
+    </UnitTest>
+    <UnitTest name="Gagamba.Execution.Tests.Restricted.RestrictedContractTests.PassiveReferenceCopiesAndComparesContents" storage="c:\users\laszlos\source\repos\solo\rc2a-02c\tests\gagamba.execution.tests\bin\release\net10.0\gagamba.execution.tests.dll" id="b4995bcd-665b-7c5d-6d81-a51ab70db4f1">
+      <Execution id="34bae06f-9c8c-4969-854d-db981f9bfa1e" />
+      <TestMethod codeBase="C:\Users\Laszlos\source\repos\Solo\rc2a-02c\tests\Gagamba.Execution.Tests\bin\Release\net10.0\Gagamba.Execution.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Gagamba.Execution.Tests.Restricted.RestrictedContractTests" name="PassiveReferenceCopiesAndComparesContents" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="b4995bcd-665b-7c5d-6d81-a51ab70db4f1" executionId="34bae06f-9c8c-4969-854d-db981f9bfa1e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3547ab19-ba14-243f-8f69-b453eba02738" executionId="c777db4a-c63f-4aa7-82bc-2a4370105e7c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0b61b008-9366-503f-cee4-7d060f006d20" executionId="0f9fd316-4b12-4a3e-89e1-6599733ffc50" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="3" executed="3" passed="3" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>Logging TestHost Diagnostics in file: C:\Users\Laszlos\source\repos\Solo\rc2a-02c\docs\evidence\restricted-consumer-contract-rc2a-02c-q2as-rcd04\runs\windows\final\vstest-diag.host.26-10-25_21-36-39_80506_5.log&#xD;
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.12)&#xD;
+[xUnit.net 00:00:00.33]   Discovering: Gagamba.Execution.Tests&#xD;
+[xUnit.net 00:00:00.59]   Discovered:  Gagamba.Execution.Tests&#xD;
+[xUnit.net 00:00:00.78]   Starting:    Gagamba.Execution.Tests&#xD;
+[xUnit.net 00:00:00.93]   Finished:    Gagamba.Execution.Tests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

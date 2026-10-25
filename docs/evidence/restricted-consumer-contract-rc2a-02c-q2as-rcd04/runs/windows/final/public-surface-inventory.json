@@ -1,0 +1,904 @@
+{
+  "assembly": "Gagamba.Execution",
+  "contractNamespace": "Gagamba.Execution.Restricted.Contracts",
+  "exportedTypes": [
+    {
+      "fullName": "Gagamba.Execution.Restricted.Contracts.AuthorityManifestView",
+      "kind": "class",
+      "isSealed": true,
+      "interfaces": [],
+      "constructors": [],
+      "properties": [
+        {
+          "name": "Capabilities",
+          "type": "System.Collections.Immutable.ImmutableArray\u003CSystem.String\u003E",
+          "getter": "System.Collections.Immutable.ImmutableArray\u003CSystem.String\u003E get_Capabilities()",
+          "setter": null
+        },
+        {
+          "name": "FilterLength",
+          "type": "System.UInt64",
+          "getter": "System.UInt64 get_FilterLength()",
+          "setter": null
+        },
+        {
+          "name": "FilterSha256",
+          "type": "System.Collections.Immutable.ImmutableArray\u003CSystem.Byte\u003E",
+          "getter": "System.Collections.Immutable.ImmutableArray\u003CSystem.Byte\u003E get_FilterSha256()",
+          "setter": null
+        },
+        {
+          "name": "MountPolicy",
+          "type": "Gagamba.Execution.Restricted.Contracts.ExecutableMountPolicyView",
+          "getter": "Gagamba.Execution.Restricted.Contracts.ExecutableMountPolicyView get_MountPolicy()",
+          "setter": null
+        },
+        {
+          "name": "Namespaces",
+          "type": "System.Collections.Immutable.ImmutableArray\u003CSystem.String\u003E",
+          "getter": "System.Collections.Immutable.ImmutableArray\u003CSystem.String\u003E get_Namespaces()",
+          "setter": null
+        },
+        {
+          "name": "NetworkQualification",
+          "type": "Gagamba.Execution.Restricted.Contracts.QualificationDisposition",
+          "getter": "Gagamba.Execution.Restricted.Contracts.QualificationDisposition get_NetworkQualification()",
+          "setter": null
+        },
+        {
+          "name": "NoAmbientEnvironment",
+          "type": "System.Boolean",
+          "getter": "System.Boolean get_NoAmbientEnvironment()",
+          "setter": null
+        },
+        {
+          "name": "NoExtraInheritedFds",
+          "type": "System.Boolean",
+          "getter": "System.Boolean get_NoExtraInheritedFds()",
+          "setter": null
+        },
+        {
+          "name": "NoIpcEndpoints",
+          "type": "System.Boolean",
+          "getter": "System.Boolean get_NoIpcEndpoints()",
+          "setter": null
+        },
+        {
+          "name": "NoNewPrivs",
+          "type": "System.Boolean",
+          "getter": "System.Boolean get_NoNewPrivs()",
+          "setter": null
+        },
+        {
+          "name": "ReadOnlyDestinations",
+          "type": "System.Collections.Immutable.ImmutableArray\u003CSystem.String\u003E",
+          "getter": "System.Collections.Immutable.ImmutableArray\u003CSystem.String\u003E get_ReadOnlyDestinations()",
+          "setter": null
+        },
+        {
+          "name": "WritableStores",
+          "type": "System.Collections.Immutable.ImmutableArray\u003CGagamba.Execution.Restricted.Contracts.WritableStoreView\u003E",
+          "getter": "System.Collections.Immutable.ImmutableArray\u003CGagamba.Execution.Restricted.Contracts.WritableStoreView\u003E get_WritableStores()",
+          "setter": null
+        }
+      ],
+      "declaredMethods": [
+        "Gagamba.Execution.Restricted.Contracts.ExecutableMountPolicyView get_MountPolicy()",
+        "Gagamba.Execution.Restricted.Contracts.QualificationDisposition get_NetworkQualification()",
+        "System.Boolean get_NoAmbientEnvironment()",
+        "System.Boolean get_NoExtraInheritedFds()",
+        "System.Boolean get_NoIpcEndpoints()",
+        "System.Boolean get_NoNewPrivs()",
+        "System.Collections.Immutable.ImmutableArray\u003CGagamba.Execution.Restricted.Contracts.WritableStoreView\u003E get_WritableStores()",
+        "System.Collections.Immutable.ImmutableArray\u003CSystem.Byte\u003E get_FilterSha256()",
+        "System.Collections.Immutable.ImmutableArray\u003CSystem.String\u003E get_Capabilities()",
+        "System.Collections.Immutable.ImmutableArray\u003CSystem.String\u003E get_Namespaces()",
+        "System.Collections.Immutable.ImmutableArray\u003CSystem.String\u003E get_ReadOnlyDestinations()",
+        "System.UInt64 get_FilterLength()"
+      ],
+      "operators": [],
+      "events": [],
+      "nestedTypes": [
+        "Gagamba.Execution.Restricted.Contracts.AuthorityManifestView\u002B\u003C\u003Ec"
+      ],
+      "publicFields": []
+    },
+    {
+      "fullName": "Gagamba.Execution.Restricted.Contracts.BudgetValueKind",
+      "kind": "enum",
+      "isSealed": true,
+      "interfaces": [
+        "System.IComparable",
+        "System.IConvertible",
+        "System.IFormattable",
+        "System.ISpanFormattable"
+      ],
+      "constructors": [],
+      "properties": [],
+      "declaredMethods": [],
+      "operators": [],
+      "events": [],
+      "nestedTypes": [],
+      "publicFields": [
+        "Gagamba.Execution.Restricted.Contracts.BudgetValueKind Absent",
+        "Gagamba.Execution.Restricted.Contracts.BudgetValueKind Exact",
+        "Gagamba.Execution.Restricted.Contracts.BudgetValueKind Unlimited",
+        "System.Byte value__"
+      ]
+    },
+    {
+      "fullName": "Gagamba.Execution.Restricted.Contracts.ChannelManifestView",
+      "kind": "class",
+      "isSealed": true,
+      "interfaces": [],
+      "constructors": [],
+      "properties": [
+        {
+          "name": "AggregateLimitBytes",
+          "type": "System.UInt64",
+          "getter": "System.UInt64 get_AggregateLimitBytes()",
+          "setter": null
+        },
+        {
+          "name": "StderrLimitBytes",
+          "type": "System.UInt64",
+          "getter": "System.UInt64 get_StderrLimitBytes()",
+          "setter": null
+        },
+        {
+          "name": "StdinEof",
+          "type": "System.Boolean",
+          "getter": "System.Boolean get_StdinEof()",
+          "setter": null
+        },
+        {
+          "name": "StdoutLimitBytes",
+          "type": "System.UInt64",
+          "getter": "System.UInt64 get_StdoutLimitBytes()",
+          "setter": null
+        }
+      ],
+      "declaredMethods": [
+        "System.Boolean get_StdinEof()",
+        "System.UInt64 get_AggregateLimitBytes()",
+        "System.UInt64 get_StderrLimitBytes()",
+        "System.UInt64 get_StdoutLimitBytes()"
+      ],
+      "operators": [],
+      "events": [],
+      "nestedTypes": [],
+      "publicFields": []
+    },
+    {
+      "fullName": "Gagamba.Execution.Restricted.Contracts.ClosureIdentityView",
+      "kind": "class",
+      "isSealed": true,
+      "interfaces": [],
+      "constructors": [],
+      "properties": [
+        {
+          "name": "HelperDependencies",
+          "type": "System.Collections.Immutable.ImmutableArray\u003CSystem.String\u003E",
+          "getter": "System.Collections.Immutable.ImmutableArray\u003CSystem.String\u003E get_HelperDependencies()",
+          "setter": null
+        },
+        {
+          "name": "Objects",
+          "type": "System.Collections.Immutable.ImmutableArray\u003CGagamba.Execution.Restricted.Contracts.ClosureObjectView\u003E",
+          "getter": "System.Collections.Immutable.ImmutableArray\u003CGagamba.Execution.Restricted.Contracts.ClosureObjectView\u003E get_Objects()",
+          "setter": null
+        }
+      ],
+      "declaredMethods": [
+        "System.Collections.Immutable.ImmutableArray\u003CGagamba.Execution.Restricted.Contracts.ClosureObjectView\u003E get_Objects()",
+        "System.Collections.Immutable.ImmutableArray\u003CSystem.String\u003E get_HelperDependencies()"
+      ],
+      "operators": [],
+      "events": [],
+      "nestedTypes": [
+        "Gagamba.Execution.Restricted.Contracts.ClosureIdentityView\u002B\u003C\u003Ec"
+      ],
+      "publicFields": []
+    },
+    {
+      "fullName": "Gagamba.Execution.Restricted.Contracts.ClosureObjectView",
+      "kind": "class",
+      "isSealed": true,
+      "interfaces": [],
+      "constructors": [],
+      "properties": [
+        {
+          "name": "BuildIdentity",
+          "type": "System.String",
+          "getter": "System.String get_BuildIdentity()",
+          "setter": null
+        },
+        {
+          "name": "Destination",
+          "type": "System.String",
+          "getter": "System.String get_Destination()",
+          "setter": null
+        },
+        {
+          "name": "Length",
+          "type": "System.UInt64",
+          "getter": "System.UInt64 get_Length()",
+          "setter": null
+        },
+        {
+          "name": "Role",
+          "type": "System.String",
+          "getter": "System.String get_Role()",
+          "setter": null
+        },
+        {
+          "name": "Sha256",
+          "type": "System.Collections.Immutable.ImmutableArray\u003CSystem.Byte\u003E",
+          "getter": "System.Collections.Immutable.ImmutableArray\u003CSystem.Byte\u003E get_Sha256()",
+          "setter": null
+        }
+      ],
+      "declaredMethods": [
+        "System.Collections.Immutable.ImmutableArray\u003CSystem.Byte\u003E get_Sha256()",
+        "System.String get_BuildIdentity()",
+        "System.String get_Destination()",
+        "System.String get_Role()",
+        "System.UInt64 get_Length()"
+      ],
+      "operators": [],
+      "events": [],
+      "nestedTypes": [],
+      "publicFields": []
+    },
+    {
+      "fullName": "Gagamba.Execution.Restricted.Contracts.CoreDumpPolicyView",
+      "kind": "class",
+      "isSealed": true,
+      "interfaces": [],
+      "constructors": [],
+      "properties": [
+        {
+          "name": "CoreDisabled",
+          "type": "System.Boolean",
+          "getter": "System.Boolean get_CoreDisabled()",
+          "setter": null
+        },
+        {
+          "name": "CorePatternObserved",
+          "type": "System.String",
+          "getter": "System.String get_CorePatternObserved()",
+          "setter": null
+        },
+        {
+          "name": "RuntimeDumpsDisabled",
+          "type": "System.Boolean",
+          "getter": "System.Boolean get_RuntimeDumpsDisabled()",
+          "setter": null
+        }
+      ],
+      "declaredMethods": [
+        "System.Boolean get_CoreDisabled()",
+        "System.Boolean get_RuntimeDumpsDisabled()",
+        "System.String get_CorePatternObserved()"
+      ],
+      "operators": [],
+      "events": [],
+      "nestedTypes": [],
+      "publicFields": []
+    },
+    {
+      "fullName": "Gagamba.Execution.Restricted.Contracts.ExecutableMountPolicyView",
+      "kind": "class",
+      "isSealed": true,
+      "interfaces": [],
+      "constructors": [],
+      "properties": [
+        {
+          "name": "ScratchNoexec",
+          "type": "System.Boolean",
+          "getter": "System.Boolean get_ScratchNoexec()",
+          "setter": null
+        },
+        {
+          "name": "ToolExecutable",
+          "type": "System.Boolean",
+          "getter": "System.Boolean get_ToolExecutable()",
+          "setter": null
+        }
+      ],
+      "declaredMethods": [
+        "System.Boolean get_ScratchNoexec()",
+        "System.Boolean get_ToolExecutable()"
+      ],
+      "operators": [],
+      "events": [],
+      "nestedTypes": [],
+      "publicFields": []
+    },
+    {
+      "fullName": "Gagamba.Execution.Restricted.Contracts.InvocationManifestView",
+      "kind": "class",
+      "isSealed": true,
+      "interfaces": [],
+      "constructors": [],
+      "properties": [
+        {
+          "name": "Argv",
+          "type": "System.Collections.Immutable.ImmutableArray\u003CSystem.String\u003E",
+          "getter": "System.Collections.Immutable.ImmutableArray\u003CSystem.String\u003E get_Argv()",
+          "setter": null
+        },
+        {
+          "name": "Environment",
+          "type": "System.Collections.Immutable.ImmutableArray\u003CSystem.Collections.Generic.KeyValuePair\u003CSystem.String, System.String\u003E\u003E",
+          "getter": "System.Collections.Immutable.ImmutableArray\u003CSystem.Collections.Generic.KeyValuePair\u003CSystem.String, System.String\u003E\u003E get_Environment()",
+          "setter": null
+        },
+        {
+          "name": "InputPath",
+          "type": "System.String",
+          "getter": "System.String get_InputPath()",
+          "setter": null
+        },
+        {
+          "name": "Mode",
+          "type": "System.String",
+          "getter": "System.String get_Mode()",
+          "setter": null
+        },
+        {
+          "name": "ToolPath",
+          "type": "System.String",
+          "getter": "System.String get_ToolPath()",
+          "setter": null
+        },
+        {
+          "name": "WorkDirectory",
+          "type": "System.String",
+          "getter": "System.String get_WorkDirectory()",
+          "setter": null
+        }
+      ],
+      "declaredMethods": [
+        "System.Collections.Immutable.ImmutableArray\u003CSystem.Collections.Generic.KeyValuePair\u003CSystem.String, System.String\u003E\u003E get_Environment()",
+        "System.Collections.Immutable.ImmutableArray\u003CSystem.String\u003E get_Argv()",
+        "System.String get_InputPath()",
+        "System.String get_Mode()",
+        "System.String get_ToolPath()",
+        "System.String get_WorkDirectory()"
+      ],
+      "operators": [],
+      "events": [],
+      "nestedTypes": [],
+      "publicFields": []
+    },
+    {
+      "fullName": "Gagamba.Execution.Restricted.Contracts.ManifestDecodeError",
+      "kind": "enum",
+      "isSealed": true,
+      "interfaces": [
+        "System.IComparable",
+        "System.IConvertible",
+        "System.IFormattable",
+        "System.ISpanFormattable"
+      ],
+      "constructors": [],
+      "properties": [],
+      "declaredMethods": [],
+      "operators": [],
+      "events": [],
+      "nestedTypes": [],
+      "publicFields": [
+        "Gagamba.Execution.Restricted.Contracts.ManifestDecodeError Duplicate",
+        "Gagamba.Execution.Restricted.Contracts.ManifestDecodeError EmptyInput",
+        "Gagamba.Execution.Restricted.Contracts.ManifestDecodeError InputTooLarge",
+        "Gagamba.Execution.Restricted.Contracts.ManifestDecodeError InvalidLengthOrCount",
+        "Gagamba.Execution.Restricted.Contracts.ManifestDecodeError InvalidTag",
+        "Gagamba.Execution.Restricted.Contracts.ManifestDecodeError InvalidUtf8",
+        "Gagamba.Execution.Restricted.Contracts.ManifestDecodeError InvalidValue",
+        "Gagamba.Execution.Restricted.Contracts.ManifestDecodeError NonCanonicalOrder",
+        "Gagamba.Execution.Restricted.Contracts.ManifestDecodeError TrailingData",
+        "Gagamba.Execution.Restricted.Contracts.ManifestDecodeError Truncated",
+        "Gagamba.Execution.Restricted.Contracts.ManifestDecodeError UnsupportedImplementation",
+        "Gagamba.Execution.Restricted.Contracts.ManifestDecodeError UnsupportedSchema",
+        "System.Int32 value__"
+      ]
+    },
+    {
+      "fullName": "Gagamba.Execution.Restricted.Contracts.ManifestDecodeResult",
+      "kind": "class",
+      "isSealed": true,
+      "interfaces": [],
+      "constructors": [],
+      "properties": [
+        {
+          "name": "Error",
+          "type": "System.Nullable\u003CGagamba.Execution.Restricted.Contracts.ManifestDecodeError\u003E",
+          "getter": "System.Nullable\u003CGagamba.Execution.Restricted.Contracts.ManifestDecodeError\u003E get_Error()",
+          "setter": null
+        },
+        {
+          "name": "Offset",
+          "type": "System.Nullable\u003CSystem.Int32\u003E",
+          "getter": "System.Nullable\u003CSystem.Int32\u003E get_Offset()",
+          "setter": null
+        },
+        {
+          "name": "Value",
+          "type": "Gagamba.Execution.Restricted.Contracts.RestrictedManifestView",
+          "getter": "Gagamba.Execution.Restricted.Contracts.RestrictedManifestView get_Value()",
+          "setter": null
+        }
+      ],
+      "declaredMethods": [
+        "Gagamba.Execution.Restricted.Contracts.RestrictedManifestView get_Value()",
+        "System.Nullable\u003CGagamba.Execution.Restricted.Contracts.ManifestDecodeError\u003E get_Error()",
+        "System.Nullable\u003CSystem.Int32\u003E get_Offset()"
+      ],
+      "operators": [],
+      "events": [],
+      "nestedTypes": [],
+      "publicFields": []
+    },
+    {
+      "fullName": "Gagamba.Execution.Restricted.Contracts.OwnerAllocationLimitsView",
+      "kind": "class",
+      "isSealed": true,
+      "interfaces": [],
+      "constructors": [],
+      "properties": [
+        {
+          "name": "ConfigBytes",
+          "type": "System.UInt64",
+          "getter": "System.UInt64 get_ConfigBytes()",
+          "setter": null
+        },
+        {
+          "name": "CoordinatorStatusBytes",
+          "type": "System.UInt64",
+          "getter": "System.UInt64 get_CoordinatorStatusBytes()",
+          "setter": null
+        },
+        {
+          "name": "HelperStatusBytes",
+          "type": "System.UInt64",
+          "getter": "System.UInt64 get_HelperStatusBytes()",
+          "setter": null
+        },
+        {
+          "name": "JournalBytes",
+          "type": "System.UInt64",
+          "getter": "System.UInt64 get_JournalBytes()",
+          "setter": null
+        },
+        {
+          "name": "ReceiptBytes",
+          "type": "System.UInt64",
+          "getter": "System.UInt64 get_ReceiptBytes()",
+          "setter": null
+        },
+        {
+          "name": "StagingBytes",
+          "type": "System.UInt64",
+          "getter": "System.UInt64 get_StagingBytes()",
+          "setter": null
+        },
+        {
+          "name": "StagingObjects",
+          "type": "System.UInt32",
+          "getter": "System.UInt32 get_StagingObjects()",
+          "setter": null
+        }
+      ],
+      "declaredMethods": [
+        "System.UInt32 get_StagingObjects()",
+        "System.UInt64 get_ConfigBytes()",
+        "System.UInt64 get_CoordinatorStatusBytes()",
+        "System.UInt64 get_HelperStatusBytes()",
+        "System.UInt64 get_JournalBytes()",
+        "System.UInt64 get_ReceiptBytes()",
+        "System.UInt64 get_StagingBytes()"
+      ],
+      "operators": [],
+      "events": [],
+      "nestedTypes": [],
+      "publicFields": []
+    },
+    {
+      "fullName": "Gagamba.Execution.Restricted.Contracts.QualificationDisposition",
+      "kind": "enum",
+      "isSealed": true,
+      "interfaces": [
+        "System.IComparable",
+        "System.IConvertible",
+        "System.IFormattable",
+        "System.ISpanFormattable"
+      ],
+      "constructors": [],
+      "properties": [],
+      "declaredMethods": [],
+      "operators": [],
+      "events": [],
+      "nestedTypes": [],
+      "publicFields": [
+        "Gagamba.Execution.Restricted.Contracts.QualificationDisposition Mandatory",
+        "Gagamba.Execution.Restricted.Contracts.QualificationDisposition PendingQualification",
+        "System.Byte value__"
+      ]
+    },
+    {
+      "fullName": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView",
+      "kind": "class",
+      "isSealed": true,
+      "interfaces": [],
+      "constructors": [],
+      "properties": [
+        {
+          "name": "Kind",
+          "type": "Gagamba.Execution.Restricted.Contracts.BudgetValueKind",
+          "getter": "Gagamba.Execution.Restricted.Contracts.BudgetValueKind get_Kind()",
+          "setter": null
+        },
+        {
+          "name": "Qualification",
+          "type": "Gagamba.Execution.Restricted.Contracts.QualificationDisposition",
+          "getter": "Gagamba.Execution.Restricted.Contracts.QualificationDisposition get_Qualification()",
+          "setter": null
+        },
+        {
+          "name": "Unit",
+          "type": "System.String",
+          "getter": "System.String get_Unit()",
+          "setter": null
+        },
+        {
+          "name": "Value",
+          "type": "System.UInt64",
+          "getter": "System.UInt64 get_Value()",
+          "setter": null
+        }
+      ],
+      "declaredMethods": [
+        "Gagamba.Execution.Restricted.Contracts.BudgetValueKind get_Kind()",
+        "Gagamba.Execution.Restricted.Contracts.QualificationDisposition get_Qualification()",
+        "System.String get_Unit()",
+        "System.UInt64 get_Value()"
+      ],
+      "operators": [],
+      "events": [],
+      "nestedTypes": [],
+      "publicFields": []
+    },
+    {
+      "fullName": "Gagamba.Execution.Restricted.Contracts.ResourceManifestView",
+      "kind": "class",
+      "isSealed": true,
+      "interfaces": [],
+      "constructors": [],
+      "properties": [
+        {
+          "name": "CaptureAggregateBytes",
+          "type": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView",
+          "getter": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_CaptureAggregateBytes()",
+          "setter": null
+        },
+        {
+          "name": "CoreDumps",
+          "type": "Gagamba.Execution.Restricted.Contracts.CoreDumpPolicyView",
+          "getter": "Gagamba.Execution.Restricted.Contracts.CoreDumpPolicyView get_CoreDumps()",
+          "setter": null
+        },
+        {
+          "name": "FileDescriptors",
+          "type": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView",
+          "getter": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_FileDescriptors()",
+          "setter": null
+        },
+        {
+          "name": "FinalDrainNs",
+          "type": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView",
+          "getter": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_FinalDrainNs()",
+          "setter": null
+        },
+        {
+          "name": "InodeQualification",
+          "type": "Gagamba.Execution.Restricted.Contracts.QualificationDisposition",
+          "getter": "Gagamba.Execution.Restricted.Contracts.QualificationDisposition get_InodeQualification()",
+          "setter": null
+        },
+        {
+          "name": "Memory",
+          "type": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView",
+          "getter": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_Memory()",
+          "setter": null
+        },
+        {
+          "name": "OverallTimeoutNs",
+          "type": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView",
+          "getter": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_OverallTimeoutNs()",
+          "setter": null
+        },
+        {
+          "name": "OwnerAllocation",
+          "type": "Gagamba.Execution.Restricted.Contracts.OwnerAllocationLimitsView",
+          "getter": "Gagamba.Execution.Restricted.Contracts.OwnerAllocationLimitsView get_OwnerAllocation()",
+          "setter": null
+        },
+        {
+          "name": "SetupTimeoutNs",
+          "type": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView",
+          "getter": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_SetupTimeoutNs()",
+          "setter": null
+        },
+        {
+          "name": "ShmBytes",
+          "type": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView",
+          "getter": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_ShmBytes()",
+          "setter": null
+        },
+        {
+          "name": "StderrBytes",
+          "type": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView",
+          "getter": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_StderrBytes()",
+          "setter": null
+        },
+        {
+          "name": "StdoutBytes",
+          "type": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView",
+          "getter": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_StdoutBytes()",
+          "setter": null
+        },
+        {
+          "name": "StopAllowanceNs",
+          "type": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView",
+          "getter": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_StopAllowanceNs()",
+          "setter": null
+        },
+        {
+          "name": "Swap",
+          "type": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView",
+          "getter": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_Swap()",
+          "setter": null
+        },
+        {
+          "name": "Tasks",
+          "type": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView",
+          "getter": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_Tasks()",
+          "setter": null
+        },
+        {
+          "name": "TmpBytes",
+          "type": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView",
+          "getter": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_TmpBytes()",
+          "setter": null
+        }
+      ],
+      "declaredMethods": [
+        "Gagamba.Execution.Restricted.Contracts.CoreDumpPolicyView get_CoreDumps()",
+        "Gagamba.Execution.Restricted.Contracts.OwnerAllocationLimitsView get_OwnerAllocation()",
+        "Gagamba.Execution.Restricted.Contracts.QualificationDisposition get_InodeQualification()",
+        "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_CaptureAggregateBytes()",
+        "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_FileDescriptors()",
+        "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_FinalDrainNs()",
+        "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_Memory()",
+        "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_OverallTimeoutNs()",
+        "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_SetupTimeoutNs()",
+        "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_ShmBytes()",
+        "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_StderrBytes()",
+        "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_StdoutBytes()",
+        "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_StopAllowanceNs()",
+        "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_Swap()",
+        "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_Tasks()",
+        "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_TmpBytes()"
+      ],
+      "operators": [],
+      "events": [],
+      "nestedTypes": [],
+      "publicFields": []
+    },
+    {
+      "fullName": "Gagamba.Execution.Restricted.Contracts.RestrictedManifestCodec",
+      "kind": "class",
+      "isSealed": true,
+      "interfaces": [],
+      "constructors": [],
+      "properties": [],
+      "declaredMethods": [
+        "Gagamba.Execution.Restricted.Contracts.ManifestDecodeResult Decode(System.ReadOnlySpan\u003CSystem.Byte\u003E)",
+        "System.Boolean Supports(System.UInt16, System.String)",
+        "System.Boolean VerifySha256(Gagamba.Execution.Restricted.Contracts.RestrictedManifestView, System.ReadOnlySpan\u003CSystem.Byte\u003E)",
+        "System.Byte[] Encode(Gagamba.Execution.Restricted.Contracts.RestrictedManifestView)",
+        "System.Collections.Immutable.ImmutableArray\u003CSystem.Byte\u003E ComputeSha256(Gagamba.Execution.Restricted.Contracts.RestrictedManifestView)"
+      ],
+      "operators": [],
+      "events": [],
+      "nestedTypes": [],
+      "publicFields": [
+        "System.Int32 MaxCanonicalBytes",
+        "System.UInt16 SupportedSchemaVersion"
+      ]
+    },
+    {
+      "fullName": "Gagamba.Execution.Restricted.Contracts.RestrictedManifestView",
+      "kind": "class",
+      "isSealed": true,
+      "interfaces": [],
+      "constructors": [],
+      "properties": [
+        {
+          "name": "Authority",
+          "type": "Gagamba.Execution.Restricted.Contracts.AuthorityManifestView",
+          "getter": "Gagamba.Execution.Restricted.Contracts.AuthorityManifestView get_Authority()",
+          "setter": null
+        },
+        {
+          "name": "Channels",
+          "type": "Gagamba.Execution.Restricted.Contracts.ChannelManifestView",
+          "getter": "Gagamba.Execution.Restricted.Contracts.ChannelManifestView get_Channels()",
+          "setter": null
+        },
+        {
+          "name": "Closure",
+          "type": "Gagamba.Execution.Restricted.Contracts.ClosureIdentityView",
+          "getter": "Gagamba.Execution.Restricted.Contracts.ClosureIdentityView get_Closure()",
+          "setter": null
+        },
+        {
+          "name": "ImplementationId",
+          "type": "System.String",
+          "getter": "System.String get_ImplementationId()",
+          "setter": null
+        },
+        {
+          "name": "Invocation",
+          "type": "Gagamba.Execution.Restricted.Contracts.InvocationManifestView",
+          "getter": "Gagamba.Execution.Restricted.Contracts.InvocationManifestView get_Invocation()",
+          "setter": null
+        },
+        {
+          "name": "Resources",
+          "type": "Gagamba.Execution.Restricted.Contracts.ResourceManifestView",
+          "getter": "Gagamba.Execution.Restricted.Contracts.ResourceManifestView get_Resources()",
+          "setter": null
+        },
+        {
+          "name": "SchemaVersion",
+          "type": "System.UInt16",
+          "getter": "System.UInt16 get_SchemaVersion()",
+          "setter": null
+        }
+      ],
+      "declaredMethods": [
+        "Gagamba.Execution.Restricted.Contracts.AuthorityManifestView get_Authority()",
+        "Gagamba.Execution.Restricted.Contracts.ChannelManifestView get_Channels()",
+        "Gagamba.Execution.Restricted.Contracts.ClosureIdentityView get_Closure()",
+        "Gagamba.Execution.Restricted.Contracts.InvocationManifestView get_Invocation()",
+        "Gagamba.Execution.Restricted.Contracts.ResourceManifestView get_Resources()",
+        "System.String get_ImplementationId()",
+        "System.UInt16 get_SchemaVersion()"
+      ],
+      "operators": [],
+      "events": [],
+      "nestedTypes": [],
+      "publicFields": []
+    },
+    {
+      "fullName": "Gagamba.Execution.Restricted.Contracts.RestrictedPreparationReference",
+      "kind": "class",
+      "isSealed": true,
+      "interfaces": [
+        "System.IEquatable\u003CGagamba.Execution.Restricted.Contracts.RestrictedPreparationReference\u003E"
+      ],
+      "constructors": [
+        "RestrictedPreparationReference(System.Guid, System.Guid, System.Guid, System.Guid, System.ReadOnlySpan\u003CSystem.Byte\u003E)"
+      ],
+      "properties": [
+        {
+          "name": "ExecutionId",
+          "type": "System.Guid",
+          "getter": "System.Guid get_ExecutionId()",
+          "setter": null
+        },
+        {
+          "name": "GenerationId",
+          "type": "System.Guid",
+          "getter": "System.Guid get_GenerationId()",
+          "setter": null
+        },
+        {
+          "name": "IssuerId",
+          "type": "System.Guid",
+          "getter": "System.Guid get_IssuerId()",
+          "setter": null
+        },
+        {
+          "name": "ManifestSha256",
+          "type": "System.Collections.Immutable.ImmutableArray\u003CSystem.Byte\u003E",
+          "getter": "System.Collections.Immutable.ImmutableArray\u003CSystem.Byte\u003E get_ManifestSha256()",
+          "setter": null
+        },
+        {
+          "name": "PreparationId",
+          "type": "System.Guid",
+          "getter": "System.Guid get_PreparationId()",
+          "setter": null
+        }
+      ],
+      "declaredMethods": [
+        "System.Boolean Equals(Gagamba.Execution.Restricted.Contracts.RestrictedPreparationReference)",
+        "System.Boolean Equals(System.Object)",
+        "System.Collections.Immutable.ImmutableArray\u003CSystem.Byte\u003E get_ManifestSha256()",
+        "System.Guid get_ExecutionId()",
+        "System.Guid get_GenerationId()",
+        "System.Guid get_IssuerId()",
+        "System.Guid get_PreparationId()",
+        "System.Int32 GetHashCode()"
+      ],
+      "operators": [],
+      "events": [],
+      "nestedTypes": [],
+      "publicFields": []
+    },
+    {
+      "fullName": "Gagamba.Execution.Restricted.Contracts.WritableStoreView",
+      "kind": "class",
+      "isSealed": true,
+      "interfaces": [],
+      "constructors": [],
+      "properties": [
+        {
+          "name": "Bytes",
+          "type": "System.UInt64",
+          "getter": "System.UInt64 get_Bytes()",
+          "setter": null
+        },
+        {
+          "name": "HasInodeBudget",
+          "type": "System.Boolean",
+          "getter": "System.Boolean get_HasInodeBudget()",
+          "setter": null
+        },
+        {
+          "name": "InodeBudget",
+          "type": "System.UInt64",
+          "getter": "System.UInt64 get_InodeBudget()",
+          "setter": null
+        },
+        {
+          "name": "Path",
+          "type": "System.String",
+          "getter": "System.String get_Path()",
+          "setter": null
+        }
+      ],
+      "declaredMethods": [
+        "System.Boolean get_HasInodeBudget()",
+        "System.String get_Path()",
+        "System.UInt64 get_Bytes()",
+        "System.UInt64 get_InodeBudget()"
+      ],
+      "operators": [],
+      "events": [],
+      "nestedTypes": [],
+      "publicFields": []
+    }
+  ],
+  "referenceInheritedMethods": [
+    {
+      "declaringType": "System.Object",
+      "signature": "System.Boolean Equals(System.Object, System.Object)"
+    },
+    {
+      "declaringType": "System.Object",
+      "signature": "System.Boolean ReferenceEquals(System.Object, System.Object)"
+    },
+    {
+      "declaringType": "System.Object",
+      "signature": "System.String ToString()"
+    },
+    {
+      "declaringType": "System.Object",
+      "signature": "System.Type GetType()"
+    }
+  ]
+}

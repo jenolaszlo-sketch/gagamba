@@ -1,0 +1,54 @@
+{
+  "qualification": "RC2A-02C Q2A-S / RC-D04 passive reference",
+  "authorizationCommit": "91612b9a42827ffdd76891819670623fa43daeed",
+  "matrixCommit": "66a66bf56508b23b5730827a012ba730b702b72b",
+  "testsFirstCommit": "90895ee0865caeeacce2570dce836f25e1e5279f",
+  "executionCommit": "c4837b0b434fc75ebc3e08d278bdc09c3965a181",
+  "branch": "qualification/gagamba-rc2a-02c-q2as-rcd04",
+  "executionTree": "d47eb6173ecf7b4de442f0f9c165f3ef9e24c88d",
+  "parent": "e1be8579bcaca806071e88dcdd389fd2a054384b",
+  "commitChain": [
+    {
+      "role": "owner authorization baseline",
+      "commit": "91612b9a42827ffdd76891819670623fa43daeed",
+      "parent": "dc02951902f11031f8b0d225d2afa2cd537296a3"
+    },
+    {
+      "role": "pre-execution matrix",
+      "commit": "66a66bf56508b23b5730827a012ba730b702b72b",
+      "tree": "9e25e4b66d64276030b8d2d670f33989ad408ac6",
+      "parent": "91612b9a42827ffdd76891819670623fa43daeed"
+    },
+    {
+      "role": "tests-first assertions",
+      "commit": "90895ee0865caeeacce2570dce836f25e1e5279f",
+      "tree": "024e1f448dbf91ee7afe3fe07663368ec482a4fa",
+      "parent": "66a66bf56508b23b5730827a012ba730b702b72b"
+    },
+    {
+      "role": "inherited instance method inventory",
+      "commit": "e1be8579bcaca806071e88dcdd389fd2a054384b",
+      "tree": "d7d40c3e917c5a56c21cd6eddb96789928d25047",
+      "parent": "90895ee0865caeeacce2570dce836f25e1e5279f"
+    },
+    {
+      "role": "final inherited static method inventory and tested tree",
+      "commit": "c4837b0b434fc75ebc3e08d278bdc09c3965a181",
+      "tree": "d47eb6173ecf7b4de442f0f9c165f3ef9e24c88d",
+      "parent": "e1be8579bcaca806071e88dcdd389fd2a054384b"
+    }
+  ],
+  "sourceTreeAtExecution": "b8c167e3d7340a562221591bdc2b6df7adb372d1",
+  "testTreeAtExecution": "9c906b349b0bf0cffdee331fb5700f9b7828c199",
+  "nativeTreeAtExecution": "85631d2f04512376621d3d09f51d67fd90f45335",
+  "sourceTreeAtOwnerBaseline": "b8c167e3d7340a562221591bdc2b6df7adb372d1",
+  "testTreeAtOwnerBaseline": "5c3268286575cb55891fae9288627657f2d30ddf",
+  "nativeTreeAtOwnerBaseline": "85631d2f04512376621d3d09f51d67fd90f45335",
+  "productionSourceChanged": false,
+  "testOnlyChanges": [
+    "90895ee0865caeeacce2570dce836f25e1e5279f: tests/Gagamba.Execution.Tests/Restricted/RestrictedContractTests.cs",
+    "e1be8579bcaca806071e88dcdd389fd2a054384b: complete inherited instance and static public method inventory",
+    "c4837b0b434fc75ebc3e08d278bdc09c3965a181: enumerate inherited static methods with FlattenHierarchy"
+  ],
+  "rawPriorQualificationEvidenceChanged": false
+}

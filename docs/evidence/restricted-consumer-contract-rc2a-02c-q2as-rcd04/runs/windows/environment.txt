@@ -1,0 +1,12 @@
+UTC=2026-10-25T13:28:06.7729051Z
+ComputerName=LAPTOP-KBD8D8JG
+OSProduct=Windows 10 Home Single Language
+OSDisplayVersion=25H2
+OSVersion=10.0.26200.0
+OSBuild=26200.9711
+OSArchitecture=X64
+PowerShell=7.6.5
+DotnetPath=C:\Program Files\dotnet\dotnet.exe
+DotnetSDK=10.0.401 (dotnet --version exit 0)
+DotnetRuntime=Microsoft.NETCore.App 10.0.12
+DotnetInfoExit=1; SDK version was printed, then workload details raised access denied opening the Windows Service Control Manager; full output preserved in dotnet-info.log

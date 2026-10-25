@@ -1,0 +1,6 @@
+Test run for C:\Users\Laszlos\source\repos\Solo\rc2a-02c\tests\Gagamba.Execution.Tests\bin\Release\net10.0\Gagamba.Execution.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+vstest.console process failed to connect to testhost process after 90 seconds. This may occur due to machine slowness, please set environment variable VSTEST_CONNECTION_TIMEOUT to increase timeout. The process with id 26128 was still running when this message was reported.
+Results File: C:\Users\Laszlos\source\repos\Solo\rc2a-02c\docs\evidence\restricted-consumer-contract-rc2a-02c-q2as-rcd04\runs\windows\rc2a-02c-passive-reference.trx
+
+Test Run Aborted.

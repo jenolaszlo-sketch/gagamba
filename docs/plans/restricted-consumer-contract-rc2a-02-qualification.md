@@ -678,3 +678,41 @@ RC2A-02C must complete and receive focused independent review before full
 RC2A-02 acceptance and before RC2A-03 qualification/acceptance relies on the
 passive reference. This assignment does not mark Q2A-S complete, accept full
 RC2A-02, or start RC2A-03.
+
+## 13. RC2A-02C local execution result (2026-10-25)
+
+Status: **RC2A-02C QUALIFIED LOCALLY / READY FOR INDEPENDENT REVIEW. Q2A-S /
+RC-D04 remains OPEN pending review and a separate owner disposition.**
+
+The isolated branch `qualification/gagamba-rc2a-02c-q2as-rcd04` was created
+from owner disposition `91612b9a42827ffdd76891819670623fa43daeed`. The
+requirement-to-assertion matrix was committed before build/test execution at
+`66a66bf56508b23b5730827a012ba730b702b72b`. Tests-first commits are
+`90895ee0865caeeacce2570dce836f25e1e5279f`,
+`e1be8579bcaca806071e88dcdd389fd2a054384b`, and final tested commit
+`c4837b0b434fc75ebc3e08d278bdc09c3965a181` (tree
+`d47eb6173ecf7b4de442f0f9c165f3ef9e24c88d`). At the tested commit, `src` is
+`b8c167e3d7340a562221591bdc2b6df7adb372d1`, `tests` is
+`9c906b349b0bf0cffdee331fb5700f9b7828c199`, and `native` is
+`85631d2f04512376621d3d09f51d67fd90f45335`. The only code changes are focused
+tests; production and native trees and prior raw qualification artifacts are
+unchanged.
+
+The final Windows .NET SDK 10.0.401 Release build passed with 0 warnings and 0
+errors using the committed package versions and `NuGetAudit=false` because the
+vulnerability service was unreachable. The exact three mapped passive-reference
+tests passed 3/3, 0 failed and 0 skipped. The final run includes the complete
+exported-type inventory and inherited public framework methods. An earlier
+restore failure and a sandboxed testhost timeout that executed zero tests are
+preserved separately and are not counted as passes. The source binding,
+matrix, commands, environment, raw TRX/log/exit files, inventory, timing review,
+hashes and independent-review request are in the
+[RC2A-02C evidence package](../evidence/restricted-consumer-contract-rc2a-02c-q2as-rcd04/README.md).
+
+The evidence supports only the passive RC-2A value contract and R1-F04
+documentation boundary. D4a timing remains explicit enrolled/synthetic data;
+later D4b timing requires actual provider-origin prepared execution. The
+qualification does not establish downstream live-operation authorization,
+provider, deadline, release, native, packaging, or Hufu behavior. Q2A-S / RC-D04
+stays open until independent review and separate owner disposition; full
+RC2A-02 remains unaccepted and RC2A-03 has not started.

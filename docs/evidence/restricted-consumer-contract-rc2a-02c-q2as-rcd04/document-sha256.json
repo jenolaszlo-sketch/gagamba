@@ -1,0 +1,86 @@
+{
+  "byteDomain": "LF-normalized working-tree bytes (CRLF byte pairs converted to LF; no text decoding)",
+  "exclusion": "this hash manifest and SHA256SUMS; both are bound by the final commit/tree",
+  "files": [
+    {
+      "path": "docs/design/restricted-consumer-contract-rc1.md",
+      "bytes": 52473,
+      "sha256": "164496f886bdc324816bf963a1ad3398c9bb8e702bee6d97dc1e687d6e7d15fe"
+    },
+    {
+      "path": "docs/design/restricted-consumer-contract-rc2a-01-api.md",
+      "bytes": 6338,
+      "sha256": "df5390c890f2dc59e9fee33fd08c4b173ebf31de32b6cf2bf506991061cae521"
+    },
+    {
+      "path": "docs/decisions/gagamba-q2as-rcd04-owner-disposition.md",
+      "bytes": 12864,
+      "sha256": "e89c17d4634ad172f41a980216290e0326253aaffcd4aab54f8f81c885d7b7d3"
+    },
+    {
+      "path": "docs/plans/restricted-consumer-contract-rc2a-02-qualification.md",
+      "bytes": 45267,
+      "sha256": "0f6ddcbd3c56c960dfc33bc60aa0bd0bab4d1ce72150d69cad0f010835933a4e"
+    },
+    {
+      "path": "docs/plans/restricted-consumer-contract-implementation.md",
+      "bytes": 37999,
+      "sha256": "53cde1788f6c6e570fb609f108f70bce6225fb882e5860ac2b98c9f03f7f3709"
+    },
+    {
+      "path": "docs/work-queue.md",
+      "bytes": 159553,
+      "sha256": "b48c4dfd4a9516f9460d3d36c2baa389967b3bbbc4750968052d8d8a88902700"
+    },
+    {
+      "path": "docs/handoff.md",
+      "bytes": 180080,
+      "sha256": "a41bee5e61980f22afc4899b5644933d2f1562415d4abf9b7fced4db5304fa59"
+    },
+    {
+      "path": "src/Gagamba.Execution/Restricted/Contracts/RestrictedPreparationReference.cs",
+      "bytes": 2350,
+      "sha256": "965b9ed435c714d7694250832a782072ef6b888fdedfa3ffe882a5db519c0a8b"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Tests/Restricted/RestrictedContractTests.cs",
+      "bytes": 22639,
+      "sha256": "986f2d30e232da1f51b1071264a9b0a0c7999071773e531b7a5e60083d87275b"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-02c-q2as-rcd04/README.md",
+      "bytes": 7881,
+      "sha256": "e13d457370be67f3d9c9df2ccf596be56f9e22f037bbabc20f0dba91b65f199f"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-02c-q2as-rcd04/qualification-matrix.md",
+      "bytes": 9172,
+      "sha256": "ce01f3318e6b3bdccfcc93192fc85b09ea623266ebf09e548a924f1bcaf8351c"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-02c-q2as-rcd04/commands.md",
+      "bytes": 3517,
+      "sha256": "bf0dafbeebbd9ce5822dc4b033cce948e5ed34c97e4185e16f1986b7814e04f0"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-02c-q2as-rcd04/documentation-review.md",
+      "bytes": 2952,
+      "sha256": "f93a981be037ad00f3830eaf4c8d68d58bf32b6bb840b0e157f421cb7701bce7"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-02c-q2as-rcd04/reviewer-handoff.md",
+      "bytes": 3243,
+      "sha256": "5281498f3cfae4a52c2e45946f4759ca9da919004859b04ddd7109c23fe142ea"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-02c-q2as-rcd04/validation.md",
+      "bytes": 4457,
+      "sha256": "a26fd02818e0a07ce9e198ceebfe290da0953bfea9ebc788b4ad86c0c197a0e3"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-02c-q2as-rcd04/source-binding.json",
+      "bytes": 2551,
+      "sha256": "cea0fe57dd23476f649aa76be7744c40131bc2a733892882dc5c927f54525106"
+    }
+  ]
+}
