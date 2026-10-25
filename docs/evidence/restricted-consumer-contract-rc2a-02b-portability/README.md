@@ -54,7 +54,7 @@ qualification therefore executes the same tested implementation and test tree.
 
 | Platform | Build | Public suite | Required set | Rerun | Notes |
 |---|---|---:|---:|---:|---|
-| Windows 11 native, AMD64 | 0 warnings / 0 errors | 67 / 0 / 0 | 457 / 0 / 0 | 457 / 0 / 0 | literal plan filter: 473 / 0 / 41 |
+| Windows 11 native, AMD64 | 0 warnings / 0 errors | 67 / 0 / 0 | 457 / 0 / 0 | 457 / 0 / 0 | broad filter (provenance only): 473 / 0 / 41 |
 | WSL2 Ubuntu 26.04.1 (labeled `wsl2`) | 0 warnings / 0 errors | 67 / 0 / 0 | 457 / 0 / 0 | 457 / 0 / 0 | broad plan filter not run (selects native classes) |
 | Native Linux | not run | — | — | — | no host available |
 | macOS | not run | — | — | — | no host available |
@@ -65,6 +65,13 @@ multisets (457/457). Reruns on each platform are also identical. The 41 Windows
 skips are the same three pre-existing Linux-native classes recorded in
 RC2A02A-F02 (`NonRootQualificationTests` 31, `OwnerDeathQualificationTests` 7,
 `Wp05ReleasePathIndependentQualificationTests` 3); none is an RC2A-02A/02B case.
+Beyond the 457 tests selected by the precise filter, the broad filter selects
+five classes: `CoordinatorProtocolQualificationTests` (11 passed) and
+`Wp05V3IndependentQualificationTests` (5 passed) are managed-code classes;
+`NonRootQualificationTests` (31 skipped), `OwnerDeathQualificationTests`
+(7 skipped), and `Wp05ReleasePathIndependentQualificationTests` (3 skipped)
+are Linux-native classes. The Windows broad-filter total is **473 passed / 0
+failed / 41 skipped** (514 total). This run is provenance evidence only.
 
 Machine-readable detail, exact commands and artifact hashes:
 [`results.json`](results.json). Raw logs, TRX files, exit captures and
@@ -74,14 +81,14 @@ environment captures: [`runs/windows/`](runs/windows/) and
 ## 4. Execution-scope decisions (explicit)
 
 1. **Precise filter for qualification evidence on every platform.** The literal
-   plan filter `FullyQualifiedName~Qualification` selects the five pre-existing
-   Linux-native classes identified by Q2A02A-F02. On Windows they skip; on
-   Linux they would execute native/root-dependent tests that §3 P1 (filters
-   select pure tests only) and §3 P4 (pure managed-code scope) exclude. The
-   precise `Tests.Qualification.` filter is therefore used for all qualification
-   runs, and the literal filter is executed on Windows only as provenance. This
-   is an execution decision consistent with the owner-accepted F02 disposition,
-   not a change to the accepted specification.
+   broad filter `FullyQualifiedName~Qualification` adds five classes beyond the
+   precise selection. Two managed-code classes execute and pass on Windows
+   (16 tests total); three Linux-native classes identified by Q2A02A-F02
+   contribute 41 skips there. On Linux, those native/root-dependent classes
+   would execute, which §3 P1 (pure tests only) and §3 P4 (pure managed-code
+   scope) exclude. The precise `Tests.Qualification.` filter remains the
+   qualification selection mechanism on each platform. The broad filter is run
+   on Windows for provenance only and is not a substitute for the precise set.
 2. **WSL2 is not native Linux.** All WSL2 results are labeled `wsl2`; no native
    Linux qualification is claimed. No WSL2 result substitutes for a native Linux
    run.

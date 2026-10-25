@@ -11,7 +11,7 @@ accepted RC2A-02 plan §3 D (`Q2A-P`) and §9.1; owner acceptance of RC2A-02A
 |---|---|---|---|
 | §3 P1 | Exact commands, filters, SDK/runtime, results directory and artifact names recorded | `results.json` (commands), `runs/windows/windows-environment.txt`, `runs/wsl2/wsl2-environment.txt`, raw logs/TRX/exit files, `run-wsl2.sh` | PASS |
 | §3 P1 | Release build of `src/Gagamba.Execution`, warnings as errors | Windows build 0/0 (`runs/windows/build-execution.log`); WSL2 build 0/0 (`runs/wsl2/wsl2-build-execution.log`) | PASS |
-| §3 P1 | Pure tests only; no native fixture/owner/helper/workload started | Precise filter excludes the five Linux-native classes; no native process or fixture started; Windows literal-filter run's only native-class outcomes are pre-existing skips | PASS (scope decision recorded) |
+| §3 P1 | Pure tests only; no native fixture/owner/helper/workload started | Precise filter selects the managed-code qualification set. Beyond it, the Windows broad filter adds two managed-code classes (16 passed) and three Linux-native classes (41 skipped); no native process or fixture was started by the precise set | PASS (scope decision recorded) |
 | §3 P2 | Windows primary re-run on the qualification branch | Windows W1–W3 | PASS |
 | §3 P2 | Linux executed natively when a host is available; WSL2 labeled `wsl2`, never native | No native Linux host available → not run, recorded; WSL2 executed and labeled `wsl2` | PARTIAL (honest: native Linux not run) |
 | §3 P2 | macOS labeled with exact host/architecture; not run recorded with reason | Not run: no macOS host; recorded in `results.json`/README | NOT RUN (recorded) |
@@ -43,7 +43,7 @@ accepted RC2A-02 plan §3 D (`Q2A-P`) and §9.1; owner acceptance of RC2A-02A
 | RC2A-01 internal regressions (Manifest/Projection/PreparationIdentity) | 38 | 38 passed | 38 passed |
 | **Required set total** | **457** | **457 passed, 0 failed, 0 skipped** | **457 passed, 0 failed, 0 skipped** |
 | Rerun (deterministic) | 457 | 457/0/0, identical multiset | 457/0/0, identical multiset |
-| Literal committed-plan filter (provenance only) | 514 | 473/0/41 (pre-existing Linux-native skips) | not run (selects native classes; scope decision) |
+| Broad `~Qualification` filter (provenance only) | 514 | 473/0/41: two added managed-code classes passed (16); three Linux-native classes skipped (41) | not run (includes Linux-native classes; scope decision) |
 
 ## 3. Cross-platform comparison
 

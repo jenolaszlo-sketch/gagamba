@@ -4,13 +4,13 @@
   "files": [
     {
       "path": "docs/evidence/restricted-consumer-contract-rc2a-02b-portability/README.md",
-      "bytes": 8630,
-      "sha256": "5dcd9c6f6c427e669f3acbf17484056164984d627375f00b3e7191a966ba465f"
+      "bytes": 9180,
+      "sha256": "14b187f57b10c63c3a7a6a3b1488b8baa2fbe9d19fcd3c538410d8ee4abc7e9d"
     },
     {
       "path": "docs/evidence/restricted-consumer-contract-rc2a-02b-portability/qualification-matrix.md",
-      "bytes": 5825,
-      "sha256": "902e27127073bff247991fbf6e35772b0107e8e54a9d4ceee663ae4563d0a9f1"
+      "bytes": 5953,
+      "sha256": "3f5d88e4fb1870f79869be58792180210e13e916ae11522a755de26da136a964"
     },
     {
       "path": "docs/evidence/restricted-consumer-contract-rc2a-02b-portability/reviewer-handoff.md",
@@ -24,8 +24,8 @@
     },
     {
       "path": "docs/evidence/restricted-consumer-contract-rc2a-02b-portability/results.json",
-      "bytes": 14118,
-      "sha256": "e47404cefe1cec67fd07c476fb93355f8ed21fedc7d2358440a8d2b6df82519d"
+      "bytes": 14445,
+      "sha256": "78b31fee6a5fcb7b88080776bd5436256f0da867be82652db79e2b7e999f7ff1"
     },
     {
       "path": "docs/plans/restricted-consumer-contract-rc2a-02-qualification.md",
