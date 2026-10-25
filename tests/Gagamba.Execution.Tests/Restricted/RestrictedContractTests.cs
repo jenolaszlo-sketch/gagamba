@@ -3,6 +3,7 @@ using System.Collections.Immutable;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using Gagamba.Execution.Restricted.Contracts;
 using Xunit;
 
@@ -188,7 +189,13 @@ public sealed class RestrictedContractTests
     [Fact]
     public void PassiveReferenceCopiesAndComparesContents()
     {
-        var ids = Enumerable.Range(0, 4).Select(_ => Guid.NewGuid()).ToArray();
+        var ids = new[]
+        {
+            Guid.Parse("a1000000-0000-0000-0000-000000000001"),
+            Guid.Parse("a2000000-0000-0000-0000-000000000002"),
+            Guid.Parse("a3000000-0000-0000-0000-000000000003"),
+            Guid.Parse("a4000000-0000-0000-0000-000000000004")
+        };
         var bytes = Convert.FromHexString(GoldenDigest);
         var reference = new RestrictedPreparationReference(ids[0], ids[1], ids[2], ids[3], bytes);
         var equal = new RestrictedPreparationReference(ids[0], ids[1], ids[2], ids[3], bytes.ToArray());
@@ -196,12 +203,17 @@ public sealed class RestrictedContractTests
         Assert.Equal(reference.GetHashCode(), equal.GetHashCode());
         Assert.True(reference.Equals((object)equal));
         Assert.False(reference.Equals(null));
+        var originalDigest = bytes.ToArray();
         bytes[0] ^= 1;
         Assert.NotEqual(reference, new RestrictedPreparationReference(ids[0], ids[1], ids[2], ids[3], bytes));
-        Assert.Equal(Convert.FromHexString(GoldenDigest), reference.ManifestSha256.ToArray());
+        Assert.Equal(originalDigest, reference.ManifestSha256.ToArray());
+        var returnedDigest = reference.ManifestSha256.ToArray();
+        returnedDigest[1] ^= 1;
+        Assert.Equal(originalDigest, reference.ManifestSha256.ToArray());
+        Assert.Equal(originalDigest, reference.ManifestSha256.ToArray());
         for (var i = 0; i < 4; i++)
         {
-            var changed = ids.ToArray(); changed[i] = Guid.NewGuid();
+            var changed = ids.ToArray(); changed[i] = Guid.Parse($"b{i + 1}000000-0000-0000-0000-00000000000{i + 1}");
             Assert.NotEqual(reference, new RestrictedPreparationReference(changed[0], changed[1], changed[2], changed[3], reference.ManifestSha256.AsSpan()));
             changed[i] = Guid.Empty;
             Assert.Throws<ArgumentException>(() => new RestrictedPreparationReference(changed[0], changed[1], changed[2], changed[3], bytes));
@@ -212,10 +224,50 @@ public sealed class RestrictedContractTests
     }
 
     [Fact]
+    public void PassiveReferenceRejectsInvalidInputsByParameterName()
+    {
+        var ids = new[]
+        {
+            Guid.Parse("a1000000-0000-0000-0000-000000000001"),
+            Guid.Parse("a2000000-0000-0000-0000-000000000002"),
+            Guid.Parse("a3000000-0000-0000-0000-000000000003"),
+            Guid.Parse("a4000000-0000-0000-0000-000000000004")
+        };
+        var parameterNames = new[] { "executionId", "issuerId", "generationId", "preparationId" };
+        var digest = Enumerable.Range(0, 32).Select(value => (byte)value).ToArray();
+
+        for (var index = 0; index < ids.Length; index++)
+        {
+            var invalid = ids.ToArray();
+            invalid[index] = Guid.Empty;
+            var exception = Assert.Throws<ArgumentException>(() => new RestrictedPreparationReference(
+                invalid[0], invalid[1], invalid[2], invalid[3], digest));
+            Assert.Equal(parameterNames[index], exception.ParamName);
+        }
+
+        foreach (var length in new[] { 0, 31, 33 })
+        {
+            var exception = Assert.Throws<ArgumentException>(() => new RestrictedPreparationReference(
+                ids[0], ids[1], ids[2], ids[3], new byte[length]));
+            Assert.Equal("manifestSha256", exception.ParamName);
+        }
+
+        byte[]? nullDigest = null;
+        var nullException = Assert.Throws<ArgumentException>(() => new RestrictedPreparationReference(
+            ids[0], ids[1], ids[2], ids[3], nullDigest!));
+        Assert.Equal("manifestSha256", nullException.ParamName);
+        Assert.Equal(32, new RestrictedPreparationReference(ids[0], ids[1], ids[2], ids[3], digest)
+            .ManifestSha256.Length);
+    }
+
+    [Fact]
     public void PublicSurfaceIsSealedReadOnlyAndPassive()
     {
-        var types = typeof(RestrictedManifestCodec).Assembly.GetExportedTypes()
-            .Where(t => t.Namespace == typeof(RestrictedManifestCodec).Namespace).ToArray();
+        var assembly = typeof(RestrictedManifestCodec).Assembly;
+        var contractNamespace = typeof(RestrictedManifestCodec).Namespace;
+        var types = assembly.GetExportedTypes()
+            .Where(t => t.Namespace == contractNamespace)
+            .OrderBy(t => t.FullName, StringComparer.Ordinal).ToArray();
         Assert.NotEmpty(types);
         foreach (var type in types.Where(t => !t.IsEnum))
         {
@@ -233,8 +285,110 @@ public sealed class RestrictedContractTests
                 Assert.DoesNotContain("Lookup", method.Name);
             }
         }
+
+        var referenceType = typeof(RestrictedPreparationReference);
+        const BindingFlags declaredPublic = BindingFlags.Public | BindingFlags.Instance |
+            BindingFlags.Static | BindingFlags.DeclaredOnly;
+        Assert.True(referenceType.IsSealed);
+        Assert.Equal(new[] { typeof(IEquatable<RestrictedPreparationReference>) }, referenceType.GetInterfaces());
+
+        var properties = referenceType.GetProperties(declaredPublic).OrderBy(p => p.Name, StringComparer.Ordinal).ToArray();
         Assert.Equal(new[] { "ExecutionId", "GenerationId", "IssuerId", "ManifestSha256", "PreparationId" },
-            typeof(RestrictedPreparationReference).GetProperties().Select(p => p.Name).Order().ToArray());
+            properties.Select(p => p.Name));
+        Assert.Equal(typeof(Guid), properties.Single(p => p.Name == "ExecutionId").PropertyType);
+        Assert.Equal(typeof(Guid), properties.Single(p => p.Name == "IssuerId").PropertyType);
+        Assert.Equal(typeof(Guid), properties.Single(p => p.Name == "GenerationId").PropertyType);
+        Assert.Equal(typeof(Guid), properties.Single(p => p.Name == "PreparationId").PropertyType);
+        Assert.Equal(typeof(ImmutableArray<byte>), properties.Single(p => p.Name == "ManifestSha256").PropertyType);
+        Assert.All(properties, property =>
+        {
+            Assert.NotNull(property.GetMethod);
+            Assert.Null(property.SetMethod);
+            Assert.False(property.GetMethod!.IsStatic);
+        });
+
+        var constructors = referenceType.GetConstructors(declaredPublic);
+        var constructor = Assert.Single(constructors);
+        Assert.Equal(new[] { typeof(Guid), typeof(Guid), typeof(Guid), typeof(Guid), typeof(ReadOnlySpan<byte>) },
+            constructor.GetParameters().Select(parameter => parameter.ParameterType));
+
+        var declaredMethods = referenceType.GetMethods(declaredPublic);
+        var ordinaryMethodSignatures = declaredMethods.Where(method => !method.IsSpecialName)
+            .Select(FormatMethod).OrderBy(signature => signature, StringComparer.Ordinal).ToArray();
+        Assert.Equal(new[]
+        {
+            "System.Boolean Equals(Gagamba.Execution.Restricted.Contracts.RestrictedPreparationReference)",
+            "System.Boolean Equals(System.Object)",
+            "System.Int32 GetHashCode()"
+        }.OrderBy(signature => signature, StringComparer.Ordinal), ordinaryMethodSignatures);
+        Assert.Equal(properties.Select(property => $"get_{property.Name}").OrderBy(name => name, StringComparer.Ordinal),
+            declaredMethods.Where(method => method.IsSpecialName).Select(method => method.Name)
+                .OrderBy(name => name, StringComparer.Ordinal));
+        Assert.Empty(referenceType.GetFields(declaredPublic));
+        Assert.Empty(referenceType.GetEvents(declaredPublic));
+        Assert.Empty(referenceType.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic));
+
+        var evidenceDirectory = Environment.GetEnvironmentVariable("RC2A02C_EVIDENCE_DIRECTORY");
+        if (!string.IsNullOrWhiteSpace(evidenceDirectory))
+        {
+            Directory.CreateDirectory(evidenceDirectory);
+            var inventory = new
+            {
+                assembly = assembly.GetName().Name,
+                contractNamespace,
+                exportedTypes = types.Select(type => new
+                {
+                    fullName = type.FullName,
+                    kind = type.IsEnum ? "enum" : type.IsInterface ? "interface" : "class",
+                    isSealed = type.IsSealed,
+                    interfaces = type.GetInterfaces().Select(FormatType).OrderBy(name => name, StringComparer.Ordinal),
+                    constructors = type.GetConstructors(declaredPublic).Select(FormatConstructor)
+                        .OrderBy(signature => signature, StringComparer.Ordinal),
+                    properties = type.GetProperties(declaredPublic).Select(property => new
+                    {
+                        name = property.Name,
+                        type = FormatType(property.PropertyType),
+                        getter = property.GetMethod is null ? null : FormatMethod(property.GetMethod),
+                        setter = property.SetMethod is null ? null : FormatMethod(property.SetMethod)
+                    }).OrderBy(property => property.name, StringComparer.Ordinal),
+                    declaredMethods = type.GetMethods(declaredPublic).Select(FormatMethod)
+                        .OrderBy(signature => signature, StringComparer.Ordinal),
+                    operators = type.GetMethods(declaredPublic).Where(method => method.Name.StartsWith("op_", StringComparison.Ordinal))
+                        .Select(FormatMethod).OrderBy(signature => signature, StringComparer.Ordinal),
+                    events = type.GetEvents(declaredPublic).Select(@event => @event.Name)
+                        .OrderBy(name => name, StringComparer.Ordinal),
+                    nestedTypes = type.GetNestedTypes(BindingFlags.Public | BindingFlags.NonPublic)
+                        .Select(nested => nested.FullName).OrderBy(name => name, StringComparer.Ordinal),
+                    publicFields = type.GetFields(declaredPublic).Select(field => $"{FormatType(field.FieldType)} {field.Name}")
+                        .OrderBy(name => name, StringComparer.Ordinal)
+                }).ToArray(),
+                referenceInheritedMethods = referenceType.GetMethods(BindingFlags.Public | BindingFlags.Instance)
+                    .Where(method => method.DeclaringType != referenceType)
+                    .Select(method => new { declaringType = method.DeclaringType?.FullName, signature = FormatMethod(method) })
+                    .OrderBy(method => method.declaringType, StringComparer.Ordinal)
+                    .ThenBy(method => method.signature, StringComparer.Ordinal)
+            };
+            var json = JsonSerializer.Serialize(inventory, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(Path.Combine(evidenceDirectory, "public-surface-inventory.json"), json + Environment.NewLine);
+        }
+    }
+
+    private static string FormatConstructor(ConstructorInfo constructor) =>
+        $"{constructor.DeclaringType?.Name}({string.Join(", ", constructor.GetParameters().Select(parameter => FormatType(parameter.ParameterType)))})";
+
+    private static string FormatMethod(MethodInfo method) =>
+        $"{FormatType(method.ReturnType)} {method.Name}({string.Join(", ", method.GetParameters().Select(parameter => FormatType(parameter.ParameterType)))})";
+
+    private static string FormatType(Type type)
+    {
+        if (type.IsGenericType)
+        {
+            var genericName = type.GetGenericTypeDefinition().FullName ?? type.GetGenericTypeDefinition().Name;
+            var tick = genericName.IndexOf('`');
+            if (tick >= 0) genericName = genericName[..tick];
+            return $"{genericName}<{string.Join(", ", type.GetGenericArguments().Select(FormatType))}>";
+        }
+        return type.FullName ?? type.Name;
     }
 
     private static void Refuses(byte[] bytes, ManifestDecodeError error)
