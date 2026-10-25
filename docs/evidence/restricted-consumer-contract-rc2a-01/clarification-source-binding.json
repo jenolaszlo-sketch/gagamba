@@ -1,0 +1,97 @@
+{
+  "date": "2026-10-25 (Asia/Manila)",
+  "observedAtUtc": "2026-10-25T00:33:34.750452+00:00",
+  "branch": "implementation/gagamba-rc2a-01",
+  "worktree": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc2a-01",
+  "ownerBaseline": "9a705335701f0c1923bd9867a2612b8a93afa8cb",
+  "ownerTree": "f6a7e141bf7f38c976655c0772b7ee817a7ce148",
+  "acceptedDesign": "d609c29d3048bc0fd91583068cb013fb906fdf90",
+  "independentDesignReview": "feb9d7584c41712195d4b90754ed7a342ba74bb7",
+  "originalImplementation": "e93d642e1a36af25c0e145d328bebadd1bba4838",
+  "discoveredCleanImplementationHead": "5a5ef7bdde0708411cd875d0b0700556199134c1",
+  "implementationCommit": "781e9debb8df852d1d4d8ca98d92591e1609e193",
+  "implementationTree": "65db7ed171ba25b82b9ab21aae9196964d4f27bc",
+  "trees": {
+    "src": "b8c167e3d7340a562221591bdc2b6df7adb372d1",
+    "tests": "ceaa7aca8121a1acef5300e074a1f6bc73c0a781",
+    "native": "85631d2f04512376621d3d09f51d67fd90f45335"
+  },
+  "commission": {
+    "attachment": "C:\\Users\\Laszlos\\.codex\\attachments\\c1672733-0a66-4a71-83b2-73fc96175842\\Pasted text.txt",
+    "bytes": 7859,
+    "sha256": "6b0aa7036eec3d254a7e93527af3456098b5e43eb1bd49ca7952147deef5e0e9"
+  },
+  "ownerClarification": {
+    "source": "direct user answer and follow-up in this conversation, 2026-10-25",
+    "answer": "Use these refusal rules",
+    "rules": [
+      "oversized Encode throws ArgumentException",
+      "VerifySha256 returns false for any expected digest length other than 32",
+      "Supports null ID throws ArgumentNullException; unsupported non-null values return false"
+    ],
+    "followUp": [
+      "Record these behaviors in the RC2A-01 contract documentation.",
+      "Ensure deterministic tests cover all three.",
+      "Preserve the existing golden vector and canonical encoding.",
+      "Continue the assigned work without reopening RC-1."
+    ],
+    "authenticationClaim": "conversation instruction; not a cryptographic signature"
+  },
+  "testSourceBinding": "Tests ran before the clarification code commit with HEAD at discoveredCleanImplementationHead; tested source bytes match implementationCommit. No clean post-commit build claimed.",
+  "host": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "architecture": "AMD64",
+    "python": "3.14.8",
+    "dotnetSdk": "10.0.401"
+  },
+  "sourceFiles": [
+    {
+      "path": "src/Gagamba.Execution/Restricted/Contracts/RestrictedManifestCodec.cs",
+      "gitBlob": "8cf412bd02c78fd40a4b7c7bd4175c04b785de13",
+      "bytes": 2805,
+      "sha256GitBlobBytes": "4ddb14ab5013e85b04d7c9558af82457875ec16052af86df697f908f78240532"
+    },
+    {
+      "path": "src/Gagamba.Execution/Restricted/Contracts/RestrictedManifestView.cs",
+      "gitBlob": "c6dfc7e6c6fb500216ae4c2d366881625bb81792",
+      "bytes": 10526,
+      "sha256GitBlobBytes": "7d3c953f7e0711b365b27034aac82995873ef644c3934cbde29f4bcb03cdeec6"
+    },
+    {
+      "path": "src/Gagamba.Execution/Restricted/Contracts/RestrictedPreparationReference.cs",
+      "gitBlob": "5e427b08e277e3a207b8389a2bf5138d8b7374f8",
+      "bytes": 2350,
+      "sha256GitBlobBytes": "965b9ed435c714d7694250832a782072ef6b888fdedfa3ffe882a5db519c0a8b"
+    },
+    {
+      "path": "src/Gagamba.Execution/Restricted/ManifestReader.cs",
+      "gitBlob": "ee1423ef2799accb48f6c785bbdae53d350db547",
+      "bytes": 9054,
+      "sha256GitBlobBytes": "a38cc867ae20b2ea1c2249073f2708c674d1fe182f6d074fafa5e10ab78bafcd"
+    },
+    {
+      "path": "src/Gagamba.Execution/Restricted/ManifestValidation.cs",
+      "gitBlob": "ae5184af9a10d76303d18ad07747cf8653c6f0a1",
+      "bytes": 1939,
+      "sha256GitBlobBytes": "9d4cbcfe49b2cebae59485d3128cb1953ac0e42210786cccd0748fe5694cb392"
+    },
+    {
+      "path": "src/Gagamba.Execution/Restricted/RestrictedManifest.cs",
+      "gitBlob": "8ff409eeb9ee52dd135e66578e59640b17d77af5",
+      "bytes": 36020,
+      "sha256GitBlobBytes": "25fa0071d7df56df67ab1c38c23d1d597bd7158a22b24ac212dcaee814f464e7"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/Contracts/RestrictedPublicProjectionTests.cs",
+      "gitBlob": "d45a22bd468a84fea879504bc8d1c059fe65248e",
+      "bytes": 11368,
+      "sha256GitBlobBytes": "ca673940535a69cf4e955efc892dbde1579f931cdc2473b8177d7694f6f2aaaa"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Tests/Restricted/RestrictedContractTests.cs",
+      "gitBlob": "9260cb9bc3770c69a65e41df03e1c12bf20ac37b",
+      "bytes": 13433,
+      "sha256GitBlobBytes": "7e24936704fa8c449fe610f04c1b5e86b90c1307ce365dea508ab55707f34877"
+    }
+  ]
+}

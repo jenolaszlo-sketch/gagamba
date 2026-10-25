@@ -12,6 +12,15 @@ revision records owner dispositions and future requirements, not test completion
 
 ## 1. Progress and gates
 
+Current RC2A-01 source after explicit user clarification is
+`781e9debb8df852d1d4d8ca98d92591e1609e193`; see
+[current evidence](../evidence/restricted-consumer-contract-rc2a-01/clarification-2026-10-25.md).
+The frozen rules are oversized Encode => ArgumentException, wrong-length digest
+=> false, and Supports(null) => ArgumentNullException with unsupported non-null
+values => false. Fresh focused coverage passes 57 public and 38 deterministic
+internal cases; build has 0 warnings/errors. Golden/encoder bytes and RC-1 are
+preserved. These are RC2A-01 implementation results, not RC2A-02 qualification.
+
 RC2A-01 update 2026-10-25: the subsequent user commission explicitly authorizes passive source implementation and focused tests in RC2A-01, superseding the earlier finalization-only/source sequencing below for that bounded work. Source `e93d642e1a36af25c0e145d328bebadd1bba4838`; [handoff](../evidence/restricted-consumer-contract-rc2a-01/README.md), [API finalization](../design/restricted-consumer-contract-rc2a-01-api.md). Independent implementation review is required next; RC2A-02 remains a separately commissioned qualification stage. No pack, native work or Hufu resumption is authorized. Historical work-order details remain the broader RC-2A qualification requirements.
 
 Update this table with exact commit, evidence path, reviewer and disposition as
@@ -26,11 +35,11 @@ test failure or permission to replace a real provider with a fake.
 | RC1-03 | Test matrix, staged work orders and evidence; Astra | DONE, DOCUMENTATION ONLY | This plan and review handoff |
 | RC1-R | Independent contract review; GLM | COMPLETE — ACCEPTED WITH QUALIFICATIONS | `feb9d7584c41712195d4b90754ed7a342ba74bb7`; original findings preserved separately |
 | RC1-A | Owner accepts contract and dispositions | APPROVED AND RECORDED | [Owner decision](../decisions/restricted-consumer-rc1-owner-acceptance.md): Mode=`work`, passive public surface, encode/decode ceiling and all seven findings |
-| RC2A-01 | Revalidate/finalize API; commissioned passive implementation and focused tests | IMPLEMENTED — INDEPENDENT REVIEW REQUIRED | `e93d642`; 95 pure tests passed; source-bound handoff; named encode/digest/Supports failures |
+| RC2A-01 | Revalidate/finalize API; commissioned passive implementation and focused tests | IMPLEMENTED — INDEPENDENT REVIEW REQUIRED | Current `781e9de`; 95 pure tests passed; source-bound clarification evidence; earlier `e93d642` preserved |
 | RC2A-02 | Separately commissioned tests-first qualification | NOT_STARTED | Independent implementation review and separate commission; focused RC2A-01 tests do not complete this stage |
 | RC2A-03 | Shared validation/reader, public views and passive reference | SOURCE IMPLEMENTED UNDER RC2A-01; qualification pending | `e93d642`; no separate qualification acceptance inferred |
 | RC2A-04 | Focused regressions, local package, clean consumer | Focused RC2A-01 regressions pass; PACKAGE/CONSUMER NOT_STARTED | No pack authorized by current commission; remaining qualification gates pending |
-| RC2A-R | Independent implementation/package review | IMPLEMENTATION REVIEW REQUIRED; package review pending | Review `e93d642` and exact handoff now; no native qualification inferred |
+| RC2A-R | Independent implementation/package review | IMPLEMENTATION REVIEW REQUIRED; package review pending | Review full implementation through `781e9de` and exact evidence; no native qualification inferred |
 | HUFU-R | Sol reassesses AE4-B01 and requests D4a authorization | BLOCKED | Accepted RC2A source/package, Hufu design/delta decisions and compatible dependency graph |
 | C1-R | Independent C1 implementation review | PENDING AT INVENTORY | Separate Gagamba workstream; producer evidence is not acceptance |
 | C4-I | Approved C4 implementation and review | PENDING | Separate commission; C1/C2 prerequisites |

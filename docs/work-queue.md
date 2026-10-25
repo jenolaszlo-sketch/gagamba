@@ -1,5 +1,9 @@
 # Current work queue
 
+## Current consumer-contract work: RC2A-01 CLARIFIED AT 781e9de — INDEPENDENT IMPLEMENTATION REVIEW REQUIRED
+
+Update 2026-10-25: [owner clarification and evidence](evidence/restricted-consumer-contract-rc2a-01/clarification-2026-10-25.md) records the three public refusal rules and passing deterministic coverage at `781e9debb8df852d1d4d8ca98d92591e1609e193`: 95 passed / 0 failed / 0 skipped; build 0 warnings/errors. Wrong-length digests return false; the encoder and golden vector are preserved. Review the full implementation plus this follow-up. RC2A-02 remains NOT_STARTED, R1-F02/F03 remain OPEN for RC-2B, and **AE4-B01 remains OPEN**. No package/native/Hufu/release work was added.
+
 ## Current consumer-contract work: RC2A-01 IMPLEMENTED — INDEPENDENT REVIEW REQUIRED
 
 Update 2026-10-25: bounded passive source/focused tests commissioned in RC2A-01 are implemented at `e93d642e1a36af25c0e145d328bebadd1bba4838`, directly from accepted RC1-A. [Handoff and exact evidence](evidence/restricted-consumer-contract-rc2a-01/README.md): 95 committed pure tests passed, none failed/skipped; inclusive 65,536-byte encode/decode ceiling with mandatory oversized encode refusal. No pack/native/runtime/Hufu/dependency work. Next gate: independent implementation review, followed by separately commissioned RC2A-02 qualification; package/clean-consumer/mixed graph gates remain pending. R1-F02/F03 remain OPEN/deferred to RC-2B; **AE4-B01 remains OPEN**. Earlier current headings are historical checkpoints, not current completion claims.

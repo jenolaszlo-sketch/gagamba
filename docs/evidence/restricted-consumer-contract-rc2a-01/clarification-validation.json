@@ -1,0 +1,178 @@
+{
+  "checkedAtUtc": "2026-10-25T00:33:37.169363+00:00",
+  "scope": "producer source/evidence checks, not independent implementation acceptance",
+  "checks": [
+    {
+      "check": "exact original golden literal and digest preserved",
+      "passed": true,
+      "detail": {
+        "bytes": 873,
+        "sha256": "82161029848b1a821241af112ca806be8029d3cf2e7b95c6b23ce3e35850d5f3"
+      }
+    },
+    {
+      "check": "encoder reader models reference and original oracle unchanged",
+      "passed": true,
+      "detail": [
+        "src/Gagamba.Execution/Restricted/RestrictedManifest.cs",
+        "src/Gagamba.Execution/Restricted/ManifestReader.cs",
+        "src/Gagamba.Execution/Restricted/ManifestValidation.cs",
+        "src/Gagamba.Execution/Restricted/Contracts/RestrictedManifestView.cs",
+        "src/Gagamba.Execution/Restricted/Contracts/RestrictedPreparationReference.cs",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Contracts/ManifestTests.cs",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Contracts/ReferenceEncoder.cs",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Contracts/RestrictedPublicProjectionTests.cs"
+      ]
+    },
+    {
+      "check": "RC1 owner and independent design-review binding preserved",
+      "passed": true,
+      "detail": {
+        "owner": "9a705335701f0c1923bd9867a2612b8a93afa8cb",
+        "design": "d609c29d3048bc0fd91583068cb013fb906fdf90",
+        "review": "feb9d7584c41712195d4b90754ed7a342ba74bb7"
+      }
+    },
+    {
+      "check": "new implementation delta contains only approved source test API edits",
+      "passed": true,
+      "detail": "781e9debb8df852d1d4d8ca98d92591e1609e193"
+    },
+    {
+      "check": "native runtime and project metadata unchanged",
+      "passed": true,
+      "detail": "85631d2f04512376621d3d09f51d67fd90f45335"
+    },
+    {
+      "check": "test-first clarification reproduced old failure",
+      "passed": true,
+      "detail": {
+        "total": "3",
+        "executed": "3",
+        "passed": "0",
+        "failed": "3",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      }
+    },
+    {
+      "check": "all focused implementation tests pass without skips",
+      "passed": true,
+      "detail": [
+        {
+          "total": "57",
+          "executed": "57",
+          "passed": "57",
+          "failed": "0",
+          "error": "0",
+          "timeout": "0",
+          "aborted": "0",
+          "inconclusive": "0",
+          "passedButRunAborted": "0",
+          "notRunnable": "0",
+          "notExecuted": "0",
+          "disconnected": "0",
+          "warning": "0",
+          "completed": "0",
+          "inProgress": "0",
+          "pending": "0"
+        },
+        {
+          "total": "38",
+          "executed": "38",
+          "passed": "38",
+          "failed": "0",
+          "error": "0",
+          "timeout": "0",
+          "aborted": "0",
+          "inconclusive": "0",
+          "passedButRunAborted": "0",
+          "notRunnable": "0",
+          "notExecuted": "0",
+          "disconnected": "0",
+          "warning": "0",
+          "completed": "0",
+          "inProgress": "0",
+          "pending": "0"
+        }
+      ]
+    },
+    {
+      "check": "all three refusal rules and canonical controls covered",
+      "passed": true,
+      "detail": "TRX case names and implementation source inspected"
+    },
+    {
+      "check": "Release build zero warnings and errors",
+      "passed": true,
+      "detail": "actual captured build output"
+    },
+    {
+      "check": "wrong digest length returns false",
+      "passed": true,
+      "detail": "null manifest validation and constant-time 32-byte comparison retained"
+    },
+    {
+      "check": "owner worktree unchanged clean",
+      "passed": true,
+      "detail": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-rc1-owner-acceptance"
+    },
+    {
+      "check": "Hufu evidence unchanged clean",
+      "passed": true,
+      "detail": "C:\\Users\\Laszlos\\source\\repos\\Solo\\hufu-ae4-implementation"
+    },
+    {
+      "check": "evidence-only completion delta",
+      "passed": true,
+      "detail": [
+        "docs/evidence/restricted-consumer-contract-rc2a-01/README.md",
+        "docs/evidence/restricted-consumer-contract-rc2a-01/clarification-2026-10-25.md",
+        "docs/evidence/restricted-consumer-contract-rc2a-01/clarification-document-sha256.json",
+        "docs/evidence/restricted-consumer-contract-rc2a-01/clarification-source-binding.json",
+        "docs/evidence/restricted-consumer-contract-rc2a-01/clarification-test-results.json",
+        "docs/evidence/restricted-consumer-contract-rc2a-01/clarification-validation.json",
+        "docs/handoff.md",
+        "docs/plans/restricted-consumer-contract-implementation.md",
+        "docs/work-queue.md"
+      ]
+    },
+    {
+      "check": "current handoff relative links resolve",
+      "passed": true,
+      "detail": "current API/evidence links"
+    },
+    {
+      "check": "git diff --check",
+      "passed": true,
+      "detail": "no whitespace errors"
+    }
+  ],
+  "allPassed": true,
+  "evidenceChangedPaths": [
+    "docs/evidence/restricted-consumer-contract-rc2a-01/README.md",
+    "docs/evidence/restricted-consumer-contract-rc2a-01/clarification-2026-10-25.md",
+    "docs/evidence/restricted-consumer-contract-rc2a-01/clarification-document-sha256.json",
+    "docs/evidence/restricted-consumer-contract-rc2a-01/clarification-source-binding.json",
+    "docs/evidence/restricted-consumer-contract-rc2a-01/clarification-test-results.json",
+    "docs/evidence/restricted-consumer-contract-rc2a-01/clarification-validation.json",
+    "docs/handoff.md",
+    "docs/plans/restricted-consumer-contract-implementation.md",
+    "docs/work-queue.md"
+  ],
+  "codeCommit": "781e9debb8df852d1d4d8ca98d92591e1609e193",
+  "RC2A02": "NOT_STARTED",
+  "AE4-B01": "OPEN",
+  "independentReview": "REQUIRED",
+  "priorCollectorObservation": "Initial link-check collection used the Windows default CP1252 and failed on UTF-8 typographic quotes; explicit UTF-8 reads fixed the authoring script. No product/test change was needed."
+}

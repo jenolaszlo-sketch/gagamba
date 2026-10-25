@@ -1,5 +1,14 @@
 # RC2A-01 implementation handoff
 
+Current owner-clarified implementation: `781e9debb8df852d1d4d8ca98d92591e1609e193`.
+See the [clarification evidence](clarification-2026-10-25.md) and
+[current API contract](../../design/restricted-consumer-contract-rc2a-01-api.md).
+Wrong-length `VerifySha256` now returns false, as explicitly selected by the user.
+The three refusal rules are covered by 95 freshly passing focused tests, with no
+failures/skips and a zero-warning Release build. The original evidence below is
+preserved against `e93d642`; its wrong-length exception choice is superseded.
+Independent GLM implementation review remains required; RC2A-02 has not started.
+
 - Date: 2026-10-25 (Asia/Manila).
 - Slice: passive restricted consumer contract implementation and focused implementation tests.
 - Baseline: `9a705335701f0c1923bd9867a2612b8a93afa8cb`, tree `f6a7e141bf7f38c976655c0772b7ee817a7ce148`.

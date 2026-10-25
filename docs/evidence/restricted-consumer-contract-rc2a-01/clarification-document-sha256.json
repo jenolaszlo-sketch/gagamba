@@ -1,0 +1,46 @@
+{
+  "byteDomain": "LF-normalized UTF-8 bytes; matched to staged/final Git blobs",
+  "exclusion": "this manifest; its Git blob bound by final commit/tree",
+  "files": [
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-01/README.md",
+      "bytes": 19380,
+      "sha256": "2275b0cad9eaa89edd86f8b3e27dbc57c3e93a4e52dd22e5ae31ea329ca0e583"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-01/clarification-2026-10-25.md",
+      "bytes": 9889,
+      "sha256": "b10dc2c80d3db9cfd3fb55f454f56e394d13482adb26923c4ca442353a0e26c6"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-01/clarification-source-binding.json",
+      "bytes": 4521,
+      "sha256": "3d088ff7f1caad71cedf7d53ad1c5a1001de9a6b81dc1449c51991c9ebba8327"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-01/clarification-test-results.json",
+      "bytes": 29772,
+      "sha256": "904736e6c9360172031e210b3c2efe24c131b84fcda2bd4d4364750e4abfa870"
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-01/clarification-validation.json",
+      "bytes": 6323,
+      "sha256": "7d4ca61ab465818f41cb583ffdd4c90ecf67398e17703127400c4908c0d0cf67"
+    },
+    {
+      "path": "docs/handoff.md",
+      "bytes": 165779,
+      "sha256": "4be8cd360735f5b50ea18aacb8a75da93445d90bfb3bb85a208bae19c18fb472"
+    },
+    {
+      "path": "docs/plans/restricted-consumer-contract-implementation.md",
+      "bytes": 31015,
+      "sha256": "c5d0f88e9b2f2a4c7b3f4b3ddd2af1361e32bd5de0f4e8473608746e79fda718"
+    },
+    {
+      "path": "docs/work-queue.md",
+      "bytes": 145920,
+      "sha256": "7613e6fc45f60bd0c853782a41de50107e0a912fcc2e31456fc86245188ab125"
+    }
+  ]
+}

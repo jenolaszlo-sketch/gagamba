@@ -1,5 +1,11 @@
 # Gagamba handoff
 
+## Current consumer-contract action — RC2A-01 OWNER CLARIFICATION IMPLEMENTED; INDEPENDENT REVIEW REQUIRED
+
+Update 2026-10-25: user clarification is implemented at `781e9debb8df852d1d4d8ca98d92591e1609e193` on the existing isolated RC2A-01 branch. Wrong-length VerifySha256 returns false; oversized Encode throws ArgumentException; Supports throws ArgumentNullException for null ID and returns false for unsupported non-null values. [Current evidence](evidence/restricted-consumer-contract-rc2a-01/clarification-2026-10-25.md), [API contract](design/restricted-consumer-contract-rc2a-01-api.md). Fresh focused tests: 57 public + 38 deterministic internal passed, no failures/skips; Release Execution build has 0 warnings/errors. Golden bytes, canonical encoder and RC-1 remain unchanged.
+
+Next: independent GLM review of the complete implementation ancestry and current source/evidence. RC2A-02, package/consumer qualification, RC-2B, Hufu resumption and native/production readiness remain pending; **AE4-B01 remains OPEN**. Original `e93d642`/`5a5ef7b` evidence and historical status entries below are preserved; their prior wrong-length exception choice is superseded by the explicit user clarification.
+
 ## Current consumer-contract action — RC2A-01 IMPLEMENTED; INDEPENDENT REVIEW REQUIRED
 
 Update 2026-10-25: the current RC2A-01 user commission authorizes the bounded passive implementation and focused tests beyond the earlier plan's finalization-only staging. Implementation `e93d642e1a36af25c0e145d328bebadd1bba4838`, directly from accepted RC1-A `9a705335701f0c1923bd9867a2612b8a93afa8cb`, adds immutable complete public views, a five-field passive reference, strict decoder and the existing encoder's symmetric inclusive 65,536-byte public bound. [Implementation handoff](evidence/restricted-consumer-contract-rc2a-01/README.md), [frozen API](design/restricted-consumer-contract-rc2a-01-api.md). Exact committed Windows tests: 57 Execution + 38 selected pure M1 manifest/projection/identity cases passed, 0 failed/skipped; Release Execution build 0 warnings/errors. No runtime/native/Hufu/project/dependency change or pack occurred.
