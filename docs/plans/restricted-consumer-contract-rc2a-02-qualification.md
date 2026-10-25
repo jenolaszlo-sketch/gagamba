@@ -1,11 +1,12 @@
 # RC2A-02 tests-first qualification specification
 
 Date: 2026-10-25 (Asia/Manila). Current status: **RC2A-02A ACCEPTED WITH
-QUALIFICATIONS; RC2A-02B ACCEPTED WITH QUALIFICATIONS; FULL RC2A-02 NOT YET
-ACCEPTED** — see §11 for the current owner decision, §9 for the open Q2A-S /
-RC-D04 obligation, and §10 for the portability execution record. The original
-specification and execution history below remain preserved. This document plans
-only; it runs no test, builds no package and changes no production or test source.
+QUALIFICATIONS; RC2A-02B ACCEPTED WITH QUALIFICATIONS; Q2A-S / RC-D04 OPEN,
+ASSIGNED TO PLANNED RC2A-02C; FULL RC2A-02 NOT YET ACCEPTED** — see §12 for the
+current owner disposition, §11 for RC2A-02B acceptance, §9 for the original
+deferral and §10 for the portability execution record. Earlier execution
+records remain historical. This document is planning only; it records no new
+test execution and changes no production or test source.
 
 Governing inputs, all verified in the canonical Gagamba repository:
 
@@ -652,3 +653,28 @@ neither is merged or copied into this owner-decision branch. Q2’s verdict is
 This decision accepts **RC2A-02B only**. It does not accept full RC2A-02,
 authorize RC2A-03 or later milestones, close any listed obligation, or expand
 the supported claim beyond Windows and WSL2 managed-code value/codec scope.
+
+## 12. Q2A-S / RC-D04 owner disposition (2026-10-25)
+
+Status: **OPEN / NOT QUALIFIED; OWNER ASSIGNED TO PLANNED RC2A-02C; EXECUTION
+NOT STARTED.**
+
+The owner’s exact scope analysis, rationale, evidence assessment and acceptance
+criteria are recorded in the [Q2A-S / RC-D04 disposition](../decisions/gagamba-q2as-rcd04-owner-disposition.md).
+The source requirement is RC-1 §RC-D04 at design commit
+`d609c29d3048bc0fd91583068cb013fb906fdf90`; the residual RC2A-02 rows are
+Q2A-F2 reference coverage, Q2A-S public-surface/misuse and R1-F04’s negative
+temporal-surface/documentation check. The assigned slice covers the public
+five-field passive reference only; RC-2B’s live provider/artifact/deadline and
+release authority remains outside it.
+
+The RC2A-02A traceability matrix deferred these rows outside that authorization.
+Existing focused tests/probes and the Windows/WSL2 public-suite passes are
+supporting evidence, not a retroactive Q2A-S disposition. RC2A-02C is a planned
+focused qualification and review step; no tests or implementation are changed
+or claimed by this owner-disposition commit.
+
+RC2A-02C must complete and receive focused independent review before full
+RC2A-02 acceptance and before RC2A-03 qualification/acceptance relies on the
+passive reference. This assignment does not mark Q2A-S complete, accept full
+RC2A-02, or start RC2A-03.

@@ -29,28 +29,33 @@
     },
     {
       "path": "docs/plans/restricted-consumer-contract-rc2a-02-qualification.md",
-      "bytes": 41565,
-      "sha256": "65122e69186bbadf7d1bdb68106ecc45cbad107dab9be06b403efbb5a2ffc4a2"
+      "bytes": 42975,
+      "sha256": "cb2c21c0357c45e728ce44a7d6a03281eb75bc81f3dd578ddb6a5514b7af9ea9"
     },
     {
       "path": "docs/plans/restricted-consumer-contract-implementation.md",
-      "bytes": 36036,
-      "sha256": "f755c08004391b68d38e8dcc2855b10a0fd645dac8110ba6c8213ed099346dca"
+      "bytes": 36664,
+      "sha256": "41f7ff547effaee6cbf0ce9f5617299f7e7de8984fb53894e653a174079da4ba"
     },
     {
       "path": "docs/work-queue.md",
-      "bytes": 158756,
-      "sha256": "e04ee913cb637b6b99328fd427925684cb19af4640e93986a242f4f1fb012e90"
+      "bytes": 159378,
+      "sha256": "0c14d6a7f5a619b3d7409b0138f0c91cb3798cdcf120869b0deb55ab242b337b"
     },
     {
       "path": "docs/handoff.md",
-      "bytes": 178762,
-      "sha256": "bd93ce86b3b68be942efa263dcf207fa6478181d5e7fb5b46e1d4f1da0793bfa"
+      "bytes": 179355,
+      "sha256": "0397bc56bbf45d0721194b3e3ae964694fd2721dbae010f7ac72a14ad032c0b7"
     },
     {
       "path": "docs/decisions/restricted-consumer-contract-rc2a-02b-owner-acceptance.md",
       "bytes": 6986,
       "sha256": "97edb7855080fc9bc51dfda8306008d9b8f5b01cc705bd8e3ffb605f9eded7ca"
+    },
+    {
+      "path": "docs/decisions/gagamba-q2as-rcd04-owner-disposition.md",
+      "bytes": 12864,
+      "sha256": "e89c17d4634ad172f41a980216290e0326253aaffcd4aab54f8f81c885d7b7d3"
     }
   ],
   "documentationCorrection": {

@@ -24,6 +24,18 @@ RC-D04 remains open; full RC2A-02 remains unaccepted. The older status entries
 below preserve the state at their recorded checkpoints and are superseded by
 this decision.
 
+## Current Q2A-S / RC-D04 status — assigned to planned RC2A-02C (2026-10-25)
+
+The owner’s [Q2A-S / RC-D04 disposition](../decisions/gagamba-q2as-rcd04-owner-disposition.md)
+assigns the deferred passive-reference/public-surface qualification to a
+focused **RC2A-02C** evidence stage. It remains **OPEN / NOT QUALIFIED** and
+execution has not started. The scope is limited to the RC-D04 five-field public
+passive value, Q2A-S surface/misuse checks and R1-F04 temporal/documentation
+boundary; RC-2B live provider, artifact, deadline and release checks remain
+separate. Complete and independently review this stage before full RC2A-02
+acceptance and before RC2A-03 qualification/acceptance relies on this type.
+This planning update starts neither RC2A-02C execution nor RC2A-03.
+
 RC2A-B update: RC2A-01 is **owner-accepted with follow-up** at
 `68b01fbb53eefca9c8ca2f83ff50641521020a2a` (tree
 `54f659d01937da29bc9a5f82566a8349af264664`) after the independent GLM
@@ -97,8 +109,8 @@ test failure or permission to replace a real provider with a fake.
 | RC1-A | Owner accepts contract and dispositions | APPROVED AND RECORDED | [Owner decision](../decisions/restricted-consumer-rc1-owner-acceptance.md): Mode=`work`, passive public surface, encode/decode ceiling and all seven findings |
 | RC2A-01 | Revalidate/finalize API; commissioned passive implementation and focused tests | **ACCEPTED WITH FOLLOW-UP (RC2A-B)** | HEAD `68b01fbb53eefca9c8ca2f83ff50641521020a2a`, tree `54f659d01937da29bc9a5f82566a8349af264664`; [owner decision](../decisions/restricted-consumer-rc2a-01-owner-acceptance.md); implementation only — qualification not complete |
 | RC2A-R | Independent implementation/package review | **IMPLEMENTATION REVIEW COMPLETE — ACCEPT WITH FOLLOW-UP**; package review pending | GLM review preserved verbatim at `8e41babfc96afa2e617a53b63e50903d54001194` (blob `d329fcc49d289696bf1c4163f8f346c56115ba8c`, SHA-256 `77d2404c61dbf1af76e8448b966f03482186d95fff5bf6a676a32fe6c7d8e4d0`); R2A-F01–F04 dispositioned in the owner decision; package review remains RC2A-04 work |
-| RC2A-02 | Separately commissioned tests-first qualification | **RC2A-02A ACCEPTED WITH QUALIFICATIONS (WINDOWS); RC2A-02B ACCEPTED WITH QUALIFICATIONS (WINDOWS + WSL2); FULL RC2A-02 NOT YET ACCEPTED; Q2A-S / RC-D04 OPEN** | [RC2A-02A owner decision](../decisions/restricted-consumer-contract-rc2a-02a-owner-acceptance.md). [RC2A-02B owner decision](../decisions/restricted-consumer-contract-rc2a-02b-owner-acceptance.md): qualification `dd16baec48663d40cd29504d98e57e30dd0855df`, Q1 `5bc396c2e5619906ae202afe0a4244dfd6024d9e`, R1 `1cd22b9b109ddba4673b11487bceea62d2e92117`, Q2 `60de1f2d34a7df337a426501cb3954fdd3216a6b`; Q2 verified both Q1 findings resolved and all evidence bindings. Windows and WSL2: public 67/0/0, precise required 457/0/0 with identical reruns and matching test-name/outcome multisets. Native Linux/macOS not run; Q2A-S / RC-D04 remains open for full RC2A-02. |
-| RC2A-03 | Shared validation/reader, public views and passive reference | SOURCE IMPLEMENTED UNDER RC2A-01; qualification pending | `e93d642`; no separate qualification acceptance inferred |
+| RC2A-02 | Separately commissioned tests-first qualification | **RC2A-02A AND 02B ACCEPTED WITH QUALIFICATIONS; RC2A-02C Q2A-S / RC-D04 PLANNED, OPEN, NOT EXECUTED; FULL RC2A-02 NOT YET ACCEPTED** | [RC2A-02A owner decision](../decisions/restricted-consumer-contract-rc2a-02a-owner-acceptance.md); [RC2A-02B owner decision](../decisions/restricted-consumer-contract-rc2a-02b-owner-acceptance.md); [Q2A-S / RC-D04 disposition and RC2A-02C criteria](../decisions/gagamba-q2as-rcd04-owner-disposition.md). R1/Q2 verified the portability evidence; Q2A-S remains open until the focused stage and review are complete. |
+| RC2A-03 | Shared validation/reader, public views and passive reference | SOURCE IMPLEMENTED UNDER RC2A-01; stage not started; qualification pending; **Q2A-S / RC-D04 RC2A-02C evidence is a pre-acceptance gate** | `e93d642`; no separate qualification acceptance inferred; do not begin under this disposition |
 | RC2A-04 | Focused regressions, local package, clean consumer | Focused RC2A-01 regressions pass; PACKAGE/CONSUMER NOT_STARTED | No pack authorized by current commission; remaining qualification gates pending |
 | HUFU-R | Sol reassesses AE4-B01 and requests D4a authorization | BLOCKED | Accepted RC2A source/package, Hufu design/delta decisions and compatible dependency graph |
 | C1-R | Independent C1 implementation review | PENDING AT INVENTORY | Separate Gagamba workstream; producer evidence is not acceptance |

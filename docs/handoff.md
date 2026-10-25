@@ -1,10 +1,12 @@
 # Gagamba handoff
 
-## Current consumer-contract action — RC2A-02B ACCEPTED WITH QUALIFICATIONS (WINDOWS + WSL2); FULL RC2A-02 NOT YET ACCEPTED; Q2A-S / RC-D04 OPEN
+## Current consumer-contract action — RC2A-02A/02B ACCEPTED WITH QUALIFICATIONS; Q2A-S / RC-D04 OPEN, ASSIGNED TO PLANNED RC2A-02C; FULL RC2A-02 NOT YET ACCEPTED
 
 Owner decision recorded 2026-10-25: [RC2A-02B is ACCEPTED WITH QUALIFICATIONS](decisions/restricted-consumer-contract-rc2a-02b-owner-acceptance.md) for the bounded Windows 11 native and WSL2 Ubuntu managed-code value/codec scope. Qualification `dd16baec48663d40cd29504d98e57e30dd0855df`; Q1 `5bc396c2e5619906ae202afe0a4244dfd6024d9e`; R1 final `1cd22b9b109ddba4673b11487bceea62d2e92117`; Q2 `60de1f2d34a7df337a426501cb3954fdd3216a6b`. Each platform has public 67/0/0 and precise required 457/0/0 results, identical required reruns, and matching cross-platform test-name/outcome multisets. Q1 findings R1-01 and R1-02 are resolved and Q2 independently verified the integrity and source bindings. The broad Windows filter is provenance only (473 passed / 0 failed / 41 skipped; beyond the precise set, two managed-code classes add 16 passes and three Linux-native classes add 41 skips); the precise `Tests.Qualification.` filter remains authoritative.
 
 Native Linux and macOS: NOT RUN. WSL2 is not native Linux. Native confinement/sandbox, package and clean-consumer compatibility, mixed dependency graphs, binary reproducibility and Hufu integration are not established. Q2A-S / RC-D04 remains OPEN. Full RC2A-02 is NOT ACCEPTED; RC2A-03/04 and later work remain separate pending stages. Q1’s authorization-provenance/audit-trail note remains disclosed. The prior qualification entry below is retained as a historical checkpoint and its “review pending” status is superseded by this owner decision.
+
+Owner disposition recorded 2026-10-25: Q2A-S / RC-D04 is assigned to planned **RC2A-02C**, a focused qualification of the public passive-reference contract and R1-F04’s no-temporal/documentation boundary. It remains **OPEN / NOT QUALIFIED; not executed**. See the [owner disposition and acceptance criteria](decisions/gagamba-q2as-rcd04-owner-disposition.md). Complete the focused evidence and independent review before full RC2A-02 acceptance and before RC2A-03 qualification/acceptance relies on the reference. This record does not start RC2A-02C, RC2A-03 or later work.
 
 ## Prior qualification checkpoint — RC2A-02B IMPLEMENTED / QUALIFIED LOCALLY (WINDOWS + WSL2); NATIVE LINUX AND macOS NOT RUN; READY FOR INDEPENDENT REVIEW; FULL RC2A-02 NOT YET ACCEPTED; Q2A-S / RC-D04 OPEN
 

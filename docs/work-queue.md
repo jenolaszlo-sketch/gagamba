@@ -1,8 +1,10 @@
 # Current work queue
 
-## Current consumer-contract work: RC2A-02B ACCEPTED WITH QUALIFICATIONS (WINDOWS + WSL2); FULL RC2A-02 NOT YET ACCEPTED; Q2A-S / RC-D04 OPEN
+## Current consumer-contract work: RC2A-02A/02B ACCEPTED WITH QUALIFICATIONS; Q2A-S / RC-D04 OPEN, ASSIGNED TO PLANNED RC2A-02C; FULL RC2A-02 NOT YET ACCEPTED
 
 Owner decision recorded 2026-10-25: [RC2A-02B is ACCEPTED WITH QUALIFICATIONS](decisions/restricted-consumer-contract-rc2a-02b-owner-acceptance.md) for Windows 11 native and WSL2 Ubuntu managed-code value/codec scope. Qualification `dd16baec48663d40cd29504d98e57e30dd0855df`; Q1 `5bc396c2e5619906ae202afe0a4244dfd6024d9e`; R1 final `1cd22b9b109ddba4673b11487bceea62d2e92117`; Q2 `60de1f2d34a7df337a426501cb3954fdd3216a6b`. Public results are 67/0/0 and precise required results 457/0/0 on both platforms, with identical reruns and matching test-name/outcome multisets. Q2 independently verified both Q1 findings resolved and the evidence hashes/provenance. Windows broad-filter provenance is 473 passed / 0 failed / 41 skipped: beyond the precise set, two managed-code classes added 16 passes and three Linux-native classes added 41 skips. The precise `Tests.Qualification.` filter remains authoritative. Native Linux/macOS are NOT RUN; WSL2 is not native Linux. Native confinement, package/clean-consumer compatibility, mixed graphs, binary reproducibility and Hufu integration are not established. Q2A-S / RC-D04 remains OPEN. RC2A-03/04 and later work remain separately pending/unauthorized; full RC2A-02 is not accepted.
+
+Owner disposition recorded 2026-10-25: Q2A-S / RC-D04 is assigned to planned **RC2A-02C**, a focused qualification of the five-field public passive reference, Q2A-S surface/misuse assertions, and R1-F04’s non-temporal/documentation boundary. It remains **OPEN / NOT QUALIFIED; execution not started**. The [decision](decisions/gagamba-q2as-rcd04-owner-disposition.md) defines scope and acceptance criteria. Complete it and obtain focused independent review before full RC2A-02 acceptance or RC2A-03 qualification/acceptance relying on the reference. This assignment does not begin RC2A-02C or RC2A-03.
 
 The following qualification entry is retained as the prior execution-time status record; its “review pending” status is superseded by the owner decision above.
 
