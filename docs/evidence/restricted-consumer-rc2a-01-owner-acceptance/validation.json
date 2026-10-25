@@ -1,0 +1,42 @@
+{
+  "recordDate": "2026-10-25 (Asia/Manila)",
+  "checkedAtUtc": "2026-10-25T02:45Z",
+  "scope": "static documentation and Git-identity validation for the RC2A-B owner acceptance; no RC2A-02 execution, no build, no test, no pack, no native qualification",
+  "commands": [
+    "git rev-parse HEAD HEAD^{tree} (implementation worktree)",
+    "git log --oneline -1 review/gagamba-rc2a-01-glm-independent; git log --format=%H -1 review/...^",
+    "git log --oneline -1 decisions/gagamba-rc2a-01-owner-acceptance; git log --format=%H -1 decisions/...^",
+    "git status --short (all three worktrees)",
+    "Get-FileHash -Algorithm SHA256 (review source file and preserved copy)",
+    "git rev-parse HEAD:docs/reviews/restricted-consumer-rc2a-01-glm-independent.md (review worktree)",
+    "git cat-file blob <reviewBlob> (binary extraction; SHA-256 recomputed over exact blob bytes)"
+  ],
+  "checks": [
+    {"check": "canonical accepted implementation identity", "passed": true, "detail": "branch implementation/gagamba-rc2a-01 resolves at 68b01fbb53eefca9c8ca2f83ff50641521020a2a with root tree 54f659d01937da29bc9a5f82566a8349af264664; matches the owner-stated identities exactly"},
+    {"check": "review branch ancestry", "passed": true, "detail": "review/gagamba-rc2a-01-glm-independent commit 8e41babfc96afa2e617a53b63e50903d54001194 has parent 68b01fbb53eefca9c8ca2f83ff50641521020a2a (the accepted commit)"},
+    {"check": "decision branch ancestry", "passed": true, "detail": "decisions/gagamba-rc2a-01-owner-acceptance is created at 68b01fbb53eefca9c8ca2f83ff50641521020a2a; its acceptance-record commit will have that commit as direct parent"},
+    {"check": "accepted implementation worktree clean and untouched", "passed": true, "detail": "git status --short empty in Solo\\gagamba-rc2a-01 before and after; no commit created or amended on the implementation branch"},
+    {"check": "review source file located and verified", "passed": true, "detail": "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\docs\\reviews\\restricted-consumer-rc2a-01-glm-independent.md (16888 bytes) contains the RC2A-01 independent review heading, verified Git identities, contract compliance matrix C1-C15, findings R2A-F01..R2A-F04, independent validation results, deferred obligation reconciliation and final recommendation ACCEPT WITH FOLLOW-UP; not reconstructed from summaries"},
+    {"check": "verbatim preservation byte-for-byte", "passed": true, "detail": "source SHA-256 77d2404c61dbf1af76e8448b966f03482186d95fff5bf6a676a32fe6c7d8e4d0 equals preserved working-copy SHA-256 equals committed blob content SHA-256 (extracted via git cat-file, binary-safe); 16888 bytes; 111 CRLF lines preserved via -text .gitattributes entry"},
+    {"check": "review Git blob identity", "passed": true, "detail": "blob d329fcc49d289696bf1c4163f8f346c56115ba8c; review tree fd30ef218b2ff5d1422d2e3abddd59c50e11aead"},
+    {"check": "review content matches expected findings and recommendation", "passed": true, "detail": "R2A-F01 re-encode branch, R2A-F02 API-document digest inventory, R2A-F03 DLL byte identity, R2A-F04 null+wrong-length and argv observations; recommendation ACCEPT WITH FOLLOW-UP; no discrepancy requiring escalation"},
+    {"check": "all four findings have explicit owner dispositions", "passed": true, "detail": "R2A-F01 ACCEPT FOLLOW-UP; R2A-F02 ACCEPT FOLLOW-UP; R2A-F03 ACCEPT AS DISCLOSED; R2A-F04 ACCEPT FOLLOW-UP (acceptance record section 4)"},
+    {"check": "RC2A-02 specification completeness", "passed": true, "detail": "docs/plans/restricted-consumer-contract-rc2a-02-qualification.md contains Q2A-V vectors, Q2A-F 72-field mutation matrix, Q2A-B boundaries including R2A-F01 assessment and R2A-F04 cases, Q2A-P Windows/Linux/macOS run definitions with provenance rules, Q2A-E evidence hygiene including R2A-F02 rebinding and R2A-F03 distinction, Q2A-R independent review exit, requirement-to-test-to-evidence traceability matrix, entry criteria, exit criteria, stop conditions and exclusions; tests-first order required"},
+    {"check": "project tracking updated", "passed": true, "detail": "plans/restricted-consumer-contract-implementation.md, docs/work-queue.md, docs/handoff.md record RC2A-01 ACCEPTED WITH FOLLOW-UP, RC2A-02 PLANNED NOT STARTED, package qualification PENDING, R1-F02/F03 OPEN, AE4-B01 OPEN, Hufu resumption NOT AUTHORIZED; all historical entries preserved"},
+    {"check": "documentation-only exact path allowlist", "passed": true, "detail": ["docs/decisions/restricted-consumer-rc2a-01-owner-acceptance.md", "docs/plans/restricted-consumer-contract-rc2a-02-qualification.md", "docs/plans/restricted-consumer-contract-implementation.md", "docs/work-queue.md", "docs/handoff.md", "docs/evidence/restricted-consumer-rc2a-01-owner-acceptance/README.md", "docs/evidence/restricted-consumer-rc2a-01-owner-acceptance/owner-instruction.md", "docs/evidence/restricted-consumer-rc2a-01-owner-acceptance/source-binding.json", "docs/evidence/restricted-consumer-rc2a-01-owner-acceptance/validation.json", "docs/evidence/restricted-consumer-rc2a-01-owner-acceptance/document-sha256.json"]},
+    {"check": "production tests projects package metadata unchanged", "passed": true, "detail": {"src": "b8c167e3d7340a562221591bdc2b6df7adb372d1", "tests": "ceaa7aca8121a1acef5300e074a1f6bc73c0a781", "native": "85631d2f04512376621d3d09f51d67fd90f45335"}},
+    {"check": "review branch not merged into decision branch", "passed": true, "detail": "decision branch references the review by exact commit/blob/SHA-256 identities only"},
+    {"check": "deferred obligations remain visible", "passed": true, "detail": "R1-F02/F03 OPEN for RC-2B; R1-F06 HUFU-R recheck; AE4-B01 OPEN; package/clean-consumer/mixed-graph gates pending; no native or cross-platform qualification claimed"},
+    {"check": "RC2A-02 marked NOT STARTED", "passed": true, "detail": "specification status line and all tracking entries state PLANNED, NOT STARTED with separate-authorization requirement"},
+    {"check": "no validation runs invented", "passed": true, "detail": "the 95-test reproduction cited is the preserved independent review's own recorded evidence; this record performed documentation and Git checks only"},
+    {"check": "worktrees clean at completion", "passed": true, "detail": "verified in final validation after Commit A and after the decision commit; see external completion receipt for the decision commit's final identity"}
+  ],
+  "allPassed": true,
+  "changedPaths": ["docs/decisions/restricted-consumer-rc2a-01-owner-acceptance.md", "docs/plans/restricted-consumer-contract-rc2a-02-qualification.md", "docs/plans/restricted-consumer-contract-implementation.md", "docs/work-queue.md", "docs/handoff.md", "docs/evidence/restricted-consumer-rc2a-01-owner-acceptance/README.md", "docs/evidence/restricted-consumer-rc2a-01-owner-acceptance/owner-instruction.md", "docs/evidence/restricted-consumer-rc2a-01-owner-acceptance/source-binding.json", "docs/evidence/restricted-consumer-rc2a-01-owner-acceptance/validation.json", "docs/evidence/restricted-consumer-rc2a-01-owner-acceptance/document-sha256.json"],
+  "commitA": {"branch": "review/gagamba-rc2a-01-glm-independent", "commit": "8e41babfc96afa2e617a53b63e50903d54001194", "tree": "fd30ef218b2ff5d1422d2e3abddd59c50e11aead", "blob": "d329fcc49d289696bf1c4163f8f346c56115ba8c", "documentSha256": "77d2404c61dbf1af76e8448b966f03482186d95fff5bf6a676a32fe6c7d8e4d0"},
+  "commitB": "documentation-only commit on decisions/gagamba-rc2a-01-owner-acceptance; final commit/tree recorded in the external completion receipt to avoid self-reference",
+  "implementation": "accepted (RC2A-01), not modified by this record",
+  "buildTestPackNative": "not run",
+  "rc2a02Execution": "not authorized by this record",
+  "GLMReview": "preserved verbatim on its own branch; not copied, merged or rewritten"
+}
