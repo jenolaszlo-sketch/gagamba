@@ -1,0 +1,43 @@
+{
+  "reviewId": "GAGAMBA-RC2A-03-CQ1-Q1",
+  "overallDisposition": "REMEDIATION REQUIRED",
+  "reviewBranch": "review/gagamba-rc2a-03-cq1-q1",
+  "reviewWorktree": "C:\\Users\\Laszlos\\source\\repos\\Solo\\rc2a-03-cq1-q1-review",
+  "reviewReportCommit": "7c6d0eb310dff46390f57a9cd41bd7b81abbcf9c",
+  "reviewReportTree": "a5d801b74adcda81f8927b50e0189066d3fee007",
+  "reviewReportParent": "c946df0c93dde414c744f46cce054e7cd3f2c26e",
+  "reviewedCommit": "c946df0c93dde414c744f46cce054e7cd3f2c26e",
+  "reviewedTree": "ba7a3ef73a651cf5ace62583873742f855330910",
+  "reviewedParent": "9519e7cb612af6ff69c93c0d128553138533d9fd",
+  "reviewWorktreeCleanAfterReportCommit": true,
+  "producerWorktree": "C:\\Users\\Laszlos\\source\\repos\\Solo\\rc2a-03-cq1",
+  "producerBranch": "qualification/gagamba-rc2a-03-cq1",
+  "producerCommitTreeParent": "c946df0c93dde414c744f46cce054e7cd3f2c26e ba7a3ef73a651cf5ace62583873742f855330910 9519e7cb612af6ff69c93c0d128553138533d9fd",
+  "producerWorktreeCleanAfterReportCommit": true,
+  "changedPaths": [
+    "docs/reviews/rc2a-03-cq1-q1-independent-verification.md",
+    "docs/reviews/rc2a-03-cq1-q1/verification.json",
+    "docs/reviews/rc2a-03-cq1-q1/verify_record.py"
+  ],
+  "reportArtifacts": [
+    {
+      "path": "docs/reviews/rc2a-03-cq1-q1-independent-verification.md",
+      "gitBlob": "090cc279b4ec508d16cec6ef7a4ac095fe52b4b1",
+      "committedBytes": 30919,
+      "committedSHA256": "be23011288e6e947d3b9a28e1940618c437e21e380c0f48886062818f260f5a9"
+    },
+    {
+      "path": "docs/reviews/rc2a-03-cq1-q1/verification.json",
+      "gitBlob": "5e25d155b1562336890c09b856e14a573d9a2070",
+      "committedBytes": 106611,
+      "committedSHA256": "09e5bb863ddc5c679a30e829e5f6287a636c1d69d8bf48fba95c436c1c39c55e"
+    },
+    {
+      "path": "docs/reviews/rc2a-03-cq1-q1/verify_record.py",
+      "gitBlob": "52dd2e7220fbbc22ce88d85e14440c249d3cc2f3",
+      "committedBytes": 11678,
+      "committedSHA256": "8b32c433bd49e198b63df989de46737be1ed3c3889d57601afd74f2fce4cdb29"
+    }
+  ],
+  "note": "This companion is the post-commit Git-binding section of the independent review report. Its own containing receipt commit cannot self-embed its ID; final commit/tree/parent and clean status are supplied in the completion message. No owner acceptance or remediation performed."
+}
