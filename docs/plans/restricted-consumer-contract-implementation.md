@@ -3,14 +3,20 @@
 Date: 2026-10-24; owner-acceptance update 2026-10-25; RC2A-B acceptance update
 2026-10-25; RC2A-02A acceptance update 2026-10-25; RC2A-02B owner acceptance
 update 2026-10-25; RC2A-02C (Q2A-S / RC-D04) owner acceptance update
-2026-10-26 (Asia/Manila). Governing design: [RC-1](../design/restricted-consumer-contract-rc1.md) at
+2026-10-26; RC2A-02 full-stage owner acceptance update 2026-10-26
+(Asia/Manila). Governing design: [RC-1](../design/restricted-consumer-contract-rc1.md) at
 `d609c29d3048bc0fd91583068cb013fb906fdf90`, independently accepted with
 qualifications by GLM at `feb9d7584c41712195d4b90754ed7a342ba74bb7`, followed by
 [RC1-A owner acceptance](../decisions/restricted-consumer-rc1-owner-acceptance.md).
 Consumer dependency: Hufu AE4-B01. **Planning only; RC-2B, package qualification
 and Hufu resumption are not authorized by this document, RC1-A or RC2A-B.**
 
-## Current Q2A-S / RC-D04 status — ACCEPTED WITH QUALIFICATIONS via RC2A-02C (2026-10-26)
+## Current Q2A-S / RC-D04 status — ACCEPTED WITH QUALIFICATIONS via RC2A-02C (2026-10-26); RC2A-02 full stage ACCEPTED WITH QUALIFICATIONS
+
+**Full-stage owner decision recorded 2026-10-26: [RC2A-02 is ACCEPTED WITH QUALIFICATIONS](../decisions/restricted-consumer-contract-rc2a-02-full-stage-owner-acceptance.md)** on branch `decisions/gagamba-rc2a-02-full-stage-acceptance`, based on the three accepted substage dispositions and the independent full-stage assessment **RC2A-02-FSA-01** (`assessment/gagamba-rc2a-02-full-stage` at `058a150130c5f112c7e9b8189bba8842cf0cec52`, verdict READY FOR OWNER ACCEPTANCE). All eight qualification-plan §5 exit criteria are dispositioned; the E2 (F03) and E6 (native Linux/macOS NOT RUN) qualifications are carried forward with the R2A-F03 standing rule, the 02B audit-trail note, the F01 erratum, and the passive-reference boundary. A consolidated cross-substage run was not performed and is not a mandatory RC2A-02 exit criterion. Acceptance establishes qualification of the passive value/codec implementation only; RC2A-03/04, RC-2B (R1-F02/F03 OPEN), AE4-B01, native sandbox, packaging/publication, Hufu, and end-to-end execution remain open or unauthorized, and no subsequent stage is authorized by this decision.
+
+The RC2A-02C substage record below preserves the substage-level acceptance
+history.
 
 RC2A-02C ran on `qualification/gagamba-rc2a-02c-q2as-rcd04`: the pre-execution
 matrix is commit `66a66bf56508b23b5730827a012ba730b702b72b`; final tested

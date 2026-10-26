@@ -1,13 +1,14 @@
 # RC2A-02 tests-first qualification specification
 
-Date: 2026-10-25 (Asia/Manila); RC2A-02C owner acceptance update 2026-10-26.
-Current status: **RC2A-02A ACCEPTED WITH QUALIFICATIONS; RC2A-02B ACCEPTED
-WITH QUALIFICATIONS; Q2A-S / RC-D04 ACCEPTED WITH QUALIFICATIONS VIA RC2A-02C;
-FULL RC2A-02 NOT YET ACCEPTED** — see §13 for the RC2A-02C owner acceptance,
-§12 for the stage assignment, §11 for RC2A-02B acceptance, §9 for the original
-deferral and §10 for the portability execution record. Earlier execution
-records remain historical. This document is planning only; it records no new
-test execution and changes no production or test source.
+Date: 2026-10-25 (Asia/Manila); RC2A-02C owner acceptance update 2026-10-26;
+full-stage owner acceptance update 2026-10-26.
+Current status: **RC2A-02 FULL STAGE ACCEPTED WITH QUALIFICATIONS** (RC2A-02A,
+RC2A-02B and Q2A-S / RC-D04 via RC2A-02C each ACCEPTED WITH QUALIFICATIONS) —
+see §14 for the full-stage owner acceptance, §13 for the RC2A-02C owner
+acceptance, §12 for the stage assignment, §11 for RC2A-02B acceptance, §9 for
+the original deferral and §10 for the portability execution record. Earlier
+execution records remain historical. This document is planning only; it
+records no new test execution and changes no production or test source.
 
 Governing inputs, all verified in the canonical Gagamba repository:
 
@@ -755,3 +756,37 @@ reproducibility beyond the demonstrated profile, Hufu integration, or
 end-to-end execution. Full RC2A-02 remains **NOT ACCEPTED** pending its
 remaining criteria and a separate explicit owner acceptance; RC2A-03/04 and
 all later work remain not started and not authorized.
+
+## 14. Full-stage owner acceptance (2026-10-26)
+
+Status: **RC2A-02 ACCEPTED WITH QUALIFICATIONS.** This section supersedes
+the "full stage not accepted" sentences of §9–§13; those records remain
+historical.
+
+The owner decision is recorded in
+[restricted-consumer-contract-rc2a-02-full-stage-owner-acceptance.md](../decisions/restricted-consumer-contract-rc2a-02-full-stage-owner-acceptance.md)
+on branch `decisions/gagamba-rc2a-02-full-stage-acceptance`, a
+documentation-only direct child of the RC2A-02C owner-acceptance tip
+`a36cb684ad75cebf3ba778a6c86d42d7f5f2d6f6`. The decision is based on the
+three accepted substage dispositions and the independent full-stage
+acceptance-gap assessment **RC2A-02-FSA-01** (branch
+`assessment/gagamba-rc2a-02-full-stage`, commit
+`058a150130c5f112c7e9b8189bba8842cf0cec52`, verdict **READY FOR OWNER
+ACCEPTANCE**), which dispositioned all eight §5 exit criteria (E2 and E6
+with contract-compatible qualifications), reconciled the substage evidence
+and ancestry, and found no blocking defect or evidence gap.
+
+Carried-forward qualifications: F03 digest-bound large vector
+materialization (RC2A-02A); native Linux and macOS NOT RUN with WSL2 always
+labeled `wsl2` (RC2A-02B); the R2A-F03 no-binary-claim standing rule; the
+02B Q1 authorization-provenance/audit-trail note (preserved as disclosed);
+the Q2C-Q2-F01 checksum-count erratum; and the passive-reference boundary.
+A consolidated cross-substage run was not performed and is not a mandatory
+RC2A-02 exit criterion; it may remain optional future work.
+
+Acceptance establishes qualification of the passive value/codec
+implementation only. It completes neither RC2A-04 packaging/clean-consumer
+qualification, nor native/production qualification, nor AE4-B01 closure, and
+authorizes neither Hufu resumption nor publication. RC2A-03/04, RC-2B
+(R1-F02/F03 OPEN), native sandbox, packaging, publication and end-to-end
+execution remain not started, open, or unauthorized.
