@@ -790,3 +790,27 @@ qualification, nor native/production qualification, nor AE4-B01 closure, and
 authorizes neither Hufu resumption nor publication. RC2A-03/04, RC-2B
 (R1-F02/F03 OPEN), native sandbox, packaging, publication and end-to-end
 execution remain not started, open, or unauthorized.
+
+## 15. RC2A-03-CQ1 component qualification record (2026-10-26)
+
+Status: **RC2A-03-CQ1 PREPARED / READY FOR INDEPENDENT REVIEW; RC2A-03 OWNER
+SIGN-OFF PENDING; RC2A-04 NOT AUTHORIZED.**
+
+Under the owner's RC2A-03-CQ1 authorization (the bounded slice recommended by
+the RC2A-ROADMAP-01 assessment §10 — `docs/assessments/rc2a-roadmap-01-restricted-execution-dependency-review.md`
+on branch `assessment/gagamba-rc2a-roadmap-01` at `d417367499979d38a3c9a498275d8422bf69f3d0`,
+referenced by identity), the [component qualification record](../evidence/restricted-consumer-contract-rc2a-03-cq1/README.md)
+was prepared on branch `qualification/gagamba-rc2a-03-cq1`, based directly on
+the accepted RC2A-02 baseline `9519e7cb612af6ff69c93c0d128553138533d9fd`
+(tree `7b162d2b0e00d72c27a2389ed505d531758797f1`). It verifies component
+identity with zero drift (`src` `b8c167e3…`, `native` `85631d2f…`, frozen API
+blob `2d6b9d12…` across nine accepted-chain checkpoints), connects every
+component capability to its accepted RC2A-02 artifact, inherits all RC2A-02
+qualifications verbatim, states the passive security boundary and platform
+limits, and records the RC2A-02 tracking-row reconciliation (RC2A03-CQ1-F01).
+The implementation plan's RC2A-03 pre-acceptance gate (RC2A-02C evidence) is
+satisfied.
+
+This record changes no production, test, or native source. It is a candidate
+for independent review; **RC2A-03 owner sign-off remains pending** and
+RC2A-04 remains not authorized.
