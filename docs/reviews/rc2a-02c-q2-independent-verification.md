@@ -99,6 +99,16 @@ The stale `39/39` statement in `validation.md:74` is the only confirmed document
 
 This is Windows-only qualification of the passive managed-code value and R1-F04 documentation boundary. It does not establish provider-origin preparation, deadline handling, release behavior, retained-state authorization, native confinement, package/distribution readiness, reproducibility, Hufu integration, native Linux/macOS behavior, or full RC2A-02 acceptance. RC2A-02C remains locally qualified only; Q2A-S / RC-D04 requires its separate owner disposition. No RC2A-03 work is authorized or started.
 
+## Re-verification (2026-10-26)
+
+A second independent execution reproduced the focused build and test run on the same host and SDK, with results written to [`rc2a-02c-q2-evidence/windows/rerun-20261026/`](rc2a-02c-q2-evidence/windows/rerun-20261026/test.log):
+
+- Build: exit 0, 0 warnings / 0 errors ([`build.log`](rc2a-02c-q2-evidence/windows/rerun-20261026/build.log), [`build.exit`](rc2a-02c-q2-evidence/windows/rerun-20261026/build.exit) = 0).
+- Focused tests: exit 0, **3 passed / 0 failed / 0 skipped** ([`rc2a-02c-q2-rerun.trx`](rc2a-02c-q2-evidence/windows/rerun-20261026/rc2a-02c-q2-rerun.trx)); the three test names and outcomes match the committed final qualification TRX.
+- The rerun [`public-surface-inventory.json`](rc2a-02c-q2-evidence/windows/rerun-20261026/public-surface-inventory.json) is byte-identical to both the committed qualification final inventory and this review's earlier independent inventory.
+
+The re-verification also independently confirmed: all 40 `SHA256SUMS` digests against the checkout; all 16 `document-sha256.json` LF-normalized bindings; 14/14 relative evidence links; the pre-execution matrix diff (status/evidence-path updates only, requirements unchanged); commit chronology (matrix `66a66bf` at 21:25:59 precedes every test commit, and the final TRX run time falls between `c4837b0` and `62b75f5`); the RC-1 blob `4b300b01` and frozen-API blob `2d6b9d12` identities (the API blob is unchanged since the RC2A-02A acceptance `e5fff9e8`); and that Q1/Q2 review commits are not ancestors of the qualification or review branches. No new finding arose.
+
 ## Findings and recommendation
 
 **Q2C-Q2-F01 — Low, nonblocking documentation inconsistency**
