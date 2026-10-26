@@ -1,9 +1,10 @@
 # RC2A-02 tests-first qualification specification
 
-Date: 2026-10-25 (Asia/Manila). Current status: **RC2A-02A ACCEPTED WITH
-QUALIFICATIONS; RC2A-02B ACCEPTED WITH QUALIFICATIONS; Q2A-S / RC-D04 OPEN,
-ASSIGNED TO PLANNED RC2A-02C; FULL RC2A-02 NOT YET ACCEPTED** — see §12 for the
-current owner disposition, §11 for RC2A-02B acceptance, §9 for the original
+Date: 2026-10-25 (Asia/Manila); RC2A-02C owner acceptance update 2026-10-26.
+Current status: **RC2A-02A ACCEPTED WITH QUALIFICATIONS; RC2A-02B ACCEPTED
+WITH QUALIFICATIONS; Q2A-S / RC-D04 ACCEPTED WITH QUALIFICATIONS VIA RC2A-02C;
+FULL RC2A-02 NOT YET ACCEPTED** — see §13 for the RC2A-02C owner acceptance,
+§12 for the stage assignment, §11 for RC2A-02B acceptance, §9 for the original
 deferral and §10 for the portability execution record. Earlier execution
 records remain historical. This document is planning only; it records no new
 test execution and changes no production or test source.
@@ -716,3 +717,41 @@ qualification does not establish downstream live-operation authorization,
 provider, deadline, release, native, packaging, or Hufu behavior. Q2A-S / RC-D04
 stays open until independent review and separate owner disposition; full
 RC2A-02 remains unaccepted and RC2A-03 has not started.
+
+## 13. RC2A-02C owner acceptance (2026-10-26)
+
+Status: **Q2A-S / RC-D04 ACCEPTED WITH QUALIFICATIONS VIA RC2A-02C; FULL
+RC2A-02 NOT YET ACCEPTED.** This section supersedes the open-status sentence
+at the end of §12; the assignment record itself remains historical.
+
+The owner decision is recorded in
+[restricted-consumer-contract-rc2a-02c-owner-acceptance.md](../decisions/restricted-consumer-contract-rc2a-02c-owner-acceptance.md)
+on branch `decisions/gagamba-rc2a-02c-owner-acceptance`, a documentation-only
+direct child of the qualification evidence tip
+`62b75f5866d0c339816712baeb04baa386b06f85` (tree
+`66f996e1cf973e48487a073b07f1e78d9139c911`, final tested code
+`c4837b0b434fc75ebc3e08d278bdc09c3965a181`). The independent review is
+preserved on `review/gagamba-rc2a-02c-q2` at
+`9534581c34d55c1219e90ddcd290900583098388` with re-verification
+`f8b692e04941462ea592d9653960191cafb937cc`; its verdict is **SUPPORTED WITH
+QUALIFICATIONS**, with all 13 matrix rows independently supported, the
+focused Windows build (0 warnings / 0 errors) and three-test run
+(3 passed / 0 failed / 0 skipped) independently reproduced twice, and the
+package/document/link/source bindings independently confirmed.
+
+The review's single finding, Q2C-Q2-F01 (`validation.md` reported 39/39
+package checksums where the committed `SHA256SUMS` contains 40 entries, all
+independently verified), is a nonblocking P3 documentation discrepancy. The
+evidence package is immutable and hash-bound, so the correction is recorded
+as an explicit erratum in the owner decision rather than by modifying the
+reviewed artifact or its manifests.
+
+Acceptance is bounded to the Windows passive managed-code
+`RestrictedPreparationReference` value, the 13 Q2A-S matrix requirements, and
+the RC-D04 / R1-F04 documentation boundary. It does not establish
+provider-origin preparation, deadlines or timing guarantees, release or
+retained-state behavior, native confinement, packaging or distribution,
+reproducibility beyond the demonstrated profile, Hufu integration, or
+end-to-end execution. Full RC2A-02 remains **NOT ACCEPTED** pending its
+remaining criteria and a separate explicit owner acceptance; RC2A-03/04 and
+all later work remain not started and not authorized.

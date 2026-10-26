@@ -2,32 +2,48 @@
 
 Date: 2026-10-24; owner-acceptance update 2026-10-25; RC2A-B acceptance update
 2026-10-25; RC2A-02A acceptance update 2026-10-25; RC2A-02B owner acceptance
-update 2026-10-25 (Asia/Manila). Governing design: [RC-1](../design/restricted-consumer-contract-rc1.md) at
+update 2026-10-25; RC2A-02C (Q2A-S / RC-D04) owner acceptance update
+2026-10-26 (Asia/Manila). Governing design: [RC-1](../design/restricted-consumer-contract-rc1.md) at
 `d609c29d3048bc0fd91583068cb013fb906fdf90`, independently accepted with
 qualifications by GLM at `feb9d7584c41712195d4b90754ed7a342ba74bb7`, followed by
 [RC1-A owner acceptance](../decisions/restricted-consumer-rc1-owner-acceptance.md).
 Consumer dependency: Hufu AE4-B01. **Planning only; RC-2B, package qualification
 and Hufu resumption are not authorized by this document, RC1-A or RC2A-B.**
 
-## Current Q2A-S / RC-D04 status — RC2A-02C qualified locally; independent review pending (2026-10-25)
+## Current Q2A-S / RC-D04 status — ACCEPTED WITH QUALIFICATIONS via RC2A-02C (2026-10-26)
 
-RC2A-02C has a local outcome of **QUALIFIED / READY FOR INDEPENDENT REVIEW**
-on `qualification/gagamba-rc2a-02c-q2as-rcd04`. The pre-execution matrix is
-commit `66a66bf56508b23b5730827a012ba730b702b72b`. Final tested commit
-`c4837b0b434fc75ebc3e08d278bdc09c3965a181` has `src` tree
+RC2A-02C ran on `qualification/gagamba-rc2a-02c-q2as-rcd04`: the pre-execution
+matrix is commit `66a66bf56508b23b5730827a012ba730b702b72b`; final tested
+commit `c4837b0b434fc75ebc3e08d278bdc09c3965a181` has `src` tree
 `b8c167e3d7340a562221591bdc2b6df7adb372d1`, tests-only `tests` tree
 `9c906b349b0bf0cffdee331fb5700f9b7828c199`, and unchanged `native` tree
-`85631d2f04512376621d3d09f51d67fd90f45335`. The focused Windows Release build
-passed with 0 warnings/errors and the three mapped tests passed 3/3, 0 failed,
-0 skipped. The [evidence package](../evidence/restricted-consumer-contract-rc2a-02c-q2as-rcd04/README.md)
+`85631d2f04512376621d3d09f51d67fd90f45335`; the evidence tip is
+`62b75f5866d0c339816712baeb04baa386b06f85` (tree
+`66f996e1cf973e48487a073b07f1e78d9139c911`). The focused Windows Release
+build passed with 0 warnings/errors and the three mapped tests passed 3/3,
+0 failed, 0 skipped. The [evidence package](../evidence/restricted-consumer-contract-rc2a-02c-q2as-rcd04/README.md)
 contains the raw results, complete public-surface inventory, source binding,
 documentation review, integrity manifest and reviewer handoff.
 
-The result covers only the passive five-field reference contract and R1-F04
-documentation boundary. Q2A-S / RC-D04 remains **OPEN** pending focused
-independent review and separate owner disposition. Full RC2A-02 remains
-**NOT ACCEPTED**; this result does not start RC2A-03 or qualify RC-2B, provider,
-deadline, release, native, packaging or Hufu behavior.
+The independent review on `review/gagamba-rc2a-02c-q2` at
+`9534581c34d55c1219e90ddcd290900583098388` with re-verification
+`f8b692e04941462ea592d9653960191cafb937cc` issued **SUPPORTED WITH
+QUALIFICATIONS**: 13/13 matrix rows independently supported, the build and
+focused run reproduced twice, and 40/40 package digests, 16/16 document
+bindings, 14/14 relative links and the source bindings independently
+confirmed. The owner decision
+[restricted-consumer-contract-rc2a-02c-owner-acceptance.md](../decisions/restricted-consumer-contract-rc2a-02c-owner-acceptance.md)
+records **Q2A-S / RC-D04 ACCEPTED WITH QUALIFICATIONS** on
+`decisions/gagamba-rc2a-02c-owner-acceptance`. Its single nonblocking P3
+finding, Q2C-Q2-F01 (`validation.md` understated the package checksum count
+as 39/39; the committed manifest has 40 verified entries), is corrected by
+erratum in the decision without modifying the immutable evidence package.
+
+The acceptance covers only the passive five-field reference contract and
+R1-F04 documentation boundary on Windows. Full RC2A-02 remains **NOT
+ACCEPTED**; this disposition does not start RC2A-03 or qualify RC-2B,
+provider, deadline, release, native, packaging, reproducibility, Hufu or
+end-to-end behavior. No next scope is authorized by this decision.
 
 ## RC2A-02B status — owner accepted with qualifications (2026-10-25)
 
