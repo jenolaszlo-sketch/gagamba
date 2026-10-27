@@ -1,0 +1,69 @@
+{
+  "reviewId": "GAGAMBA-RC2A-03-CQ1-Q2",
+  "overallDisposition": "SUPPORTED WITH QUALIFICATIONS",
+  "findings": {
+    "F01": "CLOSED for exact reviewed R1 target",
+    "F02": "CLOSED for exact reviewed R1 target",
+    "F03": "CLOSED for exact reviewed R1 target",
+    "F04": "CLOSED for exact reviewed R1 target"
+  },
+  "reviewedCommit": "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d",
+  "reviewedTree": "f3f63129be98c5c9f9efba3302da331ae65139ee",
+  "reviewedParent": "c946df0c93dde414c744f46cce054e7cd3f2c26e",
+  "acceptedBaseline": "9519e7cb612af6ff69c93c0d128553138533d9fd",
+  "reviewBranch": "review/gagamba-rc2a-03-cq1-q1",
+  "reviewWorktree": "C:\\Users\\Laszlos\\source\\repos\\Solo\\rc2a-03-cq1-q1-review",
+  "reviewReportCommit": "a58f1b2a07d959c763bf6d08143797846948fe74",
+  "reviewReportTree": "71c688b0290b0f211842f82ac58733b8b836cbc2",
+  "reviewReportParent": "dd7e47d2c5f75af126ce4a081013bf21182d73ee",
+  "reviewWorktreeCleanAfterReportCommit": true,
+  "reviewedProducerBranch": "qualification/gagamba-rc2a-03-cq1",
+  "producerWorktree": "C:\\Users\\Laszlos\\source\\repos\\Solo\\rc2a-03-cq1",
+  "producerCommitTreeParent": "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d f3f63129be98c5c9f9efba3302da331ae65139ee c946df0c93dde414c744f46cce054e7cd3f2c26e",
+  "producerWorktreeCleanAfterReportCommit": true,
+  "producerUnchanged": true,
+  "preservedQ1Commit": "dd7e47d2c5f75af126ce4a081013bf21182d73ee",
+  "preservedQ1Artifacts": [
+    {
+      "path": "docs/reviews/rc2a-03-cq1-q1-independent-verification.md",
+      "gitBlob": "090cc279b4ec508d16cec6ef7a4ac095fe52b4b1",
+      "sha256": "be23011288e6e947d3b9a28e1940618c437e21e380c0f48886062818f260f5a9"
+    },
+    {
+      "path": "docs/reviews/rc2a-03-cq1-q1/git-binding.json",
+      "gitBlob": "0ea7c4b819dfcd88ce545c030af4cb9e97220676",
+      "sha256": "a58b7b7673b1aba3c557ee508e93fc0c2ea411e53694577feb67e662153214a5"
+    },
+    {
+      "path": "docs/reviews/rc2a-03-cq1-q1/verification.json",
+      "gitBlob": "5e25d155b1562336890c09b856e14a573d9a2070",
+      "sha256": "09e5bb863ddc5c679a30e829e5f6287a636c1d69d8bf48fba95c436c1c39c55e"
+    },
+    {
+      "path": "docs/reviews/rc2a-03-cq1-q1/verify_record.py",
+      "gitBlob": "52dd2e7220fbbc22ce88d85e14440c249d3cc2f3",
+      "sha256": "8b32c433bd49e198b63df989de46737be1ed3c3889d57601afd74f2fce4cdb29"
+    }
+  ],
+  "reportArtifacts": [
+    {
+      "path": "docs/reviews/rc2a-03-cq1-q2-independent-verification.md",
+      "gitBlob": "5cf5e8ad74a16a5a20808d0f325f892069185327",
+      "committedBytes": 20211,
+      "committedSHA256": "1ebaa998e593413134d7f1f715aedf9ae3f7682c9d30b332c86645e243755bf1"
+    },
+    {
+      "path": "docs/reviews/rc2a-03-cq1-q2/verification.json",
+      "gitBlob": "ebe6821770d0cb9d42cbe9cc408cd30e95de3a71",
+      "committedBytes": 37894,
+      "committedSHA256": "9120215fcc740172b65ead3ce87cb05b79f6aa3c01a47c38a2044d1bc6a780d1"
+    },
+    {
+      "path": "docs/reviews/rc2a-03-cq1-q2/verify_record.py",
+      "gitBlob": "f66daa21276da740e6e25acc5f4b8f9b8eade957",
+      "committedBytes": 15765,
+      "committedSHA256": "fadc84b9af008b34368cc13bb8d3d7ba7e982d2fb966f19e0f6ed2b673a90191"
+    }
+  ],
+  "note": "This receipt binds the report commit after it exists. The containing receipt commit/tree and final clean statuses are supplied in the Q2 completion handoff, avoiding self-reference. The existing review branch advances by additive Q2 commits; original Q1 content and commit are preserved. No owner acceptance, producer edit, build/test/native/package operation, merge, push or cleanup performed."
+}
