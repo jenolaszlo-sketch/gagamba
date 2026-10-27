@@ -1,0 +1,791 @@
+{
+  "target": {
+    "commit": "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d",
+    "tree": "f3f63129be98c5c9f9efba3302da331ae65139ee",
+    "parents": [
+      "c946df0c93dde414c744f46cce054e7cd3f2c26e"
+    ]
+  },
+  "prior": {
+    "commit": "c946df0c93dde414c744f46cce054e7cd3f2c26e",
+    "tree": "ba7a3ef73a651cf5ace62583873742f855330910",
+    "parents": [
+      "9519e7cb612af6ff69c93c0d128553138533d9fd"
+    ]
+  },
+  "baseline": {
+    "commit": "9519e7cb612af6ff69c93c0d128553138533d9fd",
+    "tree": "7b162d2b0e00d72c27a2389ed505d531758797f1",
+    "parents": [
+      "a36cb684ad75cebf3ba778a6c86d42d7f5f2d6f6"
+    ]
+  },
+  "q1": {
+    "commit": "dd7e47d2c5f75af126ce4a081013bf21182d73ee",
+    "tree": "c5d1299a2d382585ab240cb35f0352a7adfbfff8",
+    "parents": [
+      "7c6d0eb310dff46390f57a9cd41bd7b81abbcf9c"
+    ]
+  },
+  "reviewBranch": "review/gagamba-rc2a-03-cq1-q1",
+  "reviewWorktree": "C:\\Users\\Laszlos\\source\\repos\\Solo\\rc2a-03-cq1-q1-review",
+  "producerBefore": {
+    "commit": "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d",
+    "branch": "qualification/gagamba-rc2a-03-cq1",
+    "status": ""
+  },
+  "environment": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.8",
+    "git": "git version 2.55.0.windows.3"
+  },
+  "changedPaths": [
+    "docs/evidence/restricted-consumer-contract-rc2a-03-cq1/README.md",
+    "docs/evidence/restricted-consumer-contract-rc2a-03-cq1/SHA256SUMS",
+    "docs/evidence/restricted-consumer-contract-rc2a-03-cq1/reviewer-handoff.md",
+    "docs/evidence/restricted-consumer-contract-rc2a-03-cq1/traceability-matrix.md",
+    "docs/handoff.md",
+    "docs/plans/restricted-consumer-contract-implementation.md",
+    "docs/plans/restricted-consumer-contract-rc2a-02-qualification.md",
+    "docs/work-queue.md"
+  ],
+  "rawDiff": ":100644 100644 05c3754650d63026e9d98c237e7ccc944ef9ac4c 64c14fc444ff2db84b575646427ba64172de66b3 M\tdocs/evidence/restricted-consumer-contract-rc2a-03-cq1/README.md\n:100644 100644 9c373f98e5fd683846acb36d96f488b7ca00b515 4ca05e180c24a06f3c20e68a3f0a78b27d1a0ded M\tdocs/evidence/restricted-consumer-contract-rc2a-03-cq1/SHA256SUMS\n:100644 100644 0db538bd6b6c2f8f79480991874c3cc0771a0029 76264b5bf56e35bce302cefe05f643b1546ea560 M\tdocs/evidence/restricted-consumer-contract-rc2a-03-cq1/reviewer-handoff.md\n:100644 100644 c56337ccfc70229acdf7d869a93600285cdc23ca 363bbd98723dd223c187884638e5dfeb2d12a12e M\tdocs/evidence/restricted-consumer-contract-rc2a-03-cq1/traceability-matrix.md\n:100644 100644 2e787e7931b19dd4fd4ce6a39f25b917abcafa56 e7b8d3188a35630ea800a10d680f8db5f5437ab7 M\tdocs/handoff.md\n:100644 100644 76ccef74a03261e3010e9d6586c50e11301964b0 d5208a1e69f63d25549ffeec38c2001b7836529a M\tdocs/plans/restricted-consumer-contract-implementation.md\n:100644 100644 8d471a9857b67d4773084b310605969ee0e4a9ea 1b7b3d243847363d9b376c7d6cdedfee1e3c9bc8 M\tdocs/plans/restricted-consumer-contract-rc2a-02-qualification.md\n:100644 100644 550bcb0e2a1290f7c1c32be49308261174223915 2cb53c7ff8dd39ebc4b9ffee9c35e2fd27f34882 M\tdocs/work-queue.md",
+  "diffCheck": 0,
+  "protectedObjects": {
+    "src": {
+      "9519e7cb612af6ff69c93c0d128553138533d9fd": "b8c167e3d7340a562221591bdc2b6df7adb372d1",
+      "c946df0c93dde414c744f46cce054e7cd3f2c26e": "b8c167e3d7340a562221591bdc2b6df7adb372d1",
+      "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d": "b8c167e3d7340a562221591bdc2b6df7adb372d1"
+    },
+    "native": {
+      "9519e7cb612af6ff69c93c0d128553138533d9fd": "85631d2f04512376621d3d09f51d67fd90f45335",
+      "c946df0c93dde414c744f46cce054e7cd3f2c26e": "85631d2f04512376621d3d09f51d67fd90f45335",
+      "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d": "85631d2f04512376621d3d09f51d67fd90f45335"
+    },
+    "tests": {
+      "9519e7cb612af6ff69c93c0d128553138533d9fd": "9c906b349b0bf0cffdee331fb5700f9b7828c199",
+      "c946df0c93dde414c744f46cce054e7cd3f2c26e": "9c906b349b0bf0cffdee331fb5700f9b7828c199",
+      "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d": "9c906b349b0bf0cffdee331fb5700f9b7828c199"
+    },
+    "docs/design": {
+      "9519e7cb612af6ff69c93c0d128553138533d9fd": "a04b900e48b1e17e7450366bf2af91f58b9014a3",
+      "c946df0c93dde414c744f46cce054e7cd3f2c26e": "a04b900e48b1e17e7450366bf2af91f58b9014a3",
+      "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d": "a04b900e48b1e17e7450366bf2af91f58b9014a3"
+    },
+    "docs/decisions": {
+      "9519e7cb612af6ff69c93c0d128553138533d9fd": "ddb5d0703ac37d2df978fd0f7bb5c03e1f2764b9",
+      "c946df0c93dde414c744f46cce054e7cd3f2c26e": "ddb5d0703ac37d2df978fd0f7bb5c03e1f2764b9",
+      "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d": "ddb5d0703ac37d2df978fd0f7bb5c03e1f2764b9"
+    },
+    "docs/reviews": {
+      "9519e7cb612af6ff69c93c0d128553138533d9fd": "704d5ad065088b9ba72a94f7ed0182ec0ddccd45",
+      "c946df0c93dde414c744f46cce054e7cd3f2c26e": "704d5ad065088b9ba72a94f7ed0182ec0ddccd45",
+      "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d": "704d5ad065088b9ba72a94f7ed0182ec0ddccd45"
+    },
+    "docs/design/restricted-consumer-contract-rc2a-01-api.md": {
+      "9519e7cb612af6ff69c93c0d128553138533d9fd": "2d6b9d12cab02f092c6b6e0b690138cf6726f12b",
+      "c946df0c93dde414c744f46cce054e7cd3f2c26e": "2d6b9d12cab02f092c6b6e0b690138cf6726f12b",
+      "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d": "2d6b9d12cab02f092c6b6e0b690138cf6726f12b"
+    }
+  },
+  "preservedQ1Artifacts": [
+    {
+      "commit": "dd7e47d2c5f75af126ce4a081013bf21182d73ee",
+      "path": "docs/reviews/rc2a-03-cq1-q1-independent-verification.md",
+      "object": "090cc279b4ec508d16cec6ef7a4ac095fe52b4b1",
+      "type": "blob",
+      "bytes": 30919,
+      "sha256": "be23011288e6e947d3b9a28e1940618c437e21e380c0f48886062818f260f5a9"
+    },
+    {
+      "commit": "dd7e47d2c5f75af126ce4a081013bf21182d73ee",
+      "path": "docs/reviews/rc2a-03-cq1-q1/verification.json",
+      "object": "5e25d155b1562336890c09b856e14a573d9a2070",
+      "type": "blob",
+      "bytes": 106611,
+      "sha256": "09e5bb863ddc5c679a30e829e5f6287a636c1d69d8bf48fba95c436c1c39c55e"
+    },
+    {
+      "commit": "dd7e47d2c5f75af126ce4a081013bf21182d73ee",
+      "path": "docs/reviews/rc2a-03-cq1-q1/verify_record.py",
+      "object": "52dd2e7220fbbc22ce88d85e14440c249d3cc2f3",
+      "type": "blob",
+      "bytes": 11678,
+      "sha256": "8b32c433bd49e198b63df989de46737be1ed3c3889d57601afd74f2fce4cdb29"
+    }
+  ],
+  "q1ResultsReused": {
+    "checkpointCount": 10,
+    "checkpointsMatch": true,
+    "historicalManifests": {
+      "CQ1": [
+        4,
+        4
+      ],
+      "02A": [
+        29,
+        29
+      ],
+      "02B-R1": [
+        43,
+        43
+      ],
+      "02C": [
+        40,
+        40
+      ]
+    },
+    "requiredMultisetsEqual": true,
+    "publicMultisetsEqual": true,
+    "note": "Historical Q1 results, not new execution or a repeated full qualification audit."
+  },
+  "historicalPackagePreservation": {
+    "docs/evidence/restricted-consumer-contract-rc2a-02a-windows": "9f96931fc366395ad974533b80368e9c413ef1d1",
+    "docs/evidence/restricted-consumer-contract-rc2a-02b-portability": "0e8ba942204e09580f4811083532afa0c61422be",
+    "docs/evidence/restricted-consumer-contract-rc2a-02c-q2as-rcd04": "611070f42e76ecff8dc99d6e24b1d4a7a75daf8e"
+  },
+  "rowAudit": {
+    "C": {
+      "count": 13,
+      "changed": [
+        "C4",
+        "C7",
+        "C10",
+        "C12"
+      ],
+      "unchanged": [
+        "C1",
+        "C2",
+        "C3",
+        "C5",
+        "C6",
+        "C8",
+        "C9",
+        "C11",
+        "C13"
+      ]
+    },
+    "Q": {
+      "count": 9,
+      "changed": [
+        "Q3"
+      ],
+      "unchanged": [
+        "Q1",
+        "Q2",
+        "Q4",
+        "Q5",
+        "Q6",
+        "Q7",
+        "Q8",
+        "Q9"
+      ]
+    },
+    "X": {
+      "count": 5,
+      "changed": [],
+      "unchanged": [
+        "X1",
+        "X2",
+        "X3",
+        "X4",
+        "X5"
+      ]
+    }
+  },
+  "securityAndQualificationsSectionsUnchanged": true,
+  "inheritedCommits": [
+    {
+      "commit": "9a705335701f0c1923bd9867a2612b8a93afa8cb",
+      "tree": "f6a7e141bf7f38c976655c0772b7ee817a7ce148",
+      "parents": [
+        "d609c29d3048bc0fd91583068cb013fb906fdf90"
+      ]
+    },
+    {
+      "commit": "68b01fbb53eefca9c8ca2f83ff50641521020a2a",
+      "tree": "54f659d01937da29bc9a5f82566a8349af264664",
+      "parents": [
+        "781e9debb8df852d1d4d8ca98d92591e1609e193"
+      ]
+    },
+    {
+      "commit": "8e41babfc96afa2e617a53b63e50903d54001194",
+      "tree": "fd30ef218b2ff5d1422d2e3abddd59c50e11aead",
+      "parents": [
+        "68b01fbb53eefca9c8ca2f83ff50641521020a2a"
+      ]
+    },
+    {
+      "commit": "49ebbfec4abc7e5e1da2bd492f3ff4e43e14ca4e",
+      "tree": "6e94bee4c39801dfa256c158b300b066c0f2f217",
+      "parents": [
+        "68b01fbb53eefca9c8ca2f83ff50641521020a2a"
+      ]
+    },
+    {
+      "commit": "c1a01761f8d58136a381ad87269635c6c14ad093",
+      "tree": "8c51c3c2e06e6544f3ad0e8aceabfed8457d8c19",
+      "parents": [
+        "71a28afe2623516fb4176e6a4ce7988a3d70df06"
+      ]
+    },
+    {
+      "commit": "7b6344551c2d4b42832df39822eaf4b8a1c01495",
+      "tree": "6c75b4ddfd233f6e94f079b12c1a253198a4c7e2",
+      "parents": [
+        "c1a01761f8d58136a381ad87269635c6c14ad093"
+      ]
+    },
+    {
+      "commit": "e5fff9e8d5a31520f8b5a2c235a05b666a08e16c",
+      "tree": "8c04e9e2f0379f7b9a3ef280c3e20e5b0ec44f2e",
+      "parents": [
+        "c1a01761f8d58136a381ad87269635c6c14ad093"
+      ]
+    },
+    {
+      "commit": "dd16baec48663d40cd29504d98e57e30dd0855df",
+      "tree": "96e86aac2d284637805809b54da72e76bf46f1fc",
+      "parents": [
+        "5b4292d0fefc576664df61692dfad5cef6362879"
+      ]
+    },
+    {
+      "commit": "5bc396c2e5619906ae202afe0a4244dfd6024d9e",
+      "tree": "8ebbccb7b3787ce8e57bc74bbc93a8c1edb9e650",
+      "parents": [
+        "dd16baec48663d40cd29504d98e57e30dd0855df"
+      ]
+    },
+    {
+      "commit": "1cd22b9b109ddba4673b11487bceea62d2e92117",
+      "tree": "2f2bae947dee368ae073dd3fe7877380ca8854ff",
+      "parents": [
+        "12d914d319b1df3eedafc5439bc547dacb578651"
+      ]
+    },
+    {
+      "commit": "60de1f2d34a7df337a426501cb3954fdd3216a6b",
+      "tree": "c556b0ad7bad69e5b7ca0815f9a1a17d36e51407",
+      "parents": [
+        "1cd22b9b109ddba4673b11487bceea62d2e92117"
+      ]
+    },
+    {
+      "commit": "dc02951902f11031f8b0d225d2afa2cd537296a3",
+      "tree": "119470918c3b3a3c3c1af150e554026b230a2677",
+      "parents": [
+        "1cd22b9b109ddba4673b11487bceea62d2e92117"
+      ]
+    },
+    {
+      "commit": "91612b9a42827ffdd76891819670623fa43daeed",
+      "tree": "5f9ec8a9d01627ee3ed0a245ca54642ae1413ea4",
+      "parents": [
+        "dc02951902f11031f8b0d225d2afa2cd537296a3"
+      ]
+    },
+    {
+      "commit": "62b75f5866d0c339816712baeb04baa386b06f85",
+      "tree": "66f996e1cf973e48487a073b07f1e78d9139c911",
+      "parents": [
+        "c4837b0b434fc75ebc3e08d278bdc09c3965a181"
+      ]
+    },
+    {
+      "commit": "9534581c34d55c1219e90ddcd290900583098388",
+      "tree": "ae64a890e00c2b23eecb26d9ee776354e1ce9192",
+      "parents": [
+        "62b75f5866d0c339816712baeb04baa386b06f85"
+      ]
+    },
+    {
+      "commit": "f8b692e04941462ea592d9653960191cafb937cc",
+      "tree": "2b6c9df6c7e5d55dec977ccc92a2d6078b74d4f9",
+      "parents": [
+        "9534581c34d55c1219e90ddcd290900583098388"
+      ]
+    },
+    {
+      "commit": "a36cb684ad75cebf3ba778a6c86d42d7f5f2d6f6",
+      "tree": "b3efa338fe5625f8f86fa49fb8db1f6fd62e1bda",
+      "parents": [
+        "62b75f5866d0c339816712baeb04baa386b06f85"
+      ]
+    },
+    {
+      "commit": "058a150130c5f112c7e9b8189bba8842cf0cec52",
+      "tree": "b2211a26c838f98f994602e5c56ea8bb95b2c1d8",
+      "parents": [
+        "a36cb684ad75cebf3ba778a6c86d42d7f5f2d6f6"
+      ]
+    },
+    {
+      "commit": "9519e7cb612af6ff69c93c0d128553138533d9fd",
+      "tree": "7b162d2b0e00d72c27a2389ed505d531758797f1",
+      "parents": [
+        "a36cb684ad75cebf3ba778a6c86d42d7f5f2d6f6"
+      ]
+    },
+    {
+      "commit": "d417367499979d38a3c9a498275d8422bf69f3d0",
+      "tree": "58e90d015689014660f4d11fc9f6e3366ebb396a",
+      "parents": [
+        "9519e7cb612af6ff69c93c0d128553138533d9fd"
+      ]
+    }
+  ],
+  "F01": {
+    "assessment": {
+      "commit": "058a150130c5f112c7e9b8189bba8842cf0cec52",
+      "path": "docs/assessments/rc2a-02-full-stage-acceptance-gap-assessment.md",
+      "object": "5b4f559d71e8bb6b871a28f73be694b742887bdd",
+      "type": "blob",
+      "bytes": 28353,
+      "sha256": "0a3ffc6740e69c142ef4578abe4904b00e59dbcae8e37a1d75c9037f76a4e6bb"
+    },
+    "identity": {
+      "commit": "058a150130c5f112c7e9b8189bba8842cf0cec52",
+      "tree": "b2211a26c838f98f994602e5c56ea8bb95b2c1d8",
+      "parents": [
+        "a36cb684ad75cebf3ba778a6c86d42d7f5f2d6f6"
+      ]
+    },
+    "section4": "## 4. Stage exit-criteria matrix (qualification plan \u00a75)\n\nIndependent classification per criterion; evidence independently checked in\nthis assessment where marked.\n\n| # | Exit criterion | Classification | Evidence and basis |\n|---|---|---|---|\n| E1 | Every Q2A case in the executed traceability matrix executed on the primary platform against the exact accepted source, passes; no unjustified skips | **SATISFIED** | RC2A-02A Windows: public 67/0/0, required 457/0/0 twice, 0 skipped in qualification runs; 41 broad-filter skips are pre-existing out-of-scope Linux-native classes, disclosed (findings Q2A02A-F02) and excluded from qualification. RC2A-02C: focused 3/3 on Windows. Executed against accepted `src` `b8c167e3` in every substage |\n| E2 | Vector set byte-for-byte reproducible, independently verified, committed digests match | **SATISFIED WITH QUALIFICATIONS** | 23 vectors with committed deterministic recipes; 21/21 embedded-hex digests verified by Q1; two large vectors digest-bound (F03, ACCEPT AS DISCLOSED) with materialization reproduced twice via the committed recipes inside the 457-case suite; four independent encode/parse paths agreed. The plan does not require embedded payloads |\n| E3 | Mutation matrix covers all 72 fields with required classes; every refusal asserts exact code and offset | **SATISFIED** | 279 deterministic cases over 72/72 fields with an applicability table; 14 refusal categories with exact code/offset; verified by Q1 |\n| E4 | Both byte boundaries (65,536/65,537; 16,384/16,385), empty-argv-item and zero-length-argv-list, null-manifest and wrong-length digest (incl. combined), truncation sweep, single-byte mutation sweep, executed with committed evidence | **SATISFIED** | RC2A-02A boundary rows: 65,535/65,536/65,537 + 1,000,000 pre-parse; 16,383/16,384/16,385; B3/B4 including the combined null+wrong-length assertion (R2A-F04); 873-case truncation sweep; 222,615-mutation flip sweep under the owner-accepted \u00a78 canonical-rigidity interpretation (114,378 accepted / 108,237 refused, all accepted mutations re-encode exactly) |\n| E5 | Defensive re-encode branch assessment (B5) recorded with reachability conclusion | **SATISFIED** | `reencode-branch-assessment.md` in the RC2A-02A evidence package; branch exercised as pass-through on every accepted decode; unreachable as an independent failure path; R2A-F01 row PASS |\n| E6 | Windows run completed; each declared additional platform run completed natively with separate evidence or recorded as not run with the reason; no cross-platform claim exceeds what ran | **SATISFIED WITH QUALIFICATIONS** | Windows completed (RC2A-02A + rerun in RC2A-02B); WSL2 completed with separate evidence, always labeled `wsl2` and never native Linux (per \u00a73 P2); native Linux and macOS recorded NOT RUN with reasons (no hosts) \u2014 the criterion and \u00a73 P2 explicitly permit recorded not-run; honest labeling verified in the evidence and preserved by Q2 |\n| E7 | Evidence hygiene artifacts (E1\u2013E5) committed: rebound document inventory, per-run identities, provenance, failed-attempt register | **SATISFIED** | RC2A-02A package: `document-sha256.json` (incl. the clarified API document \u2014 R2A-F02), `source-binding.json`, per-run environment/logs/TRX/exit files with hashes, `runs/failed-attempts/b-first-sweep-failure.trx`; RC2A-02B package: per-platform artifacts; RC2A-02B Q1's two evidence defects (stale `results.json` hashes; broad-filter wording) corrected in R1 `1cd22b9` and independently re-verified by Q2 (29 artifact refs, 43 `SHA256SUMS` entries, 9 document bindings) |\n| E8 | An independent reviewer re-executed and accepted the evidence per \u00a73.F, disposition preserved | **SATISFIED** | RC2A-02A: Q1 re-executed the declared Windows commands (67/0/0; 457/0/0 twice), reproduced the mutation sweep and digests, verdict SUPPORTED WITH QUALIFICATIONS, findings owner-dispositioned. RC2A-02B: Q1 review \u2192 R1 evidence-only correction \u2192 Q2 verification. RC2A-02C: Q2 review reproduced build + focused run twice and recomputed all manifests. All dispositions preserved unmerged on their own branches |\n",
+    "ownerDecision": {
+      "commit": "9519e7cb612af6ff69c93c0d128553138533d9fd",
+      "path": "docs/decisions/restricted-consumer-contract-rc2a-02-full-stage-owner-acceptance.md",
+      "object": "2804f50052af9880546213c99356a61e3d098a0f",
+      "type": "blob",
+      "bytes": 17844,
+      "sha256": "f73189d0b32292688da67f127465990797302ce5fe2ddc56503a9506e2e04b74"
+    },
+    "decisionSections": [
+      "## 5. Exit-criteria acceptance table (stage contract \u00a75)",
+      "## 6. Carried-forward qualifications",
+      "## 7. Nonblocking historical findings",
+      "## 8. Cross-stage acceptance statement"
+    ],
+    "assessmentIsAncestor": false,
+    "siblingParent": "a36cb684ad75cebf3ba778a6c86d42d7f5f2d6f6"
+  },
+  "F02": {
+    "codec": {
+      "commit": "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d",
+      "path": "src/Gagamba.Execution/Restricted/Contracts/RestrictedManifestCodec.cs",
+      "object": "8cf412bd02c78fd40a4b7c7bd4175c04b785de13",
+      "type": "blob",
+      "bytes": 2805,
+      "sha256": "4ddb14ab5013e85b04d7c9558af82457875ec16052af86df697f908f78240532"
+    },
+    "tests": {
+      "commit": "c1a01761f8d58136a381ad87269635c6c14ad093",
+      "path": "tests/Gagamba.Execution.Tests/Restricted/Rc2a02PublicBoundaryTests.cs",
+      "object": "a0e6693938e7f26470f9a6d740696ed9a2296133",
+      "type": "blob",
+      "bytes": 4318,
+      "sha256": "4fbe780bcc72e6cd190c0bca2d9aceb6ee145ae1edd8ad8b77e8292f7387fea6"
+    },
+    "api": {
+      "commit": "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d",
+      "path": "docs/design/restricted-consumer-contract-rc2a-01-api.md",
+      "object": "2d6b9d12cab02f092c6b6e0b690138cf6726f12b",
+      "type": "blob",
+      "bytes": 6338,
+      "sha256": "df5390c890f2dc59e9fee33fd08c4b173ebf31de32b6cf2bf506991061cae521"
+    },
+    "acceptedTRX": {
+      "commit": "c1a01761f8d58136a381ad87269635c6c14ad093",
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-02a-windows/runs/windows-public.trx",
+      "object": "7cfe34d6145d9bf19d7629454d9b1658f2f7a48d",
+      "type": "blob",
+      "bytes": 100516,
+      "sha256": "956829f8c480bc36630c4d6f0e202d114992e356b324eaeda6da859d3b9a05ed"
+    },
+    "digestResults": [
+      {
+        "name": "Gagamba.Execution.Tests.Restricted.Rc2a02PublicBoundaryTests.Q2A_B_21_WrongDigestLengthsReturnFalse(length: 65536)",
+        "outcome": "Passed"
+      },
+      {
+        "name": "Gagamba.Execution.Tests.Restricted.Rc2a02PublicBoundaryTests.Q2A_B_20_NullManifestArgumentsAreProgrammingErrors",
+        "outcome": "Passed"
+      },
+      {
+        "name": "Gagamba.Execution.Tests.Restricted.Rc2a02PublicBoundaryTests.Q2A_B_23_CombinedNullManifestAndWrongLengthDigestThrowsArgumentNullException",
+        "outcome": "Passed"
+      },
+      {
+        "name": "Gagamba.Execution.Tests.Restricted.Rc2a02PublicBoundaryTests.Q2A_B_21_WrongDigestLengthsReturnFalse(length: 33)",
+        "outcome": "Passed"
+      },
+      {
+        "name": "Gagamba.Execution.Tests.Restricted.Rc2a02PublicBoundaryTests.Q2A_B_21_WrongDigestLengthsReturnFalse(length: 64)",
+        "outcome": "Passed"
+      },
+      {
+        "name": "Gagamba.Execution.Tests.Restricted.Rc2a02PublicBoundaryTests.Q2A_B_21_WrongDigestLengthsReturnFalse(length: 0)",
+        "outcome": "Passed"
+      },
+      {
+        "name": "Gagamba.Execution.Tests.Restricted.Rc2a02PublicBoundaryTests.Q2A_B_21_WrongDigestLengthsReturnFalse(length: 31)",
+        "outcome": "Passed"
+      },
+      {
+        "name": "Gagamba.Execution.Tests.Restricted.Rc2a02PublicBoundaryTests.Q2A_B_22_MatchingDigestIsTrueAndChangedOrAllZeroDigestIsFalse",
+        "outcome": "Passed"
+      }
+    ],
+    "method": "public static bool VerifySha256(RestrictedManifestView manifest, ReadOnlySpan<byte> expectedSha256)\n    {\n        ArgumentNullException.ThrowIfNull(manifest);\n        if (expectedSha256.Length != 32) return false;\n        return CryptographicOperations.FixedTimeEquals(ComputeSha256(manifest).AsSpan(), expectedSha256);\n    }\n}\n",
+    "testExecution": "NOT RUN; read existing accepted test source and TRX"
+  },
+  "F03": {
+    "review": {
+      "commit": "8e41babfc96afa2e617a53b63e50903d54001194",
+      "path": "docs/reviews/restricted-consumer-rc2a-01-glm-independent.md",
+      "object": "d329fcc49d289696bf1c4163f8f346c56115ba8c",
+      "type": "blob",
+      "bytes": 16888,
+      "sha256": "77d2404c61dbf1af76e8448b966f03482186d95fff5bf6a676a32fe6c7d8e4d0"
+    },
+    "acceptance": {
+      "commit": "49ebbfec4abc7e5e1da2bd492f3ff4e43e14ca4e",
+      "path": "docs/decisions/restricted-consumer-rc2a-01-owner-acceptance.md",
+      "object": "15e008524e4d1c239074b0f204d7c9a0f692fa0c",
+      "type": "blob",
+      "bytes": 11641,
+      "sha256": "84ec983fcbd88667544e335b15829ab5406798a35ed66d99bbc55ccda019b304"
+    },
+    "originalFinding": "**R2A-F03 \u2014 Informational.** Producer-recorded local DLL hashes (e.g. `Gagamba.Execution.dll` `766f2bfc\u2026`) did not reproduce byte-identically on my rebuild (same 137,728-byte size, different hash). The evidence explicitly scopes these as \"not package or deployment qualification\"; the reproduction criterion \u2014 test outcomes \u2014 did reproduce. No claim is invalidated.\r\n\r\n",
+    "originalDisposition": "| R2A-F03 | Locally rebuilt DLL bytes were not byte-identical despite matching test outcomes | **ACCEPT AS DISCLOSED** | No binary reproducibility or deployment qualification claim is accepted; the producer's own non-qualification scoping of local DLL hashes stands. No immediate remediation is required. Test-reproducibility versus binary-reproducibility is kept distinct in RC2A-02 evidence rules (\u00a73, E4) |",
+    "rc1": {
+      "commit": "9a705335701f0c1923bd9867a2612b8a93afa8cb",
+      "path": "docs/decisions/restricted-consumer-rc1-owner-acceptance.md",
+      "object": "9e7576d294fa7477b7206e752a3981a1d794bb4a",
+      "type": "blob",
+      "bytes": 15695,
+      "sha256": "c1a4b4e151816901696e21818b0d1b14af4f7849890b5ac441731b6ac035deed"
+    },
+    "rc1ContainsR2AF03": false,
+    "laterAcceptance": {
+      "commit": "9519e7cb612af6ff69c93c0d128553138533d9fd",
+      "path": "docs/decisions/restricted-consumer-contract-rc2a-02-full-stage-owner-acceptance.md",
+      "object": "2804f50052af9880546213c99356a61e3d098a0f",
+      "type": "blob",
+      "bytes": 17844,
+      "sha256": "f73189d0b32292688da67f127465990797302ce5fe2ddc56503a9506e2e04b74"
+    },
+    "historicalAttributionErrorRetainedAndDisclosed": true
+  },
+  "F04": {
+    "inventories": [
+      {
+        "commit": "62b75f5866d0c339816712baeb04baa386b06f85",
+        "path": "docs/evidence/restricted-consumer-contract-rc2a-02c-q2as-rcd04/runs/windows/final/public-surface-inventory.json",
+        "object": "4dbde89048e7dcc0e9e9df05150577263dad3a12",
+        "type": "blob",
+        "bytes": 34221,
+        "sha256": "4b53a523634c304336cb3faf01a1133d038bb74d1de32eecf6e1023936f06a0b",
+        "CRLF": 904,
+        "normalizedBytes": 33317,
+        "normalizedSHA256": "9e35d1ea33083537f6bab295f764423a69bd4f9d913d055ff42e9f7d3bf774d1"
+      },
+      {
+        "commit": "f8b692e04941462ea592d9653960191cafb937cc",
+        "path": "docs/reviews/rc2a-02c-q2-evidence/windows/elevated/public-surface-inventory.json",
+        "object": "182e68542b1f099c2b650f43960aa28cfa2cdacd",
+        "type": "blob",
+        "bytes": 33317,
+        "sha256": "9e35d1ea33083537f6bab295f764423a69bd4f9d913d055ff42e9f7d3bf774d1",
+        "CRLF": 0,
+        "normalizedBytes": 33317,
+        "normalizedSHA256": "9e35d1ea33083537f6bab295f764423a69bd4f9d913d055ff42e9f7d3bf774d1"
+      },
+      {
+        "commit": "f8b692e04941462ea592d9653960191cafb937cc",
+        "path": "docs/reviews/rc2a-02c-q2-evidence/windows/rerun-20261026/public-surface-inventory.json",
+        "object": "182e68542b1f099c2b650f43960aa28cfa2cdacd",
+        "type": "blob",
+        "bytes": 33317,
+        "sha256": "9e35d1ea33083537f6bab295f764423a69bd4f9d913d055ff42e9f7d3bf774d1",
+        "CRLF": 0,
+        "normalizedBytes": 33317,
+        "normalizedSHA256": "9e35d1ea33083537f6bab295f764423a69bd4f9d913d055ff42e9f7d3bf774d1"
+      }
+    ],
+    "qualificationRawDiffers": true,
+    "reviewRawEqual": true,
+    "normalizedEqual": true,
+    "jsonEqual": true,
+    "exportedTypes": 18,
+    "frozenAPI": {
+      "commit": "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d",
+      "path": "docs/design/restricted-consumer-contract-rc2a-01-api.md",
+      "object": "2d6b9d12cab02f092c6b6e0b690138cf6726f12b",
+      "type": "blob",
+      "bytes": 6338,
+      "sha256": "df5390c890f2dc59e9fee33fd08c4b173ebf31de32b6cf2bf506991061cae521"
+    }
+  },
+  "payloadHashes": [
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-03-cq1/README.md",
+      "expected": "cf76b78e58310546cac309271a53bfe898a8972635f970f2dad6c2a01d34ece5",
+      "gitSHA256": "cf76b78e58310546cac309271a53bfe898a8972635f970f2dad6c2a01d34ece5",
+      "producerCheckoutSHA256": "cf76b78e58310546cac309271a53bfe898a8972635f970f2dad6c2a01d34ece5",
+      "bytes": 24400,
+      "match": true
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-03-cq1/reviewer-handoff.md",
+      "expected": "0b0215f975d32997e54a8ba54bb2cca26c378ea11662ba5d39617f78da9439eb",
+      "gitSHA256": "0b0215f975d32997e54a8ba54bb2cca26c378ea11662ba5d39617f78da9439eb",
+      "producerCheckoutSHA256": "0b0215f975d32997e54a8ba54bb2cca26c378ea11662ba5d39617f78da9439eb",
+      "bytes": 6694,
+      "match": true
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-03-cq1/source-binding.json",
+      "expected": "61ca34b03d026b12a53cd266d9c0bc35797792f25b6f320ff319747704bc08ab",
+      "gitSHA256": "61ca34b03d026b12a53cd266d9c0bc35797792f25b6f320ff319747704bc08ab",
+      "producerCheckoutSHA256": "61ca34b03d026b12a53cd266d9c0bc35797792f25b6f320ff319747704bc08ab",
+      "bytes": 5517,
+      "match": true
+    },
+    {
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-03-cq1/traceability-matrix.md",
+      "expected": "4b173e3ea1d9ea80915661b26c1356986f4ecfe78393c4f2f3772a6004fba9a8",
+      "gitSHA256": "4b173e3ea1d9ea80915661b26c1356986f4ecfe78393c4f2f3772a6004fba9a8",
+      "producerCheckoutSHA256": "4b173e3ea1d9ea80915661b26c1356986f4ecfe78393c4f2f3772a6004fba9a8",
+      "bytes": 10606,
+      "match": true
+    }
+  ],
+  "explicitReferences": [
+    {
+      "commit": "058a150130c5f112c7e9b8189bba8842cf0cec52",
+      "path": "docs/assessments/rc2a-02-full-stage-acceptance-gap-assessment.md",
+      "object": "5b4f559d71e8bb6b871a28f73be694b742887bdd",
+      "type": "blob",
+      "bytes": 28353,
+      "sha256": "0a3ffc6740e69c142ef4578abe4904b00e59dbcae8e37a1d75c9037f76a4e6bb"
+    },
+    {
+      "commit": "9519e7cb612af6ff69c93c0d128553138533d9fd",
+      "path": "docs/decisions/restricted-consumer-contract-rc2a-02-full-stage-owner-acceptance.md",
+      "object": "2804f50052af9880546213c99356a61e3d098a0f",
+      "type": "blob",
+      "bytes": 17844,
+      "sha256": "f73189d0b32292688da67f127465990797302ce5fe2ddc56503a9506e2e04b74"
+    },
+    {
+      "commit": "d417367499979d38a3c9a498275d8422bf69f3d0",
+      "path": "docs/assessments/rc2a-roadmap-01-restricted-execution-dependency-review.md",
+      "object": "44def8bad6f8c796732a503de53cf0d133c2de21",
+      "type": "blob",
+      "bytes": 27054,
+      "sha256": "112b746a3bdade5cbd3d3421c82b0b0b02958567ab2e2a650f0b06bcf75a2991"
+    },
+    {
+      "commit": "8e41babfc96afa2e617a53b63e50903d54001194",
+      "path": "docs/reviews/restricted-consumer-rc2a-01-glm-independent.md",
+      "object": "d329fcc49d289696bf1c4163f8f346c56115ba8c",
+      "type": "blob",
+      "bytes": 16888,
+      "sha256": "77d2404c61dbf1af76e8448b966f03482186d95fff5bf6a676a32fe6c7d8e4d0"
+    },
+    {
+      "commit": "49ebbfec4abc7e5e1da2bd492f3ff4e43e14ca4e",
+      "path": "docs/decisions/restricted-consumer-rc2a-01-owner-acceptance.md",
+      "object": "15e008524e4d1c239074b0f204d7c9a0f692fa0c",
+      "type": "blob",
+      "bytes": 11641,
+      "sha256": "84ec983fcbd88667544e335b15829ab5406798a35ed66d99bbc55ccda019b304"
+    },
+    {
+      "commit": "9a705335701f0c1923bd9867a2612b8a93afa8cb",
+      "path": "docs/decisions/restricted-consumer-rc1-owner-acceptance.md",
+      "object": "9e7576d294fa7477b7206e752a3981a1d794bb4a",
+      "type": "blob",
+      "bytes": 15695,
+      "sha256": "c1a4b4e151816901696e21818b0d1b14af4f7849890b5ac441731b6ac035deed"
+    },
+    {
+      "commit": "62b75f5866d0c339816712baeb04baa386b06f85",
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-02c-q2as-rcd04/runs/windows/final/public-surface-inventory.json",
+      "object": "4dbde89048e7dcc0e9e9df05150577263dad3a12",
+      "type": "blob",
+      "bytes": 34221,
+      "sha256": "4b53a523634c304336cb3faf01a1133d038bb74d1de32eecf6e1023936f06a0b"
+    },
+    {
+      "commit": "f8b692e04941462ea592d9653960191cafb937cc",
+      "path": "docs/reviews/rc2a-02c-q2-evidence/windows/elevated/public-surface-inventory.json",
+      "object": "182e68542b1f099c2b650f43960aa28cfa2cdacd",
+      "type": "blob",
+      "bytes": 33317,
+      "sha256": "9e35d1ea33083537f6bab295f764423a69bd4f9d913d055ff42e9f7d3bf774d1"
+    },
+    {
+      "commit": "f8b692e04941462ea592d9653960191cafb937cc",
+      "path": "docs/reviews/rc2a-02c-q2-evidence/windows/rerun-20261026/public-surface-inventory.json",
+      "object": "182e68542b1f099c2b650f43960aa28cfa2cdacd",
+      "type": "blob",
+      "bytes": 33317,
+      "sha256": "9e35d1ea33083537f6bab295f764423a69bd4f9d913d055ff42e9f7d3bf774d1"
+    },
+    {
+      "commit": "dd7e47d2c5f75af126ce4a081013bf21182d73ee",
+      "path": "docs/reviews/rc2a-03-cq1-q1-independent-verification.md",
+      "object": "090cc279b4ec508d16cec6ef7a4ac095fe52b4b1",
+      "type": "blob",
+      "bytes": 30919,
+      "sha256": "be23011288e6e947d3b9a28e1940618c437e21e380c0f48886062818f260f5a9"
+    },
+    {
+      "commit": "dd7e47d2c5f75af126ce4a081013bf21182d73ee",
+      "path": "docs/reviews/rc2a-03-cq1-q1/git-binding.json",
+      "object": "0ea7c4b819dfcd88ce545c030af4cb9e97220676",
+      "type": "blob",
+      "bytes": 2307,
+      "sha256": "a58b7b7673b1aba3c557ee508e93fc0c2ea411e53694577feb67e662153214a5"
+    },
+    {
+      "commit": "dd7e47d2c5f75af126ce4a081013bf21182d73ee",
+      "path": "docs/reviews/rc2a-03-cq1-q1/verification.json",
+      "object": "5e25d155b1562336890c09b856e14a573d9a2070",
+      "type": "blob",
+      "bytes": 106611,
+      "sha256": "09e5bb863ddc5c679a30e829e5f6287a636c1d69d8bf48fba95c436c1c39c55e"
+    },
+    {
+      "commit": "dd7e47d2c5f75af126ce4a081013bf21182d73ee",
+      "path": "docs/reviews/rc2a-03-cq1-q1/verify_record.py",
+      "object": "52dd2e7220fbbc22ce88d85e14440c249d3cc2f3",
+      "type": "blob",
+      "bytes": 11678,
+      "sha256": "8b32c433bd49e198b63df989de46737be1ed3c3889d57601afd74f2fce4cdb29"
+    }
+  ],
+  "markdownLinks": [
+    {
+      "source": "docs/evidence/restricted-consumer-contract-rc2a-03-cq1/README.md",
+      "link": "source-binding.json",
+      "commit": "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d",
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-03-cq1/source-binding.json",
+      "anchor": "",
+      "resolved": true
+    },
+    {
+      "source": "docs/evidence/restricted-consumer-contract-rc2a-03-cq1/README.md",
+      "link": "traceability-matrix.md",
+      "commit": "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d",
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-03-cq1/traceability-matrix.md",
+      "anchor": "",
+      "resolved": true
+    },
+    {
+      "source": "docs/evidence/restricted-consumer-contract-rc2a-03-cq1/README.md",
+      "link": "reviewer-handoff.md",
+      "commit": "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d",
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-03-cq1/reviewer-handoff.md",
+      "anchor": "",
+      "resolved": true
+    },
+    {
+      "source": "docs/evidence/restricted-consumer-contract-rc2a-03-cq1/reviewer-handoff.md",
+      "link": "https://github.com/jenolaszlo-sketch/gagamba/blob/058a150130c5f112c7e9b8189bba8842cf0cec52/docs/assessments/rc2a-02-full-stage-acceptance-gap-assessment.md#4-stage-exit-criteria-matrix-qualification-plan-5",
+      "commit": "058a150130c5f112c7e9b8189bba8842cf0cec52",
+      "path": "docs/assessments/rc2a-02-full-stage-acceptance-gap-assessment.md",
+      "anchor": "4-stage-exit-criteria-matrix-qualification-plan-5",
+      "resolved": true
+    },
+    {
+      "source": "docs/evidence/restricted-consumer-contract-rc2a-03-cq1/reviewer-handoff.md",
+      "link": "https://github.com/jenolaszlo-sketch/gagamba/blob/dd7e47d2c5f75af126ce4a081013bf21182d73ee/docs/reviews/rc2a-03-cq1-q1-independent-verification.md",
+      "commit": "dd7e47d2c5f75af126ce4a081013bf21182d73ee",
+      "path": "docs/reviews/rc2a-03-cq1-q1-independent-verification.md",
+      "anchor": "",
+      "resolved": true
+    },
+    {
+      "source": "docs/evidence/restricted-consumer-contract-rc2a-03-cq1/traceability-matrix.md",
+      "link": "https://github.com/jenolaszlo-sketch/gagamba/blob/058a150130c5f112c7e9b8189bba8842cf0cec52/docs/assessments/rc2a-02-full-stage-acceptance-gap-assessment.md#4-stage-exit-criteria-matrix-qualification-plan-5",
+      "commit": "058a150130c5f112c7e9b8189bba8842cf0cec52",
+      "path": "docs/assessments/rc2a-02-full-stage-acceptance-gap-assessment.md",
+      "anchor": "4-stage-exit-criteria-matrix-qualification-plan-5",
+      "resolved": true
+    },
+    {
+      "source": "docs/handoff.md",
+      "link": "evidence/restricted-consumer-contract-rc2a-03-cq1/README.md#9-rc2a-03-cq1-r1-finding-corrections-and-verification",
+      "commit": "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d",
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-03-cq1/README.md",
+      "anchor": "9-rc2a-03-cq1-r1-finding-corrections-and-verification",
+      "resolved": true
+    },
+    {
+      "source": "docs/plans/restricted-consumer-contract-implementation.md",
+      "link": "../evidence/restricted-consumer-contract-rc2a-03-cq1/README.md#9-rc2a-03-cq1-r1-finding-corrections-and-verification",
+      "commit": "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d",
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-03-cq1/README.md",
+      "anchor": "9-rc2a-03-cq1-r1-finding-corrections-and-verification",
+      "resolved": true
+    },
+    {
+      "source": "docs/plans/restricted-consumer-contract-implementation.md",
+      "link": "../evidence/restricted-consumer-contract-rc2a-03-cq1/README.md",
+      "commit": "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d",
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-03-cq1/README.md",
+      "anchor": "",
+      "resolved": true
+    },
+    {
+      "source": "docs/plans/restricted-consumer-contract-implementation.md",
+      "link": "../decisions/restricted-consumer-contract-rc2a-02-full-stage-owner-acceptance.md",
+      "commit": "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d",
+      "path": "docs/decisions/restricted-consumer-contract-rc2a-02-full-stage-owner-acceptance.md",
+      "anchor": "",
+      "resolved": true
+    },
+    {
+      "source": "docs/plans/restricted-consumer-contract-implementation.md",
+      "link": "https://github.com/jenolaszlo-sketch/gagamba/blob/058a150130c5f112c7e9b8189bba8842cf0cec52/docs/assessments/rc2a-02-full-stage-acceptance-gap-assessment.md#4-stage-exit-criteria-matrix-qualification-plan-5",
+      "commit": "058a150130c5f112c7e9b8189bba8842cf0cec52",
+      "path": "docs/assessments/rc2a-02-full-stage-acceptance-gap-assessment.md",
+      "anchor": "4-stage-exit-criteria-matrix-qualification-plan-5",
+      "resolved": true
+    },
+    {
+      "source": "docs/plans/restricted-consumer-contract-implementation.md",
+      "link": "../evidence/restricted-consumer-contract-rc2a-03-cq1/README.md",
+      "commit": "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d",
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-03-cq1/README.md",
+      "anchor": "",
+      "resolved": true
+    },
+    {
+      "source": "docs/plans/restricted-consumer-contract-rc2a-02-qualification.md",
+      "link": "../evidence/restricted-consumer-contract-rc2a-03-cq1/README.md#9-rc2a-03-cq1-r1-finding-corrections-and-verification",
+      "commit": "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d",
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-03-cq1/README.md",
+      "anchor": "9-rc2a-03-cq1-r1-finding-corrections-and-verification",
+      "resolved": true
+    },
+    {
+      "source": "docs/work-queue.md",
+      "link": "evidence/restricted-consumer-contract-rc2a-03-cq1/README.md#9-rc2a-03-cq1-r1-finding-corrections-and-verification",
+      "commit": "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d",
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-03-cq1/README.md",
+      "anchor": "9-rc2a-03-cq1-r1-finding-corrections-and-verification",
+      "resolved": true
+    }
+  ],
+  "producerAfter": {
+    "commit": "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d",
+    "branch": "qualification/gagamba-rc2a-03-cq1",
+    "status": ""
+  },
+  "result": "PASS - focused mechanical checks; narrative finding dispositions in Q2 report"
+}
