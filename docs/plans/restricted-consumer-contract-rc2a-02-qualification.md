@@ -793,6 +793,8 @@ execution remain not started, open, or unauthorized.
 
 ## 15. RC2A-03-CQ1 component qualification record (2026-10-26)
 
+R1 update 2026-10-27: [F01–F04 corrections and verification](../evidence/restricted-consumer-contract-rc2a-03-cq1/README.md#9-rc2a-03-cq1-r1-finding-corrections-and-verification) are READY FOR INDEPENDENT Q2 REVIEW, pending separate owner authorization. Q1 `dd7e47d2c5f75af126ce4a081013bf21182d73ee` remains preserved with REMEDIATION REQUIRED on original producer `c946df0c93dde414c744f46cce054e7cd3f2c26e`. RC2A-03 remains unaccepted; RC2A-04 remains unauthorized; no qualification scope, source/native/API/test identity or inherited qualification changes. The following is the original preparation checkpoint.
+
 Status: **RC2A-03-CQ1 PREPARED / READY FOR INDEPENDENT REVIEW; RC2A-03 OWNER
 SIGN-OFF PENDING; RC2A-04 NOT AUTHORIZED.**
 
