@@ -816,3 +816,11 @@ satisfied.
 This record changes no production, test, or native source. It is a candidate
 for independent review; **RC2A-03 owner sign-off remains pending** and
 RC2A-04 remains not authorized.
+
+## 16. RC2A-03 owner acceptance with qualifications (2026-10-27)
+
+**[RC2A-03 ACCEPTED WITH QUALIFICATIONS](../decisions/restricted-consumer-contract-rc2a-03-owner-acceptance.md)** under GAGAMBA-RC2A-03-OWNER-01. Exact accepted R1: `271e34b45fa504f6bb7ef7359c4f2f1a9649e49d`, tree `f3f63129be98c5c9f9efba3302da331ae65139ee`; Q2 report `a58f1b2a07d959c763bf6d08143797846948fe74`, final review/receipt `e060c91225274f13d53421b613a5736225ef6de4`, tree `23bd0006ba1178f3b84ee510d89c5c0179cddc91`. Q2 verdict is SUPPORTED WITH QUALIFICATIONS; Q1 F01–F04 are closed for R1. The original Q1 report, R1 evidence and all historical decisions remain unchanged. Section 15 retains the earlier preparation checkpoints; this section supplies current owner disposition.
+
+Acceptance establishes component-level qualification for the passive restricted consumer contract, with the RC2A-02C pre-acceptance gate satisfied. All inherited qualifications and exclusions in decision §§5–6 remain effective: Windows/WSL2 scope; Windows-only 02C surface evidence; native Linux/macOS NOT RUN; passive-only semantics; digest/recipe-bound large vectors; test-versus-binary reproducibility; erratum, audit-trail, canonical-rigidity and filter disclosures; bounded re-encode/byte-domain claims; E2/E6; and open downstream findings/gates. Successful decoding confers no execution authority. No live facade, native/runtime confinement, package/distribution, Hufu or end-to-end qualification is established.
+
+**RC2A-04 remains NOT AUTHORIZED and not started.** GAGAMBA-INTEGRATION-01 is the next named task, awaiting separate commissioning; no integration, merge, push, worktree cleanup or native-track activity is started by this documentation-only decision.

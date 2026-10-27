@@ -1,0 +1,151 @@
+{
+  "decisionId": "GAGAMBA-RC2A-03-OWNER-01",
+  "date": "2026-10-27",
+  "timezone": "Asia/Manila",
+  "authority": "Explicit owner instruction in this conversation: ACCEPT RC2A-03 WITH QUALIFICATIONS; documentation only. No independent authentication of a human identity is inferred.",
+  "git": {
+    "baseline": {
+      "commit": "9519e7cb612af6ff69c93c0d128553138533d9fd",
+      "tree": "7b162d2b0e00d72c27a2389ed505d531758797f1",
+      "parents": [
+        "a36cb684ad75cebf3ba778a6c86d42d7f5f2d6f6"
+      ]
+    },
+    "acceptedR1": {
+      "commit": "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d",
+      "tree": "f3f63129be98c5c9f9efba3302da331ae65139ee",
+      "parents": [
+        "c946df0c93dde414c744f46cce054e7cd3f2c26e"
+      ]
+    },
+    "Q1": {
+      "commit": "dd7e47d2c5f75af126ce4a081013bf21182d73ee",
+      "tree": "c5d1299a2d382585ab240cb35f0352a7adfbfff8",
+      "parents": [
+        "7c6d0eb310dff46390f57a9cd41bd7b81abbcf9c"
+      ]
+    },
+    "Q2Report": {
+      "commit": "a58f1b2a07d959c763bf6d08143797846948fe74",
+      "tree": "71c688b0290b0f211842f82ac58733b8b836cbc2",
+      "parents": [
+        "dd7e47d2c5f75af126ce4a081013bf21182d73ee"
+      ]
+    },
+    "Q2Final": {
+      "commit": "e060c91225274f13d53421b613a5736225ef6de4",
+      "tree": "23bd0006ba1178f3b84ee510d89c5c0179cddc91",
+      "parents": [
+        "a58f1b2a07d959c763bf6d08143797846948fe74"
+      ]
+    }
+  },
+  "producerBranch": "qualification/gagamba-rc2a-03-cq1",
+  "producerWorktree": "C:\\Users\\Laszlos\\source\\repos\\Solo\\rc2a-03-cq1",
+  "producerInitiallyClean": true,
+  "reviewerBranch": "review/gagamba-rc2a-03-cq1-q1",
+  "reviewerWorktree": "C:\\Users\\Laszlos\\source\\repos\\Solo\\rc2a-03-cq1-q1-review",
+  "reviewerInitiallyClean": true,
+  "q2ActualVerdict": "SUPPORTED WITH QUALIFICATIONS",
+  "q2Findings": {
+    "F01": "CLOSED for R1",
+    "F02": "CLOSED for R1",
+    "F03": "CLOSED for R1",
+    "F04": "CLOSED for R1"
+  },
+  "q2ReportArtifacts": [
+    {
+      "commit": "e060c91225274f13d53421b613a5736225ef6de4",
+      "path": "docs/reviews/rc2a-03-cq1-q2-independent-verification.md",
+      "blob": "5cf5e8ad74a16a5a20808d0f325f892069185327",
+      "bytes": 20211,
+      "sha256": "1ebaa998e593413134d7f1f715aedf9ae3f7682c9d30b332c86645e243755bf1"
+    },
+    {
+      "commit": "e060c91225274f13d53421b613a5736225ef6de4",
+      "path": "docs/reviews/rc2a-03-cq1-q2/verification.json",
+      "blob": "ebe6821770d0cb9d42cbe9cc408cd30e95de3a71",
+      "bytes": 37894,
+      "sha256": "9120215fcc740172b65ead3ce87cb05b79f6aa3c01a47c38a2044d1bc6a780d1"
+    },
+    {
+      "commit": "e060c91225274f13d53421b613a5736225ef6de4",
+      "path": "docs/reviews/rc2a-03-cq1-q2/verify_record.py",
+      "blob": "f66daa21276da740e6e25acc5f4b8f9b8eade957",
+      "bytes": 15765,
+      "sha256": "fadc84b9af008b34368cc13bb8d3d7ba7e982d2fb966f19e0f6ed2b673a90191"
+    }
+  ],
+  "q2Receipt": {
+    "commit": "e060c91225274f13d53421b613a5736225ef6de4",
+    "path": "docs/reviews/rc2a-03-cq1-q2/git-binding.json",
+    "blob": "17ec0f6b8b39988a6cad4c9a21975074fb6eda8b",
+    "bytes": 3552,
+    "sha256": "a8d1a37a4b777e8218eb341f848e085fdda0bc0df8e03a3601bff8c25b4386ef"
+  },
+  "q1ArtifactsPreserved": true,
+  "componentObjects": {
+    "src": "b8c167e3d7340a562221591bdc2b6df7adb372d1",
+    "native": "85631d2f04512376621d3d09f51d67fd90f45335",
+    "tests": "9c906b349b0bf0cffdee331fb5700f9b7828c199",
+    "docs/design/restricted-consumer-contract-rc2a-01-api.md": "2d6b9d12cab02f092c6b6e0b690138cf6726f12b"
+  },
+  "r1PayloadHashes": [
+    {
+      "commit": "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d",
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-03-cq1/README.md",
+      "blob": "64c14fc444ff2db84b575646427ba64172de66b3",
+      "bytes": 24400,
+      "sha256": "cf76b78e58310546cac309271a53bfe898a8972635f970f2dad6c2a01d34ece5"
+    },
+    {
+      "commit": "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d",
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-03-cq1/reviewer-handoff.md",
+      "blob": "76264b5bf56e35bce302cefe05f643b1546ea560",
+      "bytes": 6694,
+      "sha256": "0b0215f975d32997e54a8ba54bb2cca26c378ea11662ba5d39617f78da9439eb"
+    },
+    {
+      "commit": "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d",
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-03-cq1/source-binding.json",
+      "blob": "23c8d3668e2a4fd89bdad6f22cbc05cf642c2eac",
+      "bytes": 5517,
+      "sha256": "61ca34b03d026b12a53cd266d9c0bc35797792f25b6f320ff319747704bc08ab"
+    },
+    {
+      "commit": "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d",
+      "path": "docs/evidence/restricted-consumer-contract-rc2a-03-cq1/traceability-matrix.md",
+      "blob": "363bbd98723dd223c187884638e5dfeb2d12a12e",
+      "bytes": 10606,
+      "sha256": "4b173e3ea1d9ea80915661b26c1356986f4ecfe78393c4f2f3772a6004fba9a8"
+    }
+  ],
+  "q2SectionDCarryForward": "1. **Passive security boundary.** Successful decoding grants no authority and proves no execution establishment or isolation. Neither digest equality nor a caller-supplied passive reference establishes provider provenance, live authorization, temporal/deadline/freshness/liveness guarantees, release/retained-state authority, native confinement or end-to-end execution. R1-F04 and the D4a/D4b timing-source distinction remain obligations for future consumer documentation/Hufu review.\n2. **Platform scope.** Windows is primary; the 02A/B managed assertion set has separately recorded WSL2 evidence. The later 02C focused surface qualification is Windows-only. WSL2 is never native Linux; native Linux/macOS remain **NOT RUN**. No new platform or runtime qualification follows from constant source/native Git identities.\n3. **Large vectors and reproducibility.** Two vectors remain digest/recipe-bound without standalone byte exports. Test-outcome reproducibility remains distinct from DLL-byte reproducibility; no binary, package, distribution or deployment reproducibility/compatibility guarantee is added. The corrected RC2A-01 origin must be used while the historical RC1-A citation error remains disclosed.\n4. **Evidence dispositions.** Preserve Q2C-Q2-F01's 39/39-to-40/40 acceptance erratum without altering historical `validation.md`; the 02B authorization-provenance/audit-trail limitation; Q2A02A-F01's accepted canonical-rigidity correction; and precise-filter authority versus the broad-filter 16 extra managed passes/41 native skips. Read original B evidence with its accepted R1/Q2 corrections. Historical failed/zero-result attempts do not become passes. Git records do not independently authenticate the original human authorization.\n5. **Bounded proof.** The re-encode reachability conclusion is source reasoning plus the accepted corpus. Surface inventory equality does not prove downstream enforcement or raw equality across differing representations. Full-stage E2/E6 qualifications remain; no consolidated cross-substage run occurred or was mandatory. No new combined execution is claimed.\n6. **Remaining gates.** RC-2B R1-F02/F03 remain open; R1-F06 HUFU-R recheck and AE4-B01 remain open; native, facade, package/clean-consumer/mixed-graph, Hufu and publication gates remain unqualified or unauthorized. Mode `work` remains descriptive. RC2A-03 awaits owner acceptance; RC2A-04 is unauthorized.\n",
+  "checks": "Exact Git objects/tree/parents, report and receipt availability/integrity, verdict/findings, source/native/tests/API identity, four R1 payload hashes and both clean worktrees verified read-only.",
+  "environment": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.8",
+    "git": "git version 2.55.0.windows.3"
+  },
+  "exclusions": "No build/test/native/package operation. No implementation, merge/rebase/push, branch/worktree creation/deletion, cleanup or integration work.",
+  "containingDecisionCommit": "Recorded in external completion handoff after commit; not embedded in this JSON to avoid self-reference.",
+  "focusedPrecommitAudit": {
+    "result": "PASS",
+    "expectedChangedPaths": [
+      "docs/decisions/restricted-consumer-contract-rc2a-03-owner-acceptance.md",
+      "docs/evidence/restricted-consumer-contract-rc2a-03-owner-acceptance/validation.json",
+      "docs/handoff.md",
+      "docs/plans/restricted-consumer-contract-implementation.md",
+      "docs/plans/restricted-consumer-contract-rc2a-02-qualification.md",
+      "docs/work-queue.md"
+    ],
+    "explicitReferenceCount": 5,
+    "newMarkdownLinks": 8,
+    "protectedPathsAndQualificationPackageUnchanged": true,
+    "reviewerStillCleanAtQ2Final": true,
+    "unrelatedMilestoneRowsUnchanged": true,
+    "q2QualificationsCarriedCompletely": true,
+    "decisionParentMustBe": "271e34b45fa504f6bb7ef7359c4f2f1a9649e49d",
+    "decisionCommitAndTree": "Returned after commit in completion handoff to avoid self-reference."
+  }
+}
