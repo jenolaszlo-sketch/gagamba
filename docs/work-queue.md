@@ -1,5 +1,11 @@
 # Current work queue
 
+> Current project summary and next owner decision: [PROJECT-STATUS.md](PROJECT-STATUS.md).
+> GAGAMBA-INTEGRATION-01 Stage 2B is separately owner-authorized; the accepted baseline
+> remains `1ce5c37f25c3bf49f55fc6a31a930f8430358d24`. RC2A-04 remains unauthorized.
+> Entries below are retained historical checkpoints. Their earlier pending-review or
+> awaiting-commissioning wording does not supersede the canonical current summary.
+
 ## Current consumer-contract work: RC2A-02 AND RC2A-03 ACCEPTED WITH QUALIFICATIONS; RC2A-04 NOT AUTHORIZED
 
 Owner decision recorded 2026-10-27: **[RC2A-03 ACCEPTED WITH QUALIFICATIONS](decisions/restricted-consumer-contract-rc2a-03-owner-acceptance.md)** under GAGAMBA-RC2A-03-OWNER-01, accepting the passive restricted consumer component qualification at R1 `271e34b45fa504f6bb7ef7359c4f2f1a9649e49d` (tree `f3f63129be98c5c9f9efba3302da331ae65139ee`), based on Q2 report `a58f1b2a07d959c763bf6d08143797846948fe74` and final receipt `e060c91225274f13d53421b613a5736225ef6de4` (tree `23bd0006ba1178f3b84ee510d89c5c0179cddc91`). Q2 is SUPPORTED WITH QUALIFICATIONS and closes Q1 F01–F04 for R1; original Q1 `dd7e47d2c5f75af126ce4a081013bf21182d73ee` remains preserved. All qualifications/exclusions in decision §§5–6 carry forward, including Windows/WSL2 limits, native Linux/macOS NOT RUN, passive-only semantics, no binary/package claim, erratum and provenance disclosures. Successful decoding grants no execution authority. **RC2A-04 remains unauthorized.**
