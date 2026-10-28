@@ -19,11 +19,12 @@ Standalone scope, three-platform scope and local-first testing are user-selected
 
 ## Packages
 
-The RC2A-01 source adds passive schema-1 inspection in
+The accepted RC2A-03 component provides passive schema-1 inspection in
 `Gagamba.Execution.Restricted.Contracts`: immutable manifest views, strict
 canonical encode/decode, SHA-256 verification and a passive preparation
-reference. This source API is pending independent implementation review; no
-published preview is claimed to contain it. Both public codec boundaries have
+reference. RC2A-04 is qualifying a local package candidate; owner acceptance
+and independent package review remain pending. No published preview is claimed
+to contain this API. Both public codec boundaries have
 an inclusive 65,536-byte ceiling; oversized encoding throws `ArgumentException`,
 and oversized decoding returns `InputTooLarge`. See the
 [frozen API contract](docs/design/restricted-consumer-contract-rc2a-01-api.md).
@@ -34,6 +35,17 @@ liveness. D4a timing must come from explicit enrolled/synthetic binding data;
 later D4b timing must come from the actual provider-origin prepared execution.
 Neither a valid manifest nor a matching SHA-256 digest establishes permission
 or native confinement. Mode `work` is descriptive and dispatches nothing.
+
+For passive inspection, reference `Gagamba.Execution` directly. Local candidate
+versions use `0.1.0-rc2a.<full-source-commit>` and are never published by the
+qualification runner. From a clean committed checkout, run
+`python eng/rc2a04/qualify.py --artifacts <new-absolute-directory-outside-repository>`.
+It packs a coherent candidate set with both `Version` and `PackageVersion`
+overridden, then restores ordinary external consumers from an explicit local
+feed into initially absent private caches. Python 3, .NET 10 and the explicitly
+inventoried cached SourceLink 10.0.401 and Hufu core preview.11 archives are inputs.
+The mixed graph checks package resolution and managed type loading only; it
+does not qualify Hufu Sandbox integration or activate native providers.
 
 Published to NuGet.org (current preview line: `0.1.0-preview.*`). Reference
 `Gagamba.Runtime` and it pulls the contract and all providers:
