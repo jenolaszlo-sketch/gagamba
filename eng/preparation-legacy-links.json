@@ -1,0 +1,532 @@
+{
+  "schemaVersion": 1,
+  "sourceIdentityByteDomain": "Exact file bytes: SHA-256 content and SHA-1 Git blob header plus content; no line-ending normalization",
+  "verifiedAtCommit": "12578dd41ce23b2e890c6f6b4a027db074f31f50",
+  "documents": [
+    {
+      "source": "docs/decisions/restricted-consumer-rc2a-01-owner-acceptance.md",
+      "expectedGitBlob": "15e008524e4d1c239074b0f204d7c9a0f692fa0c",
+      "expectedSha256": "84ec983fcbd88667544e335b15829ab5406798a35ed66d99bbc55ccda019b304",
+      "protection": "Accepted owner decision: two document-sha256 manifests and RC2A-03 explicit Git blob citation",
+      "references": [
+        {
+          "reference": "restricted-consumer-contract-rc2a-02-qualification.md",
+          "target": "docs/plans/restricted-consumer-contract-rc2a-02-qualification.md",
+          "classification": "incorrect-relative-directory",
+          "sourceLines": [
+            104,
+            136
+          ],
+          "expectedOccurrences": 2,
+          "verifiedTargetGitBlobAtBaseline": "0881ea230a13815651fc344115648df7c86dda2c",
+          "targetVerification": "Tracked file exists at the stated baseline"
+        }
+      ]
+    },
+    {
+      "source": "docs/reviews/2026-10-10-ar7-independent-evidence-review.md",
+      "expectedGitBlob": "70e1bb13081efd83b14873d51c7a96a8de8f18e2",
+      "expectedSha256": "e2d9cc9f3d49a7396a5f4709d447dda76af39c3b1985b822d0de4dcada20b04c",
+      "protection": "Review explicitly preserved verbatim in docs/handoff.md",
+      "references": [
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07.py:365",
+          "target": "spikes/Ar7Feasibility/p07.py",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            38
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "e38a54264d297a77d0fe692d37fdb6bfea0a44cf",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 365
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07.py:501",
+          "target": "spikes/Ar7Feasibility/p07.py",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            38
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "e38a54264d297a77d0fe692d37fdb6bfea0a44cf",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 501
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07.py:605",
+          "target": "spikes/Ar7Feasibility/p07.py",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            38
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "e38a54264d297a77d0fe692d37fdb6bfea0a44cf",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 605
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07.c:92",
+          "target": "spikes/Ar7Feasibility/p07.c",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            38
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "5af3dcd459c4534c7d174d22cfbbc21d9003f1d3",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 92
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/docs/evidence/ar7-feasibility/P07/70cf6e33690c4bd1b24ebec4824d2b08.json:146",
+          "target": "docs/evidence/ar7-feasibility/P07/70cf6e33690c4bd1b24ebec4824d2b08.json",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            38
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "b34f2da7916d82fb17ee3b40562ccc3223ed21a5",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 146
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p03.py:278",
+          "target": "spikes/Ar7Feasibility/p03.py",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            42
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "59e4ff54e434301aa19f05e5f4cb126b764f7779",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 278
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p03.py:314",
+          "target": "spikes/Ar7Feasibility/p03.py",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            42
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "59e4ff54e434301aa19f05e5f4cb126b764f7779",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 314
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/docs/evidence/ar7-feasibility/P03/70edf2c2242e4aea905e61854775b4a9.json:93",
+          "target": "docs/evidence/ar7-feasibility/P03/70edf2c2242e4aea905e61854775b4a9.json",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            42
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "b8fe8083c7373d412f4d94043475f4354c8cd506",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 93
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p04.py:136",
+          "target": "spikes/Ar7Feasibility/p04.py",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            46
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "c04657ed600027c111d6e174c6ae146e8d1554fd",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 136
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/docs/evidence/ar7-feasibility/P04/74346e3119e64a3599ccbdda8eaf2f7e.json:776",
+          "target": "docs/evidence/ar7-feasibility/P04/74346e3119e64a3599ccbdda8eaf2f7e.json",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            46
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "b2e99d8bbaafaf5be40cfa31d191b0f18e4e67a8",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 776
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/docs/evidence/ar7-P04-resource-storage.md:64",
+          "target": "docs/evidence/ar7-P04-resource-storage.md",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            46
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "0822f3c2c57cffb40d778c75537adf4b64495aa3",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 64
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/docs/evidence/ar7-P03-transports-ipc.md:34",
+          "target": "docs/evidence/ar7-P03-transports-ipc.md",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            57
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "82c38b539eb745313fb173c1f532636c08e37a35",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 34
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p03.py:294",
+          "target": "spikes/Ar7Feasibility/p03.py",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            57
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "59e4ff54e434301aa19f05e5f4cb126b764f7779",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 294
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p03.c:294",
+          "target": "spikes/Ar7Feasibility/p03.c",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            57
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "779b98adedb79379519f2384f925644233ee0746",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 294
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p03.c:392",
+          "target": "spikes/Ar7Feasibility/p03.c",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            57
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "779b98adedb79379519f2384f925644233ee0746",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 392
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p04.py:75",
+          "target": "spikes/Ar7Feasibility/p04.py",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            68
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "c04657ed600027c111d6e174c6ae146e8d1554fd",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 75
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p04.py:154",
+          "target": "spikes/Ar7Feasibility/p04.py",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            68
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "c04657ed600027c111d6e174c6ae146e8d1554fd",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 154
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/docs/evidence/ar7-feasibility/P04/74346e3119e64a3599ccbdda8eaf2f7e.json:623",
+          "target": "docs/evidence/ar7-feasibility/P04/74346e3119e64a3599ccbdda8eaf2f7e.json",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            68
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "b2e99d8bbaafaf5be40cfa31d191b0f18e4e67a8",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 623
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/docs/evidence/ar7-feasibility/P04/74346e3119e64a3599ccbdda8eaf2f7e.json:716",
+          "target": "docs/evidence/ar7-feasibility/P04/74346e3119e64a3599ccbdda8eaf2f7e.json",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            68
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "b2e99d8bbaafaf5be40cfa31d191b0f18e4e67a8",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 716
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/docs/evidence/ar7-P04-resource-storage.md:86",
+          "target": "docs/evidence/ar7-P04-resource-storage.md",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            68
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "0822f3c2c57cffb40d778c75537adf4b64495aa3",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 86
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07.py:108",
+          "target": "spikes/Ar7Feasibility/p07.py",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            74
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "e38a54264d297a77d0fe692d37fdb6bfea0a44cf",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 108
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07.py:518",
+          "target": "spikes/Ar7Feasibility/p07.py",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            74
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "e38a54264d297a77d0fe692d37fdb6bfea0a44cf",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 518
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07.py:227",
+          "target": "spikes/Ar7Feasibility/p07.py",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            74
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "e38a54264d297a77d0fe692d37fdb6bfea0a44cf",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 227
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/docs/evidence/ar7-feasibility/P07/70cf6e33690c4bd1b24ebec4824d2b08.json:570",
+          "target": "docs/evidence/ar7-feasibility/P07/70cf6e33690c4bd1b24ebec4824d2b08.json",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            74
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "b34f2da7916d82fb17ee3b40562ccc3223ed21a5",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 570
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07.py:687",
+          "target": "spikes/Ar7Feasibility/p07.py",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            74
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "e38a54264d297a77d0fe692d37fdb6bfea0a44cf",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 687
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07.c:131",
+          "target": "spikes/Ar7Feasibility/p07.c",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            79
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "5af3dcd459c4534c7d174d22cfbbc21d9003f1d3",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 131
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/docs/evidence/ar7-feasibility/P07/70cf6e33690c4bd1b24ebec4824d2b08.json:136",
+          "target": "docs/evidence/ar7-feasibility/P07/70cf6e33690c4bd1b24ebec4824d2b08.json",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            79
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "b34f2da7916d82fb17ee3b40562ccc3223ed21a5",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 136
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07.py:856",
+          "target": "spikes/Ar7Feasibility/p07.py",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            79
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "e38a54264d297a77d0fe692d37fdb6bfea0a44cf",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 856
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/docs/evidence/restricted-execution-AR-7-feasibility.md:18",
+          "target": "docs/evidence/restricted-execution-AR-7-feasibility.md",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            89
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "e9e4f1b34d2a19a3d582e1edd7ca7add226294d4",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 18
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/docs/evidence/ar7-P07-crash-ownership.md:25",
+          "target": "docs/evidence/ar7-P07-crash-ownership.md",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            89
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "f5651cadf78b9d42ef6783069419a87aa5d276b1",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 25
+        }
+      ]
+    },
+    {
+      "source": "docs/reviews/2026-10-10-ar7-r2-separate-gate-review.md",
+      "expectedGitBlob": "15b4c6a277b752b8014548e94668a8917d63fd0f",
+      "expectedSha256": "042aea9bfe5733c82c5951e49f09d4aba16e7043ea87b2161e80ee957b317bb8",
+      "protection": "Review explicitly preserved verbatim in docs/handoff.md",
+      "references": [
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07.py:1222",
+          "target": "spikes/Ar7Feasibility/p07.py",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            18
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "e38a54264d297a77d0fe692d37fdb6bfea0a44cf",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 1222
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07gate.c:14",
+          "target": "spikes/Ar7Feasibility/p07gate.c",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            26
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "327f90f56ef9192c0689ebef8cf8096a4f2d25dd",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 14
+        },
+        {
+          "reference": "/C:/Users/Laszlos/source/repos/Gagamba/spikes/Ar7Feasibility/p07.py:2138",
+          "target": "spikes/Ar7Feasibility/p07.py",
+          "classification": "machine-local-path-and-line-number-suffix",
+          "sourceLines": [
+            40
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "e38a54264d297a77d0fe692d37fdb6bfea0a44cf",
+          "targetVerification": "Tracked file exists at the stated baseline",
+          "originalLineNumber": 2138
+        }
+      ]
+    },
+    {
+      "source": "docs/evidence/linux-m1/wp03.md",
+      "expectedGitBlob": "98aa9e3fe3636b1cd05cb11c3d82d887e9948f64",
+      "expectedSha256": "2121cd57071bcd3b050e5c6ec2e37a29b5c7ac74fea0e059fe24254f9091071f",
+      "protection": "Historical evidence retained byte-for-byte",
+      "references": [
+        {
+          "reference": "../reviews/gagamba-linux-m1-g2-r6c-rereview.md",
+          "target": "docs/reviews/gagamba-linux-m1-g2-r6c-rereview.md",
+          "classification": "incorrect-relative-directory",
+          "sourceLines": [
+            1139
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "d19155eb76ddba3c75072bb178bdb2c3b59fade6",
+          "targetVerification": "Tracked file exists at the stated baseline"
+        },
+        {
+          "reference": "../reviews/gagamba-linux-m1-g2-08-r6d-rereview.md",
+          "target": "docs/reviews/gagamba-linux-m1-g2-08-r6d-rereview.md",
+          "classification": "incorrect-relative-directory",
+          "sourceLines": [
+            1257
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "baf3cfb3719e75e2fcf623abcf63ee0c4077a680",
+          "targetVerification": "Tracked file exists at the stated baseline"
+        },
+        {
+          "reference": "../reviews/gagamba-linux-m1-r6d3a-remediation-review.md",
+          "target": "docs/reviews/gagamba-linux-m1-r6d3a-remediation-review.md",
+          "classification": "incorrect-relative-directory",
+          "sourceLines": [
+            1637
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "5ac8eadc3f604370ee5108161033dfc2336871f8",
+          "targetVerification": "Tracked file exists at the stated baseline"
+        },
+        {
+          "reference": "../reviews/gagamba-linux-m1-g2-03-r6d3-final-rereview.md",
+          "target": "docs/reviews/gagamba-linux-m1-g2-03-r6d3-final-rereview.md",
+          "classification": "incorrect-relative-directory",
+          "sourceLines": [
+            1682
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "82eae8c60ed280e2725232ad3d3eafb9003a52f9",
+          "targetVerification": "Tracked file exists at the stated baseline"
+        },
+        {
+          "reference": "../reviews/gagamba-linux-m1-g2-10-final-rereview.md",
+          "target": "docs/reviews/gagamba-linux-m1-g2-10-final-rereview.md",
+          "classification": "incorrect-relative-directory",
+          "sourceLines": [
+            1732
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "31e9229d572813fa0c5dcd136bcdf259d9b12413",
+          "targetVerification": "Tracked file exists at the stated baseline"
+        },
+        {
+          "reference": "../reviews/gagamba-linux-m1-g2-final-acceptance-review.md",
+          "target": "docs/reviews/gagamba-linux-m1-g2-final-acceptance-review.md",
+          "classification": "incorrect-relative-directory",
+          "sourceLines": [
+            1740
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "7861a7b700f2e9164d14385d44dcf07d5721abdd",
+          "targetVerification": "Tracked file exists at the stated baseline"
+        }
+      ]
+    },
+    {
+      "source": "docs/evidence/linux-m1/wp05-release-protocol-implementation-2026-10-18.md",
+      "expectedGitBlob": "f4547780834446aab2e35c0b5538c57d6ef56d3e",
+      "expectedSha256": "c0ee725edd9f786b46d84e7745bf3dd173c8aebdaae15ae71f5ecb2c55f52b91",
+      "protection": "Historical evidence retained byte-for-byte",
+      "references": [
+        {
+          "reference": "../adr/0004-wp05-durable-release-schema-amendment.md",
+          "target": "docs/adr/0004-wp05-durable-release-schema-amendment.md",
+          "classification": "incorrect-relative-directory",
+          "sourceLines": [
+            26
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "373413f6b1a4ce1895380b411af29fc50012b028",
+          "targetVerification": "Tracked file exists at the stated baseline"
+        }
+      ]
+    }
+  ]
+}

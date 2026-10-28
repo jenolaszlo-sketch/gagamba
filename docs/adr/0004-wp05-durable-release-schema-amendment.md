@@ -80,7 +80,7 @@ contains:
 Version 2 has no release phase, release deadline, stop cause/time, exec or root
 observation or delivery state. `PreparationStage` ends at `Prepared`; the
 durable record does not have a separate `Owned` state. WP04 accepted this
-pre-release record and its writer fence ([WP03 evidence](../evidence/linux-m1/wp03.md:141–149)).
+pre-release record and its writer fence ([WP03 evidence](../evidence/linux-m1/wp03.md), lines 141–149).
 
 The journal is a bounded two-generation snapshot (`gen.a`/`gen.b`, `gen.tmp`,
 `gen.seal`) with a SHA-256 checksum. A mutation requires a live
