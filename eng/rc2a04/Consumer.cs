@@ -22,7 +22,7 @@ foreach (var vector in json.RootElement.GetProperty("vectors").EnumerateArray())
     Check(bytes.Length == vector.GetProperty("bytes").GetInt32(), id + " length");
     Check(SHA256.HashData(bytes).SequenceEqual(digest), id + " independent digest");
     var result = RestrictedManifestCodec.Decode(bytes);
-    Check(result.Value is not null && result.Error == ManifestDecodeError.None, id + " decode");
+    Check(result.Value is not null && result.Error is null, id + " decode");
     var view = result.Value!;
     Check(view.SchemaVersion == 1 && view.ImplementationId == "linux-m1-native-transaction", id + " identity");
     Check(RestrictedManifestCodec.Encode(view).SequenceEqual(bytes), id + " canonical roundtrip");
@@ -53,10 +53,10 @@ byte[] golden = Convert.FromHexString(json.RootElement.GetProperty("golden").Get
 for (int length = 0; length < golden.Length; length++)
 {
     var refusal = RestrictedManifestCodec.Decode(golden.AsSpan(0, length));
-    Check(refusal.Value is null && refusal.Error != ManifestDecodeError.None, "truncated prefix " + length);
+    Check(refusal.Value is null && refusal.Error is not null, "truncated prefix " + length);
 }
 var trailing = RestrictedManifestCodec.Decode(golden.Concat(new byte[] { 0 }).ToArray());
-Check(trailing.Value is null && trailing.Error != ManifestDecodeError.None, "trailing data");
+Check(trailing.Value is null && trailing.Error is not null, "trailing data");
 var corrupt = golden.ToArray(); corrupt[0] = 2;
 Check(RestrictedManifestCodec.Decode(corrupt).Value is null, "unsupported schema refusal");
 corrupt = golden.ToArray(); corrupt[6] = (byte)'X';
@@ -80,7 +80,6 @@ var reference = Make(hash);
 var same = Make(hash.ToArray());
 Check(reference.ExecutionId == ids[0] && reference.IssuerId == ids[1] && reference.GenerationId == ids[2] && reference.PreparationId == ids[3], "reference IDs");
 Check(reference.Equals(same) && reference.Equals((object)same) && reference.GetHashCode() == same.GetHashCode(), "content equality/hash within process");
-Check(!reference.Equals(null) && !reference.Equals(new object()), "reference null/type inequality");
 hash[0] ^= 1;
 Check(reference.Equals(same) && !reference.Equals(Make(hash)), "constructor copy/digest inequality");
 var copied = reference.ManifestSha256.ToArray(); copied[0] ^= 1;
@@ -93,4 +92,5 @@ for (int index = 0; index < ids.Length; index++)
     Argument(() => new RestrictedPreparationReference(changed[0], changed[1], changed[2], changed[3], hash), new[] { "executionId", "issuerId", "generationId", "preparationId" }[index]);
 }
 foreach (int length in new[] { 0, 31, 33 }) Argument(() => Make(new byte[length]), "manifestSha256");
+Check(!((object)reference).Equals(null) && !reference.Equals(new object()), "reference null/type inequality");
 Console.WriteLine(JsonSerializer.Serialize(new { result = "PASS", checks, literalVectors = vectors, recipeOnlyNotMaterialized = omitted, framework = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription, os = System.Runtime.InteropServices.RuntimeInformation.OSDescription }));
