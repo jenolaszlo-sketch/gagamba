@@ -1,0 +1,386 @@
+[
+  {
+    "label": "environment",
+    "command": [
+      "dotnet",
+      "--info"
+    ],
+    "exitCode": 0
+  },
+  {
+    "label": "package-restore",
+    "command": [
+      "dotnet",
+      "restore",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Runtime\\Gagamba.Runtime.csproj",
+      "--configfile",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\build-config\\NuGet.Config",
+      "--packages",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\build-cache",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\build-output",
+      "-p:Version=0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "-p:PackageVersion=0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "-p:RepositoryCommit=82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "-p:SourceRevisionId=82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "-p:ContinuousIntegrationBuild=true",
+      "-p:NuGetAudit=false"
+    ],
+    "exitCode": 0
+  },
+  {
+    "label": "pack-Gagamba.Execution",
+    "command": [
+      "dotnet",
+      "pack",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution\\Gagamba.Execution.csproj",
+      "-c",
+      "Release",
+      "--no-restore",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\build-output",
+      "-o",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\feed",
+      "-p:Version=0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "-p:PackageVersion=0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "-p:RepositoryCommit=82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "-p:SourceRevisionId=82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "-p:ContinuousIntegrationBuild=true",
+      "-p:NuGetAudit=false"
+    ],
+    "exitCode": 0
+  },
+  {
+    "label": "pack-Gagamba.Execution.Windows",
+    "command": [
+      "dotnet",
+      "pack",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Windows\\Gagamba.Execution.Windows.csproj",
+      "-c",
+      "Release",
+      "--no-restore",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\build-output",
+      "-o",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\feed",
+      "-p:Version=0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "-p:PackageVersion=0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "-p:RepositoryCommit=82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "-p:SourceRevisionId=82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "-p:ContinuousIntegrationBuild=true",
+      "-p:NuGetAudit=false"
+    ],
+    "exitCode": 0
+  },
+  {
+    "label": "pack-Gagamba.Execution.Linux",
+    "command": [
+      "dotnet",
+      "pack",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux\\Gagamba.Execution.Linux.csproj",
+      "-c",
+      "Release",
+      "--no-restore",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\build-output",
+      "-o",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\feed",
+      "-p:Version=0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "-p:PackageVersion=0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "-p:RepositoryCommit=82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "-p:SourceRevisionId=82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "-p:ContinuousIntegrationBuild=true",
+      "-p:NuGetAudit=false"
+    ],
+    "exitCode": 0
+  },
+  {
+    "label": "pack-Gagamba.Execution.MacOS",
+    "command": [
+      "dotnet",
+      "pack",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.MacOS\\Gagamba.Execution.MacOS.csproj",
+      "-c",
+      "Release",
+      "--no-restore",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\build-output",
+      "-o",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\feed",
+      "-p:Version=0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "-p:PackageVersion=0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "-p:RepositoryCommit=82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "-p:SourceRevisionId=82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "-p:ContinuousIntegrationBuild=true",
+      "-p:NuGetAudit=false"
+    ],
+    "exitCode": 0
+  },
+  {
+    "label": "pack-Gagamba.Runtime",
+    "command": [
+      "dotnet",
+      "pack",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Runtime\\Gagamba.Runtime.csproj",
+      "-c",
+      "Release",
+      "--no-restore",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\build-output",
+      "-o",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\feed",
+      "-p:Version=0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "-p:PackageVersion=0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "-p:RepositoryCommit=82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "-p:SourceRevisionId=82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "-p:ContinuousIntegrationBuild=true",
+      "-p:NuGetAudit=false"
+    ],
+    "exitCode": 0
+  },
+  {
+    "label": "direct-restore",
+    "command": [
+      "dotnet",
+      "restore",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\direct\\direct.csproj",
+      "--configfile",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\direct\\NuGet.Config",
+      "--packages",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\direct-cache",
+      "--force",
+      "--no-http-cache"
+    ],
+    "exitCode": 0
+  },
+  {
+    "label": "direct-run",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\direct\\direct.csproj",
+      "-c",
+      "Release",
+      "--no-restore",
+      "--",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\direct\\vectors.json"
+    ],
+    "exitCode": 0
+  },
+  {
+    "label": "mixed-restore",
+    "command": [
+      "dotnet",
+      "restore",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\mixed\\mixed.csproj",
+      "--configfile",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\mixed\\NuGet.Config",
+      "--packages",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\mixed-cache",
+      "--force",
+      "--no-http-cache"
+    ],
+    "exitCode": 0
+  },
+  {
+    "label": "mixed-run",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\mixed\\mixed.csproj",
+      "-c",
+      "Release",
+      "--no-restore"
+    ],
+    "exitCode": 0
+  },
+  {
+    "label": "negative-restore",
+    "command": [
+      "dotnet",
+      "restore",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\negative\\negative.csproj",
+      "--configfile",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\negative\\NuGet.Config",
+      "--packages",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\negative-cache"
+    ],
+    "exitCode": 0
+  },
+  {
+    "label": "negative-view-construction",
+    "command": [
+      "dotnet",
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\negative\\negative.csproj",
+      "-c",
+      "Release",
+      "--no-restore"
+    ],
+    "exitCode": 1
+  },
+  {
+    "label": "negative-view-setter",
+    "command": [
+      "dotnet",
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\negative\\negative.csproj",
+      "-c",
+      "Release",
+      "--no-restore"
+    ],
+    "exitCode": 1
+  },
+  {
+    "label": "negative-codec-launch",
+    "command": [
+      "dotnet",
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\negative\\negative.csproj",
+      "-c",
+      "Release",
+      "--no-restore"
+    ],
+    "exitCode": 1
+  },
+  {
+    "label": "negative-reference-release",
+    "command": [
+      "dotnet",
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\negative\\negative.csproj",
+      "-c",
+      "Release",
+      "--no-restore"
+    ],
+    "exitCode": 1
+  },
+  {
+    "label": "inspector-restore",
+    "command": [
+      "dotnet",
+      "restore",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\inspector\\inspector.csproj",
+      "--configfile",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\inspector\\NuGet.Config",
+      "--packages",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\inspector-cache"
+    ],
+    "exitCode": 0
+  },
+  {
+    "label": "api-inspection",
+    "command": [
+      "dotnet",
+      "run",
+      "--project",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\inspector\\inspector.csproj",
+      "-c",
+      "Release",
+      "--no-restore",
+      "--",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\inspect-inputs\\Gagamba.Execution.dll",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\inspect-inputs\\Gagamba.Execution.pdb",
+      "82cf8983a61f60a95d0aed0233ef0efac985148b"
+    ],
+    "exitCode": 0
+  },
+  {
+    "label": "public",
+    "command": [
+      "dotnet",
+      "test",
+      "tests/Gagamba.Execution.Tests/Gagamba.Execution.Tests.csproj",
+      "-c",
+      "Release",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\regression-build",
+      "--filter",
+      "FullyQualifiedName~Gagamba.Execution.Tests.Restricted.",
+      "--logger",
+      "trx;LogFileName=public.trx",
+      "--results-directory",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\windows-tests",
+      "-p:NuGetAudit=false",
+      "--verbosity",
+      "minimal"
+    ],
+    "exitCode": 0
+  },
+  {
+    "label": "portable",
+    "command": [
+      "dotnet",
+      "test",
+      "tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj",
+      "-c",
+      "Release",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\regression-build",
+      "--filter",
+      "FullyQualifiedName~Contracts.ManifestTests|FullyQualifiedName~Contracts.RestrictedPublicProjectionTests|FullyQualifiedName~PreparationIdentityTests|FullyQualifiedName~Tests.Qualification.",
+      "--logger",
+      "trx;LogFileName=portable.trx",
+      "--results-directory",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\.gagamba-rc2a04\\attempt-03\\windows-tests",
+      "-p:NuGetAudit=false",
+      "--verbosity",
+      "minimal"
+    ],
+    "exitCode": 0
+  },
+  {
+    "label": "public",
+    "command": [
+      "wsl.exe",
+      "-d",
+      "Ubuntu",
+      "--exec",
+      "dotnet",
+      "test",
+      "${WSL_REPOSITORY}/tests/Gagamba.Execution.Tests/Gagamba.Execution.Tests.csproj",
+      "-c",
+      "Release",
+      "--artifacts-path",
+      "${WSL_BUILD}",
+      "--filter",
+      "FullyQualifiedName~Gagamba.Execution.Tests.Restricted.",
+      "--logger",
+      "trx;LogFileName=public.trx",
+      "--results-directory",
+      "${WSL_ARTIFACTS}/wsl-tests",
+      "-p:NuGetAudit=false",
+      "--verbosity",
+      "minimal"
+    ],
+    "exitCode": 0
+  },
+  {
+    "label": "portable",
+    "command": [
+      "wsl.exe",
+      "-d",
+      "Ubuntu",
+      "--exec",
+      "dotnet",
+      "test",
+      "${WSL_REPOSITORY}/tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj",
+      "-c",
+      "Release",
+      "--artifacts-path",
+      "${WSL_BUILD}",
+      "--filter",
+      "FullyQualifiedName~Contracts.ManifestTests|FullyQualifiedName~Contracts.RestrictedPublicProjectionTests|FullyQualifiedName~PreparationIdentityTests|FullyQualifiedName~Tests.Qualification.",
+      "--logger",
+      "trx;LogFileName=portable.trx",
+      "--results-directory",
+      "${WSL_ARTIFACTS}/wsl-tests",
+      "-p:NuGetAudit=false",
+      "--verbosity",
+      "minimal"
+    ],
+    "exitCode": 0
+  }
+]

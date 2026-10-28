@@ -1,0 +1,135 @@
+{
+  "sourceCommit": "82cf8983a61f60a95d0aed0233ef0efac985148b",
+  "direct": {
+    "result": "PASS",
+    "checks": 1227,
+    "literalVectors": 21,
+    "recipeOnlyNotMaterialized": [
+      "Q2A-V-19-max-argenv-16384",
+      "Q2A-V-20-max-manifest-65536"
+    ],
+    "framework": ".NET 10.0.12",
+    "os": "Microsoft Windows 10.0.26200"
+  },
+  "mixed": "0,0,0,0\nPASS: coherent Runtime/provider compile and managed type loading; Hufu core restored; no native activation or Hufu Sandbox integration.",
+  "regressions": [
+    {
+      "platform": "windows",
+      "suite": "public",
+      "counters": {
+        "total": "48",
+        "executed": "48",
+        "passed": "48",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      }
+    },
+    {
+      "platform": "windows",
+      "suite": "portable",
+      "counters": {
+        "total": "457",
+        "executed": "457",
+        "passed": "457",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      }
+    },
+    {
+      "platform": "wsl",
+      "suite": "public",
+      "counters": {
+        "total": "48",
+        "executed": "48",
+        "passed": "48",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      }
+    },
+    {
+      "platform": "wsl",
+      "suite": "portable",
+      "counters": {
+        "total": "457",
+        "executed": "457",
+        "passed": "457",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      }
+    }
+  ],
+  "negativeCompilation": {
+    "view-construction": "CS1729",
+    "view-setter": "CS0200",
+    "codec-launch": "CS0117",
+    "reference-release": "CS1061"
+  },
+  "localRawReceipts": [
+    {
+      "file": "windows-tests/portable.trx",
+      "sha256": "aca415df11c7bbf94ab89bbdf853151d7463ca3338f9fdbae1c9e27c8f2e298c"
+    },
+    {
+      "file": "windows-tests/public.trx",
+      "sha256": "d0b8e67853c4755b5102a3d2a0f10aaecadcd3ab654144acee4c62550bfaa05a"
+    },
+    {
+      "file": "wsl-tests/portable.trx",
+      "sha256": "57333005c46b70b6cacd174354c095b4f1f3523da60c6edbfde669d7564f87ef"
+    },
+    {
+      "file": "wsl-tests/public.trx",
+      "sha256": "66d49a2641426f929bd4e902b98eed26f0878b696dece7f6b2f4bacc5ddb825a"
+    }
+  ],
+  "mixedHufuPublicTypeLoading": {
+    "type": "Penghou.Hufu.AuthorityAction",
+    "result": "PASS",
+    "providerActivation": false,
+    "sourceFile": "mixed-consumer.cs"
+  }
+}

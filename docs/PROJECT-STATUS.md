@@ -58,7 +58,7 @@ Existing R2A-F01/F02/F04 and R1-F01/F05 dispositions remain scoped.
 | RC2A-01 implementation | Accepted with follow-up; follow-ups retain their scoped later dispositions |
 | RC2A-02 | Accepted with qualifications at `9519e7cb612af6ff69c93c0d128553138533d9fd` |
 | RC2A-03 | Accepted with qualifications at the exact owner decision above |
-| RC2A-04 packaging/distribution/clean consumer/mixed graph | **NOT AUTHORIZED; NOT STARTED** |
+| RC2A-04 local package/clean consumer/mixed graph | **QUALIFIED WITH RESTRICTIONS / REVIEW REQUIRED**; independent review and owner acceptance pending; [evidence](evidence/rc2a-04/README.md) |
 | RC2B / RC-2B facade | Not established; R1-F02/F03 OPEN |
 | HUFU-R / R1-F06, AE4-B01 and Hufu integration | OPEN/BLOCKED; no integration authorization |
 | Native C1 review, C3/C4 and broader native track | Separate commissions/dispositions; not accepted by RC2A-03 |
@@ -76,8 +76,9 @@ The 23 checkpoint/review/assessment refs and accepted baseline were published an
 verified before this documentation commit was prepared for installation. Seven review
 and two assessment branches retain their independent histories; none was merged into main.
 The accepted implementation/decision baseline remains exactly
-`1ce5c37f25c3bf49f55fc6a31a930f8430358d24`. This documentation-only commit is its
-direct child; production, native, API and test identities above remain unchanged.
+`1ce5c37f25c3bf49f55fc6a31a930f8430358d24`. The integration status commit `12578dd41ce23b2e890c6f6b4a027db074f31f50` is its
+direct child. Subsequent link maintenance and RC2A-04 qualification tooling retain
+the production, native, API and test identities above unchanged.
 Moving historical native code into main grants it no broader acceptance.
 
 Stage 2A recovery was verified from the Git bundle, cold administrative metadata and all
@@ -92,9 +93,23 @@ Stage 2B completion receipts and GitHub Actions. This summary does not substitut
 those results. Ordinary CI build/test/pack/probe results do not establish new consumer,
 native-runtime, installed-package or distribution qualification.
 
-Next owner decision: review the Stage 2B completion/CI receipts and separately commission
-any subsequent work. RC2A-04 remains NOT AUTHORIZED and NOT STARTED; no next milestone
-starts automatically. RC2B, native and Hufu gates retain their independent dispositions.
+RC2A-04 was separately commissioned on main. Exact local package source is
+`82cf8983a61f60a95d0aed0233ef0efac985148b` (tree
+`d37ad20f2d7e5ee4ee705e4c78b766df32b61f0c`); candidate version is
+`0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b`.
+The clean Windows package consumer passed 1,227 assertions using 21 exported vectors;
+Windows and WSL2 each passed 48 public plus 457 precise portable regressions (0 failed,
+0 skipped). Five coherent local packages and symbols were inspected. The mixed graph
+with Hufu core preview.11 restored and loaded managed types without native activation;
+the Hufu Sandbox package is unavailable, so its integration graph remains unqualified.
+V19/V20 remain recipe/digest-bound, native Linux/macOS consumer qualification remains
+NOT RUN, and no binary reproducibility or execution-authority claim is added.
+No package was published. Automatic CI for the evidence commit is recorded separately.
+
+Next owner decision: after independent review of the RC2A-04 source, actual local
+packages and evidence, accept with restrictions or require bounded remediation.
+No subsequent milestone starts automatically. RC2B, native and Hufu gates retain
+their independent dispositions.
 
 Maintain this file as the single current project summary; handoff/work-queue point here.
 Keep accepted decisions, qualification packages and independent reviews immutable.

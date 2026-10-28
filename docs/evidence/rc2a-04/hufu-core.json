@@ -1,0 +1,24 @@
+{
+  "id": "Penghou.Hufu",
+  "version": "0.1.0-preview.11",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jenolaszlo-sketch/penghou-hufu",
+    "commit": "c47c0e1a2e3dd26fdbb9fe1e1781cf128842b9f3"
+  },
+  "sha256": "a9083f1f6dcf17e851f9f89aa0ce49ab9ec711bd59330788a73efad3d233fc25",
+  "dependencyGroups": [
+    {
+      "group": {
+        "targetFramework": "net10.0"
+      },
+      "dependencies": []
+    },
+    {
+      "group": {
+        "targetFramework": "net8.0"
+      },
+      "dependencies": []
+    }
+  ]
+}

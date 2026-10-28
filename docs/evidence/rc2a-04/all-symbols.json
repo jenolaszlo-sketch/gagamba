@@ -1,0 +1,42 @@
+[
+  {
+    "package": "Gagamba.Execution",
+    "assembly": "Gagamba.Execution, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null",
+    "sourceLinks": [
+      "{\"documents\":{\"/_/*\":\"https://raw.githubusercontent.com/jenolaszlo-sketch/gagamba/82cf8983a61f60a95d0aed0233ef0efac985148b/*\"}}"
+    ],
+    "exportedTypes": 57
+  },
+  {
+    "package": "Gagamba.Execution.Linux",
+    "assembly": "Gagamba.Execution.Linux, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null",
+    "sourceLinks": [
+      "{\"documents\":{\"/_/*\":\"https://raw.githubusercontent.com/jenolaszlo-sketch/gagamba/82cf8983a61f60a95d0aed0233ef0efac985148b/*\"}}"
+    ],
+    "exportedTypes": 1
+  },
+  {
+    "package": "Gagamba.Execution.MacOS",
+    "assembly": "Gagamba.Execution.MacOS, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null",
+    "sourceLinks": [
+      "{\"documents\":{\"/_/*\":\"https://raw.githubusercontent.com/jenolaszlo-sketch/gagamba/82cf8983a61f60a95d0aed0233ef0efac985148b/*\"}}"
+    ],
+    "exportedTypes": 1
+  },
+  {
+    "package": "Gagamba.Execution.Windows",
+    "assembly": "Gagamba.Execution.Windows, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null",
+    "sourceLinks": [
+      "{\"documents\":{\"/_/*\":\"https://raw.githubusercontent.com/jenolaszlo-sketch/gagamba/82cf8983a61f60a95d0aed0233ef0efac985148b/*\"}}"
+    ],
+    "exportedTypes": 1
+  },
+  {
+    "package": "Gagamba.Runtime",
+    "assembly": "Gagamba.Runtime, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null",
+    "sourceLinks": [
+      "{\"documents\":{\"/_/*\":\"https://raw.githubusercontent.com/jenolaszlo-sketch/gagamba/82cf8983a61f60a95d0aed0233ef0efac985148b/*\"}}"
+    ],
+    "exportedTypes": 7
+  }
+]

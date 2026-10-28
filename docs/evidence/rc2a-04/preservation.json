@@ -1,0 +1,17 @@
+{
+  "sourceCommit": "82cf8983a61f60a95d0aed0233ef0efac985148b",
+  "sourceTree": "d37ad20f2d7e5ee4ee705e4c78b766df32b61f0c",
+  "protectedIdentities": {
+    "src": "b8c167e3d7340a562221591bdc2b6df7adb372d1",
+    "native": "85631d2f04512376621d3d09f51d67fd90f45335",
+    "tests": "9c906b349b0bf0cffdee331fb5700f9b7828c199",
+    ".github": "ed8758aa675bf31bbb985f6745ac247c3228bacb",
+    "docs/design": "a04b900e48b1e17e7450366bf2af91f58b9014a3",
+    "docs/decisions": "6c03537e8aff3c9c3f8c53c1ad60263c55e1a713",
+    "docs/evidence": "0e5b5509edda5bfa347cb45a7315bc07cd2601cd",
+    "docs/reviews": "704d5ad065088b9ba72a94f7ed0182ec0ddccd45"
+  },
+  "originalUntrackedCount": 30,
+  "allOriginalUntrackedHashesMatch": true,
+  "rc2a01OwnerBlob": "15e008524e4d1c239074b0f204d7c9a0f692fa0c"
+}

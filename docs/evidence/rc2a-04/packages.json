@@ -1,0 +1,191 @@
+{
+  "sourceCommit": "82cf8983a61f60a95d0aed0233ef0efac985148b",
+  "sourceTree": "d37ad20f2d7e5ee4ee705e4c78b766df32b61f0c",
+  "version": "0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+  "packages": [
+    {
+      "file": "Gagamba.Execution.0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b.nupkg",
+      "sha256": "c7a2974229ba4f51ee7092ea6776cd6342d65f613e2ca9267f6d5e976489b0b3",
+      "files": [
+        "_rels/.rels",
+        "Gagamba.Execution.nuspec",
+        "README.md",
+        "lib/net10.0/Gagamba.Execution.dll",
+        "[Content_Types].xml",
+        "package/services/metadata/core-properties/nuget.psmdcp"
+      ],
+      "id": "Gagamba.Execution",
+      "version": "0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "repositoryCommit": "82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "dependencies": [],
+      "dllSha256": "60bd7de0065253bb68af69cde208042cf4912c559cf889b6e4927ec882462b67",
+      "license": "Apache-2.0"
+    },
+    {
+      "file": "Gagamba.Execution.0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b.snupkg",
+      "sha256": "5b19313affcd30553530331c414036706827671650b5e01ba68fc3d8c5d03511",
+      "files": [
+        "_rels/.rels",
+        "Gagamba.Execution.nuspec",
+        "lib/net10.0/Gagamba.Execution.pdb",
+        "[Content_Types].xml",
+        "package/services/metadata/core-properties/nuget.psmdcp"
+      ]
+    },
+    {
+      "file": "Gagamba.Execution.Linux.0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b.nupkg",
+      "sha256": "1c23664705fd94cab8b3f9e93af697abf1f2e363c1dce99246811cc0e9165b37",
+      "files": [
+        "_rels/.rels",
+        "Gagamba.Execution.Linux.nuspec",
+        "README.md",
+        "lib/net10.0/Gagamba.Execution.Linux.dll",
+        "[Content_Types].xml",
+        "package/services/metadata/core-properties/nuget.psmdcp"
+      ],
+      "id": "Gagamba.Execution.Linux",
+      "version": "0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "repositoryCommit": "82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "dependencies": [
+        {
+          "id": "Gagamba.Execution",
+          "version": "0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+          "exclude": "Build,Analyzers"
+        }
+      ],
+      "dllSha256": "24c91dcf26280db9458a94ee65bc65287ee8c5ffa4975ae79c732c48d651cc02",
+      "license": "Apache-2.0"
+    },
+    {
+      "file": "Gagamba.Execution.Linux.0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b.snupkg",
+      "sha256": "4b31c430a9c6661f630550b20341211478abd59997fb0ddb4f1dacb8c8e3e58e",
+      "files": [
+        "_rels/.rels",
+        "Gagamba.Execution.Linux.nuspec",
+        "lib/net10.0/Gagamba.Execution.Linux.pdb",
+        "[Content_Types].xml",
+        "package/services/metadata/core-properties/nuget.psmdcp"
+      ]
+    },
+    {
+      "file": "Gagamba.Execution.MacOS.0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b.nupkg",
+      "sha256": "753e90c740b80b585e1aec5d3cab614a4e62de0b28e81d4c2a0a21c787fa2513",
+      "files": [
+        "_rels/.rels",
+        "Gagamba.Execution.MacOS.nuspec",
+        "README.md",
+        "lib/net10.0/Gagamba.Execution.MacOS.dll",
+        "[Content_Types].xml",
+        "package/services/metadata/core-properties/nuget.psmdcp"
+      ],
+      "id": "Gagamba.Execution.MacOS",
+      "version": "0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "repositoryCommit": "82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "dependencies": [
+        {
+          "id": "Gagamba.Execution",
+          "version": "0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+          "exclude": "Build,Analyzers"
+        }
+      ],
+      "dllSha256": "aba70699b8251ab8dc57ee5edc54f62a7ecfa83aa71d407b278bbc08f4feca09",
+      "license": "Apache-2.0"
+    },
+    {
+      "file": "Gagamba.Execution.MacOS.0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b.snupkg",
+      "sha256": "b49b18769b7dc305938f2cfc9c0e1533a8457ac8968c6c4b6cc113e2eb843774",
+      "files": [
+        "_rels/.rels",
+        "Gagamba.Execution.MacOS.nuspec",
+        "lib/net10.0/Gagamba.Execution.MacOS.pdb",
+        "[Content_Types].xml",
+        "package/services/metadata/core-properties/nuget.psmdcp"
+      ]
+    },
+    {
+      "file": "Gagamba.Execution.Windows.0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b.nupkg",
+      "sha256": "6a91f3193f39b551d8259c583568b183f4994987ad3dddb0b61f880771e62ae8",
+      "files": [
+        "_rels/.rels",
+        "Gagamba.Execution.Windows.nuspec",
+        "README.md",
+        "lib/net10.0/Gagamba.Execution.Windows.dll",
+        "[Content_Types].xml",
+        "package/services/metadata/core-properties/nuget.psmdcp"
+      ],
+      "id": "Gagamba.Execution.Windows",
+      "version": "0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "repositoryCommit": "82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "dependencies": [
+        {
+          "id": "Gagamba.Execution",
+          "version": "0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+          "exclude": "Build,Analyzers"
+        }
+      ],
+      "dllSha256": "b61881c0e0edc5af7458c37b2a5a34748c12d53140f6ae18c96711113a9c0de4",
+      "license": "Apache-2.0"
+    },
+    {
+      "file": "Gagamba.Execution.Windows.0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b.snupkg",
+      "sha256": "b39905eb825560799df61e5d9274a78473e3351f6bcdb00de33c70b29fc2436f",
+      "files": [
+        "_rels/.rels",
+        "Gagamba.Execution.Windows.nuspec",
+        "lib/net10.0/Gagamba.Execution.Windows.pdb",
+        "[Content_Types].xml",
+        "package/services/metadata/core-properties/nuget.psmdcp"
+      ]
+    },
+    {
+      "file": "Gagamba.Runtime.0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b.nupkg",
+      "sha256": "a0c5ddefc8e40b785eaa023010312ee58da6f9b669ae5137659874506b6cfe0c",
+      "files": [
+        "_rels/.rels",
+        "Gagamba.Runtime.nuspec",
+        "README.md",
+        "lib/net10.0/Gagamba.Runtime.dll",
+        "[Content_Types].xml",
+        "package/services/metadata/core-properties/nuget.psmdcp"
+      ],
+      "id": "Gagamba.Runtime",
+      "version": "0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "repositoryCommit": "82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "dependencies": [
+        {
+          "id": "Gagamba.Execution.Linux",
+          "version": "0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+          "exclude": "Build,Analyzers"
+        },
+        {
+          "id": "Gagamba.Execution.MacOS",
+          "version": "0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+          "exclude": "Build,Analyzers"
+        },
+        {
+          "id": "Gagamba.Execution.Windows",
+          "version": "0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+          "exclude": "Build,Analyzers"
+        },
+        {
+          "id": "Gagamba.Execution",
+          "version": "0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+          "exclude": "Build,Analyzers"
+        }
+      ],
+      "dllSha256": "2dc11be8939da06143dbcfb38a38c3eb8b6694b0dd0ebad7afa45b2f99226026",
+      "license": "Apache-2.0"
+    },
+    {
+      "file": "Gagamba.Runtime.0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b.snupkg",
+      "sha256": "ba6c71ca684fe3f5520d569a84d864e2c15f6c8162cec893c9071a954e3a11f5",
+      "files": [
+        "_rels/.rels",
+        "Gagamba.Runtime.nuspec",
+        "lib/net10.0/Gagamba.Runtime.pdb",
+        "[Content_Types].xml",
+        "package/services/metadata/core-properties/nuget.psmdcp"
+      ]
+    }
+  ]
+}

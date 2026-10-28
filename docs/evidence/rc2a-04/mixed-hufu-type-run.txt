@@ -1,0 +1,2 @@
+0,0,0,0,0
+PASS: coherent Runtime/provider compile and managed type loading; Hufu core restored; no native activation or Hufu Sandbox integration.

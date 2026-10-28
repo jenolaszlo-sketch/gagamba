@@ -1,0 +1,32 @@
+[
+  {
+    "package": "microsoft.sourcelink.github",
+    "version": "10.0.401",
+    "source": "explicit machine-cache archive copy",
+    "sha256": "b8a08b620d4d87a838024c0292b37c3d2e9d98ac6fcd70ec18a40dd4a5e9ed03"
+  },
+  {
+    "package": "microsoft.sourcelink.common",
+    "version": "10.0.401",
+    "source": "explicit machine-cache archive copy",
+    "sha256": "a4cc4d4933670ae4c60cff415b5873f59ffd892b69184aaeefe4f8497feda49a"
+  },
+  {
+    "package": "microsoft.build.tasks.git",
+    "version": "10.0.401",
+    "source": "explicit machine-cache archive copy",
+    "sha256": "9c6be46354e58c76063fc06cc76b35442b62d12d433126597088bd7aae9ca7da"
+  },
+  {
+    "package": "system.io.hashing",
+    "version": "10.0.12",
+    "source": "explicit machine-cache archive copy",
+    "sha256": "d918de044168a48e148a73e84c6db6f8fea570963848dc4c03631aad97958dd1"
+  },
+  {
+    "package": "penghou.hufu",
+    "version": "0.1.0-preview.11",
+    "source": "explicit machine-cache archive copy",
+    "sha256": "a9083f1f6dcf17e851f9f89aa0ce49ab9ec711bd59330788a73efad3d233fc25"
+  }
+]

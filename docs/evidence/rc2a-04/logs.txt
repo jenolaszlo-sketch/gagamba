@@ -1,0 +1,176 @@
+=== environment ===
+.NET SDK:
+ Version:           10.0.401
+ Commit:            e34a38d2ae
+ Workload version:  10.0.400-manifests.b0700452
+ MSBuild version:   18.9.11+e34a38d2a
+
+Runtime Environment:
+ OS Name:     Windows
+ OS Version:  10.0.26200
+ OS Platform: Windows
+ RID:         win-x64
+ Base Path:   C:\Program Files\dotnet\sdk\10.0.401\
+
+.NET workloads installed:
+There are no installed workloads to display.
+Configured to use workload sets when installing new manifests.
+No workload sets are installed. Run "dotnet workload restore" to install a workload set.
+
+Host:
+  Version:      10.0.12
+  Architecture: x64
+  Commit:       95017c711e
+
+.NET SDKs installed:
+  10.0.401 [C:\Program Files\dotnet\sdk]
+
+.NET runtimes installed:
+  Microsoft.AspNetCore.App 8.0.31 [C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App]
+  Microsoft.AspNetCore.App 9.0.20 [C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App]
+  Microsoft.AspNetCore.App 10.0.12 [C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App]
+  Microsoft.NETCore.App 8.0.31 [C:\Program Files\dotnet\shared\Microsoft.NETCore.App]
+  Microsoft.NETCore.App 9.0.20 [C:\Program Files\dotnet\shared\Microsoft.NETCore.App]
+  Microsoft.NETCore.App 10.0.12 [C:\Program Files\dotnet\shared\Microsoft.NETCore.App]
+  Microsoft.WindowsDesktop.App 8.0.31 [C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App]
+  Microsoft.WindowsDesktop.App 9.0.20 [C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App]
+  Microsoft.WindowsDesktop.App 10.0.12 [C:\Program Files\dotnet\shared\Microsoft.WindowsDesktop.App]
+
+Other architectures found:
+  x86   [C:\Program Files (x86)\dotnet]
+    registered at [HKLM\SOFTWARE\dotnet\Setup\InstalledVersions\x86\InstallLocation]
+
+Environment variables:
+  DOTNET_CLI_TELEMETRY_OPTOUT              [1]
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE        [1]
+
+global.json file:
+  Not found
+
+Learn more:
+  https://aka.ms/dotnet/info
+
+Download .NET:
+  https://aka.ms/dotnet/download
+
+
+=== wsl-environment ===
+.NET SDK:
+ Version:           10.0.113
+ Commit:            4099f83977
+ Workload version:  10.0.100-manifests.da132f47
+ MSBuild version:   18.0.36+4099f8397
+
+Runtime Environment:
+ OS Name:     ubuntu
+ OS Version:  26.04
+ OS Platform: Linux
+ RID:         ubuntu.26.04-x64
+ Base Path:   /usr/lib/dotnet/sdk/10.0.113/
+
+.NET workloads installed:
+There are no installed workloads to display.
+Configured to use workload sets when installing new manifests.
+No workload sets are installed. Run "dotnet workload restore" to install a workload set.
+
+Host:
+  Version:      10.0.13
+  Architecture: x64
+  Commit:       4099f83977
+
+.NET SDKs installed:
+  10.0.113 [/usr/lib/dotnet/sdk]
+
+.NET runtimes installed:
+  Microsoft.AspNetCore.App 10.0.13 [/usr/lib/dotnet/shared/Microsoft.AspNetCore.App]
+  Microsoft.NETCore.App 10.0.13 [/usr/lib/dotnet/shared/Microsoft.NETCore.App]
+
+Other architectures found:
+  None
+
+Environment variables:
+  Not set
+
+global.json file:
+  Not found
+
+Learn more:
+  https://aka.ms/dotnet/info
+
+Download .NET:
+  https://aka.ms/dotnet/download
+
+
+=== direct-run ===
+{"result":"PASS","checks":1227,"literalVectors":21,"recipeOnlyNotMaterialized":["Q2A-V-19-max-argenv-16384","Q2A-V-20-max-manifest-65536"],"framework":".NET 10.0.12","os":"Microsoft Windows 10.0.26200"}
+
+
+=== mixed-run ===
+0,0,0,0
+PASS: coherent Runtime/provider compile and managed type loading; Hufu core restored; no native activation or Hufu Sandbox integration.
+
+
+=== windows-public ===
+  Determining projects to restore...
+  Restored ${REPOSITORY}\tests\Gagamba.Execution.Tests\Gagamba.Execution.Tests.csproj (in 192 ms).
+  Restored ${REPOSITORY}\src\Gagamba.Execution\Gagamba.Execution.csproj (in 155 ms).
+  Gagamba.Execution -> ${ARTIFACTS}\regression-build\bin\Gagamba.Execution\release\Gagamba.Execution.dll
+  Gagamba.Execution.Tests -> ${ARTIFACTS}\regression-build\bin\Gagamba.Execution.Tests\release\Gagamba.Execution.Tests.dll
+Test run for ${ARTIFACTS}\regression-build\bin\Gagamba.Execution.Tests\release\Gagamba.Execution.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+Results File: ${ARTIFACTS}\windows-tests\public.trx
+
+Passed!  - Failed:     0, Passed:    48, Skipped:     0, Total:    48, Duration: 241 ms - Gagamba.Execution.Tests.dll (net10.0)
+
+
+=== windows-portable ===
+  Determining projects to restore...
+  Restored ${REPOSITORY}\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj (in 161 ms).
+  Restored ${REPOSITORY}\tests\Gagamba.Execution.Linux.M1.Tests\Gagamba.Execution.Linux.M1.Tests.csproj (in 164 ms).
+  Restored ${REPOSITORY}\src\Gagamba.Execution.Linux.M1.Owner\Gagamba.Execution.Linux.M1.Owner.csproj (in 161 ms).
+  1 of 4 projects are up-to-date for restore.
+  Gagamba.Execution -> ${ARTIFACTS}\regression-build\bin\Gagamba.Execution\release\Gagamba.Execution.dll
+  Gagamba.Execution.Linux.M1 -> ${ARTIFACTS}\regression-build\bin\Gagamba.Execution.Linux.M1\release\Gagamba.Execution.Linux.M1.dll
+  Gagamba.Execution.Linux.M1.Owner -> ${ARTIFACTS}\regression-build\bin\Gagamba.Execution.Linux.M1.Owner\release\Gagamba.Execution.Linux.M1.Owner.dll
+  Gagamba.Execution.Linux.M1.Tests -> ${ARTIFACTS}\regression-build\bin\Gagamba.Execution.Linux.M1.Tests\release\Gagamba.Execution.Linux.M1.Tests.dll
+Test run for ${ARTIFACTS}\regression-build\bin\Gagamba.Execution.Linux.M1.Tests\release\Gagamba.Execution.Linux.M1.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+Results File: ${ARTIFACTS}\windows-tests\portable.trx
+
+Passed!  - Failed:     0, Passed:   457, Skipped:     0, Total:   457, Duration: 3 s - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+
+
+=== wsl-public ===
+  Determining projects to restore...
+  Restored ${WSL_REPOSITORY}/src/Gagamba.Execution/Gagamba.Execution.csproj (in 233 ms).
+  Restored ${WSL_REPOSITORY}/tests/Gagamba.Execution.Tests/Gagamba.Execution.Tests.csproj (in 289 ms).
+  Gagamba.Execution -> ${WSL_BUILD}/bin/Gagamba.Execution/release/Gagamba.Execution.dll
+  Gagamba.Execution.Tests -> ${WSL_BUILD}/bin/Gagamba.Execution.Tests/release/Gagamba.Execution.Tests.dll
+Test run for ${WSL_BUILD}/bin/Gagamba.Execution.Tests/release/Gagamba.Execution.Tests.dll (.NETCoreApp,Version=v10.0)
+VSTest version 18.0.2 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+Results File: ${WSL_ARTIFACTS}/wsl-tests/public.trx
+
+Passed!  - Failed:     0, Passed:    48, Skipped:     0, Total:    48, Duration: 102 ms - Gagamba.Execution.Tests.dll (net10.0)
+
+
+=== wsl-portable ===
+  Determining projects to restore...
+  Restored ${WSL_REPOSITORY}/src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj (in 200 ms).
+  Restored ${WSL_REPOSITORY}/src/Gagamba.Execution.Linux.M1.Owner/Gagamba.Execution.Linux.M1.Owner.csproj (in 200 ms).
+  Restored ${WSL_REPOSITORY}/tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj (in 200 ms).
+  1 of 4 projects are up-to-date for restore.
+  Gagamba.Execution -> ${WSL_BUILD}/bin/Gagamba.Execution/release/Gagamba.Execution.dll
+  Gagamba.Execution.Linux.M1 -> ${WSL_BUILD}/bin/Gagamba.Execution.Linux.M1/release/Gagamba.Execution.Linux.M1.dll
+  Gagamba.Execution.Linux.M1.Owner -> ${WSL_BUILD}/bin/Gagamba.Execution.Linux.M1.Owner/release/Gagamba.Execution.Linux.M1.Owner.dll
+  Gagamba.Execution.Linux.M1.Tests -> ${WSL_BUILD}/bin/Gagamba.Execution.Linux.M1.Tests/release/Gagamba.Execution.Linux.M1.Tests.dll
+Test run for ${WSL_BUILD}/bin/Gagamba.Execution.Linux.M1.Tests/release/Gagamba.Execution.Linux.M1.Tests.dll (.NETCoreApp,Version=v10.0)
+VSTest version 18.0.2 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+Results File: ${WSL_ARTIFACTS}/wsl-tests/portable.trx
+
+Passed!  - Failed:     0, Passed:   457, Skipped:     0, Total:   457, Duration: 3 s - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)

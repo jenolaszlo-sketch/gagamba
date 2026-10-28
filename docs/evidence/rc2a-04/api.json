@@ -1,0 +1,1615 @@
+{
+  "result": "PASS",
+  "assembly": "Gagamba.Execution, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null",
+  "restrictedTypes": 18,
+  "fullAssemblyIncludesLegacyLifecycleSpi": true,
+  "sourceLinks": [
+    "{\u0022documents\u0022:{\u0022/_/*\u0022:\u0022https://raw.githubusercontent.com/jenolaszlo-sketch/gagamba/82cf8983a61f60a95d0aed0233ef0efac985148b/*\u0022}}"
+  ],
+  "inventory": [
+    {
+      "type": "Gagamba.Execution.CapabilityGrant",
+      "constructors": [
+        "Void .ctor(Gagamba.Execution.CapabilityLevel, Gagamba.Execution.GuaranteeKind, System.String)"
+      ],
+      "properties": [
+        {
+          "name": "Level",
+          "type": "Gagamba.Execution.CapabilityLevel",
+          "publicSetter": true
+        },
+        {
+          "name": "Kind",
+          "type": "Gagamba.Execution.GuaranteeKind",
+          "publicSetter": true
+        },
+        {
+          "name": "Evidence",
+          "type": "System.String",
+          "publicSetter": true
+        }
+      ],
+      "methods": [
+        "Gagamba.Execution.CapabilityLevel get_Level()",
+        "Void set_Level(Gagamba.Execution.CapabilityLevel)",
+        "Gagamba.Execution.GuaranteeKind get_Kind()",
+        "Void set_Kind(Gagamba.Execution.GuaranteeKind)",
+        "System.String get_Evidence()",
+        "Void set_Evidence(System.String)",
+        "Boolean Satisfies(Gagamba.Execution.CapabilityLevel, Boolean)",
+        "System.String ToString()",
+        "Boolean op_Inequality(Gagamba.Execution.CapabilityGrant, Gagamba.Execution.CapabilityGrant)",
+        "Boolean op_Equality(Gagamba.Execution.CapabilityGrant, Gagamba.Execution.CapabilityGrant)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.CapabilityGrant)",
+        "Gagamba.Execution.CapabilityGrant \u003CClone\u003E$()",
+        "Void Deconstruct(Gagamba.Execution.CapabilityLevel ByRef, Gagamba.Execution.GuaranteeKind ByRef, System.String ByRef)"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.CapabilityLevel",
+      "constructors": [],
+      "properties": [],
+      "methods": []
+    },
+    {
+      "type": "Gagamba.Execution.CaptureLaunchResult",
+      "constructors": [],
+      "properties": [],
+      "methods": [
+        "System.String ToString()",
+        "Boolean op_Inequality(Gagamba.Execution.CaptureLaunchResult, Gagamba.Execution.CaptureLaunchResult)",
+        "Boolean op_Equality(Gagamba.Execution.CaptureLaunchResult, Gagamba.Execution.CaptureLaunchResult)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.CaptureLaunchResult)",
+        "Gagamba.Execution.CaptureLaunchResult \u003CClone\u003E$()"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.CaptureLaunchResult\u002BFailed",
+      "constructors": [
+        "Void .ctor(System.Collections.Generic.IReadOnlyList\u00601[System.String])"
+      ],
+      "properties": [
+        {
+          "name": "Reasons",
+          "type": "System.Collections.Generic.IReadOnlyList\u00601[System.String]",
+          "publicSetter": true
+        }
+      ],
+      "methods": [
+        "System.Collections.Generic.IReadOnlyList\u00601[System.String] get_Reasons()",
+        "Void set_Reasons(System.Collections.Generic.IReadOnlyList\u00601[System.String])",
+        "System.String ToString()",
+        "Boolean op_Inequality(Failed, Failed)",
+        "Boolean op_Equality(Failed, Failed)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.CaptureLaunchResult)",
+        "Boolean Equals(Failed)",
+        "Failed \u003CClone\u003E$()",
+        "Void Deconstruct(System.Collections.Generic.IReadOnlyList\u00601[System.String] ByRef)"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.CaptureLaunchResult\u002BStarted",
+      "constructors": [
+        "Void .ctor(Gagamba.Execution.ExecutionHandle, Gagamba.Execution.OutputCaptureSession)"
+      ],
+      "properties": [
+        {
+          "name": "Handle",
+          "type": "Gagamba.Execution.ExecutionHandle",
+          "publicSetter": true
+        },
+        {
+          "name": "Capture",
+          "type": "Gagamba.Execution.OutputCaptureSession",
+          "publicSetter": true
+        }
+      ],
+      "methods": [
+        "Gagamba.Execution.ExecutionHandle get_Handle()",
+        "Void set_Handle(Gagamba.Execution.ExecutionHandle)",
+        "Gagamba.Execution.OutputCaptureSession get_Capture()",
+        "Void set_Capture(Gagamba.Execution.OutputCaptureSession)",
+        "System.String ToString()",
+        "Boolean op_Inequality(Started, Started)",
+        "Boolean op_Equality(Started, Started)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.CaptureLaunchResult)",
+        "Boolean Equals(Started)",
+        "Started \u003CClone\u003E$()",
+        "Void Deconstruct(Gagamba.Execution.ExecutionHandle ByRef, Gagamba.Execution.OutputCaptureSession ByRef)"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.CompletionResult",
+      "constructors": [],
+      "properties": [],
+      "methods": [
+        "System.String ToString()",
+        "Boolean op_Inequality(Gagamba.Execution.CompletionResult, Gagamba.Execution.CompletionResult)",
+        "Boolean op_Equality(Gagamba.Execution.CompletionResult, Gagamba.Execution.CompletionResult)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.CompletionResult)",
+        "Gagamba.Execution.CompletionResult \u003CClone\u003E$()"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.CompletionResult\u002BFailed",
+      "constructors": [
+        "Void .ctor(System.Collections.Generic.IReadOnlyList\u00601[System.String])"
+      ],
+      "properties": [
+        {
+          "name": "Reasons",
+          "type": "System.Collections.Generic.IReadOnlyList\u00601[System.String]",
+          "publicSetter": true
+        }
+      ],
+      "methods": [
+        "System.Collections.Generic.IReadOnlyList\u00601[System.String] get_Reasons()",
+        "Void set_Reasons(System.Collections.Generic.IReadOnlyList\u00601[System.String])",
+        "System.String ToString()",
+        "Boolean op_Inequality(Failed, Failed)",
+        "Boolean op_Equality(Failed, Failed)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.CompletionResult)",
+        "Boolean Equals(Failed)",
+        "Failed \u003CClone\u003E$()",
+        "Void Deconstruct(System.Collections.Generic.IReadOnlyList\u00601[System.String] ByRef)"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.CompletionResult\u002BNaturalExit",
+      "constructors": [
+        "Void .ctor(Int32)"
+      ],
+      "properties": [
+        {
+          "name": "RootExitCode",
+          "type": "System.Int32",
+          "publicSetter": true
+        }
+      ],
+      "methods": [
+        "Int32 get_RootExitCode()",
+        "Void set_RootExitCode(Int32)",
+        "System.String ToString()",
+        "Boolean op_Inequality(NaturalExit, NaturalExit)",
+        "Boolean op_Equality(NaturalExit, NaturalExit)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.CompletionResult)",
+        "Boolean Equals(NaturalExit)",
+        "NaturalExit \u003CClone\u003E$()",
+        "Void Deconstruct(Int32 ByRef)"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.CompletionResult\u002BTerminated",
+      "constructors": [
+        "Void .ctor()"
+      ],
+      "properties": [],
+      "methods": [
+        "System.String ToString()",
+        "Boolean op_Inequality(Terminated, Terminated)",
+        "Boolean op_Equality(Terminated, Terminated)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.CompletionResult)",
+        "Boolean Equals(Terminated)",
+        "Terminated \u003CClone\u003E$()"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.DiscardResult",
+      "constructors": [],
+      "properties": [],
+      "methods": [
+        "System.String ToString()",
+        "Boolean op_Inequality(Gagamba.Execution.DiscardResult, Gagamba.Execution.DiscardResult)",
+        "Boolean op_Equality(Gagamba.Execution.DiscardResult, Gagamba.Execution.DiscardResult)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.DiscardResult)",
+        "Gagamba.Execution.DiscardResult \u003CClone\u003E$()"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.DiscardResult\u002BDiscarded",
+      "constructors": [
+        "Void .ctor(Gagamba.Execution.PreparedExecution)"
+      ],
+      "properties": [
+        {
+          "name": "Prepared",
+          "type": "Gagamba.Execution.PreparedExecution",
+          "publicSetter": true
+        }
+      ],
+      "methods": [
+        "Gagamba.Execution.PreparedExecution get_Prepared()",
+        "Void set_Prepared(Gagamba.Execution.PreparedExecution)",
+        "System.String ToString()",
+        "Boolean op_Inequality(Discarded, Discarded)",
+        "Boolean op_Equality(Discarded, Discarded)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.DiscardResult)",
+        "Boolean Equals(Discarded)",
+        "Discarded \u003CClone\u003E$()",
+        "Void Deconstruct(Gagamba.Execution.PreparedExecution ByRef)"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.DiscardResult\u002BFailed",
+      "constructors": [
+        "Void .ctor(System.Collections.Generic.IReadOnlyList\u00601[System.String])"
+      ],
+      "properties": [
+        {
+          "name": "Reasons",
+          "type": "System.Collections.Generic.IReadOnlyList\u00601[System.String]",
+          "publicSetter": true
+        }
+      ],
+      "methods": [
+        "System.Collections.Generic.IReadOnlyList\u00601[System.String] get_Reasons()",
+        "Void set_Reasons(System.Collections.Generic.IReadOnlyList\u00601[System.String])",
+        "System.String ToString()",
+        "Boolean op_Inequality(Failed, Failed)",
+        "Boolean op_Equality(Failed, Failed)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.DiscardResult)",
+        "Boolean Equals(Failed)",
+        "Failed \u003CClone\u003E$()",
+        "Void Deconstruct(System.Collections.Generic.IReadOnlyList\u00601[System.String] ByRef)"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.ExecutionCapability",
+      "constructors": [],
+      "properties": [],
+      "methods": []
+    },
+    {
+      "type": "Gagamba.Execution.ExecutionHandle",
+      "constructors": [
+        "Void .ctor(System.String, System.Guid)"
+      ],
+      "properties": [
+        {
+          "name": "Provider",
+          "type": "System.String",
+          "publicSetter": true
+        },
+        {
+          "name": "ExecutionId",
+          "type": "System.Guid",
+          "publicSetter": true
+        }
+      ],
+      "methods": [
+        "System.String get_Provider()",
+        "Void set_Provider(System.String)",
+        "System.Guid get_ExecutionId()",
+        "Void set_ExecutionId(System.Guid)",
+        "System.String ToString()",
+        "Boolean op_Inequality(Gagamba.Execution.ExecutionHandle, Gagamba.Execution.ExecutionHandle)",
+        "Boolean op_Equality(Gagamba.Execution.ExecutionHandle, Gagamba.Execution.ExecutionHandle)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.ExecutionHandle)",
+        "Gagamba.Execution.ExecutionHandle \u003CClone\u003E$()",
+        "Void Deconstruct(System.String ByRef, System.Guid ByRef)"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.ExecutionNegotiator",
+      "constructors": [],
+      "properties": [],
+      "methods": [
+        "Gagamba.Execution.NegotiationResult Negotiate(Gagamba.Execution.PlatformCapabilities, System.Collections.Generic.IEnumerable\u00601[Gagamba.Execution.ExecutionRequirement], System.Collections.Generic.IEnumerable\u00601[Gagamba.Execution.ExecutionRequirement], System.Collections.Generic.IReadOnlyDictionary\u00602[Gagamba.Execution.ExecutionCapability,Gagamba.Execution.CapabilityGrant])"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.ExecutionRequirement",
+      "constructors": [
+        "Void .ctor(Gagamba.Execution.ExecutionCapability, Gagamba.Execution.CapabilityLevel, Boolean, System.String)"
+      ],
+      "properties": [
+        {
+          "name": "Capability",
+          "type": "Gagamba.Execution.ExecutionCapability",
+          "publicSetter": true
+        },
+        {
+          "name": "Minimum",
+          "type": "Gagamba.Execution.CapabilityLevel",
+          "publicSetter": true
+        },
+        {
+          "name": "AllowConstructed",
+          "type": "System.Boolean",
+          "publicSetter": true
+        },
+        {
+          "name": "Reason",
+          "type": "System.String",
+          "publicSetter": true
+        }
+      ],
+      "methods": [
+        "Gagamba.Execution.ExecutionCapability get_Capability()",
+        "Void set_Capability(Gagamba.Execution.ExecutionCapability)",
+        "Gagamba.Execution.CapabilityLevel get_Minimum()",
+        "Void set_Minimum(Gagamba.Execution.CapabilityLevel)",
+        "Boolean get_AllowConstructed()",
+        "Void set_AllowConstructed(Boolean)",
+        "System.String get_Reason()",
+        "Void set_Reason(System.String)",
+        "Gagamba.Execution.ExecutionRequirement Require(Gagamba.Execution.ExecutionCapability, Gagamba.Execution.CapabilityLevel, Boolean, System.String)",
+        "System.String ToString()",
+        "Boolean op_Inequality(Gagamba.Execution.ExecutionRequirement, Gagamba.Execution.ExecutionRequirement)",
+        "Boolean op_Equality(Gagamba.Execution.ExecutionRequirement, Gagamba.Execution.ExecutionRequirement)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.ExecutionRequirement)",
+        "Gagamba.Execution.ExecutionRequirement \u003CClone\u003E$()",
+        "Void Deconstruct(Gagamba.Execution.ExecutionCapability ByRef, Gagamba.Execution.CapabilityLevel ByRef, Boolean ByRef, System.String ByRef)"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.ExecutionRequirements",
+      "constructors": [
+        "Void .ctor(System.Collections.Generic.IReadOnlyList\u00601[Gagamba.Execution.ExecutionRequirement], System.Collections.Generic.IReadOnlyList\u00601[Gagamba.Execution.ExecutionRequirement])"
+      ],
+      "properties": [
+        {
+          "name": "Required",
+          "type": "System.Collections.Generic.IReadOnlyList\u00601[Gagamba.Execution.ExecutionRequirement]",
+          "publicSetter": true
+        },
+        {
+          "name": "Preferred",
+          "type": "System.Collections.Generic.IReadOnlyList\u00601[Gagamba.Execution.ExecutionRequirement]",
+          "publicSetter": true
+        }
+      ],
+      "methods": [
+        "System.Collections.Generic.IReadOnlyList\u00601[Gagamba.Execution.ExecutionRequirement] get_Required()",
+        "Void set_Required(System.Collections.Generic.IReadOnlyList\u00601[Gagamba.Execution.ExecutionRequirement])",
+        "System.Collections.Generic.IReadOnlyList\u00601[Gagamba.Execution.ExecutionRequirement] get_Preferred()",
+        "Void set_Preferred(System.Collections.Generic.IReadOnlyList\u00601[Gagamba.Execution.ExecutionRequirement])",
+        "Boolean TrySnapshot(Gagamba.Execution.ExecutionRequirements, Gagamba.Execution.ExecutionRequirements ByRef, System.String ByRef)",
+        "System.String ToString()",
+        "Boolean op_Inequality(Gagamba.Execution.ExecutionRequirements, Gagamba.Execution.ExecutionRequirements)",
+        "Boolean op_Equality(Gagamba.Execution.ExecutionRequirements, Gagamba.Execution.ExecutionRequirements)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.ExecutionRequirements)",
+        "Gagamba.Execution.ExecutionRequirements \u003CClone\u003E$()",
+        "Void Deconstruct(System.Collections.Generic.IReadOnlyList\u00601[Gagamba.Execution.ExecutionRequirement] ByRef, System.Collections.Generic.IReadOnlyList\u00601[Gagamba.Execution.ExecutionRequirement] ByRef)"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.GuaranteeKind",
+      "constructors": [],
+      "properties": [],
+      "methods": []
+    },
+    {
+      "type": "Gagamba.Execution.IExecutionProvider",
+      "constructors": [],
+      "properties": [],
+      "methods": [
+        "Gagamba.Execution.PlatformCapabilities Describe()",
+        "Gagamba.Execution.PrepareResult Prepare(Gagamba.Execution.ExecutionRequirements)",
+        "Gagamba.Execution.DiscardResult Discard(Gagamba.Execution.PreparedExecution)",
+        "Gagamba.Execution.LaunchResult Launch(Gagamba.Execution.PreparedExecution, Gagamba.Execution.ProcessStartSpec)",
+        "Gagamba.Execution.TerminateResult Terminate(Gagamba.Execution.ExecutionHandle)",
+        "System.Threading.Tasks.ValueTask\u00601[Gagamba.Execution.CompletionResult] WaitForCompletionAsync(Gagamba.Execution.ExecutionHandle, System.Threading.CancellationToken)"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.IOutputCaptureProvider",
+      "constructors": [],
+      "properties": [],
+      "methods": [
+        "Gagamba.Execution.CaptureLaunchResult LaunchCaptured(Gagamba.Execution.PreparedExecution, Gagamba.Execution.ProcessStartSpec, Gagamba.Execution.OutputCaptureOptions)"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.LaunchResult",
+      "constructors": [],
+      "properties": [],
+      "methods": [
+        "System.String ToString()",
+        "Boolean op_Inequality(Gagamba.Execution.LaunchResult, Gagamba.Execution.LaunchResult)",
+        "Boolean op_Equality(Gagamba.Execution.LaunchResult, Gagamba.Execution.LaunchResult)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.LaunchResult)",
+        "Gagamba.Execution.LaunchResult \u003CClone\u003E$()"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.LaunchResult\u002BFailed",
+      "constructors": [
+        "Void .ctor(System.Collections.Generic.IReadOnlyList\u00601[System.String])"
+      ],
+      "properties": [
+        {
+          "name": "Reasons",
+          "type": "System.Collections.Generic.IReadOnlyList\u00601[System.String]",
+          "publicSetter": true
+        }
+      ],
+      "methods": [
+        "System.Collections.Generic.IReadOnlyList\u00601[System.String] get_Reasons()",
+        "Void set_Reasons(System.Collections.Generic.IReadOnlyList\u00601[System.String])",
+        "System.String ToString()",
+        "Boolean op_Inequality(Failed, Failed)",
+        "Boolean op_Equality(Failed, Failed)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.LaunchResult)",
+        "Boolean Equals(Failed)",
+        "Failed \u003CClone\u003E$()",
+        "Void Deconstruct(System.Collections.Generic.IReadOnlyList\u00601[System.String] ByRef)"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.LaunchResult\u002BStarted",
+      "constructors": [
+        "Void .ctor(Gagamba.Execution.ExecutionHandle)"
+      ],
+      "properties": [
+        {
+          "name": "Handle",
+          "type": "Gagamba.Execution.ExecutionHandle",
+          "publicSetter": true
+        }
+      ],
+      "methods": [
+        "Gagamba.Execution.ExecutionHandle get_Handle()",
+        "Void set_Handle(Gagamba.Execution.ExecutionHandle)",
+        "System.String ToString()",
+        "Boolean op_Inequality(Started, Started)",
+        "Boolean op_Equality(Started, Started)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.LaunchResult)",
+        "Boolean Equals(Started)",
+        "Started \u003CClone\u003E$()",
+        "Void Deconstruct(Gagamba.Execution.ExecutionHandle ByRef)"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.MatrixValidation",
+      "constructors": [],
+      "properties": [],
+      "methods": [
+        "System.Collections.Generic.IReadOnlyList\u00601[System.String] Validate(Gagamba.Execution.PlatformCapabilities)",
+        "System.Collections.Generic.IReadOnlyList\u00601[System.String] ValidateAll(System.Collections.Generic.IEnumerable\u00601[Gagamba.Execution.PlatformCapabilities])"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.NegotiationResult",
+      "constructors": [
+        "Void .ctor(Boolean, System.Collections.Generic.IReadOnlyList\u00601[System.String], System.Collections.Generic.IReadOnlyList\u00601[System.String], System.Collections.Generic.IReadOnlyList\u00601[System.String])"
+      ],
+      "properties": [
+        {
+          "name": "Accepted",
+          "type": "System.Boolean",
+          "publicSetter": true
+        },
+        {
+          "name": "Unmet",
+          "type": "System.Collections.Generic.IReadOnlyList\u00601[System.String]",
+          "publicSetter": true
+        },
+        {
+          "name": "Met",
+          "type": "System.Collections.Generic.IReadOnlyList\u00601[System.String]",
+          "publicSetter": true
+        },
+        {
+          "name": "PreferredNotes",
+          "type": "System.Collections.Generic.IReadOnlyList\u00601[System.String]",
+          "publicSetter": true
+        }
+      ],
+      "methods": [
+        "Boolean get_Accepted()",
+        "Void set_Accepted(Boolean)",
+        "System.Collections.Generic.IReadOnlyList\u00601[System.String] get_Unmet()",
+        "Void set_Unmet(System.Collections.Generic.IReadOnlyList\u00601[System.String])",
+        "System.Collections.Generic.IReadOnlyList\u00601[System.String] get_Met()",
+        "Void set_Met(System.Collections.Generic.IReadOnlyList\u00601[System.String])",
+        "System.Collections.Generic.IReadOnlyList\u00601[System.String] get_PreferredNotes()",
+        "Void set_PreferredNotes(System.Collections.Generic.IReadOnlyList\u00601[System.String])",
+        "Gagamba.Execution.NegotiationResult Reject(System.Collections.Generic.IEnumerable\u00601[System.String])",
+        "System.String ToString()",
+        "Boolean op_Inequality(Gagamba.Execution.NegotiationResult, Gagamba.Execution.NegotiationResult)",
+        "Boolean op_Equality(Gagamba.Execution.NegotiationResult, Gagamba.Execution.NegotiationResult)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.NegotiationResult)",
+        "Gagamba.Execution.NegotiationResult \u003CClone\u003E$()",
+        "Void Deconstruct(Boolean ByRef, System.Collections.Generic.IReadOnlyList\u00601[System.String] ByRef, System.Collections.Generic.IReadOnlyList\u00601[System.String] ByRef, System.Collections.Generic.IReadOnlyList\u00601[System.String] ByRef)"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.OutputCaptureOptions",
+      "constructors": [
+        "Void .ctor(Int32, Int32, Int32, Boolean, System.Nullable\u00601[System.TimeSpan])"
+      ],
+      "properties": [
+        {
+          "name": "StdoutBytes",
+          "type": "System.Int32",
+          "publicSetter": true
+        },
+        {
+          "name": "StderrBytes",
+          "type": "System.Int32",
+          "publicSetter": true
+        },
+        {
+          "name": "TotalBytes",
+          "type": "System.Int32",
+          "publicSetter": true
+        },
+        {
+          "name": "RetainBytes",
+          "type": "System.Boolean",
+          "publicSetter": true
+        },
+        {
+          "name": "PipeGrace",
+          "type": "System.Nullable\u00601[System.TimeSpan]",
+          "publicSetter": true
+        }
+      ],
+      "methods": [
+        "Int32 get_StdoutBytes()",
+        "Void set_StdoutBytes(Int32)",
+        "Int32 get_StderrBytes()",
+        "Void set_StderrBytes(Int32)",
+        "Int32 get_TotalBytes()",
+        "Void set_TotalBytes(Int32)",
+        "Boolean get_RetainBytes()",
+        "Void set_RetainBytes(Boolean)",
+        "System.Nullable\u00601[System.TimeSpan] get_PipeGrace()",
+        "Void set_PipeGrace(System.Nullable\u00601[System.TimeSpan])",
+        "Boolean TryValidate(System.String ByRef)",
+        "System.String ToString()",
+        "Boolean op_Inequality(Gagamba.Execution.OutputCaptureOptions, Gagamba.Execution.OutputCaptureOptions)",
+        "Boolean op_Equality(Gagamba.Execution.OutputCaptureOptions, Gagamba.Execution.OutputCaptureOptions)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.OutputCaptureOptions)",
+        "Gagamba.Execution.OutputCaptureOptions \u003CClone\u003E$()",
+        "Void Deconstruct(Int32 ByRef, Int32 ByRef, Int32 ByRef, Boolean ByRef, System.Nullable\u00601[System.TimeSpan] ByRef)"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.OutputCaptureResult",
+      "constructors": [
+        "Void .ctor(Gagamba.Execution.OutputCaptureStatus, Int64, Int64, System.ReadOnlyMemory\u00601[System.Byte], System.ReadOnlyMemory\u00601[System.Byte])"
+      ],
+      "properties": [
+        {
+          "name": "Status",
+          "type": "Gagamba.Execution.OutputCaptureStatus",
+          "publicSetter": true
+        },
+        {
+          "name": "StdoutBytesSeen",
+          "type": "System.Int64",
+          "publicSetter": true
+        },
+        {
+          "name": "StderrBytesSeen",
+          "type": "System.Int64",
+          "publicSetter": true
+        },
+        {
+          "name": "StdoutRetained",
+          "type": "System.ReadOnlyMemory\u00601[System.Byte]",
+          "publicSetter": true
+        },
+        {
+          "name": "StderrRetained",
+          "type": "System.ReadOnlyMemory\u00601[System.Byte]",
+          "publicSetter": true
+        }
+      ],
+      "methods": [
+        "Gagamba.Execution.OutputCaptureStatus get_Status()",
+        "Void set_Status(Gagamba.Execution.OutputCaptureStatus)",
+        "Int64 get_StdoutBytesSeen()",
+        "Void set_StdoutBytesSeen(Int64)",
+        "Int64 get_StderrBytesSeen()",
+        "Void set_StderrBytesSeen(Int64)",
+        "System.ReadOnlyMemory\u00601[System.Byte] get_StdoutRetained()",
+        "Void set_StdoutRetained(System.ReadOnlyMemory\u00601[System.Byte])",
+        "System.ReadOnlyMemory\u00601[System.Byte] get_StderrRetained()",
+        "Void set_StderrRetained(System.ReadOnlyMemory\u00601[System.Byte])",
+        "System.String ToString()",
+        "Boolean op_Inequality(Gagamba.Execution.OutputCaptureResult, Gagamba.Execution.OutputCaptureResult)",
+        "Boolean op_Equality(Gagamba.Execution.OutputCaptureResult, Gagamba.Execution.OutputCaptureResult)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.OutputCaptureResult)",
+        "Gagamba.Execution.OutputCaptureResult \u003CClone\u003E$()",
+        "Void Deconstruct(Gagamba.Execution.OutputCaptureStatus ByRef, Int64 ByRef, Int64 ByRef, System.ReadOnlyMemory\u00601[System.Byte] ByRef, System.ReadOnlyMemory\u00601[System.Byte] ByRef)"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.OutputCaptureSession",
+      "constructors": [
+        "Void .ctor(System.IO.Stream, System.IO.Stream, System.Threading.Tasks.Task\u00601[Gagamba.Execution.CompletionResult], Gagamba.Execution.OutputCaptureOptions)"
+      ],
+      "properties": [
+        {
+          "name": "Overflowed",
+          "type": "System.Threading.Tasks.Task",
+          "publicSetter": false
+        },
+        {
+          "name": "Completion",
+          "type": "System.Threading.Tasks.Task\u00601[Gagamba.Execution.OutputCaptureResult]",
+          "publicSetter": false
+        }
+      ],
+      "methods": [
+        "System.Threading.Tasks.Task get_Overflowed()",
+        "System.Threading.Tasks.Task\u00601[Gagamba.Execution.OutputCaptureResult] get_Completion()",
+        "Void Abort()"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.OutputCaptureStatus",
+      "constructors": [],
+      "properties": [],
+      "methods": []
+    },
+    {
+      "type": "Gagamba.Execution.PlatformCapabilities",
+      "constructors": [
+        "Void .ctor(System.String, System.Collections.Generic.IReadOnlyDictionary\u00602[Gagamba.Execution.ExecutionCapability,Gagamba.Execution.CapabilityGrant])"
+      ],
+      "properties": [
+        {
+          "name": "Platform",
+          "type": "System.String",
+          "publicSetter": true
+        },
+        {
+          "name": "Grants",
+          "type": "System.Collections.Generic.IReadOnlyDictionary\u00602[Gagamba.Execution.ExecutionCapability,Gagamba.Execution.CapabilityGrant]",
+          "publicSetter": true
+        }
+      ],
+      "methods": [
+        "System.String get_Platform()",
+        "Void set_Platform(System.String)",
+        "System.Collections.Generic.IReadOnlyDictionary\u00602[Gagamba.Execution.ExecutionCapability,Gagamba.Execution.CapabilityGrant] get_Grants()",
+        "Void set_Grants(System.Collections.Generic.IReadOnlyDictionary\u00602[Gagamba.Execution.ExecutionCapability,Gagamba.Execution.CapabilityGrant])",
+        "Boolean TryGet(Gagamba.Execution.ExecutionCapability, Gagamba.Execution.CapabilityGrant ByRef)",
+        "System.String ToString()",
+        "Boolean op_Inequality(Gagamba.Execution.PlatformCapabilities, Gagamba.Execution.PlatformCapabilities)",
+        "Boolean op_Equality(Gagamba.Execution.PlatformCapabilities, Gagamba.Execution.PlatformCapabilities)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.PlatformCapabilities)",
+        "Gagamba.Execution.PlatformCapabilities \u003CClone\u003E$()",
+        "Void Deconstruct(System.String ByRef, System.Collections.Generic.IReadOnlyDictionary\u00602[Gagamba.Execution.ExecutionCapability,Gagamba.Execution.CapabilityGrant] ByRef)"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.PreparedExecution",
+      "constructors": [
+        "Void .ctor(System.String, System.Guid, System.Collections.Generic.IReadOnlyList\u00601[System.String])"
+      ],
+      "properties": [
+        {
+          "name": "Provider",
+          "type": "System.String",
+          "publicSetter": true
+        },
+        {
+          "name": "PreparationId",
+          "type": "System.Guid",
+          "publicSetter": true
+        },
+        {
+          "name": "Met",
+          "type": "System.Collections.Generic.IReadOnlyList\u00601[System.String]",
+          "publicSetter": true
+        }
+      ],
+      "methods": [
+        "System.String get_Provider()",
+        "Void set_Provider(System.String)",
+        "System.Guid get_PreparationId()",
+        "Void set_PreparationId(System.Guid)",
+        "System.Collections.Generic.IReadOnlyList\u00601[System.String] get_Met()",
+        "Void set_Met(System.Collections.Generic.IReadOnlyList\u00601[System.String])",
+        "System.String ToString()",
+        "Boolean op_Inequality(Gagamba.Execution.PreparedExecution, Gagamba.Execution.PreparedExecution)",
+        "Boolean op_Equality(Gagamba.Execution.PreparedExecution, Gagamba.Execution.PreparedExecution)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.PreparedExecution)",
+        "Gagamba.Execution.PreparedExecution \u003CClone\u003E$()",
+        "Void Deconstruct(System.String ByRef, System.Guid ByRef, System.Collections.Generic.IReadOnlyList\u00601[System.String] ByRef)"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.PrepareResult",
+      "constructors": [],
+      "properties": [],
+      "methods": [
+        "System.String ToString()",
+        "Boolean op_Inequality(Gagamba.Execution.PrepareResult, Gagamba.Execution.PrepareResult)",
+        "Boolean op_Equality(Gagamba.Execution.PrepareResult, Gagamba.Execution.PrepareResult)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.PrepareResult)",
+        "Gagamba.Execution.PrepareResult \u003CClone\u003E$()"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.PrepareResult\u002BAccepted",
+      "constructors": [
+        "Void .ctor(Gagamba.Execution.PreparedExecution)"
+      ],
+      "properties": [
+        {
+          "name": "Prepared",
+          "type": "Gagamba.Execution.PreparedExecution",
+          "publicSetter": true
+        }
+      ],
+      "methods": [
+        "Gagamba.Execution.PreparedExecution get_Prepared()",
+        "Void set_Prepared(Gagamba.Execution.PreparedExecution)",
+        "System.String ToString()",
+        "Boolean op_Inequality(Accepted, Accepted)",
+        "Boolean op_Equality(Accepted, Accepted)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.PrepareResult)",
+        "Boolean Equals(Accepted)",
+        "Accepted \u003CClone\u003E$()",
+        "Void Deconstruct(Gagamba.Execution.PreparedExecution ByRef)"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.PrepareResult\u002BRejected",
+      "constructors": [
+        "Void .ctor(System.Collections.Generic.IReadOnlyList\u00601[System.String])"
+      ],
+      "properties": [
+        {
+          "name": "Reasons",
+          "type": "System.Collections.Generic.IReadOnlyList\u00601[System.String]",
+          "publicSetter": true
+        }
+      ],
+      "methods": [
+        "System.Collections.Generic.IReadOnlyList\u00601[System.String] get_Reasons()",
+        "Void set_Reasons(System.Collections.Generic.IReadOnlyList\u00601[System.String])",
+        "System.String ToString()",
+        "Boolean op_Inequality(Rejected, Rejected)",
+        "Boolean op_Equality(Rejected, Rejected)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.PrepareResult)",
+        "Boolean Equals(Rejected)",
+        "Rejected \u003CClone\u003E$()",
+        "Void Deconstruct(System.Collections.Generic.IReadOnlyList\u00601[System.String] ByRef)"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.ProcessStartSpec",
+      "constructors": [
+        "Void .ctor(System.String, System.String, System.String, System.Collections.Generic.IReadOnlyDictionary\u00602[System.String,System.String])"
+      ],
+      "properties": [
+        {
+          "name": "Executable",
+          "type": "System.String",
+          "publicSetter": true
+        },
+        {
+          "name": "Arguments",
+          "type": "System.String",
+          "publicSetter": true
+        },
+        {
+          "name": "WorkingDirectory",
+          "type": "System.String",
+          "publicSetter": true
+        },
+        {
+          "name": "Environment",
+          "type": "System.Collections.Generic.IReadOnlyDictionary\u00602[System.String,System.String]",
+          "publicSetter": true
+        },
+        {
+          "name": "ArgumentVector",
+          "type": "System.Collections.Generic.IReadOnlyList\u00601[System.String]",
+          "publicSetter": true
+        }
+      ],
+      "methods": [
+        "System.String get_Executable()",
+        "Void set_Executable(System.String)",
+        "System.String get_Arguments()",
+        "Void set_Arguments(System.String)",
+        "System.String get_WorkingDirectory()",
+        "Void set_WorkingDirectory(System.String)",
+        "System.Collections.Generic.IReadOnlyDictionary\u00602[System.String,System.String] get_Environment()",
+        "Void set_Environment(System.Collections.Generic.IReadOnlyDictionary\u00602[System.String,System.String])",
+        "System.Collections.Generic.IReadOnlyList\u00601[System.String] get_ArgumentVector()",
+        "Void set_ArgumentVector(System.Collections.Generic.IReadOnlyList\u00601[System.String])",
+        "Gagamba.Execution.ProcessStartSpec Vector(System.String, System.Collections.Generic.IEnumerable\u00601[System.String], System.String, System.Collections.Generic.IReadOnlyDictionary\u00602[System.String,System.String])",
+        "Boolean TrySnapshot(Gagamba.Execution.ProcessStartSpec, Boolean, Gagamba.Execution.ProcessStartSpec ByRef, System.String ByRef)",
+        "Gagamba.Execution.ProcessStartSpec Simple(System.String, System.String, System.String, System.Collections.Generic.IReadOnlyDictionary\u00602[System.String,System.String])",
+        "System.String ToString()",
+        "Boolean op_Inequality(Gagamba.Execution.ProcessStartSpec, Gagamba.Execution.ProcessStartSpec)",
+        "Boolean op_Equality(Gagamba.Execution.ProcessStartSpec, Gagamba.Execution.ProcessStartSpec)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.ProcessStartSpec)",
+        "Gagamba.Execution.ProcessStartSpec \u003CClone\u003E$()",
+        "Void Deconstruct(System.String ByRef, System.String ByRef, System.String ByRef, System.Collections.Generic.IReadOnlyDictionary\u00602[System.String,System.String] ByRef)"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.Restricted.Contracts.AuthorityManifestView",
+      "constructors": [],
+      "properties": [
+        {
+          "name": "Namespaces",
+          "type": "System.Collections.Immutable.ImmutableArray\u00601[System.String]",
+          "publicSetter": false
+        },
+        {
+          "name": "Capabilities",
+          "type": "System.Collections.Immutable.ImmutableArray\u00601[System.String]",
+          "publicSetter": false
+        },
+        {
+          "name": "NoNewPrivs",
+          "type": "System.Boolean",
+          "publicSetter": false
+        },
+        {
+          "name": "FilterSha256",
+          "type": "System.Collections.Immutable.ImmutableArray\u00601[System.Byte]",
+          "publicSetter": false
+        },
+        {
+          "name": "FilterLength",
+          "type": "System.UInt64",
+          "publicSetter": false
+        },
+        {
+          "name": "ReadOnlyDestinations",
+          "type": "System.Collections.Immutable.ImmutableArray\u00601[System.String]",
+          "publicSetter": false
+        },
+        {
+          "name": "WritableStores",
+          "type": "System.Collections.Immutable.ImmutableArray\u00601[Gagamba.Execution.Restricted.Contracts.WritableStoreView]",
+          "publicSetter": false
+        },
+        {
+          "name": "NoAmbientEnvironment",
+          "type": "System.Boolean",
+          "publicSetter": false
+        },
+        {
+          "name": "NoIpcEndpoints",
+          "type": "System.Boolean",
+          "publicSetter": false
+        },
+        {
+          "name": "NoExtraInheritedFds",
+          "type": "System.Boolean",
+          "publicSetter": false
+        },
+        {
+          "name": "MountPolicy",
+          "type": "Gagamba.Execution.Restricted.Contracts.ExecutableMountPolicyView",
+          "publicSetter": false
+        },
+        {
+          "name": "NetworkQualification",
+          "type": "Gagamba.Execution.Restricted.Contracts.QualificationDisposition",
+          "publicSetter": false
+        }
+      ],
+      "methods": [
+        "System.Collections.Immutable.ImmutableArray\u00601[System.String] get_Namespaces()",
+        "System.Collections.Immutable.ImmutableArray\u00601[System.String] get_Capabilities()",
+        "Boolean get_NoNewPrivs()",
+        "System.Collections.Immutable.ImmutableArray\u00601[System.Byte] get_FilterSha256()",
+        "UInt64 get_FilterLength()",
+        "System.Collections.Immutable.ImmutableArray\u00601[System.String] get_ReadOnlyDestinations()",
+        "System.Collections.Immutable.ImmutableArray\u00601[Gagamba.Execution.Restricted.Contracts.WritableStoreView] get_WritableStores()",
+        "Boolean get_NoAmbientEnvironment()",
+        "Boolean get_NoIpcEndpoints()",
+        "Boolean get_NoExtraInheritedFds()",
+        "Gagamba.Execution.Restricted.Contracts.ExecutableMountPolicyView get_MountPolicy()",
+        "Gagamba.Execution.Restricted.Contracts.QualificationDisposition get_NetworkQualification()"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.Restricted.Contracts.BudgetValueKind",
+      "constructors": [],
+      "properties": [],
+      "methods": []
+    },
+    {
+      "type": "Gagamba.Execution.Restricted.Contracts.ChannelManifestView",
+      "constructors": [],
+      "properties": [
+        {
+          "name": "StdinEof",
+          "type": "System.Boolean",
+          "publicSetter": false
+        },
+        {
+          "name": "StdoutLimitBytes",
+          "type": "System.UInt64",
+          "publicSetter": false
+        },
+        {
+          "name": "StderrLimitBytes",
+          "type": "System.UInt64",
+          "publicSetter": false
+        },
+        {
+          "name": "AggregateLimitBytes",
+          "type": "System.UInt64",
+          "publicSetter": false
+        }
+      ],
+      "methods": [
+        "Boolean get_StdinEof()",
+        "UInt64 get_StdoutLimitBytes()",
+        "UInt64 get_StderrLimitBytes()",
+        "UInt64 get_AggregateLimitBytes()"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.Restricted.Contracts.ClosureIdentityView",
+      "constructors": [],
+      "properties": [
+        {
+          "name": "Objects",
+          "type": "System.Collections.Immutable.ImmutableArray\u00601[Gagamba.Execution.Restricted.Contracts.ClosureObjectView]",
+          "publicSetter": false
+        },
+        {
+          "name": "HelperDependencies",
+          "type": "System.Collections.Immutable.ImmutableArray\u00601[System.String]",
+          "publicSetter": false
+        }
+      ],
+      "methods": [
+        "System.Collections.Immutable.ImmutableArray\u00601[Gagamba.Execution.Restricted.Contracts.ClosureObjectView] get_Objects()",
+        "System.Collections.Immutable.ImmutableArray\u00601[System.String] get_HelperDependencies()"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.Restricted.Contracts.ClosureObjectView",
+      "constructors": [],
+      "properties": [
+        {
+          "name": "Role",
+          "type": "System.String",
+          "publicSetter": false
+        },
+        {
+          "name": "Sha256",
+          "type": "System.Collections.Immutable.ImmutableArray\u00601[System.Byte]",
+          "publicSetter": false
+        },
+        {
+          "name": "Length",
+          "type": "System.UInt64",
+          "publicSetter": false
+        },
+        {
+          "name": "Destination",
+          "type": "System.String",
+          "publicSetter": false
+        },
+        {
+          "name": "BuildIdentity",
+          "type": "System.String",
+          "publicSetter": false
+        }
+      ],
+      "methods": [
+        "System.String get_Role()",
+        "System.Collections.Immutable.ImmutableArray\u00601[System.Byte] get_Sha256()",
+        "UInt64 get_Length()",
+        "System.String get_Destination()",
+        "System.String get_BuildIdentity()"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.Restricted.Contracts.CoreDumpPolicyView",
+      "constructors": [],
+      "properties": [
+        {
+          "name": "CoreDisabled",
+          "type": "System.Boolean",
+          "publicSetter": false
+        },
+        {
+          "name": "RuntimeDumpsDisabled",
+          "type": "System.Boolean",
+          "publicSetter": false
+        },
+        {
+          "name": "CorePatternObserved",
+          "type": "System.String",
+          "publicSetter": false
+        }
+      ],
+      "methods": [
+        "Boolean get_CoreDisabled()",
+        "Boolean get_RuntimeDumpsDisabled()",
+        "System.String get_CorePatternObserved()"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.Restricted.Contracts.ExecutableMountPolicyView",
+      "constructors": [],
+      "properties": [
+        {
+          "name": "ToolExecutable",
+          "type": "System.Boolean",
+          "publicSetter": false
+        },
+        {
+          "name": "ScratchNoexec",
+          "type": "System.Boolean",
+          "publicSetter": false
+        }
+      ],
+      "methods": [
+        "Boolean get_ToolExecutable()",
+        "Boolean get_ScratchNoexec()"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.Restricted.Contracts.InvocationManifestView",
+      "constructors": [],
+      "properties": [
+        {
+          "name": "ToolPath",
+          "type": "System.String",
+          "publicSetter": false
+        },
+        {
+          "name": "Mode",
+          "type": "System.String",
+          "publicSetter": false
+        },
+        {
+          "name": "InputPath",
+          "type": "System.String",
+          "publicSetter": false
+        },
+        {
+          "name": "Argv",
+          "type": "System.Collections.Immutable.ImmutableArray\u00601[System.String]",
+          "publicSetter": false
+        },
+        {
+          "name": "Environment",
+          "type": "System.Collections.Immutable.ImmutableArray\u00601[System.Collections.Generic.KeyValuePair\u00602[System.String,System.String]]",
+          "publicSetter": false
+        },
+        {
+          "name": "WorkDirectory",
+          "type": "System.String",
+          "publicSetter": false
+        }
+      ],
+      "methods": [
+        "System.String get_ToolPath()",
+        "System.String get_Mode()",
+        "System.String get_InputPath()",
+        "System.Collections.Immutable.ImmutableArray\u00601[System.String] get_Argv()",
+        "System.Collections.Immutable.ImmutableArray\u00601[System.Collections.Generic.KeyValuePair\u00602[System.String,System.String]] get_Environment()",
+        "System.String get_WorkDirectory()"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.Restricted.Contracts.ManifestDecodeError",
+      "constructors": [],
+      "properties": [],
+      "methods": []
+    },
+    {
+      "type": "Gagamba.Execution.Restricted.Contracts.ManifestDecodeResult",
+      "constructors": [],
+      "properties": [
+        {
+          "name": "Value",
+          "type": "Gagamba.Execution.Restricted.Contracts.RestrictedManifestView",
+          "publicSetter": false
+        },
+        {
+          "name": "Error",
+          "type": "System.Nullable\u00601[Gagamba.Execution.Restricted.Contracts.ManifestDecodeError]",
+          "publicSetter": false
+        },
+        {
+          "name": "Offset",
+          "type": "System.Nullable\u00601[System.Int32]",
+          "publicSetter": false
+        }
+      ],
+      "methods": [
+        "Gagamba.Execution.Restricted.Contracts.RestrictedManifestView get_Value()",
+        "System.Nullable\u00601[Gagamba.Execution.Restricted.Contracts.ManifestDecodeError] get_Error()",
+        "System.Nullable\u00601[System.Int32] get_Offset()"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.Restricted.Contracts.OwnerAllocationLimitsView",
+      "constructors": [],
+      "properties": [
+        {
+          "name": "StagingBytes",
+          "type": "System.UInt64",
+          "publicSetter": false
+        },
+        {
+          "name": "StagingObjects",
+          "type": "System.UInt32",
+          "publicSetter": false
+        },
+        {
+          "name": "ConfigBytes",
+          "type": "System.UInt64",
+          "publicSetter": false
+        },
+        {
+          "name": "CoordinatorStatusBytes",
+          "type": "System.UInt64",
+          "publicSetter": false
+        },
+        {
+          "name": "HelperStatusBytes",
+          "type": "System.UInt64",
+          "publicSetter": false
+        },
+        {
+          "name": "JournalBytes",
+          "type": "System.UInt64",
+          "publicSetter": false
+        },
+        {
+          "name": "ReceiptBytes",
+          "type": "System.UInt64",
+          "publicSetter": false
+        }
+      ],
+      "methods": [
+        "UInt64 get_StagingBytes()",
+        "UInt32 get_StagingObjects()",
+        "UInt64 get_ConfigBytes()",
+        "UInt64 get_CoordinatorStatusBytes()",
+        "UInt64 get_HelperStatusBytes()",
+        "UInt64 get_JournalBytes()",
+        "UInt64 get_ReceiptBytes()"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.Restricted.Contracts.QualificationDisposition",
+      "constructors": [],
+      "properties": [],
+      "methods": []
+    },
+    {
+      "type": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView",
+      "constructors": [],
+      "properties": [
+        {
+          "name": "Kind",
+          "type": "Gagamba.Execution.Restricted.Contracts.BudgetValueKind",
+          "publicSetter": false
+        },
+        {
+          "name": "Value",
+          "type": "System.UInt64",
+          "publicSetter": false
+        },
+        {
+          "name": "Unit",
+          "type": "System.String",
+          "publicSetter": false
+        },
+        {
+          "name": "Qualification",
+          "type": "Gagamba.Execution.Restricted.Contracts.QualificationDisposition",
+          "publicSetter": false
+        }
+      ],
+      "methods": [
+        "Gagamba.Execution.Restricted.Contracts.BudgetValueKind get_Kind()",
+        "UInt64 get_Value()",
+        "System.String get_Unit()",
+        "Gagamba.Execution.Restricted.Contracts.QualificationDisposition get_Qualification()"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.Restricted.Contracts.ResourceManifestView",
+      "constructors": [],
+      "properties": [
+        {
+          "name": "Memory",
+          "type": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView",
+          "publicSetter": false
+        },
+        {
+          "name": "Swap",
+          "type": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView",
+          "publicSetter": false
+        },
+        {
+          "name": "Tasks",
+          "type": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView",
+          "publicSetter": false
+        },
+        {
+          "name": "FileDescriptors",
+          "type": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView",
+          "publicSetter": false
+        },
+        {
+          "name": "TmpBytes",
+          "type": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView",
+          "publicSetter": false
+        },
+        {
+          "name": "ShmBytes",
+          "type": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView",
+          "publicSetter": false
+        },
+        {
+          "name": "StdoutBytes",
+          "type": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView",
+          "publicSetter": false
+        },
+        {
+          "name": "StderrBytes",
+          "type": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView",
+          "publicSetter": false
+        },
+        {
+          "name": "CaptureAggregateBytes",
+          "type": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView",
+          "publicSetter": false
+        },
+        {
+          "name": "SetupTimeoutNs",
+          "type": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView",
+          "publicSetter": false
+        },
+        {
+          "name": "OverallTimeoutNs",
+          "type": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView",
+          "publicSetter": false
+        },
+        {
+          "name": "StopAllowanceNs",
+          "type": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView",
+          "publicSetter": false
+        },
+        {
+          "name": "FinalDrainNs",
+          "type": "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView",
+          "publicSetter": false
+        },
+        {
+          "name": "InodeQualification",
+          "type": "Gagamba.Execution.Restricted.Contracts.QualificationDisposition",
+          "publicSetter": false
+        },
+        {
+          "name": "CoreDumps",
+          "type": "Gagamba.Execution.Restricted.Contracts.CoreDumpPolicyView",
+          "publicSetter": false
+        },
+        {
+          "name": "OwnerAllocation",
+          "type": "Gagamba.Execution.Restricted.Contracts.OwnerAllocationLimitsView",
+          "publicSetter": false
+        }
+      ],
+      "methods": [
+        "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_Memory()",
+        "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_Swap()",
+        "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_Tasks()",
+        "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_FileDescriptors()",
+        "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_TmpBytes()",
+        "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_ShmBytes()",
+        "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_StdoutBytes()",
+        "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_StderrBytes()",
+        "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_CaptureAggregateBytes()",
+        "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_SetupTimeoutNs()",
+        "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_OverallTimeoutNs()",
+        "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_StopAllowanceNs()",
+        "Gagamba.Execution.Restricted.Contracts.ResourceBudgetView get_FinalDrainNs()",
+        "Gagamba.Execution.Restricted.Contracts.QualificationDisposition get_InodeQualification()",
+        "Gagamba.Execution.Restricted.Contracts.CoreDumpPolicyView get_CoreDumps()",
+        "Gagamba.Execution.Restricted.Contracts.OwnerAllocationLimitsView get_OwnerAllocation()"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.Restricted.Contracts.RestrictedManifestCodec",
+      "constructors": [],
+      "properties": [],
+      "methods": [
+        "Boolean Supports(UInt16, System.String)",
+        "Gagamba.Execution.Restricted.Contracts.ManifestDecodeResult Decode(System.ReadOnlySpan\u00601[System.Byte])",
+        "Byte[] Encode(Gagamba.Execution.Restricted.Contracts.RestrictedManifestView)",
+        "System.Collections.Immutable.ImmutableArray\u00601[System.Byte] ComputeSha256(Gagamba.Execution.Restricted.Contracts.RestrictedManifestView)",
+        "Boolean VerifySha256(Gagamba.Execution.Restricted.Contracts.RestrictedManifestView, System.ReadOnlySpan\u00601[System.Byte])"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.Restricted.Contracts.RestrictedManifestView",
+      "constructors": [],
+      "properties": [
+        {
+          "name": "SchemaVersion",
+          "type": "System.UInt16",
+          "publicSetter": false
+        },
+        {
+          "name": "ImplementationId",
+          "type": "System.String",
+          "publicSetter": false
+        },
+        {
+          "name": "Authority",
+          "type": "Gagamba.Execution.Restricted.Contracts.AuthorityManifestView",
+          "publicSetter": false
+        },
+        {
+          "name": "Resources",
+          "type": "Gagamba.Execution.Restricted.Contracts.ResourceManifestView",
+          "publicSetter": false
+        },
+        {
+          "name": "Closure",
+          "type": "Gagamba.Execution.Restricted.Contracts.ClosureIdentityView",
+          "publicSetter": false
+        },
+        {
+          "name": "Invocation",
+          "type": "Gagamba.Execution.Restricted.Contracts.InvocationManifestView",
+          "publicSetter": false
+        },
+        {
+          "name": "Channels",
+          "type": "Gagamba.Execution.Restricted.Contracts.ChannelManifestView",
+          "publicSetter": false
+        }
+      ],
+      "methods": [
+        "UInt16 get_SchemaVersion()",
+        "System.String get_ImplementationId()",
+        "Gagamba.Execution.Restricted.Contracts.AuthorityManifestView get_Authority()",
+        "Gagamba.Execution.Restricted.Contracts.ResourceManifestView get_Resources()",
+        "Gagamba.Execution.Restricted.Contracts.ClosureIdentityView get_Closure()",
+        "Gagamba.Execution.Restricted.Contracts.InvocationManifestView get_Invocation()",
+        "Gagamba.Execution.Restricted.Contracts.ChannelManifestView get_Channels()"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.Restricted.Contracts.RestrictedPreparationReference",
+      "constructors": [
+        "Void .ctor(System.Guid, System.Guid, System.Guid, System.Guid, System.ReadOnlySpan\u00601[System.Byte])"
+      ],
+      "properties": [
+        {
+          "name": "ExecutionId",
+          "type": "System.Guid",
+          "publicSetter": false
+        },
+        {
+          "name": "IssuerId",
+          "type": "System.Guid",
+          "publicSetter": false
+        },
+        {
+          "name": "GenerationId",
+          "type": "System.Guid",
+          "publicSetter": false
+        },
+        {
+          "name": "PreparationId",
+          "type": "System.Guid",
+          "publicSetter": false
+        },
+        {
+          "name": "ManifestSha256",
+          "type": "System.Collections.Immutable.ImmutableArray\u00601[System.Byte]",
+          "publicSetter": false
+        }
+      ],
+      "methods": [
+        "System.Guid get_ExecutionId()",
+        "System.Guid get_IssuerId()",
+        "System.Guid get_GenerationId()",
+        "System.Guid get_PreparationId()",
+        "System.Collections.Immutable.ImmutableArray\u00601[System.Byte] get_ManifestSha256()",
+        "Boolean Equals(Gagamba.Execution.Restricted.Contracts.RestrictedPreparationReference)",
+        "Boolean Equals(System.Object)",
+        "Int32 GetHashCode()"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.Restricted.Contracts.WritableStoreView",
+      "constructors": [],
+      "properties": [
+        {
+          "name": "Path",
+          "type": "System.String",
+          "publicSetter": false
+        },
+        {
+          "name": "Bytes",
+          "type": "System.UInt64",
+          "publicSetter": false
+        },
+        {
+          "name": "HasInodeBudget",
+          "type": "System.Boolean",
+          "publicSetter": false
+        },
+        {
+          "name": "InodeBudget",
+          "type": "System.UInt64",
+          "publicSetter": false
+        }
+      ],
+      "methods": [
+        "System.String get_Path()",
+        "UInt64 get_Bytes()",
+        "Boolean get_HasInodeBudget()",
+        "UInt64 get_InodeBudget()"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.TerminateResult",
+      "constructors": [],
+      "properties": [],
+      "methods": [
+        "System.String ToString()",
+        "Boolean op_Inequality(Gagamba.Execution.TerminateResult, Gagamba.Execution.TerminateResult)",
+        "Boolean op_Equality(Gagamba.Execution.TerminateResult, Gagamba.Execution.TerminateResult)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.TerminateResult)",
+        "Gagamba.Execution.TerminateResult \u003CClone\u003E$()"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.TerminateResult\u002BFailed",
+      "constructors": [
+        "Void .ctor(System.Collections.Generic.IReadOnlyList\u00601[System.String])"
+      ],
+      "properties": [
+        {
+          "name": "Reasons",
+          "type": "System.Collections.Generic.IReadOnlyList\u00601[System.String]",
+          "publicSetter": true
+        }
+      ],
+      "methods": [
+        "System.Collections.Generic.IReadOnlyList\u00601[System.String] get_Reasons()",
+        "Void set_Reasons(System.Collections.Generic.IReadOnlyList\u00601[System.String])",
+        "System.String ToString()",
+        "Boolean op_Inequality(Failed, Failed)",
+        "Boolean op_Equality(Failed, Failed)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.TerminateResult)",
+        "Boolean Equals(Failed)",
+        "Failed \u003CClone\u003E$()",
+        "Void Deconstruct(System.Collections.Generic.IReadOnlyList\u00601[System.String] ByRef)"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.TerminateResult\u002BTerminated",
+      "constructors": [
+        "Void .ctor(Gagamba.Execution.ExecutionHandle)"
+      ],
+      "properties": [
+        {
+          "name": "Handle",
+          "type": "Gagamba.Execution.ExecutionHandle",
+          "publicSetter": true
+        }
+      ],
+      "methods": [
+        "Gagamba.Execution.ExecutionHandle get_Handle()",
+        "Void set_Handle(Gagamba.Execution.ExecutionHandle)",
+        "System.String ToString()",
+        "Boolean op_Inequality(Terminated, Terminated)",
+        "Boolean op_Equality(Terminated, Terminated)",
+        "Int32 GetHashCode()",
+        "Boolean Equals(System.Object)",
+        "Boolean Equals(Gagamba.Execution.TerminateResult)",
+        "Boolean Equals(Terminated)",
+        "Terminated \u003CClone\u003E$()",
+        "Void Deconstruct(Gagamba.Execution.ExecutionHandle ByRef)"
+      ]
+    },
+    {
+      "type": "Gagamba.Execution.WellKnownPlatforms",
+      "constructors": [],
+      "properties": [
+        {
+          "name": "Windows",
+          "type": "Gagamba.Execution.PlatformCapabilities",
+          "publicSetter": false
+        },
+        {
+          "name": "Linux",
+          "type": "Gagamba.Execution.PlatformCapabilities",
+          "publicSetter": false
+        },
+        {
+          "name": "MacOs",
+          "type": "Gagamba.Execution.PlatformCapabilities",
+          "publicSetter": false
+        },
+        {
+          "name": "All",
+          "type": "System.Collections.Generic.IReadOnlyList\u00601[Gagamba.Execution.PlatformCapabilities]",
+          "publicSetter": false
+        },
+        {
+          "name": "ComposedOwnerDeath",
+          "type": "System.Collections.Generic.IReadOnlyDictionary\u00602[System.String,System.Collections.Generic.IReadOnlyDictionary\u00602[Gagamba.Execution.ExecutionCapability,Gagamba.Execution.CapabilityGrant]]",
+          "publicSetter": false
+        }
+      ],
+      "methods": [
+        "Gagamba.Execution.PlatformCapabilities get_Windows()",
+        "Gagamba.Execution.PlatformCapabilities get_Linux()",
+        "Gagamba.Execution.PlatformCapabilities get_MacOs()",
+        "System.Collections.Generic.IReadOnlyList\u00601[Gagamba.Execution.PlatformCapabilities] get_All()",
+        "System.Collections.Generic.IReadOnlyDictionary\u00602[System.String,System.Collections.Generic.IReadOnlyDictionary\u00602[Gagamba.Execution.ExecutionCapability,Gagamba.Execution.CapabilityGrant]] get_ComposedOwnerDeath()"
+      ]
+    }
+  ]
+}

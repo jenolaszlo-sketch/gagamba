@@ -1,0 +1,63 @@
+[
+  {
+    "scenario": "direct",
+    "references": {
+      "Gagamba.Execution": "0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b"
+    },
+    "libraries": {
+      "Gagamba.Execution/0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b": "package"
+    },
+    "resolvedSources": [
+      {
+        "package": "gagamba.execution\\0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+        "source": "controlled-local"
+      }
+    ],
+    "isolatedCacheInitiallyAbsent": true,
+    "projectReferences": false
+  },
+  {
+    "scenario": "mixed",
+    "references": {
+      "Gagamba.Execution": "0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "Gagamba.Runtime": "0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+      "Penghou.Hufu": "0.1.0-preview.11"
+    },
+    "libraries": {
+      "Gagamba.Execution/0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b": "package",
+      "Gagamba.Execution.Linux/0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b": "package",
+      "Gagamba.Execution.MacOS/0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b": "package",
+      "Gagamba.Execution.Windows/0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b": "package",
+      "Gagamba.Runtime/0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b": "package",
+      "Penghou.Hufu/0.1.0-preview.11": "package"
+    },
+    "resolvedSources": [
+      {
+        "package": "gagamba.execution\\0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+        "source": "controlled-local"
+      },
+      {
+        "package": "gagamba.execution.linux\\0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+        "source": "controlled-local"
+      },
+      {
+        "package": "gagamba.execution.macos\\0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+        "source": "controlled-local"
+      },
+      {
+        "package": "gagamba.execution.windows\\0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+        "source": "controlled-local"
+      },
+      {
+        "package": "gagamba.runtime\\0.1.0-rc2a.82cf8983a61f60a95d0aed0233ef0efac985148b",
+        "source": "controlled-local"
+      },
+      {
+        "package": "penghou.hufu\\0.1.0-preview.11",
+        "source": "controlled-local"
+      }
+    ],
+    "isolatedCacheInitiallyAbsent": true,
+    "projectReferences": false
+  }
+]
