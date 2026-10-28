@@ -88,6 +88,7 @@ def main():
         ('microsoft.sourcelink.github', '10.0.401', build_feed),
         ('microsoft.sourcelink.common', '10.0.401', build_feed),
         ('microsoft.build.tasks.git', '10.0.401', build_feed),
+        ('system.io.hashing', '10.0.12', build_feed),
         ('penghou.hufu', '0.1.0-preview.11', feed),
     ]:
         original = global_cache / package / dependency_version / (package + '.' + dependency_version + '.nupkg')
