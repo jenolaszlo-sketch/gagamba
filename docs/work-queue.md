@@ -1,8 +1,11 @@
 # Current work queue
 
 > Current project summary and next owner decision: [PROJECT-STATUS.md](PROJECT-STATUS.md).
-> GAGAMBA-INTEGRATION-01 Stage 2B is separately owner-authorized; the accepted baseline
-> remains `1ce5c37f25c3bf49f55fc6a31a930f8430358d24`. RC2A-04 remains unauthorized.
+> Current delivery (2026-10-29): RC2B-01 B1 contract/refusal boundary is implemented
+> at `764045fed4a01c4c1160865bd9da53fa3af2b954`; independent review and the R1-F03
+> owner choice remain pending. RC2A-04 is ACCEPTED WITH QUALIFICATIONS.
+> [B1 handoff and tests](evidence/rc2b-01-b1.md): 630/0/0 distinct tests; no native
+> lifecycle qualification. Do not begin B2/B3 automatically.
 > Entries below are retained historical checkpoints. Their earlier pending-review or
 > awaiting-commissioning wording does not supersede the canonical current summary.
 
