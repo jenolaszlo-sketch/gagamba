@@ -3,6 +3,27 @@
 Canonical current summary; historical decisions and independent reviews remain immutable.
 Status date: 2026-10-29 (Asia/Manila).
 
+## RC2B-02 B2 producer delivery
+
+**READY FOR INDEPENDENT REVIEW WITH NATIVE ENFORCEMENT RESTRICTIONS** under the explicit
+GAGAMBA-RC2B-02 commission. Source `7396012bc07c357a49bbdd0c3791ce06808ca9ab`
+(tree `e009fb88d6cd736660c2055b4ed7743d59976b78`) adds a dedicated unprivileged recovery
+executable, one-use authenticated controller association, independent controller/owner
+pidfds and owner lifeline responses. [B2 evidence and focused review handoff](evidence/rc2b-02-b2.md).
+
+Measured: Windows 699/0/0 managed regressions; WSL2 70/0/0 focused M1 tests and 24/0/0
+real-process cases, including controller/recovery/owner death and two empty native-domain
+retention/kill/removal probes. Initial false-controller-loss reporting under SIGCHLD was
+reproduced and corrected; superseded results are disclosed in the evidence. All tested
+fixture processes were reaped and native child domains removed.
+
+This is producer evidence, not acceptance. WSL2 is not independent native Linux-host
+qualification. Populated native enforcement, recovery-death domain stop, B3 release,
+B4 capture/complete stop, B5 reconciliation/sealed C3 clocks, B6 installed closure and
+supervisor policies, and B7 lifecycle qualification remain open. Public restricted execution
+still uses the unavailable provider. Next: independent B2 review and owner disposition;
+no automatic B3, Hufu, publication or release tags.
+
 ## RC2B-01 B1 current disposition
 
 **ACCEPTED WITH QUALIFICATIONS** by GAGAMBA-RC2B-01-B1-OWNER-01 at
@@ -31,7 +52,7 @@ workload, package publication or release tag was created.
 The source-bound [B1 handoff](evidence/rc2b-01-b1.md) contains the API inventory, R1-F02
 ordering, R1-F03 decision table/recommendation, exact commands/counts, adaptations and
 remaining gates. The next proposed implementation slice is **RC2B-02 (B2 recovery bootstrap
-and controller/owner lifetime infrastructure)** — recorded, NOT STARTED.
+and controller/owner lifetime infrastructure)** — now delivered for independent review as recorded above.
 
 ## Accepted component baseline
 

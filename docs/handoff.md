@@ -1,13 +1,13 @@
 # Gagamba handoff
 
 > Current project summary and next owner decision: [PROJECT-STATUS.md](PROJECT-STATUS.md).
-> Current disposition (2026-10-29): RC2B-01 B1 is ACCEPTED WITH QUALIFICATIONS and
-> R1-F03 Option A is APPROVED as a semantic contract in
-> [the B1 owner decision](decisions/rc2b-01-b1-owner-acceptance.md); RC2A-04 is ACCEPTED
-> WITH QUALIFICATIONS. R1-F02 native enforcement remains OPEN.
-> [B1 handoff and tests](evidence/rc2b-01-b1.md): 630/0/0 distinct tests; no native
-> lifecycle qualification. Next proposed slice RC2B-02 (B2), NOT STARTED.
-> Do not begin B2/B3 automatically.
+> Current disposition (2026-10-29): RC2B-02 B2 is READY FOR INDEPENDENT REVIEW WITH
+> NATIVE ENFORCEMENT RESTRICTIONS; source `7396012bc07c357a49bbdd0c3791ce06808ca9ab`.
+> [B2 evidence/review handoff](evidence/rc2b-02-b2.md): Windows managed 699/0/0;
+> WSL2 focused M1 70/0/0; real process/native empty-domain cases 24/0/0.
+> Independent native Linux-host and populated enforcement qualification remain pending.
+> B1 remains ACCEPTED WITH QUALIFICATIONS; R1-F03 Option A semantic approval unchanged.
+> Next: focused independent B2 review and owner disposition. Do not start B3 automatically.
 > Entries below are retained historical checkpoints. Their earlier pending-review or
 > awaiting-commissioning wording does not supersede the canonical current summary.
 
