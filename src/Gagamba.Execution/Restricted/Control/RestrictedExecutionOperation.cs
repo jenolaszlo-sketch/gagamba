@@ -64,12 +64,16 @@ public sealed class PreparedRestrictedExecution
     public RestrictedEstablishmentReceipt Establishment { get; }
 }
 
-// Internal contract seam only. There is no production implementation or registration.
-// B3 must bind it to the authenticated owner/store, qualify source/receipt consistency,
-// and recheck identity, original cutoffs and capability state at the native arbiter.
+// Internal contract seam. The B3 composition binds it to the single
+// authoritative owner transaction (real preparation, capability mint and
+// owner-side release arbiter). Only descriptors, identities and decisions
+// cross this seam; no capability, handle or bearer is transferred.
 internal interface IRestrictedOperationOwner
 {
     ValueTask<RestrictedOwnerPrepareResult> PrepareAsync(RestrictedPreparationInputs inputs);
+    // Owner-side release admission. The owner keeps the capability and the
+    // sole RELEASE writer; the correlation is an admission binding only.
+    ValueTask<RestrictedOwnerReleaseResult> ReleaseAsync(ImmutableArray<byte> approvalCorrelationSha256);
     ValueTask<RestrictedStopReply> StopAsync(RestrictedStopReason reason);
     ValueTask<RestrictedCleanup> DisposeAsync();
     // Cached, nonblocking facts only: never journal I/O or an authenticated
@@ -77,6 +81,30 @@ internal interface IRestrictedOperationOwner
     RestrictedReleaseDecision? RetainedRelease { get; }
     bool IsLive(RestrictedPreparationReference reference);
 }
+
+/// <summary>Owner-origin release decision for one admitted call. The typed
+/// evidence keeps persistent, delivered and ambiguous outcomes separate; a
+/// delivered write is never proof of coordinator consumption or exec.</summary>
+internal sealed record RestrictedOwnerReleaseResult(
+    RestrictedReleaseKind Kind,
+    RestrictedReleaseEvidence Evidence,
+    RestrictedDelivery Delivery,
+    RestrictedEvidenceState DurableCommit,
+    bool? LiveExecutionExcluded,
+    RestrictedRequestBinding Binding,
+    RestrictedRefusalReason Reason,
+    RestrictedOwnerExecutionFacts? Execution = null);
+
+/// <summary>Trusted-native post-release facts. Absent axes stay null or
+/// Unknown; fixture output digests are reported separately by the owner-side
+/// observation path and never classify exec.</summary>
+internal sealed record RestrictedOwnerExecutionFacts(
+    RestrictedOutcome Outcome,
+    RestrictedExecResult? Exec,
+    RestrictedProcessResult? Root,
+    RestrictedProcessResult? Helper,
+    RestrictedDomainState Domain,
+    long? ObservedAtNs);
 
 internal sealed record RestrictedOwnerPreparation(RestrictedPreparationReference Reference,
     RestrictedManifestView Manifest, RestrictedProviderDescriptor Provider, RestrictedDeadlines Deadlines,
@@ -113,6 +141,15 @@ public sealed class RestrictedExecutionOperation : IAsyncDisposable
     private bool _disposed;
     private ulong _sequence;
     private RestrictedCleanup _cleanup = RestrictedCleanup.Unknown;
+    // R1-F03 Option A admission state. The first call that passes every local
+    // pre-retention gate binds the operation's approval correlation; a later
+    // mismatch only refuses that call. No journal field carries this.
+    private bool _hasAdmittedCorrelation;
+    private ImmutableArray<byte> _admittedCorrelation;
+    private bool _releaseSubmissionInFlight;
+    private Task<RestrictedOwnerReleaseResult>? _releaseSubmission;
+    private RestrictedReleaseDecision? _releaseDecision;
+    private RestrictedOwnerExecutionFacts? _executionFacts;
 
     internal RestrictedExecutionOperation(RestrictedProviderDescriptor provider, IRestrictedOperationOwner owner)
     { _provider = provider; _owner = owner; }
@@ -120,6 +157,10 @@ public sealed class RestrictedExecutionOperation : IAsyncDisposable
     // Deterministic contract tests may await the submitted ACK task; this is not
     // a public notification protocol and never waits for a release winner.
     internal Task StopSubmission { get { lock (_gate) return _stopTask; } }
+
+    // Deterministic contract tests may await the in-flight release submission's
+    // cached outcome. It is never a caller-visible waiter or retry loop.
+    internal Task? ReleaseSubmission { get { lock (_gate) return _releaseSubmission; } }
 
     public ValueTask<RestrictedPrepareResult> PrepareAsync(RestrictedPreparationInputs inputs,
         CancellationToken waitCancellation = default)
@@ -196,8 +237,9 @@ public sealed class RestrictedExecutionOperation : IAsyncDisposable
         ImmutableArray<byte> approvalCorrelationSha256 = default, CancellationToken waitCancellation = default)
     {
         ArgumentNullException.ThrowIfNull(exactPreparation);
-        // No operation is cancelled by a wait token. This method does no owner I/O.
+        // No operation is cancelled by a wait token; only this caller's wait is.
         waitCancellation.ThrowIfCancellationRequested();
+        Task<RestrictedOwnerReleaseResult>? submission = null;
         lock (_gate)
         {
             if (!ReferenceEquals(exactPreparation, _prepared) ||
@@ -209,9 +251,10 @@ public sealed class RestrictedExecutionOperation : IAsyncDisposable
                     RestrictedRequestBinding.Mismatch, RestrictedRefusalReason.InvalidBinding));
 
             var validCorrelation = approvalCorrelationSha256.IsDefault || approvalCorrelationSha256.Length == 32;
-            // Read-only retained observation. B1 cannot create this owner decision.
-            // C4 facts survive stop, disposal, invalid/mismatching caller correlation.
-            var retained = _owner.RetainedRelease;
+            // Read-only retained observation. C4 facts (the operation's own
+            // cached decision or the owner's cached retained view) survive
+            // stop, disposal and invalid or mismatching caller correlation.
+            var retained = _releaseDecision ?? _owner.RetainedRelease;
             if (retained is not null)
             {
                 var original = retained.ApprovalCorrelationSha256;
@@ -227,14 +270,127 @@ public sealed class RestrictedExecutionOperation : IAsyncDisposable
             if (!validCorrelation)
                 return ValueTask.FromResult(new RestrictedReleaseReply(RestrictedReleaseKind.Refused,
                     RestrictedRequestBinding.InvalidArgument, RestrictedRefusalReason.InvalidCorrelation));
-            var reason = _disposed ? RestrictedRefusalReason.Disposed : _stop is not null
+            // R1-F03 Option A: a pre-retention mismatch against the admitted
+            // binding refuses only this call. The admitted correlation, the
+            // capability, the deadlines and any retained decision state are
+            // untouched, and no RELEASE can result from this call.
+            if (_hasAdmittedCorrelation
+                && !CorrelationEqual(_admittedCorrelation, approvalCorrelationSha256))
+                return ValueTask.FromResult(new RestrictedReleaseReply(RestrictedReleaseKind.Refused,
+                    RestrictedRequestBinding.Mismatch, RestrictedRefusalReason.InvalidBinding));
+            var refusal = _disposed ? RestrictedRefusalReason.Disposed : _stop is not null
                 ? RestrictedRefusalReason.StopRequested : !_owner.IsLive(_identity)
-                    ? RestrictedRefusalReason.InvalidBinding : RestrictedRefusalReason.LiveReleaseNotImplemented;
-            // NO correlation admission/binding or physical release here. In
-            // particular, this is not an implementation of pre-retention mismatch.
-            return ValueTask.FromResult(new RestrictedReleaseReply(RestrictedReleaseKind.Refused,
-                RestrictedRequestBinding.Unknown, reason));
+                    ? RestrictedRefusalReason.InvalidBinding : RestrictedRefusalReason.None;
+            if (refusal != RestrictedRefusalReason.None)
+                return ValueTask.FromResult(new RestrictedReleaseReply(RestrictedReleaseKind.Refused,
+                    RestrictedRequestBinding.Unknown, refusal));
+            if (_releaseSubmissionInFlight)
+                // C4 concurrent loser: refused, never queued or retried, and
+                // never a second physical attempt.
+                return ValueTask.FromResult(new RestrictedReleaseReply(RestrictedReleaseKind.Refused,
+                    RestrictedRequestBinding.Accepted, RestrictedRefusalReason.ReleaseInProgress));
+            if (!_hasAdmittedCorrelation)
+            {
+                // The first fully admissible call atomically binds the
+                // operation's approval correlation.
+                _admittedCorrelation = approvalCorrelationSha256.IsDefault
+                    ? default
+                    : ImmutableArray.Create(approvalCorrelationSha256.AsSpan());
+                _hasAdmittedCorrelation = true;
+            }
+            _releaseSubmissionInFlight = true;
+            _sequence++;
+            // Owner I/O never runs under the local ordering gate.
+            submission = _releaseSubmission = SubmitReleaseAsync(approvalCorrelationSha256);
         }
+        return new(AwaitReleaseReplyAsync(submission!, waitCancellation));
+    }
+
+    private static bool CorrelationEqual(ImmutableArray<byte> left, ImmutableArray<byte> right) =>
+        left.IsDefault == right.IsDefault && (left.IsDefault || left.AsSpan().SequenceEqual(right.AsSpan()));
+
+    private async Task<RestrictedReleaseReply> AwaitReleaseReplyAsync(
+        Task<RestrictedOwnerReleaseResult> submission, CancellationToken waitCancellation)
+    {
+        var result = await submission.WaitAsync(waitCancellation).ConfigureAwait(false);
+        RestrictedReleaseDecision? decision;
+        lock (_gate)
+        {
+            decision = _releaseDecision;
+        }
+        if (result.Kind == RestrictedReleaseKind.Duplicate && decision is null)
+            return new RestrictedReleaseReply(RestrictedReleaseKind.Refused,
+                result.Binding, RestrictedRefusalReason.OwnerUnavailable);
+        var carriesDecision = result.Kind is RestrictedReleaseKind.Duplicate or RestrictedReleaseKind.Released
+            or RestrictedReleaseKind.Stopped or RestrictedReleaseKind.AmbiguousPersistence
+            || result.Evidence == RestrictedReleaseEvidence.MayHaveExecuted;
+        return new RestrictedReleaseReply(result.Kind, result.Binding, result.Reason,
+            carriesDecision ? decision : null);
+    }
+
+    private async Task<RestrictedOwnerReleaseResult> SubmitReleaseAsync(ImmutableArray<byte> correlation)
+    {
+        RestrictedOwnerReleaseResult result;
+        try
+        {
+            result = await _owner.ReleaseAsync(correlation).ConfigureAwait(false);
+        }
+        catch (Exception)
+        {
+            // A lost release reply is never a safe fresh attempt: Unknown is
+            // recorded, no decision is invented and stop stays independently
+            // callable.
+            result = new RestrictedOwnerReleaseResult(RestrictedReleaseKind.Unknown,
+                RestrictedReleaseEvidence.Unknown, RestrictedDelivery.Unknown, RestrictedEvidenceState.Unknown,
+                null, RestrictedRequestBinding.Unknown, RestrictedRefusalReason.OwnerUnavailable);
+        }
+        lock (_gate)
+        {
+            _releaseSubmissionInFlight = false;
+            _executionFacts = result.Execution ?? _executionFacts;
+            if (result.Kind == RestrictedReleaseKind.Duplicate)
+            {
+                // The owner already holds the retained decision.
+                _releaseDecision ??= _owner.RetainedRelease;
+            }
+            else if (result.Kind is RestrictedReleaseKind.Released or RestrictedReleaseKind.Stopped
+                     or RestrictedReleaseKind.AmbiguousPersistence
+                     || result.Evidence == RestrictedReleaseEvidence.MayHaveExecuted)
+            {
+                // First retained decision, including owner-side retained
+                // refusals (MayHaveExecuted): C4 facts survive every later
+                // call, stop and disposal, and never get overwritten.
+                if (_releaseDecision is null)
+                    _releaseDecision = BuildDecision(result);
+            }
+            _sequence++;
+        }
+        return result;
+    }
+
+    private RestrictedReleaseDecision BuildDecision(RestrictedOwnerReleaseResult result)
+    {
+        var kind = result.Kind == RestrictedReleaseKind.Unknown
+            ? RestrictedReleaseKind.Refused
+            : result.Kind;
+        var evidence = result.DurableCommit == RestrictedEvidenceState.Confirmed
+            ? RestrictedReleaseEvidence.Committed
+            : result.Evidence == RestrictedReleaseEvidence.NotCommitted
+                ? RestrictedReleaseEvidence.NotCommitted
+                : RestrictedReleaseEvidence.MayHaveExecuted;
+        var delivery = result.Delivery;
+        var durableCommit = result.DurableCommit;
+        if (kind == RestrictedReleaseKind.AmbiguousPersistence)
+        {
+            // Ambiguous persistence can never assert a committed or delivered write.
+            evidence = RestrictedReleaseEvidence.MayHaveExecuted;
+            delivery = RestrictedDelivery.NotAttempted;
+            durableCommit = RestrictedEvidenceState.Unknown;
+        }
+        if (evidence == RestrictedReleaseEvidence.NotCommitted)
+            delivery = RestrictedDelivery.NotAttempted;
+        return new RestrictedReleaseDecision(kind, evidence, delivery, durableCommit,
+            result.LiveExecutionExcluded, _admittedCorrelation, RestrictedEvidenceState.Unknown);
     }
 
     public ValueTask<RestrictedStopReply> RequestStopAsync(RestrictedStopReason reason,
@@ -289,9 +445,17 @@ public sealed class RestrictedExecutionOperation : IAsyncDisposable
         waitCancellation.ThrowIfCancellationRequested();
         lock (_gate)
         {
-            // B1 latest local snapshot only. GapOrLoss is explicit; no native
-            // observation time, terminal outcome or successful cleanup is invented.
-            return ValueTask.FromResult(new RestrictedObservation(_sequence, _identity, _cleanup, _stop));
+            // Latest local snapshot only. GapOrLoss stays explicit until a
+            // bounded event stream exists (B4). Only axes the live owner
+            // actually observed are filled; everything else stays unknown.
+            var facts = _executionFacts;
+            var provenance = _releaseDecision is null && facts is null
+                ? RestrictedProvenance.Unknown
+                : RestrictedProvenance.LiveOwner;
+            return ValueTask.FromResult(new RestrictedObservation(_sequence, _identity, _cleanup, _stop,
+                _releaseDecision, provenance, facts?.ObservedAtNs, gapOrLoss: true,
+                facts?.Outcome, facts?.Exec, facts?.Root, facts?.Helper,
+                facts?.Domain ?? RestrictedDomainState.Unknown));
         }
     }
 

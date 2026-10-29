@@ -175,7 +175,8 @@ internal static class OwnerPreparationSpecificationCodec
 
         if (value.TestBarrier is not null
             && value.TestBarrier is not ("after-intent" or "after-domain-retained" or "after-registered"
-                or "after-staging-accounted" or "mid-staging" or "after-copy" or "after-prepared-before-mint"))
+                or "after-staging-accounted" or "mid-staging" or "after-copy" or "after-prepared-before-mint"
+                or "release-after-intent"))
         {
             throw new ArgumentException("Unknown owner test barrier.", nameof(value.TestBarrier));
         }

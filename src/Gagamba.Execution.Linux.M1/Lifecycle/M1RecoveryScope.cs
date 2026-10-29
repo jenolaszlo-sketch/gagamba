@@ -5,6 +5,7 @@ using System.Buffers.Binary;
 using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.Win32.SafeHandles;
+using Gagamba.Execution.Linux.M1.Execution;
 using Gagamba.Execution.Linux.M1.Native;
 using Gagamba.Execution.Linux.M1.Launch;
 using Gagamba.Execution.Linux.M1.Preparation;
@@ -61,13 +62,20 @@ internal sealed record OwnerPreparationOutcome(
     bool Held = false,
     CoordinatorHeldReport? HeldReport = null,
     byte[]? CoordinatorStatusFrame = null,
-    bool NoTargetInitializationMarkerAbsent = false)
+    bool NoTargetInitializationMarkerAbsent = false,
+    long? OwnerSetupDeadlineNs = null,
+    long? OwnerOverallDeadlineNs = null)
 {
     internal bool Ok => (Completed || Held) && Error.Length == 0 && Description is not null && Owner is not null;
 }
 
 internal sealed record HeldOwnerAbortOutcome(bool Accepted, bool OwnerExited, bool CleanupRequested, string Error,
-    bool NoTargetInitializationMarkerAbsent = false);
+    bool NoTargetInitializationMarkerAbsent = false, bool ReleaseAttempted = false);
+
+internal sealed record HeldOwnerReleaseOutcome(bool Accepted, ReleaseDecision? Decision,
+    OwnerExecutionFacts? Outcome, string Error);
+
+internal sealed record HeldOwnerStopOutcome(bool Accepted, StopDecision? Decision, string Error);
 
 internal sealed class M1RecoveryScope : IDisposable
 {
@@ -570,8 +578,8 @@ internal sealed class M1RecoveryScope : IDisposable
 
             if (request.EnableHeldCoordinator)
             {
-                if (message!.Payload.Length < 2 || message.Payload[0] != 1
-                    || !CoordinatorProtocol.TryDecode(message.Payload.AsSpan(1), request.ExecutionId,
+                if (message!.Payload.Length < 17 || message.Payload[0] != 1
+                    || !CoordinatorProtocol.TryDecode(message.Payload.AsSpan(17), request.ExecutionId,
                         preparedDescription!.PreparationId, preparedDescription.ManifestDigest, 1,
                         out var coordinatorFrame, out operationError)
                     || !CoordinatorProtocol.TryDecodeHeldReport(coordinatorFrame!, out var heldReport, out operationError))
@@ -579,9 +587,19 @@ internal sealed class M1RecoveryScope : IDisposable
                     return FailOwnerPreparation(owner, channel, $"owner HELD frame refused: {operationError}");
                 }
 
+                // Owner-origin deadline echo: the retained arbitration
+                // deadlines used to encode the coordinator configuration.
+                var ownerSetup = BinaryPrimitives.ReadUInt64LittleEndian(message.Payload.AsSpan(1, 8));
+                var ownerOverall = BinaryPrimitives.ReadUInt64LittleEndian(message.Payload.AsSpan(9, 8));
+                if (ownerSetup == 0 || ownerOverall <= ownerSetup || ownerOverall > long.MaxValue)
+                {
+                    return FailOwnerPreparation(owner, channel, "owner HELD deadline echo is invalid");
+                }
+
                 return new OwnerPreparationOutcome(false, preparedDescription, owner, null, string.Empty,
-                    Held: true, HeldReport: heldReport, CoordinatorStatusFrame: message.Payload.AsSpan(1).ToArray(),
-                    NoTargetInitializationMarkerAbsent: true);
+                    Held: true, HeldReport: heldReport, CoordinatorStatusFrame: message.Payload.AsSpan(17).ToArray(),
+                    NoTargetInitializationMarkerAbsent: true,
+                    OwnerSetupDeadlineNs: checked((long)ownerSetup), OwnerOverallDeadlineNs: checked((long)ownerOverall));
             }
 
             if (!OwnerPreparationSpecificationCodec.TryDecodePreparedDescription(
@@ -599,7 +617,9 @@ internal sealed class M1RecoveryScope : IDisposable
 
     /// <summary>Accepts only abort from a live HELD owner. The existing
     /// owner pidfd proves exit before recovery can take over any journal
-    /// writer; the child descriptor map has no release writer.</summary>
+    /// writer; the child descriptor map has no release writer. The third
+    /// payload byte reports whether a RELEASE write was attempted; marker
+    /// presence is only an abort error when no release was ever attempted.</summary>
     internal HeldOwnerAbortOutcome AbortHeld(OwnerPreparationOutcome held)
     {
         if (!held.Held || held.Owner is null
@@ -609,9 +629,14 @@ internal sealed class M1RecoveryScope : IDisposable
         if (!channel.TrySend(OwnerProtocolMessageType.AbortHeld, ReadOnlySpan<byte>.Empty, out var sendError))
             return new HeldOwnerAbortOutcome(false, false, false, $"abort frame failed: {sendError}");
         if (!channel.TryReceive(OwnerProtocolMessageType.HeldAborted, out var message, out var receiveError)
-            || message!.Payload.Length != 2 || message.Payload[0] != 1 || message.Payload[1] != 1)
+            || message!.Payload.Length is not (2 or 3) || message.Payload[0] != 1)
             return new HeldOwnerAbortOutcome(true, false, false,
                 receiveError.Length == 0 ? "owner did not confirm abort cleanup" : receiveError);
+
+        var markerAbsent = message.Payload[1] == 1;
+        var releaseAttempted = message.Payload.Length == 3 && message.Payload[2] == 1;
+        if (!markerAbsent && !releaseAttempted)
+            return new HeldOwnerAbortOutcome(true, false, false, "owner confirmed marker presence before any release");
 
         var exit = WaitForOwner(held.Owner, TimeSpan.FromSeconds(7));
         if (!exit.Exited)
@@ -624,7 +649,105 @@ internal sealed class M1RecoveryScope : IDisposable
 
         channel.Dispose();
         _ownerChannels.Remove(held.Owner.Id);
-        return new HeldOwnerAbortOutcome(true, true, true, string.Empty, NoTargetInitializationMarkerAbsent: true);
+        return new HeldOwnerAbortOutcome(true, true, true, string.Empty,
+            NoTargetInitializationMarkerAbsent: markerAbsent, ReleaseAttempted: releaseAttempted);
+    }
+
+    /// <summary>Submits one stop request over the controller's own live HELD
+    /// association. Stop authority is independent of release authority: this
+    /// carries no capability and cannot restore a consumed release.</summary>
+    internal HeldOwnerStopOutcome StopHeld(OwnerPreparationOutcome held, StopCauseKind cause)
+    {
+        if (!held.Held || held.Owner is null
+            || !_ownerChannels.TryGetValue(held.Owner.Id, out var channel))
+            return new HeldOwnerStopOutcome(false, null, "no live HELD owner channel");
+        if (!Enum.IsDefined(cause))
+            return new HeldOwnerStopOutcome(false, null, "unknown stop cause");
+
+        if (!channel.TrySend(OwnerProtocolMessageType.StopRequest, new[] { (byte)cause }, out var sendError))
+            return new HeldOwnerStopOutcome(false, null, $"stop request failed: {sendError}");
+        if (!channel.TryReceive(OwnerProtocolMessageType.StopDecision, out var message, out var receiveError)
+            || !OwnerHeldWireCodec.TryDecodeStopDecision(message!.Payload, out var decision, out receiveError))
+            return new HeldOwnerStopOutcome(false, null,
+                receiveError.Length == 0 ? "stop decision refused" : receiveError);
+        return new HeldOwnerStopOutcome(true, decision, string.Empty);
+    }
+
+    /// <summary>Sends the barrier-continue acknowledgement for a paused
+    /// release arbitration. Only the exact controller association can resume
+    /// it; it carries no authority.</summary>
+    internal bool ContinueHeld(OwnerPreparationOutcome held)
+    {
+        if (!held.Held || held.Owner is null
+            || !_ownerChannels.TryGetValue(held.Owner.Id, out var channel))
+            return false;
+        return channel.TrySend(OwnerProtocolMessageType.Continue, ReadOnlySpan<byte>.Empty, out _);
+    }
+
+    /// <summary>Requests release admission over the controller's own
+    /// authenticated, original, live HELD association. The owner keeps the
+    /// capability and the sole RELEASE writer; this method transmits only the
+    /// operation-identity echo and the caller's approval correlation. A
+    /// physical-attempt decision is followed by the owner's bounded
+    /// trusted-native execution observation. When the owner pauses at a
+    /// release-phase test barrier, <paramref name="barrier"/> runs on this
+    /// thread with the arbitration paused; it may submit stops over the same
+    /// association before the gate continues.</summary>
+    internal HeldOwnerReleaseOutcome ReleaseHeld(OwnerPreparationOutcome held,
+        System.Collections.Immutable.ImmutableArray<byte> approvalCorrelationSha256,
+        Action<OwnerPreparationOutcome, string>? barrier = null)
+    {
+        if (!held.Held || held.Owner is null || held.Description is null
+            || !_ownerChannels.TryGetValue(held.Owner.Id, out var channel)
+            || !held.OwnerSetupDeadlineNs.HasValue || !held.OwnerOverallDeadlineNs.HasValue)
+            return new HeldOwnerReleaseOutcome(false, null, null, "no live HELD owner channel");
+
+        OwnerReleaseRequestWire request;
+        try
+        {
+            request = OwnerHeldWireCodec.RequestFromIdentity(
+                held.Description.ExecutionId, held.Description.PreparationId, held.Description.GenerationId,
+                held.Description.ManifestDigest, approvalCorrelationSha256.AsSpan(),
+                !approvalCorrelationSha256.IsDefault);
+        }
+        catch (ArgumentException ex)
+        {
+            return new HeldOwnerReleaseOutcome(false, null, null, $"release request refused: {ex.Message}");
+        }
+
+        if (!channel.TrySend(OwnerProtocolMessageType.ReleaseRequest,
+                OwnerHeldWireCodec.EncodeReleaseRequest(request), out var sendError))
+            return new HeldOwnerReleaseOutcome(false, null, null, $"release request failed: {sendError}");
+        if (!channel.TryReceiveAllowed(out var decisionMessage, out var decisionError,
+                OwnerProtocolMessageType.ReleaseDecision, OwnerProtocolMessageType.BarrierReached))
+            return new HeldOwnerReleaseOutcome(false, null, null,
+                decisionError.Length == 0 ? "release decision refused" : decisionError);
+        if (decisionMessage!.Type == OwnerProtocolMessageType.BarrierReached)
+        {
+            var barrierName = DecodeBarrier(decisionMessage.Payload, out var barrierError);
+            if (barrier is null || barrierName is null)
+                return new HeldOwnerReleaseOutcome(false, null, null,
+                    barrierName is null ? barrierError : "unexpected release-phase barrier");
+            barrier(held, barrierName);
+            if (!channel.TryReceive(OwnerProtocolMessageType.ReleaseDecision, out decisionMessage, out decisionError))
+                return new HeldOwnerReleaseOutcome(false, null, null,
+                    decisionError.Length == 0 ? "release decision refused" : decisionError);
+        }
+
+        if (!OwnerHeldWireCodec.TryDecodeReleaseDecision(
+                decisionMessage!.Payload, out var decision, out decisionError))
+            return new HeldOwnerReleaseOutcome(false, null, null,
+                decisionError.Length == 0 ? "release decision refused" : decisionError);
+        if (decision!.Kind != ReleaseDecisionKind.Released)
+            return new HeldOwnerReleaseOutcome(true, decision, null, string.Empty);
+
+        if (!channel.TryReceive(OwnerProtocolMessageType.ExecutionOutcome, out var outcomeMessage, out var outcomeError)
+            || !OwnerHeldWireCodec.TryDecodeExecutionOutcome(
+                outcomeMessage!.Payload, out var facts, out _, out outcomeError))
+            return new HeldOwnerReleaseOutcome(true, decision, null,
+                "release decision accepted; execution outcome not observed");
+
+        return new HeldOwnerReleaseOutcome(true, decision, facts, string.Empty);
     }
 
     /// <summary>Reaps only adopted children after the exact owner has been
@@ -765,7 +888,8 @@ internal sealed class M1RecoveryScope : IDisposable
     {
         var value = Encoding.UTF8.GetString(payload);
         if (value is not ("after-intent" or "after-domain-retained" or "after-registered"
-            or "after-staging-accounted" or "mid-staging" or "after-copy" or "after-prepared-before-mint"))
+            or "after-staging-accounted" or "mid-staging" or "after-copy" or "after-prepared-before-mint"
+            or "release-after-intent"))
         {
             error = "owner sent an unknown test barrier";
             return null;

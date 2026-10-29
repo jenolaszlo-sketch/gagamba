@@ -78,8 +78,12 @@ public sealed class RestrictedReleaseReply
     internal RestrictedReleaseReply(RestrictedReleaseKind kind, RestrictedRequestBinding binding,
         RestrictedRefusalReason reason, RestrictedReleaseDecision? original = null)
     {
-        if ((kind == RestrictedReleaseKind.Duplicate) != (original is not null))
-            throw new ArgumentException("Only Duplicate carries a retained decision in B1.");
+        // A C4 Duplicate always carries the retained original decision. B3
+        // additionally lets a first retained decision (Released, Stopped,
+        // AmbiguousPersistence or a retained refusal) travel with its reply so
+        // the caller observes the owner-origin facts of this call.
+        if (kind == RestrictedReleaseKind.Duplicate && original is null)
+            throw new ArgumentException("A Duplicate reply requires the retained decision.");
         Kind = ControlValidation.Tag(kind); Binding = ControlValidation.Tag(binding);
         Reason = ControlValidation.Tag(reason); OriginalDecision = original;
     }
@@ -214,26 +218,44 @@ public sealed class RestrictedCaptureEvidence
 }
 
 /// <summary>Immutable snapshot. Absence of an axis means unobserved, not zero or success.
-/// B1 emits only an explicitly unknown snapshot; B3/B4 must review receipt mappings.</summary>
+/// B1 emits only an explicitly unknown snapshot; B3 fills the axes it actually
+/// observed from the live owner and leaves every other axis unknown. Capture
+/// stays unobserved (B4).</summary>
 public sealed class RestrictedObservation
 {
     internal RestrictedObservation(ulong sequence, RestrictedPreparationReference? reference,
         RestrictedCleanup cleanup, RestrictedStopReply? stop)
-    { Sequence = sequence; Reference = reference; Cleanup = cleanup; Stop = stop; }
+        : this(sequence, reference, cleanup, stop, release: null, RestrictedProvenance.Unknown,
+            observedAtNs: null, gapOrLoss: true, outcome: null, exec: null, root: null, helper: null,
+            RestrictedDomainState.Unknown)
+    {
+    }
+
+    internal RestrictedObservation(ulong sequence, RestrictedPreparationReference? reference,
+        RestrictedCleanup cleanup, RestrictedStopReply? stop, RestrictedReleaseDecision? release,
+        RestrictedProvenance provenance, long? observedAtNs, bool gapOrLoss, RestrictedOutcome? outcome,
+        RestrictedExecResult? exec, RestrictedProcessResult? root, RestrictedProcessResult? helper,
+        RestrictedDomainState domain)
+    {
+        Sequence = sequence; Reference = reference; Cleanup = cleanup; Stop = stop; Release = release;
+        Provenance = ControlValidation.Tag(provenance); ObservedAtNs = observedAtNs; GapOrLoss = gapOrLoss;
+        Outcome = outcome is null ? null : ControlValidation.Tag(outcome.Value); Exec = exec;
+        Root = root; Helper = helper; Domain = ControlValidation.Tag(domain);
+    }
     public ushort EvidenceVersion => 1;
     public ulong Sequence { get; }
     public RestrictedPreparationReference? Reference { get; }
-    public RestrictedProvenance Provenance => RestrictedProvenance.Unknown;
-    public long? ObservedAtNs => null;
-    public bool GapOrLoss => true;
-    public RestrictedReleaseDecision? Release => null;
+    public RestrictedProvenance Provenance { get; }
+    public long? ObservedAtNs { get; }
+    public bool GapOrLoss { get; }
+    public RestrictedReleaseDecision? Release { get; }
     public RestrictedStopReply? Stop { get; }
     public RestrictedStopCompletion StopCompletion => RestrictedStopCompletion.Unknown;
-    public RestrictedOutcome? Outcome => null;
-    public RestrictedExecResult? Exec => null;
-    public RestrictedProcessResult? Root => null;
-    public RestrictedProcessResult? Helper => null;
-    public RestrictedDomainState Domain => RestrictedDomainState.Unknown;
+    public RestrictedOutcome? Outcome { get; }
+    public RestrictedExecResult? Exec { get; }
+    public RestrictedProcessResult? Root { get; }
+    public RestrictedProcessResult? Helper { get; }
+    public RestrictedDomainState Domain { get; }
     public RestrictedCaptureEvidence? Capture => null;
     public RestrictedCleanup Cleanup { get; }
 }

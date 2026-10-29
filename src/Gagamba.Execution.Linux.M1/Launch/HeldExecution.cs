@@ -40,6 +40,10 @@ internal sealed class HeldExecution : IDisposable, IReleaseWriteChannel
     internal int HelperChildPid { get; }
     internal CoordinatorHeldReport Report { get; }
 
+    /// <summary>True once the sole physical RELEASE write was attempted. It is
+    /// never authority: it only classifies post-release cleanup expectations.</summary>
+    internal bool ReleaseAttempted => Volatile.Read(ref _releaseAttempted) != 0;
+
     /// <summary>Exactly one nonblocking RELEASE attempt. The writer remains
     /// owner-local and is never exposed; a second call cannot write again.</summary>
     internal ReleasePipeWriteResult TryWriteRelease(ReadOnlyMemory<byte> frame)

@@ -365,41 +365,19 @@ internal static class OwnerPreparationTransaction
                 }
 
                 using var heldExecution = launch.Execution;
-                var heldReadyPayload = new byte[launch.CoordinatorStatusFrame.Length + 1];
-                heldReadyPayload[0] = 1; // independent fixture constructor-marker oracle checked before HELD is accepted
-                launch.CoordinatorStatusFrame.CopyTo(heldReadyPayload, 1);
-                if (!channel.TrySend(OwnerProtocolMessageType.HeldReady, heldReadyPayload, out channelError))
-                {
-                    _ = launcher.AbortAsync(heldExecution, primaryLease, CancellationToken.None).GetAwaiter().GetResult();
-                    publication.Capability.Dispose();
-                    return 47;
-                }
-
-                var receivedAbort = channel.TryReceive(OwnerProtocolMessageType.AbortHeld, out _, out channelError);
-                var abort = launcher.AbortAsync(heldExecution, primaryLease, CancellationToken.None)
-                    .GetAwaiter().GetResult();
+                // B3: the same authoritative capability, writer lease and
+                // sole RELEASE machinery now serve a bounded release/stop
+                // decision instead of aborting unconditionally.
+                var exitCode = new HeldReleasePhase(
+                        request, channel, launcher, heldExecution, primaryLease,
+                        journal, activeWriter, publication.Capability, setupDeadline, overallDeadline)
+                    .Run(launch.CoordinatorStatusFrame);
                 publication.Capability.Dispose();
-                if (!receivedAbort)
-                {
-                    GC.KeepAlive(store);
-                    GC.KeepAlive(closure);
-                    GC.KeepAlive(primaryLease);
-                    GC.KeepAlive(activeWriter);
-                    return abort.Stopped ? 48 : 49;
-                }
-
-                var abortPayload = new[]
-                {
-                    abort.Stopped ? (byte)1 : (byte)0,
-                    abort.NoTargetInitializationMarkerAbsent ? (byte)1 : (byte)0,
-                };
-                if (!channel.TrySend(OwnerProtocolMessageType.HeldAborted, abortPayload, out channelError))
-                    return 50;
                 GC.KeepAlive(store);
                 GC.KeepAlive(closure);
                 GC.KeepAlive(primaryLease);
                 GC.KeepAlive(activeWriter);
-                return abort.Stopped ? 0 : 51;
+                return exitCode;
             }
 
             if (!channel.TrySend(OwnerProtocolMessageType.Completed, encodedDescription, out channelError))

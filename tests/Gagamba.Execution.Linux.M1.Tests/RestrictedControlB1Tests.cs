@@ -19,10 +19,13 @@ public sealed class RestrictedControlB1Tests
     {
         public readonly TaskCompletionSource<RestrictedOwnerPrepareResult> Preparation = Signal<RestrictedOwnerPrepareResult>();
         public readonly TaskCompletionSource<RestrictedStopReply> StopAck = Signal<RestrictedStopReply>();
+        public readonly TaskCompletionSource<RestrictedOwnerReleaseResult> Release = Signal<RestrictedOwnerReleaseResult>();
         public readonly TaskCompletionSource<bool> PrepareEntered = Signal<bool>();
         public readonly TaskCompletionSource<bool> StopEntered = Signal<bool>();
+        public readonly TaskCompletionSource<bool> ReleaseEntered = Signal<bool>();
         public int PrepareCalls;
         public int StopCalls;
+        public int ReleaseCalls;
         public int DisposeCalls;
         public bool Live = true;
         public RestrictedReleaseDecision? RetainedRelease { get; set; }
@@ -34,6 +37,12 @@ public sealed class RestrictedControlB1Tests
             Interlocked.Increment(ref PrepareCalls);
             PrepareEntered.TrySetResult(true);
             return new(Preparation.Task);
+        }
+        public ValueTask<RestrictedOwnerReleaseResult> ReleaseAsync(ImmutableArray<byte> approvalCorrelationSha256)
+        {
+            Interlocked.Increment(ref ReleaseCalls);
+            ReleaseEntered.TrySetResult(true);
+            return new(Release.Task);
         }
         public ValueTask<RestrictedStopReply> StopAsync(RestrictedStopReason reason)
         {
@@ -87,6 +96,22 @@ public sealed class RestrictedControlB1Tests
         RestrictedReleaseKind.AmbiguousPersistence, RestrictedReleaseEvidence.MayHaveExecuted,
         RestrictedDelivery.NotAttempted, RestrictedEvidenceState.Unknown, true, correlation,
         RestrictedEvidenceState.Unknown);
+
+    internal static RestrictedOwnerReleaseResult RefusedPreRetention(
+        RestrictedRefusalReason reason = RestrictedRefusalReason.DeadlineExpired,
+        RestrictedRequestBinding binding = RestrictedRequestBinding.Unknown) => new(
+        RestrictedReleaseKind.Refused, RestrictedReleaseEvidence.NotCommitted, RestrictedDelivery.NotAttempted,
+        RestrictedEvidenceState.Unknown, null, binding, reason);
+
+    internal static RestrictedOwnerReleaseResult Released(RestrictedOwnerExecutionFacts? facts = null) => new(
+        RestrictedReleaseKind.Released, RestrictedReleaseEvidence.Committed, RestrictedDelivery.Delivered,
+        RestrictedEvidenceState.Confirmed, false, RestrictedRequestBinding.Accepted,
+        RestrictedRefusalReason.None, facts);
+
+    internal static RestrictedOwnerReleaseResult StoppedDuringIntent() => new(
+        RestrictedReleaseKind.Refused, RestrictedReleaseEvidence.MayHaveExecuted, RestrictedDelivery.NotAttempted,
+        RestrictedEvidenceState.Unknown, true, RestrictedRequestBinding.Accepted,
+        RestrictedRefusalReason.StopRequested);
 
     [Fact]
     public void AuthorityTypesHaveNoPublicConstructionCloneFactoryOrDeserialization()
@@ -202,10 +227,17 @@ public sealed class RestrictedControlB1Tests
     {
         var h = new Harness();
         var prepared = await h.Prepare();
+        // The owner refuses this pre-retention request; the call is admitted
+        // (correlation bound) but nothing is retained.
+        h.Owner.Release.SetResult(RefusedPreRetention());
         var before = await h.Operation.RequestReleaseAsync(prepared, waitCancellation: TestContext.Current.CancellationToken);
-        Assert.Equal(RestrictedRefusalReason.LiveReleaseNotImplemented, before.Reason);
+        Assert.Equal(RestrictedReleaseKind.Refused, before.Kind);
+        Assert.Equal(RestrictedRefusalReason.DeadlineExpired, before.Reason);
+        Assert.Null(before.OriginalDecision);
         await h.Operation.RequestStopAsync(RestrictedStopReason.CallerStop, waitCancellation: TestContext.Current.CancellationToken);
-        Assert.Equal(RestrictedRefusalReason.StopRequested, (await h.Operation.RequestReleaseAsync(prepared, waitCancellation: TestContext.Current.CancellationToken)).Reason);
+        var afterStop = await h.Operation.RequestReleaseAsync(prepared, waitCancellation: TestContext.Current.CancellationToken);
+        Assert.Equal(RestrictedRefusalReason.StopRequested, afterStop.Reason);
+        Assert.Equal(1, h.Owner.ReleaseCalls);
         Assert.Equal(RestrictedStopSubmission.LocallyQueued, (await h.Operation.ObserveAsync(waitCancellation: TestContext.Current.CancellationToken)).Stop!.Submission);
         await h.AcceptStop();
         Assert.Equal(RestrictedStopSubmission.RuntimeAccepted, (await h.Operation.ObserveAsync(waitCancellation: TestContext.Current.CancellationToken)).Stop!.Submission);
@@ -348,21 +380,24 @@ public sealed class RestrictedControlB1Tests
     }
 
     [Fact]
-    public async Task NoPreRetentionCorrelationAdmissionOrPhysicalReleasePathIsImplemented()
+    public async Task B3ExchangeAdmitsFirstCorrelationAndPublicFacadeStillExposesNoReleaseSurface()
     {
+        // B1 deliberately left pre-retention admission unwired and returned
+        // LiveReleaseNotImplemented. B3 replaces that placeholder with the
+        // approved R1-F03 Option A admission; this test records the change and
+        // the invariant that the public provider interface still has no
+        // release method at all.
         var h = new Harness();
         var prepared = await h.Prepare();
-        foreach (var correlation in new[] { default(ImmutableArray<byte>), ImmutableArray.Create(new byte[32]),
-                     ImmutableArray.Create(Enumerable.Repeat((byte)1, 32).ToArray()) })
-        {
-            var reply = await h.Operation.RequestReleaseAsync(prepared, correlation, waitCancellation: TestContext.Current.CancellationToken);
-            Assert.Equal(RestrictedRefusalReason.LiveReleaseNotImplemented, reply.Reason);
-            Assert.Equal(RestrictedRequestBinding.Unknown, reply.Binding);
-            Assert.Null(h.Owner.RetainedRelease);
-        }
-        // This seam deliberately has no release submission method. These calls
-        // cannot select consuming/nonconsuming semantics for R1-F03 accidentally.
-        Assert.DoesNotContain(typeof(IRestrictedOperationOwner).GetMethods(), m => m.Name == "ReleaseAsync");
+        h.Owner.Release.SetResult(Released());
+        var reply = await h.Operation.RequestReleaseAsync(prepared,
+            ImmutableArray.Create(new byte[32]), waitCancellation: TestContext.Current.CancellationToken);
+        Assert.Equal(RestrictedReleaseKind.Released, reply.Kind);
+        Assert.Equal(RestrictedRequestBinding.Accepted, reply.Binding);
+        Assert.NotNull(reply.OriginalDecision);
+        Assert.Single(typeof(IRestrictedOperationOwner).GetMethods(), m => m.Name == "ReleaseAsync");
+        Assert.DoesNotContain(typeof(IRestrictedExecutionProvider).GetMethods(), m =>
+            m.Name.Contains("Release", StringComparison.Ordinal) || m.Name.Contains("Prepare", StringComparison.Ordinal));
     }
 
     [Theory]

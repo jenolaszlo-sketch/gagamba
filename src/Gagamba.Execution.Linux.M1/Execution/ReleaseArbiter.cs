@@ -3,7 +3,9 @@
 // capability consumption and exactly one nonblocking RELEASE write; the
 // committed delivery observation is persisted after the gate. No journal I/O
 // occurs while the arbitration gate is held.
+using System.Collections.Immutable;
 using Gagamba.Execution.Linux.M1.Launch;
+using Gagamba.Execution.Restricted.Control;
 using Gagamba.Execution.Linux.M1.Preparation;
 using Gagamba.Execution.Linux.M1.Recovery;
 using Gagamba.Execution.Restricted;
@@ -25,6 +27,13 @@ internal sealed class ReleaseArbiter
     private bool _releaseRuntimeCommitted;
     private ReleaseDecision? _retainedRelease;
     private StopDecision? _retainedStop;
+    // R1-F03 Option A: the first successfully admitted approval correlation
+    // binds this operation. A later pre-retention mismatch refuses only that
+    // call; it never replaces the binding, consumes capability, retains a
+    // decision or writes anything. The binding is runtime state only; no
+    // journal field or manifest schema carries it.
+    private bool _hasAdmittedCorrelation;
+    private ImmutableArray<byte> _admittedCorrelation;
 
     internal ReleaseArbiter(
         PreparedTransaction capability,
@@ -49,15 +58,41 @@ internal sealed class ReleaseArbiter
         {
             if (_retainedRelease is not null)
             {
-                return _retainedRelease with { Kind = ReleaseDecisionKind.Duplicate };
+                return _retainedRelease with
+                {
+                    Kind = ReleaseDecisionKind.Duplicate,
+                    Binding = BindingFor(request.ApprovalCorrelationSha256),
+                    RefusalReason = RestrictedRefusalReason.None,
+                };
             }
 
             if (_stopAccepted)
             {
                 _retainedRelease = Refused(
                     ReleaseDisposition.NotCommitted,
-                    "release request refused: stop already won before durable intent");
+                    RestrictedRefusalReason.StopRequested,
+                    "release request refused: stop already won before durable intent",
+                    BindingFor(request.ApprovalCorrelationSha256));
                 return _retainedRelease;
+            }
+
+            if (!IsValidCorrelation(request.ApprovalCorrelationSha256))
+            {
+                return Refused(ReleaseDisposition.NotCommitted,
+                    RestrictedRefusalReason.InvalidCorrelation,
+                    "release request refused: approval correlation length is invalid",
+                    ReleaseCorrelationBinding.InvalidArgument);
+            }
+
+            if (_hasAdmittedCorrelation
+                && !CorrelationEqual(_admittedCorrelation, request.ApprovalCorrelationSha256))
+            {
+                // R1-F03 Option A: refuse only this call. No retention, no
+                // capability consumption, no deadline reset, no RELEASE.
+                return Refused(ReleaseDisposition.NotCommitted,
+                    RestrictedRefusalReason.InvalidBinding,
+                    "release request refused: approval correlation does not match the admitted binding",
+                    ReleaseCorrelationBinding.Mismatch);
             }
         }
 
@@ -67,15 +102,53 @@ internal sealed class ReleaseArbiter
             || request.OverallDeadlineNanoseconds <= 0
             || request.SetupDeadlineNanoseconds >= request.OverallDeadlineNanoseconds
             || now >= request.SetupDeadlineNanoseconds
-            || now >= request.OverallDeadlineNanoseconds
-            || !_prerequisites().Satisfied
-            || !_capability.IsLive
+            || now >= request.OverallDeadlineNanoseconds)
+        {
+            return Refused(ReleaseDisposition.NotCommitted,
+                RestrictedRefusalReason.DeadlineExpired,
+                "release request refused before durable intent: deadline authority check failed",
+                CurrentBinding(request.ApprovalCorrelationSha256));
+        }
+
+        if (!_prerequisites().Satisfied)
+        {
+            return Refused(ReleaseDisposition.NotCommitted,
+                RestrictedRefusalReason.PrerequisitesUnavailable,
+                "release request refused before durable intent: prerequisites are not satisfied",
+                CurrentBinding(request.ApprovalCorrelationSha256));
+        }
+
+        if (!_capability.IsLive
             || !IdentityEqual(request.Identity, _capability.Identity)
             || !_capability.Identity.ManifestDigest.AsSpan()
                 .SequenceEqual(ManifestCodec.ComputeDigestBytes(_capability.Manifest).AsSpan()))
         {
             return Refused(ReleaseDisposition.NotCommitted,
-                "release request refused before durable intent: identity, deadline, prerequisite or capability check failed");
+                RestrictedRefusalReason.InvalidBinding,
+                "release request refused before durable intent: identity or capability binding check failed",
+                CurrentBinding(request.ApprovalCorrelationSha256));
+        }
+
+        // Every non-retention gate passed: atomically admit this call's
+        // correlation as the operation binding when none exists yet.
+        lock (_gate)
+        {
+            if (_hasAdmittedCorrelation
+                && !CorrelationEqual(_admittedCorrelation, request.ApprovalCorrelationSha256))
+            {
+                return Refused(ReleaseDisposition.NotCommitted,
+                    RestrictedRefusalReason.InvalidBinding,
+                    "release request refused: approval correlation does not match the admitted binding",
+                    ReleaseCorrelationBinding.Mismatch);
+            }
+
+            if (!_hasAdmittedCorrelation)
+            {
+                _admittedCorrelation = request.ApprovalCorrelationSha256.IsDefault
+                    ? default
+                    : ImmutableArray.Create(request.ApprovalCorrelationSha256.AsSpan());
+                _hasAdmittedCorrelation = true;
+            }
         }
 
         JournalIoResult intentWrite;
@@ -84,20 +157,26 @@ internal sealed class ReleaseArbiter
             if (!_writer.IsLive)
             {
                 return Refused(ReleaseDisposition.NotCommitted,
-                    "release request refused: writer lease is no longer live");
+                    RestrictedRefusalReason.RecoveryAuthorityUnavailable,
+                    "release request refused: writer lease is no longer live",
+                    ReleaseCorrelationBinding.Accepted);
             }
 
             var latest = _journal.ReadLatest();
             if (!latest.Ok || latest.Snapshot is null)
             {
                 return Refused(ReleaseDisposition.NotCommitted,
-                    $"release request refused: no acknowledged preparation snapshot ({latest.Error})");
+                    RestrictedRefusalReason.RecoveryAuthorityUnavailable,
+                    $"release request refused: no acknowledged preparation snapshot ({latest.Error})",
+                    ReleaseCorrelationBinding.Accepted);
             }
 
             if (!PreparationMatches(latest.Snapshot, _capability.Identity))
             {
                 return Refused(ReleaseDisposition.NotCommitted,
-                    "release intent refused: acknowledged preparation identity does not match the capability");
+                    RestrictedRefusalReason.InvalidBinding,
+                    "release intent refused: acknowledged preparation identity does not match the capability",
+                    ReleaseCorrelationBinding.Accepted);
             }
 
             if (!OwnershipTransitions.TryPlanReleaseIntent(
@@ -105,7 +184,9 @@ internal sealed class ReleaseArbiter
                     request.OverallDeadlineNanoseconds, out var intent, out var intentError))
             {
                 return Refused(ReleaseDisposition.NotCommitted,
-                    $"release intent refused: {intentError}");
+                    RestrictedRefusalReason.RecoveryAuthorityUnavailable,
+                    $"release intent refused: {intentError}",
+                    ReleaseCorrelationBinding.Accepted);
             }
 
             intentWrite = _journal.WriteTransition(_writer, latest.Snapshot, intent!);
@@ -124,14 +205,20 @@ internal sealed class ReleaseArbiter
                 {
                     if (_retainedRelease is not null)
                     {
-                        ambiguousDecision = _retainedRelease with { Kind = ReleaseDecisionKind.Duplicate };
+                        ambiguousDecision = _retainedRelease with
+                        {
+                            Kind = ReleaseDecisionKind.Duplicate,
+                            Binding = BindingFor(request.ApprovalCorrelationSha256),
+                        };
                     }
                     else if (_stopAccepted)
                     {
                         ConsumeCapability();
                         _retainedRelease = Refused(
                             ReleaseDisposition.MayHaveExecuted,
-                            "release gate refused: stop won during durable intent");
+                            RestrictedRefusalReason.StopRequested,
+                            "release gate refused: stop won during durable intent",
+                            ReleaseCorrelationBinding.Accepted);
                         ambiguousDecision = _retainedRelease;
                     }
                     else
@@ -142,7 +229,9 @@ internal sealed class ReleaseArbiter
                             DeliveryResult.NotAttempted,
                             DurableCommitted: false,
                             LiveExecutionExcluded: true,
-                            "release decision retained because ambiguous journal persistence was reported");
+                            "release decision retained because ambiguous journal persistence was reported",
+                            ReleaseCorrelationBinding.Accepted,
+                            RestrictedRefusalReason.None);
                         ambiguousDecision = _retainedRelease;
                     }
                 }
@@ -178,7 +267,9 @@ internal sealed class ReleaseArbiter
             }
 
             return Refused(ReleaseDisposition.NotCommitted,
-                "release intent was not durably acknowledged");
+                RestrictedRefusalReason.RecoveryAuthorityUnavailable,
+                "release intent was not durably acknowledged",
+                ReleaseCorrelationBinding.Accepted);
         }
 
         Barrier("after-intent");
@@ -186,7 +277,11 @@ internal sealed class ReleaseArbiter
         {
             if (_retainedRelease is not null)
             {
-                return _retainedRelease with { Kind = ReleaseDecisionKind.Duplicate };
+                return _retainedRelease with
+                {
+                    Kind = ReleaseDecisionKind.Duplicate,
+                    Binding = BindingFor(request.ApprovalCorrelationSha256),
+                };
             }
 
             if (_stopAccepted)
@@ -194,21 +289,45 @@ internal sealed class ReleaseArbiter
                 ConsumeCapability();
                 _retainedRelease = Refused(
                     ReleaseDisposition.MayHaveExecuted,
-                    "release gate refused: stop won during durable intent");
+                    RestrictedRefusalReason.StopRequested,
+                    "release gate refused: stop won during durable intent",
+                    ReleaseCorrelationBinding.Accepted);
                 return _retainedRelease;
             }
 
             var gateNow = _clock.NowNanoseconds;
             if (gateNow <= 0
                 || gateNow >= request.SetupDeadlineNanoseconds
-                || gateNow >= request.OverallDeadlineNanoseconds
-                || !_prerequisites().Satisfied
-                || !_capability.IsLive)
+                || gateNow >= request.OverallDeadlineNanoseconds)
             {
                 ConsumeCapability();
                 _retainedRelease = Refused(
                     ReleaseDisposition.MayHaveExecuted,
-                    "release gate refused: expiry, prerequisite, liveness or capability check failed");
+                    RestrictedRefusalReason.DeadlineExpired,
+                    "release gate refused: deadline authority check failed",
+                    ReleaseCorrelationBinding.Accepted);
+                return _retainedRelease;
+            }
+
+            if (!_prerequisites().Satisfied)
+            {
+                ConsumeCapability();
+                _retainedRelease = Refused(
+                    ReleaseDisposition.MayHaveExecuted,
+                    RestrictedRefusalReason.PrerequisitesUnavailable,
+                    "release gate refused: prerequisites are not satisfied",
+                    ReleaseCorrelationBinding.Accepted);
+                return _retainedRelease;
+            }
+
+            if (!_capability.IsLive)
+            {
+                ConsumeCapability();
+                _retainedRelease = Refused(
+                    ReleaseDisposition.MayHaveExecuted,
+                    RestrictedRefusalReason.InvalidBinding,
+                    "release gate refused: capability liveness check failed",
+                    ReleaseCorrelationBinding.Accepted);
                 return _retainedRelease;
             }
 
@@ -217,7 +336,9 @@ internal sealed class ReleaseArbiter
             {
                 _retainedRelease = Refused(
                     ReleaseDisposition.MayHaveExecuted,
-                    $"release gate refused: capability consumption rejected ({violation})");
+                    RestrictedRefusalReason.InvalidBinding,
+                    $"release gate refused: capability consumption rejected ({violation})",
+                    ReleaseCorrelationBinding.Accepted);
                 return _retainedRelease;
             }
 
@@ -246,7 +367,9 @@ internal sealed class ReleaseArbiter
                 delivery,
                 DurableCommitted: false,
                 LiveExecutionExcluded: liveExcluded,
-                $"release won the gate; transport result {send}");
+                $"release won the gate; transport result {send}",
+                ReleaseCorrelationBinding.Accepted,
+                RestrictedRefusalReason.None);
         }
 
         var committedAt = _clock.NowNanoseconds;
@@ -379,9 +502,33 @@ internal sealed class ReleaseArbiter
         }
     }
 
-    private ReleaseDecision Refused(ReleaseDisposition release, string reason) =>
+    private ReleaseDecision Refused(ReleaseDisposition release, RestrictedRefusalReason refusalReason,
+        string reason, ReleaseCorrelationBinding binding) =>
         new(ReleaseDecisionKind.Refused, release, DeliveryResult.NotAttempted,
-            DurableCommitted: false, LiveExecutionExcluded: true, reason);
+            DurableCommitted: false, LiveExecutionExcluded: true, reason, binding, refusalReason);
+
+    // R1-F03 Option A admission helpers. Absent and exactly 32 bytes are the
+    // only valid forms; all-zero 32 bytes is a present correlation.
+    private static bool IsValidCorrelation(ImmutableArray<byte> value) =>
+        value.IsDefault || value.Length == 32;
+
+    private static bool CorrelationEqual(ImmutableArray<byte> left, ImmutableArray<byte> right) =>
+        left.IsDefault == right.IsDefault
+        && (left.IsDefault || left.AsSpan().SequenceEqual(right.AsSpan()));
+
+    private ReleaseCorrelationBinding BindingFor(ImmutableArray<byte> candidate) =>
+        !_hasAdmittedCorrelation ? ReleaseCorrelationBinding.Unknown
+        : CorrelationEqual(_admittedCorrelation, candidate)
+            ? ReleaseCorrelationBinding.Accepted
+            : ReleaseCorrelationBinding.Mismatch;
+
+    private ReleaseCorrelationBinding CurrentBinding(ImmutableArray<byte> candidate)
+    {
+        lock (_gate)
+        {
+            return BindingFor(candidate);
+        }
+    }
 
     private void ConsumeCapability()
     {

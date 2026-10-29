@@ -222,6 +222,10 @@ internal sealed class BubblewrapAdapter : IHeldLauncher
         var coordinatorOk = ReadToEofBounded(Fd(execution.CoordinatorStatusReader), 16 * 1024, out _, out var coordinatorError);
         var markerAbsent = !Encoding.UTF8.GetString(stdout).Contains(FixtureConstructorMarker, StringComparison.Ordinal)
             && !Encoding.UTF8.GetString(stderr).Contains(FixtureConstructorMarker, StringComparison.Ordinal);
+        // Before any RELEASE attempt the constructor marker must be absent;
+        // after an authorized release attempt the target may legitimately have
+        // initialized, so the presence is a reported fact, not a cleanup error.
+        var releaseAttempted = execution.ReleaseAttempted;
         var statusValid = ValidateHelperTail(helperTail, execution.HelperChildPid);
         var errors = new[]
         {
@@ -232,7 +236,7 @@ internal sealed class BubblewrapAdapter : IHeldLauncher
             !helperOk ? $"helper status drain failed: {helperError}" : string.Empty,
             !coordinatorOk ? $"coordinator status drain failed: {coordinatorError}" : string.Empty,
             !statusValid ? "Bubblewrap JSON completion status was malformed or mismatched" : string.Empty,
-            !markerAbsent ? "fixture constructor marker appeared before release" : string.Empty,
+            !markerAbsent && !releaseAttempted ? "fixture constructor marker appeared before release" : string.Empty,
         }.Where(value => value.Length != 0).ToArray();
         return Task.FromResult(new HeldAbortOutcome(errors.Length == 0, reaped, string.Join("; ", errors), markerAbsent));
     }

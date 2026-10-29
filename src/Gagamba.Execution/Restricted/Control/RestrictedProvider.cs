@@ -78,7 +78,10 @@ public enum RestrictedRefusalReason
 {
     None = 0, UnsupportedProfile, InstallationUnavailable, UnqualifiedInstallation,
     InvalidBinding, InvalidCorrelation, StopRequested, Disposed, PreparationAlreadyStarted,
-    OwnerUnavailable, LiveReleaseNotImplemented, RecoveryAuthorityUnavailable
+    OwnerUnavailable, LiveReleaseNotImplemented, RecoveryAuthorityUnavailable,
+    // B3 additive reasons for the real release-admission path. Existing B1
+    // values keep their meaning and numeric identity.
+    ReleaseInProgress = 12, DeadlineExpired = 13, PrerequisitesUnavailable = 14
 }
 
 public sealed class RestrictedArtifactIdentity

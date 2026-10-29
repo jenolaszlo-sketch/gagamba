@@ -36,6 +36,14 @@ internal enum OwnerProtocolMessageType : byte
     B2LifelineReady = 24,
     B2SafetyStop = 25,
     B2StopObserved = 26,
+    // B3 held-phase release/stop/outcome messages. These exist only after a
+    // controller-owned HELD establishment; B2 has no representation for them
+    // and no B3 message carries a capability, handle or bearer.
+    ReleaseRequest = 27,
+    ReleaseDecision = 28,
+    StopRequest = 29,
+    StopDecision = 30,
+    ExecutionOutcome = 31,
 }
 
 internal sealed record OwnerProtocolMessage(
@@ -61,7 +69,7 @@ internal static class OwnerProtocol
         var value = Encoding.UTF8.GetString(payload);
         return value is "after-intent" or "after-domain-retained" or "after-registered"
             or "after-staging-accounted" or "mid-staging" or "after-copy"
-            or "after-prepared-before-mint";
+            or "after-prepared-before-mint" or "release-after-intent";
     }
 
     internal static bool HasValidControlPayloadShape(OwnerProtocolMessage message) =>
@@ -83,8 +91,13 @@ internal static class OwnerProtocol
             OwnerProtocolMessageType.BarrierReached => IsKnownBarrierPayload(message.Payload),
             OwnerProtocolMessageType.Aborted => message.Payload.Length <= 1024,
             OwnerProtocolMessageType.AbortHeld => message.Payload.Length == 0,
-            OwnerProtocolMessageType.HeldReady => message.Payload.Length is >= 97 and <= 4097,
-            OwnerProtocolMessageType.HeldAborted => message.Payload.Length <= 1024,
+            OwnerProtocolMessageType.HeldReady => message.Payload.Length is >= 113 and <= 4113,
+            OwnerProtocolMessageType.HeldAborted => message.Payload.Length is 2 or 3,
+            OwnerProtocolMessageType.ReleaseRequest => message.Payload.Length is > 0 and <= 1024,
+            OwnerProtocolMessageType.ReleaseDecision => message.Payload.Length is > 0 and <= 1024,
+            OwnerProtocolMessageType.StopRequest => message.Payload.Length == 1,
+            OwnerProtocolMessageType.StopDecision => message.Payload.Length is > 0 and <= 1024,
+            OwnerProtocolMessageType.ExecutionOutcome => message.Payload.Length is > 0 and <= 4096,
             _ => !IsTransferType(message.Type),
         };
 
