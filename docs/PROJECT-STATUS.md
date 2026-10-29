@@ -3,27 +3,35 @@
 Canonical current summary; historical decisions and independent reviews remain immutable.
 Status date: 2026-10-29 (Asia/Manila).
 
-## RC2B-01 B1 current delivery
+## RC2B-01 B1 current disposition
 
-**IMPLEMENTED WITH OPEN OWNER DECISIONS**, pending independent review. Contract code
-and deterministic tests are implemented at `764045fed4a01c4c1160865bd9da53fa3af2b954`.
+**ACCEPTED WITH QUALIFICATIONS** by GAGAMBA-RC2B-01-B1-OWNER-01 at
+[the owner decision](decisions/rc2b-01-b1-owner-acceptance.md), covering only the separate
+restricted-execution public facade's control contract, safe-refusal behavior and deterministic
+local semantics. Contract code and deterministic tests are implemented at
+`764045fed4a01c4c1160865bd9da53fa3af2b954` (tree `646484a2ca5017d2439d7460dda36fc1e1d2c23f`),
+delivered at `bdd124db5ed6638746d4810b293cf497e61f86e0`, and independently reviewed at
+`beb3fe4ee53d1c2d9a6cf97af83ca390d6137fef`
+([review](reviews/rc2b-01-b1-independent-review.md), verdict **SUPPORTED WITH QUALIFICATIONS**).
 The separate restricted provider refuses all live selection without installed qualification;
 no successful native preparation/release or recovery is exposed. Final local verification:
 630 distinct tests passed / 0 failed / 0 skipped (46 new B1 cases), Release solution build
-0 warnings / 0 errors. RC2A public regression subset: 48/0/0; frozen source/API/vectors and
-native tree unchanged. Source additions do not broaden the accepted RC2A package scope.
+0 warnings / 0 errors; CI run `40793941938` completed with 10 jobs passed and one conditional
+launch job skipped. RC2A public regression subset: 48/0/0; frozen source/API/vectors and
+native tree unchanged.
 
-R1-F02 local stop/publication ordering is implemented and deterministically tested;
-owner/runtime and process-loss enforcement remains unqualified. R1-F03 pre-retention
-mismatch semantics still require an explicit owner choice. The nonconsuming per-call
-refusal recommendation is proposed only; release admission is unwired. B2-B7, sealed C3
-clock/recovery, deployment manifests/native pins, lifecycle qualification and Hufu remain
-separately gated. No native workload, package publication or release tag was created.
+R1-F02 local stop/publication ordering is implemented and independently reviewed;
+owner/runtime and process-loss enforcement remains **OPEN**. **R1-F03 Option A is APPROVED**
+as the semantic owner contract for pre-retention correlation-mismatch refusal (see the
+decision §4); it is a semantic decision only — pre-retention release admission remains
+unwired and returns `LiveReleaseNotImplemented`. B2-B7, sealed C3 clock/recovery, deployment
+manifests/native pins, lifecycle qualification and Hufu remain separately gated. No native
+workload, package publication or release tag was created.
 
-One source-bound [B1 handoff](evidence/rc2b-01-b1.md) contains the API inventory,
-R1-F02 ordering, R1-F03 decision table/recommendation, exact commands/counts, adaptations,
-remaining gates and independent review instructions. Automatic CI is observed after push
-and reported in the completion response, without treating it as native qualification.
+The source-bound [B1 handoff](evidence/rc2b-01-b1.md) contains the API inventory, R1-F02
+ordering, R1-F03 decision table/recommendation, exact commands/counts, adaptations and
+remaining gates. The next proposed implementation slice is **RC2B-02 (B2 recovery bootstrap
+and controller/owner lifetime infrastructure)** — recorded, NOT STARTED.
 
 ## Accepted component baseline
 
@@ -81,7 +89,8 @@ Existing R2A-F01/F02/F04 and R1-F01/F05 dispositions remain scoped.
 | RC2A-02 | Accepted with qualifications at `9519e7cb612af6ff69c93c0d128553138533d9fd` |
 | RC2A-03 | Accepted with qualifications at the exact owner decision above |
 | RC2A-04 local package/clean consumer/mixed graph | **ACCEPTED WITH QUALIFICATIONS**; [owner decision](decisions/rc2a-04-owner-acceptance.md), qualifications unchanged |
-| RC2B / RC-2B facade | B1 contract/refusal boundary implemented; independent review pending; R1-F03 owner decision OPEN; native/lifecycle gates remain unqualified |
+| RC2B / RC-2B facade | B1 contract/refusal boundary **ACCEPTED WITH QUALIFICATIONS** ([decision](decisions/rc2b-01-b1-owner-acceptance.md)); R1-F03 Option A APPROVED (semantic only, unwired); R1-F02 native enforcement OPEN; native/lifecycle gates remain unqualified |
+| RC2B-02 (B2) | **PROPOSED, NOT STARTED** — recovery bootstrap and controller/owner lifetime infrastructure, followed by B3 real owner preparation/release composition; requires separate owner commission |
 | HUFU-R / R1-F06, AE4-B01 and Hufu integration | OPEN/BLOCKED; no integration authorization |
 | Native C1 review, C3/C4 and broader native track | Separate commissions/dispositions; not accepted by RC2A-03 |
 | GAGAMBA-INTEGRATION-01 | Stage 2A preservation verified; accepted baseline and 23 preservation refs published under Stage 2B authorization; final verification and CI outcome recorded separately |
@@ -128,10 +137,11 @@ V19/V20 remain recipe/digest-bound, native Linux/macOS consumer qualification re
 NOT RUN, and no binary reproducibility or execution-authority claim is added.
 No package was published. Automatic CI for the evidence commit is recorded separately.
 
-RC2A-04 is subsequently ACCEPTED WITH QUALIFICATIONS in the linked owner decision.
-Next owner decision: explicitly select R1-F03 pre-retention mismatch semantics (A or B
-in the B1 handoff), with independent review of the fixed B1 source commit. B2/B3 requires
-a separate commission with named deployment and native prerequisites. No next stage starts
+RC2A-04 is subsequently ACCEPTED WITH QUALIFICATIONS in the linked owner decision, and
+RC2B-01 B1 is then ACCEPTED WITH QUALIFICATIONS with R1-F03 Option A approved as a semantic
+contract in [the B1 owner decision](decisions/rc2b-01-b1-owner-acceptance.md). The next
+proposed implementation slice is **RC2B-02 (B2)**, requiring a separate commission with
+named deployment and native prerequisites; it is NOT STARTED. No next stage starts
 automatically; native and Hufu gates retain their independent dispositions.
 
 Maintain this file as the single current project summary; handoff/work-queue point here.

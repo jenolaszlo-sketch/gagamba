@@ -1,11 +1,13 @@
 # Current work queue
 
 > Current project summary and next owner decision: [PROJECT-STATUS.md](PROJECT-STATUS.md).
-> Current delivery (2026-10-29): RC2B-01 B1 contract/refusal boundary is implemented
-> at `764045fed4a01c4c1160865bd9da53fa3af2b954`; independent review and the R1-F03
-> owner choice remain pending. RC2A-04 is ACCEPTED WITH QUALIFICATIONS.
+> Current disposition (2026-10-29): RC2B-01 B1 is ACCEPTED WITH QUALIFICATIONS and
+> R1-F03 Option A is APPROVED as a semantic contract in
+> [the B1 owner decision](decisions/rc2b-01-b1-owner-acceptance.md); RC2A-04 is ACCEPTED
+> WITH QUALIFICATIONS. R1-F02 native enforcement remains OPEN.
 > [B1 handoff and tests](evidence/rc2b-01-b1.md): 630/0/0 distinct tests; no native
-> lifecycle qualification. Do not begin B2/B3 automatically.
+> lifecycle qualification. Next proposed slice RC2B-02 (B2), NOT STARTED.
+> Do not begin B2/B3 automatically.
 > Entries below are retained historical checkpoints. Their earlier pending-review or
 > awaiting-commissioning wording does not supersede the canonical current summary.
 
