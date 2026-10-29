@@ -895,6 +895,17 @@ internal sealed class M1RecoveryScope : IDisposable
         }
     }
 
+    /// <summary>Closes only the already-associated owner's private lifeline.
+    /// It neither signals a PID nor takes a journal writer. Used by the B2
+    /// retained-domain barrier fixture to trigger the existing owner EOF path.</summary>
+    internal bool CloseOwnerLifeline(Process owner)
+    {
+        if (!_owners.TryGetValue(owner.Id, out var retained) || !ReferenceEquals(retained, owner)
+            || !_retainedOwnerPidFds.TryGetValue(owner.Id, out var pidfd) || pidfd.IsClosed
+            || !_ownerChannels.Remove(owner.Id, out var channel)) return false;
+        channel.Dispose();
+        return true;
+    }
     /// <summary>Polls the retained pidfd for the owner without reaping.
     /// True only with a retained pidfd; a missing pidfd is a refusal, never
     /// an assumed exit.</summary>

@@ -2,6 +2,7 @@
 // shared OwnerPreparationTransaction path; this executable validates its
 // inherited private endpoint and then runs that transaction as the issuer.
 using Gagamba.Execution.Linux.M1.Lifecycle;
+using Gagamba.Execution.Linux.M1.Bootstrap;
 using Gagamba.Execution.Linux.M1.Native;
 using Gagamba.Execution.Linux.M1.Preparation.Native;
 
@@ -17,6 +18,9 @@ if (!OperatingSystem.IsLinux())
     return 2;
 }
 
+if (args.Length % 2 != 0) return 3;
+var b2 = args.Length == 6 && args[4] == "--b2-lifeline" && args[5] == "1";
+if (b2) args = args[..4];
 var arguments = new Dictionary<string, string>(StringComparer.Ordinal);
 for (var index = 0; index + 1 < args.Length; index += 2)
 {
@@ -63,4 +67,5 @@ if (!OwnerBootstrap.TryValidate(map, out var bootstrapError))
     return 3;
 }
 
-return OwnerPreparationTransaction.Run(bootstrapFd, executionId, leaseGeneration);
+return b2 ? B2OwnerLifeline.Run(bootstrapFd, executionId, leaseGeneration)
+    : OwnerPreparationTransaction.Run(bootstrapFd, executionId, leaseGeneration);

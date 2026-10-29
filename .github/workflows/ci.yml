@@ -107,6 +107,18 @@ jobs:
       - name: Restricted B1 deterministic facade contracts (no native workloads)
         run: dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c $env:CONFIGURATION --filter FullyQualifiedName~RestrictedControlB1Tests --nologo
         shell: pwsh
+      - name: B2 deterministic recovery bootstrap contracts
+        run: dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c $env:CONFIGURATION --filter FullyQualifiedName~RecoveryB2Tests --nologo
+        shell: pwsh
+      - name: B2 unprivileged Linux process lifelines (no native-domain qualification)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          set -euo pipefail
+          for pair in src/Gagamba.Execution.Linux.M1.Recovery:recovery src/Gagamba.Execution.Linux.M1.Owner:owner tests/Fixtures/B2Controller:controller; do
+            dotnet publish "${pair%:*}" -c Release -o "artifacts/b2/install/${pair#*:}" --nologo
+          done
+          python3 eng/qualify-b2.py --installation artifacts/b2/install --artifacts artifacts/b2/process
       - name: xUnit provider tests (GW-2 Windows, skips off-Windows)
         run: dotnet test tests/Gagamba.Execution.Windows.Tests/Gagamba.Execution.Windows.Tests.csproj -c $env:CONFIGURATION --nologo
         shell: pwsh

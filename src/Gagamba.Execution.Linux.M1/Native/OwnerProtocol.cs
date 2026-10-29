@@ -32,6 +32,10 @@ internal enum OwnerProtocolMessageType : byte
     HeldReady = 20,
     AbortHeld = 21,
     HeldAborted = 22,
+    B2StartLifeline = 23,
+    B2LifelineReady = 24,
+    B2SafetyStop = 25,
+    B2StopObserved = 26,
 }
 
 internal sealed record OwnerProtocolMessage(
@@ -70,7 +74,11 @@ internal static class OwnerProtocol
                 or OwnerProtocolMessageType.StagingAuthorityRetained
                 or OwnerProtocolMessageType.StagingMayProceed
                 or OwnerProtocolMessageType.PreparedAcknowledgement
-                or OwnerProtocolMessageType.Continue => message.Payload.Length == 0,
+                or OwnerProtocolMessageType.Continue
+                or OwnerProtocolMessageType.B2LifelineReady
+                or OwnerProtocolMessageType.B2SafetyStop
+                or OwnerProtocolMessageType.B2StopObserved => message.Payload.Length == 0,
+            OwnerProtocolMessageType.B2StartLifeline => message.Payload.Length is > 0 and <= 4096,
             OwnerProtocolMessageType.StagingAccounted => message.Payload.Length == 16,
             OwnerProtocolMessageType.BarrierReached => IsKnownBarrierPayload(message.Payload),
             OwnerProtocolMessageType.Aborted => message.Payload.Length <= 1024,
@@ -311,6 +319,13 @@ internal sealed class OwnerProtocolChannel : IDisposable
     internal bool TryReceiveAllowed(
         out OwnerProtocolMessage? message,
         out string error,
+        params OwnerProtocolMessageType[] allowedTypes) =>
+        TryReceiveAllowedWithin(TransitionTimeoutMilliseconds, out message, out error, allowedTypes);
+
+    internal bool TryReceiveAllowedWithin(
+        int timeoutMilliseconds,
+        out OwnerProtocolMessage? message,
+        out string error,
         params OwnerProtocolMessageType[] allowedTypes)
     {
         message = null;
@@ -326,7 +341,7 @@ internal sealed class OwnerProtocolChannel : IDisposable
             return false;
         }
 
-        if (!FdPassing.TryReceiveRecord(_socket, TransitionTimeoutMilliseconds, out var record, out error))
+        if (!FdPassing.TryReceiveRecord(_socket, timeoutMilliseconds, out var record, out error))
         {
             return false;
         }

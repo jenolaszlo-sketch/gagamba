@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><TargetFramework>net10.0</TargetFramework><OutputType>Exe</OutputType><IsPackable>false</IsPackable><AssemblyName>Gagamba.Execution.Linux.M1.B2Controller</AssemblyName></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../../../src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj" /></ItemGroup>
+</Project>

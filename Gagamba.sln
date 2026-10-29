@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
@@ -54,6 +54,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gagamba.Execution.Linux.M1.Tests", "tests\Gagamba.Execution.Linux.M1.Tests\Gagamba.Execution.Linux.M1.Tests.csproj", "{B499FDC2-8991-4AAD-B4A4-E332581BE145}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gagamba.Execution.Linux.M1.Owner", "src\Gagamba.Execution.Linux.M1.Owner\Gagamba.Execution.Linux.M1.Owner.csproj", "{3A096598-8BAA-4717-9B9E-F8C7D36C2D19}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gagamba.Execution.Linux.M1.Recovery", "src\Gagamba.Execution.Linux.M1.Recovery\Gagamba.Execution.Linux.M1.Recovery.csproj", "{16699CD1-EFFA-4811-8EA3-1287F4FE08FA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fixtures", "Fixtures", "{F12727AA-ABEF-07AF-E6F0-CD96E3D9A8AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "B2Controller", "tests\Fixtures\B2Controller\B2Controller.csproj", "{9C5EBAD2-A6C2-4A53-9EB2-1E6BBABCED74}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -353,6 +359,30 @@ Global
 		{3A096598-8BAA-4717-9B9E-F8C7D36C2D19}.Release|x64.Build.0 = Release|Any CPU
 		{3A096598-8BAA-4717-9B9E-F8C7D36C2D19}.Release|x86.ActiveCfg = Release|Any CPU
 		{3A096598-8BAA-4717-9B9E-F8C7D36C2D19}.Release|x86.Build.0 = Release|Any CPU
+		{16699CD1-EFFA-4811-8EA3-1287F4FE08FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16699CD1-EFFA-4811-8EA3-1287F4FE08FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16699CD1-EFFA-4811-8EA3-1287F4FE08FA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{16699CD1-EFFA-4811-8EA3-1287F4FE08FA}.Debug|x64.Build.0 = Debug|Any CPU
+		{16699CD1-EFFA-4811-8EA3-1287F4FE08FA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{16699CD1-EFFA-4811-8EA3-1287F4FE08FA}.Debug|x86.Build.0 = Debug|Any CPU
+		{16699CD1-EFFA-4811-8EA3-1287F4FE08FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16699CD1-EFFA-4811-8EA3-1287F4FE08FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16699CD1-EFFA-4811-8EA3-1287F4FE08FA}.Release|x64.ActiveCfg = Release|Any CPU
+		{16699CD1-EFFA-4811-8EA3-1287F4FE08FA}.Release|x64.Build.0 = Release|Any CPU
+		{16699CD1-EFFA-4811-8EA3-1287F4FE08FA}.Release|x86.ActiveCfg = Release|Any CPU
+		{16699CD1-EFFA-4811-8EA3-1287F4FE08FA}.Release|x86.Build.0 = Release|Any CPU
+		{9C5EBAD2-A6C2-4A53-9EB2-1E6BBABCED74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C5EBAD2-A6C2-4A53-9EB2-1E6BBABCED74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C5EBAD2-A6C2-4A53-9EB2-1E6BBABCED74}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9C5EBAD2-A6C2-4A53-9EB2-1E6BBABCED74}.Debug|x64.Build.0 = Debug|Any CPU
+		{9C5EBAD2-A6C2-4A53-9EB2-1E6BBABCED74}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9C5EBAD2-A6C2-4A53-9EB2-1E6BBABCED74}.Debug|x86.Build.0 = Debug|Any CPU
+		{9C5EBAD2-A6C2-4A53-9EB2-1E6BBABCED74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C5EBAD2-A6C2-4A53-9EB2-1E6BBABCED74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C5EBAD2-A6C2-4A53-9EB2-1E6BBABCED74}.Release|x64.ActiveCfg = Release|Any CPU
+		{9C5EBAD2-A6C2-4A53-9EB2-1E6BBABCED74}.Release|x64.Build.0 = Release|Any CPU
+		{9C5EBAD2-A6C2-4A53-9EB2-1E6BBABCED74}.Release|x86.ActiveCfg = Release|Any CPU
+		{9C5EBAD2-A6C2-4A53-9EB2-1E6BBABCED74}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -369,5 +399,8 @@ Global
 		{9AC4C446-4967-48CA-A34E-96A74A754BB5} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{B499FDC2-8991-4AAD-B4A4-E332581BE145} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 		{3A096598-8BAA-4717-9B9E-F8C7D36C2D19} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{16699CD1-EFFA-4811-8EA3-1287F4FE08FA} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{F12727AA-ABEF-07AF-E6F0-CD96E3D9A8AF} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+		{9C5EBAD2-A6C2-4A53-9EB2-1E6BBABCED74} = {F12727AA-ABEF-07AF-E6F0-CD96E3D9A8AF}
 	EndGlobalSection
 EndGlobal
