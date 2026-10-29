@@ -7,13 +7,21 @@ using Gagamba.Execution.Linux.M1.Preparation.Native;
 namespace Gagamba.Execution.Linux.M1.Bootstrap;
 
 // Internal commissioning bootstrap only. No public provider registration or reconnect listener.
+// M-01: the control descriptor is shared between Inspect()/ObserveAsync()/Send() and
+// concurrent disposal, so every use and the single close serialize on one gate. A
+// disposed or closing connection never exposes its descriptor to IPC.
 internal sealed class RecoveryConnection : IDisposable
 {
-    private bool _disposed;
+    private readonly GuardedDescriptor _control;
     internal Process Process { get; }
     internal RecoveryWire Wire { get; }
-    internal int Control { get; }
-    private RecoveryConnection(Process process, RecoveryWire wire, int control) { Process = process; Wire = wire; Control = control; }
+    internal int Control => _control.Descriptor;
+    internal RecoveryConnection(Process process, RecoveryWire wire, int control)
+    {
+        Process = process;
+        Wire = wire;
+        _control = new GuardedDescriptor(control);
+    }
     internal static RecoveryConnection Start(RecoveryConfiguration requested)
     {
         if (!RecoveryInterop.Supported || !RecoveryInterop.IsUnprivileged) throw new InvalidOperationException("B2 requires unprivileged Linux");
@@ -63,12 +71,22 @@ internal sealed class RecoveryConnection : IDisposable
             if (child is not null) { if (!child.HasExited) child.Kill(); child.WaitForExit(5000); child.Dispose(); }
         }
     }
-    internal bool Send(RecoveryMessage type) => !_disposed && FdPassing.TrySendMessage(Control, Wire.Create(type), out _);
+    internal bool Send(RecoveryMessage type) =>
+        _control.TryUse(control => FdPassing.TrySendMessage(control, Wire.Create(type), out _));
+    // The whole send/receive exchange runs under the lifecycle gate: disposal
+    // waits for it and the descriptor cannot close or be reused mid-frame.
+    // An unusable or disposed connection yields the existing loss observation
+    // (null) without touching the descriptor.
     internal RecoverySnapshot? Inspect()
     {
-        if (!Send(RecoveryMessage.Inspect) || !FdPassing.TryReceiveMessage(Control, 1000, out var frame, out _)
-            || !Wire.Accept(frame, out var type, out var payload) || type != RecoveryMessage.Snapshot) return null;
-        return JsonSerializer.Deserialize<RecoverySnapshot>(payload);
+        RecoverySnapshot? snapshot = null;
+        _ = _control.TryUse(control =>
+            FdPassing.TrySendMessage(control, Wire.Create(RecoveryMessage.Inspect), out _)
+            && FdPassing.TryReceiveMessage(control, 1000, out var frame, out _)
+            && Wire.Accept(frame, out var type, out var payload)
+            && type == RecoveryMessage.Snapshot
+            && (snapshot = JsonSerializer.Deserialize<RecoverySnapshot>(payload)) is not null);
+        return snapshot;
     }
     // Cancelling a caller's wait never owns the process lifetime or stop obligation.
     internal async Task<RecoverySnapshot?> ObserveAsync(CancellationToken cancellation)
@@ -77,9 +95,7 @@ internal sealed class RecoveryConnection : IDisposable
     }
     public void Dispose()
     {
-        if (_disposed) return;
-        _disposed = true;
-        PreparationInterop.CloseFd(Control);
+        _control.Dispose();
         Process.Dispose();
     }
 }
