@@ -1,13 +1,16 @@
 # Current work queue
 
 > Current project summary and next owner decision: [PROJECT-STATUS.md](PROJECT-STATUS.md).
-> Current disposition (2026-10-29): RC2B-02 B2 is READY FOR INDEPENDENT REVIEW WITH
-> NATIVE ENFORCEMENT RESTRICTIONS; source `7396012bc07c357a49bbdd0c3791ce06808ca9ab`.
-> [B2 evidence/review handoff](evidence/rc2b-02-b2.md): Windows managed 699/0/0;
-> WSL2 focused M1 70/0/0; real process/native empty-domain cases 24/0/0.
-> Independent native Linux-host and populated enforcement qualification remain pending.
-> B1 remains ACCEPTED WITH QUALIFICATIONS; R1-F03 Option A semantic approval unchanged.
-> Next: focused independent B2 review and owner disposition. Do not start B3 automatically.
+> Current disposition (2026-10-29): **RC2B-02 B2 ACCEPTED WITH QUALIFICATIONS**;
+> [owner decision](decisions/rc2b-02-b2-owner-acceptance.md).
+> [Independent review](reviews/rc2b-02-b2-independent-review.md): SUPPORTED WITH QUALIFICATIONS;
+> independently executed Windows tests 699/0/0 (616 M1 + 68 Execution + 15 Runtime).
+> [Producer evidence](evidence/rc2b-02-b2.md): WSL2 process cases 24/0/0, including the
+> two empty-domain cases; reviewed but not independently reproduced by the reviewer.
+> Native Linux-host/populated stopping and all owner-decision exclusions remain unqualified.
+> M-01: accepted nonblocking follow-up, OPEN; resolve before B3 operational method use.
+> **RC2B-03 B3: NEXT PROPOSED IMPLEMENTATION, NOT STARTED**; separate commission required.
+> B1 acceptance and R1-F03 Option A semantic approval remain unchanged; live execution disabled.
 > Entries below are retained historical checkpoints. Their earlier pending-review or
 > awaiting-commissioning wording does not supersede the canonical current summary.
 
