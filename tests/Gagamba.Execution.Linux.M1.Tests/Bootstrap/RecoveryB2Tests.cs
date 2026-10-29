@@ -84,6 +84,17 @@ public sealed class RecoveryB2Tests
     }
     [Fact] public void PassiveRecordCannotReconstructInstallationAuthority() =>
         Assert.Throws<InvalidDataException>(() => new PinnedExecutable("/passive/record", []).Verify("Gagamba.Execution.Linux.M1.Owner"));
+    [Theory]
+    [InlineData("poll errno 4", true)][InlineData("recvmsg errno 4", true)]
+    [InlineData("recvmsg errno 11", true)][InlineData("control record timed out", true)]
+    [InlineData("peer closed the owner protocol channel", false)][InlineData("poll errno 9", false)]
+    public void InterruptedObservationDoesNotInventPeerLoss(string error, bool transient) =>
+        Assert.Equal(transient, RecoveryInterop.IsTransientReceiveError(error));
+    [Fact] public void InterruptedPidfdObservationIsNotExitEvidence()
+    {
+        Assert.True(RecoveryInterop.IsTransientPidfdError("pidfd poll errno 4"));
+        Assert.False(RecoveryInterop.IsTransientPidfdError("pidfd poll errno 9"));
+    }
     [Fact] public void ForeignOwnerAndMissingRetainedPidfdCannotCloseLifeline()
     {
         using var scope = new Gagamba.Execution.Linux.M1.Lifecycle.M1RecoveryScope();

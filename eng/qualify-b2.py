@@ -121,6 +121,8 @@ class B2Processes(unittest.TestCase):
             exited = f.wait('owner-exit.json')
             self.assertTrue(exited['OwnerExited']); self.assertTrue(alive(f.fds['recovery']))
             self.assertEqual(exited['StopCount'], 1); self.assertFalse(exited['ReleaseAuthority'])
+            self.assertTrue(alive(f.fds['controller'])); self.assertFalse(exited['ControllerLost'])
+            self.assertIn(exited['Cause'], ['OwnerExited', 'OwnerTransportLost'])
     def test_recovery_sigkill_surviving_owner_detects_lifeline(self):
         with Fixture('recovery-loss') as f:
             self.assertTrue(alive(f.fds['owner'])); f.kill('recovery')
@@ -252,6 +254,8 @@ class B2Domains(unittest.TestCase):
             last = wait_for(lambda: (s if (s := f.json('stop.json')) and s['DomainRemoved'] else None))
             self.assertEqual(last['NativeStop'], 'KillWrittenEmptyObserved')
             self.assertTrue(last['OwnerExited']); self.assertFalse(last['ReleaseAuthority'])
+            self.assertTrue(alive(f.fds['controller'])); self.assertFalse(last['ControllerLost'])
+            self.assertIn(last['Cause'], ['OwnerExited', 'OwnerTransportLost'])
 
 suite = unittest.defaultTestLoader.loadTestsFromTestCase(B2Processes)
 if options.delegated_parent:

@@ -9,6 +9,7 @@ namespace Gagamba.Execution.Linux.M1.Bootstrap;
 // Internal commissioning bootstrap only. No public provider registration or reconnect listener.
 internal sealed class RecoveryConnection : IDisposable
 {
+    private bool _disposed;
     internal Process Process { get; }
     internal RecoveryWire Wire { get; }
     internal int Control { get; }
@@ -62,7 +63,7 @@ internal sealed class RecoveryConnection : IDisposable
             if (child is not null) { if (!child.HasExited) child.Kill(); child.WaitForExit(5000); child.Dispose(); }
         }
     }
-    internal bool Send(RecoveryMessage type) => FdPassing.TrySendMessage(Control, Wire.Create(type), out _);
+    internal bool Send(RecoveryMessage type) => !_disposed && FdPassing.TrySendMessage(Control, Wire.Create(type), out _);
     internal RecoverySnapshot? Inspect()
     {
         if (!Send(RecoveryMessage.Inspect) || !FdPassing.TryReceiveMessage(Control, 1000, out var frame, out _)
@@ -74,5 +75,11 @@ internal sealed class RecoveryConnection : IDisposable
     {
         await Task.Yield(); cancellation.ThrowIfCancellationRequested(); return Inspect();
     }
-    public void Dispose() { PreparationInterop.CloseFd(Control); Process.Dispose(); }
+    public void Dispose()
+    {
+        if (_disposed) return;
+        _disposed = true;
+        PreparationInterop.CloseFd(Control);
+        Process.Dispose();
+    }
 }

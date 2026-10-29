@@ -113,9 +113,16 @@ internal static class RecoveryHost
         RecoverySnapshot? last = null;
         while (true)
         {
-            if (!PidFd.TryExited(controllerFd, 0, out controllerExited, out _) || controllerExited)
-            { controllerLost = true; Stop("ControllerExited"); }
-            if (!scope.TryOwnerPidFdExited(owner, 0, out var exited, out _)) Stop("OwnerExitEvidenceUnavailable");
+            if (!PidFd.TryExited(controllerFd, 0, out controllerExited, out var controllerError))
+            {
+                if (!RecoveryInterop.IsTransientPidfdError(controllerError))
+                { controllerLost = true; Stop("ControllerExitEvidenceUnavailable"); }
+            }
+            else if (controllerExited) { controllerLost = true; Stop("ControllerExited"); }
+            if (!scope.TryOwnerPidFdExited(owner, 0, out var exited, out var ownerError))
+            {
+                if (!RecoveryInterop.IsTransientPidfdError(ownerError)) Stop("OwnerExitEvidenceUnavailable");
+            }
             else if (exited && !ownerExited)
             {
                 ownerExited = scope.WaitForOwner(owner, TimeSpan.FromSeconds(1)).Exited;
@@ -141,7 +148,7 @@ internal static class RecoveryHost
                         Stop("ControllerAssociationRefused");
                     }
                 }
-                else if (error != "control record timed out")
+                else if (!RecoveryInterop.IsTransientReceiveError(error))
                 { controlUsable = false; controllerLost = true; Stop("ControllerTransportLost"); }
             }
             if (ownerUsable && ownerChannel is not null)
@@ -150,7 +157,7 @@ internal static class RecoveryHost
                 {
                     if (stopSent) obligation.OwnerAcknowledged = true;
                 }
-                else if (error != "control record timed out") { ownerUsable = false; Stop("OwnerTransportLost"); }
+                else if (!RecoveryInterop.IsTransientReceiveError(error)) { ownerUsable = false; Stop("OwnerTransportLost"); }
             }
             var current = Snapshot();
             if (obligation.Count != 0 && current != last)
@@ -189,7 +196,13 @@ internal static class B2OwnerLifeline
         var ack = false;
         while (Stopwatch.GetTimestamp() < deadline)
         {
-            if (!PidFd.TryExited(pidfd, 0, out var exited, out _) || exited) break;
+            if (!PidFd.TryExited(pidfd, 0, out var exited, out var pidfdError))
+            {
+                if (RecoveryInterop.IsTransientPidfdError(pidfdError)) continue;
+                cause = "RecoveryExitEvidenceUnavailable";
+                break;
+            }
+            if (exited) break;
             if (channel.TryReceiveAllowedWithin(20, out _, out var error, OwnerProtocolMessageType.B2SafetyStop))
             {
                 cause = "RecoveryStopRequested";
@@ -198,7 +211,7 @@ internal static class B2OwnerLifeline
                     ack = channel.TrySend(OwnerProtocolMessageType.B2StopObserved, [], out _);
                 break;
             }
-            if (error != "control record timed out") break;
+            if (!RecoveryInterop.IsTransientReceiveError(error)) break;
         }
         RecoveryEvidence.Write(start.EvidenceDirectory, "owner-stop.json", new {
             OwnerPid = Environment.ProcessId, RecoveryPid = start.RecoveryPid, Cause = cause,

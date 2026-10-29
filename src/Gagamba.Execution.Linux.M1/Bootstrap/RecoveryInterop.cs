@@ -42,6 +42,14 @@ internal static class RecoveryInterop
             && (one.Device != two.Device || one.Inode != two.Inode);
     }
 
+    // The existing bounded record primitive reports syscall interruption explicitly.
+    // Retry observation on the next loop tick; never treat EINTR/EAGAIN as peer loss,
+    // and never retry a send or renew the independently retained stop deadline.
+    internal static bool IsTransientReceiveError(string error) => error is
+        "control record timed out" or "poll errno 4" or "recvmsg errno 4" or "recvmsg errno 11";
+
+    internal static bool IsTransientPidfdError(string error) => error == "pidfd poll errno 4";
+
     internal static bool Protect(int fd, bool nonblocking = true)
     {
         var flags = Fcntl(fd, 3 /* F_GETFL */, 0);
