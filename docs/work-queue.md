@@ -1,37 +1,28 @@
 # Current work queue
 
 > Current project summary and next milestone: [PROJECT-STATUS.md](PROJECT-STATUS.md).
-> Current disposition (2026-10-30): **RC2B-03 B3 ACCEPTED WITH QUALIFICATIONS**;
-> [owner decision](decisions/rc2b-03-b3-owner-acceptance.md).
-> [Independent review](reviews/rc2b-03-b3-independent-review.md): SUPPORTED WITH QUALIFICATIONS;
-> Windows reviewer execution: M1 parallel 981/0/91, focused B3 31/0/3, B1 45/0/0,
-> Execution 68/0/0, Runtime 15/0/0 (overlapping suites, passed/failed/skipped).
-> [Native WSL2 producer evidence](evidence/rc2b-03-b3.md) was reviewed, not independently reproduced.
-> CI 40987712653 succeeded on attempt 2. M-01 CLOSED; R1-F03 Option A implemented in B3 scope.
-> **F-01 MAJOR: ACCEPTED DEFERRED INTEGRATION BLOCKER**, not waived; the positive fixture
-> is controller-owned and the recovery-death case demonstrates topology separation only.
-> Resolve F-01 before further integrated live-release qualification, topology-dependent B4,
-> Hufu or production. F-02/F-03 minor follow-ups and F-04–F-08 observations remain recorded.
-> **RC2B-03-INT-01: ALTERNATIVE B APPROVED WITH QUALIFICATIONS FOR BOUNDED
-> EXPERIMENTAL IMPLEMENTATION**; [D01 owner decision](decisions/rc2b-03-int-01-d01-owner-decision.md).
-> **Alternative A DECLINED AS PROPOSED**; no RC-1 process-ownership amendment approved or required for B.
-> Original [D01 gate](evidence/rc2b-03-int-01.md) and [Q1 review](reviews/rc2b-03-int-01-d01-independent-review.md)
-> remain unchanged. Require recovery-parented B3, actual retained native authority,
-> direct exact-peer/`SO_PEERPIDFD` authentication, one-use cryptographic session confirmation,
-> bounded stream framing and independent live safety monitoring; no release bearer through recovery.
-> Preserve C1–C4 owner-local loss/release ordering and subsequent stop obligations;
-> no absolute wall-clock death/write exclusion is claimed. Exact experimental pins/protected
-> bootstrap and unprivileged already-delegated resources are mandatory; full B6 production
-> attestation is not a prerequisite to begin. Refuse experiments if requirements are unmet.
-> **Next: GAGAMBA-RC2B-03-INT-01-B-IMPL-01 — AUTHORIZED FOR BOUNDED IMPLEMENTATION, NOT STARTED.**
-> No source/test/topology implementation or integrated native qualification occurred in this decision.
-> F-01 remains MAJOR/OPEN pending genuine integrated process tests and independent review;
-> F-02/F-03/F-07/F-08 unresolved; M-01 CLOSED; R1-F02 globally OPEN. Preserve Option A.
-> **B4: NOT STARTED.** No B4/B5/B6/B7, Hufu or production activation authorized.
-> Stop after this decision delivery; build and qualify B in the next task.
-> Native/production restrictions remain; `RestrictedExecutionRuntime.Create()` stays unavailable.
-> Entries below are retained historical checkpoints; earlier current/next-work wording
-> does not supersede the canonical current summary or this owner decision.
+> **Current implementation checkpoint (2026-10-30): INT-01-B-IMPL-01 PARTIAL SOURCE DELIVERY.**
+> Native integration: **BLOCKED_ENVIRONMENT / NOT_REPRODUCED**;
+> [implementation evidence](evidence/rc2b-03-int-01-b-impl-01.md).
+> Final tested source `17a61f5be2602445fdb195a7ef76e9d88f14640e`.
+> Windows M1 985/0/95; focused 18/0/24; Execution 68/0/0; Runtime 15/0/0.
+> WSL2 authentication 21/0/0, contracts/monitor/fence components 85/0/0,
+> exec/FD primitives 4/0/0. These do not qualify an integrated B3 execution.
+> Recovery-parented source composition, direct authenticated release and independent
+> safety paths exist; actual HELD/domain retention/release/death/takeover remain unqualified.
+> Eight core native cases were not run; 24 additional integration cases remain pending.
+> **F-01 remains MAJOR/OPEN.** F-02/Q1-F03/F04/F05 require genuine integrated proof;
+> F-03 diagnostic regressions pass; F-07 clarified; F-08 primitive correction tested,
+> confined inventory still pending. Accepted decisions/reviews/evidence remain unchanged.
+> No authorized delegated parent or unprivileged host-launch procedure is established.
+> Read-only discovery found a shared systemd user subtree; it was not selected or used.
+> No cgroup provisioning, permission change, process migration or privileged fallback occurred.
+> **Next: owner environment decision**, then finish pending fault fixtures and the genuine
+> native matrix before independent security review. No ready-for-acceptance claim.
+> M-01 CLOSED; R1-F02 globally OPEN; C1–C4 and Option A restrictions remain.
+> **B4: NOT STARTED.** B4–B7, Hufu and production gates remain closed;
+> `RestrictedExecutionRuntime.Create()` remains unavailable. Stop at the environment boundary.
+> Historical checkpoints below do not supersede this current disposition.
 
 ## Current consumer-contract work: RC2A-02 AND RC2A-03 ACCEPTED WITH QUALIFICATIONS; RC2A-04 NOT AUTHORIZED
 

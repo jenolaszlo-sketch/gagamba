@@ -3,7 +3,40 @@
 Canonical current summary; historical decisions and independent reviews remain immutable.
 Status date: 2026-10-30 (Asia/Manila).
 
-## RC2B-03-INT-01 owner architecture disposition
+## INT-01-B-IMPL-01 current implementation checkpoint
+
+**PARTIAL SOURCE DELIVERY — BLOCKED_ENVIRONMENT / NOT_REPRODUCED.**
+[Source-bound evidence](evidence/rc2b-03-int-01-b-impl-01.md).
+Tested source `17a61f5be2602445fdb195a7ef76e9d88f14640e`, tree
+`f273f07d6da3700d3af04c3703715a48667619b5`. The approved Alternative B composition
+is implemented in experimental source and builds; genuine integrated B3 HELD,
+native retention, release, death/race monitoring, reaping and writer takeover have
+not been reproduced. This commission is not complete or security-accepted.
+The core native runner has eight unexecuted cases and 24 additional pending cases.
+
+Windows: M1 985/0/95, focused 18/0/24, Execution 68/0/0, Runtime 15/0/0.
+WSL2: authentication 21/0/0, component contracts/monitor/fence 85/0/0,
+exec/FD oracle 4/0/0. Counts overlap; primitive/managed passes are not integrated
+confinement, native Linux-host qualification or independent security review.
+
+The owner confirmed no current authorized delegation or host-launch procedure.
+Read-only discovery found a writable shared systemd user subtree, but execution
+remains in `/init.scope`; the common ancestor's migration file is not writable.
+The shared subtree was not adopted. No delegation provisioning, cgroup permission
+change, migration or privileged fallback occurred. A separate owner environment
+decision is required before native integration can resume.
+
+**F-01 MAJOR/OPEN**; no closure or self-approval. F-03 diagnostics are corrected and
+regression-tested; F-07 is clarified; F-08 has passing exec/FD primitive controls.
+F-02 and Q1-F03/F04/F05 and confined F-08 still need genuine integrated evidence.
+Preserve C1–C4, Option A, uncertainty and all accepted qualifications. M-01 CLOSED;
+R1-F02 globally OPEN. **B4 NOT STARTED**; B4–B7, Hufu and production remain gated.
+Next: an owner decision establishing the environment, then pending fault fixtures
+and the actual matrix before independent review. Stop at that boundary.
+
+## RC2B-03-INT-01 owner architecture disposition (prior decision checkpoint)
+
+The following decision-stage description is historical; implementation status above supersedes its next-work pointer.
 
 **ALTERNATIVE B APPROVED WITH QUALIFICATIONS FOR BOUNDED EXPERIMENTAL IMPLEMENTATION**
 under **GAGAMBA-RC2B-03-INT-01-D01-OWNER-01**;
@@ -199,7 +232,7 @@ workload, package publication or release tag was created.
 The source-bound [B1 handoff](evidence/rc2b-01-b1.md) contains the API inventory, R1-F02
 ordering, R1-F03 decision table/recommendation, exact commands/counts, adaptations and
 remaining gates. B2 is subsequently ACCEPTED WITH QUALIFICATIONS as recorded above;
-RC2B-03 B3 is subsequently ACCEPTED WITH QUALIFICATIONS; RC2B-03-INT-01 has reached its architecture gate and is BLOCKED BY CONTRACT DELTA.
+RC2B-03 B3 is subsequently ACCEPTED WITH QUALIFICATIONS; RC2B-03-INT-01 has approved Alternative B source implementation checkpoints; integrated native qualification is BLOCKED_ENVIRONMENT / NOT_REPRODUCED, and required fault coverage remains incomplete.
 
 ## Accepted component baseline
 
@@ -260,7 +293,7 @@ Existing R2A-F01/F02/F04 and R1-F01/F05 dispositions remain scoped.
 | RC2B / RC-2B facade | B1 contract/refusal boundary **ACCEPTED WITH QUALIFICATIONS** ([decision](decisions/rc2b-01-b1-owner-acceptance.md)); R1-F03 Option A APPROVED and implemented within accepted B3 scope; R1-F02 native enforcement OPEN; native/lifecycle gates remain unqualified |
 | RC2B-02 (B2) | **ACCEPTED WITH QUALIFICATIONS**; [owner decision](decisions/rc2b-02-b2-owner-acceptance.md); M-01 subsequently CLOSED by B3; native/operational exclusions retained |
 | RC2B-03 (B3) | **ACCEPTED WITH QUALIFICATIONS**; [owner decision](decisions/rc2b-03-b3-owner-acceptance.md); M-01 CLOSED; Option A and one-shot fixture accepted; F-01 MAJOR deferred integration blocker; F-02–F-08 retained |
-| RC2B-03-INT-01 | **BLOCKED BY CONTRACT DELTA**; [INT-01-D01](evidence/rc2b-03-int-01.md) requires independent security review and owner approval; no topology implementation/native qualification; F-01 remains MAJOR and OPEN |
+| RC2B-03-INT-01 | **PARTIAL SOURCE DELIVERY; BLOCKED_ENVIRONMENT / NOT_REPRODUCED**; [B-IMPL-01 evidence](evidence/rc2b-03-int-01-b-impl-01.md); full fault coverage and genuine native qualification pending; F-01 MAJOR/OPEN |
 | B4 | **NOT STARTED**; dependent integration must follow RC2B-03-INT-01; separate commission required |
 | HUFU-R / R1-F06, AE4-B01 and Hufu integration | OPEN/BLOCKED; no integration authorization |
 | Native C1 review, C3/C4 and broader native track | Separate commissions/dispositions; not accepted by RC2A-03 |
@@ -314,7 +347,7 @@ contract in [the B1 owner decision](decisions/rc2b-01-b1-owner-acceptance.md). B
 ACCEPTED WITH QUALIFICATIONS in [the B2 owner decision](decisions/rc2b-02-b2-owner-acceptance.md).
 RC2B-03 B3 is subsequently implemented under a separate bounded commission (current
 disposition above; implementation `fcfe289e`, held-phase fix `a67a640c`), independently
-reviewed and owner-accepted WITH QUALIFICATIONS. RC2B-03-INT-01 has reached its architecture gate and is BLOCKED BY CONTRACT DELTA.
+reviewed and owner-accepted WITH QUALIFICATIONS. RC2B-03-INT-01 has approved Alternative B source implementation checkpoints; integrated native qualification is BLOCKED_ENVIRONMENT / NOT_REPRODUCED, and required fault coverage remains incomplete.
 Native and Hufu gates retain their independent dispositions; no production activation
 is authorized.
 
