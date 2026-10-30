@@ -11,11 +11,13 @@ using Xunit;
 
 namespace Gagamba.Execution.Linux.M1.Tests.Bootstrap;
 
+[Trait("Category","ProcessGlobalHostState")]
 public sealed class DirectAuthenticationTests
 {
     private static void RequireLinux()
     {
         if (!OperatingSystem.IsLinux()) Assert.Skip("Linux direct socket primitive qualification required");
+        if(Environment.GetEnvironmentVariable("GAGAMBA_INT01_NATIVE_PRIMITIVES")!="1") Assert.Skip("explicit INT01 primitive profile required");
         Assert.True(RecoveryInterop.IsUnprivileged, "requires an unprivileged test process");
         Assert.True(DirectPeerIdentity.FeatureAvailable(), "SO_PEERPIDFD must be available; no fallback");
     }
@@ -61,6 +63,16 @@ public sealed class DirectAuthenticationTests
         RequireLinux(); using var probe = new Probe(); var deadline = DirectStream.Deadline(2000);
         using var session = DirectSession.Establish(DirectOwnerListener.Connect(probe.Address, deadline),
             probe.Association, probe.OwnerPidfd.DangerousGetHandle().ToInt32(), false, deadline);
+        uint peerLength=12;
+        Assert.Equal(0,DirectUnix.PeerCredentials(session.Descriptor,1,17,out var actual,ref peerLength));
+        Assert.Equal(probe.Association.Owner.Pid,actual.Pid);
+        Assert.True(DirectPeerIdentity.LiveReference(session.PeerProcessDescriptor,probe.Association.Owner));
+        if(Environment.GetEnvironmentVariable("GAGAMBA_INT01_EVIDENCE") is {Length:>0} evidence)
+            File.WriteAllText(Path.Combine(evidence,"direct-controller-auth.json"),JsonSerializer.Serialize(new {
+                Scope="Authentication primitive only; no integrated B3 topology",probe.Association,
+                ActualPeerPid=actual.Pid,ActualPeerUid=actual.Uid,ActualPeerGid=actual.Gid,
+                SocketDerivedPidfd=session.PeerProcessDescriptor,SocketPidfdCloexec=PreparationInterop.HasCloexec(session.PeerProcessDescriptor),
+                ExpectedPidfdLive=DirectPeerIdentity.LiveReference(probe.OwnerPidfd.DangerousGetHandle().ToInt32(),probe.Association.Owner)}));
         session.SendControl([42]); Assert.True(session.TryReceiveControl(2000, out var response)); Assert.Equal(new byte[] {43}, response);
         Assert.True(probe.Process.WaitForExit(5000)); Assert.Equal(0, probe.Process.ExitCode);
         Assert.False(File.Exists(probe.Address));
@@ -155,6 +167,39 @@ public sealed class DirectAuthenticationTests
         Assert.NotEqual(mac,DirectSession.Confirmation(key,DirectSession.Transcript(a,y,x),"owner-confirm"));
         Assert.NotEqual(mac,DirectSession.Confirmation(key,DirectSession.Transcript(a with {Generation=Guid.NewGuid()},x,y),"owner-confirm"));
         Assert.NotEqual(mac,DirectSession.Confirmation(key,DirectSession.Transcript(a with {Controller=a.Recovery},x,y),"owner-confirm"));
+    }
+    [Theory][InlineData(false)][InlineData(true)]
+    public void LostAuthenticationAckOrReflectedConfirmationCannotRestoreSession(bool reflection)
+    {
+        RequireLinux();using var probe=new Probe();var deadline=DirectStream.Deadline(1000);
+        using(var stream=DirectOwnerListener.Connect(probe.Address,deadline))
+        {
+            Assert.True(stream.TryReceive(deadline,out var hello));Assert.Equal(1,BinaryPrimitives.ReadUInt16LittleEndian(hello.AsSpan(6)));
+            var challengeAndKey=RandomNumberGenerator.GetBytes(64);
+            stream.Send(Envelope(probe.Association,2,1,challengeAndKey),deadline);
+            Assert.True(stream.TryReceive(deadline,out var ownerConfirmation));
+            Assert.Equal(3,BinaryPrimitives.ReadUInt16LittleEndian(ownerConfirmation.AsSpan(6)));
+            if(reflection) stream.Send(Envelope(probe.Association,4,2,ownerConfirmation[64..]),deadline);
+            CryptographicOperations.ZeroMemory(challengeAndKey);
+        }
+        Assert.True(probe.Process.WaitForExit(4000));Assert.NotEqual(0,probe.Process.ExitCode);
+        Assert.Throws<IOException>(()=>DirectOwnerListener.Connect(probe.Address,DirectStream.Deadline(100)));
+    }
+    [Fact] public void PeerExitDuringHandshakeRefuses()
+    {
+        RequireLinux();using var probe=new Probe();var deadline=DirectStream.Deadline(1000);
+        using var stream=DirectOwnerListener.Connect(probe.Address,deadline);
+        Assert.True(stream.TryReceive(deadline,out _));probe.Process.Kill();Assert.True(probe.Process.WaitForExit(1000));
+        Assert.Throws<IOException>(()=>DirectSession.Establish(stream,probe.Association,
+            probe.OwnerPidfd.DangerousGetHandle().ToInt32(),false,deadline));
+    }
+    private static byte[] Envelope(DirectAssociation a,ushort type,uint sequence,byte[] payload)
+    {
+        var frame=new byte[64+payload.Length];BinaryPrimitives.WriteUInt32LittleEndian(frame,0x31444947);
+        BinaryPrimitives.WriteUInt16LittleEndian(frame.AsSpan(4),1);BinaryPrimitives.WriteUInt16LittleEndian(frame.AsSpan(6),type);
+        BinaryPrimitives.WriteUInt32LittleEndian(frame.AsSpan(8),sequence);a.Execution.TryWriteBytes(frame.AsSpan(12,16));
+        a.Generation.TryWriteBytes(frame.AsSpan(28,16));a.OriginalSession.TryWriteBytes(frame.AsSpan(44,16));
+        BinaryPrimitives.WriteInt32LittleEndian(frame.AsSpan(60),payload.Length);payload.CopyTo(frame,64);return frame;
     }
     private static int[] Pair() { var pair = new int[2]; Assert.Equal(0, DirectUnix.SocketPair(1,1|DirectUnix.Cloexec|DirectUnix.Nonblock,0,pair)); return pair; }
     private static byte[] Packet(byte[] payload) { var bytes = new byte[payload.Length+4]; BinaryPrimitives.WriteInt32LittleEndian(bytes,payload.Length); payload.CopyTo(bytes,4); return bytes; }

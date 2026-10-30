@@ -51,6 +51,8 @@ if (bootstrapFdText is null || !int.TryParse(bootstrapFdText, out var bootstrapF
     return 3;
 }
 
+Environment.SetEnvironmentVariable("GAGAMBA_BOOTSTRAP_FD", null);
+
 var map = new BootstrapMap(
     OwnerBootstrap.CurrentVersion,
     new[]

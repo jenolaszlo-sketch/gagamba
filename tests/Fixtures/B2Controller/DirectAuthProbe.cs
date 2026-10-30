@@ -23,15 +23,24 @@ internal static class DirectAuthProbe
             for (var attempt = 0; attempt < DirectOwnerListener.MaxAttempts; attempt++)
             {
                 var stream = listener.Accept(deadline);
-                try
+                try {using var checkedPeer=DirectPeerIdentity.Verify(stream.Descriptor,association.Controller,fd);}
+                catch(IOException) {stream.Dispose();continue;}
                 {
                     using var session = DirectSession.Establish(stream, association, fd, owner: true, deadline);
-                    listener.Dispose();
+                    listener.SealAssociation();
+                    uint peerLength=12;
+                    if(DirectUnix.PeerCredentials(session.Descriptor,1,17,out var actual,ref peerLength)!=0) return 9;
+                    if(Environment.GetEnvironmentVariable("GAGAMBA_INT01_EVIDENCE") is {Length:>0} evidence)
+                        File.WriteAllText(Path.Combine(evidence,"direct-owner-auth.json"),JsonSerializer.Serialize(new {
+                            Scope="Authentication primitive only; no integrated B3 topology",Association=association,
+                            ActualPeerPid=actual.Pid,ActualPeerUid=actual.Uid,ActualPeerGid=actual.Gid,
+                            SocketDerivedPidfd=session.PeerProcessDescriptor,
+                            SocketPidfdCloexec=Gagamba.Execution.Linux.M1.Preparation.Native.PreparationInterop.HasCloexec(session.PeerProcessDescriptor),
+                            ExpectedPidfdLive=DirectPeerIdentity.LiveReference(fd,association.Controller)}));
                     if (!session.TryReceiveControl(2000, out var bytes) || bytes.Length != 1 || bytes[0] != 42) return 6;
                     session.SendControl([43]);
                     Console.WriteLine("ESTABLISHED"); Console.Out.Flush(); return 0;
                 }
-                catch (IOException) { stream.Dispose(); }
             }
             return 7;
         }

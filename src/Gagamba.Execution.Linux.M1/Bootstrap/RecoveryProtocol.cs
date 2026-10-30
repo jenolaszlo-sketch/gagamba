@@ -6,15 +6,16 @@ using Gagamba.Execution.Linux.M1.Native;
 namespace Gagamba.Execution.Linux.M1.Bootstrap;
 
 // No release/preparation type has a representation in this B2-only protocol.
-internal enum RecoveryMessage : byte { Associate = 1, Ready = 2, Stop = 3, Inspect = 4, Snapshot = 5, Reconnect = 6, Refused = 7 }
+internal enum RecoveryMessage : byte { Associate = 1, Ready = 2, Stop = 3, Inspect = 4, Snapshot = 5, Reconnect = 6, Refused = 7, Rendezvous = 8 }
 internal sealed class RecoveryWire
 {
     internal const int MaxPayload = 512;
+    internal static int PayloadBound(RecoveryMessage type) => type is RecoveryMessage.Rendezvous or RecoveryMessage.Ready or RecoveryMessage.Snapshot ? 4096 : MaxPayload;
     private readonly OwnerProtocolSequencer _sequence;
     internal RecoveryWire(Guid execution, Guid generation) => _sequence = new(execution, generation);
     internal byte[] Create(RecoveryMessage type, ReadOnlySpan<byte> payload = default)
     {
-        if (!Enum.IsDefined(type) || payload.Length > MaxPayload) throw new ArgumentException("Invalid B2 frame");
+        if (!Enum.IsDefined(type) || payload.Length > PayloadBound(type)) throw new ArgumentException("Invalid B2 frame");
         // Distinct magic prevents a controller packet being used as an owner packet.
         var frame = _sequence.Create((OwnerProtocolMessageType)(byte)type, payload);
         frame[0] ^= 0x20;
@@ -23,7 +24,8 @@ internal sealed class RecoveryWire
     internal bool Accept(byte[] frame, out RecoveryMessage type, out byte[] payload)
     {
         type = default; payload = [];
-        if (frame.Length < OwnerProtocol.HeaderBytes || frame.Length > OwnerProtocol.HeaderBytes + MaxPayload) return false;
+        if (frame.Length < OwnerProtocol.HeaderBytes || frame.Length > OwnerProtocol.HeaderBytes + 4096) return false;
+        if (!Enum.IsDefined((RecoveryMessage)frame[6]) || frame.Length > OwnerProtocol.HeaderBytes + PayloadBound((RecoveryMessage)frame[6])) return false;
         var copy = frame.ToArray(); copy[0] ^= 0x20;
         var allowed = Enum.GetValues<RecoveryMessage>().Select(x => (OwnerProtocolMessageType)(byte)x).ToArray();
         // TryAccept also checks execution, generation and next per-direction sequence.
@@ -31,7 +33,7 @@ internal sealed class RecoveryWire
             || !allowed.Contains(message!.Type)) return false;
         type = (RecoveryMessage)(byte)message.Type; payload = message.Payload;
         return type == RecoveryMessage.Associate ? payload.Length == 48
-            : type is RecoveryMessage.Ready or RecoveryMessage.Snapshot ? payload.Length <= MaxPayload
+            : type is RecoveryMessage.Ready or RecoveryMessage.Snapshot or RecoveryMessage.Rendezvous ? payload.Length <= PayloadBound(type)
             : payload.Length == 0;
     }
 }
@@ -99,7 +101,7 @@ internal sealed record PinnedExecutable(string Directory, Dictionary<string, str
 
 internal sealed record RecoveryConfiguration(ushort Version, Guid Execution, Guid Generation, Guid Session,
     int ControllerPid, uint ControllerUid, byte[] Secret, PinnedExecutable Recovery, PinnedExecutable Owner,
-    string EvidenceDirectory, string? DelegatedParent = null)
+    string EvidenceDirectory, string? DelegatedParent = null, IntegratedRecoverySpecification? Integrated = null)
 {
     internal const int MaxBytes = 8192;
     internal static RecoveryConfiguration Decode(byte[] bytes)
@@ -128,7 +130,8 @@ internal sealed record RecoveryConfiguration(ushort Version, Guid Execution, Gui
 
 internal sealed record RecoverySnapshot(int RecoveryPid, int OwnerPid, int ControllerPid, int SessionId,
     bool Subreaper, bool ControllerLost, bool OwnerExited, int StopCount, string? Cause, long? StopDeadline,
-    bool OwnerAcknowledged, bool ReleaseAuthority = false, string NativeStop = "Unproven", int RetainedDomains = 0, bool DomainRemoved = false);
+    bool OwnerAcknowledged, bool ReleaseAuthority = false, string NativeStop = "Unproven", int RetainedDomains = 0, bool DomainRemoved = false,
+    bool OwnerReaped = false, bool WriterFence = false, bool StagingRemoved = false, bool JournalFinalized = false, bool DomainEmpty = false);
 
 internal static class RecoveryEvidence
 {

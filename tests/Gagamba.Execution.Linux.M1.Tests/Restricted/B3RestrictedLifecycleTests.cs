@@ -742,7 +742,7 @@ public sealed class B3RestrictedLifecycleTests
     }
 
     [Fact]
-    public void B3RecoveryDeathWhileTheTransactionOwnerIsHeldAltersNothingAndReleaseStillWorks()
+    public void B3TopologySeparationDemonstrationUnrelatedRecoveryDeathDoesNotSuperviseThisOwner()
     {
         SkipUnlessB2Installation();
         using var fx = new ScopeFixture();

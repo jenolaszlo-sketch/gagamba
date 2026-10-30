@@ -32,8 +32,23 @@ internal sealed class DirectSession : IDisposable
     private uint _sent, _received;
     private bool _established;
     internal int Descriptor => _stream.Descriptor;
-    internal bool IsAlive => _established && _stream.IsAlive()
-        && DirectPeerIdentity.LiveReference(_peer.DangerousGetHandle().ToInt32(), _expected);
+    internal int PeerProcessDescriptor => _peer.DangerousGetHandle().ToInt32();
+    internal bool IsAlive
+    {
+        get
+        {
+            var retained=false;
+            try
+            {
+                if(!_established) return false;
+                _peer.DangerousAddRef(ref retained);
+                return _established && _stream.IsAlive()
+                    && DirectPeerIdentity.LiveReference(_peer.DangerousGetHandle().ToInt32(),_expected);
+            }
+            catch(ObjectDisposedException) {return false;}
+            finally {if(retained) _peer.DangerousRelease();}
+        }
+    }
     private DirectSession(DirectStream stream, DirectAssociation association, int expectedPidfd, bool owner)
     {
         association.Validate(); _stream = stream; _association = association;

@@ -1,6 +1,7 @@
 // WP03 M1RecoveryScope is the external recovery actor. It retains the delegated parent and independent domain/staging handles, owns the subreaper and owner pidfd lifecycle, and takes the journal writer only after proven owner exit.
 // Domain creation, staging, Prepared, and Mint execute in the owner process. The scope never receives a preparation capability or release authority.
 using System.Diagnostics;
+using Gagamba.Execution.Linux.M1.Bootstrap;
 using System.Buffers.Binary;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -48,7 +49,8 @@ internal sealed record OwnerPreparationRequest(
     long ExpiresAtNs,
     string? TestBarrier = null,
     bool WithholdStagingRetentionAckForTest = false,
-    bool EnableHeldCoordinator = false);
+    bool EnableHeldCoordinator = false,
+    IntegratedOwnerLaunch? Integrated = null);
 
 /// <summary>Non-authoritative owner result. The capability and primary
 /// domain lease remain in the live owner process; only a bounded
@@ -79,6 +81,25 @@ internal sealed record HeldOwnerStopOutcome(bool Accepted, StopDecision? Decisio
 
 internal sealed class M1RecoveryScope : IDisposable
 {
+    private readonly object _retentionGate = new();
+    internal int RetainedDomainCount { get { lock (_retentionGate) return _retainedRecoveryLeases.Count; } }
+    internal bool RetentionValid
+    {
+        get { lock (_retentionGate) return _retainedRecoveryLeases.Count == 1
+            && _retainedStagingParents.Count == 1 && _retainedStagingDirs.Count == 1
+            && _retainedRecoveryLeases[0].AuthorityAlive && _retainedRecoveryLeases[0].VerifyIdentity().Match; }
+    }
+    internal string SafetyStopRetained()
+    {
+        lock (_retentionGate)
+        {
+            if (_retainedRecoveryLeases.Count != 1) return "Unknown";
+            var lease = _retainedRecoveryLeases[0];
+            if (!lease.AuthorityAlive || !lease.VerifyIdentity().Match) return "RefusedIdentity";
+            var stop = lease.RequestStop(); var population = lease.ObservePopulation();
+            return stop.Ok && population.Known && population.Empty ? "KillWrittenEmptyObserved" : "Unknown";
+        }
+    }
     private int _parentFd = -1;
     private bool _subreaperEnabled;
     private bool _disposed;
@@ -170,7 +191,7 @@ internal sealed class M1RecoveryScope : IDisposable
     /// PID before any owner-loss-dependent state exists. A missing or
     /// non-CLOEXEC pidfd terminates the owner and refuses (missing-pidfd
     /// refusal); no PID/`/proc`/journal fallback exists.</summary>
-    internal OwnerSpawnResult TrySpawnOwner(string ownerDll, string[] arguments, int ownerSocketFd)
+    internal OwnerSpawnResult TrySpawnOwner(string ownerDll, string[] arguments, int ownerSocketFd, ExperimentalRuntimePin? runtime = null)
     {
         var psi = new ProcessStartInfo
         {
@@ -181,6 +202,7 @@ internal sealed class M1RecoveryScope : IDisposable
             UseShellExecute = false,
         };
         psi.ArgumentList.Add(ownerDll);
+        if(runtime is not null) psi=runtime.StartInfo(ownerDll);
         foreach (var argument in arguments)
         {
             psi.ArgumentList.Add(argument);
@@ -269,7 +291,7 @@ internal sealed class M1RecoveryScope : IDisposable
             return new OwnerPreparationOutcome(false, null, null, null, "staging parent identity unavailable");
         }
 
-        _retainedStagingParents.Add(stagingParent);
+        lock (_retentionGate) _retainedStagingParents.Add(stagingParent);
         var specification = new OwnerPreparationSpecification(
             request.Writer.Directory,
             request.DomainChildName,
@@ -290,7 +312,8 @@ internal sealed class M1RecoveryScope : IDisposable
             request.ExpiresAtNs,
             request.TestBarrier,
             request.EnableHeldCoordinator,
-            MonotonicNowNanoseconds());
+            request.Integrated?.AcceptedAtNs ?? MonotonicNowNanoseconds(),
+            request.Integrated?.Identity);
 
         byte[] encodedSpecification;
         OwnershipSnapshot intent;
@@ -322,7 +345,7 @@ internal sealed class M1RecoveryScope : IDisposable
         var spawned = TrySpawnOwner(
             request.OwnerDllPath,
             new[] { "--exec", request.ExecutionId.ToString("D"), "--lease", request.LeaseGeneration.ToString("D") },
-            childSocket);
+            childSocket, request.Integrated?.Runtime);
         if (!spawned.Ok || spawned.Process is null)
         {
             PreparationInterop.CloseFd(parentSocket);
@@ -330,8 +353,10 @@ internal sealed class M1RecoveryScope : IDisposable
         }
 
         var owner = spawned.Process;
+        request.Integrated?.OwnerSpawned(owner, spawned.PidFd);
         var channel = new OwnerProtocolChannel(
             parentSocket, request.ExecutionId, request.LeaseGeneration, ownsSocket: true);
+        channel.RecoveryOnly = request.Integrated is not null;
         _ownerChannels[owner.Id] = channel;
         var operationError = string.Empty;
         try
@@ -354,6 +379,24 @@ internal sealed class M1RecoveryScope : IDisposable
             if (barrier is not null)
             {
                 return new OwnerPreparationOutcome(false, null, owner, barrier, string.Empty);
+            }
+
+            if (request.Integrated is { } integrated)
+            {
+                var association = new DirectAssociation(request.ExecutionId,request.StoreGenerationId,
+                    integrated.Identity.OriginalSession,integrated.Identity.Controller,
+                    DirectProcessIdentity.Current() with {Pid=owner.Id}, integrated.Identity.Recovery);
+                association.Validate();
+                var bootstrap = DirectBootstrapPacket.Encode(association);
+                if (!channel.TrySendTransfer(OwnerProtocolMessageType.DirectBootstrap,bootstrap,
+                        new[] {integrated.ControllerPidfd,integrated.OwnerSafetyFd},out operationError))
+                    return FailOwnerPreparation(owner,channel,"direct identity bootstrap transfer failed");
+                integrated.CloseTransferredSafetyEnd();
+                if (!channel.TryReceive(OwnerProtocolMessageType.DirectRendezvous,out var rendezvous,out operationError))
+                    return FailOwnerPreparation(owner,channel,"owner rendezvous unavailable");
+                var address = Encoding.UTF8.GetString(rendezvous!.Payload);
+                _ = DirectUnix.Address(address);
+                integrated.Rendezvous(new OwnerRendezvous(address,association),spawned.PidFd);
             }
 
             var parentDuplicate = PreparationInterop.Dup(_parentFd);
@@ -410,7 +453,7 @@ internal sealed class M1RecoveryScope : IDisposable
             }
 
             var recoveryLease = new DomainLease(recoveryBackend!, domainIdentity!);
-            _retainedRecoveryLeases.Add(recoveryLease);
+            lock (_retentionGate) _retainedRecoveryLeases.Add(recoveryLease);
             if (!channel.TrySend(OwnerProtocolMessageType.DomainAuthorityRetained, ReadOnlySpan<byte>.Empty, out operationError))
             {
                 return FailOwnerPreparation(owner, channel, $"domain retention acknowledgement failed: {operationError}");
@@ -468,7 +511,7 @@ internal sealed class M1RecoveryScope : IDisposable
                 return FailOwnerPreparation(owner, channel, "received staging authority identity mismatch");
             }
 
-            _retainedStagingDirs.Add(new SafeFileHandle(new IntPtr(stagingFds[0]), ownsHandle: true));
+            lock (_retentionGate) _retainedStagingDirs.Add(new SafeFileHandle(new IntPtr(stagingFds[0]), ownsHandle: true));
             if (request.WithholdStagingRetentionAckForTest)
             {
                 return new OwnerPreparationOutcome(false, null, owner, null, "test withheld staging retention acknowledgement");
@@ -500,6 +543,24 @@ internal sealed class M1RecoveryScope : IDisposable
             if (!channel.TrySend(OwnerProtocolMessageType.StagingMayProceed, ReadOnlySpan<byte>.Empty, out operationError))
             {
                 return FailOwnerPreparation(owner, channel, $"staging continuation acknowledgement failed: {operationError}");
+            }
+
+            if (request.Integrated is not null)
+            {
+                // Controller admission happens only on the direct socket. Recovery independently
+                // corroborates durable preparation and its exact native retention, then ACKs custody.
+                if (!channel.TryReceive(OwnerProtocolMessageType.PreparedDescription,out var directPrepared,out operationError)
+                    || !OwnerPreparationSpecificationCodec.TryDecodePreparedDescription(directPrepared!.Payload,
+                        out var directDescription,out operationError) || directDescription is null || !RetentionValid)
+                    return FailOwnerPreparation(owner,channel,"integrated prepared retention refused");
+                var directIdentity = new PreparationIdentity(directDescription.ExecutionId,directDescription.IssuerId,
+                    directDescription.GenerationId,directDescription.PreparationId,directDescription.ManifestDigest);
+                if (directIdentity.ExecutionId != request.ExecutionId || directIdentity.IssuerId != request.IssuerId
+                    || directIdentity.GenerationId != request.StoreGenerationId
+                    || !MatchesPrepared(request.Journal,specification,directDescription,directIdentity)
+                    || !channel.TrySend(OwnerProtocolMessageType.PreparedAcknowledgement,[],out operationError))
+                    return FailOwnerPreparation(owner,channel,"integrated durable preparation ACK refused");
+                return new OwnerPreparationOutcome(true,directDescription,owner,null,string.Empty);
             }
 
             if (!ReceiveControlOrBarrier(channel, OwnerProtocolMessageType.StagedObjects,

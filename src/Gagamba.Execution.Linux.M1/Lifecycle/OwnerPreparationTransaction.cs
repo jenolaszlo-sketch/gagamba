@@ -1,4 +1,5 @@
 using System.Buffers.Binary;
+using Gagamba.Execution.Linux.M1.Bootstrap;
 using System.Diagnostics;
 using System.Text;
 using Microsoft.Win32.SafeHandles;
@@ -41,6 +42,7 @@ internal static class OwnerPreparationTransaction
     internal static int Run(int controlFd, Guid executionId, Guid leaseGeneration)
     {
         using var channel = new OwnerProtocolChannel(controlFd, executionId, leaseGeneration, ownsSocket: true);
+        if (!RecoveryInterop.Protect(controlFd,nonblocking:false)) return 20;
         if (!channel.TryReceive(OwnerProtocolMessageType.Start, out var start, out var startError)
             || !OwnerPreparationSpecificationCodec.TryDecode(start!.Payload, out var request, out startError))
         {
@@ -54,6 +56,7 @@ internal static class OwnerPreparationTransaction
             return 20;
         }
 
+        if(request.DirectIdentity is not null) request.DirectIdentity.Runtime.VerifyCurrent();
         return RunTransaction(request, channel);
     }
 
@@ -88,6 +91,10 @@ internal static class OwnerPreparationTransaction
             {
                 return 24;
             }
+
+            using var direct = request.DirectIdentity is null ? null : OwnerDirectConnection.Accept(request,channel);
+            using var safety = direct?.Safety;
+            var controllerChannel = direct?.Channel ?? channel;
 
             if (!channel.TryReceiveTransfer(
                     OwnerProtocolMessageType.StartAuthority,
@@ -147,6 +154,7 @@ internal static class OwnerPreparationTransaction
             }
 
             using var primaryLease = new DomainLease(primaryBackend!, domainIdentity!);
+            safety?.PublishDomain(primaryLease);
             var recoveryBackend = (CgroupBackend)primaryBackend!.DuplicateForRecovery();
             var domainPayload = new byte[] { checked((byte)DomainHandleTransfer.ExactDescriptorCount) };
             var domainSent = channel.TrySendTransfer(
@@ -289,8 +297,8 @@ internal static class OwnerPreparationTransaction
             var descriptions = closure.Objects.Select(staged => new StagedObjectDescription(
                 staged.Role, staged.Sha256, staged.Length, staged.Device, staged.Inode, staged.StagingName)).ToArray();
             var stagedPayload = OwnerPreparationSpecificationCodec.EncodeStagedObjects(descriptions);
-            if (!channel.TrySend(OwnerProtocolMessageType.StagedObjects, stagedPayload, out channelError)
-                || !channel.TryReceive(OwnerProtocolMessageType.ManifestAuthorization, out var authMessage, out channelError)
+            if (!controllerChannel.TrySend(OwnerProtocolMessageType.StagedObjects, stagedPayload, out channelError)
+                || !controllerChannel.TryReceive(OwnerProtocolMessageType.ManifestAuthorization, out var authMessage, out channelError)
                 || !OwnerManifestAuthorizationCodec.TryDecode(authMessage!.Payload, out var authorization, out channelError))
             {
                 SendAbort(channel, $"manifest authorization failed: {channelError}");
@@ -331,7 +339,13 @@ internal static class OwnerPreparationTransaction
                 return 41;
             }
 
-            if (!WaitAtBarrier(request, channel, "after-prepared-before-mint", out channelError))
+            safety?.ConfirmRetention();
+            if (direct is not null && (!controllerChannel.TrySend(OwnerProtocolMessageType.PreparedDescription,encodedDescription,out channelError)
+                || !controllerChannel.TryReceive(OwnerProtocolMessageType.PreparedAcknowledgement,out _,out channelError)))
+                return 41;
+            if (safety?.StopLatched == true) { SendAbort(controllerChannel,"stop latched before Mint"); return 42; }
+
+            if (!WaitAtBarrier(request, controllerChannel, "after-prepared-before-mint", out channelError))
             {
                 return 42;
             }
@@ -340,12 +354,15 @@ internal static class OwnerPreparationTransaction
                 request.IssuerId, request.StoreGenerationId, new OwnerClock());
             var publication = PreparationPublisher.Publish(
                 store, closure, manifest, identity, request.ExpiresAtNs,
-                _ => true, CancellationToken.None);
+                _ => safety?.StopLatched != true, CancellationToken.None);
             if (!publication.Published || publication.Capability is null)
             {
                 SendAbort(channel, $"owner Mint failed: {publication.Failure}/{publication.Detail}");
                 return 43;
             }
+
+            if (safety is not null && !safety.PublishCapability(publication.Capability))
+            { publication.Capability.Dispose(); SendAbort(controllerChannel,"pre-mint stop prevented usable publication"); return 43; }
 
             if (request.EnableHeldCoordinator)
             {
@@ -369,8 +386,8 @@ internal static class OwnerPreparationTransaction
                 // sole RELEASE machinery now serve a bounded release/stop
                 // decision instead of aborting unconditionally.
                 var exitCode = new HeldReleasePhase(
-                        request, channel, launcher, heldExecution, primaryLease,
-                        journal, activeWriter, publication.Capability, setupDeadline, overallDeadline)
+                        request, controllerChannel, launcher, heldExecution, primaryLease,
+                        journal, activeWriter, publication.Capability, setupDeadline, overallDeadline, safety)
                     .Run(launch.CoordinatorStatusFrame);
                 publication.Capability.Dispose();
                 GC.KeepAlive(store);

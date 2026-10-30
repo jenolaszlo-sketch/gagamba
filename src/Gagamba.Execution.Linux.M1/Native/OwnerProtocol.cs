@@ -3,6 +3,7 @@
 // It carries descriptions and acknowledgements only; capabilities and
 // release authority have no wire representation.
 using System.Buffers.Binary;
+using Gagamba.Execution.Linux.M1.Bootstrap;
 using System.Text;
 using Gagamba.Execution.Linux.M1.Preparation.Native;
 
@@ -44,6 +45,9 @@ internal enum OwnerProtocolMessageType : byte
     StopRequest = 29,
     StopDecision = 30,
     ExecutionOutcome = 31,
+    DirectBootstrap = 32, // exactly original-controller pidfd + dedicated recovery safety lifeline
+    DirectRendezvous = 33, // bounded address only; never a release endpoint
+
 }
 
 internal sealed record OwnerProtocolMessage(
@@ -86,6 +90,7 @@ internal static class OwnerProtocol
                 or OwnerProtocolMessageType.B2LifelineReady
                 or OwnerProtocolMessageType.B2SafetyStop
                 or OwnerProtocolMessageType.B2StopObserved => message.Payload.Length == 0,
+            OwnerProtocolMessageType.DirectRendezvous => message.Payload.Length is > 0 and <= 2048,
             OwnerProtocolMessageType.B2StartLifeline => message.Payload.Length is > 0 and <= 4096,
             OwnerProtocolMessageType.StagingAccounted => message.Payload.Length == 16,
             OwnerProtocolMessageType.BarrierReached => IsKnownBarrierPayload(message.Payload),
@@ -104,7 +109,8 @@ internal static class OwnerProtocol
     internal static bool IsTransferType(OwnerProtocolMessageType type) =>
         type is OwnerProtocolMessageType.StartAuthority
             or OwnerProtocolMessageType.DomainRecoveryAuthority
-            or OwnerProtocolMessageType.StagingAuthority;
+            or OwnerProtocolMessageType.StagingAuthority
+            or OwnerProtocolMessageType.DirectBootstrap;
 
     internal static byte[] Encode(OwnerProtocolMessage message)
     {
@@ -276,6 +282,30 @@ internal sealed class OwnerProtocolChannel : IDisposable
     private readonly Guid _sequencerLeaseGeneration;
     private readonly OwnerProtocolSequencer _sequencer;
     private bool _disposed;
+    private readonly DirectSession? _direct;
+    internal bool RecoveryOnly { get; set; }
+    internal static bool DirectControl(OwnerProtocolMessageType type) => type is
+        OwnerProtocolMessageType.StagedObjects or OwnerProtocolMessageType.ManifestAuthorization
+        or OwnerProtocolMessageType.PreparedDescription or OwnerProtocolMessageType.PreparedAcknowledgement
+        or OwnerProtocolMessageType.HeldReady or OwnerProtocolMessageType.AbortHeld
+        or OwnerProtocolMessageType.HeldAborted or OwnerProtocolMessageType.ReleaseRequest
+        or OwnerProtocolMessageType.ReleaseDecision or OwnerProtocolMessageType.StopRequest
+        or OwnerProtocolMessageType.StopDecision or OwnerProtocolMessageType.ExecutionOutcome
+        or OwnerProtocolMessageType.Aborted or OwnerProtocolMessageType.BarrierReached or OwnerProtocolMessageType.Continue;
+    private static bool ForbiddenRecovery(OwnerProtocolMessageType type) => type is
+        OwnerProtocolMessageType.StagedObjects or OwnerProtocolMessageType.ManifestAuthorization
+        or OwnerProtocolMessageType.HeldReady or OwnerProtocolMessageType.AbortHeld
+        or OwnerProtocolMessageType.HeldAborted or OwnerProtocolMessageType.ReleaseRequest
+        or OwnerProtocolMessageType.ReleaseDecision or OwnerProtocolMessageType.StopRequest
+        or OwnerProtocolMessageType.StopDecision or OwnerProtocolMessageType.ExecutionOutcome;
+    internal bool IsAlive => !_disposed && (_direct?.IsAlive ?? DirectSocketAlive());
+    private bool DirectSocketAlive()
+    {
+        var poll = new DirectUnix.PollFd { Fd = _socket, Events = 0x2000 };
+        return DirectUnix.Poll(ref poll, (UIntPtr)1, 0) >= 0 && (poll.Revents & (0x2000 | 0x38)) == 0;
+    }
+    internal OwnerProtocolChannel(DirectSession direct, Guid executionId, Guid leaseGeneration)
+        : this(direct.Descriptor, executionId, leaseGeneration, false) => _direct = direct;
 
     internal OwnerProtocolChannel(int socket, Guid executionId, Guid leaseGeneration, bool ownsSocket)
     {
@@ -301,7 +331,15 @@ internal sealed class OwnerProtocolChannel : IDisposable
             return false;
         }
 
+        if ((RecoveryOnly && ForbiddenRecovery(type)) || (_direct is not null && !DirectControl(type)))
+        { error = "owner channel authority role refused"; return false; }
         var frame = _sequencer.Create(type, payload);
+        if (_direct is not null)
+        {
+            try { _direct.SendControl(frame); error = string.Empty; return true; }
+            catch (Exception ex) when (ex is IOException or InvalidDataException)
+            { error = "original direct session lost"; return false; }
+        }
         return FdPassing.TrySendMessage(_socket, frame, out error);
     }
 
@@ -317,6 +355,7 @@ internal sealed class OwnerProtocolChannel : IDisposable
             return false;
         }
 
+        if (_direct is not null) { error = "no descriptor transfer on direct release session"; return false; }
         var frame = _sequencer.Create(type, payload);
         return FdPassing.TrySendTransfer(_socket, descriptors, frame, out error);
     }
@@ -354,6 +393,23 @@ internal sealed class OwnerProtocolChannel : IDisposable
             return false;
         }
 
+        if ((RecoveryOnly && allowedTypes.Any(ForbiddenRecovery))
+            || (_direct is not null && allowedTypes.Any(type => !DirectControl(type))))
+        { error = "owner receive authority role refused"; return false; }
+        if (_direct is not null)
+        {
+            try
+            {
+                if (!_direct.TryReceiveControl(timeoutMilliseconds, out var frame))
+                { error = "control record timed out"; return false; }
+                if (!OwnerProtocol.TryDecode(frame, _sequencerExecutionId, _sequencerLeaseGeneration,
+                        out var decoded, out error) || !DirectControl(decoded!.Type)
+                    || !OwnerProtocol.HasValidControlPayloadShape(decoded)) return false;
+                return _sequencer.TryAcceptDecoded(decoded, allowedTypes, out message, out error);
+            }
+            catch (Exception ex) when (ex is IOException or InvalidDataException)
+            { error = "original direct session lost"; return false; }
+        }
         if (!FdPassing.TryReceiveRecord(_socket, timeoutMilliseconds, out var record, out error))
         {
             return false;
@@ -399,6 +455,7 @@ internal sealed class OwnerProtocolChannel : IDisposable
             return false;
         }
 
+        if (_direct is not null) { error = "direct descriptors refused"; return false; }
         if (!OwnerProtocol.IsTransferType(expectedType)
             || expectedDescriptorCount <= 0
             || expectedDescriptorCount > 64
@@ -469,6 +526,7 @@ internal sealed class OwnerProtocolChannel : IDisposable
             return false;
         }
 
+        if (_direct is not null) { error = "direct descriptors refused"; return false; }
         if (!OwnerProtocol.IsTransferType(expectedTransferType)
             || expectedDescriptorCount <= 0
             || expectedDescriptorCount > 64
@@ -579,6 +637,7 @@ internal sealed class OwnerProtocolChannel : IDisposable
         }
 
         _disposed = true;
+        _direct?.Dispose();
         if (_ownsSocket)
         {
             PreparationInterop.CloseFd(_socket);

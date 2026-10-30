@@ -33,6 +33,15 @@ internal static class PidFd
 {
     // pidfd_open(2) is syscall 434 on x86_64 and arm64.
     private const long SysPidfdOpen = 434;
+    [DllImport("libc", EntryPoint = "syscall", SetLastError = true)]
+    private static extern long SignalSyscall(long number,long fd,long signal,long info,long flags);
+    internal static bool TrySignal(int fd,int signal,out string error)
+    {
+        error=string.Empty;
+        if(!OperatingSystem.IsLinux() || fd<0 || signal is <1 or >64) {error="invalid pidfd signal";return false;}
+        if(SignalSyscall(424,fd,signal,0,0)==0) return true;
+        error=$"pidfd_send_signal errno {Marshal.GetLastPInvokeError()}"; return false;
+    }
     private const short PollIn = 0x001;
     private const short PollErr = 0x008;
     private const short PollHup = 0x010;

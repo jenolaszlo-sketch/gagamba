@@ -25,6 +25,7 @@ internal sealed class ReleaseArbiter
     internal Action<string>? TestBarrier { get; set; }
     private bool _stopAccepted;
     private bool _releaseRuntimeCommitted;
+    internal bool RuntimeReleaseCommitted => Volatile.Read(ref _releaseRuntimeCommitted);
     private ReleaseDecision? _retainedRelease;
     private StopDecision? _retainedStop;
     // R1-F03 Option A: the first successfully admitted approval correlation
@@ -517,7 +518,8 @@ internal sealed class ReleaseArbiter
         && (left.IsDefault || left.AsSpan().SequenceEqual(right.AsSpan()));
 
     private ReleaseCorrelationBinding BindingFor(ImmutableArray<byte> candidate) =>
-        !_hasAdmittedCorrelation ? ReleaseCorrelationBinding.Unknown
+        !IsValidCorrelation(candidate) ? ReleaseCorrelationBinding.InvalidArgument
+        : !_hasAdmittedCorrelation ? ReleaseCorrelationBinding.Unknown
         : CorrelationEqual(_admittedCorrelation, candidate)
             ? ReleaseCorrelationBinding.Accepted
             : ReleaseCorrelationBinding.Mismatch;

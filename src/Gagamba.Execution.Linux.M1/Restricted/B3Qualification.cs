@@ -49,7 +49,8 @@ internal sealed record B3FixtureProfile(
     string InputEnrollmentId,
     ulong TotalBudgetBytes,
     int MaxObjects,
-    long ExpiresLeadNanoseconds)
+    long ExpiresLeadNanoseconds,
+    B3IntegratedProfile? IntegratedRecovery = null)
 {
     internal const string ProfileId = "ae4-linux-fixed-fixture-v1";
     internal const long MaxExpiresLeadNanoseconds = 120_000_000_000L;
@@ -59,7 +60,7 @@ internal sealed record B3FixtureProfile(
 }
 
 internal sealed record B3QualificationCreation(RestrictedExecutionOperation? Operation,
-    RestrictedRefusalReason Reason);
+    RestrictedRefusalReason Reason, B3PreparationOwner? ExperimentalOwner = null);
 
 /// <summary>Trusted internal qualification entry point. It verifies the
 /// executable, artifact, protocol and deployment identities, then returns one
@@ -143,12 +144,32 @@ internal static class B3Qualification
                 return new B3QualificationCreation(null, RestrictedRefusalReason.UnqualifiedInstallation);
             }
 
+            if(profile.IntegratedRecovery is { } integrated)
+            {
+                integrated.Runtime.VerifyCurrent();
+                foreach(var directory in new[] {profile.SourceRootPath,profile.StagingParentPath,profile.JournalDirectory,integrated.EvidenceDirectory})
+                    ExperimentalRuntimePin.VerifyPrivateDirectory(directory);
+                ExperimentalRuntimePin.VerifyPrivateClosure(integrated.Owner);
+                ExperimentalRuntimePin.VerifyPrivateClosure(integrated.Recovery);
+                if(integrated.Owner.Verify("Gagamba.Execution.Linux.M1.Owner")!=profile.OwnerDllPath
+                    || !DirectPeerIdentity.FeatureAvailable())
+                    return new B3QualificationCreation(null,RestrictedRefusalReason.UnqualifiedInstallation);
+                _=integrated.Recovery.Verify("Gagamba.Execution.Linux.M1.Recovery");
+                foreach(var assembly in new[] {typeof(B3Qualification).Assembly,typeof(RestrictedExecutionOperation).Assembly})
+                {
+                    var name=Path.GetFileName(assembly.Location);
+                    if(!integrated.Owner.Sha256.TryGetValue(name,out var ownerHash)
+                        || !integrated.Recovery.Sha256.TryGetValue(name,out var recoveryHash)
+                        || ownerHash!=recoveryHash || !VerifySha256(assembly.Location,ownerHash))
+                        return new B3QualificationCreation(null,RestrictedRefusalReason.UnqualifiedInstallation);
+                }
+            }
             var provider = new RestrictedProviderDescriptor();
             var owner = new B3PreparationOwner(profile, provider);
             return new B3QualificationCreation(
-                new RestrictedExecutionOperation(provider, owner), RestrictedRefusalReason.None);
+                new RestrictedExecutionOperation(provider, owner), RestrictedRefusalReason.None, owner);
         }
-        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or ArgumentException
+        catch (Exception ex) when (ex is IOException or InvalidDataException or System.Text.Json.JsonException or UnauthorizedAccessException or ArgumentException
             or NotSupportedException or CryptographicException)
         {
             return new B3QualificationCreation(null, RestrictedRefusalReason.InstallationUnavailable);
@@ -202,7 +223,8 @@ internal sealed class B3PreparationOwner : IRestrictedOperationOwner, IDisposabl
     private readonly object _gate = new();
     private readonly B3FixtureProfile _profile;
     private readonly RestrictedProviderDescriptor _provider;
-    private readonly M1RecoveryScope _scope = new();
+    private readonly M1RecoveryScope? _scope;
+    private readonly IntegratedB3Client? _integrated;
     private readonly OwnershipJournal _journal;
     private OwnerPreparationOutcome? _held;
     private OwnerPreparedDescription? _description;
@@ -221,6 +243,8 @@ internal sealed class B3PreparationOwner : IRestrictedOperationOwner, IDisposabl
     internal B3PreparationOwner(B3FixtureProfile profile, RestrictedProviderDescriptor provider)
     {
         _profile = profile;
+        if(profile.IntegratedRecovery is null) _scope=new M1RecoveryScope();
+        else _integrated=new IntegratedB3Client();
         _provider = provider;
         _journal = new OwnershipJournal(new JournalFileStorage(), profile.JournalDirectory);
         if (!Directory.Exists(profile.JournalDirectory))
@@ -230,6 +254,8 @@ internal sealed class B3PreparationOwner : IRestrictedOperationOwner, IDisposabl
     }
 
     internal RestrictedProviderDescriptor Descriptor => _provider;
+    internal RecoverySnapshot? InspectIntegrated()=>_integrated?.InspectRecovery();
+    internal int? PhysicalReleaseAttempts { get; private set; }
 
     public RestrictedReleaseDecision? RetainedRelease
     {
@@ -266,7 +292,8 @@ internal sealed class B3PreparationOwner : IRestrictedOperationOwner, IDisposabl
                 return false;
             }
 
-            return _scope.TryOwnerPidFdExited(held.Owner, 0, out var exited, out _) && !exited;
+            if(_integrated is not null) return _integrated.IsLive;
+            return _scope!.TryOwnerPidFdExited(held.Owner, 0, out var exited, out _) && !exited;
         }
     }
 
@@ -281,6 +308,7 @@ internal sealed class B3PreparationOwner : IRestrictedOperationOwner, IDisposabl
 
     public ValueTask<RestrictedStopReply> StopAsync(RestrictedStopReason reason)
     {
+        _integrated?.RequestNativeStop();
         var task = Task.Run(() => StopCore(reason));
         lock (_gate)
         {
@@ -300,9 +328,10 @@ internal sealed class B3PreparationOwner : IRestrictedOperationOwner, IDisposabl
             return new RestrictedOwnerPrepareResult(RestrictedPrepareKind.Failed);
         }
 
+        if(_integrated is not null) return PrepareIntegrated();
         try
         {
-            if (!_scope.TryInitialize().Ok
+            if (!_scope!.TryInitialize().Ok
                 || !_scope.TryOpenDelegatedParent(_profile.DelegatedParentPath).Ok
                 || !CgroupInterop.TryReadBootId(out var bootId, out _)
                 || !Guid.TryParse(bootId, out var bootGuid))
@@ -333,7 +362,7 @@ internal sealed class B3PreparationOwner : IRestrictedOperationOwner, IDisposabl
                     executionId,
                     leaseGeneration,
                     bootId,
-                    BuildPlan(),
+                    BuildPlan(_profile),
                     _journal,
                     writer,
                     issuerId,
@@ -419,30 +448,65 @@ internal sealed class B3PreparationOwner : IRestrictedOperationOwner, IDisposabl
 
             return new RestrictedOwnerPrepareResult(RestrictedPrepareKind.Prepared, source);
         }
-        catch (Exception ex) when (ex is IOException or InvalidOperationException or ArgumentException
+        catch (Exception ex) when (ex is IOException or InvalidDataException or System.Text.Json.JsonException or InvalidOperationException or ArgumentException
             or OverflowException or CryptographicException)
         {
             return new RestrictedOwnerPrepareResult(RestrictedPrepareKind.Failed);
         }
     }
 
-    private CopyPlan BuildPlan() => new(
-        _profile.SourceRootPath,
-        _profile.StagingParentPath,
+    private RestrictedOwnerPrepareResult PrepareIntegrated()
+    {
+        try
+        {
+            if(!CgroupInterop.TryReadBootId(out var boot,out _) || !Guid.TryParse(boot,out var bootId))
+                return new(RestrictedPrepareKind.Failed);
+            var execution=Guid.NewGuid(); var lease=Guid.NewGuid(); var issuer=Guid.NewGuid();
+            var generation=Guid.NewGuid(); var preparation=Guid.NewGuid();
+            _acceptedAtNs=MonotonicNowNanoseconds(); _expiresAtNs=checked(_acceptedAtNs+_profile.ExpiresLeadNanoseconds);
+            RestrictedManifest? manifest=null;
+            var held=_integrated!.Prepare(_profile,execution,lease,issuer,generation,_acceptedAtNs,_expiresAtNs,staged=>
+            {
+                var admitted=BuildManifest(staged,execution,issuer,generation,preparation);manifest=admitted.Manifest;return admitted;
+            });
+            if(!held.Ok || !held.Held || manifest is null || held.Description is not { } description || held.HeldReport is not { } report
+                || held.CoordinatorStatusFrame is null || !held.NoTargetInitializationMarkerAbsent
+                || report.Uid!=0 || report.EffectiveUid!=0 || report.Gid!=0 || report.EffectiveGid!=0
+                || report.NoNewPrivs!=1 || report.SeccompMode!=2 || report.Dumpable!=0 || report.CapEff!=0 || report.CapPrm!=0 || report.CapAmb!=0
+                || !CoordinatorMountVerifier.HasPrivateNamespaces(report.NamespaceInodes,out _)
+                || !CoordinatorMountVerifier.Validate(report.MountInfo,out _)
+                || !report.Cgroup.TrimEnd('\n','\r').EndsWith("/int-"+execution.ToString("N"),StringComparison.Ordinal))
+                throw new IOException("Integrated HELD establishment invalid");
+            var reference=new RestrictedPreparationReference(description.ExecutionId,description.IssuerId,description.GenerationId,
+                description.PreparationId,description.ManifestDigest);
+            var deadlines=new RestrictedDeadlines(_acceptedAtNs,_expiresAtNs,held.OwnerSetupDeadlineNs!.Value,
+                held.OwnerOverallDeadlineNs!.Value,"owner-monotonic-stopwatch-v1",bootId,lease,(ulong)Stopwatch.Frequency,generation);
+            var source=new RestrictedOwnerPreparation(reference,new RestrictedManifestView(manifest),_provider,deadlines,
+                new RestrictedEstablishmentReceipt(1,held.CoordinatorStatusFrame));
+            lock(_gate) {_held=held;_description=description;_manifest=manifest;_source=source;}
+            return new(RestrictedPrepareKind.Prepared,source);
+        }
+        catch(Exception ex) when(ex is IOException or InvalidDataException or System.Text.Json.JsonException or InvalidOperationException or ArgumentException or OverflowException or CryptographicException)
+        {_integrated!.RequestNativeStop();return new(RestrictedPrepareKind.Failed);}
+    }
+
+    internal static CopyPlan BuildPlan(B3FixtureProfile profile) => new(
+        profile.SourceRootPath,
+        profile.StagingParentPath,
         "prep-001",
         new[]
         {
-            new CopyObjectPlan("tool", _profile.ToolSourceName, B3FixtureProfile.MaxObjectBytes,
-                B3Qualification.DecodeHex(_profile.ToolSha256)),
-            new CopyObjectPlan("input", _profile.InputSourceName, B3FixtureProfile.MaxObjectBytes,
-                B3Qualification.DecodeHex(_profile.InputSha256)),
-            new CopyObjectPlan("coordinator", _profile.CoordinatorSourceName, B3FixtureProfile.MaxObjectBytes,
-                B3Qualification.DecodeHex(_profile.CoordinatorSha256)),
-            new CopyObjectPlan("filter", _profile.FilterSourceName, B3FixtureProfile.MaxObjectBytes,
+            new CopyObjectPlan("tool", profile.ToolSourceName, B3FixtureProfile.MaxObjectBytes,
+                B3Qualification.DecodeHex(profile.ToolSha256)),
+            new CopyObjectPlan("input", profile.InputSourceName, B3FixtureProfile.MaxObjectBytes,
+                B3Qualification.DecodeHex(profile.InputSha256)),
+            new CopyObjectPlan("coordinator", profile.CoordinatorSourceName, B3FixtureProfile.MaxObjectBytes,
+                B3Qualification.DecodeHex(profile.CoordinatorSha256)),
+            new CopyObjectPlan("filter", profile.FilterSourceName, B3FixtureProfile.MaxObjectBytes,
                 B3Qualification.DecodeHex(BubblewrapAdapter.FilterSha256)),
         },
-        _profile.TotalBudgetBytes,
-        _profile.MaxObjects,
+        profile.TotalBudgetBytes,
+        profile.MaxObjects,
         Array.Empty<KeyValuePair<string, string>>(),
         Acknowledge: null,
         Hooks: null);
@@ -567,7 +631,7 @@ internal sealed class B3PreparationOwner : IRestrictedOperationOwner, IDisposabl
             return RefusedResult(RestrictedRefusalReason.OwnerUnavailable);
         }
 
-        var outcome = _scope.ReleaseHeld(held, correlation);
+        var outcome = _integrated?.Release(correlation) ?? _scope!.ReleaseHeld(held, correlation);
         if (!outcome.Accepted || outcome.Decision is null)
         {
             return new RestrictedOwnerReleaseResult(RestrictedReleaseKind.Unknown,
@@ -577,6 +641,7 @@ internal sealed class B3PreparationOwner : IRestrictedOperationOwner, IDisposabl
 
         var decision = outcome.Decision;
         var facts = outcome.Outcome is null ? null : MapFacts(outcome.Outcome);
+        if(outcome.Outcome is not null) PhysicalReleaseAttempts=outcome.Outcome.PhysicalReleaseAttempts;
         lock (_gate)
         {
             _facts = facts ?? _facts;
@@ -620,7 +685,7 @@ internal sealed class B3PreparationOwner : IRestrictedOperationOwner, IDisposabl
             return new RestrictedStopReply(RestrictedStopSubmission.Refused, false, reason);
         }
 
-        var outcome = _scope.StopHeld(held, MapCause(reason));
+        var outcome = _integrated?.Stop(MapCause(reason)) ?? _scope!.StopHeld(held, MapCause(reason));
         if (!outcome.Accepted || outcome.Decision is null)
         {
             return new RestrictedStopReply(RestrictedStopSubmission.Unknown, false, reason);
@@ -649,6 +714,12 @@ internal sealed class B3PreparationOwner : IRestrictedOperationOwner, IDisposabl
             }
         }
 
+        if(_integrated is not null)
+        {
+            var integratedCleanup=_integrated.Cleanup();
+            lock(_gate) _cleanup=integratedCleanup;
+            return integratedCleanup;
+        }
         OwnerPreparationOutcome? held;
         Task<RestrictedStopReply>? pendingStop;
         lock (_gate)
@@ -676,7 +747,7 @@ internal sealed class B3PreparationOwner : IRestrictedOperationOwner, IDisposabl
         try
         {
             abort = held is { Held: true, Owner: not null }
-                ? _scope.AbortHeld(held)
+                ? _scope!.AbortHeld(held)
                 : new HeldOwnerAbortOutcome(false, false, false, "no held owner to abort");
         }
         catch (Exception)
@@ -699,7 +770,7 @@ internal sealed class B3PreparationOwner : IRestrictedOperationOwner, IDisposabl
         }
         finally
         {
-            _scope.Dispose();
+            _scope!.Dispose();
         }
 
         lock (_gate)
@@ -727,7 +798,7 @@ internal sealed class B3PreparationOwner : IRestrictedOperationOwner, IDisposabl
 
         using (writer)
         {
-            var lease = _scope.RetainedRecoveryLeases.Count == 1 ? _scope.RetainedRecoveryLeases[0] : null;
+            var lease = _scope!.RetainedRecoveryLeases.Count == 1 ? _scope.RetainedRecoveryLeases[0] : null;
             var cleaner = BuildCleaner();
             var reconciler = new Reconciler(new RealDomainClock(), TimeSpan.FromSeconds(5));
             var result = reconciler.Reconcile(read.Snapshot, bootId, lease, cleaner, _journal, writer);
@@ -752,7 +823,7 @@ internal sealed class B3PreparationOwner : IRestrictedOperationOwner, IDisposabl
 
     private IAllocationCleaner? BuildCleaner()
     {
-        if (_scope.RetainedStagingParents.Count != 1 || _scope.RetainedStagingDirectories.Count != 1)
+        if (_scope!.RetainedStagingParents.Count != 1 || _scope.RetainedStagingDirectories.Count != 1)
         {
             return null;
         }

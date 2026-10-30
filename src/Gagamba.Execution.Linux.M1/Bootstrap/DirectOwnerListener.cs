@@ -14,6 +14,7 @@ internal sealed class DirectOwnerListener : IDisposable
     private readonly FileIdentity _socketIdentity;
     private readonly string _name;
     private bool _closed;
+    internal bool CleanupConfirmed { get; private set; }
     internal string Address { get; }
     internal const int MaxAttempts = 4;
     private DirectOwnerListener(SafeFileHandle parent, SafeFileHandle directory, SafeFileHandle listener,
@@ -35,8 +36,13 @@ internal sealed class DirectOwnerListener : IDisposable
         if (PreparationInterop.OpenRelative(root, trustedParent.TrimStart('/'), (int)how.Flags, how.Resolve, out var parentFd) != 0)
             throw new IOException("Trusted rendezvous parent refused");
         var parent = new SafeFileHandle((IntPtr)parentFd, true);
+        if(PreparationInterop.StatFd(parentFd,out var parentStat)!=0 || !ExperimentalRuntimePin.TryOwner(parentFd,out var parentUid)
+            || (parentUid!=0 && parentUid!=RecoveryInterop.GetUid())
+            || ((parentStat.Mode&0x12)!=0 && !(parentUid==0 && (parentStat.Mode&0x200)!=0)))
+        {parent.Dispose();throw new IOException("Untrusted rendezvous parent refused");}
         SafeFileHandle? directory = null, listener = null;
         var name = "gagamba-" + Guid.NewGuid().ToString("N");
+        FileIdentity? createdDirectory=null,createdSocket=null;
         try
         {
             var address = Path.Combine(trustedParent, name, "owner.sock"); _ = DirectUnix.Address(address);
@@ -49,6 +55,8 @@ internal sealed class DirectOwnerListener : IDisposable
             if (PreparationInterop.StatFd(dirFd, out var dirStat) != 0 || !PreparationInterop.IsDirectory(dirStat.Mode)
                 || (dirStat.Mode & 0x1ff) != PreparationInterop.Mode0700)
                 throw new IOException("Rendezvous directory mode refused");
+            createdDirectory=dirStat;
+            if(TryIdentity(dirFd,"owner.sock",out _)) throw new IOException("Preexisting rendezvous socket refused");
             var socket = DirectUnix.Socket(1, 1 | DirectUnix.Cloexec | DirectUnix.Nonblock, 0);
             if (socket < 0) throw new IOException("Atomic CLOEXEC stream socket unavailable");
             listener = new SafeFileHandle((IntPtr)socket, true);
@@ -60,16 +68,24 @@ internal sealed class DirectOwnerListener : IDisposable
                 || (socketStat.Mode & 0x1ff) != PreparationInterop.Mode0600
                 || DirectUnix.Listen(socket, MaxAttempts) != 0)
                 throw new IOException("Protected listener creation refused");
+            createdSocket=socketStat;
             var result = new DirectOwnerListener(parent, directory, listener, name, address, dirStat, socketStat);
-            if (!result.VerifyEntry()) { result.Dispose(); throw new IOException("Listener entry substituted"); }
+            if (!result.VerifyEntry()) throw new IOException("Listener entry substituted");
             return result;
         }
         catch
         {
             listener?.Dispose();
-            // Only remove names relative to the private directory. Never follow a substituted entry.
-            if (directory is not null) { PreparationInterop.Unlink(directory.DangerousGetHandle().ToInt32(), "owner.sock"); directory.Dispose(); }
-            PreparationInterop.RemoveDirectory(parentFd, name); parent.Dispose(); throw;
+            // Remove only identities actually created and captured by this attempt. An EEXIST
+            // or substituted entry is never treated as ours, even on failure cleanup.
+            if(directory is not null && createdDirectory is { } dir
+                && TryIdentity(parentFd,name,out var current) && Same(dir,current))
+            {
+                if(createdSocket is { } socket && TryIdentity(directory.DangerousGetHandle().ToInt32(),"owner.sock",out var leaf)
+                    && Same(socket,leaf)) PreparationInterop.Unlink(directory.DangerousGetHandle().ToInt32(),"owner.sock");
+                PreparationInterop.RemoveDirectory(parentFd,name);
+            }
+            directory?.Dispose(); parent.Dispose(); throw;
         }
     }
     private static bool TryIdentity(int directory, string name, out FileIdentity identity)
@@ -97,8 +113,28 @@ internal sealed class DirectOwnerListener : IDisposable
         if (fd < 0) throw new IOException("Atomic CLOEXEC accept refused");
         return new DirectStream(fd);
     }
+    private static bool Same(FileIdentity one,FileIdentity two) => one.Device==two.Device && one.Inode==two.Inode && one.Mode==two.Mode;
+    internal void SealAssociation()
+    {
+        Dispose();
+        if(!CleanupConfirmed) throw new IOException("Rendezvous cleanup unconfirmed; association refused");
+    }
     internal static DirectStream Connect(string address, long deadline)
     {
+        if(!RecoveryInterop.IsUnprivileged) throw new IOException("Unprivileged direct connection required");
+        _=DirectUnix.Address(address);
+        if(PreparationInterop.OpenDirectory("/",out var root)!=0) throw new IOException("Connection root unavailable");
+        using var rootHandle=new SafeFileHandle((IntPtr)root,true);
+        var parent=Path.GetDirectoryName(address) ?? throw new IOException("Missing protected socket directory");
+        if(PreparationInterop.OpenRelative(root,parent.TrimStart('/'),PreparationInterop.O_RDONLY|PreparationInterop.O_DIRECTORY
+            |PreparationInterop.O_CLOEXEC,PreparationInterop.RequiredResolve,out var directory)!=0)
+            throw new IOException("Symlink/stale rendezvous directory refused");
+        using var directoryHandle=new SafeFileHandle((IntPtr)directory,true);
+        var name=Path.GetFileName(address);
+        if(PreparationInterop.StatFd(directory,out var dirStat)!=0 || (dirStat.Mode&0x1ff)!=0x1c0
+            || !ExperimentalRuntimePin.TryOwner(directory,out var uid) || uid!=RecoveryInterop.GetUid()
+            || !TryIdentity(directory,name,out var socketStat) || (socketStat.Mode&0xf1ff)!=0xc180)
+            throw new IOException("Protected rendezvous identity/mode refused");
         var fd = DirectUnix.Socket(1, 1 | DirectUnix.Cloexec | DirectUnix.Nonblock, 0);
         if (fd < 0) throw new IOException("Atomic CLOEXEC connection unavailable");
         var stream = new DirectStream(fd);
@@ -115,6 +151,9 @@ internal sealed class DirectOwnerListener : IDisposable
                 if (DirectUnix.IntOption(fd, 1, 4 /* SO_ERROR */, out error, ref length) != 0 || error != 0)
                     throw new IOException("Direct connect failed");
             }
+            if(!TryIdentity(root,parent.TrimStart('/'),out var dirAfter) || !Same(dirStat,dirAfter)
+                || !TryIdentity(directory,name,out var socketAfter) || !Same(socketStat,socketAfter))
+                throw new IOException("Rendezvous changed during connect");
             return stream;
         }
         catch { stream.Dispose(); throw; }
@@ -125,8 +164,8 @@ internal sealed class DirectOwnerListener : IDisposable
         var verified = VerifyEntry(); _closed = true; _listener.Dispose();
         if (verified)
         {
-            PreparationInterop.Unlink(_directory.DangerousGetHandle().ToInt32(), "owner.sock");
-            PreparationInterop.RemoveDirectory(_parent.DangerousGetHandle().ToInt32(), _name);
+            CleanupConfirmed=PreparationInterop.Unlink(_directory.DangerousGetHandle().ToInt32(), "owner.sock")==0
+                && PreparationInterop.RemoveDirectory(_parent.DangerousGetHandle().ToInt32(), _name)==0;
         }
         _directory.Dispose(); _parent.Dispose();
     }

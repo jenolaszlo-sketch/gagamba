@@ -127,8 +127,16 @@ internal sealed class DirectStream : IDisposable
     }
     internal bool IsAlive()
     {
-        var poll = new DirectUnix.PollFd { Fd = Descriptor, Events = 0x2000 /* RDHUP */ };
-        return !_failed && DirectUnix.Poll(ref poll, (UIntPtr)1, 0) >= 0 && (poll.Revents & (0x2000 | 0x8 | 0x10 | 0x20)) == 0;
+        var retained=false;
+        try
+        {
+            if(_failed) return false;
+            _socket.DangerousAddRef(ref retained);
+            var poll = new DirectUnix.PollFd { Fd = Descriptor, Events = 0x2000 /* RDHUP */ };
+            return !_failed && DirectUnix.Poll(ref poll, (UIntPtr)1, 0) >= 0 && (poll.Revents & (0x2000 | 0x8 | 0x10 | 0x20)) == 0;
+        }
+        catch(ObjectDisposedException) {return false;}
+        finally {if(retained) _socket.DangerousRelease();}
     }
     internal void Fail() { _failed = true; _ = DirectUnix.Shutdown(Descriptor, 2); }
     public void Dispose() { _failed = true; _socket.Dispose(); }

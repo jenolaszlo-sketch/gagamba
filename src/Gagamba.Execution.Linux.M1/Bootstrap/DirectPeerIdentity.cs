@@ -27,6 +27,8 @@ internal static class DirectPeerIdentity
 {
     internal static bool LiveReference(int fd, DirectProcessIdentity expected)
     {
+        try
+        {
         if (!PreparationInterop.HasCloexec(fd) || !PidFd.TryExited(fd, 0, out var exited, out _) || exited)
             return false;
         // fdinfo is read for an ALREADY retained kernel reference, never to reopen a numeric PID.
@@ -34,6 +36,8 @@ internal static class DirectPeerIdentity
             .SingleOrDefault(line => line.StartsWith("Pid:", StringComparison.Ordinal));
         return pid is not null && int.TryParse(pid.AsSpan(4).Trim(), out var value) && value == expected.Pid
             && PidFd.TryExited(fd, 0, out exited, out _) && !exited;
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException) { return false; }
     }
 
     internal static SafeFileHandle Verify(int socket, DirectProcessIdentity expected, int retainedPidfd)

@@ -211,6 +211,25 @@ public sealed class ReleaseAdmissionTests
         Assert.Equal(1, h.Transport.Attempts);
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void InvalidCorrelationAfterStopOrRetainedReleasePreservesDecisionAndDiagnostic(bool releaseFirst)
+    {
+        using var h=new Harness();
+        if(releaseFirst) _=h.Arbiter.RequestRelease(h.Request(CorrelationA));
+        else _=h.Arbiter.RequestStop(StopCauseKind.CallerStop);
+        var before=h.Latest(); var attempts=h.Transport.Attempts;
+        var invalid=h.Arbiter.RequestRelease(h.Request(ImmutableArray.Create(new byte[31])));
+        Assert.Equal(ReleaseCorrelationBinding.InvalidArgument,invalid.Binding);
+        Assert.Equal(releaseFirst?ReleaseDecisionKind.Duplicate:ReleaseDecisionKind.Refused,invalid.Kind);
+        Assert.Equal(attempts,h.Transport.Attempts);
+        Assert.Equal(OwnershipSnapshotCodec.Encode(before),OwnershipSnapshotCodec.Encode(h.Latest()));
+        var duplicate=h.Arbiter.RequestRelease(h.Request(CorrelationA));
+        Assert.Equal(ReleaseDecisionKind.Duplicate,duplicate.Kind);
+        Assert.Equal(attempts,h.Transport.Attempts);
+    }
+
     [Fact]
     public void DeadlineAndPrerequisiteRefusalsCarryTypedReasonsWithoutRetention()
     {

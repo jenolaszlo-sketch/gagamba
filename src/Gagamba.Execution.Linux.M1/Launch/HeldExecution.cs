@@ -10,6 +10,8 @@ internal sealed class HeldExecution : IDisposable, IReleaseWriteChannel
 {
     private SafeFileHandle? _controlWriter;
     private int _releaseAttempted;
+    private int _physicalReleaseAttempts;
+    internal int PhysicalReleaseAttempts=>Volatile.Read(ref _physicalReleaseAttempts);
     private bool _disposed;
 
     internal HeldExecution(
@@ -59,6 +61,7 @@ internal sealed class HeldExecution : IDisposable, IReleaseWriteChannel
             return ReleasePipeWriteResult.Unknown;
         }
 
+        Interlocked.Increment(ref _physicalReleaseAttempts);
         return ReleasePipeWrite.WriteOnce(
             checked((int)writer.DangerousGetHandle()), frame);
     }

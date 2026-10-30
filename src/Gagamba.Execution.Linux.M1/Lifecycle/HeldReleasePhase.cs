@@ -45,6 +45,7 @@ internal sealed class HeldReleasePhase
     private readonly long _setupDeadline;
     private readonly long _overallDeadline;
     private bool _pendingAbortHeld;
+    private readonly OwnerSafetyMonitor? _safety;
 
     internal HeldReleasePhase(
         OwnerPreparationSpecification request,
@@ -56,8 +57,10 @@ internal sealed class HeldReleasePhase
         JournalWriterLease writer,
         PreparedTransaction capability,
         long setupDeadline,
-        long overallDeadline)
+        long overallDeadline,
+        OwnerSafetyMonitor? safety = null)
     {
+        _safety = safety;
         _request = request;
         _channel = channel;
         _launcher = launcher;
@@ -68,7 +71,7 @@ internal sealed class HeldReleasePhase
         _capability = capability;
         _setupDeadline = setupDeadline;
         _overallDeadline = overallDeadline;
-        if (PidFd.TryOpen(RecoveryInterop.GetParentPid(), out var parentFd, out _)
+        if (safety is null && PidFd.TryOpen(RecoveryInterop.GetParentPid(), out var parentFd, out _)
             && PreparationInterop.HasCloexec(parentFd))
         {
             _scopePidFd = new SafeFileHandle(new IntPtr(parentFd), ownsHandle: true);
@@ -79,6 +82,7 @@ internal sealed class HeldReleasePhase
         {
             TestBarrier = HandleArbiterBarrier,
         };
+        safety?.BindArbiter(_arbiter);
     }
 
     /// <summary>Sends the owner-origin HELD establishment frame, then serves
@@ -86,6 +90,7 @@ internal sealed class HeldReleasePhase
     /// the retained overall deadline. Returns the owner process exit code.</summary>
     internal int Run(byte[] coordinatorStatusFrame)
     {
+        if (_safety?.StopLatched == true) return Abort();
         var heldReadyPayload = new byte[17 + coordinatorStatusFrame.Length];
         heldReadyPayload[0] = 1; // independent fixture constructor-marker oracle checked before HELD is accepted
         System.Buffers.Binary.BinaryPrimitives.WriteUInt64LittleEndian(
@@ -100,7 +105,7 @@ internal sealed class HeldReleasePhase
 
         while (true)
         {
-            if (_pendingAbortHeld)
+            if (_pendingAbortHeld || _safety?.StopLatched == true)
             {
                 return Abort();
             }
@@ -178,6 +183,7 @@ internal sealed class HeldReleasePhase
         SendReleaseDecision(decision);
         if (decision.Kind == ReleaseDecisionKind.Released)
         {
+            _safety?.Released();
             var facts = ObserveExecution(decision);
             PersistObservations(facts, decision);
             SendExecutionOutcome(facts);
@@ -208,10 +214,12 @@ internal sealed class HeldReleasePhase
     /// has not exited. Anything unavailable refuses by construction.</summary>
     private ReleasePrerequisites Prerequisites()
     {
-        var resources = _primaryLease.TryReadWp04Limits(out _, out _);
+        var resources = _safety?.ResourcesValid ?? _primaryLease.TryReadWp04Limits(out _, out _);
         var capture = _execution.StdoutReader is { IsClosed: false, IsInvalid: false }
             && _execution.StderrReader is { IsClosed: false, IsInvalid: false }
             && _execution.CoordinatorStatusReader is { IsClosed: false, IsInvalid: false };
+        if (_safety is not null)
+            return new ReleasePrerequisites(resources,capture,_safety.ControllerAlive,_safety.RecoveryAlive);
         var recoveryAlive = false;
         if (_scopePidFd is not null)
         {
@@ -361,7 +369,7 @@ internal sealed class HeldReleasePhase
             stdoutReadFailure || stderrReadFailure,
             stdoutEof && stdout.Length > 0 ? SHA256.HashData(stdout) : null,
             stderrEof && stderr.Length > 0 ? SHA256.HashData(stderr) : null,
-            ObservedAtNanoseconds: NowNanoseconds());
+            ObservedAtNanoseconds: NowNanoseconds(),PhysicalReleaseAttempts:_execution.PhysicalReleaseAttempts);
     }
 
     private static RestrictedOutcome Classify(DeliveryResult delivery, ExecTag exec, RootKind root, int exitCode)

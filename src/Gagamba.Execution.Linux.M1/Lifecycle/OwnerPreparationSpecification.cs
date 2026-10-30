@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Gagamba.Execution.Linux.M1.Bootstrap;
 using System.Text.Json.Serialization;
 using Gagamba.Execution.Linux.M1.Native;
 using Gagamba.Execution.Linux.M1.Preparation;
@@ -30,7 +31,8 @@ internal sealed record OwnerPreparationSpecification(
     long ExpiresAtNs,
     string? TestBarrier = null,
     bool EnableHeldCoordinator = false,
-    long AcceptedAtNs = 0);
+    long AcceptedAtNs = 0,
+    OwnerDirectIdentity? DirectIdentity = null);
 
 internal sealed record OwnerManifestAuthorization(
     RestrictedManifest Manifest,

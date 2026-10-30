@@ -2,6 +2,7 @@ using System.Text.Json;
 using Gagamba.Execution.Linux.M1.Bootstrap;
 using Gagamba.Execution.Linux.M1.Native;
 
+if (args.Length == 1 && args[0] == "--int01-controller") return await IntegratedControllerProbe.Run();
 if (args.Length == 1 && args[0] == "--direct-peer") return DirectAuthProbe.Run();
 if (args.Length != 1 || args[0] != "--controller" || !RecoveryInterop.Supported) return 2;
 try

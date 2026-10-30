@@ -25,6 +25,10 @@ int main(int argc, char **argv)
         return 3;
     }
 
+    /* Keep the fixed positive fixture observable briefly after exec, so the
+     * coordinator can corroborate /proc/<child>/exe without waiting for exit.
+     * This is finite test behavior; no production target cooperation is claimed. */
+    usleep(200000);
     printf("gagamba-m1-fixture: useful-work\n");
     return 0;
 }

@@ -30,6 +30,7 @@ PROCESS_GLOBAL_CLASSES=(
   Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05TerminationObserverTests
   Gagamba.Execution.Linux.M1.Tests.Launch.Wp05SigpipeDispositionTests
   Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests
+  Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests
 )
 
 for class_name in "${PROCESS_GLOBAL_CLASSES[@]}"; do

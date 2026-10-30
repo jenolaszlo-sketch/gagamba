@@ -24,6 +24,7 @@
 #include <time.h>
 #include <unistd.h>
 #include "release_protocol.h"
+#include "b3-exec-confirm.h"
 
 #define CONFIG_TOOL_DEV 98u
 #define CONFIG_TOOL_INO 106u
@@ -256,48 +257,33 @@ static int launch_target(int *child_pid, uint32_t *exec_errno)
         close(confirm[0]);
         close(3); /* config memfd */
         close(5); /* coordinator status writer stays with the coordinator */
-        int flags = fcntl(confirm[1], F_GETFD);
-        if (flags >= 0) (void)fcntl(confirm[1], F_SETFD, flags & ~FD_CLOEXEC);
+        /* pipe2 atomically sets CLOEXEC. Keep it set through execve. */
         char *argv[] = { (char *)"/tool", NULL };
         char *envp[] = { NULL };
         execve("/tool", argv, envp);
         uint32_t failure = (uint32_t)errno;
-        ssize_t ignored = write(confirm[1], &failure, sizeof(failure));
-        (void)ignored;
+        ssize_t written;
+        do { written = write(confirm[1], &failure, sizeof(failure)); } while (written < 0 && errno == EINTR);
+        (void)written;
         _exit(127);
     }
 
     close(confirm[1]);
-    uint32_t failure = 0;
-    size_t got = 0;
-    while (got < sizeof(failure))
-    {
-        ssize_t count = read(confirm[0], ((unsigned char *)&failure) + got, sizeof(failure) - got);
-        if (count < 0 && errno == EINTR) continue;
-        if (count < 0)
-        {
-            close(confirm[0]);
-            kill(pid, SIGKILL);
-            (void)waitpid(pid, NULL, 0);
-            return -1;
-        }
-        if (count == 0) break;
-        got += (size_t)count;
-    }
-    close(confirm[0]);
-    if (got == 0)
-    {
-        *child_pid = pid;
-        *exec_errno = 0;
-        return 0;
-    }
-
-    /* execve failed: reap the child and report the trusted errno. */
-    int status = 0;
-    while (waitpid(pid, &status, 0) < 0 && errno == EINTR) { }
     *child_pid = pid;
-    *exec_errno = failure;
-    return 1;
+    uint64_t tool_dev = 0, tool_ino = 0;
+    for (unsigned i = 0; i < 8; ++i) {
+        tool_dev |= (uint64_t)cfg[CONFIG_TOOL_DEV + i] << (8 * i);
+        tool_ino |= (uint64_t)cfg[CONFIG_TOOL_INO + i] << (8 * i);
+    }
+    int observed = b3_observe_exec(pid, confirm[0], (dev_t)tool_dev, (ino_t)tool_ino, deadline_ns, exec_errno);
+    close(confirm[0]);
+    if (observed < 0) {
+        /* Unknown exec is not Confirmed. Collect only this direct fixture child. */
+        (void)kill(pid, SIGKILL);
+        while (waitpid(pid, NULL, 0) < 0 && errno == EINTR) { }
+    }
+    /* The caller collects the root status once, including execve failure. */
+    return observed;
 }
 
 static int wait_target(pid_t pid, int *raw_status)

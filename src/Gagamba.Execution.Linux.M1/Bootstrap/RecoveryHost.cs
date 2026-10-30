@@ -59,6 +59,9 @@ internal static class RecoveryHost
             || !association.Authenticate(payload)) return 3;
         CryptographicOperations.ZeroMemory(payload); CryptographicOperations.ZeroMemory(frame);
 
+        if(config.Integrated is not null)
+            return IntegratedRecoveryHost.Run(config,scope,wire,control,controllerFd,ownerPath);
+
         Process owner;
         OwnerProtocolChannel? ownerChannel = null;
         if (config.DelegatedParent is not null)
