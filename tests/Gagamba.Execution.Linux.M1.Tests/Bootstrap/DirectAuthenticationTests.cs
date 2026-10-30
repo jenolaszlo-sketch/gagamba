@@ -146,7 +146,7 @@ public sealed class DirectAuthenticationTests
         Assert.True(FdPassing.TrySendTransfer(pair[1], [sentinel[0]], Packet([1]), out var error), error);
         Assert.Throws<IOException>(() => receiver.TryReceive(DirectStream.Deadline(100), out _));
         // Count only this unique live socket inode. Unrelated tests may open/close other FDs.
-        Assert.Single(Directory.GetFiles("/proc/self/fd").Where(path=>new FileInfo(path).LinkTarget==identity));
+        Assert.Single(Directory.GetFiles("/proc/self/fd"),path=>new FileInfo(path).LinkTarget==identity);
     }
     [Fact] public void ListenerModesAndSymlinkSubstitutionRefuse()
     {
