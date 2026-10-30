@@ -3,28 +3,48 @@
 Canonical current summary; historical decisions and independent reviews remain immutable.
 Status date: 2026-10-30 (Asia/Manila).
 
-## RC2B-03-INT-01 architecture gate
+## RC2B-03-INT-01 owner architecture disposition
 
-**BLOCKED BY CONTRACT DELTA.** The separately commissioned integration reached the
-mandatory architecture gate at baseline `98d46f308d27d7ac3fd95079d6bc5b5d9bad482d`;
-[source-bound gate evidence and INT-01-D01 review request](evidence/rc2b-03-int-01.md).
-No topology/source/test implementation was made. The controller-parented candidate
-changes RC-1 §RC-D05's requirement that independent recovery spawn/subreap the owner,
-including reaping and owner-exit/writer-takeover assumptions. It is proposed for
-bounded independent security review and owner approval, not approved for implementation.
-Recovery-parented ownership remains an alternative, but the existing B2 secret and
-owner endpoint are not independent controller-to-owner authentication; its concrete
-bootstrap/trust basis requires review under the applicable installation gates.
+**ALTERNATIVE B APPROVED WITH QUALIFICATIONS FOR BOUNDED EXPERIMENTAL IMPLEMENTATION**
+under **GAGAMBA-RC2B-03-INT-01-D01-OWNER-01**;
+[owner decision](decisions/rc2b-03-int-01-d01-owner-decision.md).
+**Alternative A DECLINED AS PROPOSED.** No RC-1 process-ownership amendment is approved
+or required for B. The original [D01 gate](evidence/rc2b-03-int-01.md) and
+[Q1 review](reviews/rc2b-03-int-01-d01-independent-review.md) remain historical and unchanged.
+Q1 is SUPPORTED WITH QUALIFICATIONS, recommends B and discloses same-conversation
+gate/reassessment provenance. The architectural question is resolved for experimental
+implementation; the next task is to build and qualify B, not reconsider A.
 
-**F-01 remains MAJOR and OPEN; F-02/F-03/F-07/F-08 remain unresolved.** F-04–F-06,
-M-01 closure and B3 acceptance retain their prior dispositions. No integrated native
-execution or process-failure tests ran. The historical WSL2 delegated parent is absent
-and default invocation is root; no delegation was provisioned. This is an additional
-native prerequisite, not a substitute explanation for the contract stop.
+Preserve recovery-parented ownership, verified subreaping/reaping and retained native
+domain/staging authority. The owner alone retains preparation capability, journal
+writer and sole RELEASE writer. Require an owner-created protected SOCK_STREAM
+listener, fresh direct controller/owner connection, exact expected PID/UID/GID and
+feature-tested fail-closed `SO_PEERPIDFD` checks, immutable original identity/session,
+one-use direct challenge and cryptographic confirmation, bounded stream framing and
+sequencing, no resumed authority and no release secret/endpoint through recovery.
+Real B3 must run under surviving B2 recovery; safety monitoring/native stop remain
+independent of preparation, owner exchanges, capture/observation and controller callbacks.
 
-Next: independent review of **INT-01-D01**, then owner disposition before the
-contract-changing dependency resumes. No independent review or owner approval is
-claimed. **B4: NOT STARTED. Production restricted execution remains unavailable.**
+Retain C1–C4 owner-local arbitration: accepted loss blocks later release; loss observed
+before the final prerequisite check blocks release; an already committed release keeps
+its original decision and subsequent safety-stop obligations. A pidfd poll/death event
+is not atomic with physical RELEASE. No absolute wall-clock death-before-write
+exclusion is claimed; stronger ordering needs a separately reviewed enforceable fence.
+Preserve Option A, original deadlines, one RELEASE and no reconstructed authority.
+
+Exact pinned experimental artifacts/runtime/native closure, protected bootstrap,
+kernel features, immutable expected identities, unprivileged execution and already
+authorized delegated cgroups are mandatory. Refuse unmet prerequisites. Full B6
+production attestation is not required to begin; the caller-populated B3 profile is
+not production attestation. No public provider activation is authorized.
+
+**Next: GAGAMBA-RC2B-03-INT-01-B-IMPL-01 — AUTHORIZED FOR BOUNDED IMPLEMENTATION,
+NOT STARTED.** This decision implements nothing and qualifies no security claim.
+Q1-F01–F06 remain recorded with owner dispositions in decision §8. B3 F-01 remains
+MAJOR/OPEN pending genuine integrated process tests, independent review and owner
+acceptance; F-02/F-03/F-07/F-08 remain unresolved. M-01 CLOSED; R1-F02 globally OPEN.
+No B4/B5/B6/B7, Hufu or production activation is authorized. **B4: NOT STARTED.**
+Production restricted execution remains unavailable. Stop after this decision delivery.
 
 ## RC2B-03 B3 current disposition
 
@@ -80,23 +100,14 @@ integrated live-release qualification, topology-dependent B4, Hufu or production
 | F-07 OBSERVATION | Recovery-death test proves topology separation; clarify/rename alongside genuine integrated recovery-loss testing. |
 | F-08 OBSERVATION | Coordinator clears exec-confirmation `FD_CLOEXEC`, leaking an extra target fd and weakening the oracle. Still uncorrected; fix before affected FD 0–2 native qualification claims. |
 
-**RC2B-03-INT-01: Integrated controller/recovery/owner supervision — BLOCKED BY
-CONTRACT DELTA at the commissioned architecture gate; topology implementation not started.**
-See the current gate disposition above. Required outcomes and failure qualification are in
-owner decision §7. Establish one coherent lifecycle, independently surviving recovery
-with retained stop/domain authority, private controller-to-owner release association,
-genuine recovery-loss awareness, correct liveness identities, single/concurrent failure
-safety and accurate cleanup/uncertainty evidence. Preserve C1–C4/Option A; no release
-after loss of the genuine recovery obligation and no reconstruction from passive records,
-PIDs, paths or reconnect. Replace the separation demonstration with a real integrated
-recovery-death case. Include F-02/F-07; schedule bounded F-03/F-08 corrections before
-affected claims. F-04–F-06 retain B6/provenance gates.
-
-Architecture alternatives in the review require assessment, not approval. Select the
-simplest architecture preserving RC-1; recovery must not become a release proxy or
-receive a bearer. A change to accepted RC-1 security semantics requires a scoped design
-delta and independent review. Integration precedes B4 work dependent on final topology.
-**B4: NOT STARTED**; no automatic implementation authorization is granted.
+**RC2B-03-INT-01-B-IMPL-01: AUTHORIZED FOR BOUNDED IMPLEMENTATION, NOT STARTED.**
+The [D01 owner decision](decisions/rc2b-03-int-01-d01-owner-decision.md) selects B with
+the constraints in the current summary above and decision §§3–9. Build and qualify
+the real recovery-parented B3 lifecycle, direct authentication, live independent
+monitoring and retention barriers; test actual process failures and correct the
+commissioned F-02/F-03/F-07/F-08 follow-ups. The historical gate and Q1 review remain
+unchanged. Architecture approval does not close F-01 or authorize B4. No implementation
+or integrated native qualification occurred in this owner-decision task.
 
 **Restrictions preserved:** no integrated B2/B3 topology or fully independent B3 recovery
 supervision; no hostile populated-domain stopping or complete failure cleanup; no B4

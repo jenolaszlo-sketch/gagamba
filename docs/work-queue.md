@@ -12,12 +12,23 @@
 > is controller-owned and the recovery-death case demonstrates topology separation only.
 > Resolve F-01 before further integrated live-release qualification, topology-dependent B4,
 > Hufu or production. F-02/F-03 minor follow-ups and F-04–F-08 observations remain recorded.
-> **RC2B-03-INT-01: BLOCKED BY CONTRACT DELTA** at the commissioned architecture gate;
-> [INT-01-D01 evidence and review request](evidence/rc2b-03-int-01.md).
-> Controller-parented ownership changes RC-1 spawn/subreap/reaping obligations; independent
-> security review and owner approval are required before that dependency resumes.
-> No source/test/topology implementation or integrated native qualification occurred.
-> F-01 remains MAJOR and OPEN; F-02/F-03/F-07/F-08 remain unresolved. **B4: NOT STARTED.**
+> **RC2B-03-INT-01: ALTERNATIVE B APPROVED WITH QUALIFICATIONS FOR BOUNDED
+> EXPERIMENTAL IMPLEMENTATION**; [D01 owner decision](decisions/rc2b-03-int-01-d01-owner-decision.md).
+> **Alternative A DECLINED AS PROPOSED**; no RC-1 process-ownership amendment approved or required for B.
+> Original [D01 gate](evidence/rc2b-03-int-01.md) and [Q1 review](reviews/rc2b-03-int-01-d01-independent-review.md)
+> remain unchanged. Require recovery-parented B3, actual retained native authority,
+> direct exact-peer/`SO_PEERPIDFD` authentication, one-use cryptographic session confirmation,
+> bounded stream framing and independent live safety monitoring; no release bearer through recovery.
+> Preserve C1–C4 owner-local loss/release ordering and subsequent stop obligations;
+> no absolute wall-clock death/write exclusion is claimed. Exact experimental pins/protected
+> bootstrap and unprivileged already-delegated resources are mandatory; full B6 production
+> attestation is not a prerequisite to begin. Refuse experiments if requirements are unmet.
+> **Next: GAGAMBA-RC2B-03-INT-01-B-IMPL-01 — AUTHORIZED FOR BOUNDED IMPLEMENTATION, NOT STARTED.**
+> No source/test/topology implementation or integrated native qualification occurred in this decision.
+> F-01 remains MAJOR/OPEN pending genuine integrated process tests and independent review;
+> F-02/F-03/F-07/F-08 unresolved; M-01 CLOSED; R1-F02 globally OPEN. Preserve Option A.
+> **B4: NOT STARTED.** No B4/B5/B6/B7, Hufu or production activation authorized.
+> Stop after this decision delivery; build and qualify B in the next task.
 > Native/production restrictions remain; `RestrictedExecutionRuntime.Create()` stays unavailable.
 > Entries below are retained historical checkpoints; earlier current/next-work wording
 > does not supersede the canonical current summary or this owner decision.
