@@ -1,7 +1,61 @@
 # Gagamba project status
 
 Canonical current summary; historical decisions and independent reviews remain immutable.
-Status date: 2026-10-29 (Asia/Manila).
+Status date: 2026-10-30 (Asia/Manila).
+
+## RC2B-03 B3 current disposition
+
+**RC2B-03 B3 IMPLEMENTATION COMPLETE; NOT SELF-APPROVED; READY FOR INDEPENDENT
+REVIEW WITH NATIVE ENFORCEMENT RESTRICTIONS (owner review required).** The
+[source-bound evidence](evidence/rc2b-03-b3.md) records the acceptance-relevant
+facts at baseline `4067f81a8eb095e010db64afd67fd60dcbccbd4`, M-01 closure
+`880babe9c170756e007dc2b563f92a1e7466990c`, implementation
+`fcfe289ea10b5240054f8d985678ac3361d7ca9f` (tree
+`d6f66a4abed83f7f6ffe4468154e9cc17114cbed`) and held-phase serialization fix
+`a67a640c3de69ee268842fda8ffd189f29e6c9d8` (tree
+`05535a2592a58565650d59994cb1fb1af099ef60`).
+
+Within the declared WSL2 scope: M-01 is **CLOSED** (guarded descriptor plus
+focused regression tests); the authoritative owner transaction now serves a
+bounded HELD release/stop phase through the existing `ReleaseArbiter` and
+`HeldExecution` with an owner-local capability, one durable release intent,
+exactly one physical RELEASE write, coordinator-derived exec/root observations
+persisted as separate durable facts, and abort/stop/deadline/controller-loss
+safety paths. **R1-F03 Option A is implemented** in pre-retention admission at
+both the operation and owner-arbiter levels (mismatch refuses only that call;
+no consumption, retention, replacement, RELEASE or deadline reset; absent and
+all-zero 32 bytes remain distinct present/absent forms). The B1 public facade
+gains typed admission and owner-observed axes while
+`RestrictedExecutionRuntime.Create()` still returns the unavailable production
+provider; the B3 composition is reachable only through the explicit internal
+pinned profile `ae4-linux-fixed-fixture-v1`.
+
+A real target executed exactly once after an authorized release
+(ExecConfirmed + RootWait raw status from the coordinator, fixture output
+digests, wrapper reaper exit, domain observed empty, durable release/exec/root
+records); stop-before-release, stop-during-arbitration (deterministic barrier),
+release-then-stop, controller loss, owner death and held-deadline expiry all
+preserve the C1–C4 and one-write invariants. The report/recovery separation
+finding is explicit: a release-capable controller-to-owner association cannot
+be added to the current B2 topology without giving the recovery process
+manufacture/replay power or passing a bearer through it, so that dependent
+integration is stopped and reported; the recovery process retains zero release
+authority, demonstrated with a live B2 recovery whose death during HELD changed
+nothing.
+
+**Not established (carried forward):** B4 protected capture/complete
+independent stop; B5 sealed C3 durable deadline/reconciliation (the retained
+clock is the owner `Stopwatch` monotonic clock and is not C3); B6 installation/
+deployment attestation; B7 full lifecycle qualification; independent native
+Linux-host qualification (WSL2 only; no native host selected); Hufu D4a/D4b;
+same-UID hostile-process isolation; production activation. Populated-domain
+stopping is exercised only for the cooperative fixture; hostile-population
+stopping and capture integrity are not claimed. Verification evidence: Windows
+981/0/91 M1 parallel (plus process-global classes) and all other projects
+green; WSL2 qualified profile 1072/0/0 parallel plus every process-global class
+0 failed, `eng/qualify-b2.py` 22/22 and 24/24 with delegation. Two failed
+initial attempts (single-mutation exec/root persistence; disposal
+stop/abort interleave) are preserved in the evidence with their corrections.
 
 ## RC2B-02 B2 current disposition
 
@@ -44,14 +98,14 @@ Empty-domain kill/readback proves neither populated stopping nor complete cleanu
 The B1 public facade remains safely disabled for live restricted execution, and no
 production security claim is expanded.
 
-**RC2B-03 B3: NEXT PROPOSED IMPLEMENTATION, NOT STARTED.** The intended next commission
-connects the accepted B1 facade and B2 topology to real owner preparation and one-shot
-release composition, preserving the identity/evidence, C1-C4, approved Option A,
-no repeated RELEASE, recovery-without-release-authority and loss-safety requirements
-in the owner decision. Bounded local WSL2 development is permitted under that future
-commission; an actual suitable independent native Linux host and capabilities must
-be selected before claiming native qualification. No host is selected here.
-B4/B5/B6/B7 and Hufu gates remain separate; this decision starts no B3 implementation.
+**RC2B-03 B3: implemented under a separate bounded commission** (see the current
+disposition above and the [evidence](evidence/rc2b-03-b3.md)); the B3 implementation
+connects the accepted B1 facade and B2 topology to real owner preparation and a
+one-shot release composition, preserving the identity/evidence, C1-C4, approved
+Option A, no-repeated-RELEASE and recovery-without-release-authority requirements.
+Bounded local WSL2 development/qualification was used; no independent native Linux
+host has been selected and none is claimed. B4/B5/B6/B7 and Hufu gates remain
+separate.
 
 ## RC2B-01 B1 current disposition
 
@@ -141,7 +195,7 @@ Existing R2A-F01/F02/F04 and R1-F01/F05 dispositions remain scoped.
 | RC2A-04 local package/clean consumer/mixed graph | **ACCEPTED WITH QUALIFICATIONS**; [owner decision](decisions/rc2a-04-owner-acceptance.md), qualifications unchanged |
 | RC2B / RC-2B facade | B1 contract/refusal boundary **ACCEPTED WITH QUALIFICATIONS** ([decision](decisions/rc2b-01-b1-owner-acceptance.md)); R1-F03 Option A APPROVED (semantic only, unwired); R1-F02 native enforcement OPEN; native/lifecycle gates remain unqualified |
 | RC2B-02 (B2) | **ACCEPTED WITH QUALIFICATIONS**; [owner decision](decisions/rc2b-02-b2-owner-acceptance.md); M-01 accepted nonblocking follow-up, still OPEN; native/operational exclusions retained |
-| RC2B-03 (B3) | **NEXT PROPOSED IMPLEMENTATION, NOT STARTED**; real owner preparation and one-shot release composition; M-01 correction required before operational connection-method use; separate commission and qualification gates |
+| RC2B-03 (B3) | **IMPLEMENTATION COMPLETE; NOT SELF-APPROVED; READY FOR INDEPENDENT REVIEW WITH NATIVE ENFORCEMENT RESTRICTIONS**; implementation `fcfe289e`, held-phase fix `a67a640c`; M-01 CLOSED; R1-F03 Option A implemented; one physical RELEASE verified; B4/B5/B6/B7 and native-host gates carried forward ([evidence](evidence/rc2b-03-b3.md)) |
 | HUFU-R / R1-F06, AE4-B01 and Hufu integration | OPEN/BLOCKED; no integration authorization |
 | Native C1 review, C3/C4 and broader native track | Separate commissions/dispositions; not accepted by RC2A-03 |
 | GAGAMBA-INTEGRATION-01 | Stage 2A preservation verified; accepted baseline and 23 preservation refs published under Stage 2B authorization; final verification and CI outcome recorded separately |
@@ -192,9 +246,10 @@ RC2A-04 is subsequently ACCEPTED WITH QUALIFICATIONS in the linked owner decisio
 RC2B-01 B1 is then ACCEPTED WITH QUALIFICATIONS with R1-F03 Option A approved as a semantic
 contract in [the B1 owner decision](decisions/rc2b-01-b1-owner-acceptance.md). B2 is now
 ACCEPTED WITH QUALIFICATIONS in [the B2 owner decision](decisions/rc2b-02-b2-owner-acceptance.md).
-The next proposed implementation is **RC2B-03 B3, NOT STARTED**, requiring a separate
-bounded commission and the carried-forward prerequisites. Native and Hufu gates
-retain their independent dispositions; no production activation is authorized.
+RC2B-03 B3 is subsequently implemented under a separate bounded commission (current
+disposition above; implementation `fcfe289e`, held-phase fix `a67a640c`), awaiting
+independent review; no self-approval is recorded. Native and Hufu gates retain their
+independent dispositions; no production activation is authorized.
 
 Maintain this file as the single current project summary; handoff/work-queue point here.
 Keep accepted decisions, qualification packages and independent reviews immutable.

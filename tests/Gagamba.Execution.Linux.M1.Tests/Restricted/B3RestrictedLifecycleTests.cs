@@ -155,7 +155,13 @@ public sealed class B3RestrictedLifecycleTests
 
         public void Dispose()
         {
-            try { Directory.Delete(Path, true); } catch { }
+            // Qualification runs may retain the directory (bounded evidence
+            // files only) for independent inspection.
+            if (Environment.GetEnvironmentVariable("GAGAMBA_B3_KEEP_EVIDENCE") != "1")
+            {
+                try { Directory.Delete(Path, true); } catch { }
+            }
+
             GC.SuppressFinalize(this);
         }
     }
@@ -316,6 +322,26 @@ public sealed class B3RestrictedLifecycleTests
         var prepared = Assert.IsType<PreparedRestrictedExecution>(
             (await operation.PrepareAsync(new("enrolled-tool", "enrolled-input"),
                 waitCancellation: TestContext.Current.CancellationToken)).Preparation);
+        File.WriteAllText(System.IO.Path.Combine(fixture.Evidence.Path, "b3-preparation.json"),
+            System.Text.Json.JsonSerializer.Serialize(new
+            {
+                prepared.Reference.ExecutionId,
+                prepared.Reference.IssuerId,
+                prepared.Reference.GenerationId,
+                prepared.Reference.PreparationId,
+                ManifestSha256 = Convert.ToHexString(prepared.Reference.ManifestSha256.AsSpan()),
+                prepared.Deadlines.AcceptedAtNs,
+                prepared.Deadlines.PreparationExpiresAtNs,
+                prepared.Deadlines.SetupDeadlineNs,
+                prepared.Deadlines.OverallDeadlineNs,
+                prepared.Deadlines.ClockId,
+                BootId = prepared.Deadlines.BootId,
+                prepared.Deadlines.EpochId,
+                prepared.Deadlines.FrequencyHz,
+                DeadlineGenerationId = prepared.Deadlines.GenerationId,
+                EstablishmentSha256 = Convert.ToHexString(prepared.Establishment.Sha256.AsSpan()),
+                EstablishmentBytes = prepared.Establishment.Bytes.Length,
+            }));
         // Owner-origin identity: non-empty complete identity and the exact digest.
         Assert.NotEqual(Guid.Empty, prepared.Reference.ExecutionId);
         Assert.NotEqual(Guid.Empty, prepared.Reference.PreparationId);
