@@ -3,6 +3,29 @@
 Canonical current summary; historical decisions and independent reviews remain immutable.
 Status date: 2026-10-30 (Asia/Manila).
 
+## RC2B-03-INT-01 architecture gate
+
+**BLOCKED BY CONTRACT DELTA.** The separately commissioned integration reached the
+mandatory architecture gate at baseline `98d46f308d27d7ac3fd95079d6bc5b5d9bad482d`;
+[source-bound gate evidence and INT-01-D01 review request](evidence/rc2b-03-int-01.md).
+No topology/source/test implementation was made. The controller-parented candidate
+changes RC-1 §RC-D05's requirement that independent recovery spawn/subreap the owner,
+including reaping and owner-exit/writer-takeover assumptions. It is proposed for
+bounded independent security review and owner approval, not approved for implementation.
+Recovery-parented ownership remains an alternative, but the existing B2 secret and
+owner endpoint are not independent controller-to-owner authentication; its concrete
+bootstrap/trust basis requires review under the applicable installation gates.
+
+**F-01 remains MAJOR and OPEN; F-02/F-03/F-07/F-08 remain unresolved.** F-04–F-06,
+M-01 closure and B3 acceptance retain their prior dispositions. No integrated native
+execution or process-failure tests ran. The historical WSL2 delegated parent is absent
+and default invocation is root; no delegation was provisioned. This is an additional
+native prerequisite, not a substitute explanation for the contract stop.
+
+Next: independent review of **INT-01-D01**, then owner disposition before the
+contract-changing dependency resumes. No independent review or owner approval is
+claimed. **B4: NOT STARTED. Production restricted execution remains unavailable.**
+
 ## RC2B-03 B3 current disposition
 
 **RC2B-03 B3 ACCEPTED WITH QUALIFICATIONS** under GAGAMBA-RC2B-03-B3-OWNER-01;
@@ -57,8 +80,9 @@ integrated live-release qualification, topology-dependent B4, Hufu or production
 | F-07 OBSERVATION | Recovery-death test proves topology separation; clarify/rename alongside genuine integrated recovery-loss testing. |
 | F-08 OBSERVATION | Coordinator clears exec-confirmation `FD_CLOEXEC`, leaking an extra target fd and weakening the oracle. Still uncorrected; fix before affected FD 0–2 native qualification claims. |
 
-**RC2B-03-INT-01: Integrated controller/recovery/owner supervision — NEXT PROPOSED
-IMPLEMENTATION, NOT STARTED.** Required outcomes and failure qualification are in
+**RC2B-03-INT-01: Integrated controller/recovery/owner supervision — BLOCKED BY
+CONTRACT DELTA at the commissioned architecture gate; topology implementation not started.**
+See the current gate disposition above. Required outcomes and failure qualification are in
 owner decision §7. Establish one coherent lifecycle, independently surviving recovery
 with retained stop/domain authority, private controller-to-owner release association,
 genuine recovery-loss awareness, correct liveness identities, single/concurrent failure
@@ -164,7 +188,7 @@ workload, package publication or release tag was created.
 The source-bound [B1 handoff](evidence/rc2b-01-b1.md) contains the API inventory, R1-F02
 ordering, R1-F03 decision table/recommendation, exact commands/counts, adaptations and
 remaining gates. B2 is subsequently ACCEPTED WITH QUALIFICATIONS as recorded above;
-RC2B-03 B3 is subsequently ACCEPTED WITH QUALIFICATIONS; RC2B-03-INT-01 is next, NOT STARTED.
+RC2B-03 B3 is subsequently ACCEPTED WITH QUALIFICATIONS; RC2B-03-INT-01 has reached its architecture gate and is BLOCKED BY CONTRACT DELTA.
 
 ## Accepted component baseline
 
@@ -225,7 +249,7 @@ Existing R2A-F01/F02/F04 and R1-F01/F05 dispositions remain scoped.
 | RC2B / RC-2B facade | B1 contract/refusal boundary **ACCEPTED WITH QUALIFICATIONS** ([decision](decisions/rc2b-01-b1-owner-acceptance.md)); R1-F03 Option A APPROVED and implemented within accepted B3 scope; R1-F02 native enforcement OPEN; native/lifecycle gates remain unqualified |
 | RC2B-02 (B2) | **ACCEPTED WITH QUALIFICATIONS**; [owner decision](decisions/rc2b-02-b2-owner-acceptance.md); M-01 subsequently CLOSED by B3; native/operational exclusions retained |
 | RC2B-03 (B3) | **ACCEPTED WITH QUALIFICATIONS**; [owner decision](decisions/rc2b-03-b3-owner-acceptance.md); M-01 CLOSED; Option A and one-shot fixture accepted; F-01 MAJOR deferred integration blocker; F-02–F-08 retained |
-| RC2B-03-INT-01 | **NEXT PROPOSED IMPLEMENTATION, NOT STARTED**; integrated controller/recovery/owner supervision; F-01 required before integrated live-release qualification, topology-dependent B4, Hufu or production |
+| RC2B-03-INT-01 | **BLOCKED BY CONTRACT DELTA**; [INT-01-D01](evidence/rc2b-03-int-01.md) requires independent security review and owner approval; no topology implementation/native qualification; F-01 remains MAJOR and OPEN |
 | B4 | **NOT STARTED**; dependent integration must follow RC2B-03-INT-01; separate commission required |
 | HUFU-R / R1-F06, AE4-B01 and Hufu integration | OPEN/BLOCKED; no integration authorization |
 | Native C1 review, C3/C4 and broader native track | Separate commissions/dispositions; not accepted by RC2A-03 |
@@ -279,7 +303,7 @@ contract in [the B1 owner decision](decisions/rc2b-01-b1-owner-acceptance.md). B
 ACCEPTED WITH QUALIFICATIONS in [the B2 owner decision](decisions/rc2b-02-b2-owner-acceptance.md).
 RC2B-03 B3 is subsequently implemented under a separate bounded commission (current
 disposition above; implementation `fcfe289e`, held-phase fix `a67a640c`), independently
-reviewed and owner-accepted WITH QUALIFICATIONS. RC2B-03-INT-01 is next, NOT STARTED.
+reviewed and owner-accepted WITH QUALIFICATIONS. RC2B-03-INT-01 has reached its architecture gate and is BLOCKED BY CONTRACT DELTA.
 Native and Hufu gates retain their independent dispositions; no production activation
 is authorized.
 

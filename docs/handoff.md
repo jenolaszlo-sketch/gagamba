@@ -12,8 +12,12 @@
 > is controller-owned and the recovery-death case demonstrates topology separation only.
 > Resolve F-01 before further integrated live-release qualification, topology-dependent B4,
 > Hufu or production. F-02/F-03 minor follow-ups and F-04–F-08 observations remain recorded.
-> **RC2B-03-INT-01: Integrated controller/recovery/owner supervision — NEXT PROPOSED
-> IMPLEMENTATION, NOT STARTED. B4: NOT STARTED.** Separate implementation commission required.
+> **RC2B-03-INT-01: BLOCKED BY CONTRACT DELTA** at the commissioned architecture gate;
+> [INT-01-D01 evidence and review request](evidence/rc2b-03-int-01.md).
+> Controller-parented ownership changes RC-1 spawn/subreap/reaping obligations; independent
+> security review and owner approval are required before that dependency resumes.
+> No source/test/topology implementation or integrated native qualification occurred.
+> F-01 remains MAJOR and OPEN; F-02/F-03/F-07/F-08 remain unresolved. **B4: NOT STARTED.**
 > Native/production restrictions remain; `RestrictedExecutionRuntime.Create()` stays unavailable.
 > Entries below are retained historical checkpoints; earlier current/next-work wording
 > does not supersede the canonical current summary or this owner decision.
