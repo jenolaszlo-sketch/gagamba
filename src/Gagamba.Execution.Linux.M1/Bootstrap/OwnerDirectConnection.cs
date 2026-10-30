@@ -27,6 +27,8 @@ internal sealed class OwnerDirectConnection : IDisposable
         int[] fds=[];
         try
         {
+            if(!DirectPeerIdentity.LiveReference(recoveryFd,identity.Recovery))
+                throw new IOException("Original recovery lifetime unavailable");
             // Payload is a bounded full association, and exactly two disjoint non-release roles are required.
             if(!recovery.TryReceiveTransfer(OwnerProtocolMessageType.DirectBootstrap,2,
                 DirectBootstrapPacket.Encode(new DirectAssociation(request.ExecutionId,request.StoreGenerationId,
@@ -38,7 +40,13 @@ internal sealed class OwnerDirectConnection : IDisposable
                 || !DirectPeerIdentity.LiveReference(fds[0],identity.Controller))
                 throw new IOException("Immutable direct association refused");
             uint size=4;
-            if(DirectUnix.IntOption(fds[1],1,3,out var type,ref size)!=0 || type!=5 || !PreparationInterop.HasCloexec(fds[1]))
+            uint credentialSize=12;
+            if(DirectUnix.IntOption(fds[1],1,3,out var type,ref size)!=0 || type!=5 || !PreparationInterop.HasCloexec(fds[1])
+                || !RecoveryInterop.Protect(fds[1])
+                || DirectUnix.PeerCredentials(fds[1],1,17,out var peer,ref credentialSize)!=0 || credentialSize!=12
+                || peer.Pid!=identity.Recovery.Pid || peer.Uid!=identity.Recovery.Uid || peer.Gid!=identity.Recovery.Gid
+                || PreparationInterop.StatFd(fds[1],out var lifeStat)!=0 || PreparationInterop.StatFd(recovery.Socket,out var controlStat)!=0
+                || (lifeStat.Device==controlStat.Device && lifeStat.Inode==controlStat.Inode))
                 throw new IOException("Dedicated recovery safety role refused");
             safety=new OwnerSafetyMonitor(fds[0],recoveryFd,fds[1],identity,request.AcceptedAtNs,request.ExpiresAtNs);
             fds=[]; recoveryReference.SetHandleAsInvalid();

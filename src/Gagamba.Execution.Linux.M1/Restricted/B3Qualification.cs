@@ -78,9 +78,9 @@ internal static class B3Qualification
                 return new B3QualificationCreation(null, RestrictedRefusalReason.UnqualifiedInstallation);
             }
 
-            // In this WSL2 development environment the fixture topology runs
-            // the owner as an unprivileged direct child of the caller; the
-            // uid check keeps the qualification bound to that topology.
+            // Both experimental profiles require an unprivileged host. The legacy
+            // B3 profile is retained for topology-separation regressions; only the
+            // integrated profile uses the independently recovery-parented owner.
             if (RecoveryInterop.GetUid() == 0)
             {
                 return new B3QualificationCreation(null, RestrictedRefusalReason.UnqualifiedInstallation);

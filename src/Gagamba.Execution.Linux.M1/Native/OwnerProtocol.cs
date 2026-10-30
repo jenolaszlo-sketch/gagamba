@@ -1,7 +1,7 @@
-// G2-03 owner/recovery transaction control. This is a private inherited
-// SOCK_SEQPACKET protocol: frames are bounded, identity-bound and ordered.
-// It carries descriptions and acknowledgements only; capabilities and
-// release authority have no wire representation.
+// G2-03/INT01 bounded owner control schema. Recovery uses the private inherited
+// SOCK_SEQPACKET transport with RecoveryOnly role enforcement. The integrated
+// controller uses the separately authenticated DirectSession SOCK_STREAM transport.
+// No capability or physical RELEASE writer is serialized on either transport.
 using System.Buffers.Binary;
 using Gagamba.Execution.Linux.M1.Bootstrap;
 using System.Text;

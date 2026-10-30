@@ -140,11 +140,13 @@ public sealed class DirectAuthenticationTests
     [Fact] public void UnexpectedAncillaryRightsAreClosedAndRefused()
     {
         RequireLinux(); var pair = Pair(); using var receiver = new DirectStream(pair[0]); using var sender = new DirectStream(pair[1]);
-        Assert.True(PidFd.TryOpen(Environment.ProcessId, out var fd, out _)); using var original = new SafeFileHandle((IntPtr)fd, true);
-        var count = Directory.GetFiles("/proc/self/fd").Length;
-        Assert.True(FdPassing.TrySendTransfer(pair[1], [fd], Packet([1]), out var error), error);
+        var sentinel=Pair();using var original=new DirectStream(sentinel[0]);using var other=new DirectStream(sentinel[1]);
+        var identity=new FileInfo("/proc/self/fd/"+sentinel[0]).LinkTarget;
+        Assert.NotNull(identity);
+        Assert.True(FdPassing.TrySendTransfer(pair[1], [sentinel[0]], Packet([1]), out var error), error);
         Assert.Throws<IOException>(() => receiver.TryReceive(DirectStream.Deadline(100), out _));
-        Assert.Equal(count, Directory.GetFiles("/proc/self/fd").Length);
+        // Count only this unique live socket inode. Unrelated tests may open/close other FDs.
+        Assert.Single(Directory.GetFiles("/proc/self/fd").Where(path=>new FileInfo(path).LinkTarget==identity));
     }
     [Fact] public void ListenerModesAndSymlinkSubstitutionRefuse()
     {
