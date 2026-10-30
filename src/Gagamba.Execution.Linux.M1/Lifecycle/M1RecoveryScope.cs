@@ -89,6 +89,12 @@ internal sealed class M1RecoveryScope : IDisposable
     private readonly Dictionary<int, SafeHandle> _retainedOwnerPidFds = new();
     private readonly Dictionary<int, OwnerProtocolChannel> _ownerChannels = new();
     private readonly Dictionary<int, Process> _owners = new();
+    // B3: one exchange gate per owner channel. Stop, release and abort
+    // exchanges must never interleave frames on one sequenced channel; the
+    // gate is reentrant so a release-phase barrier callback may submit a stop
+    // on the same thread.
+    private readonly object _channelGateSync = new();
+    private readonly Dictionary<int, object> _ownerChannelGates = new();
 
     internal M1RecoveryScope(IPidFdProvider? pidFdProvider = null)
     {
@@ -622,35 +628,45 @@ internal sealed class M1RecoveryScope : IDisposable
     /// presence is only an abort error when no release was ever attempted.</summary>
     internal HeldOwnerAbortOutcome AbortHeld(OwnerPreparationOutcome held)
     {
-        if (!held.Held || held.Owner is null
-            || !_ownerChannels.TryGetValue(held.Owner.Id, out var channel))
+        if (!held.Held || held.Owner is null)
             return new HeldOwnerAbortOutcome(false, false, false, "no live HELD owner channel");
+        lock (OwnerChannelGate(held.Owner.Id))
+        {
+            if (!_ownerChannels.TryGetValue(held.Owner.Id, out var channel))
+                return new HeldOwnerAbortOutcome(false, false, false, "no live HELD owner channel");
 
-        if (!channel.TrySend(OwnerProtocolMessageType.AbortHeld, ReadOnlySpan<byte>.Empty, out var sendError))
-            return new HeldOwnerAbortOutcome(false, false, false, $"abort frame failed: {sendError}");
-        if (!channel.TryReceive(OwnerProtocolMessageType.HeldAborted, out var message, out var receiveError)
-            || message!.Payload.Length is not (2 or 3) || message.Payload[0] != 1)
-            return new HeldOwnerAbortOutcome(true, false, false,
-                receiveError.Length == 0 ? "owner did not confirm abort cleanup" : receiveError);
+            if (!channel.TrySend(OwnerProtocolMessageType.AbortHeld, ReadOnlySpan<byte>.Empty, out var sendError))
+                return new HeldOwnerAbortOutcome(false, false, false, $"abort frame failed: {sendError}");
+            if (!channel.TryReceive(OwnerProtocolMessageType.HeldAborted, out var message, out var receiveError)
+                || message!.Payload.Length is not (2 or 3) || message.Payload[0] != 1)
+                return new HeldOwnerAbortOutcome(true, false, false,
+                    receiveError.Length == 0 ? "owner did not confirm abort cleanup" : receiveError);
 
-        var markerAbsent = message.Payload[1] == 1;
-        var releaseAttempted = message.Payload.Length == 3 && message.Payload[2] == 1;
-        if (!markerAbsent && !releaseAttempted)
-            return new HeldOwnerAbortOutcome(true, false, false, "owner confirmed marker presence before any release");
+            var markerAbsent = message.Payload[1] == 1;
+            var releaseAttempted = message.Payload.Length == 3 && message.Payload[2] == 1;
+            if (!markerAbsent && !releaseAttempted)
+                return new HeldOwnerAbortOutcome(true, false, false,
+                    "owner confirmed marker presence before any release");
 
-        var exit = WaitForOwner(held.Owner, TimeSpan.FromSeconds(7));
-        if (!exit.Exited)
-            return new HeldOwnerAbortOutcome(true, false, false, $"owner pidfd exit/reap failed: {exit.Error}");
-        if (exit.ExitCode != 0)
-            return new HeldOwnerAbortOutcome(true, true, false, $"owner reported abort failure exit {exit.ExitCode}");
+            var exit = WaitForOwner(held.Owner, TimeSpan.FromSeconds(7));
+            if (!exit.Exited)
+                return new HeldOwnerAbortOutcome(true, false, false, $"owner pidfd exit/reap failed: {exit.Error}");
+            if (exit.ExitCode != 0)
+                return new HeldOwnerAbortOutcome(true, true, false, $"owner reported abort failure exit {exit.ExitCode}");
 
-        if (!ReapAdoptedChildren(TimeSpan.FromSeconds(5), out _, out var reapError))
-            return new HeldOwnerAbortOutcome(true, true, false, $"adopted setup child reap failed: {reapError}");
+            if (!ReapAdoptedChildren(TimeSpan.FromSeconds(5), out _, out var reapError))
+                return new HeldOwnerAbortOutcome(true, true, false, $"adopted setup child reap failed: {reapError}");
 
-        channel.Dispose();
-        _ownerChannels.Remove(held.Owner.Id);
-        return new HeldOwnerAbortOutcome(true, true, true, string.Empty,
-            NoTargetInitializationMarkerAbsent: markerAbsent, ReleaseAttempted: releaseAttempted);
+            channel.Dispose();
+            _ownerChannels.Remove(held.Owner.Id);
+            lock (_channelGateSync)
+            {
+                _ownerChannelGates.Remove(held.Owner.Id);
+            }
+
+            return new HeldOwnerAbortOutcome(true, true, true, string.Empty,
+                NoTargetInitializationMarkerAbsent: markerAbsent, ReleaseAttempted: releaseAttempted);
+        }
     }
 
     /// <summary>Submits one stop request over the controller's own live HELD
@@ -658,19 +674,35 @@ internal sealed class M1RecoveryScope : IDisposable
     /// carries no capability and cannot restore a consumed release.</summary>
     internal HeldOwnerStopOutcome StopHeld(OwnerPreparationOutcome held, StopCauseKind cause)
     {
-        if (!held.Held || held.Owner is null
-            || !_ownerChannels.TryGetValue(held.Owner.Id, out var channel))
+        if (!held.Held || held.Owner is null || !Enum.IsDefined(cause))
             return new HeldOwnerStopOutcome(false, null, "no live HELD owner channel");
-        if (!Enum.IsDefined(cause))
-            return new HeldOwnerStopOutcome(false, null, "unknown stop cause");
+        lock (OwnerChannelGate(held.Owner.Id))
+        {
+            if (!_ownerChannels.TryGetValue(held.Owner.Id, out var channel))
+                return new HeldOwnerStopOutcome(false, null, "no live HELD owner channel");
 
-        if (!channel.TrySend(OwnerProtocolMessageType.StopRequest, new[] { (byte)cause }, out var sendError))
-            return new HeldOwnerStopOutcome(false, null, $"stop request failed: {sendError}");
-        if (!channel.TryReceive(OwnerProtocolMessageType.StopDecision, out var message, out var receiveError)
-            || !OwnerHeldWireCodec.TryDecodeStopDecision(message!.Payload, out var decision, out receiveError))
-            return new HeldOwnerStopOutcome(false, null,
-                receiveError.Length == 0 ? "stop decision refused" : receiveError);
-        return new HeldOwnerStopOutcome(true, decision, string.Empty);
+            if (!channel.TrySend(OwnerProtocolMessageType.StopRequest, new[] { (byte)cause }, out var sendError))
+                return new HeldOwnerStopOutcome(false, null, $"stop request failed: {sendError}");
+            if (!channel.TryReceive(OwnerProtocolMessageType.StopDecision, out var message, out var receiveError)
+                || !OwnerHeldWireCodec.TryDecodeStopDecision(message!.Payload, out var decision, out receiveError))
+                return new HeldOwnerStopOutcome(false, null,
+                    receiveError.Length == 0 ? "stop decision refused" : receiveError);
+            return new HeldOwnerStopOutcome(true, decision, string.Empty);
+        }
+    }
+
+    private object OwnerChannelGate(int ownerId)
+    {
+        lock (_channelGateSync)
+        {
+            if (!_ownerChannelGates.TryGetValue(ownerId, out var gate))
+            {
+                gate = new object();
+                _ownerChannelGates[ownerId] = gate;
+            }
+
+            return gate;
+        }
     }
 
     /// <summary>Sends the barrier-continue acknowledgement for a paused
@@ -678,10 +710,13 @@ internal sealed class M1RecoveryScope : IDisposable
     /// it; it carries no authority.</summary>
     internal bool ContinueHeld(OwnerPreparationOutcome held)
     {
-        if (!held.Held || held.Owner is null
-            || !_ownerChannels.TryGetValue(held.Owner.Id, out var channel))
+        if (!held.Held || held.Owner is null)
             return false;
-        return channel.TrySend(OwnerProtocolMessageType.Continue, ReadOnlySpan<byte>.Empty, out _);
+        lock (OwnerChannelGate(held.Owner.Id))
+        {
+            return _ownerChannels.TryGetValue(held.Owner.Id, out var channel)
+                && channel.TrySend(OwnerProtocolMessageType.Continue, ReadOnlySpan<byte>.Empty, out _);
+        }
     }
 
     /// <summary>Requests release admission over the controller's own
@@ -698,56 +733,60 @@ internal sealed class M1RecoveryScope : IDisposable
         Action<OwnerPreparationOutcome, string>? barrier = null)
     {
         if (!held.Held || held.Owner is null || held.Description is null
-            || !_ownerChannels.TryGetValue(held.Owner.Id, out var channel)
             || !held.OwnerSetupDeadlineNs.HasValue || !held.OwnerOverallDeadlineNs.HasValue)
             return new HeldOwnerReleaseOutcome(false, null, null, "no live HELD owner channel");
+        lock (OwnerChannelGate(held.Owner.Id))
+        {
+            if (!_ownerChannels.TryGetValue(held.Owner.Id, out var channel))
+                return new HeldOwnerReleaseOutcome(false, null, null, "no live HELD owner channel");
 
-        OwnerReleaseRequestWire request;
-        try
-        {
-            request = OwnerHeldWireCodec.RequestFromIdentity(
-                held.Description.ExecutionId, held.Description.PreparationId, held.Description.GenerationId,
-                held.Description.ManifestDigest, approvalCorrelationSha256.AsSpan(),
-                !approvalCorrelationSha256.IsDefault);
-        }
-        catch (ArgumentException ex)
-        {
-            return new HeldOwnerReleaseOutcome(false, null, null, $"release request refused: {ex.Message}");
-        }
+            OwnerReleaseRequestWire request;
+            try
+            {
+                request = OwnerHeldWireCodec.RequestFromIdentity(
+                    held.Description.ExecutionId, held.Description.PreparationId, held.Description.GenerationId,
+                    held.Description.ManifestDigest, approvalCorrelationSha256.AsSpan(),
+                    !approvalCorrelationSha256.IsDefault);
+            }
+            catch (ArgumentException ex)
+            {
+                return new HeldOwnerReleaseOutcome(false, null, null, $"release request refused: {ex.Message}");
+            }
 
-        if (!channel.TrySend(OwnerProtocolMessageType.ReleaseRequest,
-                OwnerHeldWireCodec.EncodeReleaseRequest(request), out var sendError))
-            return new HeldOwnerReleaseOutcome(false, null, null, $"release request failed: {sendError}");
-        if (!channel.TryReceiveAllowed(out var decisionMessage, out var decisionError,
-                OwnerProtocolMessageType.ReleaseDecision, OwnerProtocolMessageType.BarrierReached))
-            return new HeldOwnerReleaseOutcome(false, null, null,
-                decisionError.Length == 0 ? "release decision refused" : decisionError);
-        if (decisionMessage!.Type == OwnerProtocolMessageType.BarrierReached)
-        {
-            var barrierName = DecodeBarrier(decisionMessage.Payload, out var barrierError);
-            if (barrier is null || barrierName is null)
-                return new HeldOwnerReleaseOutcome(false, null, null,
-                    barrierName is null ? barrierError : "unexpected release-phase barrier");
-            barrier(held, barrierName);
-            if (!channel.TryReceive(OwnerProtocolMessageType.ReleaseDecision, out decisionMessage, out decisionError))
+            if (!channel.TrySend(OwnerProtocolMessageType.ReleaseRequest,
+                    OwnerHeldWireCodec.EncodeReleaseRequest(request), out var sendError))
+                return new HeldOwnerReleaseOutcome(false, null, null, $"release request failed: {sendError}");
+            if (!channel.TryReceiveAllowed(out var decisionMessage, out var decisionError,
+                    OwnerProtocolMessageType.ReleaseDecision, OwnerProtocolMessageType.BarrierReached))
                 return new HeldOwnerReleaseOutcome(false, null, null,
                     decisionError.Length == 0 ? "release decision refused" : decisionError);
+            if (decisionMessage!.Type == OwnerProtocolMessageType.BarrierReached)
+            {
+                var barrierName = DecodeBarrier(decisionMessage.Payload, out var barrierError);
+                if (barrier is null || barrierName is null)
+                    return new HeldOwnerReleaseOutcome(false, null, null,
+                        barrierName is null ? barrierError : "unexpected release-phase barrier");
+                barrier(held, barrierName);
+                if (!channel.TryReceive(OwnerProtocolMessageType.ReleaseDecision, out decisionMessage, out decisionError))
+                    return new HeldOwnerReleaseOutcome(false, null, null,
+                        decisionError.Length == 0 ? "release decision refused" : decisionError);
+            }
+
+            if (!OwnerHeldWireCodec.TryDecodeReleaseDecision(
+                    decisionMessage!.Payload, out var decision, out decisionError))
+                return new HeldOwnerReleaseOutcome(false, null, null,
+                    decisionError.Length == 0 ? "release decision refused" : decisionError);
+            if (decision!.Kind != ReleaseDecisionKind.Released)
+                return new HeldOwnerReleaseOutcome(true, decision, null, string.Empty);
+
+            if (!channel.TryReceive(OwnerProtocolMessageType.ExecutionOutcome, out var outcomeMessage, out var outcomeError)
+                || !OwnerHeldWireCodec.TryDecodeExecutionOutcome(
+                    outcomeMessage!.Payload, out var facts, out _, out outcomeError))
+                return new HeldOwnerReleaseOutcome(true, decision, null,
+                    "release decision accepted; execution outcome not observed");
+
+            return new HeldOwnerReleaseOutcome(true, decision, facts, string.Empty);
         }
-
-        if (!OwnerHeldWireCodec.TryDecodeReleaseDecision(
-                decisionMessage!.Payload, out var decision, out decisionError))
-            return new HeldOwnerReleaseOutcome(false, null, null,
-                decisionError.Length == 0 ? "release decision refused" : decisionError);
-        if (decision!.Kind != ReleaseDecisionKind.Released)
-            return new HeldOwnerReleaseOutcome(true, decision, null, string.Empty);
-
-        if (!channel.TryReceive(OwnerProtocolMessageType.ExecutionOutcome, out var outcomeMessage, out var outcomeError)
-            || !OwnerHeldWireCodec.TryDecodeExecutionOutcome(
-                outcomeMessage!.Payload, out var facts, out _, out outcomeError))
-            return new HeldOwnerReleaseOutcome(true, decision, null,
-                "release decision accepted; execution outcome not observed");
-
-        return new HeldOwnerReleaseOutcome(true, decision, facts, string.Empty);
     }
 
     /// <summary>Reaps only adopted children after the exact owner has been

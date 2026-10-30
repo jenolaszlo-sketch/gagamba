@@ -212,6 +212,7 @@ internal sealed class B3PreparationOwner : IRestrictedOperationOwner, IDisposabl
     private bool _hasAdmittedCorrelation;
     private RestrictedReleaseDecision? _retained;
     private RestrictedOwnerExecutionFacts? _facts;
+    private Task<RestrictedStopReply>? _stopTask;
     private int _disposed;
     private long _acceptedAtNs;
     private long _expiresAtNs;
@@ -278,8 +279,16 @@ internal sealed class B3PreparationOwner : IRestrictedOperationOwner, IDisposabl
     public ValueTask<RestrictedOwnerReleaseResult> ReleaseAsync(ImmutableArray<byte> approvalCorrelationSha256) =>
         new(Task.Run(() => ReleaseCore(approvalCorrelationSha256)));
 
-    public ValueTask<RestrictedStopReply> StopAsync(RestrictedStopReason reason) =>
-        new(Task.Run(() => StopCore(reason)));
+    public ValueTask<RestrictedStopReply> StopAsync(RestrictedStopReason reason)
+    {
+        var task = Task.Run(() => StopCore(reason));
+        lock (_gate)
+        {
+            _stopTask = task;
+        }
+
+        return new(task);
+    }
 
     public ValueTask<RestrictedCleanup> DisposeAsync() => new(Task.Run(DisposeCore));
 
@@ -641,9 +650,26 @@ internal sealed class B3PreparationOwner : IRestrictedOperationOwner, IDisposabl
         }
 
         OwnerPreparationOutcome? held;
+        Task<RestrictedStopReply>? pendingStop;
         lock (_gate)
         {
             held = _held;
+            pendingStop = _stopTask;
+        }
+
+        // A disposal-requested stop and the abort share one sequenced owner
+        // channel: wait for the submitted stop exchange to finish (bounded)
+        // before the abort exchange starts, so frames can never interleave.
+        if (pendingStop is not null)
+        {
+            try
+            {
+                pendingStop.Wait(TimeSpan.FromSeconds(20));
+            }
+            catch
+            {
+                // The stop outcome is already recorded as Unknown by StopCore.
+            }
         }
 
         HeldOwnerAbortOutcome abort;
