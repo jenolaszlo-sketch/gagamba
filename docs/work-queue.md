@@ -1,18 +1,22 @@
 # Current work queue
 
-> Current project summary and next owner decision: [PROJECT-STATUS.md](PROJECT-STATUS.md).
-> Current disposition (2026-10-29): **RC2B-02 B2 ACCEPTED WITH QUALIFICATIONS**;
-> [owner decision](decisions/rc2b-02-b2-owner-acceptance.md).
-> [Independent review](reviews/rc2b-02-b2-independent-review.md): SUPPORTED WITH QUALIFICATIONS;
-> independently executed Windows tests 699/0/0 (616 M1 + 68 Execution + 15 Runtime).
-> [Producer evidence](evidence/rc2b-02-b2.md): WSL2 process cases 24/0/0, including the
-> two empty-domain cases; reviewed but not independently reproduced by the reviewer.
-> Native Linux-host/populated stopping and all owner-decision exclusions remain unqualified.
-> M-01: accepted nonblocking follow-up, OPEN; resolve before B3 operational method use.
-> **RC2B-03 B3: NEXT PROPOSED IMPLEMENTATION, NOT STARTED**; separate commission required.
-> B1 acceptance and R1-F03 Option A semantic approval remain unchanged; live execution disabled.
-> Entries below are retained historical checkpoints. Their earlier pending-review or
-> awaiting-commissioning wording does not supersede the canonical current summary.
+> Current project summary and next milestone: [PROJECT-STATUS.md](PROJECT-STATUS.md).
+> Current disposition (2026-10-30): **RC2B-03 B3 ACCEPTED WITH QUALIFICATIONS**;
+> [owner decision](decisions/rc2b-03-b3-owner-acceptance.md).
+> [Independent review](reviews/rc2b-03-b3-independent-review.md): SUPPORTED WITH QUALIFICATIONS;
+> Windows reviewer execution: M1 parallel 981/0/91, focused B3 31/0/3, B1 45/0/0,
+> Execution 68/0/0, Runtime 15/0/0 (overlapping suites, passed/failed/skipped).
+> [Native WSL2 producer evidence](evidence/rc2b-03-b3.md) was reviewed, not independently reproduced.
+> CI 40987712653 succeeded on attempt 2. M-01 CLOSED; R1-F03 Option A implemented in B3 scope.
+> **F-01 MAJOR: ACCEPTED DEFERRED INTEGRATION BLOCKER**, not waived; the positive fixture
+> is controller-owned and the recovery-death case demonstrates topology separation only.
+> Resolve F-01 before further integrated live-release qualification, topology-dependent B4,
+> Hufu or production. F-02/F-03 minor follow-ups and F-04–F-08 observations remain recorded.
+> **RC2B-03-INT-01: Integrated controller/recovery/owner supervision — NEXT PROPOSED
+> IMPLEMENTATION, NOT STARTED. B4: NOT STARTED.** Separate implementation commission required.
+> Native/production restrictions remain; `RestrictedExecutionRuntime.Create()` stays unavailable.
+> Entries below are retained historical checkpoints; earlier current/next-work wording
+> does not supersede the canonical current summary or this owner decision.
 
 ## Current consumer-contract work: RC2A-02 AND RC2A-03 ACCEPTED WITH QUALIFICATIONS; RC2A-04 NOT AUTHORIZED
 
