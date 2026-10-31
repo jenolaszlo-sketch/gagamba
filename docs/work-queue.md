@@ -1,5 +1,15 @@
 # Current work queue
 
+> **B4 IMPLEMENTED — READY FOR INDEPENDENT B4 SECURITY REVIEW (2026-10-31).**
+> Owner authorization: GAGAMBA-RC2B-04-B4-IMPL-01, from canonical `4a181dc`.
+> [Source-bound B4 evidence](evidence/rc2b-04-b4-impl-01.md); implementation `4bb4943df69af5f95b65300d90852c04d08a1926`.
+> B4 confined matrix **13/0/0**; INT-01 regression **32/0/0**, cleanup **21 Confirmed / 11 Unknown**.
+> Protected capture, independent stop/disposal hardening and applicable retained-resource cleanup implemented.
+> Windows M1 **989/0/267**, Execution **68/0/0**, Runtime **15/0/0**; WSL components **272/0/3** plus all three missing-helper cases **3/0/0**; direct authentication **21/0/0**.
+> Q1R-01/06/07 addressed within declared scope; R1-F02 remains globally OPEN. INT-01 acceptance and C1-C4 preserved.
+> Independent B4 review/owner acceptance pending. B5-B7, VM/HCS, Hufu and production remain gated.
+> Earlier checkpoints below, including statements that B4 has not started, are historical.
+
 > **INT-01 ACCEPTED WITH QUALIFICATIONS (2026-10-31).**
 > Owner decision: [RC2B-03-INT-01 Owner Acceptance](decisions/rc2b-03-int-01-owner-acceptance.md).
 > Independent review: [SUPPORTED WITH QUALIFICATIONS](reviews/rc2b-03-int-01-q1-independent-security-review.md).

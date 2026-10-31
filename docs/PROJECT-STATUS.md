@@ -1,5 +1,15 @@
 # Gagamba project status
 
+> **B4 IMPLEMENTED — READY FOR INDEPENDENT B4 SECURITY REVIEW (2026-10-31).**
+> Owner authorization: GAGAMBA-RC2B-04-B4-IMPL-01, from canonical `4a181dc`.
+> [Source-bound B4 evidence](evidence/rc2b-04-b4-impl-01.md); implementation `4bb4943df69af5f95b65300d90852c04d08a1926`.
+> B4 confined matrix **13/0/0**; INT-01 regression **32/0/0**, cleanup **21 Confirmed / 11 Unknown**.
+> Protected capture, independent stop/disposal hardening and applicable retained-resource cleanup implemented.
+> Windows M1 **989/0/267**, Execution **68/0/0**, Runtime **15/0/0**; WSL components **272/0/3** plus all three missing-helper cases **3/0/0**; direct authentication **21/0/0**.
+> Q1R-01/06/07 addressed within declared scope; R1-F02 remains globally OPEN. INT-01 acceptance and C1-C4 preserved.
+> Independent B4 review/owner acceptance pending. B5-B7, VM/HCS, Hufu and production remain gated.
+> Earlier checkpoints below, including statements that B4 has not started, are historical.
+
 Canonical current summary; historical decisions and independent reviews remain immutable.
 Status date: 2026-10-31 (Asia/Manila).
 
@@ -340,7 +350,7 @@ Existing R2A-F01/F02/F04 and R1-F01/F05 dispositions remain scoped.
 | RC2B-02 (B2) | **ACCEPTED WITH QUALIFICATIONS**; [owner decision](decisions/rc2b-02-b2-owner-acceptance.md); M-01 subsequently CLOSED by B3; native/operational exclusions retained |
 | RC2B-03 (B3) | **ACCEPTED WITH QUALIFICATIONS**; [owner decision](decisions/rc2b-03-b3-owner-acceptance.md); M-01 CLOSED; Option A and one-shot fixture accepted; F-01 MAJOR deferred integration blocker; F-02–F-08 retained |
 | RC2B-03-INT-01 | **PARTIAL SOURCE DELIVERY; BLOCKED_ENVIRONMENT / NOT_REPRODUCED**; [B-IMPL-01 evidence](evidence/rc2b-03-int-01-b-impl-01.md); full fault coverage and genuine native qualification pending; F-01 MAJOR/OPEN |
-| B4 | **NOT STARTED**; dependent integration must follow RC2B-03-INT-01; separate commission required |
+| B4 | **IMPLEMENTED; READY FOR INDEPENDENT REVIEW** in the bounded WSL2 profile; [B4 evidence](evidence/rc2b-04-b4-impl-01.md). Owner acceptance pending. |
 | HUFU-R / R1-F06, AE4-B01 and Hufu integration | OPEN/BLOCKED; no integration authorization |
 | Native C1 review, C3/C4 and broader native track | Separate commissions/dispositions; not accepted by RC2A-03 |
 | GAGAMBA-INTEGRATION-01 | Stage 2A preservation verified; accepted baseline and 23 preservation refs published under Stage 2B authorization; final verification and CI outcome recorded separately |
