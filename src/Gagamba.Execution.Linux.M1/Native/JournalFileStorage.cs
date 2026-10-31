@@ -30,6 +30,7 @@ internal sealed class JournalFileStorage : IJournalStorage, IDisposable
     // native host), so no second usable fence can exist while one is held.
     private readonly Dictionary<(string Directory, string Name), FileStream> _heldLocks = new();
     private bool _disposed;
+    internal Action<string,string>? QualificationBeforeRename { get; set; }
 
     public JournalIoResult CreateExclusive(string directory, string name)
     {
@@ -84,6 +85,7 @@ internal sealed class JournalFileStorage : IJournalStorage, IDisposable
     {
         try
         {
+            QualificationBeforeRename?.Invoke(directory,targetName);
             File.Move(
                 Path.Combine(directory, sourceName),
                 Path.Combine(directory, targetName),

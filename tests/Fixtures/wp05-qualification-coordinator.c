@@ -136,6 +136,18 @@ int main(void)
     uint64_t overall = strtoull(overall_text, NULL, 10);
     int release_fd = atoi(release_fd_text);
     if (overall == 0 || release_fd < 0) return 3;
+    /* Preserve the status role before remapping release: its inherited slot may
+       itself be 4, and dup2(release,4) would otherwise destroy that role. */
+    const char *status_fd_text = getenv("WP05_STATUS_FD");
+    const char *status_mode = getenv("WP05_STATUS_MODE");
+    int saved_status = -1;
+    if (status_fd_text != NULL && status_mode != NULL)
+    {
+        int source_status = atoi(status_fd_text);
+        if (source_status < 0 || source_status == release_fd || fcntl(release_fd, F_GETFD) < 0) return 23;
+        saved_status = fcntl(source_status, F_DUPFD_CLOEXEC, 6);
+        if (saved_status < 0) return 23;
+    }
     if (duplicate_to(release_fd, 4) != 0) return 3;
 
     unsigned char frame[GGM1_RELEASE_BYTES];
@@ -170,11 +182,9 @@ int main(void)
     close(4);
     (void)write_all(1, (const unsigned char *)"wp05-release-accepted\n", 22);
 
-    const char *status_fd_text = getenv("WP05_STATUS_FD");
-    const char *status_mode = getenv("WP05_STATUS_MODE");
     if (status_fd_text != NULL && status_mode != NULL)
     {
-        int status_fd = atoi(status_fd_text);
+        int status_fd = saved_status;
         if (status_fd < 0 || duplicate_to(status_fd, 5) != 0) return 23;
         uint64_t sequence = 2;
         const char *value_text = getenv("WP05_STATUS_VALUE");

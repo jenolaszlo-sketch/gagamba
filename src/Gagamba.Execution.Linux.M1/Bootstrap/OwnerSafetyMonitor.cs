@@ -31,6 +31,7 @@ internal sealed class OwnerSafetyMonitor : IDisposable
     private Thread? _stopWorker;
     private int _stopped, _done, _released, _retained, _resources;
     private bool _closing;
+    internal Action<StopCauseKind,bool>? QualificationNativeStop { get; set; }
     internal int ControllerDescriptor => _controller.DangerousGetHandle().ToInt32();
     internal bool StopLatched => Volatile.Read(ref _stopped) != 0;
     internal bool RetentionConfirmed => Volatile.Read(ref _retained) != 0;
@@ -92,14 +93,16 @@ internal sealed class OwnerSafetyMonitor : IDisposable
     internal void AcceptStop(StopCauseKind cause)
     {
         var first=Interlocked.Exchange(ref _stopped,1)==0;
+        var kernelAccepted=false;
         lock (_gate)
         {
             // Native stop does not depend on callbacks, request channel or durable stop settlement.
-            if (_domain is not null) _ = _domain.RequestStop();
+            if (_domain is not null) kernelAccepted=_domain.RequestStop().Ok;
             if (_arbiter is null && _capability is not null) _ = _capability.TryConsume(out _);
             DispatchStop(cause);
         }
         if(first) _=FdPassing.TrySendMessage(_lifeline.DangerousGetHandle().ToInt32(),[2],out _);
+        if(first) QualificationNativeStop?.Invoke(cause,kernelAccepted);
     }
     private void DispatchStop(StopCauseKind cause)
     {

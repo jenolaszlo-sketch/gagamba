@@ -568,7 +568,7 @@ internal sealed class OwnerProtocolChannel : IDisposable
                     || decoded.Payload.Length != expectedPayloadBytes
                     || record.DescriptorCount != expectedDescriptorCount)
                 {
-                    error = "owner transfer payload or descriptor count did not match the expected shape";
+                    error = $"owner transfer payload or descriptor count did not match the expected shape (payload {decoded.Payload.Length}/{expectedPayloadBytes}, descriptors {record.DescriptorCount}/{expectedDescriptorCount})";
                     return false;
                 }
 

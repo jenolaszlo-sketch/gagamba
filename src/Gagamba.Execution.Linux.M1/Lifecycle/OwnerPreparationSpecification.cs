@@ -32,7 +32,7 @@ internal sealed record OwnerPreparationSpecification(
     string? TestBarrier = null,
     bool EnableHeldCoordinator = false,
     long AcceptedAtNs = 0,
-    OwnerDirectIdentity? DirectIdentity = null);
+    OwnerDirectIdentity? DirectIdentity = null, Int01QualificationFault? QualificationFault = null);
 
 internal sealed record OwnerManifestAuthorization(
     RestrictedManifest Manifest,
@@ -140,6 +140,9 @@ internal static class OwnerPreparationSpecificationCodec
             throw new ArgumentException("Owner preparation bounds are invalid.");
         }
 
+        Int01Qualification.Validate(value.QualificationFault);
+        if(value.QualificationFault is not null && (value.DirectIdentity is null || !value.EnableHeldCoordinator))
+            throw new ArgumentException("Qualification fault requires the integrated fixed fixture" );
         RequireSingleName(value.DomainChildName, nameof(value.DomainChildName));
         RequireSingleName(value.StagingDirectoryName, nameof(value.StagingDirectoryName));
         for (var i = 0; i < value.Objects.Count; i++)

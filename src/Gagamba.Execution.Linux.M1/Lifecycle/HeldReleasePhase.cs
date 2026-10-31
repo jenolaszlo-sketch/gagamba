@@ -180,11 +180,17 @@ internal sealed class HeldReleasePhase
             : default(ImmutableArray<byte>);
         var decision = _arbiter.RequestRelease(new ReleaseRequest(
             _capability.Identity, _setupDeadline, _overallDeadline, correlation));
+        if(_request.QualificationFault is { } fault)
+            Int01Qualification.Write(fault,"owner-release-decision",new { Kind=decision.Kind.ToString(), decision.Delivery, decision.DurableCommitted, PhysicalReleaseAttempts=_execution.PhysicalReleaseAttempts });
+        if(Int01Qualification.Reached(_request.QualificationFault,"owner-before-release-reply"))
+        { _channel.Dispose();_pendingAbortHeld=true;return; }
         SendReleaseDecision(decision);
         if (decision.Kind == ReleaseDecisionKind.Released)
         {
             _safety?.Released();
+            Int01Qualification.Point(_request.QualificationFault,"owner-before-observation",_overallDeadline);
             var facts = ObserveExecution(decision);
+            if(_request.QualificationFault is { } observedFault) Int01Qualification.Write(observedFault,"owner-execution-facts",facts);
             PersistObservations(facts, decision);
             SendExecutionOutcome(facts);
         }
@@ -237,6 +243,20 @@ internal sealed class HeldReleasePhase
     /// arbitration points are pausable.</summary>
     private void HandleArbiterBarrier(string name)
     {
+        if(_request.QualificationFault is { } fault)
+        {
+            if(name=="after-intent" && Int01Qualification.Stage(fault.Case)=="release-after-intent")
+            {
+                Int01Qualification.Write(fault,"owner-before-physical-release",new {PhysicalReleaseAttempts=_execution.PhysicalReleaseAttempts});
+                Int01Qualification.Point(fault,"release-after-intent",_setupDeadline,()=>_safety?.StopLatched==true);
+            }
+            if(name=="after-write" && Int01Qualification.Reached(fault,"release-after-write"))
+            {
+                Int01Qualification.Write(fault,"physical-release",new { PhysicalReleaseAttempts=_execution.PhysicalReleaseAttempts });
+                Process.GetCurrentProcess().Kill();
+                Thread.Sleep(Timeout.Infinite); // SIGKILL must terminate this exact owner, never proceed.
+            }
+        }
         if (!string.Equals(_request.TestBarrier, ReleaseAfterIntentBarrier, StringComparison.Ordinal)
             || !string.Equals(name, "after-intent", StringComparison.Ordinal))
         {
@@ -346,7 +366,7 @@ internal sealed class HeldReleasePhase
                 }
 
                 // Root follows the exec frame; give it the remaining allowance.
-                deadlineLocal = Math.Min(deadline, NowNanoseconds() + 1_000_000_000L);
+                deadlineLocal = statusDeadline;
             }
         }
         catch (Exception ex) when (ex is InvalidOperationException or IOException or OverflowException)

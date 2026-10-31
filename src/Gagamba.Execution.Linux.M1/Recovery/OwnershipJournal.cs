@@ -442,13 +442,13 @@ internal sealed class OwnershipJournal
         var sealedFile = _storage.FsyncFile(_directory, SealName);
         if (!sealedFile.Ok)
         {
-            return FailSealed(lease, $"seal file sync failed: {sealedFile.Error}");
+            return FailSealed(lease, $"seal file sync failed: {sealedFile.Error}", snapshot.Release?.Tag == ReleaseTag.Intent);
         }
 
         var sealedDir = _storage.FsyncDirectory(_directory);
         if (!sealedDir.Ok)
         {
-            return FailSealed(lease, $"seal directory sync failed: {sealedDir.Error}");
+            return FailSealed(lease, $"seal directory sync failed: {sealedDir.Error}", snapshot.Release?.Tag == ReleaseTag.Intent);
         }
 
         // Stage the candidate into SlotB (atomic rename of a complete,
@@ -460,31 +460,31 @@ internal sealed class OwnershipJournal
             var created = _storage.CreateExclusive(_directory, TempName);
             if (!created.Ok)
             {
-                return FailSealed(lease, $"candidate temp creation failed: {created.Error}");
+                return FailSealed(lease, $"candidate temp creation failed: {created.Error}", snapshot.Release?.Tag == ReleaseTag.Intent);
             }
 
             var written = _storage.WriteAll(_directory, TempName, bytes);
             if (!written.Ok)
             {
-                return FailSealed(lease, $"candidate write failed: {written.Error}");
+                return FailSealed(lease, $"candidate write failed: {written.Error}", snapshot.Release?.Tag == ReleaseTag.Intent);
             }
 
             var syncedFile = _storage.FsyncFile(_directory, TempName);
             if (!syncedFile.Ok)
             {
-                return FailSealed(lease, $"candidate file sync failed: {syncedFile.Error}");
+                return FailSealed(lease, $"candidate file sync failed: {syncedFile.Error}", snapshot.Release?.Tag == ReleaseTag.Intent);
             }
 
             var visible = _storage.Rename(_directory, TempName, target);
             if (!visible.Ok)
             {
-                return FailSealed(lease, $"candidate rename failed: {visible.Error}");
+                return FailSealed(lease, $"candidate rename failed: {visible.Error}", snapshot.Release?.Tag == ReleaseTag.Intent);
             }
 
             var syncedDir = _storage.FsyncDirectory(_directory);
             if (!syncedDir.Ok)
             {
-                return FailSealed(lease, $"candidate directory sync failed: {syncedDir.Error}");
+                return FailSealed(lease, $"candidate directory sync failed: {syncedDir.Error}", snapshot.Release?.Tag == ReleaseTag.Intent);
             }
         }
 
@@ -516,7 +516,7 @@ internal sealed class OwnershipJournal
     /// unreadable slots, or a complete newer generation that only the seal
     /// deletion could confirm) the seal stays and the reader reports
     /// explicit uncertainty.</summary>
-    private JournalIoResult FailSealed(JournalWriterLease lease, string error)
+    private JournalIoResult FailSealed(JournalWriterLease lease, string error, bool releaseIntent)
     {
         if (lease.BaselineSequence != 0)
         {
@@ -530,7 +530,12 @@ internal sealed class OwnershipJournal
             }
         }
 
-        return JournalIoResult.Failure(error);
+        // A retained seal is explicit uncertainty. A failed candidate can be a
+        // definite refusal only when restoring the acknowledged baseline actually
+        // removed that uncertainty. Preserve C1/Option A for a release intent.
+        return releaseIntent && _storage.Exists(_directory, SealName)
+            ? JournalIoResult.AmbiguousFailure(error)
+            : JournalIoResult.Failure(error);
     }
 
     /// <summary>Writes with the next monotonic sequence stamped.</summary>

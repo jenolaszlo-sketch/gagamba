@@ -3,7 +3,7 @@
 Full security matrix remains mandatory; this runner implements the core actual-process
 cases below. Other required fault injections are explicitly pending, never passed.
 """
-import argparse, copy, fcntl, hashlib, json, os, pathlib, select, shutil, signal, subprocess, tempfile, time
+import argparse, copy, fcntl, hashlib, importlib.util, json, os, pathlib, select, shutil, signal, subprocess, tempfile, time
 
 CORE_CASES=('positive-one-release','stop-before-release','controller-sigkill-held','recovery-sigkill-held',
             'owner-sigkill-held','controller-sigkill-after-release','recovery-sigkill-after-release','owner-sigkill-after-release')
@@ -119,7 +119,14 @@ def run_case(base,case,report):
             while time.monotonic_ns()<cutoff: time.sleep(max(0,min(.02,(cutoff-time.monotonic_ns())/1e9)))
             facts['LaterRelease']=command(process,'release')
             assert facts['LaterRelease']['Kind']!=2
-            facts['DeadlineJournal']=command(process,'journal')
+            facts['DeadlineJournalReads']=[]
+            observation_end=time.monotonic()+5
+            while True:
+                read=command(process,'journal-status');facts['DeadlineJournalReads'].append(read)
+                if read['Ok'] and read['Snapshot'] is not None:break
+                assert time.monotonic()<observation_end,'acknowledged deadline journal unavailable'
+                time.sleep(.01)
+            facts['DeadlineJournal']=read['Snapshot']
             assert facts['DeadlineJournal']['Release'] is None
         elif case=='simultaneous-controller-recovery-death':
             # Two exact pidfd signals back-to-back; no claim of atomic wall-clock death.
@@ -205,21 +212,27 @@ def run_case(base,case,report):
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--profile',default=os.environ.get('GAGAMBA_INT01_PROFILE'))
     parser.add_argument('--report',required=True);parser.add_argument('--preflight-only',action='store_true')
-    parser.add_argument('--case',choices=CORE_CASES+IMPLEMENTED_FAULT_CASES,help='Run one core case; default runs all eight')
+    parser.add_argument('--case',choices=CORE_CASES+PENDING_CASES,help='Run one required case; default runs eight core cases')
+    parser.add_argument('--full-matrix',action='store_true',help='Run all eight core and 24 additional cases')
     args=parser.parse_args()
+    if args.case and args.full_matrix: parser.error('--case and --full-matrix are mutually exclusive')
     report=pathlib.Path(args.report);report.mkdir(parents=True,exist_ok=True)
     checks=prerequisites(args.profile);ready=all(x['Passed'] for x in checks)
     evidence={'Host':os.uname()._asdict() if hasattr(os.uname(),'_asdict') else list(os.uname()),'Checks':checks,
         'CoreCases':list(CORE_CASES),'AdditionalRequiredCases':list(PENDING_CASES),
         'NativeRun':'NotRun' if not ready or args.preflight_only else 'Requested',
         'Disposition':'BLOCKED BY ENVIRONMENTAL PREREQUISITE' if not ready else 'PREREQUISITES ONLY',
-        'AdditionalRequiredCasesStatus':'Pending; not qualified by the core runner'}
+        'AdditionalRequiredCasesStatus':'Use individual native case reports; implementation alone is not qualification'}
     emit(report/'preflight.json',evidence)
     print(json.dumps(evidence,indent=2))
     if not ready: return 2
     if args.preflight_only:return 0
-    cases=(args.case,) if args.case else CORE_CASES
-    base=json.loads(pathlib.Path(args.profile).read_text());passed=sum(run_case(base,case,report) for case in cases)
-    print(f'{passed} passed / {len(cases)-passed} failed / {len(PENDING_CASES)} additional required cases pending')
+    cases=CORE_CASES+PENDING_CASES if args.full_matrix else (args.case,) if args.case else CORE_CASES
+    extra_spec=importlib.util.spec_from_file_location('int01_faults',pathlib.Path(__file__).with_name('int01-fault-matrix.py'))
+    extra=importlib.util.module_from_spec(extra_spec);extra_spec.loader.exec_module(extra)
+    assert set(extra.STAGES)==set(PENDING_CASES)-set(IMPLEMENTED_FAULT_CASES)
+    base=json.loads(pathlib.Path(args.profile).read_text())
+    passed=sum((run_case if case in CORE_CASES+IMPLEMENTED_FAULT_CASES else extra.run_case)(base,case,report) for case in cases)
+    print(f'{passed} passed / {len(cases)-passed} failed / {len(cases)} requested; {len(PENDING_CASES)} additional cases in required inventory')
     return 0 if passed==len(cases) else 1
 if __name__=='__main__': raise SystemExit(main())

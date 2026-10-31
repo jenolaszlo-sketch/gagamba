@@ -59,7 +59,16 @@ internal sealed class OwnerDirectConnection : IDisposable
             {
                 var stream=listener.Accept(deadline);
                 try {using var checkedPeer=DirectPeerIdentity.Verify(stream.Descriptor,association.Controller,safety.ControllerDescriptor);}
-                catch(IOException) {stream.Dispose();continue;}
+                catch(IOException)
+                {
+                    if(Int01Qualification.Is(request.QualificationFault,"actual-recovery-release-impersonation"))
+                    {
+                        uint peerSize=12;
+                        if(DirectUnix.PeerCredentials(stream.Descriptor,1,17,out var rejected,ref peerSize)==0)
+                            Int01Qualification.Write(request.QualificationFault!,"owner-refused-recovery-peer",new { ActualPid=rejected.Pid, ExpectedControllerPid=association.Controller.Pid, ExpectedRecoveryPid=association.Recovery.Pid });
+                    }
+                    stream.Dispose();continue;
+                }
                 // A verified original-peer attempt consumes this association even when its ACK is lost.
                 // Only unauthenticated OS peers may be rejected without consuming that attempt.
                 {

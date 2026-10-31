@@ -27,6 +27,7 @@ internal static class IntegratedControllerProbe
             if(creation.Operation is null) {Console.WriteLine(JsonSerializer.Serialize(new {Refused=creation.Reason}));return 3;}
             await using var operation=creation.Operation;
             Task<RestrictedPrepareResult>? preparing=null;PreparedRestrictedExecution? prepared=null;
+            Task<RestrictedReleaseReply>? releasing=null;
             Console.WriteLine("READY");Console.Out.Flush();
             while((line=Console.ReadLine()) is not null)
             {
@@ -40,6 +41,22 @@ internal static class IntegratedControllerProbe
                         if(preparing is null) return 4;
                         var result=await preparing.WaitAsync(TimeSpan.FromSeconds(15));prepared=result.Preparation;
                         Console.WriteLine(JsonSerializer.Serialize(new {Kind=result.Kind,Reference=prepared?.Reference,Deadlines=prepared?.Deadlines,Establishment=prepared is null ? null : new { prepared.Establishment.EvidenceVersion, Bytes=prepared.Establishment.Bytes.ToArray(), Sha256=prepared.Establishment.Sha256.ToArray() }},EvidenceJson));break;
+                    case "prepare-status":
+                        Console.WriteLine(JsonSerializer.Serialize(new { Completed=preparing?.IsCompleted, Prepared=preparing?.IsCompletedSuccessfully==true && preparing.Result.Kind==RestrictedPrepareKind.Prepared }));break;
+                    case "begin-release":
+                        if(prepared is null || releasing is not null) return 4;
+                        releasing=operation.RequestReleaseAsync(prepared,ImmutableArray.Create(new byte[32])).AsTask();
+                        Console.WriteLine("RELEASING");break;
+                    case "release-result":
+                        if(releasing is null) return 4;
+                        Console.WriteLine(JsonSerializer.Serialize(await releasing.WaitAsync(TimeSpan.FromSeconds(15))));break;
+                    case "queue-stop":
+                        _=operation.RequestStopAsync(RestrictedStopReason.CallerStop).AsTask();
+                        Console.WriteLine("STOP-QUEUED");break;
+                    case "journal-status":
+                        using(var statusStorage=new Gagamba.Execution.Linux.M1.Native.JournalFileStorage())
+                            Console.WriteLine(JsonSerializer.Serialize(new Gagamba.Execution.Linux.M1.Recovery.OwnershipJournal(statusStorage,profile.JournalDirectory).ReadLatest()));
+                        break;
                     case "journal":
                         using(var storage=new Gagamba.Execution.Linux.M1.Native.JournalFileStorage())
                         {

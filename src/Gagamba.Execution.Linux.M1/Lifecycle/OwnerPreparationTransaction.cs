@@ -63,6 +63,20 @@ internal static class OwnerPreparationTransaction
     private static int RunTransaction(OwnerPreparationSpecification request, OwnerProtocolChannel channel)
     {
         using var storage = new JournalFileStorage();
+        if(Int01Qualification.Is(request.QualificationFault,"integrated-ambiguous-intent"))
+        {
+            var injected=false;
+            storage.QualificationBeforeRename=(directory,target)=>
+            {
+                if(injected || target!="gen.a" || !File.Exists(Path.Combine(request.QualificationFault!.EvidenceDirectory,"arm-intent-storage"))) return;
+                injected=true;
+                // Real filesystem rename failure after slot B content has been fsynced.
+                // Preserve the old slot, create a conflicting directory, leave the ambiguity seal.
+                File.Move(Path.Combine(directory,target),Path.Combine(request.QualificationFault.EvidenceDirectory,"gen.a.before-fault"));
+                Directory.CreateDirectory(Path.Combine(directory,target));
+                Int01Qualification.Reached(request.QualificationFault,"owner-intent-storage");
+            };
+        }
         var journal = new OwnershipJournal(storage, request.JournalDirectory);
         if (!journal.TryAcquireWriter(out var writer, out var writerError))
         {
@@ -94,6 +108,11 @@ internal static class OwnerPreparationTransaction
 
             using var direct = request.DirectIdentity is null ? null : OwnerDirectConnection.Accept(request,channel);
             using var safety = direct?.Safety;
+            var fault = request.QualificationFault;
+            if(fault is not null && safety is not null)
+                safety.QualificationNativeStop=(cause,accepted)=>Int01Qualification.Write(fault,"owner-native-stop",new { Cause=cause.ToString(), KernelAccepted=accepted });
+            var cutoff = Math.Min(request.ExpiresAtNs,request.AcceptedAtNs+10_000_000_000L);
+            void Point(string stage) => Int01Qualification.Point(fault,stage,cutoff,()=>safety?.StopLatched==true);
             var controllerChannel = direct?.Channel ?? channel;
 
             if (!channel.TryReceiveTransfer(
@@ -137,6 +156,7 @@ internal static class OwnerPreparationTransaction
                 return 25;
             }
 
+            Point("owner-before-allocation");
             if (!ScopedAllocationContext.TryCreate(
                     parent.DangerousGetHandle().ToInt32(), journal, activeWriter, expectedIntent,
                     request.ExecutionId, request.LeaseGeneration, request.BootId,
@@ -155,13 +175,23 @@ internal static class OwnerPreparationTransaction
 
             using var primaryLease = new DomainLease(primaryBackend!, domainIdentity!);
             safety?.PublishDomain(primaryLease);
+            Point("owner-before-domain-transfer");
             var recoveryBackend = (CgroupBackend)primaryBackend!.DuplicateForRecovery();
             var domainPayload = new byte[] { checked((byte)DomainHandleTransfer.ExactDescriptorCount) };
+            var transferFds=recoveryBackend.OrderedFds();
+            Point("owner-domain-transfer");
+            if(fault is not null && Int01Qualification.Stage(fault.Case)=="owner-domain-transfer")
+            {
+                if(Int01Qualification.Is(fault,"wrong-descriptor-role-count")) domainPayload[0]--;
+                if(Int01Qualification.Is(fault,"partial-scm-rights")) transferFds=transferFds.Take(transferFds.Length-1).ToArray();
+            }
             var domainSent = channel.TrySendTransfer(
                 OwnerProtocolMessageType.DomainRecoveryAuthority,
                 domainPayload,
-                recoveryBackend.OrderedFds(),
+                transferFds,
                 out channelError);
+            if(fault is not null && Int01Qualification.Stage(fault.Case)=="owner-domain-transfer")
+                Int01Qualification.Write(fault,"owner-malformed-transfer",new { Sent=domainSent, RoleCount=domainPayload[0], DescriptorCount=transferFds.Length });
             recoveryBackend.Dispose();
             if (!domainSent)
             {
@@ -180,6 +210,7 @@ internal static class OwnerPreparationTransaction
                 return 33;
             }
 
+            Point("owner-domain-retained");
             var registered = BuildRegistered(request, domainIdentity!, stagingParentStat.Device, stagingParentStat.Inode);
             if (!journal.WriteNext(activeWriter, registered).Ok)
             {
@@ -223,6 +254,7 @@ internal static class OwnerPreparationTransaction
                 {
                     accounting.OnObject(staged);
                     accountedObjects++;
+                    if(accountedObjects==1) Point("owner-first-object-accounted");
                     if (accountedObjects == 1
                         && !WaitAtBarrier(request, channel, "mid-staging", out var barrierError))
                     {
@@ -343,6 +375,7 @@ internal static class OwnerPreparationTransaction
             if (direct is not null && (!controllerChannel.TrySend(OwnerProtocolMessageType.PreparedDescription,encodedDescription,out channelError)
                 || !controllerChannel.TryReceive(OwnerProtocolMessageType.PreparedAcknowledgement,out _,out channelError)))
                 return 41;
+            Point("owner-before-mint");
             if (safety?.StopLatched == true) { SendAbort(controllerChannel,"stop latched before Mint"); return 42; }
 
             if (!WaitAtBarrier(request, controllerChannel, "after-prepared-before-mint", out channelError))
@@ -363,6 +396,8 @@ internal static class OwnerPreparationTransaction
 
             if (safety is not null && !safety.PublishCapability(publication.Capability))
             { publication.Capability.Dispose(); SendAbort(controllerChannel,"pre-mint stop prevented usable publication"); return 43; }
+
+            if(fault is not null) Int01Qualification.Write(fault,"owner-capability-published",new { request.ExecutionId, request.StoreGenerationId });
 
             if (request.EnableHeldCoordinator)
             {
