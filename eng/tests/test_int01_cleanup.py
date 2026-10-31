@@ -114,6 +114,46 @@ class CleanupClassificationTests(unittest.TestCase):
         self.assertEqual('Unknown',
                          int01_cleanup.classify_dispose(None, 2)['State'])
 
+    def test_dispose_state_requires_exact_integer_one(self):
+        # F02: equality-based checks promoted bool/float/string lookalikes.
+        for value in (True, 1.0, '1'):
+            with self.subTest(value=value):
+                record = int01_cleanup.classify_dispose({'State': value}, 2)
+                self.assertEqual('Unknown', record['State'], record)
+                self.assertFalse(record['LiveCleanupConfirmed'])
+        valid = int01_cleanup.classify_dispose({'State': 1}, 2)
+        self.assertEqual('Confirmed', valid['State'])
+        self.assertTrue(valid['LiveCleanupConfirmed'])
+        self.assertEqual(1, valid['DisposeState'])
+
+    def test_dispose_state_rejects_null_and_malformed(self):
+        for value in (None, False, 0, 2, -1, [], {}, 'Confirmed'):
+            with self.subTest(value=value):
+                record = int01_cleanup.classify_dispose({'State': value}, 2)
+                self.assertEqual('Unknown', record['State'], record)
+                self.assertFalse(record['LiveCleanupConfirmed'])
+        for payload in (None, {}, [], {'State': None}):
+            with self.subTest(payload=payload):
+                record = int01_cleanup.classify_dispose(payload, 2)
+                self.assertEqual('Unknown', record['State'], record)
+                self.assertFalse(record['LiveCleanupConfirmed'])
+
+    def test_entry_points_reject_non_integer_durable_verdicts(self):
+        # F02: 2.0 compared equal to Confirmed (2) at the entry points even
+        # though the shared on-wire validator rejects it.
+        for value in (True, 2.0, '2', None):
+            with self.subTest(value=value):
+                final = int01_cleanup.classify_final_record(dict(FLAGS), value)
+                self.assertEqual('Unknown', final['State'], final)
+                self.assertIsNone(final['DurableVerdict'])
+                dispose = int01_cleanup.classify_dispose({'State': 1}, value)
+                self.assertEqual('Unknown', dispose['State'], dispose)
+                self.assertIsNone(dispose['DurableVerdict'])
+        self.assertEqual('Confirmed',
+                         int01_cleanup.classify_final_record(dict(FLAGS), 2)['State'])
+        self.assertEqual('Confirmed',
+                         int01_cleanup.classify_dispose({'State': 1}, 2)['State'])
+
     def test_status_verdict_reads_only_acknowledged_snapshots(self):
         self.assertEqual(2, int01_cleanup.status_verdict(
             {'Ok': True, 'Snapshot': {'Cleanup': 2}}))

@@ -27,8 +27,20 @@ PHYSICAL_EVIDENCE = ('DomainEmpty', 'DomainRemoved', 'StagingRemoved')
 
 
 def _verdict(value):
-    """Accept only the exact-integer on-wire enum values."""
+    """Accept only the exact-integer on-wire enum values.
+
+    Booleans are ``int`` subclasses in Python but not valid wire verdicts;
+    floats, strings, null and out-of-range integers are also rejected.
+    """
     return value if type(value) is int and value in DURABLE_VALUES else None
+
+
+def _dispose_state(dispose_cleanup):
+    """Accept only an exact-integer live disposal state, or None."""
+    if not isinstance(dispose_cleanup, dict):
+        return None
+    value = dispose_cleanup.get('State')
+    return value if type(value) is int else None
 
 
 def durable_verdict(evidence_directory):
@@ -65,6 +77,7 @@ def final_flags(recovery_final):
 
 def classify_final_record(recovery_final, durable_cleanup):
     """Classify a recovery final record against the durable verdict."""
+    durable_cleanup = _verdict(durable_cleanup)
     flags = final_flags(recovery_final)
     source = recovery_final if isinstance(recovery_final, dict) else {}
     physical = any(source.get(name) is True for name in PHYSICAL_EVIDENCE)
@@ -80,7 +93,8 @@ def classify_final_record(recovery_final, durable_cleanup):
 
 def classify_dispose(dispose_cleanup, durable_cleanup):
     """Classify the live-owner dispose observation against the durable verdict."""
-    live = isinstance(dispose_cleanup, dict) and dispose_cleanup.get('State') == 1
+    durable_cleanup = _verdict(durable_cleanup)
+    live = _dispose_state(dispose_cleanup) == 1
     confirmed = live and durable_cleanup == DURABLE_CONFIRMED
     return {
         'DurableVerdict': durable_cleanup,
