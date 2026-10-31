@@ -1,18 +1,15 @@
 # Gagamba handoff
 
-> **Current QF-02 checkpoint (2026-10-31): READY FOR INDEPENDENT INT-01 SECURITY REVIEW.**
-> [QF-02 evidence](evidence/rc2b-03-int-01-b-qf-02.md); tested implementation
-> `dc436249fd0b0a8d70b4e4319ac27587fe857c1c`.
-> Required native **32/0/0 (8 core + 24 additional); no unfinished case**.
-> Cleanup 20 Confirmed / 12 Unknown; no remaining test cgroups/processes.
-> WSL affected components 277/0/0; Windows M1 987/0/256, Execution 68/0/0,
-> Runtime 15/0/0; scopes separate and skips retained. Actual confined exec/FD
-> supplementary probe passes. Production journal ambiguity and root-wait budget
-> defects fixed; failing-before artifacts retained. Historical reports unchanged.
-> QF-01 delivered through 5170fab; separate QF-02 implementation/evidence commits
-> are delivered by ordinary push with exact live receipt returned on delivery.
-> F-01 remains MAJOR/OPEN. Next: independent INT-01 review, then owner disposition.
-> QF-02 stops here. B4-B7/VM/HCS/Hufu/production remain gated; no acceptance.
+> **INT-01 ACCEPTED WITH QUALIFICATIONS (2026-10-31).**
+> Owner decision: [RC2B-03-INT-01 Owner Acceptance](decisions/rc2b-03-int-01-owner-acceptance.md).
+> Independent review: [SUPPORTED WITH QUALIFICATIONS](reviews/rc2b-03-int-01-q1-independent-security-review.md).
+> Tested implementation: `dc436249fd0b0a8d70b4e4319ac27587fe857c1c`, tree `3b5e2d9eca42e696f48f984b6ab3831e7ed90f44`.
+> Native qualification: **32/0/0 producer; 20/0/0 independent reruns + 8 inspected = 28/32 independently verified**.
+> Cleanup: 20 Confirmed / 12 Unknown (categorized in owner decision §7); no residual test cgroups/processes.
+> WSL components 277/0/0; Windows M1 987/0/256, Execution 68/0/0, Runtime 15/0/0.
+> **F-01 CLOSED** within INT-01 integrated-topology scope; residual cleanup and platform obligations carried forward.
+> B4-B7/VM/HCS/Hufu/production remain gated; **B4 requires separate authorization**.
+> QF-02 complete; historical evidence unchanged.
 > The checkpoints below are historical and do not supersede this disposition.
 
 > **Prior QF-01 checkpoint (2026-10-31): QUALIFICATION INCOMPLETE / REMEDIATION REQUIRED.**
