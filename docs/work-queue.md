@@ -1,5 +1,17 @@
 # Current work queue
 
+> **QF-01 checkpoint (2026-10-31): QUALIFICATION INCOMPLETE / REMEDIATION REQUIRED.**
+> [QF-01 evidence](evidence/rc2b-03-int-01-b-qf-01.md); tested runner source
+> `51f615534b468fa3977afc867e5603abdf09bdae`.
+> Eight core regressions and four additional actual-process cases passed.
+> Twenty required cases remain unimplemented/unexecuted; no review-ready verdict.
+> Historical four Unknown records preserved. New owner-death runs independently
+> confirm cleanup before watchdog action; recovery-death runs remain Unknown.
+> ENV-01 commits pushed normally to remote main at `988ef8f`; QF-01 commits local.
+> Next: finish twenty integrated fault fixtures under existing QF-01 authorization.
+> F-01 remains MAJOR/OPEN; B4-B7/Hufu/production remain gated.
+> The ENV-01 checkpoint below remains historical evidence, not complete QF-01 coverage.
+
 > Current project summary and next milestone: [PROJECT-STATUS.md](PROJECT-STATUS.md).
 > **Current checkpoint (2026-10-31): INT-01-ENV-01 bounded native attempt complete.**
 > [ENV-01 evidence](evidence/rc2b-03-int-01-env-01.md); tested source

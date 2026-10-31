@@ -3,7 +3,22 @@
 Canonical current summary; historical decisions and independent reviews remain immutable.
 Status date: 2026-10-31 (Asia/Manila).
 
-## INT-01-ENV-01 current native checkpoint
+## INT-01-B-QF-01 current qualification checkpoint
+
+**QUALIFICATION INCOMPLETE / REMEDIATION REQUIRED.**
+[QF-01 evidence](evidence/rc2b-03-int-01-b-qf-01.md), tested runner source
+`51f615534b468fa3977afc867e5603abdf09bdae`. Eight core cases and four added
+native cases pass; twenty required additional faults remain unimplemented/unexecuted.
+Historical Unknown cleanup records are unchanged. New owner-death samples await
+independent recovery-final evidence and confirm cleanup; recovery-death cleanup
+remains Unknown. Windows M1 987/0/256, Execution 68/0/0, Runtime 15/0/0;
+WSL selected components 201/0/3, with all skips disclosed. No review-ready verdict.
+ENV-01 commits are pushed normally through 988ef8f; new QF-01 commits remain local.
+No production source/contracts changed; F-01 remains MAJOR/OPEN. Next work under
+existing authorization: finish twenty integrated fault fixtures and applicable
+native regressions. B4-B7, Hufu and production remain gated.
+
+## INT-01-ENV-01 prior native checkpoint
 
 **FIRST GENUINE INTEGRATED EXECUTION REPRODUCED; CORE RUNNER 8 PASSED / 0 FAILED.**
 [ENV-01 evidence](evidence/rc2b-03-int-01-env-01.md), tested source
