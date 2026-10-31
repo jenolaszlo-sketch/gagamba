@@ -3,7 +3,27 @@
 Canonical current summary; historical decisions and independent reviews remain immutable.
 Status date: 2026-10-31 (Asia/Manila).
 
-## INT-01-B-QF-01 current qualification checkpoint
+## INT-01-B-QF-02 current qualification checkpoint
+
+**READY FOR INDEPENDENT INT-01 SECURITY REVIEW.**
+[QF-02 evidence](evidence/rc2b-03-int-01-b-qf-02.md), implementation source
+`dc436249fd0b0a8d70b4e4319ac27587fe857c1c`, tree
+`3b5e2d9eca42e696f48f984b6ab3831e7ed90f44`. All original native cases pass:
+**32/0/0 (8 core + 24 additional), none unfinished**. Genuine HELD receipts 21;
+cleanup 20 Confirmed / 12 Unknown with missing witnesses disclosed. Outer host
+check has no remaining test cgroups/processes. Two production defects corrected
+(retained-seal ambiguity and root observation budget); failing-before evidence
+preserved, alongside a corrected qualification-helper FD collision.
+WSL affected components **277/0/0**; Windows M1 **987/0/256**, Execution **68/0/0**,
+Runtime **15/0/0** (separate overlapping scopes; skips disclosed). Supplementary
+integrated confined exec/FD/root-wait probe passes. Historical evidence unchanged.
+QF-01 history delivered normally through 5170fab; QF-02 implementation and separate
+documentation delivery use ordinary push, with exact receipt returned on delivery.
+**F-01 remains MAJOR/OPEN**; no self-approval or owner acceptance. Next: independent
+INT-01 security review, then owner disposition. QF-02 stops here; B4-B7, VM/HCS,
+Hufu and production remain gated. Prior checkpoint paragraphs below are historical.
+
+## INT-01-B-QF-01 prior qualification checkpoint
 
 **QUALIFICATION INCOMPLETE / REMEDIATION REQUIRED.**
 [QF-01 evidence](evidence/rc2b-03-int-01-b-qf-01.md), tested runner source

@@ -1,6 +1,21 @@
 # Current work queue
 
-> **QF-01 checkpoint (2026-10-31): QUALIFICATION INCOMPLETE / REMEDIATION REQUIRED.**
+> **Current QF-02 checkpoint (2026-10-31): READY FOR INDEPENDENT INT-01 SECURITY REVIEW.**
+> [QF-02 evidence](evidence/rc2b-03-int-01-b-qf-02.md); tested implementation
+> `dc436249fd0b0a8d70b4e4319ac27587fe857c1c`.
+> Required native **32/0/0 (8 core + 24 additional); no unfinished case**.
+> Cleanup 20 Confirmed / 12 Unknown; no remaining test cgroups/processes.
+> WSL affected components 277/0/0; Windows M1 987/0/256, Execution 68/0/0,
+> Runtime 15/0/0; scopes separate and skips retained. Actual confined exec/FD
+> supplementary probe passes. Production journal ambiguity and root-wait budget
+> defects fixed; failing-before artifacts retained. Historical reports unchanged.
+> QF-01 delivered through 5170fab; separate QF-02 implementation/evidence commits
+> are delivered by ordinary push with exact live receipt returned on delivery.
+> F-01 remains MAJOR/OPEN. Next: independent INT-01 review, then owner disposition.
+> QF-02 stops here. B4-B7/VM/HCS/Hufu/production remain gated; no acceptance.
+> The checkpoints below are historical and do not supersede this disposition.
+
+> **Prior QF-01 checkpoint (2026-10-31): QUALIFICATION INCOMPLETE / REMEDIATION REQUIRED.**
 > [QF-01 evidence](evidence/rc2b-03-int-01-b-qf-01.md); tested runner source
 > `51f615534b468fa3977afc867e5603abdf09bdae`.
 > Eight core regressions and four additional actual-process cases passed.
@@ -13,7 +28,7 @@
 > The ENV-01 checkpoint below remains historical evidence, not complete QF-01 coverage.
 
 > Current project summary and next milestone: [PROJECT-STATUS.md](PROJECT-STATUS.md).
-> **Current checkpoint (2026-10-31): INT-01-ENV-01 bounded native attempt complete.**
+> **Prior checkpoint (2026-10-31): INT-01-ENV-01 bounded native attempt complete.**
 > [ENV-01 evidence](evidence/rc2b-03-int-01-env-01.md); tested source
 > `a80b622168ba4e1a5250f06ea81f36b0995cc374`.
 > Disposable WSL2 user-unit delegation and direct host-child launch established;
