@@ -79,7 +79,7 @@ def run_case(base,case,report):
         refs['controller']=os.pidfd_open(process.pid)
         process.stdin.write(json.dumps(profile)+'\n');process.stdin.flush();assert read_line(process)=='READY'
         assert command(process,'prepare')=='PREPARING'
-        prepared=command(process,'prepared');assert prepared['Kind']==1,prepared
+        prepared=command(process,'prepared');facts['Preparation']=prepared;assert prepared['Kind']==1,prepared
         snapshot=command(process,'inspect');facts['Held']=snapshot
         assert snapshot['ControllerPid']==process.pid and snapshot['RetainedDomains']==1 and not snapshot['ReleaseAuthority']
         for actor in ('recovery','owner'): refs[actor]=os.pidfd_open(snapshot[actor.title()+'Pid'])
@@ -87,6 +87,15 @@ def run_case(base,case,report):
         ppid=int(next(x.split(':')[1] for x in owner_status.splitlines() if x.startswith('PPid:')))
         assert ppid==snapshot['RecoveryPid'],(ppid,snapshot)
         facts['ActualOwnerParent']=ppid
+        facts['HeldJournal']=command(process,'journal')
+        facts['KernelInventory']={}
+        for actor,pid in (('controller',process.pid),('recovery',snapshot['RecoveryPid']),('owner',snapshot['OwnerPid'])):
+            proc=pathlib.Path(f'/proc/{pid}')
+            inventory={'Status':(proc/'status').read_text(),'Cgroup':(proc/'cgroup').read_text(),'Fds':{}}
+            try:
+                for fdpath in (proc/'fd').iterdir(): inventory['Fds'][fdpath.name]=os.readlink(fdpath)
+            except OSError as error: inventory['FdInventoryError']=str(error)
+            facts['KernelInventory'][actor]=inventory
         facts['RetainedPeerPidfds']={actor:os.readlink(f'/proc/self/fd/{fd}') for actor,fd in refs.items()}
         if case=='stop-before-release':
             facts['Stop']=command(process,'stop');facts['LaterRelease']=command(process,'release')
@@ -96,8 +105,9 @@ def run_case(base,case,report):
             observation=command(process,'observe');facts['Execution']=observation
             assert observation['PhysicalReleaseAttempts']==1,observation
             if case=='positive-one-release':
-                duplicate=command(process,'release');assert duplicate['Kind']==3,duplicate
-                assert command(process,'observe')['PhysicalReleaseAttempts']==1
+                duplicate=command(process,'release');facts['RepeatRelease']=duplicate;assert duplicate['Kind']==3,duplicate
+                facts['RepeatObservation']=command(process,'observe')
+                assert facts['RepeatObservation']['PhysicalReleaseAttempts']==1
         if '-sigkill-' in case:
             actor=case.split('-')[0];kill_exact(refs[actor]);facts['KilledActualActor']=actor
             deadline=time.monotonic()+12
@@ -147,7 +157,9 @@ def run_case(base,case,report):
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--profile',default=os.environ.get('GAGAMBA_INT01_PROFILE'))
-    parser.add_argument('--report',required=True);parser.add_argument('--preflight-only',action='store_true');args=parser.parse_args()
+    parser.add_argument('--report',required=True);parser.add_argument('--preflight-only',action='store_true')
+    parser.add_argument('--case',choices=CORE_CASES,help='Run one core case; default runs all eight')
+    args=parser.parse_args()
     report=pathlib.Path(args.report);report.mkdir(parents=True,exist_ok=True)
     checks=prerequisites(args.profile);ready=all(x['Passed'] for x in checks)
     evidence={'Host':os.uname()._asdict() if hasattr(os.uname(),'_asdict') else list(os.uname()),'Checks':checks,
@@ -159,7 +171,8 @@ def main():
     print(json.dumps(evidence,indent=2))
     if not ready: return 2
     if args.preflight_only:return 0
-    base=json.loads(pathlib.Path(args.profile).read_text());passed=sum(run_case(base,case,report) for case in CORE_CASES)
-    print(f'{passed} passed / {len(CORE_CASES)-passed} failed / {len(PENDING_CASES)} additional required cases pending')
-    return 0 if passed==len(CORE_CASES) else 1
+    cases=(args.case,) if args.case else CORE_CASES
+    base=json.loads(pathlib.Path(args.profile).read_text());passed=sum(run_case(base,case,report) for case in cases)
+    print(f'{passed} passed / {len(cases)-passed} failed / {len(PENDING_CASES)} additional required cases pending')
+    return 0 if passed==len(cases) else 1
 if __name__=='__main__': raise SystemExit(main())

@@ -1,11 +1,20 @@
 using System.Collections.Immutable;
 using System.Text.Json;
+using System.Text.Json.Serialization;
+using Gagamba.Execution.Restricted.Contracts;
 using Gagamba.Execution.Linux.M1.Bootstrap;
 using Gagamba.Execution.Linux.M1.Restricted;
 using Gagamba.Execution.Restricted.Control;
 
 internal static class IntegratedControllerProbe
 {
+    private static readonly JsonSerializerOptions EvidenceJson = new() { Converters = { new ReferenceEvidenceConverter() } };
+    private sealed class ReferenceEvidenceConverter : JsonConverter<RestrictedPreparationReference>
+    {
+        public override RestrictedPreparationReference Read(ref Utf8JsonReader reader, Type type, JsonSerializerOptions options) => throw new NotSupportedException("Evidence output only");
+        public override void Write(Utf8JsonWriter writer, RestrictedPreparationReference value, JsonSerializerOptions options) =>
+            JsonSerializer.Serialize(writer, new { value.ExecutionId, value.IssuerId, value.GenerationId, value.PreparationId, ManifestSha256 = value.ManifestSha256.ToArray() }, options);
+    }
     // Fixed pinned internal profile only. This process is the ACTUAL original controller in fault tests.
     internal static async Task<int> Run()
     {
@@ -30,7 +39,7 @@ internal static class IntegratedControllerProbe
                     case "prepared":
                         if(preparing is null) return 4;
                         var result=await preparing.WaitAsync(TimeSpan.FromSeconds(15));prepared=result.Preparation;
-                        Console.WriteLine(JsonSerializer.Serialize(new {Kind=result.Kind,Reference=prepared?.Reference,Deadlines=prepared?.Deadlines}));break;
+                        Console.WriteLine(JsonSerializer.Serialize(new {Kind=result.Kind,Reference=prepared?.Reference,Deadlines=prepared?.Deadlines,Establishment=prepared is null ? null : new { prepared.Establishment.EvidenceVersion, Bytes=prepared.Establishment.Bytes.ToArray(), Sha256=prepared.Establishment.Sha256.ToArray() }},EvidenceJson));break;
                     case "journal":
                         using(var storage=new Gagamba.Execution.Linux.M1.Native.JournalFileStorage())
                         {
@@ -43,14 +52,14 @@ internal static class IntegratedControllerProbe
                         if(prepared is null) return 4;
                         Console.WriteLine(JsonSerializer.Serialize(await operation.RequestReleaseAsync(prepared,ImmutableArray.Create(new byte[32]))));break;
                     case "stop": Console.WriteLine(JsonSerializer.Serialize(await operation.RequestStopAsync(RestrictedStopReason.CallerStop)));break;
-                    case "observe": Console.WriteLine(JsonSerializer.Serialize(new {Observation=await operation.ObserveAsync(),PhysicalReleaseAttempts=creation.ExperimentalOwner!.PhysicalReleaseAttempts}));break;
-                    case "dispose": await operation.DisposeAsync();Console.WriteLine(JsonSerializer.Serialize(await operation.ObserveAsync()));break;
+                    case "observe": Console.WriteLine(JsonSerializer.Serialize(new {Observation=await operation.ObserveAsync(),PhysicalReleaseAttempts=creation.ExperimentalOwner!.PhysicalReleaseAttempts},EvidenceJson));break;
+                    case "dispose": await operation.DisposeAsync();Console.WriteLine(JsonSerializer.Serialize(await operation.ObserveAsync(),EvidenceJson));break;
                     default:return 4;
                 }
                 Console.Out.Flush();
             }
             return 0;
         }
-        catch {Console.Error.WriteLine("INT01 controller refused");return 3;}
+        catch(Exception error) {Console.Error.WriteLine($"INT01 controller refused ({error.GetType().Name})");if(error is InvalidOperationException) Console.Error.WriteLine(error.Message);Console.Error.WriteLine(error.StackTrace);return 3;}
     }
 }
