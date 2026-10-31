@@ -139,7 +139,9 @@ def run_case(base,case,native,report,baseline=False):
         while time.monotonic()<end and not final.exists() and not core.exited(refs['recovery']):time.sleep(.01)
         if final.exists():
             facts['RecoveryFinal']=json.loads(final.read_text())
-            if all(facts['RecoveryFinal'][k] for k in ('OwnerReaped','WriterFence','DomainEmpty','StagingRemoved','JournalFinalized')):facts['Cleanup']='Confirmed'
+            facts['CleanupEvidence']=core.cleanup_classification.classify_final_record(
+                facts['RecoveryFinal'],core.cleanup_classification.durable_verdict(workspace/'evidence'))
+            facts['Cleanup']=facts['CleanupEvidence']['State']
         if case.startswith('recovery-loss'):assert facts['Cleanup']=='Unknown','loss of reaper cannot be promoted'
         if domain.exists():facts['PopulationBeforeWatchdog']=population(domain)
     except Exception as error:facts['Status']='Failed';facts['Error']=repr(error)

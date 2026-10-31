@@ -187,7 +187,9 @@ def run_case(base,case,report):
             if not final_path.exists():facts['RecoveryFinalObservation']='Unavailable before watchdog; cleanup remains Unknown'
             if final_path.exists():
                 final=json.loads(final_path.read_text());facts['RecoveryFinal']=final
-                facts['Cleanup']='Confirmed' if all(final[k] for k in ('OwnerReaped','WriterFence','DomainEmpty','StagingRemoved','JournalFinalized')) else 'Unknown'
+                facts['CleanupEvidence']=core.cleanup_classification.classify_final_record(
+                    final,core.cleanup_classification.durable_verdict(workspace/'evidence'))
+                facts['Cleanup']=facts['CleanupEvidence']['State']
         facts['Status']='Passed'
     except Exception as error:facts['Error']=repr(error)
     finally:

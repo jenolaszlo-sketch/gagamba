@@ -5,6 +5,9 @@ cases below. Other required fault injections are explicitly pending, never passe
 """
 import argparse, copy, fcntl, hashlib, importlib.util, json, os, pathlib, select, shutil, signal, subprocess, tempfile, time
 
+_cleanup_spec=importlib.util.spec_from_file_location('int01_cleanup',pathlib.Path(__file__).with_name('int01_cleanup.py'))
+cleanup_classification=importlib.util.module_from_spec(_cleanup_spec);_cleanup_spec.loader.exec_module(cleanup_classification)
+
 CORE_CASES=('positive-one-release','stop-before-release','controller-sigkill-held','recovery-sigkill-held',
             'owner-sigkill-held','controller-sigkill-after-release','recovery-sigkill-after-release','owner-sigkill-after-release')
 PENDING_CASES=('controller-before-preparation','controller-during-preparation','controller-release-race',
@@ -166,7 +169,9 @@ def run_case(base,case,report):
                 final=json.loads(final_path.read_text());facts['RecoveryFinal']=final
                 assert final['OwnerReaped'] and final['WriterFence'],final
                 assert exited(refs['owner']),'actual owner exit not proved'
-                facts['Cleanup']='Confirmed' if final['DomainEmpty'] and final['StagingRemoved'] and final['JournalFinalized'] else 'Unknown'
+                facts['CleanupEvidence']=cleanup_classification.classify_final_record(
+                    final,cleanup_classification.durable_verdict(workspace/'evidence'))
+                facts['Cleanup']=facts['CleanupEvidence']['State']
             else:
                 while time.monotonic()<deadline and not exited(refs['owner']): time.sleep(.02)
                 assert exited(refs['owner']),'actual surviving owner did not stop/exit'
@@ -181,7 +186,9 @@ def run_case(base,case,report):
                     while time.monotonic()<deadline and not final_path.exists(): time.sleep(.02)
                     assert final_path.exists(),'recovery cleanup completion unavailable before watchdog'
                     final=json.loads(final_path.read_text());facts['RecoveryFinal']=final
-                    facts['Cleanup']='Confirmed' if final['DomainEmpty'] and final['StagingRemoved'] and final['JournalFinalized'] else 'Unknown'
+                    facts['CleanupEvidence']=cleanup_classification.classify_final_record(
+                        final,cleanup_classification.durable_verdict(workspace/'evidence'))
+                    facts['Cleanup']=facts['CleanupEvidence']['State']
                 if case.endswith('after-release'):
                     assert facts['PostFault']['Observation']['Release']==facts['Execution']['Observation']['Release'],facts
                 else:
@@ -190,7 +197,11 @@ def run_case(base,case,report):
         else:
             cleanup=command(process,'dispose');facts['FinalObservation']=cleanup
             assert cleanup['Cleanup']['State']==1,cleanup
-            facts['Cleanup']='Confirmed'
+            try: status=command(process,'journal-status')
+            except Exception as error: status=None;facts['DurableCleanupReadError']=repr(error)
+            facts['CleanupEvidence']=cleanup_classification.classify_dispose(
+                cleanup['Cleanup'],cleanup_classification.status_verdict(status))
+            facts['Cleanup']=facts['CleanupEvidence']['State']
         facts['Status']='Passed'
     except Exception as error:
         facts['Error']=str(error)
