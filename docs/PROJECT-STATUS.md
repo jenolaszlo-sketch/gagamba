@@ -1,9 +1,26 @@
 # Gagamba project status
 
 Canonical current summary; historical decisions and independent reviews remain immutable.
-Status date: 2026-10-30 (Asia/Manila).
+Status date: 2026-10-31 (Asia/Manila).
 
-## INT-01-B-IMPL-01 current implementation checkpoint
+## INT-01-ENV-01 current native checkpoint
+
+**FIRST GENUINE INTEGRATED EXECUTION REPRODUCED; CORE RUNNER 8 PASSED / 0 FAILED.**
+[ENV-01 evidence](evidence/rc2b-03-int-01-env-01.md), tested source
+`a80b622168ba4e1a5250f06ea81f36b0995cc374`. Disposable systemd user-unit
+memory/pids delegation and direct `host` launch verified on WSL2 as UID 1000
+with zero checked capabilities; native preflight 12/12. Actual recovery parentage,
+retained native authority, HELD, one RELEASE, target exec/exit 0, Duplicate and
+positive cleanup observed. Internal evidence serialization fixed; production
+source and accepted contracts unchanged. Four core case records retain Cleanup
+Unknown; 24 additional cases remain NOT RUN / NOT QUALIFIED. No remaining test
+processes or unit cgroups; raw evidence retained. This bounded attempt stops here.
+**F-01 remains MAJOR/OPEN**, pending complete evidence, independent review and
+owner acceptance. Next separately commissioned work: pending fixtures and stronger
+fault/cleanup observations, then review. B4 NOT STARTED; B4-B7/Hufu/production
+remain gated. All accepted qualifications and C1-C4/Option A remain.
+
+## INT-01-B-IMPL-01 prior implementation checkpoint
 
 **PARTIAL SOURCE DELIVERY — BLOCKED_ENVIRONMENT / NOT_REPRODUCED.**
 [Source-bound evidence](evidence/rc2b-03-int-01-b-impl-01.md).

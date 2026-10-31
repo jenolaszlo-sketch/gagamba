@@ -1,27 +1,20 @@
 # Current work queue
 
 > Current project summary and next milestone: [PROJECT-STATUS.md](PROJECT-STATUS.md).
-> **Current implementation checkpoint (2026-10-30): INT-01-B-IMPL-01 PARTIAL SOURCE DELIVERY.**
-> Native integration: **BLOCKED_ENVIRONMENT / NOT_REPRODUCED**;
-> [implementation evidence](evidence/rc2b-03-int-01-b-impl-01.md).
-> Final tested source `17a61f5be2602445fdb195a7ef76e9d88f14640e`.
-> Windows M1 985/0/95; focused 18/0/24; Execution 68/0/0; Runtime 15/0/0.
-> WSL2 authentication 21/0/0, contracts/monitor/fence components 85/0/0,
-> exec/FD primitives 4/0/0. These do not qualify an integrated B3 execution.
-> Recovery-parented source composition, direct authenticated release and independent
-> safety paths exist; actual HELD/domain retention/release/death/takeover remain unqualified.
-> Eight core native cases were not run; 24 additional integration cases remain pending.
-> **F-01 remains MAJOR/OPEN.** F-02/Q1-F03/F04/F05 require genuine integrated proof;
-> F-03 diagnostic regressions pass; F-07 clarified; F-08 primitive correction tested,
-> confined inventory still pending. Accepted decisions/reviews/evidence remain unchanged.
-> No authorized delegated parent or unprivileged host-launch procedure is established.
-> Read-only discovery found a shared systemd user subtree; it was not selected or used.
-> No cgroup provisioning, permission change, process migration or privileged fallback occurred.
-> **Next: owner environment decision**, then finish pending fault fixtures and the genuine
-> native matrix before independent security review. No ready-for-acceptance claim.
-> M-01 CLOSED; R1-F02 globally OPEN; C1–C4 and Option A restrictions remain.
-> **B4: NOT STARTED.** B4–B7, Hufu and production gates remain closed;
-> `RestrictedExecutionRuntime.Create()` remains unavailable. Stop at the environment boundary.
+> **Current checkpoint (2026-10-31): INT-01-ENV-01 bounded native attempt complete.**
+> [ENV-01 evidence](evidence/rc2b-03-int-01-env-01.md); tested source
+> `a80b622168ba4e1a5250f06ea81f36b0995cc374`.
+> Disposable WSL2 user-unit delegation and direct host-child launch established;
+> UID 1000, zero checked capabilities, memory/pids controls, 12/12 preflight.
+> First genuine confined integrated positive reproduced; full core runner **8/0/0**.
+> Four case records retain Cleanup Unknown; **24 additional cases remain pending**.
+> Production source/contracts unchanged; internal fixture serialization repaired.
+> **F-01 remains MAJOR/OPEN** pending complete evidence, independent review and acceptance.
+> No experimental processes or test-unit cgroups remain; raw evidence retained locally.
+> Next separately commissioned work: 24 pending fixtures and stronger fault/cleanup
+> observations, then independent review. This bounded native attempt stops here.
+> M-01 CLOSED; R1-F02 globally OPEN; C1-C4, Option A and accepted qualifications remain.
+> **B4 NOT STARTED**; B4-B7, Hufu and production gates remain closed.
 > Historical checkpoints below do not supersede this current disposition.
 
 ## Current consumer-contract work: RC2A-02 AND RC2A-03 ACCEPTED WITH QUALIFICATIONS; RC2A-04 NOT AUTHORIZED
