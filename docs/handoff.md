@@ -1,5 +1,13 @@
 # Gagamba handoff
 
+> **B4Q1-F01-R2 COMPLETE — STRICT CLEANUP TYPES (2026-10-31).**
+> [Source-bound evidence](evidence/rc2b-04-b4-q1f01-r2-cleanup-type-hardening.md); tested implementation `0e89cc710fb235569191baf44d9188eda8c9f9a8`, tree `4caf454100cbcc3999467d55b95bbc7c564c0766`, from `9bae9a724aea54710a80527a9404b62cdc224882`.
+> `classify_dispose` now requires an exact integer live state `1`; both classification entry points apply the shared strict durable-verdict validator. Boolean, float, string, null and malformed values cannot confirm cleanup; evidence fields and `Confirmed`/`Unknown` vocabulary are unchanged.
+> Deterministic classifier **16/16**, complete `eng/tests` **35/35**; accepted INT-01 raw evidence reclassified **20 Confirmed / 12 Unknown** with zero flips.
+> Independent verification of the exact patch: **SUPPORTED**, no findings.
+> R1 evidence, the independent review, B4Q1-F02–F04 and R1-F02 remain unchanged; no production/journal/security-contract change; B5 not started.
+> Historical blocks below are unchanged.
+
 > **B4Q1-F01-R1 COMPLETE — CLEANUP CLASSIFICATION CORRECTED (2026-10-31).**
 > [Source-bound evidence](evidence/rc2b-04-b4-q1f01-cleanup-classification.md); tested implementation `4516c24e01fbea7cc40c44b1e7c3c78109b5b438`, tree `ce1fd2f72e6bb32745bdf348184c4f87728d718a`, from baseline `37a90871fa820cf34f663355fb0d7cc918a08e16`.
 > The native harness now requires the authoritative durable journal verdict (`OwnershipCleanupState.Confirmed`) plus final physical/reaping/fencing flags before reporting Confirmed; a successfully persisted Unknown verdict is not Confirmed cleanup.
