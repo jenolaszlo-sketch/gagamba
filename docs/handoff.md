@@ -1,14 +1,24 @@
 # Gagamba handoff
 
-> **B4 IMPLEMENTED — READY FOR INDEPENDENT B4 SECURITY REVIEW (2026-10-31).**
+> **B4 ACCEPTED WITH QUALIFICATIONS (2026-10-31).**
+> Owner decision: [RC2B-04-B4 Owner Acceptance](decisions/rc2b-04-b4-owner-acceptance.md).
+> Independent review: [SUPPORTED WITH QUALIFICATIONS](reviews/rc2b-04-b4-q1-independent-security-review.md).
+> Tested implementation: `4bb4943df69af5f95b65300d90852c04d08a1926`, tree `6c9535013e98fb83f72d4b628a03c59b0e99a1c7`; producer evidence `ca7200937fe12f0cbccccd72ee157528630e9670`.
+> B4 confined matrix **13/0/0** (8 independently rerun); INT-01 regression **32/0/0** producer; independent capture/cleanup/disposal component tests **12/0/0**; 281-file evidence manifest verified.
+> **Cleanup corrected to 20 Confirmed / 12 Unknown (B4Q1-F01 erratum):** `missing-staging-ack`'s durable journal verdict is Unknown; the qualification harness's five-flag classification must be corrected before future stages use its aggregate Confirmed count as authoritative.
+> B4Q1-F02–F04 accepted as bounded residuals (filesystem-identity hardening, drain-fault handling, store-failure-hook exclusion carried forward).
+> R1-F02 remains globally OPEN; INT-01 acceptance and C1-C4 preserved. B5-B7, VM/HCS, Hufu, native Linux/macOS and production remain gated; **B5 requires a separate bounded commission**.
+> Earlier checkpoints below, including statements that B4 review/acceptance is pending, are historical.
+
+> **Prior B4 implementation checkpoint (2026-10-31): B4 IMPLEMENTED — READY FOR INDEPENDENT B4 SECURITY REVIEW (superseded by the acceptance above).**
 > Owner authorization: GAGAMBA-RC2B-04-B4-IMPL-01, from canonical `4a181dc`.
 > [Source-bound B4 evidence](evidence/rc2b-04-b4-impl-01.md); implementation `4bb4943df69af5f95b65300d90852c04d08a1926`.
-> B4 confined matrix **13/0/0**; INT-01 regression **32/0/0**, cleanup **21 Confirmed / 11 Unknown**.
+> B4 confined matrix **13/0/0**; INT-01 regression **32/0/0**, cleanup **21 Confirmed / 11 Unknown** (tally corrected to **20/12** by the B4Q1-F01 erratum in the owner decision above).
 > Protected capture, independent stop/disposal hardening and applicable retained-resource cleanup implemented.
 > Windows M1 **989/0/267**, Execution **68/0/0**, Runtime **15/0/0**; WSL components **272/0/3** plus all three missing-helper cases **3/0/0**; direct authentication **21/0/0**.
 > Q1R-01/06/07 addressed within declared scope; R1-F02 remains globally OPEN. INT-01 acceptance and C1-C4 preserved.
-> Independent B4 review/owner acceptance pending. B5-B7, VM/HCS, Hufu and production remain gated.
-> Earlier checkpoints below, including statements that B4 has not started, are historical.
+> Independent B4 review/owner acceptance were pending at this checkpoint (historical; both have since completed).
+> Checkpoints below are historical and do not supersede this disposition.
 
 > **INT-01 ACCEPTED WITH QUALIFICATIONS (2026-10-31).**
 > Owner decision: [RC2B-03-INT-01 Owner Acceptance](decisions/rc2b-03-int-01-owner-acceptance.md).
