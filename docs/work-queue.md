@@ -1,5 +1,14 @@
 # Current work queue
 
+> **B4Q1-F01-R1 COMPLETE — CLEANUP CLASSIFICATION CORRECTED (2026-10-31).**
+> [Source-bound evidence](evidence/rc2b-04-b4-q1f01-cleanup-classification.md); tested implementation `4516c24e01fbea7cc40c44b1e7c3c78109b5b438`, tree `ce1fd2f72e6bb32745bdf348184c4f87728d718a`, from baseline `37a90871fa820cf34f663355fb0d7cc918a08e16`.
+> The native harness now requires the authoritative durable journal verdict (`OwnershipCleanupState.Confirmed`) plus final physical/reaping/fencing flags before reporting Confirmed; a successfully persisted Unknown verdict is not Confirmed cleanup.
+> WSL2 full INT-01 matrix **32/0/0**, cleanup **20 Confirmed / 12 Unknown** in two identical runs; exactly one correction (`missing-staging-ack`: Confirmed → Unknown); `missing-domain-ack` remains Unknown; both keep physical-improvement annotations.
+> B4 matrix **13/0/0**, cleanup **12/1** unchanged; WSL2 component batch **275/0/0** including B4 capture/cleanup/disposal **12/12**; deterministic classifier regression **13/13** (whole `eng/tests` suite 32/32).
+> B4Q1-F02–F04 and R1-F02 unchanged; C1–C4, INT-01 and B4 acceptance preserved; no production source, journal-contract or authority change. B5-B7, VM/HCS, Hufu, native Linux/macOS and production remain gated; **B5 requires a separate bounded commission**.
+> Next: independent focused review of this harness correction; no further scope is authorized by it.
+> Historical B4 acceptance and earlier checkpoints below are unchanged.
+
 > **B4 ACCEPTED WITH QUALIFICATIONS (2026-10-31).**
 > Owner decision: [RC2B-04-B4 Owner Acceptance](decisions/rc2b-04-b4-owner-acceptance.md).
 > Independent review: [SUPPORTED WITH QUALIFICATIONS](reviews/rc2b-04-b4-q1-independent-security-review.md).
