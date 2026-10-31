@@ -1,62 +1,91 @@
 # Gagamba
 
-Standalone .NET process-lifecycle library with separate sandbox research.
+**Standalone .NET process-lifecycle infrastructure and an experimental Linux restricted-execution sandbox.**
 
-Status: research/prototyping with a working execution substrate, updated 2026-10-05. Three native providers (Windows Job Objects, Linux cgroup v2, macOS launchd) implement one frozen `IExecutionProvider` SPI, validated by a shared cross-platform conformance matrix, plus a requirement-driven `ExecutionRuntime`. Packages are published to NuGet.org. The Windows launch engine (GW-1B) still carries deliberately red legs pending engine findings. Start with the [handoff](docs/handoff.md) and [current queue](docs/work-queue.md).
+Gagamba offers two related but distinct capabilities:
 
-The published native providers negotiate **process lifecycle** guarantees: preparation, launch into an owned OS domain, descendant membership where supported, termination, completion observation, and cleanup. They do not enforce filesystem grants, network denial, credential or identity isolation, IPC restrictions, or limits on broker/service access. Run only workloads appropriate to the host account's existing authority. The offline-process-v1 security model and experimental Windows isolation engine are separate, unqualified work; lifecycle capabilities do not make hostile code safe. Gagamba is independently useful and has no Penghou, Hufu, Luban, workflow, authorization-engine, or agent dependency.
+- **Cross-platform process lifecycle management.** Published preview packages provide a common `IExecutionProvider` contract, requirement-based provider selection, and native process ownership and termination facilities for Windows, Linux, and macOS. These are **not** general-purpose security sandboxes.
+- **Experimental Linux restricted execution.** A separate, locally qualified implementation combines confined execution, one-shot release authority, independent recovery, native safety stopping, and bounded protected output capture. Its security claims are limited to the environments and cases actually tested.
 
-## Current direction
+Gagamba is a standalone project. Using its lifecycle facilities does not require Penghou, Hufu, an agent framework, or a workflow engine.
 
-- Windows, Linux, and macOS are target platforms. Start testing on the local Windows host, use WSL2 for early Linux work, and investigate GitHub-hosted macOS CI. Each platform needs independent evidence.
-- Develop and qualify Gagamba alone. Any Hufu integration is deferred.
-- Reject unsupported restrictions and backend failures before target execution. Never fall back to unrestricted execution.
-- The offline-process-v1 design targets one execution, explicit filesystem grants, and denied network; the published providers do not implement those restrictions.
-- Treat endpoint mediation, persistent sessions, live changes and OpenShell as later extensions. macOS is in scope, with backend selection subject to research.
-- Prove the platform mechanisms before freezing a package family or public API.
+> **Security status (October 31, 2026):** Linux restricted-execution milestones **B1–B4 are accepted with qualifications**, based on source-bound evidence and independent security review under **WSL2 Ubuntu**. **B5–B7 remain incomplete; production restricted execution is unavailable.** Do not treat the experimental implementation, its tests, or the existing lifecycle providers as authorization to execute arbitrary hostile code. See the [current project status](docs/PROJECT-STATUS.md).
 
-Standalone scope, three-platform scope and local-first testing are user-selected. The offline-process-v1 baseline remains a design target, not a shipped security boundary.
+## What works today
 
-## Packages
+| Area | Demonstrated state | Important boundary |
+| --- | --- | --- |
+| Process lifecycle providers | Preview packages for Windows Job Objects, Linux cgroup v2, and macOS launchd; common lifecycle contract and conformance tests | These manage processes; they do **not** provide filesystem, network, identity, or IPC isolation |
+| Restricted manifest and passive inspection | RC2A component and local package qualification accepted with qualifications | Parsing, references, and digests grant **no** execution or release authority |
+| Linux restricted execution (B1–B4) | Integrated controller/recovery/owner topology, preparation and HELD state, authenticated one-shot release, independent native stop, bounded protected capture | Demonstrated in an **experimental WSL2 profile**, not a production deployment |
+| Durable recovery and installed trust | B5 sealed deadlines and reconciliation, B6 installation/attestation, and B7 broader lifecycle qualification are still outstanding | The production restricted-execution provider remains unavailable |
 
-The accepted RC2A-03 component provides passive schema-1 inspection in
-`Gagamba.Execution.Restricted.Contracts`: immutable manifest views, strict
-canonical encode/decode, SHA-256 verification and a passive preparation
-reference. RC2A-04 is qualifying a local package candidate; owner acceptance
-and independent package review remain pending. No published preview is claimed
-to contain this API. Both public codec boundaries have
-an inclusive 65,536-byte ceiling; oversized encoding throws `ArgumentException`,
-and oversized decoding returns `InputTooLarge`. See the
-[frozen API contract](docs/design/restricted-consumer-contract-rc2a-01-api.md).
+The Linux native qualification includes genuine process-death and fault-injection cases. **A passing security-invariant test is not automatically a cleanup-success claim:** the accepted B4 cleanup interpretation is **20 Confirmed / 12 Unknown**. See the [B4 owner acceptance](docs/decisions/rc2b-04-b4-owner-acceptance.md) for the correction and its limits.
 
-A preparation reference contains four GUIDs and a digest, with no temporal
-fields, lookup, release or execution authority. It establishes no expiry or
-liveness. D4a timing must come from explicit enrolled/synthetic binding data;
-later D4b timing must come from the actual provider-origin prepared execution.
-Neither a valid manifest nor a matching SHA-256 digest establishes permission
-or native confinement. Mode `work` is descriptive and dispatches nothing.
+## Experimental Linux architecture
 
-For passive inspection, reference `Gagamba.Execution` directly. Local candidate
-versions use `0.1.0-rc2a.<full-source-commit>` and are never published by the
-qualification runner. From a clean committed checkout, run
-`python eng/rc2a04/qualify.py --artifacts <new-absolute-directory-outside-repository>`.
-It packs a coherent candidate set with both `Version` and `PackageVersion`
-overridden, then restores ordinary external consumers from an explicit local
-feed into initially absent private caches. Python 3, .NET 10 and the explicitly
-inventoried cached SourceLink 10.0.401 and Hufu core preview.11 archives are inputs.
-The mixed graph checks package resolution and managed type loading only; it
-does not qualify Hufu Sandbox integration or activate native providers.
+The controller, recovery process, and execution owner are deliberately separate. The **owner alone** holds the live preparation capability, journal writer, and physical RELEASE authority. Recovery retains native domain and staging handles so it can stop and clean up independently; it does **not** receive a release bearer.
 
-Published to NuGet.org (current preview line: `0.1.0-preview.*`). Reference
-`Gagamba.Runtime` and it pulls the contract and all providers:
+```mermaid
+flowchart LR
+    C["Trusted controller"]
+    R["Independent recovery process"]
+    O["Execution owner"]
+    P["Owner-private protected capture"]
 
-| Package | Contents |
+    subgraph D["Confined Linux domain (cgroup v2)"]
+        T["Coordinator and target"]
+    end
+
+    C -->|"Bootstrap and liveness"| R
+    R -->|"Spawns and reaps"| O
+    C <-->|"Authenticated direct control"| O
+    O -->|"At most one physical RELEASE"| T
+    T -->|"stdout and stderr"| P
+    O -->|"Owns capture custody"| P
+    O -.->|"Native safety stop"| D
+    R -.->|"Independent native stop / cleanup"| D
+```
+
+The authenticated controller-to-owner connection is direct, not a release proxy through recovery. The qualified Linux implementation uses pidfds, protected Unix-domain communication, retained cgroup handles, and fail-closed behavior when required authority or evidence is missing. These results are specific to the accepted experimental setup.
+
+### Why cleanup can remain Unknown
+
+Stop acceptance, kernel-domain emptiness, owner reaping, writer fencing, staging removal, and durable journal completion are **different facts**. An empty domain alone does not prove completed cleanup.
+
+```mermaid
+flowchart TD
+    A["Stop, exit, or failure observed"] --> B["Collect native and durable evidence"]
+    B --> D["Domain empty"]
+    B --> R["Owner reaped"]
+    B --> W["Exclusive writer fence"]
+    B --> S["Staging removed"]
+    B --> J["Durable journal cleanup verdict"]
+    D --> Q{"All mandatory facts confirmed?"}
+    R --> Q
+    W --> Q
+    S --> Q
+    J --> Q
+    Q -->|"Yes"| C["Cleanup Confirmed"]
+    Q -->|"Missing / uncertain"| U["Cleanup Unknown"]
+    Q -->|"Known failure"| F["Cleanup Failed"]
+```
+
+In particular, **physically removing a retained directory does not turn a durable `Unknown` verdict into `Confirmed`**. The accepted B4 review identified and documented this reporting distinction; the qualification harness correction remains a follow-up.
+
+## Published process-lifecycle packages
+
+Gagamba's published preview package family covers the **process lifecycle API**, not the experimental restricted-execution provider:
+
+| Package | Purpose |
 | --- | --- |
-| `Gagamba.Execution` | Frozen contract: capability matrix, fail-closed negotiation, `IExecutionProvider`. |
-| `Gagamba.Runtime` | `ExecutionRuntime`: selects the OS provider and offers requirement-driven launch. |
-| `Gagamba.Execution.Windows` | Windows provider (Job Objects). |
-| `Gagamba.Execution.Linux` | Linux provider (cgroup v2). |
-| `Gagamba.Execution.MacOS` | macOS provider (launchd). |
+| `Gagamba.Execution` | Shared `IExecutionProvider` contract, capabilities, and fail-closed negotiation |
+| `Gagamba.Runtime` | `ExecutionRuntime` and requirement-driven OS provider selection |
+| `Gagamba.Execution.Windows` | Windows Job Objects lifecycle provider |
+| `Gagamba.Execution.Linux` | Linux cgroup v2 lifecycle provider |
+| `Gagamba.Execution.MacOS` | macOS launchd lifecycle provider |
+
+A lifecycle-only example:
 
 ```csharp
 await using var runtime = ExecutionRuntime.Create();
@@ -65,63 +94,54 @@ var prep = runtime.Prepare(new ExecutionRequirements(new[]
     ExecutionRequirement.Require(ExecutionCapability.UnitTermination),
     ExecutionRequirement.Require(ExecutionCapability.SurvivesRootExit),
 }));
-// Accepted -> launch/terminate via the same runtime; Rejected -> reasons.
+// Inspect whether preparation was accepted before launching.
+// This does not create a restricted sandbox.
 ```
 
-Publishing runs from `.github/workflows/publish.yml` on `v*` version tags via
-NuGet trusted publishing (OIDC; repo secret `NUGET_USER`). See
-[conformance and provider selection](docs/conformance.md).
+The published preview line uses `0.1.0-preview.*` versions; consult NuGet and the [provider conformance documentation](docs/conformance.md) for package-specific information. Publishing uses [the repository workflow](.github/workflows/publish.yml).
 
-## Implementation and qualification
+### Passive restricted contracts
 
-The [implementation plan](docs/implementation-plan.md) is the canonical work queue, from policy definition and local Windows probes through Linux/macOS backends and package qualification. The [testing and CI plan](docs/testing-and-ci.md) defines conformance cases, runner coverage, required checks and release gates. The [security model](docs/security-model.md) is the offline-process-v1 design baseline. The [fixture contract](docs/fixture-protocol.md) defines the private test tooling. The Windows provider direction and its open findings are recorded in [ADR 0001](docs/adr/0001-windows-provider.md) and the [evidence summaries](docs/evidence/).
+The accepted RC2A work provides immutable manifest views, strict canonical encoding/decoding, SHA-256 verification, and passive preparation references. RC2A-04 qualified a **local package candidate** with qualifications. That does **not** establish that a published preview includes these APIs or that a valid manifest/reference can start a sandbox.
 
-## Reading order
+See the [frozen restricted API contract](docs/design/restricted-consumer-contract-rc2a-01-api.md) and [RC2A-04 owner acceptance](docs/decisions/rc2a-04-owner-acceptance.md).
 
-1. [Feasibility review](docs/feasibility-review.md): verdict, corrections, and implementation risks.
-2. [Standalone design draft](docs/design.md): proposed semantics and boundary.
-3. [Research plan](docs/research-plan.md): Windows, Linux, and macOS experiments and acceptance gates.
-4. [Decision log](docs/decisions.md): selected direction, recommendations, and open questions.
-5. [Sources](docs/sources.md): primary references and evidence limits.
-6. [Original proposal](docs/proposals/2026-10-03-original-proposal.md): preserved input, including deferred integration ideas.
+## Security boundaries and remaining work
 
-The original proposal is historical input. Its integration roadmap and illustrative APIs are not implementation instructions. Current working scope is this standalone design and research plan.
+The established Linux restricted-execution evidence is limited to the declared unprivileged WSL2 environment. It does **not** establish:
 
-## Next work
+- Production readiness or an available public restricted-execution provider. `RestrictedExecutionRuntime.Create()` still refuses production restricted execution.
+- Native Linux-host or macOS sandbox qualification, a restricted Windows backend, or cross-platform equivalence.
+- Protection against malicious same-UID host processes, privileged administrators, or a compromised trusted bootstrap.
+- Completed B5 sealed-C3 deadlines and durable reconciliation, B6 installed-artifact attestation, or B7 comprehensive lifecycle and fault qualification.
+- Global closure of **R1-F02** or resolution of every cleanup uncertainty.
+- Hufu integration, microVM/HCS support, or automatic policy/authorization decisions.
 
-GP-1A/GP-1B fixture self-tests and the GW-1A probe are green. GW-1B is mid-slice: denial, descendants, cancel races, pipes and supervisor sweep are demonstrated, but four legs remain red pending engine findings — descendant stop on root exit, STARTUPINFO/file-handle transport, `dotnet` runtime compatibility, and granting the Git installation tree. See the [current queue](docs/work-queue.md), the [slice-4 evidence](docs/evidence/windows-slice4-GW-1B.md) and [ADR 0001](docs/adr/0001-windows-provider.md). Next: resolve or narrow those findings, then proceed to GL-1A (separate Ubuntu WSL2) and GM-1A (macOS probe). See the [test environment plan](docs/test-environments.md).
+The process lifecycle providers have a different, narrower contract: they do not promise filesystem grants, network denial, credential isolation, IPC restrictions, or restrictions on other services available to the host account. The [offline-process-v1 security model](docs/security-model.md) describes research goals, **not** features already enforced by those providers.
 
-This repository contains planning documents, private test tooling (`tests/Fixtures/`), feasibility spikes (`spikes/`), the production providers and runtime (`src/`), conformance tests, local entrypoints (`eng/`) and a read-only verification script. It is connected to [GitHub](https://github.com/jenolaszlo-sketch/gagamba); the initial license is preserved.
+## Build, verify, and explore
 
-## Verify preparation on Windows
+The repository contains the runtime and providers (`src/`), tests and native fixtures (`tests/`), experimental runners (`eng/`), and source-bound evidence (`docs/evidence/`).
 
-From the repository root, use a fresh Windows PowerShell process:
+For the existing read-only preparation verification on Windows:
 
 ```powershell
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\eng\verify-preparation.ps1
 ```
 
-For PowerShell 7, substitute `pwsh` for `powershell.exe`. From another working directory, provide the script's full path; its repository root is resolved from the script location. An explicit `-RepositoryRoot` override is also supported.
+This validates preparation/documentation state; **it does not prove sandbox isolation or run a restricted workload**. See [testing and CI](docs/testing-and-ci.md) and [test environments](docs/test-environments.md) for broader qualification context.
 
-Alternatively, in an existing PowerShell session:
+The native restricted-execution matrices require the separately controlled WSL2 environment, a delegated unprivileged cgroup v2 user unit, protected artifact pins, and exact qualification profiles. They are internal security qualification tools, **not** a safe one-command public sandbox launcher.
 
-```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-& .\eng\verify-preparation.ps1
-```
+## Documentation
 
-These options apply only to the invoked process/session, without changing CurrentUser or LocalMachine policy. Managed policy can take precedence; do not change machine policy to run this check. The verifier reads files only and does not establish sandbox or CI qualification.
+- [Current project status](docs/PROJECT-STATUS.md) and [work queue](docs/work-queue.md): authoritative current checkpoint and next gates
+- [Engineering handoff](docs/handoff.md): current implementation and evidence trail
+- [Restricted consumer / execution contract](docs/design/restricted-consumer-contract-rc1.md): authority, process, and result semantics
+- [INT-01 owner acceptance](docs/decisions/rc2b-03-int-01-owner-acceptance.md): integrated topology and qualified limitations
+- [B4 owner acceptance](docs/decisions/rc2b-04-b4-owner-acceptance.md): protected capture, stopping, cleanup erratum, remaining findings
+- [B4 independent security review](docs/reviews/rc2b-04-b4-q1-independent-security-review.md): adversarial assessment and exact evidence limits
+- [B4 producer evidence](docs/evidence/rc2b-04-b4-impl-01.md): native cases, regressions, manifests, and environment
+- [Original design and research](docs/design.md) and [feasibility review](docs/feasibility-review.md): historical exploration, not the current implementation status
 
-## Local entrypoints
-
-All build Release output and write a versioned JSON evidence report under ignored `artifacts/`; each exits non-zero unless its aggregate is `Passed`. Windows PowerShell examples (add `-Configuration Debug` to change config):
-
-| Entrypoint | Purpose |
-| --- | --- |
-| `eng/verify-preparation.ps1` | Read-only check of preparation artifacts, doc links and the preserved proposal hash |
-| `eng/fixture-selftest.ps1` | Build + unit-test + run the GP-1A/B fixture harness (self-test only; no sandbox) |
-| `eng/probe.ps1` | GW-1A Windows availability probe (export/schema inventory; does not launch) |
-| `eng/launch-spike.ps1` | GW-1B launch staircase (experimental Windows API; disposable identities, deleted afterwards) |
-
-Bash equivalents (`eng/*.sh`) mirror these on Linux/macOS. `eng/launch-spike.sh` intentionally refuses off-Windows. `eng/probe.sh` runs cross-platform (Windows-only legs report `Unsupported`).
-
+**Current direction:** correct the bounded cleanup-qualification reporting issue before relying on later aggregate cleanup statistics, then separately commission B5. No later milestone is automatically authorized by the acceptance of B4.
