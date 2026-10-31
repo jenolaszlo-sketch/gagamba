@@ -121,7 +121,7 @@ internal static class IntegratedRecoveryHost
                 else if(exited)
                 {
                     ownerExited=true;Stop("OwnerExited");
-                    ownerReaped=scope.WaitForOwner(current,TimeSpan.FromSeconds(1)).Exited
+                    ownerReaped=scope.WaitForOwner(current,TimeSpan.Zero).Exited
                         && scope.ReapAdoptedChildren(TimeSpan.Zero,out _,out _);
                 }
             }
@@ -164,6 +164,29 @@ internal static class IntegratedRecoveryHost
                         lock(stateGate)
                         {domainEmpty=Confirmed(CleanupComponents.DomainEmpty);domainRemoved=Confirmed(CleanupComponents.DomainRemoval);stagingRemoved=Confirmed(CleanupComponents.Staging);
                             journalFinalized=Confirmed(CleanupComponents.JournalFinalization);}
+                        // A failed retention ACK can leave an unregistered, but independently
+                        // retained live resource. Clean that exact resource after reaping/fencing.
+                        // This does NOT repair/promote the journal or unobserved allocations.
+                        if (lease is not null && !domainRemoved && lease.VerifyIdentity().Match)
+                        {
+                            var stop = lease.RequestStop(); var population = lease.ObservePopulation();
+                            if (stop.Ok && population.Known && population.Empty)
+                            {
+                                var removal = lease.RemoveIfIdentityMatches();
+                                lock (stateGate) { domainEmpty = true; domainRemoved = removal.Removed; }
+                            }
+                        }
+                        if (!stagingRemoved && cleaner is not null && scope.RetainedStagingDirectories.Count == 1)
+                        {
+                            var planned = read.Snapshot.Allocations.SingleOrDefault(a => a.Kind == AllocationKind.StagingDirectory);
+                            var fd = scope.RetainedStagingDirectories[0].DangerousGetHandle().ToInt32();
+                            if (planned is not null && Preparation.Native.PreparationInterop.StatFd(fd, out var identity) == 0)
+                            {
+                                // Empty-only removal; unknown/unaccounted contents remain debt.
+                                var removed = cleaner.CleanOne(planned with { Device = identity.Device, Inode = identity.Inode });
+                                lock (stateGate) stagingRemoved = removed.Outcome == AllocationCleanOutcome.Cleaned;
+                            }
+                        }
                     }
                     var finalJournal=journal.ReadLatest();
                     if(finalJournal.Ok && finalJournal.Snapshot is { } final)

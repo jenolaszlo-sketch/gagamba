@@ -23,6 +23,10 @@ public sealed class RestrictedControlB1Tests
         public readonly TaskCompletionSource<bool> PrepareEntered = Signal<bool>();
         public readonly TaskCompletionSource<bool> StopEntered = Signal<bool>();
         public readonly TaskCompletionSource<bool> ReleaseEntered = Signal<bool>();
+        public readonly TaskCompletionSource<RestrictedCaptureRead> Capture = Signal<RestrictedCaptureRead>();
+        public int CaptureCalls;
+        public ValueTask<RestrictedCaptureRead> ReadCaptureAsync(RestrictedCaptureStream stream, ulong offset, int count)
+        { Interlocked.Increment(ref CaptureCalls); return new(Capture.Task); }
         public int PrepareCalls;
         public int StopCalls;
         public int ReleaseCalls;
@@ -59,6 +63,26 @@ public sealed class RestrictedControlB1Tests
             return ValueTask.FromResult(Cleanup);
         }
         public bool IsLive(RestrictedPreparationReference reference) => Live;
+    }
+
+    [Fact]
+    public async Task CaptureReadHasOnePendingSlotAndCancelledWaitCannotBlockStop()
+    {
+        var h = new Harness();
+        Assert.Equal(RestrictedCaptureReadKind.Unavailable,(await h.Operation.ReadCaptureAsync(RestrictedCaptureStream.Stdout,0,4,TestContext.Current.CancellationToken)).Kind);
+        await h.Prepare();
+        using var cancellation = new CancellationTokenSource();
+        var first = h.Operation.ReadCaptureAsync(RestrictedCaptureStream.Stdout,0,4,cancellation.Token).AsTask();
+        Assert.Equal(1,h.Owner.CaptureCalls); cancellation.Cancel();
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(()=>first);
+        var refused = await h.Operation.ReadCaptureAsync(RestrictedCaptureStream.Stdout,0,4,TestContext.Current.CancellationToken);
+        Assert.Equal(RestrictedCaptureReadKind.Unavailable,refused.Kind);Assert.Equal(1,h.Owner.CaptureCalls);
+        var stop = await h.Operation.RequestStopAsync(RestrictedStopReason.CallerStop,TestContext.Current.CancellationToken);
+        Assert.Equal(RestrictedStopSubmission.LocallyQueued,stop.Submission);
+        await h.AcceptStop();
+        h.Owner.Capture.SetResult(new(RestrictedCaptureReadKind.Copied,[1,2,3,4]));
+        Assert.Throws<ArgumentOutOfRangeException>(()=>h.Operation.ReadCaptureAsync(RestrictedCaptureStream.Stdout,0,16385,TestContext.Current.CancellationToken));
+        Assert.Throws<ArgumentOutOfRangeException>(()=>h.Operation.ReadCaptureAsync(RestrictedCaptureStream.Stdout,ulong.MaxValue,1,TestContext.Current.CancellationToken));
     }
 
     private sealed class Harness

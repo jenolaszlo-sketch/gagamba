@@ -31,6 +31,10 @@ internal sealed class OwnerSafetyMonitor : IDisposable
     private Thread? _stopWorker;
     private int _stopped, _done, _released, _retained, _resources;
     private bool _closing;
+    private StopCauseKind? _firstCause;
+    private Launch.ProtectedCapture? _capture;
+    internal void BindCapture(Launch.ProtectedCapture capture)
+    { lock (_gate) { _capture = capture; if (StopLatched) capture.BoundDrain(Now()+6_000_000_000L); } }
     internal Action<StopCauseKind,bool>? QualificationNativeStop { get; set; }
     internal int ControllerDescriptor => _controller.DangerousGetHandle().ToInt32();
     internal bool StopLatched => Volatile.Read(ref _stopped) != 0;
@@ -77,7 +81,7 @@ internal sealed class OwnerSafetyMonitor : IDisposable
     }
     internal void BindArbiter(ReleaseArbiter arbiter)
     {
-        lock (_gate) { _arbiter=arbiter; if (StopLatched) DispatchStop(StopCauseKind.SetupFault); }
+        lock (_gate) { if (_closing) throw new ObjectDisposedException(nameof(OwnerSafetyMonitor)); _arbiter=arbiter; if (StopLatched) DispatchStop(_firstCause ?? StopCauseKind.SetupFault); }
     }
     internal void Released() => Interlocked.Exchange(ref _released,1);
     private bool LifelineAlive()
@@ -92,21 +96,25 @@ internal sealed class OwnerSafetyMonitor : IDisposable
         && (_controllerChannel?.IsAlive ?? false);
     internal void AcceptStop(StopCauseKind cause)
     {
-        var first=Interlocked.Exchange(ref _stopped,1)==0;
+        bool first;
         var kernelAccepted=false;
         lock (_gate)
         {
+            first = !StopLatched;
+            _firstCause ??= cause;
+            Interlocked.Exchange(ref _stopped, 1);
+            _capture?.BoundDrain(Now()+6_000_000_000L);
             // Native stop does not depend on callbacks, request channel or durable stop settlement.
             if (_domain is not null) kernelAccepted=_domain.RequestStop().Ok;
             if (_arbiter is null && _capability is not null) _ = _capability.TryConsume(out _);
-            DispatchStop(cause);
+            DispatchStop(_firstCause.Value);
         }
         if(first) _=FdPassing.TrySendMessage(_lifeline.DangerousGetHandle().ToInt32(),[2],out _);
         if(first) QualificationNativeStop?.Invoke(cause,kernelAccepted);
     }
     private void DispatchStop(StopCauseKind cause)
     {
-        if (!_closing && _arbiter is not null && _stopWorker is null)
+        if (_arbiter is not null && _stopWorker is null)
         {
             var arbiter=_arbiter;
             _stopWorker=new Thread(() => arbiter.RequestStop(cause)) {IsBackground=true,Name="gagamba-owner-stop"};
@@ -139,7 +147,9 @@ internal sealed class OwnerSafetyMonitor : IDisposable
                 if(!controllerLive || !channelLive) AcceptStop(StopCauseKind.CallerLoss);
                 else if(!recoveryLive || !healthy) AcceptStop(StopCauseKind.SetupFault);
                 else if(now>=_overall || (!releaseCommitted && now>=_setup)) AcceptStop(StopCauseKind.SetupExpired);
-                if(StopLatched) { lock(_gate) { if(_domain is not null) _ = _domain.RequestStop(); } }
+                if(StopLatched) { lock(_gate) { if(_domain is not null) { _ = _domain.RequestStop();
+                    var population = _domain.ObservePopulation();
+                    if (population.Known && population.Empty) _capture?.BoundDrain(Now()+1_000_000_000L); } } }
                 _wake.Wait(10);
             }
         }
@@ -154,6 +164,7 @@ internal sealed class OwnerSafetyMonitor : IDisposable
     {
         // Keep native monitoring active while the arbiter settles its durable stop. If disk I/O
         // wedges, independent recovery can still stop the domain and observe/refuse live-owner takeover.
+        AcceptStop(StopCauseKind.CallerStop);
         Thread? worker;
         lock(_gate) { _closing=true; worker=_stopWorker; }
         worker?.Join();

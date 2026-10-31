@@ -122,7 +122,7 @@ public sealed class OwnerHeldWireCodecTests
         var facts = new OwnerExecutionFacts(
             RestrictedOutcome.Succeeded, ExecTag.Confirmed, 0, RootKind.Exited, 0, 0, false,
             true, 0, true, 0, true, false,
-            29, 29, true, false, 30, 30, true, false, false, Digest(3), Digest(4), 999);
+            29, 29, true, false, 30, 30, true, false, false, Digest(3), Digest(4), 999, StdoutReadFailure:false, StderrReadFailure:false, CaptureDrainExpired:false);
         var encoded = OwnerHeldWireCodec.EncodeExecutionOutcome(facts, "observed");
         Assert.True(OwnerHeldWireCodec.TryDecodeExecutionOutcome(encoded, out var decoded, out var reason, out var error),
             error);
@@ -140,6 +140,9 @@ public sealed class OwnerHeldWireCodecTests
         Assert.True(decoded.StderrSha256!.AsSpan().SequenceEqual(Digest(4)));
         Assert.Equal(facts.ObservedAtNanoseconds, decoded.ObservedAtNanoseconds);
         Assert.Equal("observed", reason);
+        Assert.False(decoded.StdoutReadFailure); Assert.False(decoded.StderrReadFailure); Assert.False(decoded.CaptureDrainExpired);
+        var invalid = System.Text.Encoding.UTF8.GetString(encoded).Replace("\"StdoutStoredBytes\":29", "\"StdoutStoredBytes\":65537");
+        Assert.False(OwnerHeldWireCodec.TryDecodeExecutionOutcome(System.Text.Encoding.UTF8.GetBytes(invalid),out _,out _,out _));
 
         Assert.False(OwnerHeldWireCodec.TryDecodeExecutionOutcome(
             System.Text.Encoding.UTF8.GetBytes(System.Text.Encoding.UTF8.GetString(encoded)

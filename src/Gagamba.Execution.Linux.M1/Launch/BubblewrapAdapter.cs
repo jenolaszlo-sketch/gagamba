@@ -21,6 +21,9 @@ internal sealed class BubblewrapAdapter : IHeldLauncher
 {
     internal const string FilterSha256 = "2aa879019138c4d4066557213ce0037de70430aac3a05008eec5c8abd999d108";
     internal const ulong FilterLength = 672;
+    private readonly Action<StopCauseKind>? _safetyStop;
+    internal Action<bool>? QualificationBeforeCaptureStore { get; init; }
+    internal BubblewrapAdapter(Action<StopCauseKind>? safetyStop = null) => _safetyStop = safetyStop;
     private const int ConfigHeaderBytes = 202;
     private const int MaxConfigBytes = 16 * 1024;
     private const int MaxCaptureBytes = 65536;
@@ -49,6 +52,7 @@ internal sealed class BubblewrapAdapter : IHeldLauncher
         SafeFileHandle? helperStatusRead = null, helperStatusWrite = null;
         PidFdChildReaper? wrapperReaper = null;
         var spawned = false;
+        ProtectedCapture? capture = null;
         try
         {
             if (MonotonicNowNanoseconds() >= setupDeadlineNs || setupDeadlineNs >= overallDeadlineNs)
@@ -110,6 +114,8 @@ internal sealed class BubblewrapAdapter : IHeldLauncher
             if (!LaunchDescriptorMap.TryCreate(descriptors, out var map, out var mapError))
                 throw new InvalidOperationException(mapError);
 
+            capture = new ProtectedCapture(stdoutRead!, stderrRead!, manifest.Channels, overallDeadlineNs,
+                cause => { if (_safetyStop is not null) _safetyStop(cause); else _ = domain.RequestStop(); }, QualificationBeforeCaptureStore);
             if (!NativeLaunchInterop.TrySpawn(domain, map!, BubblewrapArguments.Build(), out var pid, out var spawnError))
                 throw new InvalidOperationException(spawnError);
             spawned = true;
@@ -143,10 +149,11 @@ internal sealed class BubblewrapAdapter : IHeldLauncher
                 throw new InvalidOperationException($"trusted coordinator HELD frame invalid: {decodeError}");
             if (!ValidateHeldReport(report!, tool, input, coordinator, helperPid, domain, out var reportError))
                 throw new InvalidOperationException(reportError);
-            var stdoutCaptured = TryReadAvailable(Fd(stdoutRead!), MaxCaptureBytes, out var initialStdout, out var stdoutError);
-            var stderrCaptured = TryReadAvailable(Fd(stderrRead!), MaxCaptureBytes, out var initialStderr, out var stderrError);
-            if (!stdoutCaptured || !stderrCaptured)
-                throw new InvalidOperationException($"bounded setup capture failed: {stdoutError}{stderrError}");
+            if (!capture.SettleSetup(setupDeadlineNs)) throw new InvalidOperationException("setup capture barrier refused");
+            var initialCapture = capture.Snapshot();
+            var initialStdout = initialCapture.Stdout.Bytes;
+            var initialStderr = initialCapture.Stderr.Bytes;
+            if (!capture.Healthy) throw new InvalidOperationException("independent setup capture failed");
             if (Encoding.UTF8.GetString(initialStdout).Contains(FixtureConstructorMarker, StringComparison.Ordinal)
                 || Encoding.UTF8.GetString(initialStderr).Contains(FixtureConstructorMarker, StringComparison.Ordinal))
                 throw new InvalidOperationException("fixture constructor marker appeared before trusted HELD");
@@ -154,7 +161,8 @@ internal sealed class BubblewrapAdapter : IHeldLauncher
                 throw new InvalidOperationException("overall execution deadline expired before HELD acceptance");
 
             execution = new HeldExecution(wrapperReaper!, controlWrite!, coordinatorStatusRead!, helperStatusRead!,
-                stdoutRead!, stderrRead!, helperPid, report!);
+                stdoutRead!, stderrRead!, helperPid, report!, capture);
+            capture = null;
             wrapperReaper = null;
             controlWrite = coordinatorStatusRead = helperStatusRead = stdoutRead = stderrRead = null;
             return Task.FromResult(new HeldLaunchOutcome(true, execution, statusFrame, report, string.Empty,
@@ -164,6 +172,7 @@ internal sealed class BubblewrapAdapter : IHeldLauncher
             or CryptographicException or OverflowException or DllNotFoundException or EntryPointNotFoundException)
         {
             string cleanupError = string.Empty;
+            capture?.Dispose(); capture = null;
             if (spawned)
             {
                 controlWrite?.Dispose();
@@ -172,7 +181,7 @@ internal sealed class BubblewrapAdapter : IHeldLauncher
                 if (wrapperReaper is not null
                     && !wrapperReaper.TryReap(5000, out _, out var reapError))
                     cleanupError = $"; Bubblewrap wrapper exit/reap failed: {reapError}";
-                if (stdoutRead is not null)
+                if (stdoutRead is { IsClosed: false })
                 {
                     if (ReadToEofBounded(Fd(stdoutRead), MaxCaptureBytes, out var failedStdout, out var failedStdoutError))
                     {
@@ -181,7 +190,7 @@ internal sealed class BubblewrapAdapter : IHeldLauncher
                     }
                     else cleanupError += $"; stdout cleanup drain failed: {failedStdoutError}";
                 }
-                if (stderrRead is not null)
+                if (stderrRead is { IsClosed: false })
                 {
                     if (ReadToEofBounded(Fd(stderrRead), MaxCaptureBytes, out var failedStderr, out var failedStderrError))
                     {
@@ -195,6 +204,7 @@ internal sealed class BubblewrapAdapter : IHeldLauncher
         }
         finally
         {
+            capture?.Dispose();
             Dispose(ref stdinRead); Dispose(ref stdoutRead); Dispose(ref stdoutWrite);
             Dispose(ref stderrRead); Dispose(ref stderrWrite); Dispose(ref controlRead); Dispose(ref controlWrite);
             Dispose(ref coordinatorStatusRead); Dispose(ref coordinatorStatusWrite);
@@ -216,8 +226,20 @@ internal sealed class BubblewrapAdapter : IHeldLauncher
         execution.CloseAbortControl();
         var stop = domain.StopAndAwaitEmpty(TimeSpan.FromSeconds(5), new LaunchDomainClock());
         var reaped = execution.WrapperReaper.TryReap(5000, out _, out var reapError);
-        var stdoutOk = ReadToEofBounded(Fd(execution.StdoutReader), MaxCaptureBytes, out var stdout, out var stdoutError);
-        var stderrOk = ReadToEofBounded(Fd(execution.StderrReader), MaxCaptureBytes, out var stderr, out var stderrError);
+        var capture = execution.Capture?.Finish();
+        byte[] stdout, stderr; string stdoutError = "", stderrError = "";
+        bool stdoutOk, stderrOk;
+        if (capture is not null)
+        {
+            stdout = capture.Stdout.Bytes; stderr = capture.Stderr.Bytes;
+            stdoutOk = capture.Stdout.Eof && !capture.Stdout.Failed;
+            stderrOk = capture.Stderr.Eof && !capture.Stderr.Failed;
+        }
+        else
+        {
+            stdoutOk = ReadToEofBounded(Fd(execution.StdoutReader), MaxCaptureBytes, out stdout, out stdoutError);
+            stderrOk = ReadToEofBounded(Fd(execution.StderrReader), MaxCaptureBytes, out stderr, out stderrError);
+        }
         var helperOk = ReadToEofBounded(Fd(execution.HelperStatusReader), 16 * 1024, out var helperTail, out var helperError);
         var coordinatorOk = ReadToEofBounded(Fd(execution.CoordinatorStatusReader), 16 * 1024, out _, out var coordinatorError);
         var markerAbsent = !Encoding.UTF8.GetString(stdout).Contains(FixtureConstructorMarker, StringComparison.Ordinal)

@@ -25,11 +25,31 @@ internal static class Int01Qualification
             or "integrated-stop-after-intent-before-write" => "release-after-intent",
         "owner-ambiguous-delivery" => "release-after-write",
         "integrated-lost-release-ack" => "owner-before-release-reply",
-        "blocked-observer-native-stop" => "owner-before-observation",
+        "b4-overflow-blocked" or "b4-recovery-loss-blocked" or "b4-status-backpressure" or "b4-controller-loss-blocked" or "blocked-observer-native-stop" => "owner-before-observation",
         "actual-recovery-release-impersonation" => "recovery-before-rendezvous",
         "integrated-ambiguous-intent" => "owner-intent-storage",
+        "b4-store-failure" => "capture-store",
         _ => throw new ArgumentException("Unsupported INT01 qualification fault")
     };
+
+    [System.Runtime.InteropServices.DllImport("libc", EntryPoint="ioctl", SetLastError=true)]
+    private static extern int PendingBytes(int fd, uint request, out int value);
+    [System.Runtime.InteropServices.DllImport("libc", EntryPoint="fcntl", SetLastError=true)]
+    private static extern int PipeSize(int fd, int command);
+    internal static void ObserveFullStatusPipe(Int01QualificationFault fault, int fd, long cutoff)
+    {
+        var capacity = PipeSize(fd, 1032); // Linux F_GETPIPE_SZ; observation only
+        var pageSize = Environment.SystemPageSize; const int frameBytes = 96;
+        // Atomic 96-byte writes can exhaust pipe page slots before every capacity byte is used.
+        var minimumFullBytes = capacity / pageSize * (pageSize / frameBytes) * frameBytes;
+        while (OwnerSafetyMonitor.Now() < cutoff)
+        {
+            if (capacity > 0 && PendingBytes(fd, 0x541b, out var pending) == 0 && pending >= minimumFullBytes)
+            { Write(fault, "owner-status-pipe-full", new { Pending = pending, Capacity = capacity, PageSize = pageSize, FrameBytes = frameBytes, MinimumFullBytes = minimumFullBytes }); return; }
+            Thread.Sleep(5);
+        }
+        throw new IOException("B4 status backpressure was not established");
+    }
 
     internal static void Validate(Int01QualificationFault? fault)
     {

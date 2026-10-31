@@ -66,7 +66,8 @@ internal sealed record OwnerExecutionOutcomeWire(
     byte[]? StderrSha256,
     long ObservedAtNanoseconds,
     string Reason,
-    int? PhysicalReleaseAttempts = null);
+    int? PhysicalReleaseAttempts = null,
+    bool? StdoutReadFailure = null, bool? StderrReadFailure = null, bool? CaptureDrainExpired = null);
 
 /// <summary>Strict bounded codec for the B3 held-phase payloads. The options
 /// mirror the owner preparation description codec: unknown fields, excessive
@@ -210,7 +211,8 @@ internal static class OwnerHeldWireCodec
             facts.StdoutStoredBytes, facts.StdoutObservedBytes, facts.StdoutEof, facts.StdoutOverflow,
             facts.StderrStoredBytes, facts.StderrObservedBytes, facts.StderrEof, facts.StderrOverflow,
             facts.CaptureReadFailure, facts.StdoutSha256, facts.StderrSha256, facts.ObservedAtNanoseconds,
-            reason.Length > 512 ? reason[..512] : reason, facts.PhysicalReleaseAttempts), MaxOutcomeBytes);
+            reason.Length > 512 ? reason[..512] : reason, facts.PhysicalReleaseAttempts,
+            facts.StdoutReadFailure, facts.StderrReadFailure, facts.CaptureDrainExpired), MaxOutcomeBytes);
     }
 
     internal static bool TryDecodeExecutionOutcome(
@@ -233,6 +235,11 @@ internal static class OwnerHeldWireCodec
             || !Enum.TryParse<RootKind>(decoded.RootKind, out var root) || !Enum.IsDefined(root)
             || decoded.DomainPopulation is not ("Empty" or "Populated" or "Unknown")
             || decoded.StdoutSha256 is { Length: not 32 } || decoded.StderrSha256 is { Length: not 32 }
+            || decoded.StdoutStoredBytes > 65536 || decoded.StderrStoredBytes > 65536
+            || decoded.StdoutStoredBytes > decoded.StdoutObservedBytes || decoded.StderrStoredBytes > decoded.StderrObservedBytes
+            || (decoded.StdoutReadFailure.HasValue && decoded.StderrReadFailure.HasValue
+                && decoded.CaptureReadFailure != (decoded.StdoutReadFailure.Value || decoded.StderrReadFailure.Value))
+            || (decoded.CaptureDrainExpired == true && decoded.StdoutEof && decoded.StderrEof)
             || decoded.PhysicalReleaseAttempts is < 0 or > 1
             || decoded.ObservedAtNanoseconds <= 0
             || decoded.Reason is null || decoded.Reason.Length > 512)
@@ -247,7 +254,8 @@ internal static class OwnerHeldWireCodec
             decoded.DomainPopulation != "Unknown", decoded.DomainPopulation == "Populated",
             decoded.StdoutStoredBytes, decoded.StdoutObservedBytes, decoded.StdoutEof, decoded.StdoutOverflow,
             decoded.StderrStoredBytes, decoded.StderrObservedBytes, decoded.StderrEof, decoded.StderrOverflow,
-            decoded.CaptureReadFailure, decoded.StdoutSha256, decoded.StderrSha256, decoded.ObservedAtNanoseconds,decoded.PhysicalReleaseAttempts);
+            decoded.CaptureReadFailure, decoded.StdoutSha256, decoded.StderrSha256, decoded.ObservedAtNanoseconds,decoded.PhysicalReleaseAttempts,
+            decoded.StdoutReadFailure, decoded.StderrReadFailure, decoded.CaptureDrainExpired);
         reason = decoded.Reason;
         return true;
     }
@@ -359,4 +367,5 @@ internal sealed record OwnerExecutionFacts(
     byte[]? StdoutSha256 = null,
     byte[]? StderrSha256 = null,
     long ObservedAtNanoseconds = 0,
-    int? PhysicalReleaseAttempts = null);
+    int? PhysicalReleaseAttempts = null,
+    bool? StdoutReadFailure = null, bool? StderrReadFailure = null, bool? CaptureDrainExpired = null);

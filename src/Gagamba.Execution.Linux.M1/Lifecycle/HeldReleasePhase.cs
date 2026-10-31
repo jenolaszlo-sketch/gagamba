@@ -27,8 +27,6 @@ internal sealed class HeldReleasePhase
 {
     // The fixture coordinator/exec path is the only post-release producer of
     // these facts; capture drains are bounded like every other B3 buffer.
-    private const int MaxCaptureBytes = 64 * 1024;
-    private const long CaptureDrainAllowanceNanoseconds = 2_000_000_000L;
     private const long ObservationAllowanceNanoseconds = 6_000_000_000L;
     private const string ReleaseAfterIntentBarrier = "release-after-intent";
 
@@ -113,7 +111,7 @@ internal sealed class HeldReleasePhase
             if (!_channel.TryReceiveAllowedWithin(250, out var message, out var error,
                     OwnerProtocolMessageType.AbortHeld,
                     OwnerProtocolMessageType.StopRequest,
-                    OwnerProtocolMessageType.ReleaseRequest))
+                    OwnerProtocolMessageType.ReleaseRequest, OwnerProtocolMessageType.CaptureRead))
             {
                 if (error == "control record timed out")
                 {
@@ -145,6 +143,21 @@ internal sealed class HeldReleasePhase
                     }
 
                     SendStopDecision(_arbiter.RequestStop((StopCauseKind)message.Payload[0]));
+                    break;
+                }
+                case OwnerProtocolMessageType.CaptureRead:
+                {
+                    var payload = message.Payload;
+                    var offset = System.Buffers.Binary.BinaryPrimitives.ReadUInt64LittleEndian(payload.AsSpan(1));
+                    var count = System.Buffers.Binary.BinaryPrimitives.ReadInt32LittleEndian(payload.AsSpan(9));
+                    byte[] response = [0];
+                    if (payload[0] <= 1 && offset <= ProtectedCapture.StreamCeiling && count is >= 0 and <= ProtectedCapture.ReadCeiling
+                        && _execution.Capture is { } capture)
+                    {
+                        var bytes = capture.Read(payload[0] == 0, offset, count);
+                        response = new byte[1+bytes.Length]; response[0] = 1; bytes.CopyTo(response, 1);
+                    }
+                    _channel.TrySend(OwnerProtocolMessageType.CaptureBytes, response, out _);
                     break;
                 }
                 case OwnerProtocolMessageType.ReleaseRequest:
@@ -188,6 +201,9 @@ internal sealed class HeldReleasePhase
         if (decision.Kind == ReleaseDecisionKind.Released)
         {
             _safety?.Released();
+            if (Int01Qualification.Is(_request.QualificationFault,"b4-status-backpressure"))
+                Int01Qualification.ObserveFullStatusPipe(_request.QualificationFault!,
+                    _execution.CoordinatorStatusReader.DangerousGetHandle().ToInt32(), Math.Min(_overallDeadline,NowNanoseconds()+2_000_000_000L));
             Int01Qualification.Point(_request.QualificationFault,"owner-before-observation",_overallDeadline);
             var facts = ObserveExecution(decision);
             if(_request.QualificationFault is { } observedFault) Int01Qualification.Write(observedFault,"owner-execution-facts",facts);
@@ -221,7 +237,7 @@ internal sealed class HeldReleasePhase
     private ReleasePrerequisites Prerequisites()
     {
         var resources = _safety?.ResourcesValid ?? _primaryLease.TryReadWp04Limits(out _, out _);
-        var capture = _execution.StdoutReader is { IsClosed: false, IsInvalid: false }
+        var capture = _execution.Capture?.Healthy == true && _execution.StdoutReader is { IsClosed: false, IsInvalid: false }
             && _execution.StderrReader is { IsClosed: false, IsInvalid: false }
             && _execution.CoordinatorStatusReader is { IsClosed: false, IsInvalid: false };
         if (_safety is not null)
@@ -375,21 +391,23 @@ internal sealed class HeldReleasePhase
         }
 
         var wrapperExited = _execution.WrapperReaper.TryReap(5000, out var wrapperExitCode, out _);
-        var stdout = DrainBounded(Fd(_execution.StdoutReader), out var stdoutEof, out var stdoutOverflow, out var stdoutReadFailure);
-        var stderr = DrainBounded(Fd(_execution.StderrReader), out var stderrEof, out var stderrOverflow, out var stderrReadFailure);
+        var captured = _execution.Capture!.Finish();
+        var stdout = captured.Stdout; var stderr = captured.Stderr;
         var population = _primaryLease.ObservePopulation();
         var outcome = Classify(decision.Delivery, exec, root, exitCode);
+        if (!captured.Complete || !population.Known || !population.Empty || _safety?.StopLatched == true)
+            outcome = RestrictedOutcome.Unknown; // known exec/root survive missing completion axes
 
         return new OwnerExecutionFacts(
             outcome, exec, execErrno, root, exitCode, signal, coreDumped,
             rawWaitPresent, rawWaitStatus, wrapperExited, wrapperExitCode,
             population.Known, population.Known && !population.Empty,
-            (ulong)stdout.Length, (ulong)stdout.Length, stdoutEof, stdoutOverflow,
-            (ulong)stderr.Length, (ulong)stderr.Length, stderrEof, stderrOverflow,
-            stdoutReadFailure || stderrReadFailure,
-            stdoutEof && stdout.Length > 0 ? SHA256.HashData(stdout) : null,
-            stderrEof && stderr.Length > 0 ? SHA256.HashData(stderr) : null,
-            ObservedAtNanoseconds: NowNanoseconds(),PhysicalReleaseAttempts:_execution.PhysicalReleaseAttempts);
+            (ulong)stdout.Bytes.Length, stdout.Seen, stdout.Eof, stdout.Overflow,
+            (ulong)stderr.Bytes.Length, stderr.Seen, stderr.Eof, stderr.Overflow,
+            stdout.Failed || stderr.Failed,
+            stdout.Digest, stderr.Digest,
+            ObservedAtNanoseconds: NowNanoseconds(),PhysicalReleaseAttempts:_execution.PhysicalReleaseAttempts,
+            StdoutReadFailure:stdout.Failed,StderrReadFailure:stderr.Failed,CaptureDrainExpired:captured.Expired);
     }
 
     private static RestrictedOutcome Classify(DeliveryResult delivery, ExecTag exec, RootKind root, int exitCode)
@@ -461,68 +479,6 @@ internal sealed class HeldReleasePhase
     }
 
     private static int Fd(SafeFileHandle handle) => checked((int)handle.DangerousGetHandle());
-
-    private static byte[] DrainBounded(int fd, out bool eof, out bool overflow, out bool readFailure)
-    {
-        eof = false;
-        overflow = false;
-        readFailure = false;
-        using var output = new MemoryStream(4096);
-        var buffer = new byte[4096];
-        var deadline = NowNanoseconds() + CaptureDrainAllowanceNanoseconds;
-        while (true)
-        {
-            var remaining = deadline - NowNanoseconds();
-            if (remaining <= 0)
-            {
-                return output.ToArray();
-            }
-
-            var poll = new[] { new NativeLaunchInterop.PollFd { Fd = fd, Events = 1 } };
-            var ready = NativeLaunchInterop.Poll(poll, 1, (int)Math.Clamp(remaining / 1_000_000, 1, 100));
-            if (ready < 0)
-            {
-                if (System.Runtime.InteropServices.Marshal.GetLastWin32Error() == NativeLaunchInterop.EINTR)
-                {
-                    continue;
-                }
-
-                readFailure = true;
-                return output.ToArray();
-            }
-
-            if (ready == 0)
-            {
-                continue;
-            }
-
-            var read = NativeLaunchInterop.Read(fd, buffer, (nuint)buffer.Length);
-            if (read < 0)
-            {
-                if (System.Runtime.InteropServices.Marshal.GetLastWin32Error() == NativeLaunchInterop.EINTR)
-                {
-                    continue;
-                }
-
-                readFailure = true;
-                return output.ToArray();
-            }
-
-            if (read == 0)
-            {
-                eof = true;
-                return output.ToArray();
-            }
-
-            if (output.Length + read > MaxCaptureBytes)
-            {
-                overflow = true;
-                return output.ToArray();
-            }
-
-            output.Write(buffer, 0, (int)read);
-        }
-    }
 
     private static long NowNanoseconds()
     {

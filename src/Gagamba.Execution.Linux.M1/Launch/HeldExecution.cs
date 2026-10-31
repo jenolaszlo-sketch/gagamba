@@ -22,7 +22,7 @@ internal sealed class HeldExecution : IDisposable, IReleaseWriteChannel
         SafeFileHandle stdoutReader,
         SafeFileHandle stderrReader,
         int helperChildPid,
-        CoordinatorHeldReport report)
+        CoordinatorHeldReport report, ProtectedCapture? capture = null)
     {
         WrapperReaper = wrapperReaper;
         _controlWriter = controlWriter;
@@ -31,7 +31,7 @@ internal sealed class HeldExecution : IDisposable, IReleaseWriteChannel
         StdoutReader = stdoutReader;
         StderrReader = stderrReader;
         HelperChildPid = helperChildPid;
-        Report = report;
+        Report = report; Capture = capture;
     }
 
     internal PidFdChildReaper WrapperReaper { get; }
@@ -41,6 +41,7 @@ internal sealed class HeldExecution : IDisposable, IReleaseWriteChannel
     internal SafeFileHandle StderrReader { get; }
     internal int HelperChildPid { get; }
     internal CoordinatorHeldReport Report { get; }
+    internal ProtectedCapture? Capture { get; }
 
     /// <summary>True once the sole physical RELEASE write was attempted. It is
     /// never authority: it only classifies post-release cleanup expectations.</summary>
@@ -78,6 +79,7 @@ internal sealed class HeldExecution : IDisposable, IReleaseWriteChannel
         CloseAbortControl();
         CoordinatorStatusReader.Dispose();
         HelperStatusReader.Dispose();
+        Capture?.Dispose();
         StdoutReader.Dispose();
         StderrReader.Dispose();
         WrapperReaper.Dispose();

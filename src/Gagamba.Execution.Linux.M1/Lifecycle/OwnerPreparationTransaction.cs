@@ -404,7 +404,10 @@ internal static class OwnerPreparationTransaction
                 var acceptedAt = request.AcceptedAtNs;
                 var setupDeadline = Math.Min(checked(acceptedAt + 10_000_000_000L), request.ExpiresAtNs);
                 var overallDeadline = Math.Min(checked(acceptedAt + 30_000_000_000L), request.ExpiresAtNs);
-                var launcher = new BubblewrapAdapter();
+                var launcher = new BubblewrapAdapter(cause =>
+                { if (safety is not null) safety.AcceptStop(cause); else _ = primaryLease.RequestStop(); })
+                { QualificationBeforeCaptureStore = Int01Qualification.Is(fault,"b4-store-failure")
+                    ? _ => throw new IOException("B4 qualification capture store failure") : null };
                 var launch = launcher.PrepareHeldAsync(primaryLease, closure, manifest, identity,
                         setupDeadline, overallDeadline, CancellationToken.None)
                     .GetAwaiter().GetResult();
@@ -417,6 +420,7 @@ internal static class OwnerPreparationTransaction
                 }
 
                 using var heldExecution = launch.Execution;
+                if (heldExecution.Capture is { } capture) safety?.BindCapture(capture);
                 // B3: the same authoritative capability, writer lease and
                 // sole RELEASE machinery now serve a bounded release/stop
                 // decision instead of aborting unconditionally.

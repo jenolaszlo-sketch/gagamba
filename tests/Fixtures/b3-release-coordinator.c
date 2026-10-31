@@ -314,6 +314,13 @@ static int wait_target(pid_t pid, int *raw_status)
 int main(void)
 {
     if (load_config() != 0) return 80;
+#ifdef B4_SETUP_FLOOD
+    for (unsigned i=0;i<20000;i++) { const unsigned char b[]="setup-output\n"; if(write_all(1,b,sizeof(b)-1)!=0) return 115; }
+#endif
+#ifdef B4_SETUP_MARKER
+    const unsigned char marker[]="gagamba-m1-fixture: ctor-marker\n";
+    if(write_all(2,marker,sizeof(marker)-1)!=0) return 117;
+#endif
     if (write_held_report() != 0) return 81;
 
     /* Close the filter/status descriptors exactly as the pinned policy
@@ -356,6 +363,9 @@ int main(void)
     int child = 0;
     uint32_t exec_errno = 0;
     int launch = launch_target(&child, &exec_errno);
+#ifdef B4_STATUS_FLOOD
+    for (uint64_t i=2;i<100000;i++) if(write_frame(GGM1_KIND_EXEC_CONFIRMED,i,0)!=0) return 116;
+#endif
     if (launch < 0) return fail(40, 2);
     if (launch == 1)
     {
@@ -371,6 +381,9 @@ int main(void)
     int raw = 0;
     if (wait_target((pid_t)child, &raw) != 0) return fail(42, 2);
     if (write_frame(GGM1_KIND_ROOT_WAIT, 3, (uint32_t)raw) != 0) return 114;
+#ifdef B4_KEEP_INIT
+    usleep(2500000);
+#endif
     (void)close(5);
     return 0;
 }

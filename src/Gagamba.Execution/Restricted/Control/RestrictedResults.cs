@@ -217,10 +217,25 @@ public sealed class RestrictedCaptureEvidence
     public RestrictedFinalDrain FinalDrain { get; }
 }
 
+public enum RestrictedCaptureStream { Stdout = 0, Stderr = 1 }
+public enum RestrictedCaptureReadKind { Unavailable = 0, Copied = 1 }
+
+/// <summary>A copied bounded slice for the trusted host; no external disclosure is asserted.</summary>
+public sealed class RestrictedCaptureRead
+{
+    internal RestrictedCaptureRead(RestrictedCaptureReadKind kind, ReadOnlySpan<byte> bytes)
+    {
+        if (!Enum.IsDefined(kind) || bytes.Length > 16384 || (kind == RestrictedCaptureReadKind.Unavailable && !bytes.IsEmpty))
+            throw new ArgumentException("Invalid bounded capture slice");
+        Kind = kind; Bytes = ImmutableArray.Create(bytes);
+    }
+    public RestrictedCaptureReadKind Kind { get; }
+    public ImmutableArray<byte> Bytes { get; }
+}
+
 /// <summary>Immutable snapshot. Absence of an axis means unobserved, not zero or success.
 /// B1 emits only an explicitly unknown snapshot; B3 fills the axes it actually
-/// observed from the live owner and leaves every other axis unknown. Capture
-/// stays unobserved (B4).</summary>
+/// observed from the live owner and leaves every other axis unknown.</summary>
 public sealed class RestrictedObservation
 {
     internal RestrictedObservation(ulong sequence, RestrictedPreparationReference? reference,
@@ -235,12 +250,12 @@ public sealed class RestrictedObservation
         RestrictedCleanup cleanup, RestrictedStopReply? stop, RestrictedReleaseDecision? release,
         RestrictedProvenance provenance, long? observedAtNs, bool gapOrLoss, RestrictedOutcome? outcome,
         RestrictedExecResult? exec, RestrictedProcessResult? root, RestrictedProcessResult? helper,
-        RestrictedDomainState domain)
+        RestrictedDomainState domain, RestrictedCaptureEvidence? capture = null)
     {
         Sequence = sequence; Reference = reference; Cleanup = cleanup; Stop = stop; Release = release;
         Provenance = ControlValidation.Tag(provenance); ObservedAtNs = observedAtNs; GapOrLoss = gapOrLoss;
         Outcome = outcome is null ? null : ControlValidation.Tag(outcome.Value); Exec = exec;
-        Root = root; Helper = helper; Domain = ControlValidation.Tag(domain);
+        Root = root; Helper = helper; Domain = ControlValidation.Tag(domain); Capture = capture;
     }
     public ushort EvidenceVersion => 1;
     public ulong Sequence { get; }
@@ -256,7 +271,7 @@ public sealed class RestrictedObservation
     public RestrictedProcessResult? Root { get; }
     public RestrictedProcessResult? Helper { get; }
     public RestrictedDomainState Domain { get; }
-    public RestrictedCaptureEvidence? Capture => null;
+    public RestrictedCaptureEvidence? Capture { get; }
     public RestrictedCleanup Cleanup { get; }
 }
 

@@ -134,6 +134,23 @@ internal sealed class IntegratedB3Client : IDisposable
             return new(true,decision,string.Empty);
         }
     }
+    internal RestrictedCaptureRead ReadCapture(RestrictedCaptureStream stream, ulong offset, int count)
+    {
+        if (!Enum.IsDefined(stream) || offset > ProtectedCapture.StreamCeiling || count is < 0 or > ProtectedCapture.ReadCeiling)
+            throw new ArgumentOutOfRangeException(nameof(count));
+        lock (_exchange)
+        {
+            if (_disposed || _channel is null) return new(RestrictedCaptureReadKind.Unavailable, []);
+            var request = new byte[13]; request[0] = (byte)stream;
+            System.Buffers.Binary.BinaryPrimitives.WriteUInt64LittleEndian(request.AsSpan(1), offset);
+            System.Buffers.Binary.BinaryPrimitives.WriteInt32LittleEndian(request.AsSpan(9), count);
+            if (!_channel.TrySend(OwnerProtocolMessageType.CaptureRead, request, out _)
+                || !_channel.TryReceive(OwnerProtocolMessageType.CaptureBytes, out var reply, out _)
+                || reply!.Payload[0] != 1 || reply.Payload.Length > count + 1)
+                return new(RestrictedCaptureReadKind.Unavailable, []);
+            return new(RestrictedCaptureReadKind.Copied, reply.Payload.AsSpan(1));
+        }
+    }
     internal RestrictedCleanup Cleanup()
     {
         RequestNativeStop();

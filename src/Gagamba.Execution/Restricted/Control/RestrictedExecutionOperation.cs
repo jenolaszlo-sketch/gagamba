@@ -76,6 +76,8 @@ internal interface IRestrictedOperationOwner
     ValueTask<RestrictedOwnerReleaseResult> ReleaseAsync(ImmutableArray<byte> approvalCorrelationSha256);
     ValueTask<RestrictedStopReply> StopAsync(RestrictedStopReason reason);
     ValueTask<RestrictedCleanup> DisposeAsync();
+    ValueTask<RestrictedCaptureRead> ReadCaptureAsync(RestrictedCaptureStream stream, ulong offset, int count) =>
+        ValueTask.FromResult(new RestrictedCaptureRead(RestrictedCaptureReadKind.Unavailable, []));
     // Cached, nonblocking facts only: never journal I/O or an authenticated
     // channel round trip while the facade's local ordering gate is held.
     RestrictedReleaseDecision? RetainedRelease { get; }
@@ -104,7 +106,7 @@ internal sealed record RestrictedOwnerExecutionFacts(
     RestrictedProcessResult? Root,
     RestrictedProcessResult? Helper,
     RestrictedDomainState Domain,
-    long? ObservedAtNs);
+    long? ObservedAtNs, RestrictedCaptureEvidence? Capture = null);
 
 internal sealed record RestrictedOwnerPreparation(RestrictedPreparationReference Reference,
     RestrictedManifestView Manifest, RestrictedProviderDescriptor Provider, RestrictedDeadlines Deadlines,
@@ -139,6 +141,7 @@ public sealed class RestrictedExecutionOperation : IAsyncDisposable
     private Task _stopTask = Task.CompletedTask;
     private Task? _disposeTask;
     private bool _disposed;
+    private bool _captureReadInFlight;
     private ulong _sequence;
     private RestrictedCleanup _cleanup = RestrictedCleanup.Unknown;
     // R1-F03 Option A admission state. The first call that passes every local
@@ -455,8 +458,30 @@ public sealed class RestrictedExecutionOperation : IAsyncDisposable
             return ValueTask.FromResult(new RestrictedObservation(_sequence, _identity, _cleanup, _stop,
                 _releaseDecision, provenance, facts?.ObservedAtNs, gapOrLoss: true,
                 facts?.Outcome, facts?.Exec, facts?.Root, facts?.Helper,
-                facts?.Domain ?? RestrictedDomainState.Unknown));
+                facts?.Domain ?? RestrictedDomainState.Unknown, facts?.Capture));
         }
+    }
+
+    /// <summary>Reads at most 16 KiB from fixed owner custody. Cancellation ends only this wait.</summary>
+    public ValueTask<RestrictedCaptureRead> ReadCaptureAsync(RestrictedCaptureStream stream, ulong offset, int count,
+        CancellationToken waitCancellation = default)
+    {
+        ControlValidation.Tag(stream);
+        if (count is < 0 or > 16384 || offset > 65536) throw new ArgumentOutOfRangeException(nameof(count));
+        waitCancellation.ThrowIfCancellationRequested();
+        lock (_gate)
+        {
+            if (_disposed || _prepared is null || _captureReadInFlight)
+                return ValueTask.FromResult(new RestrictedCaptureRead(RestrictedCaptureReadKind.Unavailable, []));
+            _captureReadInFlight = true;
+        }
+        return new(ReadCaptureCoreAsync(stream, offset, count).WaitAsync(waitCancellation));
+    }
+    private async Task<RestrictedCaptureRead> ReadCaptureCoreAsync(RestrictedCaptureStream stream, ulong offset, int count)
+    {
+        try { return await _owner.ReadCaptureAsync(stream, offset, count).ConfigureAwait(false); }
+        catch { return new(RestrictedCaptureReadKind.Unavailable, []); }
+        finally { lock (_gate) _captureReadInFlight = false; }
     }
 
     public ValueTask DisposeAsync()

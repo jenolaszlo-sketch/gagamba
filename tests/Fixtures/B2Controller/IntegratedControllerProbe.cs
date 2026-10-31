@@ -70,6 +70,8 @@ internal static class IntegratedControllerProbe
                         Console.WriteLine(JsonSerializer.Serialize(await operation.RequestReleaseAsync(prepared,ImmutableArray.Create(new byte[32]))));break;
                     case "stop": Console.WriteLine(JsonSerializer.Serialize(await operation.RequestStopAsync(RestrictedStopReason.CallerStop)));break;
                     case "observe": Console.WriteLine(JsonSerializer.Serialize(new {Observation=await operation.ObserveAsync(),PhysicalReleaseAttempts=creation.ExperimentalOwner!.PhysicalReleaseAttempts},EvidenceJson));break;
+                    case "capture-stdout": Console.WriteLine(JsonSerializer.Serialize(await operation.ReadCaptureAsync(RestrictedCaptureStream.Stdout, 0, 16384)));break;
+                    case "capture-stderr": Console.WriteLine(JsonSerializer.Serialize(await operation.ReadCaptureAsync(RestrictedCaptureStream.Stderr, 0, 16384)));break;
                     case "dispose": await operation.DisposeAsync();Console.WriteLine(JsonSerializer.Serialize(await operation.ObserveAsync(),EvidenceJson));break;
                     default:return 4;
                 }

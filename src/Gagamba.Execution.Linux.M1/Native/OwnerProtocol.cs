@@ -46,6 +46,8 @@ internal enum OwnerProtocolMessageType : byte
     StopDecision = 30,
     ExecutionOutcome = 31,
     DirectBootstrap = 32, // exactly original-controller pidfd + dedicated recovery safety lifeline
+    CaptureRead = 34, // direct original controller only; checked copied bytes, no descriptors
+    CaptureBytes = 35,
     DirectRendezvous = 33, // bounded address only; never a release endpoint
 
 }
@@ -102,6 +104,8 @@ internal static class OwnerProtocol
             OwnerProtocolMessageType.ReleaseDecision => message.Payload.Length is > 0 and <= 1024,
             OwnerProtocolMessageType.StopRequest => message.Payload.Length == 1,
             OwnerProtocolMessageType.StopDecision => message.Payload.Length is > 0 and <= 1024,
+            OwnerProtocolMessageType.CaptureRead => message.Payload.Length == 13,
+            OwnerProtocolMessageType.CaptureBytes => message.Payload.Length is >= 1 and <= 16385,
             OwnerProtocolMessageType.ExecutionOutcome => message.Payload.Length is > 0 and <= 4096,
             _ => !IsTransferType(message.Type),
         };
@@ -291,13 +295,15 @@ internal sealed class OwnerProtocolChannel : IDisposable
         or OwnerProtocolMessageType.HeldAborted or OwnerProtocolMessageType.ReleaseRequest
         or OwnerProtocolMessageType.ReleaseDecision or OwnerProtocolMessageType.StopRequest
         or OwnerProtocolMessageType.StopDecision or OwnerProtocolMessageType.ExecutionOutcome
+        or OwnerProtocolMessageType.CaptureRead or OwnerProtocolMessageType.CaptureBytes
         or OwnerProtocolMessageType.Aborted or OwnerProtocolMessageType.BarrierReached or OwnerProtocolMessageType.Continue;
     private static bool ForbiddenRecovery(OwnerProtocolMessageType type) => type is
         OwnerProtocolMessageType.StagedObjects or OwnerProtocolMessageType.ManifestAuthorization
         or OwnerProtocolMessageType.HeldReady or OwnerProtocolMessageType.AbortHeld
         or OwnerProtocolMessageType.HeldAborted or OwnerProtocolMessageType.ReleaseRequest
         or OwnerProtocolMessageType.ReleaseDecision or OwnerProtocolMessageType.StopRequest
-        or OwnerProtocolMessageType.StopDecision or OwnerProtocolMessageType.ExecutionOutcome;
+        or OwnerProtocolMessageType.StopDecision or OwnerProtocolMessageType.ExecutionOutcome
+        or OwnerProtocolMessageType.CaptureRead or OwnerProtocolMessageType.CaptureBytes;
     internal bool IsAlive => !_disposed && (_direct?.IsAlive ?? DirectSocketAlive());
     private bool DirectSocketAlive()
     {

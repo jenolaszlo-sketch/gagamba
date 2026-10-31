@@ -111,6 +111,16 @@ def run_case(base,case,report):
         elif action=='kill':
             assert snapshot[actor.title()+'Pid']==(process.pid if actor=='controller' else snapshot[actor.title()+'Pid'])
             core.kill_exact(refs[actor]);facts['Signal']={'Actor':actor,'Signal':'SIGKILL'}
+            if case=='blocked-observer-native-stop':
+                sample_end=time.monotonic()+2
+                while time.monotonic()<sample_end:
+                    preexit={'AtNs':time.monotonic_ns(),'Events':(domain/'cgroup.events').read_text(),'Inode':domain.stat().st_ino}
+                    if 'populated 0' in preexit['Events']:break
+                    time.sleep(.002)
+                facts['PreOwnerExitPopulation']=preexit
+                facts['OwnerAliveAtEmptySample']=not core.exited(refs['owner'])
+                assert 'populated 0' in preexit['Events'] and facts['OwnerAliveAtEmptySample']
+                (workspace/'evidence'/'continue-owner-before-observation').touch()
             wait_exit(refs['owner'])
             facts['OwnerExitPidfd']=True
             if domain.exists():facts['DomainAfterFault']={'Events':(domain/'cgroup.events').read_text(),'Procs':(domain/'cgroup.procs').read_text(),'Inode':domain.stat().st_ino}

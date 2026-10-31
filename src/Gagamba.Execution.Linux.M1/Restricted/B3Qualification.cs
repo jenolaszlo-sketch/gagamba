@@ -322,6 +322,9 @@ internal sealed class B3PreparationOwner : IRestrictedOperationOwner, IDisposabl
     }
 
     public ValueTask<RestrictedCleanup> DisposeAsync() => new(Task.Run(DisposeCore));
+    public ValueTask<RestrictedCaptureRead> ReadCaptureAsync(RestrictedCaptureStream stream, ulong offset, int count) =>
+        new(Task.Run(() => _integrated?.ReadCapture(stream, offset, count)
+            ?? new RestrictedCaptureRead(RestrictedCaptureReadKind.Unavailable, [])));
 
     private RestrictedOwnerPrepareResult PrepareCore(RestrictedPreparationInputs inputs)
     {
@@ -864,8 +867,19 @@ internal sealed class B3PreparationOwner : IRestrictedOperationOwner, IDisposabl
         var domain = facts.DomainKnown
             ? facts.DomainPopulated ? RestrictedDomainState.Populated : RestrictedDomainState.Empty
             : RestrictedDomainState.Unknown;
+        var stdoutFailed = facts.StdoutReadFailure ?? facts.CaptureReadFailure;
+        var stderrFailed = facts.StderrReadFailure ?? facts.CaptureReadFailure;
         return new RestrictedOwnerExecutionFacts(facts.Outcome, exec, root, Helper: null, domain,
-            facts.ObservedAtNanoseconds > 0 ? facts.ObservedAtNanoseconds : null);
+            facts.ObservedAtNanoseconds > 0 ? facts.ObservedAtNanoseconds : null,
+            new RestrictedCaptureEvidence(
+                new(facts.StdoutStoredBytes, facts.StdoutObservedBytes, facts.StdoutOverflow, stdoutFailed,
+                    !facts.StdoutEof || facts.StdoutOverflow || stdoutFailed, facts.StdoutEof,
+                    facts.StdoutEof && !facts.StdoutOverflow && !stdoutFailed),
+                new(facts.StderrStoredBytes, facts.StderrObservedBytes, facts.StderrOverflow, stderrFailed,
+                    !facts.StderrEof || facts.StderrOverflow || stderrFailed, facts.StderrEof,
+                    facts.StderrEof && !facts.StderrOverflow && !stderrFailed),
+                131072, ulong.MaxValue, facts.CaptureDrainExpired == true ? RestrictedFinalDrain.Expired
+                    : facts.StdoutEof && facts.StderrEof ? RestrictedFinalDrain.Complete : RestrictedFinalDrain.Incomplete));
     }
 
     private RestrictedReleaseDecision BuildPublicDecision(ReleaseDecision decision) =>
@@ -970,6 +984,13 @@ internal sealed class B3ScopeCleaner : IAllocationCleaner
                     "staging directory identity mismatch");
             }
 
+            using var parent = new SafeFileHandle((IntPtr)_parentFd, ownsHandle: false);
+            var open = LibcCopyHost.Instance.OpenSource(parent, entry.Name, out var named);
+            if (open != 0 || named is null) return new(AllocationCleanOutcome.Mismatch, "staging entry unavailable");
+            using (named)
+                if (LibcCopyHost.Instance.StatHandle(named, out var identity) != 0
+                    || identity.Device != entry.Device || identity.Inode != entry.Inode)
+                    return new(AllocationCleanOutcome.Mismatch, "staging name no longer names retained directory");
             var errno = PreparationInterop.RemoveDirectory(_parentFd, entry.Name);
             return errno == 0
                 ? new AllocationCleanResult(AllocationCleanOutcome.Cleaned, string.Empty)
