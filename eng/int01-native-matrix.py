@@ -3,7 +3,7 @@
 Full security matrix remains mandatory; this runner implements the core actual-process
 cases below. Other required fault injections are explicitly pending, never passed.
 """
-import argparse, copy, hashlib, json, os, pathlib, select, shutil, signal, subprocess, tempfile, time
+import argparse, copy, fcntl, hashlib, json, os, pathlib, select, shutil, signal, subprocess, tempfile, time
 
 CORE_CASES=('positive-one-release','stop-before-release','controller-sigkill-held','recovery-sigkill-held',
             'owner-sigkill-held','controller-sigkill-after-release','recovery-sigkill-after-release','owner-sigkill-after-release')
@@ -14,6 +14,9 @@ PENDING_CASES=('controller-before-preparation','controller-during-preparation','
  'integrated-stop-before-mint','integrated-stop-after-intent-before-write','integrated-ambiguous-intent',
  'integrated-lost-release-ack','integrated-original-deadline','integrated-owner-live-takeover-refusal',
  'integrated-post-exit-writer-fence','actual-recovery-release-impersonation')
+
+IMPLEMENTED_FAULT_CASES=('simultaneous-controller-recovery-death','integrated-original-deadline',
+ 'integrated-owner-live-takeover-refusal','integrated-post-exit-writer-fence')
 
 def emit(path,value):
     path.write_text(json.dumps(value,indent=2)+'\n')
@@ -88,6 +91,8 @@ def run_case(base,case,report):
         assert ppid==snapshot['RecoveryPid'],(ppid,snapshot)
         facts['ActualOwnerParent']=ppid
         facts['HeldJournal']=command(process,'journal')
+        domain=pathlib.Path(profile['DelegatedParentPath'])/facts['HeldJournal']['DomainName']
+        facts['DomainKernelBefore']={'Path':str(domain),'Events':(domain/'cgroup.events').read_text(),'Procs':(domain/'cgroup.procs').read_text()}
         facts['KernelInventory']={}
         for actor,pid in (('controller',process.pid),('recovery',snapshot['RecoveryPid']),('owner',snapshot['OwnerPid'])):
             proc=pathlib.Path(f'/proc/{pid}')
@@ -97,6 +102,40 @@ def run_case(base,case,report):
             except OSError as error: inventory['FdInventoryError']=str(error)
             facts['KernelInventory'][actor]=inventory
         facts['RetainedPeerPidfds']={actor:os.readlink(f'/proc/self/fd/{fd}') for actor,fd in refs.items()}
+        if case=='integrated-owner-live-takeover-refusal':
+            assert not exited(refs['owner']) and not snapshot['WriterFence']
+            with (workspace/'journal'/'ownership.lock').open('r+b') as contender:
+                try: fcntl.flock(contender,fcntl.LOCK_EX|fcntl.LOCK_NB)
+                except BlockingIOError: facts['LiveOwnerWriterContention']='KernelRefused'
+                else:
+                    fcntl.flock(contender,fcntl.LOCK_UN)
+                    raise AssertionError('live owner writer fence was acquired by contender')
+            assert not exited(refs['owner'])
+            facts['LiveOwnerRecovery']=command(process,'inspect')
+            assert not facts['LiveOwnerRecovery']['WriterFence']
+        elif case=='integrated-original-deadline':
+            cutoff=prepared['Deadlines']['SetupDeadlineNs']
+            facts['OriginalSetupDeadlineNs']=cutoff
+            while time.monotonic_ns()<cutoff: time.sleep(max(0,min(.02,(cutoff-time.monotonic_ns())/1e9)))
+            facts['LaterRelease']=command(process,'release')
+            assert facts['LaterRelease']['Kind']!=2
+            facts['DeadlineJournal']=command(process,'journal')
+            assert facts['DeadlineJournal']['Release'] is None
+        elif case=='simultaneous-controller-recovery-death':
+            # Two exact pidfd signals back-to-back; no claim of atomic wall-clock death.
+            kill_exact(refs['controller']);kill_exact(refs['recovery'])
+            facts['Signals']=['controller:SIGKILL','recovery:SIGKILL']
+            deadline=time.monotonic()+12
+            while time.monotonic()<deadline and not exited(refs['owner']):time.sleep(.02)
+            assert exited(refs['owner'])
+            facts['OwnerExitObserved']=True
+            if domain.exists():
+                facts['DomainKernelAfter']={'Events':(domain/'cgroup.events').read_text(),'Procs':(domain/'cgroup.procs').read_text()}
+                assert 'populated 0' in facts['DomainKernelAfter']['Events']
+            else: facts['DomainKernelAfter']={'Observation':'Removed; no independent emptiness witness'}
+            facts['Cleanup']='Unknown'
+            facts['Status']='Passed'
+            return True
         if case=='stop-before-release':
             facts['Stop']=command(process,'stop');facts['LaterRelease']=command(process,'release')
             assert facts['LaterRelease']['Kind']!=2
@@ -108,8 +147,9 @@ def run_case(base,case,report):
                 duplicate=command(process,'release');facts['RepeatRelease']=duplicate;assert duplicate['Kind']==3,duplicate
                 facts['RepeatObservation']=command(process,'observe')
                 assert facts['RepeatObservation']['PhysicalReleaseAttempts']==1
-        if '-sigkill-' in case:
-            actor=case.split('-')[0];kill_exact(refs[actor]);facts['KilledActualActor']=actor
+        if '-sigkill-' in case or case=='integrated-post-exit-writer-fence':
+            actor='owner' if case=='integrated-post-exit-writer-fence' else case.split('-')[0]
+            kill_exact(refs[actor]);facts['KilledActualActor']=actor
             deadline=time.monotonic()+12
             if actor=='controller':
                 assert not exited(refs['recovery']),'recovery died with original controller'
@@ -128,8 +168,13 @@ def run_case(base,case,report):
                     final=command(process,'inspect')
                     while time.monotonic()<deadline and not (final and final['OwnerReaped'] and final['WriterFence']):
                         time.sleep(.02);final=command(process,'inspect')
-                    facts['RecoveryFinal']=final
                     assert final is not None and final['OwnerReaped'] and final['WriterFence'] and not final['ReleaseAuthority']
+                    facts['RecoveryReapedAndFenced']=final
+                    final_path=workspace/'evidence'/'integrated-final.json'
+                    while time.monotonic()<deadline and not final_path.exists(): time.sleep(.02)
+                    assert final_path.exists(),'recovery cleanup completion unavailable before watchdog'
+                    final=json.loads(final_path.read_text());facts['RecoveryFinal']=final
+                    facts['Cleanup']='Confirmed' if final['DomainEmpty'] and final['StagingRemoved'] and final['JournalFinalized'] else 'Unknown'
                 if case.endswith('after-release'):
                     assert facts['PostFault']['Observation']['Release']==facts['Execution']['Observation']['Release'],facts
                 else:
@@ -144,9 +189,11 @@ def run_case(base,case,report):
         facts['Error']=str(error)
     finally:
         # Test watchdog cleanup is distinct from observed recovery/owner stopping. No guessed PIDs or privileged fallback.
+        facts['WatchdogActions']=[]
         for actor in ('controller','owner','recovery'):
             if actor in refs and not exited(refs[actor]):
-                try: kill_exact(refs[actor])
+                try:
+                    kill_exact(refs[actor]);facts['WatchdogActions'].append({'Actor':actor,'Signal':'SIGKILL'})
                 except ProcessLookupError: pass
         if process is not None:
             try: process.wait(timeout=5)
@@ -158,7 +205,7 @@ def run_case(base,case,report):
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--profile',default=os.environ.get('GAGAMBA_INT01_PROFILE'))
     parser.add_argument('--report',required=True);parser.add_argument('--preflight-only',action='store_true')
-    parser.add_argument('--case',choices=CORE_CASES,help='Run one core case; default runs all eight')
+    parser.add_argument('--case',choices=CORE_CASES+IMPLEMENTED_FAULT_CASES,help='Run one core case; default runs all eight')
     args=parser.parse_args()
     report=pathlib.Path(args.report);report.mkdir(parents=True,exist_ok=True)
     checks=prerequisites(args.profile);ready=all(x['Passed'] for x in checks)
