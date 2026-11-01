@@ -1,6 +1,14 @@
 # Gagamba handoff
 
-> **B5 IMPLEMENTED WITH QUALIFICATIONS — READY FOR INDEPENDENT C3 SECURITY REVIEW (2026-11-01).**
+> **B5 ACCEPTED WITH QUALIFICATIONS (2026-11-01).**
+> Owner decision: [RC2B-05-B5 Owner Acceptance](decisions/rc2b-05-b5-owner-acceptance.md); independent review: [SUPPORTED WITH QUALIFICATIONS](reviews/rc2b-05-b5-q1-independent-security-review.md) at review commit `d5852f46bb3db08b8f37386851bf22bd7a99b48f`.
+> Tested implementation `0bf045d0ec3e4cb560edb2bc3b4e7065efaa7b9c`, tree `80d138f81c82b61243e23c0865eb6a1ca516cc54`; producer evidence `9cba151ee82bdba301251f0c12fc1550c9e6d5d6`, tree `155da2cfd0d185eba0b6187b3e69f390cd6c348e`; baseline `e7818b5a876c220cb4f803b6cc1f9c55027d3c66`.
+> Accepted within the demonstrated Windows/WSL2 experimental scope: sealed monotonic clock; immutable durable `StopRecord` deadline as the authoritative bound; no renewal through restart/repeat/partial cleanup; Policy A zero-wait expiry kill plus one observation; conservative clock refusal; separated no-record behavior; typed outcomes and truthful aggregate precedence; C1/C2/C4/Option A/INT-01/B4 preserved.
+> Evidence: B5 **61/61**, D6.4 **3/3**, native non-root **33/33**, INT-01 **32/32**, Windows M1 **1,050/269**, 108-file manifest verified (`47680950…`), cleanup **20 Confirmed / 12 Unknown**; failing-before 200 → 0.
+> **No test execution was independently reproduced:** the reviewer verified bindings and recomputed the manifest, but native cases were not rerun and the deterministic inventory was not re-executed; all counts are producer-executed and inspected only. B5-L01–L07 remain qualification limits (WSL2 ≠ native Linux host; reconstructed INT-01 profile; carried skips/findings).
+> No production activation, installation attestation, package release, B6/B7, Hufu or native Linux/macOS qualification is authorized. B4Q1-F02–F04, Q1R-08 and R1-F02 retain existing dispositions. Historical blocks below are unchanged.
+
+> **Prior B5 implementation checkpoint (2026-11-01): B5 IMPLEMENTED WITH QUALIFICATIONS — READY FOR INDEPENDENT C3 SECURITY REVIEW (superseded by the acceptance above).**
 > Authorization GAGAMBA-RC2B-05-B5-IMPL-01 from canonical `e7818b5a876c220cb4f803b6cc1f9c55027d3c66`; [source-bound evidence](evidence/rc2b-05-b5-impl-01.md); tested implementation `0bf045d0ec3e4cb560edb2bc3b4e7065efaa7b9c`, tree `80d138f81c82b61243e23c0865eb6a1ca516cc54`.
 > Sealed `StopwatchDomainClock` with the shared OwnerClock conversion; a valid durable `StopRecord` absolute deadline is authoritative (`remaining = max(0, deadline - now)`), Policy A zero-wait on expiry, typed kill/population outcomes, corrected `JournalFinalization` precedence, and the fixed D6.4 R1-T13–T15 variant.
 > Failing-before preserved: 200 fresh 25 ms polls after the persisted deadline expired; corrected to 0. Windows M1 **1050/0/269**, B5 focused **61/61**, D6.4 **3/3**, solution build 0/0, `eng/tests` **35/35**.

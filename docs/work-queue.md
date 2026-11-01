@@ -1,6 +1,14 @@
 # Current work queue
 
-> **B5 IMPLEMENTED WITH QUALIFICATIONS — READY FOR INDEPENDENT C3 SECURITY REVIEW (2026-11-01).**
+> **B5 ACCEPTED WITH QUALIFICATIONS (2026-11-01).**
+> Owner decision: [RC2B-05-B5 Owner Acceptance](decisions/rc2b-05-b5-owner-acceptance.md); independent review: [SUPPORTED WITH QUALIFICATIONS](reviews/rc2b-05-b5-q1-independent-security-review.md) at review commit `d5852f46bb3db08b8f37386851bf22bd7a99b48f`.
+> Tested implementation `0bf045d0ec3e4cb560edb2bc3b4e7065efaa7b9c`, tree `80d138f81c82b61243e23c0865eb6a1ca516cc54`; producer evidence `9cba151ee82bdba301251f0c12fc1550c9e6d5d6`, tree `155da2cfd0d185eba0b6187b3e69f390cd6c348e`; baseline `e7818b5a876c220cb4f803b6cc1f9c55027d3c66`.
+> Accepted: sealed monotonic clock; immutable durable `StopRecord` deadline authority; no renewal via restart/repeat/partial cleanup; Policy A zero-wait expiry kill + one observation; conservative clock refusal; separated no-record path; typed outcomes; truthful component/aggregate precedence; C1/C2/C4/R1-F03 Option A/INT-01/B4 preserved.
+> Evidence: B5 **61/61**, D6.4 **3/3**, native non-root **33/33**, full INT-01 **32/32**, Windows M1 **1,050/269**, 108-file manifest verified (`47680950…`), cleanup **20 Confirmed / 12 Unknown**. **Inspection-only:** no test execution was independently reproduced; native cases were explicitly not rerun.
+> Limits tracked as B5-L01–L07: WSL2 is not a native Linux host; INT-01 profile reconstructed, not replayed; compatible clock basis/boot required; pre-existing native skips unqualified; B4Q1-F02–F04, Q1R-08 and R1-F02 retain existing dispositions.
+> No production activation, installation attestation, package release, B6/B7, Hufu or native Linux/macOS work is authorized. Smallest recommended next milestone is a separately commissioned B6 installed-artifact/deployment attestation slice; starting it requires new owner authorization. Historical blocks below are unchanged.
+
+> **Prior B5 implementation checkpoint (2026-11-01): B5 IMPLEMENTED WITH QUALIFICATIONS — READY FOR INDEPENDENT C3 SECURITY REVIEW (superseded by the acceptance above).**
 > Authorization GAGAMBA-RC2B-05-B5-IMPL-01 from canonical `e7818b5a876c220cb4f803b6cc1f9c55027d3c66`; [source-bound evidence](evidence/rc2b-05-b5-impl-01.md); tested implementation `0bf045d0ec3e4cb560edb2bc3b4e7065efaa7b9c`, tree `80d138f81c82b61243e23c0865eb6a1ca516cc54`.
 > The durable C3 contract is implemented: sealed `StopwatchDomainClock`, checked remaining-time derivation from the immutable `StopRecord`, Policy A zero-wait expiry behaviour, typed kill/population outcomes, truthful component/aggregate cleanup precedence, and the D6.4 R1-T13–T15 fixture variant.
 > Failing-before **200 fresh polls vs 0**; Windows M1 **1050/0/269**, B5 focused **61/61**, D6.4 **3/3**, solution build 0/0, `eng/tests` **35/35**.

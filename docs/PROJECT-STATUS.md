@@ -1,5 +1,14 @@
 # Gagamba project status
 
+> **B5 ACCEPTED WITH QUALIFICATIONS (2026-11-01).**
+> Owner decision: [RC2B-05-B5 Owner Acceptance](decisions/rc2b-05-b5-owner-acceptance.md).
+> Independent review: [SUPPORTED WITH QUALIFICATIONS](reviews/rc2b-05-b5-q1-independent-security-review.md), review commit `d5852f46bb3db08b8f37386851bf22bd7a99b48f`.
+> Tested implementation `0bf045d0ec3e4cb560edb2bc3b4e7065efaa7b9c`, tree `80d138f81c82b61243e23c0865eb6a1ca516cc54`; producer evidence `9cba151ee82bdba301251f0c12fc1550c9e6d5d6`, tree `155da2cfd0d185eba0b6187b3e69f390cd6c348e`; baseline `e7818b5a876c220cb4f803b6cc1f9c55027d3c66`.
+> Sealed monotonic clock, immutable durable `StopRecord` deadline, Policy A zero-wait expiry (one identity-checked kill plus one immediate population observation), typed outcomes, truthful component/aggregate precedence and separated no-record behavior accepted within the demonstrated scope.
+> B5 deterministic **61/61**, D6.4 **3/3**, native non-root **33/33**, full INT-01 **32/32**, Windows M1 **1,050 passed / 269 skipped**; 108-file evidence manifest verified (SHA-256 `476809507ab458c59670d439f437d1d9606528eab8f3db8f14bba466638c0dd2`); cleanup remains **20 Confirmed / 12 Unknown**.
+> Independent reproduction: source bindings and the 108-file manifest were independently recomputed; **no test execution was independently reproduced** — every test inventory above is inspection-only and native cases were explicitly not rerun. WSL2 is not an independent native Linux host.
+> C1/C2/C4, R1-F03 Option A, INT-01 and B4 preserved; B4Q1-F02–F04, Q1R-08 and R1-F02 retain existing dispositions. No production activation, installation attestation, package release, B6/B7, Hufu or native Linux/macOS qualification is authorized. Historical blocks below are unchanged.
+
 > **B4Q1-F01-R2 COMPLETE — STRICT CLEANUP TYPES (2026-10-31).**
 > [Source-bound evidence](evidence/rc2b-04-b4-q1f01-r2-cleanup-type-hardening.md); tested implementation `0e89cc710fb235569191baf44d9188eda8c9f9a8`, tree `4caf454100cbcc3999467d55b95bbc7c564c0766`, from `9bae9a724aea54710a80527a9404b62cdc224882`.
 > `classify_dispose` now requires an exact integer live state `1`; both classification entry points apply the shared strict durable-verdict validator. Boolean, float, string, null and malformed values cannot confirm cleanup; evidence fields and `Confirmed`/`Unknown` vocabulary are unchanged.
@@ -37,7 +46,45 @@
 > Checkpoints below are historical and do not supersede this disposition.
 
 Canonical current summary; historical decisions and independent reviews remain immutable.
-Status date: 2026-10-31 (Asia/Manila).
+Status date: 2026-11-01 (Asia/Manila).
+
+## B5 Owner Acceptance Current Status
+
+**B5 ACCEPTED WITH QUALIFICATIONS.**
+Owner decision: [RC2B-05-B5 Owner Acceptance](decisions/rc2b-05-b5-owner-acceptance.md).
+Independent Q1 review: [SUPPORTED WITH QUALIFICATIONS](reviews/rc2b-05-b5-q1-independent-security-review.md),
+review commit `d5852f46bb3db08b8f37386851bf22bd7a99b48f`.
+Tested implementation `0bf045d0ec3e4cb560edb2bc3b4e7065efaa7b9c`, tree
+`80d138f81c82b61243e23c0865eb6a1ca516cc54`, from baseline
+`e7818b5a876c220cb4f803b6cc1f9c55027d3c66`; producer evidence
+`9cba151ee82bdba301251f0c12fc1550c9e6d5d6`, tree
+`155da2cfd0d185eba0b6187b3e69f390cd6c348e`; verified ancestry `e7818b5a` →
+`0bf045d0` → `9cba151e` → `d5852f46`.
+Accepted capabilities: sealed production monotonic-clock composition; the immutable durable
+`StopRecord` deadline as the authoritative recovery bound; no renewal through restart, repeat
+reconciliation or partial cleanup; Policy A identity-checked kill and one immediate population
+observation at expiry; conservative refusal of invalid clock evidence before destructive action;
+separate no-`StopRecord` behavior without fabricated deadlines or restored RELEASE authority;
+typed kill/population outcomes preserving `Failed`/`Refused`/`Unknown`/`Confirmed`; correct
+component and aggregate reconciliation precedence; conservative persistence uncertainty; and
+preservation of C1, C2, C4, R1-F03 Option A, INT-01 and B4.
+Evidence: B5 deterministic **61/61**, D6.4 **3/3**, native non-root **33/33**, full INT-01
+**32/32**, Windows M1 **1,050 passed / 0 failed / 269 skipped**, complete 108-file manifest
+verified (SHA-256 `476809507ab458c59670d439f437d1d9606528eab8f3db8f14bba466638c0dd2`),
+failing-before 200 fresh polls → 0. Cleanup remains **20 Confirmed / 12 Unknown**.
+**Independent execution inventory:** reviewer independently verified source/tree bindings and
+recomputed the 108-entry manifest; **no test execution was independently reproduced** (native
+explicitly not executed, deterministic inventory verified from committed evidence). All counts
+above are producer-executed and inspected only. Owner checks re-verified artifact integrity and
+logs, not test reruns.
+**Qualifications retained:** same compatible monotonic basis and boot context only (no
+cross-platform equivalence); WSL2 is not a separate native Linux host; INT-01 profile
+reconstructed, not a byte-identical replay; pre-existing native class skips unqualified;
+B4Q1-F02–F04, Q1R-08 and R1-F02 retain their dispositions.
+**No production, installation-attestation, package-release, B6/B7, Hufu or native
+Linux/macOS work is authorized.** `RestrictedExecutionRuntime.Create()` remains
+production-unavailable.
+Prior checkpoints below are historical.
 
 ## B4 Owner Acceptance Current Status
 
@@ -52,7 +99,7 @@ Accepted capabilities: owner-private protected stdout/stderr capture; fixed per-
 Findings: B4Q1-F01 accepted as a reporting erratum with the harness classification correction required; B4Q1-F02 residual check-then-remove race accepted within the existing threat model (no atomic/race-free claim; filesystem-identity hardening carried into later lifecycle/security qualification); B4Q1-F03 bounded drain-thread robustness limitation accepted (broader fault handling required before production eligibility); B4Q1-F04 gated experimental store-failure hook accepted (production exclusion/isolation required).
 Inherited: Q1R-01 addressed within the B4 experimental profile; Q1R-06 and Q1R-07 fixed and independently reviewed; Q1R-08 (legacy D5_O03 flake) remains unresolved; **R1-F02 remains globally OPEN**, partially satisfied by B4 evidence; INT-01 remains ACCEPTED WITH QUALIFICATIONS; F-01 remains CLOSED within its accepted integrated-topology scope.
 **This is not a production or cross-platform qualification.** WSL2 experimental scope only: no native Linux-host/macOS qualification, no isolation from malicious same-UID host processes, no B5 sealed-C3 durability/deadline reconciliation, no B6 installed-artifact/deployment attestation, no B7 comprehensive lifecycle/fault qualification, no Hufu, no VM/HCS and no general-purpose or production restricted-execution activation. `RestrictedExecutionRuntime.Create()` remains production-unavailable.
-**B5 is not authorized; it requires a separate bounded commission.**
+**B5 was subsequently authorized under a separate bounded commission and is now ACCEPTED WITH QUALIFICATIONS (see the current B5 block above).**
 Prior checkpoints below are historical.
 
 ## INT-01 Owner Acceptance Current Status
@@ -392,7 +439,8 @@ Existing R2A-F01/F02/F04 and R1-F01/F05 dispositions remain scoped.
 | RC2B-02 (B2) | **ACCEPTED WITH QUALIFICATIONS**; [owner decision](decisions/rc2b-02-b2-owner-acceptance.md); M-01 subsequently CLOSED by B3; native/operational exclusions retained |
 | RC2B-03 (B3) | **ACCEPTED WITH QUALIFICATIONS**; [owner decision](decisions/rc2b-03-b3-owner-acceptance.md); M-01 CLOSED; Option A and one-shot fixture accepted; F-01 MAJOR deferred integration blocker; F-02–F-08 retained |
 | RC2B-03-INT-01 | **PARTIAL SOURCE DELIVERY; BLOCKED_ENVIRONMENT / NOT_REPRODUCED**; [B-IMPL-01 evidence](evidence/rc2b-03-int-01-b-impl-01.md); full fault coverage and genuine native qualification pending; F-01 MAJOR/OPEN |
-| B4 | **ACCEPTED WITH QUALIFICATIONS** ([owner decision](decisions/rc2b-04-b4-owner-acceptance.md)); WSL2 experimental scope; cleanup classification corrected to 20/12 (B4Q1-F01 erratum); B4Q1-F02–F04 carried as bounded follow-ups; B5 remains separately gated. |
+| B4 | **ACCEPTED WITH QUALIFICATIONS** ([owner decision](decisions/rc2b-04-b4-owner-acceptance.md)); WSL2 experimental scope; cleanup classification corrected to 20/12 (B4Q1-F01 erratum); B4Q1-F02–F04 carried as bounded follow-ups. |
+| B5 | **ACCEPTED WITH QUALIFICATIONS** ([owner decision](decisions/rc2b-05-b5-owner-acceptance.md)); sealed C3 clock/deadline/reconciliation within the demonstrated Windows/WSL2 scope; independent review SUPPORTED WITH QUALIFICATIONS but inspection-only for execution; B5-L01–L07 tracked as separate qualification limits; no production/B6/B7 activation. |
 | HUFU-R / R1-F06, AE4-B01 and Hufu integration | OPEN/BLOCKED; no integration authorization |
 | Native C1 review, C3/C4 and broader native track | Separate commissions/dispositions; not accepted by RC2A-03 |
 | GAGAMBA-INTEGRATION-01 | Stage 2A preservation verified; accepted baseline and 23 preservation refs published under Stage 2B authorization; final verification and CI outcome recorded separately |
