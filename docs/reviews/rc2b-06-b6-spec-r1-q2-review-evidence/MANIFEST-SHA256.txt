@@ -1,0 +1,24 @@
+﻿# RC2B-06 B6-SPEC-R1-Q2 independent review evidence manifest
+# source custody: C:\Users\Laszlos\source\repos\Solo\b6-spec-r1-q2-review (external to the canonical repository)
+# All files below are reviewer-authored byte-identical copies, except README.md and this manifest,
+# which are preservation-authored. Reviewer-authored bytes were not altered.
+# format: <sha256>  <path-relative-to-this-directory>
+
+75940bb0b6047582c98eacafdd71c703faecf6f6af194cedd2deecce08141a41  ADVERSARIAL-CONTRACT-PROBES.md
+22b9a4c197832f2107e5328cefa2e2c5bfb56c7fb96282ad06f3f008a7b1ec78  CLAIMS-ARGUMENTS-EVIDENCE.md
+958b532d7824752cdb367d9b171e41286f56fb2e9eb64f53cdccb05b2a5d81db  CONSISTENCY-AUDIT.md
+4874dddfda632f19a53d8c06955c617b9fd60de08863a13ff90b4cfaea3da665  evidence/diff-inventory.txt
+965a9961cca7f8352024f3155b831a85c97548ebf08ac1a5f10edd49d61890e0  evidence/extracted-blob-hashes.txt
+ce45a14bcfa7d8cf3cc3817f18de3546d9e0a9c6fa5b035174cfbf6fcada7bb3  evidence/git-source-binding.txt
+541cc1885625a836799f8ae8e0ea5ccfb2ed3f850e2f65793ef7e84ba6d0623b  evidence/SHA256SUMS.txt
+9badba657e202203362b512c2ed188cca9dc29a1e2d77848133492d8bd0bea54  evidence/verify-preparation-output.txt
+bd07cbe5a563847f7fdafbde559d8aa01f23c60711606cf2d24fb2a6dbdd368c  FINAL-HANDOFF.md
+25b1750a48514a39553fdbd030ab6a762579fe422df2fb31aad6ff3ef2d825ae  FINDINGS.md
+f857ebed836b0716945aa9184ff82b4f2537b09c3152820576b1cf8c7a0dd8bd  HD-DECISION-AUDIT.md
+364267b450c7b6b738da878616620eb19a2a58879506a6ee2e2a34ea06f55ff2  INSTALLED-ARTIFACT-TRUST-REVIEW.md
+5862c984d8dc9531c4714416dbff1da0cd418b179a34e2e7d2f01e9d12edd768  OWNER-HANDOFF.md
+8c361a08f2abcf4ec28b167a6aeb90f54f30ca86f879132c34b00554487dde82  Q1-FINDING-CLOSURE.md
+4d49f707283ff75c8f0955910187e19d1bc1a6aea5822692553586f29bc4e29e  QUALIFICATION-TRACEABILITY.md
+c3bd21cb842b6b1f6ceecee6b0c3cbd2877dc2964e1f36bdd0db0dc3aaf525be  README.md
+f2243f892d25e474108f07c6257609b218910eeccdf90c0bdb0bc64fbb3921c0  REPORT.md
+f058e8888ca8e54bb0b2e97174a1ba59ee392588c48eff189a54e3bdb8a2c903  SOURCE-BINDING.md

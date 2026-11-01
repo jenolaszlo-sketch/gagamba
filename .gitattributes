@@ -1,2 +1,4 @@
 * text=auto eol=lf
 docs/proposals/2026-10-03-original-proposal.md -text
+# Preserve independent review evidence byte-for-byte (no eol normalization).
+docs/reviews/rc2b-06-b6-spec-r1-q2-review-evidence/** -text

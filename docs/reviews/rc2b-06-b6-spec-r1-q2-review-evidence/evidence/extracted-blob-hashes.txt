@@ -1,0 +1,24 @@
+﻿# Pinned-file extraction hash verification (git blob identity)
+# generated: 2026-11-01T12:08:16.3273593+08:00
+
+[OK] cc47f4d docs/design/rc2b-06-b6-installed-artifact-trust.md blob=154c97f2b40d4550ebf30c43008c48dea10cdd80 extracted=154c97f2b40d4550ebf30c43008c48dea10cdd80
+[OK] cc47f4d docs/plans/rc2b-06-b6-qualification.md blob=3101d72abd783ff1d1ef340d015522f0e43d24b6 extracted=3101d72abd783ff1d1ef340d015522f0e43d24b6
+[OK] cc47f4d docs/evidence/rc2b-06-b6-spec-01.md blob=589623e15ff8f562d3958f7e5f9f983daea995e1 extracted=589623e15ff8f562d3958f7e5f9f983daea995e1
+[OK] cc47f4d docs/PROJECT-STATUS.md blob=247dcc8e8650b369a152f421b617498fbb1d9be1 extracted=247dcc8e8650b369a152f421b617498fbb1d9be1
+[OK] cc47f4d docs/handoff.md blob=30a98db772a58162819af6e72b6c3cb00d85f27f extracted=30a98db772a58162819af6e72b6c3cb00d85f27f
+[OK] cc47f4d docs/work-queue.md blob=a24b3a1ddbdeb59f26435faf930d1d4dcf95a968 extracted=a24b3a1ddbdeb59f26435faf930d1d4dcf95a968
+[OK] 08ebcb5 docs/reviews/rc2b-06-b6-spec-q1-independent-review.md blob=9b7de75feb1a40456ef450cc62380f45a4edd478 extracted=9b7de75feb1a40456ef450cc62380f45a4edd478
+[OK] 77ee441 docs/design/rc2b-06-b6-installed-artifact-trust.md blob=ba9e3beb30a25363d3d6eba516209f2c8ad65f3c extracted=ba9e3beb30a25363d3d6eba516209f2c8ad65f3c
+[OK] 77ee441 docs/plans/rc2b-06-b6-qualification.md blob=d892340d51e3ef6d846276b0bb5520955f910a82 extracted=d892340d51e3ef6d846276b0bb5520955f910a82
+[OK] 77ee441 docs/evidence/rc2b-06-b6-spec-r1-remediation.md blob=7e9845fe8ae29135f233f22644efe95578f8a089 extracted=7e9845fe8ae29135f233f22644efe95578f8a089
+[OK] 77ee441 docs/PROJECT-STATUS.md blob=30019780bd1d84547f85bda97e4911bc6f2ed5da extracted=30019780bd1d84547f85bda97e4911bc6f2ed5da
+[OK] 77ee441 docs/handoff.md blob=1a5ea479e30f8a2265851ba41b9d15df97ec2c95 extracted=1a5ea479e30f8a2265851ba41b9d15df97ec2c95
+[OK] 77ee441 docs/work-queue.md blob=b47433ec5008ab22c28250c00aa3c7d526484e9b extracted=b47433ec5008ab22c28250c00aa3c7d526484e9b
+[OK] 5b34667 docs/evidence/rc2b-06-b6-spec-r1-bind-01-receipt.md blob=171a90f517ae1e6787e3e7659f1a5a446c8855ec extracted=171a90f517ae1e6787e3e7659f1a5a446c8855ec
+[OK] 5b34667 docs/evidence/rc2b-06-b6-spec-r1-remediation.md blob=5fef01bb1ad1bdde9fb0b1058c52548e6045dfc8 extracted=5fef01bb1ad1bdde9fb0b1058c52548e6045dfc8
+[OK] 5b34667 docs/PROJECT-STATUS.md blob=67d87cfd1ae36ebc71c20faae6f6ba4546af1681 extracted=67d87cfd1ae36ebc71c20faae6f6ba4546af1681
+[OK] 5b34667 docs/handoff.md blob=2835672233782dde0bef145ee7ecf539e26c2374 extracted=2835672233782dde0bef145ee7ecf539e26c2374
+[OK] 5b34667 docs/work-queue.md blob=4396158f83be485eb27cfa854d4ceccf5cec33ab extracted=4396158f83be485eb27cfa854d4ceccf5cec33ab
+
+All extracted files were produced via: git cat-file blob <commit>:<path> > <dest>
+Verification: git hash-object -- <dest> must equal git rev-parse <commit>:<path>.
