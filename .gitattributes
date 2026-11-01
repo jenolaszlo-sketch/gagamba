@@ -1,4 +1,8 @@
-* text=auto eol=lf
-docs/proposals/2026-10-03-original-proposal.md -text
-# Preserve independent review evidence byte-for-byte (no eol normalization).
-docs/reviews/rc2b-06-b6-spec-r1-q2-review-evidence/** -text
+# Preserve byte-identical line endings for independent review evidence
+# These directories contain reviewer-authored documents that must not be normalized
+docs/reviews/rc2b-06-b6-wire-q1-evidence/* -text
+docs/reviews/rc2b-06-b6-spec-r1-q2-review-evidence/* -text
+
+# Also preserve the review index documents
+docs/reviews/*-independent-review.md -text
+docs/reviews/*-independent-verification.md -text
