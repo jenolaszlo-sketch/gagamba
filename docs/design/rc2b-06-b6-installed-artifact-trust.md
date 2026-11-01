@@ -926,9 +926,12 @@ atomic or race-free guarantee beyond what the OS operations establish.
    in their role closure or under the pinned shared-runtime directory with the
    pinned inventory, and compare the installation identity/protocol versions with
    the controller's. They send a bounded `InstallationEcho` (32-byte digest +
-   u16 versions + role bit) before `WriterReady`/`StartAuthority` (owner) or
-   `Ready` (recovery). A mismatch aborts before domain creation, staging or
-   release. This is detection, not the trust anchor.
+   u16 versions + role bit) before the owner's first state-changing message
+   (`WriterReady` on the B2 path; `StagedObjects` in the integrated profile) and,
+   for recovery, before `Ready` (B2 path) or `Rendezvous` (integrated profile).
+   `StartAuthority` is an existing recovery→owner transfer and is not the echo gate.
+   A mismatch aborts before domain creation, staging or release. This is detection,
+   not the trust anchor.
 8. **Before release.** The controller re-reads `active` and requires the
    operation's generation to still be active. If it changed, the controller does
    not send `ReleaseRequest`; it submits the existing stop path and records the
@@ -1007,10 +1010,12 @@ InstallationIdentity {
   manifest, passes it in `RecoveryConfiguration` (version 2; version 1 is refused
   for the qualified profile).
 - **Recovery:** verifies its own role closure and the identity before
-  associating; compares with its own loaded location; sends `InstallationEcho`.
+  associating; compares with its own loaded location; sends `InstallationEcho`
+  (before `Ready` on the B2 path, or before `Rendezvous` in the integrated profile).
 - **Owner:** verifies its own role closure and runtime before acquiring the
-  journal writer/allocating domain authority; sends `InstallationEcho` before
-  `StartAuthority`.
+  journal writer/allocating domain authority; sends `InstallationEcho` as its first
+  owner-channel message, before any state-changing message (not tied to
+  `StartAuthority`, which is recovery→owner).
 - **Controller:** compares both echoes; any mismatch aborts and requests stop.
   No domain, staging, capability or RELEASE exists on mismatch.
 
@@ -1020,28 +1025,59 @@ is the sole RELEASE writer; recovery never receives it.
 ### 6.2 Installation-identity handshake wire specification (remediation for B6-Q1-F07)
 
 The following defines the exact wire-level contract for the installation-identity
-verification exchange. Message IDs are selected from the existing
-`OwnerProtocolMessageType` / `RecoveryMessageType` namespace after verifying
-available values (current max: `OwnerProtocolMessageType = 7`,
-`RecoveryMessageType = 5`).
+verification exchange. **Wire-delta correction (WIRE-DELTA-01):** the exchange reuses
+the existing authenticated, sequenced envelopes and allocates currently unused IDs.
+Different C# enum names do not create separate wire namespaces; numeric IDs are
+meaningful only within an envelope/magic/transport. The earlier statement that IDs came
+from a shared namespace with max values `OwnerProtocolMessageType = 7` /
+`RecoveryMessageType = 5` was incorrect and is withdrawn: `RecoveryMessage` already
+defines 1–8 (`Reconnect = 6`, `Refused = 7`, `Rendezvous = 8`;
+`Bootstrap/RecoveryProtocol.cs`) and `OwnerProtocolMessageType` already defines 1–35
+(`StagingAuthority = 8`, …, `CaptureBytes = 35`; `Native/OwnerProtocol.cs`), so the
+previously proposed 6/7/8 collided with live B1–B5 messages.
 
-**Protocol version requirement**: `RecoveryConfiguration` version 2 (qualified
-profile). Version 1 has no identity fields and is refused.
+**Envelopes reused (no parallel framing).** All frames use the existing
+`OwnerProtocol` envelope: magic `0x4D314F50` ("M1OP"), `CurrentVersion = 1`, a 48-byte
+**little-endian** header (magic u32, version u16, type u8, reserved u8, execution
+Guid 16, lease generation Guid 16, sequence u32, payload length u32) with payload from
+offset 48. Recovery frames are the same envelope with the first byte XORed by `0x20`
+(distinct recovery magic) and use `RecoveryMessage` type values. The integrated owner
+channel additionally wraps owner frames in the authenticated `DirectSession` (GID1)
+envelope. There is **no** "4-byte big-endian length" framing; the length field is the
+little-endian u32 at header offset 44.
+
+**Transports.** The bootstrap record is delivered on the inherited credential
+`SOCK_SEQPACKET` descriptor (`GAGAMBA_B2_CREDENTIAL_FD`); recovery control/echo traffic
+uses the inherited control `SOCK_SEQPACKET` descriptor (`GAGAMBA_B2_CONTROL_FD`); owner
+traffic uses the inherited owner socketpair or the authenticated `DirectSession`
+`SOCK_STREAM`. None of these are stdin/stdout fd 0/1.
+
+**Protocol version requirement**: the exchange reuses the existing frame version
+(`OwnerProtocol.CurrentVersion = 1`) and does **not** bump it (a bump would refuse all
+B1–B5 frames). The version axis is the bootstrap record:
+`RecoveryConfiguration.Version = 2` for the qualified profile; version 1 has no identity
+fields and is refused for the qualified profile.
+
+The source-backed collision analysis, corrected mapping and required negative tests are
+recorded in `docs/evidence/rc2b-06-b6-spec-wire-delta-01.md`. This section is the
+design-side contract and is subject to focused independent review before implementation.
 
 #### 6.2.1 Message types and numeric identifiers
 
-| Message | Numeric ID | Direction | Channel | Max encoded size |
-|---|---|---|---|---|
-| `RecoveryConfigV2` (extends `RecoveryConfiguration`) | N/A (bootstrap JSON) | Controller → Recovery | Recovery stdin (fd 0, length-prefixed JSON) | 8 KiB |
-| `InstallationEchoRequest` (Recovery→Controller) | `RecoveryMessageType = 6` (new) | Recovery → Controller | Recovery stdout (fd 1, framed) | 512 bytes |
-| `InstallationEchoResponse` (Controller→Recovery) | `RecoveryMessageType = 7` (new) | Controller → Recovery | Controller stdin (fd 0, framed) | 512 bytes |
-| `OwnerInstallationEcho` (Owner→Controller) | `OwnerProtocolMessageType = 8` (new) | Owner → Controller | Owner stdout (fd 1, framed) | 512 bytes |
-| `OwnerStartAuthority` (Controller→Owner) | `OwnerProtocolMessageType = 3` (existing) | Controller → Owner | Controller stdout (fd 1, framed) | 1 KiB |
+| Message | Wire namespace / envelope | Numeric ID | Direction | Channel | Max encoded size |
+|---|---|---|---|---|---|
+| `RecoveryConfigV2` (extends `RecoveryConfiguration`, record `Version = 2`) | bootstrap record (JSON) | N/A | Controller → Recovery | inherited credential `SOCK_SEQPACKET` (`GAGAMBA_B2_CREDENTIAL_FD`) | 8 KiB |
+| `InstallationEchoRequest` (Recovery→Controller) | recovery envelope (`OwnerProtocol` header, recovery magic `frame[0] ^ 0x20`) | `RecoveryMessage = 9` (new) | Recovery → Controller | inherited control `SOCK_SEQPACKET` (`GAGAMBA_B2_CONTROL_FD`) | 512 bytes |
+| `InstallationEchoResponse` (Controller→Recovery) | recovery envelope (same magic) | `RecoveryMessage = 10` (new) | Controller → Recovery | same control channel | 512 bytes |
+| `OwnerInstallationEcho` (Owner→Controller) | owner envelope (`OwnerProtocol` header; `DirectSession` GID1 control frame in the qualified profile) | `OwnerProtocolMessageType = 36` (new) | Owner → Controller | inherited owner socketpair or `DirectSession` `SOCK_STREAM` | 512 bytes |
+| `OwnerStartAuthority` (Recovery→Owner, unchanged) | owner envelope | `OwnerProtocolMessageType = 3` (existing) | Recovery → Owner | inherited owner socketpair (recovery↔owner) | 2 bytes + 2 descriptors |
 
-**Framing**: All post-bootstrap messages use the existing length-prefixed frame
-(4-byte big-endian length + payload). The coordinator/seccomp filter fds are
-passed via the existing fd-passing mechanism (fd 6 for filter, fd 7 for
-coordinator path).
+**Framing**: All frames use the existing `OwnerProtocol` envelope (48-byte
+little-endian header; see above), delivered as `SOCK_SEQPACKET` records with
+`SCM_RIGHTS` fd passing, or wrapped by the authenticated `DirectSession` envelope
+(GID1, 64-byte header) in the integrated owner channel. There is no big-endian length
+prefix. `StartAuthority` (3) is an existing **recovery→owner** descriptor transfer; it
+is not a controller→owner message and is not changed by B6.
 
 #### 6.2.2 `RecoveryConfigV2` payload (controller → recovery, at spawn)
 
@@ -1138,17 +1174,23 @@ Payload (binary):
 | 4 | 32 | `ExpectedArtifactSetSha256` (controller's expected value) |
 
 If `Success=0`, recovery logs the mismatch, performs native safety stop (C2/Policy
-A), and exits without `Ready`. If `Success=1`, recovery sends `Ready` (existing
-`RecoveryMessageType = 1`).
+A), and exits without proceeding. If `Success=1`, the existing flow continues: the
+non-integrated B2 path sends `Ready` (existing `RecoveryMessage = 2`), and the
+integrated path publishes `Rendezvous` (existing `RecoveryMessage = 8`) carrying the
+owner pidfd.
 
-#### 6.2.5 `OwnerInstallationEcho` (owner → controller, after load, before `StartAuthority`)
+#### 6.2.5 `OwnerInstallationEcho` (owner → controller, before the owner's first state-changing message)
 
-Same binary structure as `InstallationEchoRequest`, with `Role = 1` (owner).
-The owner computes its own role closure hash (`OwnerClosureSha256`) and sends it
-after verifying its loaded assemblies against the manifest (same check as
-recovery). The controller verifies `OwnerClosureSha256` matches the manifest.
-Mismatch → controller does not send `OwnerStartAuthority`; aborts and requests
-stop.
+Same binary structure as `InstallationEchoRequest`, with `Role = 1` (owner), carried as
+`OwnerProtocolMessageType = 36` (new). The owner computes its own role closure hash
+(`OwnerClosureSha256`) and sends it after verifying its loaded assemblies against the
+manifest (same check as recovery). Ordering (wire-delta correction): the echo is the
+owner's **first** owner-channel message — before `StagedObjects`
+(`OwnerProtocolMessageType = 12`) in the integrated profile, or before `WriterReady`
+(2) in the non-integrated B2 path. It is **not** tied to `StartAuthority`, which is an
+existing recovery→owner transfer. The controller verifies `OwnerClosureSha256` against
+the manifest; mismatch → controller aborts and requests stop; no HELD, no domain, no
+`ReleaseRequest`.
 
 #### 6.2.6 Expected identity provenance
 
@@ -1156,11 +1198,14 @@ The **receiver has a trusted expected identity independently of the peer's
 claim**. The controller's expected identity comes from the verified manifest
 (recomputed from installed bytes, bound to `active` and root-owned receipt). The
 recovery's expected identity comes from `RecoveryConfigV2.Integrated.InstallationIdentity`
-(which the controller built from the same manifest). The owner's expected
-identity comes from the same source via the controller's `OwnerStartAuthority`
-payload (which includes the installation identity). An actor reporting its own
-digest cannot qualify itself; the receiver compares against its independent
-expected value.
+(which the controller built from the same manifest). The owner's expected identity comes
+from the immutable `DirectAssociation` delivered with `DirectBootstrap`
+(`OwnerProtocolMessageType = 32`) and verified by `DirectSession.Establish` under
+`SO_PEERPIDFD`, which binds the execution, generation, original session and the
+controller/owner/recovery process identities before any authority is acquired.
+(Wire-delta correction: the owner's expected identity does **not** arrive via
+`StartAuthority`; that message is recovery→owner.) An actor reporting its own digest
+cannot qualify itself; the receiver compares against its independent expected value.
 
 #### 6.2.7 Recovery restriction
 
@@ -1175,13 +1220,22 @@ authority under the old generation; no release is possible.
 
 #### 6.2.8 Ordering and timeout behavior
 
-1. Controller spawns recovery with `RecoveryConfigV2` (fd 0).
-2. Recovery loads, verifies its closure, sends `InstallationEchoRequest` (fd 1).
-3. Controller verifies, responds `InstallationEchoResponse` (fd 0).
-4. Recovery receives response; if `Success=1`, sends `Ready` (fd 1).
-5. Controller spawns owner with `OwnerStartAuthority` including installation identity.
-6. Owner loads, verifies its closure, sends `OwnerInstallationEcho` (fd 1).
-7. Controller verifies; if success, proceeds to HELD; if mismatch, aborts.
+1. Controller creates the recovery, sends the `Version = 2` bootstrap on the inherited
+   credential channel, then `Associate` (`RecoveryMessage = 1`) on the inherited control
+   channel.
+2. Recovery loads and verifies its closure and the identity.
+3. Recovery sends `InstallationEchoRequest` (`RecoveryMessage = 9`) on control; the
+   controller verifies and responds `InstallationEchoResponse` (`RecoveryMessage = 10`).
+4. Recovery requires `Success = 1` **before** it proceeds to `Ready`
+   (`RecoveryMessage = 2`, B2 path) or, in the integrated profile, **before** it
+   publishes `Rendezvous` (`RecoveryMessage = 8`) with the owner pidfd.
+5. Existing integrated flow proceeds: the controller establishes the `DirectSession`
+   to the owner; the owner sends `OwnerInstallationEcho`
+   (`OwnerProtocolMessageType = 36`) as its first owner-channel message (before
+   `WriterReady` (2) on the B2 path); the controller verifies it before accepting
+   `StagedObjects` (`OwnerProtocolMessageType = 12`).
+6. Controller verifies; if success, proceeds to HELD; if mismatch, aborts and requests
+   stop. `StartAuthority` (3) remains an existing recovery→owner transfer.
 
 **Timeouts**: Each exchange has a 5-second deadline (consistent with existing
 bootstrap timeouts). Timeout → mismatch → abort. No retries.
@@ -1191,9 +1245,9 @@ bootstrap timeouts). Timeout → mismatch → abort. No retries.
 `Generation` check. The controller tracks which echoes it has answered for the
 current operation; duplicate echoes are refused.
 
-**Cancellation**: If the controller dies before sending `OwnerStartAuthority`,
-the owner never receives it and exits on lifeline loss (existing behavior). The
-recovery retains its identity and stop authority.
+**Cancellation**: If the controller dies before the owner acquires authority, the owner
+exits on lifeline loss of the existing channel (existing behavior). The recovery retains
+its identity and stop authority.
 
 **Cleanup on mismatch**: All processes exit; no domain created; no staging
 committed; journal records the mismatch; cleanup follows existing C2/Policy A

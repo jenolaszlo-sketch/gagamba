@@ -458,39 +458,50 @@ limitations/skips.
 
 ### B6-T20b — Installation-identity handshake verification (remediation for B6-Q1-F07)
 
-- **Positive control:** Full integrated bootstrap with `RecoveryConfigV2`; both
-  recovery and owner send installation echoes; controller verifies and proceeds
-  to HELD.
+- **Positive control:** Full integrated bootstrap with `RecoveryConfigV2`
+  (`Version = 2`); recovery sends `InstallationEchoRequest` (`RecoveryMessage = 9`),
+  controller responds `InstallationEchoResponse` (`RecoveryMessage = 10`), and the
+  owner sends `OwnerInstallationEcho` (`OwnerProtocolMessageType = 36`) as its first
+  owner-channel message; controller verifies and proceeds to HELD. Wire mapping:
+  `docs/evidence/rc2b-06-b6-spec-wire-delta-01.md` (WIRE-DELTA-01).
 - **Mutation subcases (N):**
   1. **Recovery echo mismatch:** Recovery sends wrong `ArtifactSetSha256` or
-     `RecoveryClosureSha256`; controller responds `Success=0`; recovery exits
-     without `Ready`; no domain created.
+     `RecoveryClosureSha256`; controller responds `Success=0`; recovery stops and
+     does not proceed to `Ready` (2) or `Rendezvous` (8); no domain created.
   2. **Owner echo mismatch:** Owner sends wrong `OwnerClosureSha256`; controller
-     does not send `OwnerStartAuthority`; owner exits; no domain created.
+     aborts; the owner's first state-changing message (`StagedObjects` (12), or
+     `WriterReady` (2) on the B2 path) never proceeds; no domain created.
   3. **Protocol version mismatch:** `RecoveryConfigV2` declares `OwnerProtocol=2`
-     but owner binary is v1; handshake refuses at echo or `OwnerStartAuthority`.
+     but owner binary is v1; handshake refuses at the echo.
   4. **Generation mismatch:** Controller `active` points to generation B; recovery
-     started under generation A sends echo with generation A; controller mismatches
-     and aborts.
-  5. **Missing echo:** Recovery/owner fails to send echo within 5s timeout;
-     controller aborts.
-  6. **Replay attack:** Replay a previous generation's echo; controller rejects
-     on `Generation` mismatch.
+     started under generation A sends echo with generation A; the envelope
+     execution/generation binding refuses and the controller aborts.
+  5. **Missing echo:** Recovery/owner fails to send echo within the existing
+     transition timeout; controller aborts.
+  6. **Replay attack:** Replay a previous generation's echo; the envelope
+     execution/generation binding and the per-direction sequence refuse it.
   7. **Recovery never gets release:** Verify recovery process never receives
      `ReleaseRequest` frame or RELEASE writer fd; `RecoveryObligation.ReleaseAuthority`
      remains `false`.
-- **Expected:** Every wire detail (message IDs, payload bounds, sequence,
-  direction, channel, timeout, mismatch behavior) is exercised; no critical
-  detail is deferred; handshake is implementable and testable from exact
+  8. **Wrong direction/envelope:** A recovery-namespace frame fed to an owner decoder
+     (or vice versa) is refused by the magic/role gate (`B6-V13`); an owner echo on a
+     `RecoveryOnly` channel is refused.
+- **Expected:** Every wire detail (envelope/magic, message IDs 9/10/36, payload
+  bounds, sequence, direction, channel, timeout, mismatch behavior) is exercised; no
+  critical detail is deferred; the handshake is implementable and testable from exact
   definitions.
 - **Phase:** spawn/handshake/HELD.
-- **Observation:** Frame captures (stdout/stdin fd exchanges), echo payloads,
-  controller decisions, process exits, journal.
+- **Observation:** Frame captures (control `SOCK_SEQPACKET` records; `DirectSession`
+  control frames), echo payloads, controller decisions, process exits, journal.
 - **Negative evidence:** No HELD, no RELEASE, no domain on any mismatch.
 - **Native:** Required (N) with test-only mismatch builds.
 - **Retain:** Frame captures, echo payloads, refusal logs, process/journal inventory.
-- **Limits:** Message IDs `RecoveryMessageType=6,7` and `OwnerProtocolMessageType=8`
-  are new allocations; verify no collision with existing namespace.
+- **Limits:** `RecoveryMessage = 9,10` and `OwnerProtocolMessageType = 36` are new
+  additive IDs (wire delta). They must be verified collision-free against the frozen
+  B1–B5 enums (`RecoveryMessage` 1–8; `OwnerProtocolMessageType` 1–35); the frame
+  version stays 1 and the bootstrap record is the version axis
+  (`RecoveryConfiguration.Version = 2`). The wire-delta mapping requires focused
+  independent review before implementation.
 
 ### B6-T20c — Qualification record association determinism (remediation for B6-Q1-F13)
 
@@ -713,8 +724,9 @@ substitutes for native cases.
 | B6-V10 | Selection binding | ProfileId/Version/RID/QualificationId/ArtifactSetSha256 exact match; mismatch refuses with InvalidBinding/Unqualified |
 | B6-V11 | Refusal vocabulary | each failure maps to the intended typed reason/diagnostic; no installation failure becomes Prepared/Released/Confirmed |
 | B6-V12 | Test-only deny list | known test coordinator/fixture/D6.4/synthetic clock/fault hook names/hashes refuse; relabeling does not promote |
+| B6-V13 | Wire namespace/direction gate | frame magic/version/type checked before payload; recovery frames (`frame[0] ^ 0x20`) are never accepted by an owner decoder and vice versa; new IDs `RecoveryMessage` 9/10 and `OwnerProtocolMessageType` 36 are accepted only in their envelope/direction; every old B1–B5 ID (`RecoveryMessage` 1–8, `OwnerProtocolMessageType` 1–35) keeps its meaning; unknown, oversized and duplicate frames refuse (WIRE-DELTA-01) |
 
-B6-V01–V12 run on Windows (portable logic) and are re-run on Linux; the Linux
+B6-V01–V13 run on Windows (portable logic) and are re-run on Linux; the Linux
 re-run is recorded separately but is still not native execution.
 
 ---
