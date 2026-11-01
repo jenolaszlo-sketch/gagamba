@@ -21,7 +21,7 @@
        AdditionalProperties overrides solution configuration mapping explicitly. -->
   <ItemGroup>
     <ProjectReference Include="..\..\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj" AdditionalProperties="Configuration=Debug" />
-    <ProjectReference Include="..\..\src\Gagamba.Execution\Gagamba.Execution.csproj" />
+    <ProjectReference Include="..\..\src\Gagamba.Execution\Gagamba.Execution.csproj" AdditionalProperties="Configuration=Debug" />
     <ProjectReference Include="..\..\src\Gagamba.Execution.Linux.M1.Owner\Gagamba.Execution.Linux.M1.Owner.csproj" ReferenceOutputAssembly="false" AdditionalProperties="Configuration=Debug" />
   </ItemGroup>
 

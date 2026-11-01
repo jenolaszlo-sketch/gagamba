@@ -43,6 +43,15 @@
           Condition="'$(Configuration)' == 'Release' And ('$(MSBuildProjectName)' == 'Gagamba.Execution.Linux.M1' Or '$(MSBuildProjectName)' == 'Gagamba.Execution.Linux.M1.Owner' Or '$(MSBuildProjectName)' == 'Gagamba.Execution.Linux.M1.Recovery')">
     <Exec Command="&quot;$(_GagambaDotnetHost)&quot; run --project &quot;$(MSBuildThisFileDirectory)eng/VerifyProductionAssembly/VerifyProductionAssembly.csproj&quot; -c Release --no-launch-profile -- --production &quot;$(TargetDir)Gagamba.Execution.Linux.M1.dll&quot;" />
   </Target>
+  <!-- A solution can override inferred transitive configurations. Check actual
+       instrumented closures too, so a Debug owner cannot silently carry Release M1. -->
+  <Target Name="VerifyGagambaInstrumentedBinary" AfterTargets="CopyFilesToOutputDirectory"
+          Condition="('$(Configuration)' == 'Debug' Or '$(Configuration)' == 'Test') And ('$(MSBuildProjectName)' == 'Gagamba.Execution.Linux.M1' Or '$(MSBuildProjectName)' == 'Gagamba.Execution.Linux.M1.Owner' Or '$(MSBuildProjectName)' == 'Gagamba.Execution.Linux.M1.Recovery')">
+    <Exec Condition="'$(MSBuildProjectName)' == 'Gagamba.Execution.Linux.M1'"
+          Command="&quot;$(_GagambaDotnetHost)&quot; run --project &quot;$(MSBuildThisFileDirectory)eng/VerifyProductionAssembly/VerifyProductionAssembly.csproj&quot; -c Release --no-launch-profile -- --instrumented &quot;$(TargetPath)&quot;" />
+    <Exec Condition="'$(MSBuildProjectName)' != 'Gagamba.Execution.Linux.M1'"
+          Command="&quot;$(_GagambaDotnetHost)&quot; run --project &quot;$(MSBuildThisFileDirectory)eng/VerifyProductionAssembly/VerifyProductionAssembly.csproj&quot; -c Release --no-launch-profile -- --instrumented &quot;$(TargetDir)Gagamba.Execution.Linux.M1.dll&quot;" />
+  </Target>
   <!-- Publication without rebuilding must inspect the build output used as publish input, rather than trust properties or a
        previous build's success. A final gate also checks the published M1 copy. -->
   <Target Name="VerifyGagambaProductionPublish" BeforeTargets="ComputeFilesToPublish"

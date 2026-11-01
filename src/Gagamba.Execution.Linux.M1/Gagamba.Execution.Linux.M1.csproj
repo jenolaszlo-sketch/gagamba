@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Gagamba.Execution\Gagamba.Execution.csproj"
+                      AdditionalProperties="Configuration=$(Configuration)"
                       GlobalPropertiesToRemove="AssemblyName;DefineConstants;BaseIntermediateOutputPath;MSBuildProjectExtensionsPath;BaseOutputPath;IsPackable;GagambaWp05D64FixtureEnabled" />
   </ItemGroup>
 

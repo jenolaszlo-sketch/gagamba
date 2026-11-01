@@ -10,8 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj" />
-    <ProjectReference Include="..\Gagamba.Execution\Gagamba.Execution.csproj" />
+    <ProjectReference Include="..\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj" AdditionalProperties="Configuration=$(Configuration)" />
+    <ProjectReference Include="..\Gagamba.Execution\Gagamba.Execution.csproj" AdditionalProperties="Configuration=$(Configuration)" />
   </ItemGroup>
 
 </Project>

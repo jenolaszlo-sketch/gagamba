@@ -44,9 +44,24 @@ try {
     Invoke-Probe 'fresh-debug' @('build',$m1,'-c','Debug','--artifacts-path',$debugRoot,'--nologo')
     Inspect-M1 'inspect-fresh-debug' $debugRoot 'Debug'
     foreach ($entry in @(@('owner',$owner),@('recovery',$recovery))) {
-        Invoke-Probe ($entry[0]+'-release') @('build',$entry[1],'-c','Release','--artifacts-path',(Join-Path $EvidenceDirectory $entry[0]),'--nologo')
+        $componentRoot = Join-Path $EvidenceDirectory $entry[0]
+        Invoke-Probe ($entry[0]+'-release') @('build',$entry[1],'-c','Release','--artifacts-path',$componentRoot,'--nologo')
+        Invoke-Probe ($entry[0]+'-debug') @('build',$entry[1],'-c','Debug','--artifacts-path',$componentRoot,'--nologo')
+        $component = if ($entry[0] -eq 'owner') { 'Gagamba.Execution.Linux.M1.Owner' } else { 'Gagamba.Execution.Linux.M1.Recovery' }
+        $componentM1 = Join-Path $componentRoot ('bin/'+$component+'/debug/Gagamba.Execution.Linux.M1.dll')
+        Invoke-Probe ($entry[0]+'-debug-inspection') @('run','--project',$tool,'-c','Release','--no-launch-profile','--','--instrumented',$componentM1)
     }
     Invoke-Probe 'solution-release' @('build',(Join-Path $repo 'Gagamba.sln'),'-c','Release','-m','--artifacts-path',(Join-Path $EvidenceDirectory 'solution'),'--nologo')
+    $solutionRoot = Join-Path $EvidenceDirectory 'solution'
+    $solutionOwnerM1 = Join-Path $solutionRoot 'bin/Gagamba.Execution.Linux.M1.Owner/debug/Gagamba.Execution.Linux.M1.dll'
+    Invoke-Probe 'solution-debug-owner-inspection' @('run','--project',$tool,'-c','Release','--no-launch-profile','--','--instrumented',$solutionOwnerM1)
+    foreach ($dependency in @('Gagamba.Execution.Linux.M1.dll','Gagamba.Execution.dll')) {
+        $sourceProject = if ($dependency -eq 'Gagamba.Execution.dll') { 'Gagamba.Execution' } else { 'Gagamba.Execution.Linux.M1' }
+        $sourceHash = (Get-FileHash (Join-Path $solutionRoot ('bin/'+$sourceProject+'/debug/'+$dependency))).Hash
+        $copyHash = (Get-FileHash (Join-Path $solutionRoot ('bin/Gagamba.Execution.Linux.M1.Owner/debug/'+$dependency))).Hash
+        if ($sourceHash -ne $copyHash) { throw "Solution Debug owner dependency mismatch: $dependency" }
+        "$dependency $sourceHash" | Add-Content (Join-Path $EvidenceDirectory 'solution-debug-owner-hashes.txt')
+    }
     $negativeCases = @(
         @('missing-symbol',@('-p:DefineConstants=TRACE'),'GAGAMBA002'),
         @('empty-symbols',@('-p:DefineConstants='),'GAGAMBA002'),
@@ -95,6 +110,12 @@ try {
     Copy-Item -LiteralPath $debugBinary -Destination $ownerSourceM1
     Copy-Item -LiteralPath $debugBinary -Destination $ownerM1
     Invoke-Probe 'owner-stale-ref-disabled' @('build',$owner,'-c','Release','-p:BuildProjectReferences=false','--artifacts-path',$ownerRoot,'--nologo') 'FAIL'
+    $ownerDebugSource = Join-Path $ownerRoot 'bin/Gagamba.Execution.Linux.M1/debug/Gagamba.Execution.Linux.M1.dll'
+    $ownerDebugM1 = Join-Path $ownerRoot 'bin/Gagamba.Execution.Linux.M1.Owner/debug/Gagamba.Execution.Linux.M1.dll'
+    $validProduction = Join-Path $solutionRoot 'bin/Gagamba.Execution.Linux.M1/release/Gagamba.Execution.Linux.M1.dll'
+    Copy-Item -LiteralPath $validProduction -Destination $ownerDebugSource
+    Copy-Item -LiteralPath $validProduction -Destination $ownerDebugM1
+    Invoke-Probe 'owner-debug-stale-production-ref-disabled' @('build',$owner,'-c','Debug','-p:BuildProjectReferences=false','--artifacts-path',$ownerRoot,'--nologo') 'FAIL'
     # Rebuild the affected isolated outputs and verify a genuine candidate again.
     Invoke-Probe 'restore-valid-release' @('build',$m1,'-c','Release','--no-incremental','--artifacts-path',$orderRoot,'--nologo')
     Inspect-M1 'inspect-restored-release' $orderRoot 'Release'

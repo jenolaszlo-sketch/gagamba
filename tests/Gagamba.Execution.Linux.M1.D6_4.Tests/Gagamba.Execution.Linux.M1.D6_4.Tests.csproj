@@ -22,7 +22,7 @@
          inventory, distinct identity and isolated output paths. -->
     <ProjectReference Include="..\..\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj"
                       AdditionalProperties="Configuration=Debug;AssemblyName=Gagamba.Execution.Linux.M1.TestFixture;IsPackable=false;GagambaWp05D64FixtureEnabled=true;BaseIntermediateOutputPath=obj/d6-4-variant/;MSBuildProjectExtensionsPath=obj/d6-4-variant/;BaseOutputPath=bin/d6-4-variant/" />
-    <ProjectReference Include="..\..\src\Gagamba.Execution\Gagamba.Execution.csproj" />
+    <ProjectReference Include="..\..\src\Gagamba.Execution\Gagamba.Execution.csproj" AdditionalProperties="Configuration=Debug" />
     <Compile Include="..\Gagamba.Execution.Linux.M1.Tests\Recovery\RecoveryTestSupport.cs" Link="RecoveryTestSupport.cs" />
   </ItemGroup>
 
