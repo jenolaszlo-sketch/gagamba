@@ -12,8 +12,9 @@ package build, installation or production activation is claimed.
 **Q1 review and R1 parent baseline:** Canonical `main` at
 `08ebcb5479e5ffb78189c06f1bd5c02d49f2f7df` (tree `630b803d57e27a0044686595e108868072aa20ea`).
 
-**R1 remediation:** the commit that introduces this document set; its exact
-SHA/tree are recorded in the follow-up `B6-SPEC-R1-BIND-01` provenance receipt
+**R1 remediation:** `77ee4414df37b9f88979bde02742756538ba45af`
+(tree `62736d355e2650b5f40cdc3d904ed49466cbf025`), recorded by the follow-up
+`B6-SPEC-R1-BIND-01` provenance receipt
 (`docs/evidence/rc2b-06-b6-spec-r1-bind-01-receipt.md`).
 
 **Q1 review:** `docs/reviews/rc2b-06-b6-spec-q1-independent-review.md`
@@ -31,8 +32,8 @@ SHA/tree are recorded in the follow-up `B6-SPEC-R1-BIND-01` provenance receipt
 | Q1 review / R1 parent baseline tree | `630b803d57e27a0044686595e108868072aa20ea` |
 | Original specification HEAD | `cc47f4dd2dc23895dc1d0cfacea81301ec75f08b` |
 | Original specification tree | `6e25ac365cc7a3d5f761dd0ff5306af2e5b60fe7` |
-| R1 remediation HEAD | recorded in `B6-SPEC-R1-BIND-01` provenance receipt |
-| R1 remediation tree | recorded in `B6-SPEC-R1-BIND-01` provenance receipt |
+| R1 remediation HEAD | `77ee4414df37b9f88979bde02742756538ba45af` |
+| R1 remediation tree | `62736d355e2650b5f40cdc3d904ed49466cbf025` |
 | Parent baseline (pre-B6) | `2cd8c1d716ed2e3e61156819730cd3d39e81844b` (tree `e9ed9989ee35c43557e0a93fdec4d313af4f740e`) |
 | `origin/main` | `2cd8c1d716ed2e3e61156819730cd3d39e81844b` (equal; no ahead/behind) |
 | Worktrees | 74 pre-existing; none created or modified |
@@ -453,7 +454,7 @@ is introduced. Evaluate HD-1–HD-4 as explicit decisions for owner, not assumed
 **Starting Git identity for Q2 review**:
 - Original specification: `cc47f4dd2dc23895dc1d0cfacea81301ec75f08b` (tree `6e25ac365cc7a3d5f761dd0ff5306af2e5b60fe7`)
 - Q1 review and R1 parent baseline: `08ebcb5479e5ffb78189c06f1bd5c02d49f2f7df` (tree `630b803d57e27a0044686595e108868072aa20ea`)
-- R1 remediation: recorded in the follow-up `B6-SPEC-R1-BIND-01` provenance receipt
+- R1 remediation: `77ee4414df37b9f88979bde02742756538ba45af` (tree `62736d355e2650b5f40cdc3d904ed49466cbf025`)
 
 ---
 
