@@ -1,5 +1,9 @@
 # Gagamba handoff
 
+> **CI PREPARATION CHECKOUT-BYTE FIX VERIFIED LOCALLY — NOT PUSHED (2026-11-02).**
+> [Evidence](evidence/ci-preparation-checkout-byte-identity-2026-11-02.md): Windows CRLF checkout changed five exact-identity historical files; explicit Git `-text` paths preserve their original bytes. Verifier/map/document contents unchanged; checkout regression 2/2 and complete engineering suite 37/37 pass; fresh CRLF/LF preparation checks pass and changed-byte control refuses. New CI run pending a separately authorized push. S1's Q2 requirement and existing qualifications remain unchanged.
+
+
 > **S1 REMEDIATED WITH QUALIFICATIONS — Q2 REQUIRED (2026-11-01).**
 > [REM-01 evidence](evidence/rc2b-06-b6-impl-01-s1-rem-01.md): original Release solution failure and empty-DefineConstants bypass reproduced; explicit isolated instrumented test references, effective compiler invariant checks, and actual metadata/IL gates implemented. Final implementation `66896754de2610b1610c665f73d3cc0f88675641` (tree `62613e8e407eca25c9d0438d041a89d8e9c5b9fa`), including explicitly propagated transitive variants and instrumented closure inspection. Final build matrix **51/51**; Q1-comparable deterministic suite **1,245 passed / 0 failed / 289 environmental skips**; supplemental actual Release M1 **1,019/0/199**; complete Release test assertions retained.
 > Q1 remains **S1 SUPPORTED WITH QUALIFICATIONS**; owner disposition remains **FOCUSED S1 REMEDIATION REQUIRED** until an owner decision. Source-bound local verification receipt is complete. Next: separately commissioned **GAGAMBA-RC2B-06-B6-IMPL-01-S1-Q2**. No independent acceptance, push, privileged/native qualification, production activation or S2 implementation. The inherited internal clock-overload qualification and S2 dependency/installation obligations are explicit in the evidence. Historical blocks below remain unchanged.

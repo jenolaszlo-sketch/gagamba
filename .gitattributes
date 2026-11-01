@@ -6,3 +6,11 @@ docs/reviews/rc2b-06-b6-spec-r1-q2-review-evidence/* -text
 # Also preserve the review index documents
 docs/reviews/*-independent-review.md -text
 docs/reviews/*-independent-verification.md -text
+
+# Exact-byte sources bound by eng/preparation-legacy-links.json.
+# Checkout conversion must not change their recorded SHA-256/Git blob identities.
+docs/decisions/restricted-consumer-rc2a-01-owner-acceptance.md -text
+docs/reviews/2026-10-10-ar7-independent-evidence-review.md -text
+docs/reviews/2026-10-10-ar7-r2-separate-gate-review.md -text
+docs/evidence/linux-m1/wp03.md -text
+docs/evidence/linux-m1/wp05-release-protocol-implementation-2026-10-18.md -text
