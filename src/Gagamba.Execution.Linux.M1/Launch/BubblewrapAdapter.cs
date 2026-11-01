@@ -22,7 +22,9 @@ internal sealed class BubblewrapAdapter : IHeldLauncher
     internal const string FilterSha256 = "2aa879019138c4d4066557213ce0037de70430aac3a05008eec5c8abd999d108";
     internal const ulong FilterLength = 672;
     private readonly Action<StopCauseKind>? _safetyStop;
+#if !GAGAMBA_PRODUCTION
     internal Action<bool>? QualificationBeforeCaptureStore { get; init; }
+#endif
     internal BubblewrapAdapter(Action<StopCauseKind>? safetyStop = null) => _safetyStop = safetyStop;
     private const int ConfigHeaderBytes = 202;
     private const int MaxConfigBytes = 16 * 1024;
@@ -115,7 +117,11 @@ internal sealed class BubblewrapAdapter : IHeldLauncher
                 throw new InvalidOperationException(mapError);
 
             capture = new ProtectedCapture(stdoutRead!, stderrRead!, manifest.Channels, overallDeadlineNs,
-                cause => { if (_safetyStop is not null) _safetyStop(cause); else _ = domain.RequestStop(); }, QualificationBeforeCaptureStore);
+                cause => { if (_safetyStop is not null) _safetyStop(cause); else _ = domain.RequestStop(); }
+#if !GAGAMBA_PRODUCTION
+                , QualificationBeforeCaptureStore
+#endif
+                );
             if (!NativeLaunchInterop.TrySpawn(domain, map!, BubblewrapArguments.Build(), out var pid, out var spawnError))
                 throw new InvalidOperationException(spawnError);
             spawned = true;

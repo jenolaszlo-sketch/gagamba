@@ -33,9 +33,9 @@ internal sealed class OwnerSafetyMonitor : IDisposable
     private bool _closing;
     private StopCauseKind? _firstCause;
     private Launch.ProtectedCapture? _capture;
-    internal void BindCapture(Launch.ProtectedCapture capture)
-    { lock (_gate) { _capture = capture; if (StopLatched) capture.BoundDrain(Now()+6_000_000_000L); } }
+#if !GAGAMBA_PRODUCTION
     internal Action<StopCauseKind,bool>? QualificationNativeStop { get; set; }
+#endif
     internal int ControllerDescriptor => _controller.DangerousGetHandle().ToInt32();
     internal bool StopLatched => Volatile.Read(ref _stopped) != 0;
     internal bool RetentionConfirmed => Volatile.Read(ref _retained) != 0;
@@ -84,6 +84,8 @@ internal sealed class OwnerSafetyMonitor : IDisposable
         lock (_gate) { if (_closing) throw new ObjectDisposedException(nameof(OwnerSafetyMonitor)); _arbiter=arbiter; if (StopLatched) DispatchStop(_firstCause ?? StopCauseKind.SetupFault); }
     }
     internal void Released() => Interlocked.Exchange(ref _released,1);
+    internal void BindCapture(Launch.ProtectedCapture capture)
+    { lock (_gate) { _capture = capture; if (StopLatched) capture.BoundDrain(Now()+6_000_000_000L); } }
     private bool LifelineAlive()
     {
         var poll=new DirectUnix.PollFd {Fd=_lifeline.DangerousGetHandle().ToInt32(),Events=1|0x2000};
@@ -110,7 +112,9 @@ internal sealed class OwnerSafetyMonitor : IDisposable
             DispatchStop(_firstCause.Value);
         }
         if(first) _=FdPassing.TrySendMessage(_lifeline.DangerousGetHandle().ToInt32(),[2],out _);
+#if !GAGAMBA_PRODUCTION
         if(first) QualificationNativeStop?.Invoke(cause,kernelAccepted);
+#endif
     }
     private void DispatchStop(StopCauseKind cause)
     {

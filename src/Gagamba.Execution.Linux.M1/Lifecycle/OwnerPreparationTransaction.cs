@@ -48,6 +48,7 @@ internal static class OwnerPreparationTransaction
     private static int RunTransaction(OwnerPreparationSpecification request, OwnerProtocolChannel channel)
     {
         using var storage = new JournalFileStorage();
+#if !GAGAMBA_PRODUCTION
         if(Int01Qualification.Is(request.QualificationFault,"integrated-ambiguous-intent"))
         {
             var injected=false;
@@ -62,6 +63,7 @@ internal static class OwnerPreparationTransaction
                 Int01Qualification.Reached(request.QualificationFault,"owner-intent-storage");
             };
         }
+#endif
         var journal = new OwnershipJournal(storage, request.JournalDirectory);
         if (!journal.TryAcquireWriter(out var writer, out var writerError))
         {
@@ -93,11 +95,16 @@ internal static class OwnerPreparationTransaction
 
             using var direct = request.DirectIdentity is null ? null : OwnerDirectConnection.Accept(request,channel);
             using var safety = direct?.Safety;
+#if !GAGAMBA_PRODUCTION
             var fault = request.QualificationFault;
             if(fault is not null && safety is not null)
                 safety.QualificationNativeStop=(cause,accepted)=>Int01Qualification.Write(fault,"owner-native-stop",new { Cause=cause.ToString(), KernelAccepted=accepted });
             var cutoff = Math.Min(request.ExpiresAtNs,request.AcceptedAtNs+10_000_000_000L);
             void Point(string stage) => Int01Qualification.Point(fault,stage,cutoff,()=>safety?.StopLatched==true);
+#else
+            var cutoff = Math.Min(request.ExpiresAtNs,request.AcceptedAtNs+10_000_000_000L);
+            void Point(string stage) { }
+#endif
             var controllerChannel = direct?.Channel ?? channel;
 
             if (!channel.TryReceiveTransfer(
@@ -160,23 +167,33 @@ internal static class OwnerPreparationTransaction
 
             using var primaryLease = new DomainLease(primaryBackend!, domainIdentity!);
             safety?.PublishDomain(primaryLease);
+#if !GAGAMBA_PRODUCTION
             Point("owner-before-domain-transfer");
+#else
+            Point("owner-before-domain-transfer");
+#endif
             var recoveryBackend = (CgroupBackend)primaryBackend!.DuplicateForRecovery();
             var domainPayload = new byte[] { checked((byte)DomainHandleTransfer.ExactDescriptorCount) };
             var transferFds=recoveryBackend.OrderedFds();
+#if !GAGAMBA_PRODUCTION
             Point("owner-domain-transfer");
             if(fault is not null && Int01Qualification.Stage(fault.Case)=="owner-domain-transfer")
             {
                 if(Int01Qualification.Is(fault,"wrong-descriptor-role-count")) domainPayload[0]--;
                 if(Int01Qualification.Is(fault,"partial-scm-rights")) transferFds=transferFds.Take(transferFds.Length-1).ToArray();
             }
+#else
+            Point("owner-domain-transfer");
+#endif
             var domainSent = channel.TrySendTransfer(
                 OwnerProtocolMessageType.DomainRecoveryAuthority,
                 domainPayload,
                 transferFds,
                 out channelError);
+#if !GAGAMBA_PRODUCTION
             if(fault is not null && Int01Qualification.Stage(fault.Case)=="owner-domain-transfer")
                 Int01Qualification.Write(fault,"owner-malformed-transfer",new { Sent=domainSent, RoleCount=domainPayload[0], DescriptorCount=transferFds.Length });
+#endif
             recoveryBackend.Dispose();
             if (!domainSent)
             {
@@ -195,7 +212,11 @@ internal static class OwnerPreparationTransaction
                 return 33;
             }
 
+#if !GAGAMBA_PRODUCTION
             Point("owner-domain-retained");
+#else
+            Point("owner-domain-retained");
+#endif
             var registered = BuildRegistered(request, domainIdentity!, stagingParentStat.Device, stagingParentStat.Inode);
             if (!journal.WriteNext(activeWriter, registered).Ok)
             {
@@ -239,7 +260,11 @@ internal static class OwnerPreparationTransaction
                 {
                     accounting.OnObject(staged);
                     accountedObjects++;
+#if !GAGAMBA_PRODUCTION
                     if(accountedObjects==1) Point("owner-first-object-accounted");
+#else
+                    if(accountedObjects==1) Point("owner-first-object-accounted");
+#endif
                     if (accountedObjects == 1
                         && !WaitAtBarrier(request, channel, "mid-staging", out var barrierError))
                     {
@@ -360,7 +385,11 @@ internal static class OwnerPreparationTransaction
             if (direct is not null && (!controllerChannel.TrySend(OwnerProtocolMessageType.PreparedDescription,encodedDescription,out channelError)
                 || !controllerChannel.TryReceive(OwnerProtocolMessageType.PreparedAcknowledgement,out _,out channelError)))
                 return 41;
+#if !GAGAMBA_PRODUCTION
             Point("owner-before-mint");
+#else
+            Point("owner-before-mint");
+#endif
             if (safety?.StopLatched == true) { SendAbort(controllerChannel,"stop latched before Mint"); return 42; }
 
             if (!WaitAtBarrier(request, controllerChannel, "after-prepared-before-mint", out channelError))
@@ -382,17 +411,24 @@ internal static class OwnerPreparationTransaction
             if (safety is not null && !safety.PublishCapability(publication.Capability))
             { publication.Capability.Dispose(); SendAbort(controllerChannel,"pre-mint stop prevented usable publication"); return 43; }
 
+#if !GAGAMBA_PRODUCTION
             if(fault is not null) Int01Qualification.Write(fault,"owner-capability-published",new { request.ExecutionId, request.StoreGenerationId });
+#endif
 
             if (request.EnableHeldCoordinator)
             {
                 var acceptedAt = request.AcceptedAtNs;
                 var setupDeadline = Math.Min(checked(acceptedAt + 10_000_000_000L), request.ExpiresAtNs);
                 var overallDeadline = Math.Min(checked(acceptedAt + 30_000_000_000L), request.ExpiresAtNs);
+#if !GAGAMBA_PRODUCTION
                 var launcher = new BubblewrapAdapter(cause =>
                 { if (safety is not null) safety.AcceptStop(cause); else _ = primaryLease.RequestStop(); })
                 { QualificationBeforeCaptureStore = Int01Qualification.Is(fault,"b4-store-failure")
                     ? _ => throw new IOException("B4 qualification capture store failure") : null };
+#else
+                var launcher = new BubblewrapAdapter(cause =>
+                { if (safety is not null) safety.AcceptStop(cause); else _ = primaryLease.RequestStop(); });
+#endif
                 var launch = launcher.PrepareHeldAsync(primaryLease, closure, manifest, identity,
                         setupDeadline, overallDeadline, CancellationToken.None)
                     .GetAwaiter().GetResult();

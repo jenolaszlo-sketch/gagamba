@@ -112,7 +112,11 @@ public sealed class IntegratedBarrierTests
         public Guid LeaseGen = Guid.NewGuid();
         public string ChildName = "d-" + Guid.NewGuid().ToString("N");
 
-        public Fixture(byte[] toolContent, byte[]? inputContent, CopyTestHooks? hooks)
+        public Fixture(byte[] toolContent, byte[]? inputContent
+#if !GAGAMBA_PRODUCTION
+    , CopyTestHooks? hooks
+#endif
+    )
         {
             Assert.True(Scope.TryInitialize().Ok);
             Assert.True(Scope.TryOpenDelegatedParent(Temp.Path).Ok);
@@ -129,7 +133,11 @@ public sealed class IntegratedBarrierTests
             Writer = writer!;
             Plan = new CopyPlan(
                 Source.Path, Staging.Path, "prep-001", objects, 16UL * 1024 * 1024, 128,
-                Array.Empty<KeyValuePair<string, string>>(), _ => true, hooks);
+                Array.Empty<KeyValuePair<string, string>>(), _ => true
+#if !GAGAMBA_PRODUCTION
+                , hooks
+#endif
+                );
         }
 
         public CopyPlan Plan { get; }

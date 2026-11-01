@@ -50,7 +50,11 @@ internal sealed record OwnerPreparationRequest(
     string? TestBarrier = null,
     bool WithholdStagingRetentionAckForTest = false,
     bool EnableHeldCoordinator = false,
-    IntegratedOwnerLaunch? Integrated = null, Int01QualificationFault? QualificationFault = null);
+    IntegratedOwnerLaunch? Integrated = null
+#if !GAGAMBA_PRODUCTION
+    , Int01QualificationFault? QualificationFault = null
+#endif
+);
 
 /// <summary>Non-authoritative owner result. The capability and primary
 /// domain lease remain in the live owner process; only a bounded
@@ -313,7 +317,11 @@ internal sealed class M1RecoveryScope : IDisposable
             request.TestBarrier,
             request.EnableHeldCoordinator,
             request.Integrated?.AcceptedAtNs ?? MonotonicNowNanoseconds(),
-            request.Integrated?.Identity, request.QualificationFault);
+            request.Integrated?.Identity
+#if !GAGAMBA_PRODUCTION
+            , request.QualificationFault
+#endif
+        );
 
         byte[] encodedSpecification;
         OwnershipSnapshot intent;
@@ -430,8 +438,10 @@ internal sealed class M1RecoveryScope : IDisposable
                     out barrier,
                     out operationError))
             {
+#if !GAGAMBA_PRODUCTION
                 if(request.QualificationFault is { } fault && Int01Qualification.Is(fault,"partial-scm-rights"))
                     Int01Qualification.Write(fault,"recovery-transfer-rejected",new { Error=operationError, ExpectedDescriptorCount=DomainHandleTransfer.ExactDescriptorCount });
+#endif
                 return FailOwnerPreparation(owner, channel, $"domain recovery authority transfer failed: {operationError}");
             }
 
@@ -442,8 +452,10 @@ internal sealed class M1RecoveryScope : IDisposable
 
             if (domainMessage!.Payload[0] != DomainHandleTransfer.ExactDescriptorCount)
             {
+#if !GAGAMBA_PRODUCTION
                 if(request.QualificationFault is { } fault)
                     Int01Qualification.Write(fault,"recovery-transfer-rejected",new { Error="role count mismatch", ObservedRoleCount=domainMessage.Payload[0], DescriptorCount=recoveryFds.Length });
+#endif
                 CloseReceived(recoveryFds);
                 return FailOwnerPreparation(owner, channel, "scope rejected owner domain authority role count");
             }
@@ -458,12 +470,14 @@ internal sealed class M1RecoveryScope : IDisposable
 
             var recoveryLease = new DomainLease(recoveryBackend!, domainIdentity!);
             lock (_retentionGate) _retainedRecoveryLeases.Add(recoveryLease);
+#if !GAGAMBA_PRODUCTION
             Int01Qualification.Point(request.QualificationFault,"recovery-before-domain-ack",request.Integrated is null ? request.ExpiresAtNs : Math.Min(request.ExpiresAtNs,request.Integrated.AcceptedAtNs+10_000_000_000L));
             if(Int01Qualification.Is(request.QualificationFault,"missing-domain-ack"))
             {
                 Int01Qualification.Write(request.QualificationFault!,"recovery-ack-omitted",new { Role="DomainAuthorityRetained", Withheld=true });
                 return FailOwnerPreparation(owner,channel,"qualification withheld domain retention ACK");
             }
+#endif
             if (!channel.TrySend(OwnerProtocolMessageType.DomainAuthorityRetained, ReadOnlySpan<byte>.Empty, out operationError))
             {
                 return FailOwnerPreparation(owner, channel, $"domain retention acknowledgement failed: {operationError}");
@@ -522,12 +536,14 @@ internal sealed class M1RecoveryScope : IDisposable
             }
 
             lock (_retentionGate) _retainedStagingDirs.Add(new SafeFileHandle(new IntPtr(stagingFds[0]), ownsHandle: true));
+#if !GAGAMBA_PRODUCTION
             Int01Qualification.Point(request.QualificationFault,"recovery-before-staging-ack",Math.Min(request.ExpiresAtNs,(request.Integrated?.AcceptedAtNs ?? MonotonicNowNanoseconds())+10_000_000_000L));
             if (request.WithholdStagingRetentionAckForTest || Int01Qualification.Is(request.QualificationFault,"missing-staging-ack"))
             {
                 if(request.QualificationFault is { } omittedFault) Int01Qualification.Write(omittedFault,"recovery-ack-omitted",new { Role="StagingAuthorityRetained", Withheld=true });
                 return new OwnerPreparationOutcome(false, null, owner, null, "test withheld staging retention acknowledgement");
             }
+#endif
             if (!channel.TrySend(OwnerProtocolMessageType.StagingAuthorityRetained, ReadOnlySpan<byte>.Empty, out operationError))
             {
                 return FailOwnerPreparation(owner, channel, $"staging retention acknowledgement failed: {operationError}");
@@ -565,12 +581,14 @@ internal sealed class M1RecoveryScope : IDisposable
                     || !OwnerPreparationSpecificationCodec.TryDecodePreparedDescription(directPrepared!.Payload,
                         out var directDescription,out operationError) || directDescription is null || !RetentionValid)
                     return FailOwnerPreparation(owner,channel,"integrated prepared retention refused");
+#if !GAGAMBA_PRODUCTION
                 Int01Qualification.Point(request.QualificationFault,"recovery-before-prepared-ack",Math.Min(request.ExpiresAtNs,request.Integrated.AcceptedAtNs+10_000_000_000L));
                 if(Int01Qualification.Is(request.QualificationFault,"lost-retention-ack"))
                 {
                     Int01Qualification.Write(request.QualificationFault!,"recovery-ack-omitted",new { Role="PreparedAcknowledgement", Withheld=true });
                     return FailOwnerPreparation(owner,channel,"qualification lost prepared retention ACK");
                 }
+#endif
                 var directIdentity = new PreparationIdentity(directDescription.ExecutionId,directDescription.IssuerId,
                     directDescription.GenerationId,directDescription.PreparationId,directDescription.ManifestDigest);
                 if (directIdentity.ExecutionId != request.ExecutionId || directIdentity.IssuerId != request.IssuerId

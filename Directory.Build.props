@@ -16,6 +16,12 @@
     <NoWarn>$(NoWarn);RS0026;RS0027</NoWarn>
   </PropertyGroup>
 
+  <!-- GAGAMBA_PRODUCTION: compile-time exclusion of qualification-only types and members.
+       Defined for Release configuration only; absent in Debug and Test configurations. -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <DefineConstants>$(DefineConstants);GAGAMBA_PRODUCTION</DefineConstants>
+  </PropertyGroup>
+
   <!-- NuGet packaging metadata shared by every packable project. -->
   <PropertyGroup>
     <Authors>Gagamba contributors</Authors>

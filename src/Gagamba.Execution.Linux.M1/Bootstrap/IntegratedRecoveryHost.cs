@@ -48,6 +48,7 @@ internal static class IntegratedRecoveryHost
             {
                 lock(sendGate)
                 {
+#if !GAGAMBA_PRODUCTION
                     if(Int01Qualification.Is(spec.Profile.QualificationFault,"actual-recovery-release-impersonation"))
                     {
                         using var attacker=new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.Unix,System.Net.Sockets.SocketType.Stream,System.Net.Sockets.ProtocolType.Unspecified);
@@ -57,6 +58,7 @@ internal static class IntegratedRecoveryHost
                         catch(System.Net.Sockets.SocketException) { }
                         Int01Qualification.Reached(spec.Profile.QualificationFault,"recovery-before-rendezvous");
                     }
+#endif
                     var payload=JsonSerializer.SerializeToUtf8Bytes(rendezvous);
                     if(!FdPassing.TrySendTransfer(control,[pidfd],wire.Create(RecoveryMessage.Rendezvous,payload),out _))
                         throw new IOException("Direct rendezvous/lifetime publication failed");
@@ -72,7 +74,11 @@ internal static class IntegratedRecoveryHost
                 var request=new OwnerPreparationRequest(ownerPath,"int-"+config.Execution.ToString("N"),config.Execution,
                     config.Generation,boot,B3PreparationOwner.BuildPlan(spec.Profile),journal,writer,spec.Issuer,spec.StoreGeneration,
                     _=>throw new InvalidOperationException("Recovery cannot authorize a manifest"),spec.ExpiresAtNs,
-                    EnableHeldCoordinator:true,Integrated:launch,QualificationFault:spec.Profile.QualificationFault);
+                    EnableHeldCoordinator:true,Integrated:launch
+#if !GAGAMBA_PRODUCTION
+                    ,QualificationFault:spec.Profile.QualificationFault
+#endif
+                    );
                 return scope.StartOwnerPreparation(request,CancellationToken.None);
             }
         });

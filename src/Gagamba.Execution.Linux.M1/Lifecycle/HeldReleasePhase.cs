@@ -193,6 +193,7 @@ internal sealed class HeldReleasePhase
             : default(ImmutableArray<byte>);
         var decision = _arbiter.RequestRelease(new ReleaseRequest(
             _capability.Identity, _setupDeadline, _overallDeadline, correlation));
+#if !GAGAMBA_PRODUCTION
         if(_request.QualificationFault is { } fault)
             Int01Qualification.Write(fault,"owner-release-decision",new { Kind=decision.Kind.ToString(), decision.Delivery, decision.DurableCommitted, PhysicalReleaseAttempts=_execution.PhysicalReleaseAttempts });
         if(Int01Qualification.Reached(_request.QualificationFault,"owner-before-release-reply"))
@@ -210,6 +211,16 @@ internal sealed class HeldReleasePhase
             PersistObservations(facts, decision);
             SendExecutionOutcome(facts);
         }
+#else
+        SendReleaseDecision(decision);
+        if (decision.Kind == ReleaseDecisionKind.Released)
+        {
+            _safety?.Released();
+            var facts = ObserveExecution(decision);
+            PersistObservations(facts, decision);
+            SendExecutionOutcome(facts);
+        }
+#endif
     }
 
     private ReleaseDecision RefusedRelease(string reason, ReleaseCorrelationBinding binding,
@@ -259,6 +270,7 @@ internal sealed class HeldReleasePhase
     /// arbitration points are pausable.</summary>
     private void HandleArbiterBarrier(string name)
     {
+#if !GAGAMBA_PRODUCTION
         if(_request.QualificationFault is { } fault)
         {
             if(name=="after-intent" && Int01Qualification.Stage(fault.Case)=="release-after-intent")
@@ -273,6 +285,7 @@ internal sealed class HeldReleasePhase
                 Thread.Sleep(Timeout.Infinite); // SIGKILL must terminate this exact owner, never proceed.
             }
         }
+#endif
         if (!string.Equals(_request.TestBarrier, ReleaseAfterIntentBarrier, StringComparison.Ordinal)
             || !string.Equals(name, "after-intent", StringComparison.Ordinal))
         {

@@ -50,7 +50,11 @@ internal sealed record B3FixtureProfile(
     ulong TotalBudgetBytes,
     int MaxObjects,
     long ExpiresLeadNanoseconds,
-    B3IntegratedProfile? IntegratedRecovery = null, Int01QualificationFault? QualificationFault = null)
+    B3IntegratedProfile? IntegratedRecovery = null
+#if !GAGAMBA_PRODUCTION
+    , Int01QualificationFault? QualificationFault = null
+#endif
+)
 {
     internal const string ProfileId = "ae4-linux-fixed-fixture-v1";
     internal const long MaxExpiresLeadNanoseconds = 120_000_000_000L;
@@ -164,9 +168,11 @@ internal static class B3Qualification
                         return new B3QualificationCreation(null,RestrictedRefusalReason.UnqualifiedInstallation);
                 }
             }
+#if !GAGAMBA_PRODUCTION
             Int01Qualification.Validate(profile.QualificationFault);
             if(profile.QualificationFault is not null && profile.IntegratedRecovery is null)
                 return new B3QualificationCreation(null, RestrictedRefusalReason.UnqualifiedInstallation);
+#endif
             var provider = new RestrictedProviderDescriptor();
             var owner = new B3PreparationOwner(profile, provider);
             return new B3QualificationCreation(

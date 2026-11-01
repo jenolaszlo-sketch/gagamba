@@ -1,10 +1,11 @@
+// Trusted experimental input only. This record conveys no OS or release authority.
+// Every hook is inert without an explicit, validated internal fixture profile.
+#if !GAGAMBA_PRODUCTION
 using System.Diagnostics;
 using System.Text.Json;
 
 namespace Gagamba.Execution.Linux.M1.Bootstrap;
 
-// Trusted experimental input only. This record conveys no OS or release authority.
-// Every hook is inert without an explicit, validated internal fixture profile.
 internal sealed record Int01QualificationFault(string Case, string EvidenceDirectory);
 
 internal static class Int01Qualification
@@ -99,3 +100,4 @@ internal static class Int01Qualification
         File.Move(pathTemporary, pathFinal, true);
     }
 }
+#endif

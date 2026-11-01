@@ -396,8 +396,11 @@ public sealed class NonRootQualificationTests
         public Guid LeaseGen = Guid.NewGuid();
         public string ChildName;
 
-        public IntegratedFixture(byte[] tool, byte[]? input, CopyTestHooks? hooks,
-            IPidFdProvider? pidFdProvider = null, byte[]? coordinator = null, byte[]? filter = null)
+        public IntegratedFixture(byte[] tool, byte[]? input
+#if !GAGAMBA_PRODUCTION
+    , CopyTestHooks? hooks
+#endif
+            , IPidFdProvider? pidFdProvider = null, byte[]? coordinator = null, byte[]? filter = null)
         {
             ChildName = "d-" + Guid.NewGuid().ToString("N");
             Scope = new M1RecoveryScope(pidFdProvider);
@@ -426,7 +429,11 @@ public sealed class NonRootQualificationTests
             Writer = writer!;
             Plan = new CopyPlan(
                 Source.Path, Staging.Path, "prep-001", objects, 16UL * 1024 * 1024, 128,
-                Array.Empty<KeyValuePair<string, string>>(), _ => true, hooks);
+                Array.Empty<KeyValuePair<string, string>>(), _ => true
+#if !GAGAMBA_PRODUCTION
+                , hooks
+#endif
+                );
         }
 
         public CopyPlan Plan { get; }

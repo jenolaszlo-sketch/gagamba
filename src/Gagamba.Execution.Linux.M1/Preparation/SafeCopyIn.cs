@@ -44,7 +44,9 @@ internal sealed record CopyObjectPlan(
 /// OnChunkCopied after each copied chunk, OnBeforeReopen after the
 /// writable destination closes and before the read-only reopen. Null by
 /// default; production never sets them.</summary>
+#if !GAGAMBA_PRODUCTION
 internal sealed record CopyTestHooks(Action<int>? OnChunkCopied, Action<string>? OnBeforeReopen);
+#endif
 
 /// <summary>Simulated actor death for deterministic recovery barriers.
 /// Thrown by test hooks to abandon preparation immediately without any
@@ -53,6 +55,7 @@ internal sealed record CopyTestHooks(Action<int>? OnChunkCopied, Action<string>?
 /// authority plus durable state may be used afterward. Never thrown by
 /// production paths; the engine lets it propagate instead of converting
 /// it into a normal failure.</summary>
+#if !GAGAMBA_PRODUCTION
 internal sealed class BarrierDeathException : Exception
 {
     internal BarrierDeathException(string barrier)
@@ -63,6 +66,7 @@ internal sealed class BarrierDeathException : Exception
 
     internal string Barrier { get; }
 }
+#endif
 
 /// <summary>Immutable preparation request. All collections are copied on
 /// use; mutating caller arrays afterwards cannot change preparation.
@@ -79,7 +83,11 @@ internal sealed record CopyPlan(
     int MaxObjects,
     IReadOnlyList<KeyValuePair<string, string>>? Environment,
     Func<CancellationToken, bool>? Acknowledge,
+#if !GAGAMBA_PRODUCTION
     CopyTestHooks? Hooks,
+#else
+    object? Hooks,
+#endif
     Action<SafeHandle, StagedObject>? OnObjectAccounted = null,
     Action<SafeHandle>? OnStagingDirectoryCreated = null,
     SafeHandle? StagingParentAuthority = null)
@@ -173,7 +181,12 @@ internal static class SafeCopyIn
                 var staged = CopyOneObject(
                     host, sourceRoot!, stagingDir!, plan.Objects[index], index,
                     plan.TotalBudgetBytes, ref totalBytes,
-                    plan.Hooks, plan.OnObjectAccounted, cancellationToken, created);
+#if !GAGAMBA_PRODUCTION
+                    plan.Hooks,
+#else
+                    null,
+#endif
+                    plan.OnObjectAccounted, cancellationToken, created);
                 if (!staged.Succeeded)
                 {
                     return FinishFailed(host, ref stagingDir, created, bound, totalBytes, environment, staged.Failure, staged.Detail);
@@ -202,6 +215,7 @@ internal static class SafeCopyIn
             return FinishFailed(host, ref stagingDir, created, bound, totalBytes, environment,
                 CopyFailureKind.Cancelled, "Cancelled during preparation.");
         }
+#if !GAGAMBA_PRODUCTION
         catch (BarrierDeathException)
         {
             // Simulated actor death for deterministic recovery barriers:
@@ -209,6 +223,7 @@ internal static class SafeCopyIn
             // independently retained authority is all recovery may use.
             throw;
         }
+#endif
         catch (Exception ex)
         {
             return FinishFailed(host, ref stagingDir, created, bound, totalBytes, environment,
@@ -398,7 +413,11 @@ internal static class SafeCopyIn
         int index,
         ulong totalBudget,
         ref ulong totalBytes,
+#if !GAGAMBA_PRODUCTION
         CopyTestHooks? hooks,
+#else
+        object? hooks,
+#endif
         Action<SafeHandle, StagedObject>? onObjectAccounted,
         CancellationToken cancellationToken,
         List<CreatedEntry> created)
@@ -477,7 +496,13 @@ internal static class SafeCopyIn
                 string streamDetail;
                 var copied = CopyStreamed(
                     host, source, destination, request.MaxBytes,
-                    totalBudget, ref totalBytes, hooks, cancellationToken,
+                    totalBudget, ref totalBytes,
+#if !GAGAMBA_PRODUCTION
+                    hooks,
+#else
+                    null,
+#endif
+                    cancellationToken,
                     out digest, out count, out streamFailure, out streamDetail);
                 if (!copied)
                 {
@@ -517,7 +542,9 @@ internal static class SafeCopyIn
                 }
             }
 
+#if !GAGAMBA_PRODUCTION
             hooks?.OnBeforeReopen?.Invoke(stagingName);
+#endif
             var bound = BindReopened(host, stagingDir, stagingName, request.Role, digest, count, createdIdentity, finalMode);
             if (bound.Succeeded && bound.Bound is not null && onObjectAccounted is not null)
             {
@@ -530,10 +557,12 @@ internal static class SafeCopyIn
                 {
                     onObjectAccounted(stagingDir, bound.Bound);
                 }
+#if !GAGAMBA_PRODUCTION
                 catch (BarrierDeathException)
                 {
                     throw;
                 }
+#endif
                 catch (OperationCanceledException)
                 {
                     throw;
@@ -555,7 +584,11 @@ internal static class SafeCopyIn
         ulong maxBytes,
         ulong totalBudget,
         ref ulong totalBytes,
+#if !GAGAMBA_PRODUCTION
         CopyTestHooks? hooks,
+#else
+        object? hooks,
+#endif
         CancellationToken cancellationToken,
         out byte[] digest,
         out ulong count,
@@ -616,7 +649,9 @@ internal static class SafeCopyIn
                 hash.AppendData(buffer, 0, read);
                 count += (ulong)read;
                 totalBytes += (ulong)read;
+#if !GAGAMBA_PRODUCTION
                 hooks?.OnChunkCopied?.Invoke(chunkIndex);
+#endif
                 chunkIndex++;
             }
 

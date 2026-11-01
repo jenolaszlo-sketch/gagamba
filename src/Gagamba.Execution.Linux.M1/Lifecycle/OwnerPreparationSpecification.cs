@@ -32,7 +32,11 @@ internal sealed record OwnerPreparationSpecification(
     string? TestBarrier = null,
     bool EnableHeldCoordinator = false,
     long AcceptedAtNs = 0,
-    OwnerDirectIdentity? DirectIdentity = null, Int01QualificationFault? QualificationFault = null);
+    OwnerDirectIdentity? DirectIdentity = null
+#if !GAGAMBA_PRODUCTION
+    , Int01QualificationFault? QualificationFault = null
+#endif
+);
 
 internal sealed record OwnerManifestAuthorization(
     RestrictedManifest Manifest,
@@ -140,9 +144,11 @@ internal static class OwnerPreparationSpecificationCodec
             throw new ArgumentException("Owner preparation bounds are invalid.");
         }
 
+#if !GAGAMBA_PRODUCTION
         Int01Qualification.Validate(value.QualificationFault);
         if(value.QualificationFault is not null && (value.DirectIdentity is null || !value.EnableHeldCoordinator))
             throw new ArgumentException("Qualification fault requires the integrated fixed fixture" );
+#endif
         RequireSingleName(value.DomainChildName, nameof(value.DomainChildName));
         RequireSingleName(value.StagingDirectoryName, nameof(value.StagingDirectoryName));
         for (var i = 0; i < value.Objects.Count; i++)
