@@ -21,22 +21,7 @@ internal static class OwnerPreparationTransaction
 {
     private sealed class OwnerClock : ITransactionClock
     {
-        public long NowNanoseconds
-        {
-            get
-            {
-                var timestamp = Stopwatch.GetTimestamp();
-                return (timestamp / Stopwatch.Frequency * 1_000_000_000L)
-                    + (timestamp % Stopwatch.Frequency * 1_000_000_000L / Stopwatch.Frequency);
-            }
-        }
-    }
-
-    private sealed class OwnerDomainClock : IDomainClock
-    {
-        private readonly Stopwatch _watch = Stopwatch.StartNew();
-        public long NowNanoseconds => _watch.ElapsedTicks * (1_000_000_000L / Stopwatch.Frequency);
-        public void Delay(TimeSpan duration) => Thread.Sleep(duration);
+        public long NowNanoseconds => MonotonicTime.NowNanoseconds();
     }
 
     internal static int Run(int controlFd, Guid executionId, Guid leaseGeneration)

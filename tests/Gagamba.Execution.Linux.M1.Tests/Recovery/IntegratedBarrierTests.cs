@@ -535,6 +535,8 @@ public sealed class IntegratedBarrierTests
     {
         private readonly Stopwatch _watch = Stopwatch.StartNew();
 
+        public MonotonicClockBasis Basis => new(MonotonicEpoch.Unknown, Stopwatch.Frequency);
+
         public long NowNanoseconds => _watch.ElapsedTicks * (1_000_000_000L / Stopwatch.Frequency);
 
         public void Delay(TimeSpan duration) => Thread.Sleep(duration);

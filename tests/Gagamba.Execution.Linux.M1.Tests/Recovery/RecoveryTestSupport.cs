@@ -150,19 +150,25 @@ internal sealed class FakeDomainBackend : IDomainBackend
     public bool KillAccepted { get; set; } = true;
     public bool ReadFault { get; set; }
     public bool KillFault { get; set; }
+    public bool KillDispatchUnknown { get; set; }
     public bool RemoveFault { get; set; }
     public bool Replacement { get; set; }
     public ulong ReplacementInode { get; set; } = 999;
     public string ChildName { get; set; } = "domain-1";
     public int KillWrites { get; private set; }
+    public int WriteKillCalls { get; private set; }
+    public int ReadPopulationCalls { get; private set; }
+    public int RemoveChildCalls { get; private set; }
     private bool _disposed;
 
     public bool HandlesAlive => !_disposed;
 
     public DomainIoResult WriteKill()
     {
+        WriteKillCalls++;
         if (_disposed) { return DomainIoResult.Failure("disposed"); }
         if (KillFault) { return DomainIoResult.Failure("cgroup.kill fault"); }
+        if (KillDispatchUnknown) { return DomainIoResult.Unknown("cgroup.kill dispatch unproven"); }
         KillWrites++;
         if (KillAccepted) { Populated = false; }
         return DomainIoResult.Success;
@@ -170,6 +176,7 @@ internal sealed class FakeDomainBackend : IDomainBackend
 
     public DomainPopulationResult ReadPopulation()
     {
+        ReadPopulationCalls++;
         if (_disposed) { return DomainPopulationResult.Unknown("disposed"); }
         if (ReadFault) { return DomainPopulationResult.Unknown("cgroup.events fault"); }
         return Populated ? DomainPopulationResult.Populated : DomainPopulationResult.Emptied;
@@ -190,8 +197,11 @@ internal sealed class FakeDomainBackend : IDomainBackend
         return new DomainLookupResult(true, DomainDevice, inode, DomainMode, string.Empty);
     }
 
-    public DomainIoResult RemoveChild(string name) =>
-        RemoveFault ? DomainIoResult.Failure("rmdir fault") : DomainIoResult.Success;
+    public DomainIoResult RemoveChild(string name)
+    {
+        RemoveChildCalls++;
+        return RemoveFault ? DomainIoResult.Failure("rmdir fault") : DomainIoResult.Success;
+    }
 
     public IDomainBackend DuplicateForRecovery() => new FakeDomainBackend
     {
@@ -215,10 +225,17 @@ internal sealed class FakeDomainBackend : IDomainBackend
 
 internal sealed class FakeDomainClock : IDomainClock
 {
+    public MonotonicClockBasis Basis { get; set; } =
+        new(MonotonicEpoch.Qpc, System.Diagnostics.Stopwatch.Frequency);
+
     public long NowNanoseconds { get; set; }
     public int Delays { get; private set; }
 
-    public void Delay(TimeSpan duration) => NowNanoseconds += (long)(duration.TotalSeconds * 1_000_000_000d);
+    public void Delay(TimeSpan duration)
+    {
+        Delays++;
+        NowNanoseconds += (long)(duration.TotalSeconds * 1_000_000_000d);
+    }
 
     public void Advance(TimeSpan duration) => NowNanoseconds += (long)(duration.TotalSeconds * 1_000_000_000d);
 }

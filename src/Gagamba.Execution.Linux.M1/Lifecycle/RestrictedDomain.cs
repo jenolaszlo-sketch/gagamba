@@ -5,11 +5,16 @@
 // real cgroup filesystem natively and an in-memory model portably.
 namespace Gagamba.Execution.Linux.M1.Lifecycle;
 
-internal readonly record struct DomainIoResult(bool Ok, string Error)
+internal readonly record struct DomainIoResult(bool Ok, string Error, bool DispatchUnproven = false)
 {
     internal static DomainIoResult Success { get; } = new(true, string.Empty);
 
     internal static DomainIoResult Failure(string error) => new(false, error);
+
+    /// <summary>The backend cannot prove whether the operation was dispatched.
+    /// The native backend never returns this; it exists for a backend that
+    /// genuinely cannot attribute the result and for deterministic fixtures.</summary>
+    internal static DomainIoResult Unknown(string error) => new(false, error, DispatchUnproven: true);
 }
 
 internal readonly record struct DomainPopulationResult(bool Known, bool Empty, string Error)

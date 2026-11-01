@@ -204,6 +204,8 @@ public sealed class NonRootQualificationTests
     {
         private readonly Stopwatch _watch = Stopwatch.StartNew();
 
+        public MonotonicClockBasis Basis => new(MonotonicEpoch.Unknown, Stopwatch.Frequency);
+
         public long NowNanoseconds => _watch.ElapsedTicks * (1_000_000_000L / Stopwatch.Frequency);
 
         public void Delay(TimeSpan duration) => Thread.Sleep(duration);
@@ -1573,6 +1575,86 @@ public sealed class NonRootQualificationTests
         finally
         {
             try { Directory.Delete(sibling); } catch { }
+        }
+    }
+
+    // B5 C3: a real durable StopRecord on a real delegated cgroup. The
+    // persisted absolute deadline authorises one immediate identity-checked
+    // kill plus one population observation, never a fresh five-second window,
+    // and repeated reconciliation keeps the same absolute deadline.
+    [Fact]
+    public void NonRootExpiredDurableStopDeadlineAppliesPolicyAWithoutRenewedWait()
+    {
+        SkipUnlessQualified();
+        using var fx = new IntegratedFixture(Bytes(0x60, 2048), null, null);
+        var outcome = fx.Scope.StartOwnerPreparation(fx.Request("after-copy"), CancellationToken.None);
+        Assert.Equal("after-copy", outcome.Barrier);
+        outcome.Owner!.Kill(entireProcessTree: false);
+        Assert.True(fx.Scope.WaitForOwner(outcome.Owner, TimeSpan.FromSeconds(5)).Exited);
+
+        var current = fx.Journal.ReadLatest();
+        Assert.True(current.Ok, current.Error);
+        var accepted = StopwatchDomainClock.Instance.NowNanoseconds - 60_000_000_000L;
+        Assert.True(OwnershipTransitions.TryPlanStop(
+            current.Snapshot!, accepted, StopCauseKind.CallerStop, out var planned, out var planError), planError);
+        Assert.True(fx.Journal.TryAcquireWriter(out var writer, out var writerError), writerError);
+        using (writer!)
+        {
+            var transition = fx.Journal.WriteTransition(writer, current.Snapshot!, planned!);
+            Assert.True(transition.Ok, transition.Error);
+            var planted = fx.Journal.ReadLatest().Snapshot!;
+            Assert.Equal(planned!.Stop, planted.Stop);
+
+            var recovery = Assert.Single(fx.Scope.RetainedRecoveryLeases);
+            var stamp = Stopwatch.GetTimestamp();
+            var result = new Reconciler(StopwatchDomainClock.Instance, TimeSpan.Zero)
+                .Reconcile(planted, Boot(), recovery, null, fx.Journal, writer);
+            var elapsed = Stopwatch.GetElapsedTime(stamp);
+            Assert.True(elapsed < TimeSpan.FromSeconds(2), $"expired deadline waited {elapsed}");
+            Assert.True(result.DestructiveActionTaken);
+            Assert.NotEqual(ReconcileOutcome.Failed, result.Outcome);
+            var stop = Assert.Single(result.Components!, c => c.Component == CleanupComponents.DomainStop);
+            Assert.Contains(stop.State, new[] { ComponentState.Confirmed, ComponentState.Unknown });
+
+            var after = fx.Journal.ReadLatest().Snapshot!;
+            Assert.Equal(planted.Stop, after.Stop);
+
+            var second = new Reconciler(StopwatchDomainClock.Instance, TimeSpan.Zero)
+                .Reconcile(after, Boot(), recovery, null, fx.Journal, writer);
+            Assert.True(Stopwatch.GetElapsedTime(stamp) < TimeSpan.FromSeconds(4));
+            Assert.NotEqual(ReconcileOutcome.Failed, second.Outcome);
+            Assert.Equal(planted.Stop, fx.Journal.ReadLatest().Snapshot!.Stop);
+        }
+    }
+
+    [Fact]
+    public void NonRootSameBootRecoveryKeepsTheOriginalDeadlineBeforeExpiry()
+    {
+        SkipUnlessQualified();
+        using var fx = new IntegratedFixture(Bytes(0x61, 2048), null, null);
+        var outcome = fx.Scope.StartOwnerPreparation(fx.Request("after-copy"), CancellationToken.None);
+        Assert.Equal("after-copy", outcome.Barrier);
+        outcome.Owner!.Kill(entireProcessTree: false);
+        Assert.True(fx.Scope.WaitForOwner(outcome.Owner, TimeSpan.FromSeconds(5)).Exited);
+
+        var current = fx.Journal.ReadLatest();
+        Assert.True(current.Ok, current.Error);
+        var accepted = StopwatchDomainClock.Instance.NowNanoseconds - 1_000_000_000L;
+        Assert.True(OwnershipTransitions.TryPlanStop(
+            current.Snapshot!, accepted, StopCauseKind.CallerStop, out var planned, out var planError), planError);
+        Assert.True(fx.Journal.TryAcquireWriter(out var writer, out var writerError), writerError);
+        using (writer!)
+        {
+            Assert.True(fx.Journal.WriteTransition(writer, current.Snapshot!, planned!).Ok);
+            var planted = fx.Journal.ReadLatest().Snapshot!;
+            var recovery = Assert.Single(fx.Scope.RetainedRecoveryLeases);
+            var stamp = Stopwatch.GetTimestamp();
+            var result = new Reconciler(StopwatchDomainClock.Instance, TimeSpan.FromSeconds(5))
+                .Reconcile(planted, Boot(), recovery, null, fx.Journal, writer);
+            Assert.True(Stopwatch.GetElapsedTime(stamp) < TimeSpan.FromSeconds(2));
+            Assert.NotEqual(ReconcileOutcome.Failed, result.Outcome);
+            Assert.Equal(planted.Stop, fx.Journal.ReadLatest().Snapshot!.Stop);
+            Assert.Equal(accepted, planted.Stop!.StopAcceptedAtNanoseconds);
         }
     }
 }

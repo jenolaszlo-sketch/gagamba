@@ -533,16 +533,14 @@ internal sealed class BubblewrapAdapter : IHeldLauncher
         handle = null;
     }
 
-    private static long MonotonicNowNanoseconds()
-    {
-        var timestamp = Stopwatch.GetTimestamp();
-        return (timestamp / Stopwatch.Frequency * 1_000_000_000L)
-            + (timestamp % Stopwatch.Frequency * 1_000_000_000L / Stopwatch.Frequency);
-    }
+    private static long MonotonicNowNanoseconds() => MonotonicTime.NowNanoseconds();
 
     private sealed class LaunchDomainClock : IDomainClock
     {
+        public MonotonicClockBasis Basis => new(MonotonicEpoch.Qpc, Stopwatch.Frequency);
+
         public long NowNanoseconds => MonotonicNowNanoseconds();
+
         public void Delay(TimeSpan duration) => Thread.Sleep(duration);
     }
 }

@@ -10,6 +10,8 @@ using System.Text;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Gagamba.Execution.Linux.M1")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Gagamba.Execution.Linux.M1.Tests")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Gagamba.Execution.Linux.M1.TestFixture")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Gagamba.Execution.Linux.M1.D6_4.Tests")]
 
 namespace Gagamba.Execution.Restricted;
 

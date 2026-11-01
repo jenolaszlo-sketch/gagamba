@@ -156,9 +156,11 @@ internal static class IntegratedRecoveryHost
                             ?new B3ScopeCleaner(scope.RetainedStagingParents[0].DangerousGetHandle().ToInt32(),
                                 scope.RetainedStagingDirectories[0].DangerousGetHandle().ToInt32()):null;
                         var lease=scope.RetainedRecoveryLeases.Count==1?scope.RetainedRecoveryLeases[0]:null;
-                        // No new waiting allowance is created after the original stop obligation. This
-                        // immediate cleanup attempt is NOT full sealed C3/B5 deadline reconciliation.
-                        var result=new Reconciler(new Clock(),TimeSpan.Zero).Reconcile(read.Snapshot,currentBoot,
+                        // A valid StopRecord deadline is authoritative and is consumed by the
+                        // sealed clock; the zero allowance applies only to records with no
+                        // accepted durable stop. No new waiting allowance is created after the
+                        // original stop obligation.
+                        var result=new Reconciler(StopwatchDomainClock.Instance,TimeSpan.Zero).Reconcile(read.Snapshot,currentBoot,
                             lease,cleaner,journal,writer);
                         bool Confirmed(CleanupComponents component)=>result.Components?.Any(x=>x.Component==component && x.State==ComponentState.Confirmed)==true;
                         lock(stateGate)
@@ -204,10 +206,5 @@ internal static class IntegratedRecoveryHost
             if(current is null && preparation.IsCompleted) return 3;
             Thread.Sleep(10);
         }
-    }
-    private sealed class Clock:IDomainClock
-    {
-        public long NowNanoseconds=>OwnerSafetyMonitor.Now();
-        public void Delay(TimeSpan duration)=>Thread.Sleep(duration);
     }
 }

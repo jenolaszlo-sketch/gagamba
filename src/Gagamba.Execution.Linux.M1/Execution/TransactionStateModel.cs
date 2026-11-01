@@ -8,8 +8,13 @@
 using System.Collections.Immutable;
 using Gagamba.Execution.Restricted;
 
+#if GAGAMBA_WP05_D6_4_TEST_FIXTURE
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo(
+    "Gagamba.Execution.Linux.M1.D6_4.Tests")]
+#else
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Gagamba.Execution.Linux.M1.Tests")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Gagamba.Execution.Linux.M1.Owner")]
+#endif
 
 namespace Gagamba.Execution.Linux.M1.Execution;
 

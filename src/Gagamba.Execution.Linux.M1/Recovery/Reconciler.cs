@@ -7,7 +7,9 @@
 // cross-boot and mismatched records yield Unknown/quarantine with no
 // destructive adoption. Reconciliation is idempotent and never resumes
 // work or resurrects a capability.
+using System.Diagnostics;
 using Gagamba.Execution.Linux.M1.Lifecycle;
+using Gagamba.Execution.Restricted;
 
 namespace Gagamba.Execution.Linux.M1.Recovery;
 
@@ -121,12 +123,133 @@ internal sealed record ComponentOutcome(CleanupComponents Component, ComponentSt
 internal sealed class Reconciler
 {
     private readonly IDomainClock _clock;
-    private readonly TimeSpan _stopAllowance;
+    private readonly TimeSpan _noRecordCleanupAllowance;
 
+    /// <summary>Production composition. The sealed clock is the only source of
+    /// durable StopRecord deadline arithmetic; a caller-supplied allowance is
+    /// retained only for records that carry no accepted durable stop.</summary>
+    internal Reconciler(StopwatchDomainClock clock, TimeSpan noRecordCleanupAllowance)
+    {
+        _clock = clock ?? throw new ArgumentNullException(nameof(clock));
+        _noRecordCleanupAllowance = noRecordCleanupAllowance;
+    }
+
+    /// <summary>Explicitly test-only deterministic seam. Production call sites
+    /// use the sealed <see cref="StopwatchDomainClock"/> constructor, so a
+    /// foreign clock (including one declaring a Qpc label) cannot be passed
+    /// from production composition without a reviewed source change.</summary>
     internal Reconciler(IDomainClock clock, TimeSpan stopAllowance)
     {
         _clock = clock ?? throw new ArgumentNullException(nameof(clock));
-        _stopAllowance = stopAllowance;
+        _noRecordCleanupAllowance = stopAllowance;
+    }
+
+#if GAGAMBA_WP05_D6_4_TEST_FIXTURE
+    private readonly NotAttemptedStopTestFixture? _notAttemptedStopFixture;
+
+    internal Reconciler(
+        IDomainClock clock,
+        TimeSpan stopAllowance,
+        NotAttemptedStopTestFixture fixture)
+        : this(clock, stopAllowance)
+    {
+        _notAttemptedStopFixture = fixture ?? throw new ArgumentNullException(nameof(fixture));
+    }
+#endif
+
+    /// <summary>Derives the bounded stop window from the durable record. A
+    /// valid StopRecord is authoritative: the caller-supplied allowance is
+    /// ignored. Any unverifiable provenance, epoch, frequency, timestamp or
+    /// arithmetic refuses before destructive action so no fresh window can be
+    /// manufactured.</summary>
+    private bool TryResolveStopBudget(
+        StopRecord? stop,
+        out long budgetNanoseconds,
+        out string refusal)
+    {
+        budgetNanoseconds = 0;
+        refusal = string.Empty;
+
+        if (stop is null)
+        {
+            if (_noRecordCleanupAllowance < TimeSpan.Zero)
+            {
+                refusal = "cleanup allowance is negative; no durable stop deadline exists";
+                return false;
+            }
+
+            budgetNanoseconds = (long)(_noRecordCleanupAllowance.TotalSeconds * 1_000_000_000d);
+            return true;
+        }
+
+        if (stop.StopAcceptedAtNanoseconds <= 0
+            || stop.StopDeadlineNanoseconds <= 0
+            || stop.StopDeadlineNanoseconds < stop.StopAcceptedAtNanoseconds)
+        {
+            refusal = "durable stop deadline is invalid; refusing destructive action";
+            return false;
+        }
+
+        if ((byte)stop.Cause > (byte)StopCauseKind.TransportFailure)
+        {
+            refusal = "durable stop cause is invalid; refusing destructive action";
+            return false;
+        }
+
+        long declaredAllowance;
+        try
+        {
+            checked { declaredAllowance = stop.StopDeadlineNanoseconds - stop.StopAcceptedAtNanoseconds; }
+        }
+        catch (OverflowException)
+        {
+            refusal = "durable stop deadline arithmetic overflowed";
+            return false;
+        }
+
+        if (declaredAllowance != OwnershipSnapshotCodec.StopConfirmationAllowanceNanoseconds)
+        {
+            refusal = "durable stop deadline does not match the accepted allowance";
+            return false;
+        }
+
+        var basis = _clock.Basis;
+        if (basis.Epoch != MonotonicEpoch.Qpc || basis.Frequency != Stopwatch.Frequency)
+        {
+            refusal = "monotonic clock epoch/frequency is incompatible with the durable stop timestamp basis";
+            return false;
+        }
+
+        long now;
+        try
+        {
+            now = _clock.NowNanoseconds;
+        }
+        catch (Exception)
+        {
+            refusal = "monotonic clock is unavailable";
+            return false;
+        }
+
+        if (now <= 0)
+        {
+            refusal = "monotonic clock timestamp is invalid";
+            return false;
+        }
+
+        long remaining;
+        try
+        {
+            checked { remaining = stop.StopDeadlineNanoseconds - now; }
+        }
+        catch (OverflowException)
+        {
+            refusal = "durable stop remaining-time arithmetic overflowed";
+            return false;
+        }
+
+        budgetNanoseconds = remaining > 0 ? remaining : 0;
+        return true;
     }
 
     /// <summary>Idempotent component-wise reconciliation. Every required
@@ -159,8 +282,8 @@ internal sealed class Reconciler
         var outcomes = new List<ComponentOutcome>();
         var destructive = false;
         var bits = record.CompletedCleanup;
-        var finalizationFailed = false;
-        var finalizationDetail = string.Empty;
+        var journalProgressUncertain = false;
+        var journalProgressDetail = string.Empty;
 
         bool TryPersist(byte newBits, OwnershipCleanupState cleanup, out string error)
         {
@@ -212,8 +335,30 @@ internal sealed class Reconciler
         void Note(CleanupComponents component, ComponentState state, string detail) =>
             outcomes.Add(new ComponentOutcome(component, state, detail));
 
+        void NoteProgressFailure(string stage, string error)
+        {
+            journalProgressUncertain = true;
+            journalProgressDetail = $"{stage} progress persistence failed: {error}";
+        }
+
+        // C3: when the durable stop is still outstanding, the persisted
+        // absolute deadline is the only authoritative bound. Resolve it
+        // before any destructive action; an unverifiable clock or deadline
+        // refuses rather than fabricating a fresh allowance.
+        var stopBudgetNanoseconds = 0L;
+        if ((bits & (byte)CleanupComponents.DomainStop) == 0)
+        {
+            if (!TryResolveStopBudget(record.Stop, out stopBudgetNanoseconds, out var budgetRefusal))
+            {
+                return new ReconcileResult(
+                    ReconcileOutcome.QuarantinedUnknown, budgetRefusal, DestructiveActionTaken: false);
+            }
+        }
+
         // DomainStop (+DomainEmpty established by the same bounded wait).
         var stopState = ComponentState.Pending;
+        var kill = KillDispatchOutcome.NotAttempted;
+        var population = StopPopulationObservation.NotObserved;
         if ((bits & (byte)CleanupComponents.DomainStop) != 0)
         {
             stopState = ComponentState.Confirmed;
@@ -228,22 +373,44 @@ internal sealed class Reconciler
             }
 
             destructive = true;
-            var stop = liveLease.StopAndAwaitEmpty(_stopAllowance, _clock);
-            if (!stop.Stopped)
+#if GAGAMBA_WP05_D6_4_TEST_FIXTURE
+            var stop = _notAttemptedStopFixture is null
+                ? liveLease.StopAndAwaitEmpty(stopBudgetNanoseconds, _clock)
+                : _notAttemptedStopFixture.CreateOutcome();
+#else
+            var stop = liveLease.StopAndAwaitEmpty(stopBudgetNanoseconds, _clock);
+#endif
+            kill = stop.Kill;
+            population = stop.Population;
+
+            switch (stop.Kill)
             {
-                Note(CleanupComponents.DomainStop, ComponentState.Failed, stop.Error);
-                stopState = ComponentState.Failed;
-            }
-            else
-            {
-                bits |= (byte)(CleanupComponents.DomainStop | CleanupComponents.DomainEmpty);
-                stopState = ComponentState.Confirmed;
-                Note(CleanupComponents.DomainStop, stopState, "stopped and observed empty");
-                if (!TryPersist(bits, record.Cleanup, out var persistError))
-                {
-                    finalizationFailed = true;
-                    finalizationDetail = $"stop progress persistence failed: {persistError}";
-                }
+                case KillDispatchOutcome.Accepted when stop.Population == StopPopulationObservation.Empty:
+                    bits |= (byte)(CleanupComponents.DomainStop | CleanupComponents.DomainEmpty);
+                    stopState = ComponentState.Confirmed;
+                    Note(CleanupComponents.DomainStop, stopState, "stopped and observed empty");
+                    if (!TryPersist(bits, record.Cleanup, out var persistError))
+                    {
+                        NoteProgressFailure("stop", persistError);
+                    }
+
+                    break;
+                case KillDispatchOutcome.Failed:
+                    // Definitive kill operation failure. A later empty
+                    // observation may confirm emptiness but cannot erase it.
+                    stopState = ComponentState.Failed;
+                    Note(CleanupComponents.DomainStop, stopState, stop.Error);
+                    break;
+                case KillDispatchOutcome.NotAttempted:
+                    stopState = ComponentState.Unknown;
+                    Note(CleanupComponents.DomainStop, stopState,
+                        $"kill dispatch not attempted: {stop.Error}");
+                    break;
+                default:
+                    stopState = ComponentState.Unknown;
+                    Note(CleanupComponents.DomainStop, stopState,
+                        $"kill dispatch unproven: {stop.Error}");
+                    break;
             }
         }
 
@@ -260,29 +427,44 @@ internal sealed class Reconciler
             emptyState = ComponentState.Confirmed;
             Note(CleanupComponents.DomainEmpty, emptyState, "established by stop");
         }
+        else if (kill is KillDispatchOutcome.Accepted or KillDispatchOutcome.Unknown)
+        {
+            // An accepted kill that left the domain populated (including the
+            // zero-wait Policy A path) or an unproven dispatch is uncertainty,
+            // never a second wait and never fabricated emptiness.
+            emptyState = ComponentState.Unknown;
+            Note(CleanupComponents.DomainEmpty, emptyState,
+                kill == KillDispatchOutcome.Accepted
+                    ? "kill accepted but domain emptiness unconfirmed"
+                    : "kill dispatch unproven; population not adopted");
+        }
         else
         {
-            var population = liveLease!.ObservePopulation();
-            if (population.Known && population.Empty)
+            // Kill failed or was not attempted. A trusted, authorized fallback
+            // observation may independently confirm emptiness; it never
+            // implies a successful kill.
+            var fallback = liveLease!.ObservePopulation();
+            if (fallback.Known && fallback.Empty)
             {
                 bits |= (byte)CleanupComponents.DomainEmpty;
                 emptyState = ComponentState.Confirmed;
-                Note(CleanupComponents.DomainEmpty, emptyState, "observed empty");
+                Note(CleanupComponents.DomainEmpty, emptyState,
+                    "independently observed empty without a confirmed kill dispatch");
                 if (!TryPersist(bits, record.Cleanup, out var persistError))
                 {
-                    finalizationFailed = true;
-                    finalizationDetail = $"empty progress persistence failed: {persistError}";
+                    NoteProgressFailure("empty fallback", persistError);
                 }
             }
-            else if (population.Known)
+            else if (fallback.Known)
             {
-                emptyState = ComponentState.Failed;
-                Note(CleanupComponents.DomainEmpty, emptyState, "domain still populated");
+                emptyState = ComponentState.Unknown;
+                Note(CleanupComponents.DomainEmpty, emptyState,
+                    "fallback observation still populated");
             }
             else
             {
                 emptyState = ComponentState.Unknown;
-                Note(CleanupComponents.DomainEmpty, emptyState, population.Error);
+                Note(CleanupComponents.DomainEmpty, emptyState, fallback.Error);
             }
         }
 
@@ -380,8 +562,7 @@ internal sealed class Reconciler
                 Note(CleanupComponents.Staging, stagingState, "all staging allocations cleaned");
                 if (!TryPersist(bits, record.Cleanup, out var persistError))
                 {
-                    finalizationFailed = true;
-                    finalizationDetail = $"staging progress persistence failed: {persistError}";
+                    NoteProgressFailure("staging", persistError);
                 }
             }
         }
@@ -404,8 +585,7 @@ internal sealed class Reconciler
                 Note(CleanupComponents.DomainRemoval, removalState, "removed");
                 if (!TryPersist(bits, record.Cleanup, out var persistError))
                 {
-                    finalizationFailed = true;
-                    finalizationDetail = $"removal progress persistence failed: {persistError}";
+                    NoteProgressFailure("removal", persistError);
                 }
             }
             else if (removal.Refused)
@@ -420,56 +600,98 @@ internal sealed class Reconciler
             }
         }
 
-        // JournalFinalization + truthful aggregation.
+        // JournalFinalization + truthful aggregation. Operation failures and
+        // persistence uncertainty stay separate: a known component failure is
+        // never hidden, and persistence uncertainty alone never becomes an
+        // invented operation failure or a fabricated confirmation.
         var finalizationState = ComponentState.Pending;
         var required = new[] { stopState, emptyState, stagingState, removalState };
+        var componentFailed = required.Any(s => s == ComponentState.Failed);
+        var componentUnknown = required.Any(s => s == ComponentState.Unknown);
+
         OwnershipCleanupState verdict;
-        ReconcileOutcome outcome;
-        string detail;
-        if (required.Any(s => s == ComponentState.Failed) || finalizationFailed)
+        string componentDetail;
+        if (componentFailed)
         {
             verdict = OwnershipCleanupState.Failed;
-            outcome = ReconcileOutcome.Failed;
-            detail = finalizationFailed && !required.Any(s => s == ComponentState.Failed)
-                ? finalizationDetail
-                : "one or more required cleanup components failed";
+            componentDetail = "one or more required cleanup components failed";
         }
-        else if (required.Any(s => s == ComponentState.Unknown))
+        else if (componentUnknown || journalProgressUncertain)
         {
             verdict = OwnershipCleanupState.Unknown;
-            outcome = ReconcileOutcome.QuarantinedUnknown;
-            detail = "required cleanup state cannot be established";
+            componentDetail = journalProgressUncertain
+                ? journalProgressDetail
+                : "required cleanup state cannot be established";
         }
         else
         {
             verdict = OwnershipCleanupState.Confirmed;
-            outcome = ReconcileOutcome.CleanupConfirmed;
-            detail = "all required cleanup components confirmed";
+            componentDetail = "all required cleanup components confirmed";
         }
 
+        ReconcileOutcome outcome;
+        string detail;
         if (journal is null || writer is null)
         {
             finalizationState = ComponentState.Unknown;
-            Note(CleanupComponents.JournalFinalization, finalizationState, "persistence uncertainty: no writer lease supplied");
-            if (outcome == ReconcileOutcome.CleanupConfirmed)
-            {
-                outcome = ReconcileOutcome.QuarantinedUnknown;
-                detail = "operations confirmed but persistence unavailable; explicit Unknown";
-            }
+            Note(CleanupComponents.JournalFinalization, finalizationState,
+                "persistence uncertainty: no writer lease supplied");
+            outcome = componentFailed ? ReconcileOutcome.Failed : ReconcileOutcome.QuarantinedUnknown;
+            detail = componentFailed
+                ? $"{componentDetail}; durable finalization unavailable"
+                : "operations concluded but persistence unavailable; explicit Unknown";
         }
         else if (TryPersist(bits, verdict, out var finalError))
         {
-            finalizationState = ComponentState.Confirmed;
-            Note(CleanupComponents.JournalFinalization, finalizationState, "progress persisted");
+            if (journalProgressUncertain)
+            {
+                finalizationState = ComponentState.Unknown;
+                Note(CleanupComponents.JournalFinalization, finalizationState,
+                    $"persistence uncertain: {journalProgressDetail}");
+                outcome = componentFailed ? ReconcileOutcome.Failed : ReconcileOutcome.QuarantinedUnknown;
+                detail = componentFailed
+                    ? $"{componentDetail}; {journalProgressDetail}"
+                    : journalProgressDetail;
+            }
+            else
+            {
+                finalizationState = ComponentState.Confirmed;
+                Note(CleanupComponents.JournalFinalization, finalizationState, "progress persisted");
+                outcome = verdict switch
+                {
+                    OwnershipCleanupState.Failed => ReconcileOutcome.Failed,
+                    OwnershipCleanupState.Confirmed => ReconcileOutcome.CleanupConfirmed,
+                    _ => ReconcileOutcome.QuarantinedUnknown,
+                };
+                detail = componentDetail;
+            }
         }
         else
         {
-            finalizationState = ComponentState.Failed;
-            Note(CleanupComponents.JournalFinalization, finalizationState, $"persistence failed: {finalError}");
-            outcome = ReconcileOutcome.Failed;
-            detail = $"cleanup progress persistence failed distinctly from operations: {finalError}";
+            finalizationState = ComponentState.Unknown;
+            Note(CleanupComponents.JournalFinalization, finalizationState,
+                $"persistence failed: {finalError}");
+            outcome = componentFailed ? ReconcileOutcome.Failed : ReconcileOutcome.QuarantinedUnknown;
+            detail = componentFailed
+                ? $"{componentDetail}; final journal write failed: {finalError}"
+                : $"cleanup persistence failed without an operation failure: {finalError}";
         }
 
         return new ReconcileResult(outcome, detail, destructive, outcomes);
     }
 }
+
+#if GAGAMBA_WP05_D6_4_TEST_FIXTURE
+/// <summary>D6.4 fixed test-only fixture. It accepts no caller-supplied
+/// result, delegate or payload and can only express a kill that was never
+/// attempted with no population observation. Everything else in the shared
+/// Reconciler path remains production source.</summary>
+internal sealed class NotAttemptedStopTestFixture
+{
+    internal StopOutcome CreateOutcome() => new(
+        KillDispatchOutcome.NotAttempted,
+        StopPopulationObservation.NotObserved,
+        TimedOut: false,
+        Error: "D6.4 test fixture");
+}
+#endif

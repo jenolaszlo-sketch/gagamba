@@ -155,11 +155,7 @@ internal sealed class OwnerSafetyMonitor : IDisposable
         }
         catch { AcceptStop(StopCauseKind.SetupFault); }
     }
-    internal static long Now()
-    {
-        var ticks=Stopwatch.GetTimestamp(); return ticks/Stopwatch.Frequency*1_000_000_000L
-            +ticks%Stopwatch.Frequency*1_000_000_000L/Stopwatch.Frequency;
-    }
+    internal static long Now() => MonotonicTime.NowNanoseconds();
     public void Dispose()
     {
         // Keep native monitoring active while the arbiter settles its durable stop. If disk I/O

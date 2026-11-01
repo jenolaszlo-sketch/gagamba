@@ -8,13 +8,59 @@ using Gagamba.Execution.Linux.M1.Native;
 
 namespace Gagamba.Execution.Linux.M1.Lifecycle;
 
-internal readonly record struct StopOutcome(bool Stopped, bool TimedOut, string Error)
+/// <summary>Typed kill-dispatch outcome. <see cref="Failed"/> is a definitive
+/// operation failure; <see cref="Unknown"/> means dispatch could not be
+/// proven either way; <see cref="NotAttempted"/> means the bounded stop never
+/// dispatched a kill (for example a fixture substitution or a path that
+/// only observes population).</summary>
+internal enum KillDispatchOutcome : byte
 {
-    internal static StopOutcome Success { get; } = new(true, false, string.Empty);
+    NotAttempted = 0,
+    Failed = 1,
+    Accepted = 2,
+    Unknown = 3,
+}
 
-    internal static StopOutcome Timeout(string error) => new(false, true, error);
+/// <summary>Typed population observation for the stop result. A timeout and an
+/// unavailable observation are distinct facts.</summary>
+internal enum StopPopulationObservation : byte
+{
+    NotObserved = 0,
+    Unknown = 1,
+    Populated = 2,
+    Empty = 3,
+}
 
-    internal static StopOutcome Failure(string error) => new(false, false, error);
+/// <summary>Typed stop result. <see cref="Error"/> is diagnostic text only;
+/// classification never parses it. <see cref="Stopped"/> is true only for an
+/// accepted kill dispatch plus a confirmed-empty observation.</summary>
+internal readonly record struct StopOutcome(
+    KillDispatchOutcome Kill,
+    StopPopulationObservation Population,
+    bool TimedOut,
+    string Error)
+{
+    internal bool Stopped =>
+        Kill == KillDispatchOutcome.Accepted
+        && Population == StopPopulationObservation.Empty;
+
+    internal static StopOutcome Success { get; } = new(
+        KillDispatchOutcome.Accepted,
+        StopPopulationObservation.Empty,
+        TimedOut: false,
+        Error: string.Empty);
+
+    internal static StopOutcome Timeout(string error) => new(
+        KillDispatchOutcome.Accepted,
+        StopPopulationObservation.Populated,
+        TimedOut: true,
+        error);
+
+    internal static StopOutcome Failure(string error) => new(
+        KillDispatchOutcome.Failed,
+        StopPopulationObservation.NotObserved,
+        TimedOut: false,
+        error);
 }
 
 internal readonly record struct IdentityCheck(bool Match, string Error)
@@ -33,9 +79,13 @@ internal readonly record struct RemovalOutcome(bool Removed, bool Refused, strin
     internal static RemovalOutcome Failure(string error) => new(false, false, error);
 }
 
-/// <summary>Bounded monotonic clock and sleeper for stop/observe loops.</summary>
+/// <summary>Bounded monotonic clock and sleeper for stop/observe loops. The
+/// declared basis distinguishes the shared durable timestamp epoch from an
+/// incompatible construction-relative clock.</summary>
 internal interface IDomainClock
 {
+    MonotonicClockBasis Basis { get; }
+
     long NowNanoseconds { get; }
 
     void Delay(TimeSpan duration);
@@ -104,8 +154,23 @@ internal sealed class DomainLease : IDisposable
         : _backend.ReadPopulation();
 
     /// <summary>Whole-domain stop: kill through the retained handle, then
-    /// bounded poll of the retained events handle for populated=0.</summary>
+    /// bounded poll of the retained events handle for populated=0. The
+    /// nanosecond overload is used by C3 deadline arithmetic so the durable
+    /// remaining interval is never round-tripped through a double. A zero
+    /// budget still performs the identity-checked kill and exactly one
+    /// immediate population observation (Policy A).</summary>
     internal StopOutcome StopAndAwaitEmpty(TimeSpan timeout, IDomainClock clock)
+    {
+        if (timeout < TimeSpan.Zero)
+        {
+            return StopOutcome.Failure("negative stop allowance refused");
+        }
+
+        var budget = (long)(timeout.TotalSeconds * 1_000_000_000d);
+        return StopAndAwaitEmpty(budget, clock);
+    }
+
+    internal StopOutcome StopAndAwaitEmpty(long budgetNanoseconds, IDomainClock clock)
     {
         ArgumentNullException.ThrowIfNull(clock);
         if (_disposed)
@@ -113,19 +178,51 @@ internal sealed class DomainLease : IDisposable
             return StopOutcome.Failure("lease disposed; no stop authority");
         }
 
+        if (budgetNanoseconds < 0)
+        {
+            return StopOutcome.Failure("negative stop allowance refused");
+        }
+
         var kill = _backend.WriteKill();
         if (!kill.Ok)
         {
-            return StopOutcome.Failure(kill.Error);
+            return kill.DispatchUnproven
+                ? new StopOutcome(
+                    KillDispatchOutcome.Unknown,
+                    StopPopulationObservation.NotObserved,
+                    TimedOut: false,
+                    kill.Error)
+                : StopOutcome.Failure(kill.Error);
         }
 
-        var deadline = clock.NowNanoseconds + (long)(timeout.TotalSeconds * 1_000_000_000d);
+        long deadline;
+        try
+        {
+            checked { deadline = clock.NowNanoseconds + budgetNanoseconds; }
+        }
+        catch (OverflowException)
+        {
+            // The kill was dispatched; its outcome is real. Only the wait
+            // budget is unrepresentable, so report an uncertain observation.
+            return new StopOutcome(
+                KillDispatchOutcome.Accepted,
+                StopPopulationObservation.Unknown,
+                TimedOut: false,
+                "stop allowance arithmetic overflowed");
+        }
+
         while (true)
         {
             var population = _backend.ReadPopulation();
             if (!population.Known)
             {
-                return StopOutcome.Failure(population.Error);
+                // Observation unavailable is uncertainty, never a proven kill
+                // failure and never confirmed emptiness.
+                return new StopOutcome(
+                    KillDispatchOutcome.Accepted,
+                    StopPopulationObservation.Unknown,
+                    TimedOut: false,
+                    population.Error);
             }
 
             if (population.Empty)

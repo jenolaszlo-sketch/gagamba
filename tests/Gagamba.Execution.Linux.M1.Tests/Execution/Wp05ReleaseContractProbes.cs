@@ -277,7 +277,7 @@ public sealed class Wp05ReleaseContractProbes
     }
 
     [Fact]
-    public void ReconcilerUsesCallerAllowanceAfterPersistedStopDeadlineExpired()
+    public void ReconcilerConsumesPersistedStopDeadlineAndAppliesPolicyAWhenExpired()
     {
         var acceptedAt = 1_000L;
         var start = acceptedAt + OwnershipSnapshotCodec.StopConfirmationAllowanceNanoseconds + 1;
@@ -291,9 +291,17 @@ public sealed class Wp05ReleaseContractProbes
 
         var result = reconciler.Reconcile(record, "boot-1", lease, null, null, null);
 
-        Assert.True(clock.NowNanoseconds - start >= 5_000_000_000L);
-        Assert.True(backend.KillWrites > 0);
+        // C3 remediation of the former D2 baseline: the expired durable
+        // deadline authorises one immediate identity-checked kill and one
+        // population observation, never a fresh caller allowance.
+        Assert.Equal(0, clock.NowNanoseconds - start);
+        Assert.Equal(0, clock.Delays);
+        Assert.Equal(1, backend.WriteKillCalls);
+        Assert.Equal(1, backend.ReadPopulationCalls);
         Assert.NotEqual(ReconcileOutcome.CleanupConfirmed, result.Outcome);
+        Assert.Equal(ReconcileOutcome.QuarantinedUnknown, result.Outcome);
+        Assert.Equal(ComponentState.Unknown,
+            Assert.Single(result.Components!, c => c.Component == CleanupComponents.DomainStop).State);
     }
 
     [Fact]

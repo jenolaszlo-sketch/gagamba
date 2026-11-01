@@ -1105,12 +1105,7 @@ internal sealed class M1RecoveryScope : IDisposable
         && left.PreparationId == right.PreparationId
         && left.ManifestDigest.AsSpan().SequenceEqual(right.ManifestDigest);
 
-    private static long MonotonicNowNanoseconds()
-    {
-        var timestamp = Stopwatch.GetTimestamp();
-        return (timestamp / Stopwatch.Frequency * 1_000_000_000L)
-            + (timestamp % Stopwatch.Frequency * 1_000_000_000L / Stopwatch.Frequency);
-    }
+    private static long MonotonicNowNanoseconds() => MonotonicTime.NowNanoseconds();
 
     private static void CloseReceived(IEnumerable<int> descriptors)
     {

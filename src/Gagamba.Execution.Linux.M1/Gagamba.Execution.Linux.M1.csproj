@@ -7,8 +7,19 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
+  <!-- WP05 D6.5/D6.6 test-variant carrier. The carrier is supplied only by the
+       dedicated D6_4.Tests project reference; normal production M1 never
+       evaluates this group and never receives the fixture symbol. -->
+  <PropertyGroup Condition="'$(GagambaWp05D64FixtureEnabled)' == 'true'">
+    <DefineConstants>$(DefineConstants);GAGAMBA_WP05_D6_4_TEST_FIXTURE</DefineConstants>
+    <!-- The variant moves its intermediate directory, so exclude any
+         production obj/bin generated sources from the default compile glob. -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);obj/**;bin/**</DefaultItemExcludes>
+  </PropertyGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\Gagamba.Execution\Gagamba.Execution.csproj" />
+    <ProjectReference Include="..\Gagamba.Execution\Gagamba.Execution.csproj"
+                      GlobalPropertiesToRemove="AssemblyName;DefineConstants;BaseIntermediateOutputPath;MSBuildProjectExtensionsPath;BaseOutputPath;IsPackable;GagambaWp05D64FixtureEnabled" />
   </ItemGroup>
 
 </Project>

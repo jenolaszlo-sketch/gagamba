@@ -806,7 +806,7 @@ internal sealed class B3PreparationOwner : IRestrictedOperationOwner, IDisposabl
         {
             var lease = _scope!.RetainedRecoveryLeases.Count == 1 ? _scope.RetainedRecoveryLeases[0] : null;
             var cleaner = BuildCleaner();
-            var reconciler = new Reconciler(new RealDomainClock(), TimeSpan.FromSeconds(5));
+            var reconciler = new Reconciler(StopwatchDomainClock.Instance, TimeSpan.FromSeconds(5));
             var result = reconciler.Reconcile(read.Snapshot, bootId, lease, cleaner, _journal, writer);
             return new RestrictedCleanup(
                 Component(result, CleanupComponents.DomainEmpty),
@@ -941,21 +941,10 @@ internal sealed class B3PreparationOwner : IRestrictedOperationOwner, IDisposabl
             RestrictedDelivery.NotAttempted, RestrictedEvidenceState.Unknown, null,
             RestrictedRequestBinding.Unknown, reason);
 
-    private static long MonotonicNowNanoseconds()
-    {
-        var timestamp = Stopwatch.GetTimestamp();
-        return (timestamp / Stopwatch.Frequency * 1_000_000_000L)
-            + (timestamp % Stopwatch.Frequency * 1_000_000_000L / Stopwatch.Frequency);
-    }
+    private static long MonotonicNowNanoseconds() => MonotonicTime.NowNanoseconds();
 
     public void Dispose() => DisposeCore();
 
-    private sealed class RealDomainClock : IDomainClock
-    {
-        public long NowNanoseconds => MonotonicNowNanoseconds();
-
-        public void Delay(TimeSpan duration) => Thread.Sleep(duration);
-    }
 }
 
 /// <summary>Identity-checked staging cleanup over the recovery scope's
