@@ -1,0 +1,242 @@
+{
+  "source_commit": "0bf045d0ec3e4cb560edb2bc3b4e7065efaa7b9c",
+  "source_tree": "80d138f81c82b61243e23c0865eb6a1ca516cc54",
+  "matrix_cases": 32,
+  "matrix_passed": 32,
+  "cleanup_confirmed": 20,
+  "cleanup_unknown": 12,
+  "cleanup_confirmed_cases": [
+    "actual-recovery-release-impersonation",
+    "blocked-observer-native-stop",
+    "controller-during-preparation",
+    "controller-release-race",
+    "controller-sigkill-after-release",
+    "controller-sigkill-held",
+    "integrated-lost-release-ack",
+    "integrated-original-deadline",
+    "integrated-owner-live-takeover-refusal",
+    "integrated-post-exit-writer-fence",
+    "integrated-stop-after-intent-before-write",
+    "integrated-stop-before-mint",
+    "lost-retention-ack",
+    "owner-after-intent",
+    "owner-ambiguous-delivery",
+    "owner-mid-staging",
+    "owner-sigkill-after-release",
+    "owner-sigkill-held",
+    "positive-one-release",
+    "stop-before-release"
+  ],
+  "cleanup_unknown_cases": [
+    "controller-before-preparation",
+    "integrated-ambiguous-intent",
+    "missing-domain-ack",
+    "missing-staging-ack",
+    "owner-before-retention",
+    "partial-scm-rights",
+    "recovery-release-race",
+    "recovery-retention-death",
+    "recovery-sigkill-after-release",
+    "recovery-sigkill-held",
+    "simultaneous-controller-recovery-death",
+    "wrong-descriptor-role-count"
+  ],
+  "preserved_unknown_must_remain_unknown": {
+    "missing-domain-ack": "Unknown",
+    "missing-staging-ack": "Unknown"
+  },
+  "cases": [
+    {
+      "case": "actual-recovery-release-impersonation",
+      "status": "Passed",
+      "cleanup": "Confirmed",
+      "error": ""
+    },
+    {
+      "case": "blocked-observer-native-stop",
+      "status": "Passed",
+      "cleanup": "Confirmed",
+      "error": ""
+    },
+    {
+      "case": "controller-before-preparation",
+      "status": "Passed",
+      "cleanup": "Unknown",
+      "error": ""
+    },
+    {
+      "case": "controller-during-preparation",
+      "status": "Passed",
+      "cleanup": "Confirmed",
+      "error": ""
+    },
+    {
+      "case": "controller-release-race",
+      "status": "Passed",
+      "cleanup": "Confirmed",
+      "error": ""
+    },
+    {
+      "case": "controller-sigkill-after-release",
+      "status": "Passed",
+      "cleanup": "Confirmed",
+      "error": ""
+    },
+    {
+      "case": "controller-sigkill-held",
+      "status": "Passed",
+      "cleanup": "Confirmed",
+      "error": ""
+    },
+    {
+      "case": "integrated-ambiguous-intent",
+      "status": "Passed",
+      "cleanup": "Unknown",
+      "error": ""
+    },
+    {
+      "case": "integrated-lost-release-ack",
+      "status": "Passed",
+      "cleanup": "Confirmed",
+      "error": ""
+    },
+    {
+      "case": "integrated-original-deadline",
+      "status": "Passed",
+      "cleanup": "Confirmed",
+      "error": ""
+    },
+    {
+      "case": "integrated-owner-live-takeover-refusal",
+      "status": "Passed",
+      "cleanup": "Confirmed",
+      "error": ""
+    },
+    {
+      "case": "integrated-post-exit-writer-fence",
+      "status": "Passed",
+      "cleanup": "Confirmed",
+      "error": ""
+    },
+    {
+      "case": "integrated-stop-after-intent-before-write",
+      "status": "Passed",
+      "cleanup": "Confirmed",
+      "error": ""
+    },
+    {
+      "case": "integrated-stop-before-mint",
+      "status": "Passed",
+      "cleanup": "Confirmed",
+      "error": ""
+    },
+    {
+      "case": "lost-retention-ack",
+      "status": "Passed",
+      "cleanup": "Confirmed",
+      "error": ""
+    },
+    {
+      "case": "missing-domain-ack",
+      "status": "Passed",
+      "cleanup": "Unknown",
+      "error": ""
+    },
+    {
+      "case": "missing-staging-ack",
+      "status": "Passed",
+      "cleanup": "Unknown",
+      "error": ""
+    },
+    {
+      "case": "owner-after-intent",
+      "status": "Passed",
+      "cleanup": "Confirmed",
+      "error": ""
+    },
+    {
+      "case": "owner-ambiguous-delivery",
+      "status": "Passed",
+      "cleanup": "Confirmed",
+      "error": ""
+    },
+    {
+      "case": "owner-before-retention",
+      "status": "Passed",
+      "cleanup": "Unknown",
+      "error": ""
+    },
+    {
+      "case": "owner-mid-staging",
+      "status": "Passed",
+      "cleanup": "Confirmed",
+      "error": ""
+    },
+    {
+      "case": "owner-sigkill-after-release",
+      "status": "Passed",
+      "cleanup": "Confirmed",
+      "error": ""
+    },
+    {
+      "case": "owner-sigkill-held",
+      "status": "Passed",
+      "cleanup": "Confirmed",
+      "error": ""
+    },
+    {
+      "case": "partial-scm-rights",
+      "status": "Passed",
+      "cleanup": "Unknown",
+      "error": ""
+    },
+    {
+      "case": "positive-one-release",
+      "status": "Passed",
+      "cleanup": "Confirmed",
+      "error": ""
+    },
+    {
+      "case": "recovery-release-race",
+      "status": "Passed",
+      "cleanup": "Unknown",
+      "error": ""
+    },
+    {
+      "case": "recovery-retention-death",
+      "status": "Passed",
+      "cleanup": "Unknown",
+      "error": ""
+    },
+    {
+      "case": "recovery-sigkill-after-release",
+      "status": "Passed",
+      "cleanup": "Unknown",
+      "error": ""
+    },
+    {
+      "case": "recovery-sigkill-held",
+      "status": "Passed",
+      "cleanup": "Unknown",
+      "error": ""
+    },
+    {
+      "case": "simultaneous-controller-recovery-death",
+      "status": "Passed",
+      "cleanup": "Unknown",
+      "error": ""
+    },
+    {
+      "case": "stop-before-release",
+      "status": "Passed",
+      "cleanup": "Confirmed",
+      "error": ""
+    },
+    {
+      "case": "wrong-descriptor-role-count",
+      "status": "Passed",
+      "cleanup": "Unknown",
+      "error": ""
+    }
+  ]
+}

@@ -1,5 +1,12 @@
 # Current work queue
 
+> **B5 IMPLEMENTED WITH QUALIFICATIONS — READY FOR INDEPENDENT C3 SECURITY REVIEW (2026-11-01).**
+> Authorization GAGAMBA-RC2B-05-B5-IMPL-01 from canonical `e7818b5a876c220cb4f803b6cc1f9c55027d3c66`; [source-bound evidence](evidence/rc2b-05-b5-impl-01.md); tested implementation `0bf045d0ec3e4cb560edb2bc3b4e7065efaa7b9c`, tree `80d138f81c82b61243e23c0865eb6a1ca516cc54`.
+> The durable C3 contract is implemented: sealed `StopwatchDomainClock`, checked remaining-time derivation from the immutable `StopRecord`, Policy A zero-wait expiry behaviour, typed kill/population outcomes, truthful component/aggregate cleanup precedence, and the D6.4 R1-T13–T15 fixture variant.
+> Failing-before **200 fresh polls vs 0**; Windows M1 **1050/0/269**, B5 focused **61/61**, D6.4 **3/3**, solution build 0/0, `eng/tests` **35/35**.
+> WSL2 B5 **61/61**, D6.4 **3/3**, NonRoot integrated **33/33**, full INT-01 **32/32**, cleanup **20 Confirmed / 12 Unknown** with both named cases Unknown. Pre-existing native skips (root-probe harness, absent B2 install closure, explicit INT-01 primitive profile) remain disclosed as skips.
+> C1–C4, INT-01, B4 and B4Q1-F01-R2 preserved; no schema/public-API/release-authority change. B5 is not owner-accepted; independent review is required. B6/B7, Hufu, VM/HCS, native Linux/macOS, packages and production remain gated. Historical blocks below are unchanged.
+
 > **B4Q1-F01-R2 COMPLETE — STRICT CLEANUP TYPES (2026-10-31).**
 > [Source-bound evidence](evidence/rc2b-04-b4-q1f01-r2-cleanup-type-hardening.md); tested implementation `0e89cc710fb235569191baf44d9188eda8c9f9a8`, tree `4caf454100cbcc3999467d55b95bbc7c564c0766`, from `9bae9a724aea54710a80527a9404b62cdc224882`.
 > `classify_dispose` now requires an exact integer live state `1`; both classification entry points apply the shared strict durable-verdict validator. Boolean, float, string, null and malformed values cannot confirm cleanup; evidence fields and `Confirmed`/`Unknown` vocabulary are unchanged.
