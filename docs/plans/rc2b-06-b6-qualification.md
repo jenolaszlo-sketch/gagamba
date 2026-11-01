@@ -24,6 +24,11 @@ document. Implementation is not authorized.
 - .NET 10.0.x host/hostfxr/shared framework matching the installed pin.
 - glibc >= 2.43 (atomic `posix_spawnattr_setcgroup_np`), `openat2`, `pidfd_*`,
   `SO_PEERPIDFD`, `PR_SET_CHILD_SUBREAPER`, user namespaces, seccomp.
+- **Native runtime dependencies (remediation for B6-Q1-F04):** ICU (if non-invariant
+  globalization), OpenSSL 3.0+ (`libssl3`/`libcrypto3`), zlib 1.2.11+ (`libz1g`);
+  minimum versions recorded in manifest/platform baseline. Invariant globalization
+  (`DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1`) is the recommended B6 configuration
+  to eliminate ICU as a conditional dependency.
 - Root (`sudo`) available **inside the disposable WSL2 instance** for the
   root-owned install. If it is not available, the native `Qualified` portions
   are `Pending`, not `Passed` (HD-1).
@@ -405,6 +410,140 @@ limitations/skips.
 - **Retain:** missing/unreadable evidence, refusal.
 - **Limits:** none.
 
+### B6-T20a — Native runtime dependency closure (remediation for B6-Q1-F04)
+
+- **Positive control:** Exact pinned runtime with invariant globalization
+  (`DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1`); `ldd` on all runtime `.so` files
+  shows no ICU dependency; `ldd` on `System.Net.Security.Native.so` shows
+  `libssl3`/`libcrypto3`; `ldd` on `System.IO.Compression.Native.so` shows
+  `libz`.
+- **Static inspection subcase (V):** `ldd`/`readelf -d` on every runtime `.so`,
+  `GlobalizationNative.so`, `System.Net.Security.Native.so`,
+  `System.IO.Compression.Native.so`; record every `NEEDED` entry and resolved
+  path; verify all are either in the pinned runtime directory or are qualified
+  platform-baseline libraries (glibc, libssl3, libcrypto3, libz) with minimum
+  versions recorded in the manifest.
+- **Runtime observation subcase (N):** Launch a minimal test process under the
+  pinned runtime with cleared environment; capture `/proc/<pid>/maps` and
+  `ldd -v`; verify no unexpected libraries loaded; verify ICU is not mapped when
+  invariant mode is set.
+- **Controlled substitution subcase (N-root):** In a test generation, replace the
+  pinned runtime directory with a version having a different OpenSSL dependency
+  (e.g., OpenSSL 1.1.1 vs 3.0); verify admission refuses with
+  `RuntimeDependencyMissing` or `UnqualifiedInstallation`.
+- **Missing-library subcase (N-root):** Temporarily remove `libicuuc.so` (if
+  non-invariant) or `libssl3.so` in the disposable instance; verify runtime
+  fails to start and verifier records the missing dependency.
+- **Roll-forward subcase (V+N):** Verify `DOTNET_ROLL_FORWARD=LatestPatch` with
+  the pinned runtime directory does not resolve to a different patch with
+  different native dependencies.
+- **Expected:** Every required native loader input has a named
+  application-artifact or qualified-platform-baseline disposition; conditional
+  dependencies (ICU) have explicit activation and verification rules; admission
+  refuses unsupported/substituted versions.
+- **Phase:** describe/create/spawn.
+- **Observation:** Static `ldd` inventory, runtime `/proc/<pid>/maps`, substitution
+  refusal, missing-library failure, roll-forward verification.
+- **Negative evidence:** No unexpected library loads; no admission with
+  mismatched dependencies.
+- **Native:** Required (V + N + N-root); static inspection is mandatory;
+  runtime observation covers the supported feature surface.
+- **Retain:** `ldd`/`readelf` output, `/proc/<pid>/maps`, refusal logs, platform
+  baseline versions in manifest.
+- **Limits:** If invariant globalization is not selected, ICU version becomes a
+  mandatory platform-baseline entry; the qualification record must list it as a
+  limitation.
+
+### B6-T20b — Installation-identity handshake verification (remediation for B6-Q1-F07)
+
+- **Positive control:** Full integrated bootstrap with `RecoveryConfigV2`; both
+  recovery and owner send installation echoes; controller verifies and proceeds
+  to HELD.
+- **Mutation subcases (N):**
+  1. **Recovery echo mismatch:** Recovery sends wrong `ArtifactSetSha256` or
+     `RecoveryClosureSha256`; controller responds `Success=0`; recovery exits
+     without `Ready`; no domain created.
+  2. **Owner echo mismatch:** Owner sends wrong `OwnerClosureSha256`; controller
+     does not send `OwnerStartAuthority`; owner exits; no domain created.
+  3. **Protocol version mismatch:** `RecoveryConfigV2` declares `OwnerProtocol=2`
+     but owner binary is v1; handshake refuses at echo or `OwnerStartAuthority`.
+  4. **Generation mismatch:** Controller `active` points to generation B; recovery
+     started under generation A sends echo with generation A; controller mismatches
+     and aborts.
+  5. **Missing echo:** Recovery/owner fails to send echo within 5s timeout;
+     controller aborts.
+  6. **Replay attack:** Replay a previous generation's echo; controller rejects
+     on `Generation` mismatch.
+  7. **Recovery never gets release:** Verify recovery process never receives
+     `ReleaseRequest` frame or RELEASE writer fd; `RecoveryObligation.ReleaseAuthority`
+     remains `false`.
+- **Expected:** Every wire detail (message IDs, payload bounds, sequence,
+  direction, channel, timeout, mismatch behavior) is exercised; no critical
+  detail is deferred; handshake is implementable and testable from exact
+  definitions.
+- **Phase:** spawn/handshake/HELD.
+- **Observation:** Frame captures (stdout/stdin fd exchanges), echo payloads,
+  controller decisions, process exits, journal.
+- **Negative evidence:** No HELD, no RELEASE, no domain on any mismatch.
+- **Native:** Required (N) with test-only mismatch builds.
+- **Retain:** Frame captures, echo payloads, refusal logs, process/journal inventory.
+- **Limits:** Message IDs `RecoveryMessageType=6,7` and `OwnerProtocolMessageType=8`
+  are new allocations; verify no collision with existing namespace.
+
+### B6-T20c — Qualification record association determinism (remediation for B6-Q1-F13)
+
+- **Positive control:** Fresh install with accepted qualification record; receipt
+  has `qualificationId` and `qualificationRecordSha256`; record matches on all
+  fields; descriptor reports `Qualified`.
+- **Mutation subcases (V + N):**
+  1. **Fresh install, no qualification record:** Receipt has `expectedDigestSource="unverified-candidate"`,
+     `qualificationId=null`; descriptor reports `Installed/Unqualified` (not
+     `Qualified`).
+  2. **Missing referenced record:** Receipt points to `qualificationId="Q1"` but
+     `/opt/gagamba/qualifications/Q1.json` does not exist; descriptor
+     `Unqualified`.
+  3. **Record hash mismatch:** Record file exists but SHA-256 ≠
+     `qualificationRecordSha256`; descriptor `Unqualified`.
+  4. **Multiple candidate records:** Create `Q1.json` and `Q2.json` both with
+     same `artifactSetSha256`; receipt points to `Q1`; only `Q1` is evaluated;
+     `Q2` ignored (no directory search).
+  5. **Stale/superseded qualification:** Receipt points to `Q1` (old scope); new
+     `Q2` exists with broader scope; only `Q1` evaluated; if `Q1` scope doesn't
+     match manifest → `Unqualified`.
+  6. **Record for another digest:** Record `artifactSetSha256` ≠ `active`;
+     `Unqualified`.
+  7. **Record for another RID/profile:** Record `rid=linux-arm64` or
+     `profileId=other`; manifest mismatch → `Unqualified`.
+  8. **Unaccepted producer evidence:** Record lacks `acceptedAtUtc` or has
+     `acceptedAtUtc` from non-trusted source; `Unqualified`.
+  9. **Conflicting metadata:** Record `Qualified=true` but `buildConfiguration="Test"`;
+     `Unqualified`.
+- **Expected:** Verifier has one unambiguous, fail-closed rule for selecting and
+  validating the associated qualification record (by `qualificationId` from
+  receipt, not search). Qualification acceptance remains separate from file
+  integrity.
+- **Phase:** describe/create.
+- **Observation:** Verifier selection logic, receipt/record field comparison,
+  descriptor state.
+- **Negative evidence:** No `Qualified` state in any mismatch case.
+- **Native:** Deterministic V required; native N for fresh install with record.
+- **Retain:** Receipt/record pairs, verifier decision logs, descriptor outputs.
+- **Limits:** None.
+
+### B6-T20 — Installation verification unavailable
+
+- **Positive control:** readable anchor.
+- **Mutation:** remove `active`, receipt, manifest or qualification record; make
+  them unreadable; make the trust directory inaccessible.
+- **Expected:** fail closed; `Unavailable`/`Unqualified`; no optimistic
+  descriptor; no operation.
+- **Phase:** describe/create.
+- **Observation:** verifier error, descriptor, refusal.
+- **Negative evidence:** no process/domain.
+- **Native:** deterministic V + native N.
+- **Retain:** missing/unreadable evidence, refusal.
+- **Limits:** none.
+
 ### B6-T21 — Malformed or self-asserted trust metadata
 
 - **Positive control:** canonical manifest/receipt/qualification.
@@ -450,40 +589,113 @@ limitations/skips.
 - **Retain:** missing-member evidence, refusal.
 - **Limits:** the test build is test-only.
 
-### B6-T24 — Fault-injection/test variant in ordinary installation
+### B6-T24 — Production/test separation and fault-injection exclusion (remediation for B6-Q1-F02)
 
-- **Positive control:** production candidate without test symbols/assemblies.
-- **Mutation:** install D6.4 `Gagamba.Execution.Linux.M1.TestFixture`, a build
-  with `GAGAMBA_WP05_D6_4_TEST_FIXTURE`, `Int01QualificationFault`, synthetic
-  clocks, or a test-only friend assembly.
-- **Expected:** excluded or refused; never selected; no production authority;
-  relabeling the descriptor does not promote it.
-- **Phase:** install/describe/create.
-- **Observation:** assembly names/symbols/role/hash deny list, refusal.
-- **Negative evidence:** no test variant process/domain.
-- **Native:** deterministic V + native N.
-- **Retain:** variant identity, refusal.
-- **Limits:** none.
+- **Positive control:** Production candidate built under `Production` configuration
+  (`GAGAMBA_PRODUCTION` defined), which excludes all qualification-only types and
+  members from `Gagamba.Execution.Linux.M1.dll`.
+- **Verification subcase V (deterministic):** Load the production assembly via
+  reflection; assert that none of the following types/members exist:
+  - `Int01QualificationFault`, `Int01Qualification`
+  - `OwnerSafetyMonitor.QualificationNativeStop`
+  - `BubblewrapAdapter.QualificationBeforeCaptureStore`
+  - `SafeCopyIn.CopyTestHooks`, `SafeCopyIn.BarrierDeathException`
+  - `JournalFileStorage.QualificationBeforeRename`
+  - `FakeDomainClock`, `RelativeTestClock`, open `IDomainClock` constructor
+- **Mutation subcase N (native):** Install a test-configuration build (with hooks)
+  as a separate generation; verify the verifier refuses it via deny list
+  (assembly name/hash) and the descriptor reports `UnqualifiedInstallation`.
+- **Expected:** Production assembly contains no prohibited test-only
+  implementation; production execution cannot activate synthetic faults through
+  public or internal configuration; installation manifest excludes
+  qualification-only binaries; test variants remain available for deterministic
+  and native qualification under `Test` configuration; production and test
+  variants cannot be confused by artifact identity or provider selection;
+  accepted B1–B5 behavior remains correct in the production-configuration
+  candidate; native qualification evidence records `buildConfiguration:
+  "Production"`.
+- **Phase:** build/install/describe/create.
+- **Observation:** Assembly type/member inspection result, verifier refusal log,
+  descriptor state, build configuration label in qualification record.
+- **Negative evidence:** No test-only type/member in production assembly; no
+  test variant process/domain.
+- **Native:** Deterministic V + native N.
+- **Retain:** Production assembly inspection log, test variant refusal, qualification
+  record with `buildConfiguration`.
+- **Limits:** The production/test separation is a design obligation for IMPL-01;
+  this test specifies the positive control. If compile-time exclusion makes
+  existing qualification impossible, a bounded alternative (separate test adapter
+  assembly) is specified in the design and preserves testability without hooks in
+  the qualified closure.
 
-### B6-T25 — Native B2 installation closure
+### B6-T25 — Native B2 installation closure (split into T25-A and T25-B, remediation for B6-Q1-F01, B6-Q1-F05)
 
-- **Positive control:** the real installed owner/recovery/bootstrap closure
+**T25-A: Historical test accounting**
+
+- **Objective:** Identify the exact previously skipped B2 installation tests, their
+  original prerequisites, and the reason each was skipped. Preserve their
+  historical results. Do not claim that installing new artifacts automatically
+  converts those tests into valid qualified-installed-closure tests.
+- **Previously skipped cases (from `B3RestrictedLifecycleTests.cs:628–800`):**
+  1. `RecoveryConfiguration` v1 (non-integrated topology) — skipped because
+     `artifacts/b2/install` was absent (B5-L04).
+  2. `/usr/bin/dotnet` with ambient environment — legacy PATH resolution path.
+  3. `FileName="dotnet"` owner spawn — PATH fallback when no runtime pin supplied.
+  4. Non-integrated recovery bootstrap — no `RecoveryConfiguration.Integrated`.
+- **Disposition for each historical case:**
+  - Cases 1–4: **Remain legacy regressions** — they test the refused legacy path
+    (D8) and cannot pass against the qualified integrated closure. They are
+    recorded as `Skipped:LegacyPath` in the B5 evidence and are not counted as
+    B6 passes.
+  - No historical skipped case is replaced by a new equivalent test; the new
+    installed-closure tests (T25-B) are separate obligations.
+  - No adaptation under a separately authorized implementation change is needed;
+    the legacy path is explicitly refused for the qualified profile.
+  - All four cases remain **explicitly unqualified** for the B6 qualified profile.
+- **Evidence:** Exact test names, skip reasons, and source lines recorded in the
+  remediation evidence artifact.
+
+**T25-B: Actual B6 installed closure**
+
+- **Environment:** WSL2 x86-64, unprivileged user, delegated cgroup, root install
+  available; `candidate-A` installed as qualified generation.
+- **Positive control:** The real installed owner/recovery/bootstrap closure
+  (integrated `RecoveryConfiguration` v2, pinned runtime, installation identity)
   replaces the absent `artifacts/b2/install`.
-- **Mutation:** none for the positive case; separately remove one closure member
-  to prove refusal.
-- **Expected:** the previously skipped `B3RestrictedLifecycleTests` native
-  installation/topology cases run and pass against the actual installed closure;
-  no `Installation closure missing` skip; the recovery topology retains its
-  domain without release authority; cleanup is truthful.
+- **Test cases (new, mandatory, native N):**
+  1. **Integrated bootstrap with installation identity:** Controller spawns
+     recovery with `RecoveryConfigV2`; recovery verifies closure, sends
+     `InstallationEchoRequest`; controller responds; recovery sends `Ready`.
+  2. **Owner installation identity:** Owner verifies its closure, sends
+     `OwnerInstallationEcho` before `StartAuthority`; controller verifies.
+  3. **Retained authority after controller death:** Kill controller during HELD;
+     recovery retains stop/cleanup authority and installation identity; no
+     release authority reconstructed.
+  4. **Recovery without release capability:** Verify `RecoveryObligation.ReleaseAuthority => false`
+     holds under installed closure; recovery never receives RELEASE writer.
+  5. **Missing closure member refusal:** Remove one closure artifact (owner DLL,
+     recovery deps.json, coordinator, filter); verify admission refuses.
+- **Expected:** All cases pass against the actual installed closure; zero
+  installation-closure skips; recovery topology retains domain without release
+  authority; cleanup is truthful (Confirmed/Unknown per existing categories).
 - **Phase:** install/spawn/recovery.
-- **Observation:** real recovery/owner processes, retained domain, journal,
-  recovery snapshot, cleanup.
-- **Negative evidence:** zero skipped installation cases; a missing-member
-  subcase refuses.
-- **Native:** required (N), mandatory; a skip is not a pass.
-- **Retain:** install closure, test log with no skip, process/journal/cleanup.
+- **Observation:** Real recovery/owner processes, retained domain, journal,
+  recovery snapshot, cleanup, installation echo frames.
+- **Negative evidence:** Zero skipped installation cases; missing-member subcase
+  refuses with `UnqualifiedInstallation`.
+- **Native:** Required (N), mandatory; a skip is not a pass.
+- **Retain:** Install closure, test log with no skip, process/journal/cleanup,
+  echo frame captures.
 - **Limits:** WSL2 only; this closes B5-L04 for the installed profile, not native
   Linux-host qualification.
+
+**Relationship to B2/INT-01 acceptance:** T25-B does not claim byte-identical
+historical replay of the skipped B2 tests. The B2 tests exercised a legacy
+topology that the qualified profile explicitly refuses. T25-B proves the B6
+requirement directly: the installed closure supports the integrated topology
+with identity verification, retained authority, and recovery without release.
+The INT-01 acceptance (20 Confirmed / 12 Unknown) remains unchanged; T25-B
+extends it with installation identity binding.
 
 ---
 
@@ -593,11 +805,12 @@ inspected.
 
 B6 implementation/qualification is complete only when:
 
-- B6-T01–T25 are implemented with the declared deterministic/native subcases.
+- B6-T01–T25, T25-A, T25-B, T20a, T20b, T20c are implemented with the declared
+  deterministic/native subcases.
 - All mandatory native cases on the declared WSL2 x86-64 host are `Passed`;
   required cases that cannot run are `Pending` and block completion.
-- **T25 runs the actual B2 installed closure and records zero installation-closure
-  skips.**
+- **T25-B runs the actual B2 installed closure and records zero installation-closure
+  skips. T25-A accounts for historical skipped cases without counting them as passes.**
 - B6-V01–V12 pass; no required negative case is skipped.
 - The installed digest equals the qualified digest; every artifact and platform
   baseline is recorded; no test-only artifact is in the production closure.
@@ -653,8 +866,12 @@ This plan does not qualify:
 | B6-T18 | §2 T18 | N |
 | B6-T19 | §2 T19 | V + N |
 | B6-T20 | §2 T20 | V + N |
+| B6-T20a | §2 T20a | V + N + N-root |
+| B6-T20b | §2 T20b | N |
+| B6-T20c | §2 T20c | V + N |
 | B6-T21 | §2 T21 | V |
 | B6-T22 | §2 T22 | N |
 | B6-T23 | §2 T23 | V + N |
 | B6-T24 | §2 T24 | V + N |
-| B6-T25 | §2 T25 | N (mandatory, no skip) |
+| B6-T25-A | §2 T25-A | V (historical accounting) |
+| B6-T25-B | §2 T25-B | N (mandatory, no skip) |

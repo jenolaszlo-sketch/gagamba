@@ -1,10 +1,11 @@
 # Gagamba project status
 
-> **B6 SPECIFICATION COMPLETE — READY WITH QUALIFICATIONS (2026-11-01).**
-> Specification commit follows baseline `2cd8c1d716ed2e3e61156819730cd3d39e81844b` (tree `e9ed9989ee35c43557e0a93fdec4d313af4f740e`).
-> Design: [RC2B-06 B6 installed-artifact trust](design/rc2b-06-b6-installed-artifact-trust.md); qualification plan: [B6-T01–T25](plans/rc2b-06-b6-qualification.md); source gaps: [B6-SPEC-01 evidence](evidence/rc2b-06-b6-spec-01.md).
-> Recommended architecture: root-owned immutable local installation (generation = artifact-set SHA-256) + root-owned receipt + accepted qualification record; explicit platform baseline for bwrap/.NET/loader/kernel. Caller-populated B3 pins are rejected for production. Descriptor is passive; no new RELEASE authority.
-> **No B6 implementation, test execution, native run, installer, package build or production activation occurred.** B3-F04/F06 and B5-L04 remain open implementation obligations; HD-1–HD-4 require owner decisions. B6/B7, Hufu, packaging, native Linux/macOS and production remain gated. Historical blocks below are unchanged.
+> **B6 SPECIFICATION REMEDIATION COMPLETE — READY FOR FOCUSED Q2 REVIEW (2026-11-01).**
+> Original specification `cc47f4dd2dc23895dc1d0cfacea81301ec75f08b` (tree `6e25ac365cc7a3d5f761dd0ff5306af2e5b60fe7`); Q1 independent review and R1 parent baseline `08ebcb5479e5ffb78189c06f1bd5c02d49f2f7df` (tree `630b803d57e27a0044686595e108868072aa20ea`); R1 remediation amends the design and plan in the commit that introduces this document set (exact SHA/tree recorded in the follow-up `B6-SPEC-R1-BIND-01` provenance receipt, `docs/evidence/rc2b-06-b6-spec-r1-bind-01-receipt.md`).
+> Design: [RC2B-06 B6 installed-artifact trust](design/rc2b-06-b6-installed-artifact-trust.md); qualification plan: [B6-T01–T25, T25-A, T25-B, T20a, T20b, T20c](plans/rc2b-06-b6-qualification.md); remediation evidence: [B6-SPEC-R1](evidence/rc2b-06-b6-spec-r1-remediation.md); original gaps: [B6-SPEC-01](evidence/rc2b-06-b6-spec-01.md).
+> Q1 major findings addressed: F01 (T25 split), F02 (production/test separation), F04 (native dependency closure), F07 (wire-specified handshake), F13 (qualification record association). Bounded findings F03, F05, F06, F08–F11, F14 corrected. F12 preserved.
+> Architecture: root-owned immutable generations + receipt + qualification record; explicit platform baseline including .NET native dlopen dependencies (ICU/OpenSSL/zlib or invariant globalization); minimal public descriptor v2; installation-identity handshake with exact message IDs/payloads/ordering; deterministic qualification selection by receipt-bound qualificationId. No new RELEASE authority.
+> **No B6 implementation, test execution, native run, installer, package build or production activation occurred.** B3-F04/F06 and B5-L04 remain implementation obligations. HD-1–HD-4 require owner decisions before IMPL-01. B6/B7, Hufu, packaging, native Linux/macOS and production remain gated. Historical blocks below are unchanged.
 
 > **B5 ACCEPTED WITH QUALIFICATIONS (2026-11-01).**
 > Owner decision: [RC2B-05-B5 Owner Acceptance](decisions/rc2b-05-b5-owner-acceptance.md).

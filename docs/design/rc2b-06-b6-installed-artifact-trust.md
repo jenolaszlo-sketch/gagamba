@@ -119,7 +119,7 @@ survive controller death. `Target` = can the target influence selection? `Refusa
 
 | # | Logical role | Actual identity / source | Provenance | Req | Class | Version / compatibility | Resolution | Mutable after install? | Consumer | Survives | Target | Integrity / provenance evidence | Refusal |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| A1 | Controller provider assembly | `Gagamba.Execution.Linux.M1.dll` | `src/Gagamba.Execution.Linux.M1` build | yes | managed | assembly 0.1.0.x; protocol constants below | host loads from install root; verifier hashes `Assembly.Location` | no (root-owned 0444) | trusted host | n/a (controller) | no | SHA-256 + artifact-set digest + root receipt | `UnqualifiedInstallation` before operation |
+| A1 | Controller provider assembly | `Gagamba.Execution.Linux.M1.dll` | `src/Gagamba.Execution.Linux.M1` build | yes | managed | assembly 0.1.0.x; protocol constants below | host loads assembly; verifier hashes `Assembly.Location` against manifest provider role | no (root-owned 0444) | trusted host | n/a (controller) | no | SHA-256 + artifact-set digest + root receipt | `UnqualifiedInstallation` before operation |
 | A2 | Public contract assembly | `Gagamba.Execution.dll` | `src/Gagamba.Execution` build | yes | managed | 0.1.0.x | same | no | controller, owner, recovery | yes | no | SHA-256; must be identical in owner and recovery closures | refusal |
 | A3 | Runtime facade (only if host composes through it) | `Gagamba.Runtime.dll` | `src/Gagamba.Runtime` build | conditional | managed | 0.1.0.x | host load | no | controller host | n/a | no | SHA-256 | refusal |
 | A4 | Recovery entry | `Gagamba.Execution.Linux.M1.Recovery.dll` | `src/Gagamba.Execution.Linux.M1.Recovery` | yes | managed | net10.0; owner protocol v1 | pinned absolute path; `dotnet <dll>` | no | recovery process | yes (own lifetime) | no | SHA-256 + role closure digest | refusal before association |
@@ -162,6 +162,14 @@ survive controller death. `Target` = can the target influence selection? `Refusa
   `config.Integrated is not null`; otherwise it uses `new ProcessStartInfo("/usr/bin/dotnet")`
   and **inherits the ambient environment** (`RecoveryConnection.cs:52–55`). The
   integrated profile is the only one with an explicit runtime pin.
+
+  **Load-path correction (remediation for B6-Q1-F10)**: The design previously
+  stated "host loads from install root." The practical binding is hashing the
+  already-loaded `Assembly.Location` against the manifest's provider role, as
+  `B3Qualification` already does for owner/recovery pins (`B3Qualification.cs:158–165`).
+  The load path is immaterial; the verification is the digest comparison. The
+  wording is corrected to "host loads assembly; verifier hashes
+  `Assembly.Location` against manifest provider role."
 - **Recovery:** `RecoveryHost.RunCore` decodes a bounded JSON
   `RecoveryConfiguration`, validates it (`Version == 1`), receives control and
   credential fds, verifies peer/uid/parent and `config.Recovery.Verify(...) ==
@@ -239,6 +247,65 @@ practical, and admission refuses an incompatible baseline. A system library that
 cannot be identified or constrained is not silently trusted; it is a bounded
 qualification limitation.
 
+### 2.7 Native .NET runtime dependency closure (remediation for B6-Q1-F04)
+
+The .NET runtime loads native libraries via `dlopen` that are not part of the
+managed `deps.json` asset graph. For the qualified profile, each must be
+explicitly classified:
+
+| Native dependency | Load mechanism | Triggering feature | File/library family | Expected resolution source | Deployment controls bytes? | Minimum platform requirement | Mandatory/conditional/excluded | Independent observation | Refusal on unsupported/substituted version |
+|---|---|---|---|---|---|---|---|---|---|
+| ICU (libicuuc, libicui18n, libicudata) | `dlopen` by `System.Globalization` / `GlobalizationNative` | Non-invariant globalization; culture-aware formatting, collation, casing | ICU 70+ (distro package) | OS package (`libicu70` or distro equivalent) | No (platform baseline) | glibc ≥ 2.43; ICU ≥ 70 | Conditional — only if `DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=0` (default) | `ldd` on `GlobalizationNative.so`; runtime `Assembly.Load` of culture data; `dotnet --info` globalization mode | Refuse admission if invariant mode is declared but ICU loads, or if ICU version < minimum |
+| OpenSSL (libssl, libcrypto) | `dlopen` by `System.Net.Security` / `SslStream` / `HttpClient` | TLS/SSL, HTTPS, certificate validation | OpenSSL 3.0+ (distro package) | OS package (`libssl3`, `libcrypto3`) | No (platform baseline) | OpenSSL 3.0.x compatible | Mandatory for any TLS use | `ldd` on `System.Net.Security.Native.so`; `openssl version`; TLS handshake probe | Refuse if OpenSSL < 3.0 or ABI-incompatible; record exact version in platform baseline |
+| zlib (libz) | `dlopen` by `System.IO.Compression` / `DeflateStream` / `GZipStream` | Compression streams | zlib 1.2.11+ (distro package) | OS package (`zlib1g` or equivalent) | No (platform baseline) | zlib ≥ 1.2.11 | Mandatory | `ldd` on `System.IO.Compression.Native.so`; compression round-trip probe | Refuse if zlib missing or version < minimum |
+| Native runtime loader (hostfxr, `libhostfxr.so`, `libcoreclr.so`, `libclrjit.so`, `libmscordaccore.so`, `libmscordbi.so`, `libSOS.so`) | `dlopen` by `hostfxr` / runtime startup | All managed execution | .NET 10.0.x shared framework | OS/runtime install (`/usr/lib/dotnet/shared/Microsoft.NETCore.App/<version>/`) | Yes (pinned by B6 as A19/A20) | Exact version from `runtimeconfig.json` | Mandatory | Recursive inventory SHA-256 (A19); `dotnet --list-runtimes`; `ldd` on each `.so` | Refuse on any version/inventory mismatch; exact pin required |
+
+**Globalization mode decision**: The design must choose one:
+
+- **Invariant globalization** (`DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1`): ICU is not
+  loaded. The manifest records this mode; admission verifies the environment
+  variable is set and that no ICU libraries are loaded by the runtime (observed via
+  `ldd`/`/proc/<pid>/maps` on a test execution). This is a bounded platform
+  limitation: culture-aware operations throw or use invariant behavior.
+
+- **Non-invariant globalization** (default): ICU is a qualified platform-baseline
+  dependency. The manifest records the minimum ICU version; admission checks the
+  distro package version and `ldd` evidence. A root-owned ICU update changes the
+  loader input without changing the Gagamba manifest; this is accepted as a
+  platform-baseline residual and recorded in the qualification limitations.
+
+The design recommends **invariant globalization** for the initial B6 qualification
+to eliminate the ICU conditional dependency and simplify the closure. If the owner
+decides otherwise (HD-3 scope), the non-invariant row applies and the qualification
+record must list the ICU version as a platform-baseline limitation.
+
+The same reasoning applies to OpenSSL and zlib: they are mandatory platform-baseline
+components with recorded minimum versions. The manifest's `platform` section is
+extended with `icuVersion`, `opensslVersion`, `zlibVersion` (or `globalizationMode:
+"invariant"`) and admission verifies them.
+
+**Verification plan** (supplements Gate C):
+
+1. **Static inspection**: `ldd` on `GlobalizationNative.so`, `System.Net.Security.Native.so`,
+   `System.IO.Compression.Native.so`, and each runtime `.so` in the pinned shared
+   framework directory. Record every `NEEDED` entry and its resolved path.
+2. **Runtime observation**: Launch a minimal test process under the pinned runtime
+   with the cleared environment; capture `/proc/<pid>/maps` and `ldd -v` output.
+   Verify no unexpected libraries are loaded.
+3. **Controlled substitution tests**: In a test generation, replace the pinned
+   runtime directory with a version having a different OpenSSL/ICU/zlib dependency;
+   verify admission refuses (`RuntimeDependencyMissing` or `UnqualifiedInstallation`).
+4. **Missing-library tests**: Temporarily remove a platform-baseline library (e.g.,
+   `libicuuc.so`) in the disposable instance; verify the runtime fails to start
+   and the verifier records the missing dependency.
+5. **Roll-forward check**: Verify `DOTNET_ROLL_FORWARD=LatestPatch` with the pinned
+   runtime directory does not resolve to a different patch with different native
+   dependencies.
+
+No single `ldd` or one trivial code path is claimed exhaustive. The qualification
+plan (T01, T10, T19) requires both static and runtime evidence across the
+supported feature surface.
+
 ### 2.5 Test-only assets that must never enter the production closure
 
 Verified in the current tree:
@@ -267,6 +334,94 @@ Verified in the current tree:
 - `artifacts/b2/install` (absent today) is a test-install closure, not a
   production installation.
 
+**Production/test separation (remediation for B6-Q1-F02)**: The above items from
+`Int01QualificationFault` through `FakeDomainClock` are currently **compiled into
+the production `Gagamba.Execution.Linux.M1.dll`**. A file/assembly hash deny list
+cannot exclude individual types or members from an otherwise approved DLL. The
+design requires a genuine production build closure in which test-only
+fault-injection capabilities are **absent or demonstrably unreachable** under an
+explicitly justified security boundary.
+
+Three alternatives are evaluated:
+
+**A. Compile-time exclusion (recommended)**
+- Define a `Production` build configuration (or `DefineConstants` condition)
+  that excludes qualification-only code and symbols from the production assembly.
+- The following are conditionally compiled out of the `Production` configuration:
+  - `Int01QualificationFault` / `Int01Qualification` types and all references
+  - `OwnerSafetyMonitor.QualificationNativeStop` field and its wiring
+  - `BubblewrapAdapter.QualificationBeforeCaptureStore` field and its wiring
+  - `SafeCopyIn.CopyTestHooks` / `BarrierDeathException` types and all references
+  - `JournalFileStorage.QualificationBeforeRename` field and its wiring
+  - `FakeDomainClock` / `RelativeTestClock` / open `IDomainClock` constructor
+- The `Debug` and `Test` configurations retain these for deterministic and native
+  qualification. The `Release` configuration used for the candidate build is
+  aliased to `Production`.
+- The verifier inspects the production assembly (via `Assembly.GetTypes()`,
+  `Module.GetMethods()`, reflection over `internal` members) and asserts that
+  none of the excluded type/member names exist. This is an executable test, not a
+  textual symbol claim.
+
+**B. Separate test assembly or adapter**
+- Move all qualification-only behavior into a separately built, non-deployable
+  assembly (e.g., `Gagamba.Execution.Linux.M1.TestSeams.dll`) referenced only by
+  test projects and the D6.4 variant.
+- The production M1 assembly has no reference to it and contains no
+  fault-injection surface.
+- This requires more source restructuring but provides the strongest assembly-level
+  separation.
+
+**C. Narrow runtime guard (only if A/B are infeasible)**
+- Retain the hooks in the production assembly but gate every entry point behind a
+  `RuntimeConfiguration` check that is **provably false** in the production
+  configuration (e.g., a `AppContext` switch set only by the test runner, or a
+  `DOTNET_GAGAMBA_QUALIFICATION_MODE` environment variable that the cleared
+  environment guarantees is absent).
+- The verifier must prove: (1) the guard is on every reachable path, (2) the
+  production environment cannot satisfy it, (3) no public/internal configuration
+  can enable it. This is harder to prove than A/B and is not recommended.
+
+**Recommendation: Alternative A (compile-time exclusion)** based on actual source
+coupling. The fault hooks are isolated to specific types and call sites; they do
+not permeate core logic. The `Production` configuration excludes exactly the
+listed types/members. The D6.4 variant and qualification tests continue to build
+against the `Test` configuration.
+
+**Required proof obligations (executable, not packaging assertions):**
+
+1. Production assemblies contain no prohibited test-only implementation
+   (type/member inspection test).
+2. Production execution cannot activate synthetic faults through public or
+   internal configuration (environment/configuration enumeration test).
+3. The installation manifest excludes qualification-only binaries (manifest
+   role/kind grammar test).
+4. Test variants remain available for deterministic and native qualification
+   (D6.4 and qualification test builds succeed under `Test` configuration).
+5. Production and test variants cannot be confused by artifact identity or
+   provider selection (distinct assembly names/strong names/hashes; verifier deny
+   list).
+6. Accepted B1–B5 behavior remains correct in the actual production-configuration
+   candidate (regression suite runs against `Production` build).
+7. Native qualification evidence identifies whether it used a production or
+   instrumented test build (qualification record includes `buildConfiguration:
+   "Production"` or `"Test"`).
+
+**Implementation boundary (for IMPL-01):** The exact source changes are:
+- Add `DefineConstants` condition `GAGAMBA_PRODUCTION` to the M1 csproj for the
+  `Release` configuration.
+- Wrap each listed type/member in `#if !GAGAMBA_PRODUCTION ... #endif`.
+- Update `Directory.Build.props` to define `GAGAMBA_PRODUCTION` for `Release`
+  and not for `Debug`/`Test`.
+- Add a deterministic verifier test (`InstalledArtifactVerifierTests`)
+  that loads the production assembly and asserts the excluded types/members are
+  absent.
+
+This design correction does **not** implement the separation; it defines the
+exact source changes and testing consequences for the later implementation
+commission. If removing test hooks makes existing qualification impossible, a
+bounded alternative (separate test adapter assembly) preserves testability
+without including hooks in the qualified production closure.
+
 The production install manifest must have a closed role/kind enum and a path
 grammar that cannot name these files. The verifier must additionally reject
 known test-only artifact hashes and assembly names (`*.Tests`, `*.TestFixture`,
@@ -278,11 +433,30 @@ control, not the filename.
 ### 2.6 Gate A result
 
 A complete source-backed inventory exists for the qualified experimental profile.
-There is no unidentified security-critical artifact or loader input. However, the
-current implementation has **no install candidate, no installer, no root-owned
-manifest/receipt and no qualified descriptor**; those are B6 implementation
-obligations, not unresolved design ambiguity. Gate A is satisfied as an inventory;
-the missing installation mechanism is the subject of Gates B–F.
+The application-controlled closure (A1–A16, A30, A31) is fully specified. The
+platform baseline (A17–A24) is version-constrained and evidence-bound. However:
+
+1. **Native .NET runtime `dlopen` dependencies** (ICU for globalization, OpenSSL
+   `libssl`/`libcrypto`, zlib) are not inventoried in the current table. They are
+   loaded by the .NET runtime itself, not by Gagamba code. The design must
+   explicitly classify each as either an application-controlled artifact (if
+   deployed and pinned by B6) or a qualified platform-baseline component with
+   minimum version, resolution source, and refusal behavior. See **B6-Q1-F04**.
+
+2. **Build-only dependency ambiguity**: The existing Release output for
+   Owner/Recovery lists `Microsoft.SourceLink.GitHub` → `System.IO.Hashing` in
+   `deps.json` and contains `System.IO.Hashing.dll`. This was observed in build
+   output, not a fresh publish. The candidate publish must be inspected; the
+   design requires either excluding build-only assets from the runtime `deps.json`
+   or manifest-pinning every listed runtime asset. See **B6-Q1-F09**.
+
+3. The current implementation has **no install candidate, no installer, no root-owned
+   manifest/receipt and no qualified descriptor**; those are B6 implementation
+   obligations, not unresolved design ambiguity.
+
+Gate A is satisfied as an inventory for application-controlled artifacts; the
+native runtime `dlopen` baseline and the fresh publish dependency inspection are
+explicit remediation items before B6-S1 can be claimed.
 
 ---
 
@@ -394,14 +568,20 @@ B6 process:
    toolchain.
 2. Compute the canonical manifest and artifact-set digest from the actual bytes.
 3. Install the candidate as a new immutable generation (root); record
-   `Installed` with the digest.
+   `Installed` with the digest. **For a first-time install there is no
+   independent expected digest; root computes it from the candidate bytes. This
+   is an integrity check only. The receipt records
+   `expectedDigestSource="unverified-candidate"` (remediation for B6-Q1-F14).
+   The state is `Installed/Unqualified`, not `Qualified`.**
 4. Verify the installed closure (same digest, root ownership, modes, exact file
    set, platform baseline).
 5. Run the B6 qualification matrix against the **installed** bytes.
 6. Record the accepted qualification (root-owned) with the same digest, scope,
-   host, evidence digest and limitations.
+   host, evidence digest and limitations. The receipt is updated with
+   `expectedDigestSource="qualification-record"`, `qualificationId`, and
+   `qualificationRecordSha256`.
 7. Descriptor becomes `Qualified` only when install digest == qualification
-   digest and every mandatory prerequisite is verified.
+   digest == selection digest and every mandatory prerequisite is verified.
 
 If installation modifies binaries or security-relevant bytes, the result is a
 different artifact set and must be re-qualified. The installer may set
@@ -483,24 +663,78 @@ the canonical manifest bytes. Proposed shape:
 { "schemaVersion": 1, "artifactSetSha256": "<64 hex>",
   "manifestFileSha256": "<64 hex>", "installedByUid": 0,
   "installedAtUtc": "...", "candidatePath": "...", "installerVersion": "...",
-  "expectedDigestSource": "qualification-record|<explicit root input>" }
+  "expectedDigestSource": "qualification-record|unverified-candidate|<explicit root input>",
+  "qualificationId": "<qualification-id-or-null>",
+  "qualificationRecordSha256": "<64-hex-or-null>" }
 ```
 
+- `expectedDigestSource`: `"qualification-record"` for a qualified installation
+  (digest from the accepted qualification record), `"unverified-candidate"` for a
+  first-time install where root computes the digest from the candidate bytes
+  (remediation for **B6-Q1-F14**), or an explicit root-supplied value.
+- `qualificationId` and `qualificationRecordSha256`: **Required for `Qualified`
+  state** (remediation for **B6-Q1-F13**). The verifier selects the qualification
+  record by matching `qualificationId` (not directory search) and verifies its
+  SHA-256 equals `qualificationRecordSha256`. If either is null/empty or the
+  record hash mismatches, the state is `Unqualified`.
+
 `active` (root-owned, 0444) contains only `<artifactSetSha256>\n`.
-`qualifications/<id>.json` (root-owned, 0444) contains the accepted record:
+`qualifications/<qualificationId>.json` (root-owned, 0444) contains the accepted record:
 `qualificationId`, `artifactSetSha256`, `profileId/version`, `rid`, `scope`,
 `host`, `sourceCommit/tree`, `evidenceSha256`, `reviewCommit`, `acceptedAtUtc`,
-`limitations[]`.
+`limitations[]`, `buildConfiguration` (`"Production"` or `"Test"`).
 
 The verifier recomputes the manifest digest from the installed bytes and compares
 it to the directory name, `active`, the receipt and (for `Qualified`) the
 qualification record. A file in the generation dir that is not in the manifest,
 or a manifest entry with no file, refuses.
 
+**Qualification record association (remediation for B6-Q1-F13)**: The receipt's
+`qualificationId` and `qualificationRecordSha256` provide an explicit, deterministic
+binding. The verifier:
+
+1. Reads `active` → gets `artifactSetSha256`.
+2. Reads the generation's `install-receipt.json` → gets `qualificationId` and
+   `qualificationRecordSha256`.
+3. Opens `/opt/gagamba/qualifications/<qualificationId>.json` (no directory
+   enumeration, no latest-file-wins).
+4. Verifies the record's `artifactSetSha256` matches `active`.
+5. Verifies the record's SHA-256 equals `qualificationRecordSha256`.
+6. Verifies `profileId/version`, `rid`, `scope` match the manifest.
+7. Verifies `buildConfiguration` is `"Production"` for a qualified production
+   installation.
+8. If any check fails → `Unqualified`. If `qualificationId` is null/empty →
+   `Unqualified` (fresh install is `Installed/Unqualified`, not `Qualified`).
+
+**Required states and deterministic behavior:**
+
+| State | Behavior |
+|---|---|
+| Fresh installation, no qualification record | `Installed/Unqualified`; receipt has `expectedDigestSource="unverified-candidate"`, `qualificationId=null` |
+| Exactly one valid associated accepted record | `Qualified` if all digest/profile/rid/scope/buildConfiguration checks pass |
+| Missing referenced record (`qualificationId` not found) | `Unqualified`; receipt points to non-existent record |
+| Record hash mismatch (`qualificationRecordSha256` ≠ actual record SHA-256) | `Unqualified`; record tampered or replaced without receipt update |
+| Multiple candidate records (not possible with explicit `qualificationId`) | N/A — selection is by `qualificationId`, not search |
+| Stale/superseded qualification (different `qualificationId`) | `Unqualified`; receipt points to specific record; old records remain but are not selected |
+| Record for another digest | `Unqualified`; record `artifactSetSha256` ≠ `active` |
+| Record for another RID, protocol or profile | `Unqualified`; manifest/profile/RID mismatch |
+| Unaccepted producer-only evidence | `Unqualified`; record must have `acceptedAtUtc` from trusted owner action |
+| Conflicting qualification metadata | `Unqualified`; any field mismatch refuses |
+
+A self-generated test report cannot automatically approve itself. The transition
+from locally tested candidate to accepted qualification record is a separate
+trusted action (root runs `qualify-install.sh` after reviewing evidence).
+
 ### 4.6 Installed-provider descriptor
 
 The descriptor is a passive, typed, versioned value. B6 proposes **descriptor
 version 2**, additive to version 1; version 1 continues to mean `Unavailable`.
+
+**Minimal public surface (remediation for B6-Q1-F08 / HD-2)**: The review
+confirmed that the proposed v2 surface is larger than B6 needs. B6 requires only
+admission/refusal reporting fields; per-file `Artifacts`, `Verification` and
+`Platform` inventories duplicate internal manifest data and should remain
+internal until a real consumer exists (B7). The minimal public v2 fields are:
 
 Proposed additions/changes (all read-only properties; no public factory and no
 authority):
@@ -513,19 +747,22 @@ authority):
 - `InstallationId` = artifact-set digest hex (same value as
   `ArtifactSetSha256`, retained for clarity).
 - `ProfileId`, `ProfileVersion`, `BootstrapVersion`.
-- `Platform`: `RuntimeIdentifier`, `Architecture`, `KernelMin`, `GlibcMin`,
-  `DotnetRuntimeVersion`, `BubblewrapVersion`.
+- `RuntimeIdentifier`, `Architecture`.
 - `Protocol`: `ManifestSchemaVersion`, `OwnerProtocolVersion`,
   `CoordinatorProtocolVersion`, `CoordinatorHeaderBytes`,
   `ReleaseFrameBytes`, `ReleaseSequence`.
-- `Artifacts`: closed, sorted role inventory (`Role`, `Kind`, `RelativePath`,
-  `Sha256`, `Length`, `Mode`, `BuildIdentity`, `Required`).
 - `QualificationId`, `QualificationScope`, `QualificationEvidenceSha256`,
   `QualificationLimitations` (bounded list).
 - `HostPrerequisites`: verified booleans for cgroup2, openat2, pidfd,
   `SO_PEERPIDFD`, subreaper, userns, seccomp, unprivileged-empty-caps.
-- `Verification`: `ManifestSha256`, `ReceiptSha256`, `VerifiedGeneration`.
 - `CaptureReadbackAvailable` (A30 component presence).
+
+**Internal verifier diagnostics** (not public): `Artifacts` (full role inventory),
+`Verification` (`ManifestSha256`, `ReceiptSha256`, `VerifiedGeneration`),
+`Platform` (full `DotnetRuntimeVersion`, `BubblewrapVersion`, `KernelMin`,
+`GlibcMin`, `icuVersion`/`globalizationMode`, `opensslVersion`, `zlibVersion`).
+These remain in the internal `InstalledRestrictedProviderDescriptor` used by the
+verifier and tests; they are not exposed in the public `RestrictedProviderDescriptor`.
 
 Semantics:
 
@@ -572,6 +809,15 @@ atomic or race-free guarantee beyond what the OS operations establish.
    symlinks. Files are 0444 (data) or 0555 (executables), `nlink == 1`, no
    setuid/setgid, no file capabilities. The target cannot write them; a non-root
    trusted process cannot replace them.
+
+   **Ancestor predicate correction (remediation for B6-Q1-F06)**: The existing
+   `ExperimentalRuntimePin.AncestorsProtected` accepts a root-owned ancestor with
+   group/other write when the sticky bit is set (`owner==0 && (mode&0x200)`), i.e.
+   `/tmp`-like directories. The installed closure **must drop that exception**.
+   The install verifier implements a stricter predicate: every ancestor directory
+   to `/` must be root-owned (`uid==0`) and **not** group-writable (`mode&020==0`)
+   and **not** other-writable (`mode&002==0`). The sticky-bit exception is
+   removed. This is enforced at admission (V04) and verified in T01/T04.
 2. **Descriptor-relative verification.** Open the generation directory by
    `openat2(RESOLVE_BENEATH|RESOLVE_NO_SYMLINKS|RESOLVE_NO_MAGICLINKS,
    O_DIRECTORY|O_NOFOLLOW)`; open each artifact relative to it with
@@ -604,9 +850,22 @@ atomic or race-free guarantee beyond what the OS operations establish.
      `DYLD_*` and all other ambient variables are absent.
    - Bubblewrap is opened and hashed by fd and executed via
      `/proc/self/fd/11`; the pathname is not used after open.
-   - Coordinator and seccomp filter are copied from verified source fds with
-     claimed digests by `SafeCopyIn`; the coordinator is bound read-only at
+   - Coordinator and seccomp filter are copied from verified source **paths with
+     claimed digests** by `SafeCopyIn`; the coordinator is bound read-only at
      `/coordinator`, the filter is a sealed memfd at fd 6.
+     **Correction (remediation for B6-Q1-F03)**: The design previously claimed
+     "copied from verified source fds." The current `CopyPlan` carries a
+     `SourceRootPath` string; `SafeCopyIn` opens the source root by path with
+     `O_NOFOLLOW` and `RESOLVE_BENEATH|RESOLVE_NO_SYMLINKS|RESOLVE_NO_MAGICLINKS`,
+     checks regular file, size stability, digest, read-only reopen, device/inode/
+     mode/link count and dense accounting. The **content is claimed-digest bound**,
+     but the source root is reopened by path, not retained as an fd. The
+     staging-parent fd (`StagingParentAuthority`) is retained, not the source
+     root. A root actor could replace the source root path after verification;
+     non-root cannot. The wording is corrected to "claimed-digest path copies
+     under a verified staging parent." The implementation may add a
+     `SourceRootAuthority` fd to `CopyPlan` in IMPL-01; the design does not
+     require it for the trust claim.
 7. **Post-start identity echo.** After load but before any native authority, the
    owner and recovery compute a hash of their own role closure (entry, deps,
    runtimeconfig, `Gagamba.Execution.Linux.M1.dll`, `Gagamba.Execution.dll`),
@@ -705,7 +964,161 @@ InstallationIdentity {
 This adds no release authority. The owner still mints the capability locally and
 is the sole RELEASE writer; recovery never receives it.
 
-### 6.2 Required properties
+### 6.2 Installation-identity handshake wire specification (remediation for B6-Q1-F07)
+
+The following defines the exact wire-level contract for the installation-identity
+verification exchange. Message IDs are selected from the existing
+`OwnerProtocolMessageType` / `RecoveryMessageType` namespace after verifying
+available values (current max: `OwnerProtocolMessageType = 7`,
+`RecoveryMessageType = 5`).
+
+**Protocol version requirement**: `RecoveryConfiguration` version 2 (qualified
+profile). Version 1 has no identity fields and is refused.
+
+#### 6.2.1 Message types and numeric identifiers
+
+| Message | Numeric ID | Direction | Channel | Max encoded size |
+|---|---|---|---|---|
+| `RecoveryConfigV2` (extends `RecoveryConfiguration`) | N/A (bootstrap JSON) | Controller → Recovery | Recovery stdin (fd 0, length-prefixed JSON) | 8 KiB |
+| `InstallationEchoRequest` (Recovery→Controller) | `RecoveryMessageType = 6` (new) | Recovery → Controller | Recovery stdout (fd 1, framed) | 512 bytes |
+| `InstallationEchoResponse` (Controller→Recovery) | `RecoveryMessageType = 7` (new) | Controller → Recovery | Controller stdin (fd 0, framed) | 512 bytes |
+| `OwnerInstallationEcho` (Owner→Controller) | `OwnerProtocolMessageType = 8` (new) | Owner → Controller | Owner stdout (fd 1, framed) | 512 bytes |
+| `OwnerStartAuthority` (Controller→Owner) | `OwnerProtocolMessageType = 3` (existing) | Controller → Owner | Controller stdout (fd 1, framed) | 1 KiB |
+
+**Framing**: All post-bootstrap messages use the existing length-prefixed frame
+(4-byte big-endian length + payload). The coordinator/seccomp filter fds are
+passed via the existing fd-passing mechanism (fd 6 for filter, fd 7 for
+coordinator path).
+
+#### 6.2.2 `RecoveryConfigV2` payload (controller → recovery, at spawn)
+
+```json
+{
+  "Version": 2,
+  "Recovery": { "PinnedExecutable": { ... } },
+  "Owner": { "PinnedExecutable": { ... } },
+  "Integrated": {
+    "Runtime": { "HostPath": "...", "RuntimeDirectory": "...", "HostFxrDirectory": "..." },
+    "InstallationIdentity": {
+      "ArtifactSetSha256": "<64 hex>",
+      "OwnerClosureSha256": "<64 hex>",
+      "RecoveryClosureSha256": "<64 hex>",
+      "CoordinatorSha256": "<64 hex>",
+      "SeccompFilterSha256": "<64 hex>",
+      "RuntimeInventorySha256": "<64 hex>",
+      "ManifestSchema": 1,
+      "OwnerProtocol": 1,
+      "CoordinatorProtocol": 1,
+      "Bootstrap": 1,
+      "ProfileId": "ae4-linux-fixed-fixture-v1",
+      "ProfileVersion": "1",
+      "Generation": "<64 hex>",
+      "Qualified": true
+    }
+  }
+}
+```
+
+The `InstallationIdentity` is **required** when `Integrated` is non-null.
+`Qualified` must be `true` for the qualified profile. The recovery validates
+its own five-file closure hash matches `RecoveryClosureSha256` and its
+`Assembly.GetEntryAssembly().Location` hash matches the manifest entry before
+proceeding.
+
+#### 6.2.3 `InstallationEchoRequest` (recovery → controller, after load, before `Ready`)
+
+Payload (binary, little-endian):
+
+| Offset | Size | Field |
+|---|---|---|
+| 0 | 32 | `ArtifactSetSha256` (recovery's computed installation digest) |
+| 32 | 32 | `RecoveryClosureSha256` (recovery's computed role closure hash) |
+| 64 | 2 | `OwnerProtocol` (u16) |
+| 66 | 2 | `CoordinatorProtocol` (u16) |
+| 68 | 2 | `Bootstrap` (u16) |
+| 70 | 1 | `Role` (0 = recovery, 1 = owner) |
+| 71 | 1 | `Qualified` (0/1) |
+| 72 | 4 | Reserved (zero) |
+| 76 | — | Optional: `ProfileId`/`ProfileVersion` UTF-8, length-prefixed (max 64 bytes each) |
+
+Total: ≤ 256 bytes. The controller verifies every field matches its expected
+identity from the manifest. `Role` must be 0. Mismatch → controller sends
+`InstallationEchoResponse` with `Success=0` and aborts.
+
+#### 6.2.4 `InstallationEchoResponse` (controller → recovery)
+
+Payload (binary):
+
+| Offset | Size | Field |
+|---|---|---|
+| 0 | 1 | `Success` (0/1) |
+| 1 | 1 | `MismatchReason` (enum: 0=none, 1=digest, 2=closure, 3=protocol, 4=generation, 5=qualified) |
+| 2 | 2 | Reserved (zero) |
+| 4 | 32 | `ExpectedArtifactSetSha256` (controller's expected value) |
+
+If `Success=0`, recovery logs the mismatch, performs native safety stop (C2/Policy
+A), and exits without `Ready`. If `Success=1`, recovery sends `Ready` (existing
+`RecoveryMessageType = 1`).
+
+#### 6.2.5 `OwnerInstallationEcho` (owner → controller, after load, before `StartAuthority`)
+
+Same binary structure as `InstallationEchoRequest`, with `Role = 1` (owner).
+The owner computes its own role closure hash (`OwnerClosureSha256`) and sends it
+after verifying its loaded assemblies against the manifest (same check as
+recovery). The controller verifies `OwnerClosureSha256` matches the manifest.
+Mismatch → controller does not send `OwnerStartAuthority`; aborts and requests
+stop.
+
+#### 6.2.6 Expected identity provenance
+
+The **receiver has a trusted expected identity independently of the peer's
+claim**. The controller's expected identity comes from the verified manifest
+(recomputed from installed bytes, bound to `active` and root-owned receipt). The
+recovery's expected identity comes from `RecoveryConfigV2.Integrated.InstallationIdentity`
+(which the controller built from the same manifest). The owner's expected
+identity comes from the same source via the controller's `OwnerStartAuthority`
+payload (which includes the installation identity). An actor reporting its own
+digest cannot qualify itself; the receiver compares against its independent
+expected value.
+
+#### 6.2.7 Recovery restriction
+
+The handshake **must not grant recovery RELEASE authority**. No new bearer
+capability is derived solely from an installation digest. The recovery's
+`InstallationEcho` is detection only; it never receives a capability, writer, or
+release frame. Cross-generation reconciliation fails conservatively: if the
+controller's `active` generation changes, the recovery (started under the old
+generation) will echo the old identity; the controller (now on new generation)
+will mismatch and refuse. The surviving recovery retains its stop/cleanup
+authority under the old generation; no release is possible.
+
+#### 6.2.8 Ordering and timeout behavior
+
+1. Controller spawns recovery with `RecoveryConfigV2` (fd 0).
+2. Recovery loads, verifies its closure, sends `InstallationEchoRequest` (fd 1).
+3. Controller verifies, responds `InstallationEchoResponse` (fd 0).
+4. Recovery receives response; if `Success=1`, sends `Ready` (fd 1).
+5. Controller spawns owner with `OwnerStartAuthority` including installation identity.
+6. Owner loads, verifies its closure, sends `OwnerInstallationEcho` (fd 1).
+7. Controller verifies; if success, proceeds to HELD; if mismatch, aborts.
+
+**Timeouts**: Each exchange has a 5-second deadline (consistent with existing
+bootstrap timeouts). Timeout → mismatch → abort. No retries.
+
+**Replay/duplication**: Each echo includes the full `ArtifactSetSha256` and
+`Generation` (same value). A replay from a previous generation fails the
+`Generation` check. The controller tracks which echoes it has answered for the
+current operation; duplicate echoes are refused.
+
+**Cancellation**: If the controller dies before sending `OwnerStartAuthority`,
+the owner never receives it and exits on lifeline loss (existing behavior). The
+recovery retains its identity and stop authority.
+
+**Cleanup on mismatch**: All processes exit; no domain created; no staging
+committed; journal records the mismatch; cleanup follows existing C2/Policy A
+paths.
+
+### 6.3 Required properties
 
 | # | Property | Mechanism |
 |---|---|---|
@@ -720,7 +1133,7 @@ is the sole RELEASE writer; recovery never receives it.
 | 9 | Missing native/managed dependency prevents admission | exact deps/runtime asset set; missing/extra refuses |
 | 10 | Controller failure does not cause uncontrolled resolution | recovery/owner already loaded; no PATH; restart uses install generation, not ambient paths |
 
-### 6.3 Deployment generations
+### 6.5 Deployment generations
 
 **Policy: side-by-side immutable generations; no cross-generation adoption.**
 
@@ -730,10 +1143,14 @@ is the sole RELEASE writer; recovery never receives it.
   controller records it in the operation; recovery/owner echo it.
 - A controller cannot adopt an owner/recovery from another generation; a
   reconnect cannot change it.
-- If the controller dies and a recovery for the old execution must be restarted
-  after `active` changed, the new recovery starts under the new generation and
-  refuses the old owner (identity mismatch); the owner self-stops on lifeline
-  loss. There is no disk-only reconstruction of release authority.
+- **Correction (remediation for B6-Q1-F11)**: The design previously described a
+  "recovery restart after active changed" branch as if it were a current
+  mechanism. **No reconnect listener or post-controller recovery relaunch exists
+  today.** If the controller dies and a recovery for the old execution must be
+  restarted after `active` changed, the new recovery starts under the new
+  generation and refuses the old owner (identity mismatch); the owner self-stops
+  on lifeline loss. There is no disk-only reconstruction of release authority.
+  This hypothetical future support is identified separately and is not part of B6.
 - Old generations are not deleted automatically. The removal script refuses the
   active generation and refuses when a process still holds/maps its files; if
   that cannot be determined, removal is refused (Unknown).

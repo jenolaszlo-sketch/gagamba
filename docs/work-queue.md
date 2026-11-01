@@ -1,8 +1,9 @@
 # Current work queue
 
-> **B6 SPECIFICATION COMPLETE — READY WITH QUALIFICATIONS (2026-11-01).**
-> Baseline `2cd8c1d716ed2e3e61156819730cd3d39e81844b`; [design](design/rc2b-06-b6-installed-artifact-trust.md), [B6-T01–T25 plan](plans/rc2b-06-b6-qualification.md), [source/gap trace](evidence/rc2b-06-b6-spec-01.md).
-> Next activity: **independent B6 specification review**, not implementation. B6 implementation requires a separate `GAGAMBA-RC2B-06-B6-IMPL-01` commission; B3-F04/F06 and B5-L04 remain implementation obligations. HD-1–HD-4 require owner decisions.
+> **B6 SPECIFICATION REMEDIATION COMPLETE — READY FOR FOCUSED Q2 REVIEW (2026-11-01).**
+> Original specification `cc47f4dd2dc23895dc1d0cfacea81301ec75f08b` (tree `6e25ac365cc7a3d5f761dd0ff5306af2e5b60fe7`); Q1 independent review and R1 parent baseline `08ebcb5479e5ffb78189c06f1bd5c02d49f2f7df` (tree `630b803d57e27a0044686595e108868072aa20ea`); R1 remediation is the commit that introduces this document set (exact SHA/tree recorded in the follow-up `B6-SPEC-R1-BIND-01` provenance receipt, `docs/evidence/rc2b-06-b6-spec-r1-bind-01-receipt.md`); [design](design/rc2b-06-b6-installed-artifact-trust.md), [B6-T01–T25, T25-A, T25-B, T20a, T20b, T20c plan](plans/rc2b-06-b6-qualification.md), [remediation evidence](evidence/rc2b-06-b6-spec-r1-remediation.md).
+> Q1 major findings addressed: F01 (T25 split), F02 (production/test separation), F04 (native dependency closure), F07 (wire-specified handshake), F13 (qualification record association). Bounded findings F03, F05, F06, F08–F11, F14 corrected. F12 preserved.
+> Next activity: **focused independent Q2 review**, not implementation. B6 implementation requires a separate `GAGAMBA-RC2B-06-B6-IMPL-01` commission after HD-1–HD-4 owner decisions; B3-F04/F06 and B5-L04 remain implementation obligations.
 > No production activation, installer, package release, B6/B7 implementation, Hufu or native Linux/macOS work is authorized. Historical blocks below are unchanged.
 
 > **B5 ACCEPTED WITH QUALIFICATIONS (2026-11-01).**
