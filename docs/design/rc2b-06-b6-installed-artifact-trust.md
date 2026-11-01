@@ -22,6 +22,16 @@ TPM/secure boot, containers/VMs, Hufu integration, automatic updates/rollback,
 B7, macOS/native-Linux-host qualification, or any change to C1–C4, R1-F03 Option A,
 B1–B5 accepted semantics.
 
+**Amendment history:** the R1 remediation for the independent Q1 review (commit
+`77ee4414df37b9f88979bde02742756538ba45af`) added §2.7 (native runtime dependency
+closure), §6.2 (wire-specified installation-identity handshake) and the
+qualification-record association. The bounded Q2 corrections (recorded in
+`docs/evidence/rc2b-06-b6-spec-r1-q2-correction-receipt.md`) fix residual FD
+wording, section numbering, the `qualificationId` grammar, trusted-acceptance
+wording, the identity-echo projection and the globalization-decision label. These
+corrections do not change any accepted architectural semantics, message ordering or
+authority separation, and no implementation is authorized by this document.
+
 ---
 
 ## 1. Purpose and boundaries
@@ -247,65 +257,6 @@ practical, and admission refuses an incompatible baseline. A system library that
 cannot be identified or constrained is not silently trusted; it is a bounded
 qualification limitation.
 
-### 2.7 Native .NET runtime dependency closure (remediation for B6-Q1-F04)
-
-The .NET runtime loads native libraries via `dlopen` that are not part of the
-managed `deps.json` asset graph. For the qualified profile, each must be
-explicitly classified:
-
-| Native dependency | Load mechanism | Triggering feature | File/library family | Expected resolution source | Deployment controls bytes? | Minimum platform requirement | Mandatory/conditional/excluded | Independent observation | Refusal on unsupported/substituted version |
-|---|---|---|---|---|---|---|---|---|---|
-| ICU (libicuuc, libicui18n, libicudata) | `dlopen` by `System.Globalization` / `GlobalizationNative` | Non-invariant globalization; culture-aware formatting, collation, casing | ICU 70+ (distro package) | OS package (`libicu70` or distro equivalent) | No (platform baseline) | glibc ≥ 2.43; ICU ≥ 70 | Conditional — only if `DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=0` (default) | `ldd` on `GlobalizationNative.so`; runtime `Assembly.Load` of culture data; `dotnet --info` globalization mode | Refuse admission if invariant mode is declared but ICU loads, or if ICU version < minimum |
-| OpenSSL (libssl, libcrypto) | `dlopen` by `System.Net.Security` / `SslStream` / `HttpClient` | TLS/SSL, HTTPS, certificate validation | OpenSSL 3.0+ (distro package) | OS package (`libssl3`, `libcrypto3`) | No (platform baseline) | OpenSSL 3.0.x compatible | Mandatory for any TLS use | `ldd` on `System.Net.Security.Native.so`; `openssl version`; TLS handshake probe | Refuse if OpenSSL < 3.0 or ABI-incompatible; record exact version in platform baseline |
-| zlib (libz) | `dlopen` by `System.IO.Compression` / `DeflateStream` / `GZipStream` | Compression streams | zlib 1.2.11+ (distro package) | OS package (`zlib1g` or equivalent) | No (platform baseline) | zlib ≥ 1.2.11 | Mandatory | `ldd` on `System.IO.Compression.Native.so`; compression round-trip probe | Refuse if zlib missing or version < minimum |
-| Native runtime loader (hostfxr, `libhostfxr.so`, `libcoreclr.so`, `libclrjit.so`, `libmscordaccore.so`, `libmscordbi.so`, `libSOS.so`) | `dlopen` by `hostfxr` / runtime startup | All managed execution | .NET 10.0.x shared framework | OS/runtime install (`/usr/lib/dotnet/shared/Microsoft.NETCore.App/<version>/`) | Yes (pinned by B6 as A19/A20) | Exact version from `runtimeconfig.json` | Mandatory | Recursive inventory SHA-256 (A19); `dotnet --list-runtimes`; `ldd` on each `.so` | Refuse on any version/inventory mismatch; exact pin required |
-
-**Globalization mode decision**: The design must choose one:
-
-- **Invariant globalization** (`DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1`): ICU is not
-  loaded. The manifest records this mode; admission verifies the environment
-  variable is set and that no ICU libraries are loaded by the runtime (observed via
-  `ldd`/`/proc/<pid>/maps` on a test execution). This is a bounded platform
-  limitation: culture-aware operations throw or use invariant behavior.
-
-- **Non-invariant globalization** (default): ICU is a qualified platform-baseline
-  dependency. The manifest records the minimum ICU version; admission checks the
-  distro package version and `ldd` evidence. A root-owned ICU update changes the
-  loader input without changing the Gagamba manifest; this is accepted as a
-  platform-baseline residual and recorded in the qualification limitations.
-
-The design recommends **invariant globalization** for the initial B6 qualification
-to eliminate the ICU conditional dependency and simplify the closure. If the owner
-decides otherwise (HD-3 scope), the non-invariant row applies and the qualification
-record must list the ICU version as a platform-baseline limitation.
-
-The same reasoning applies to OpenSSL and zlib: they are mandatory platform-baseline
-components with recorded minimum versions. The manifest's `platform` section is
-extended with `icuVersion`, `opensslVersion`, `zlibVersion` (or `globalizationMode:
-"invariant"`) and admission verifies them.
-
-**Verification plan** (supplements Gate C):
-
-1. **Static inspection**: `ldd` on `GlobalizationNative.so`, `System.Net.Security.Native.so`,
-   `System.IO.Compression.Native.so`, and each runtime `.so` in the pinned shared
-   framework directory. Record every `NEEDED` entry and its resolved path.
-2. **Runtime observation**: Launch a minimal test process under the pinned runtime
-   with the cleared environment; capture `/proc/<pid>/maps` and `ldd -v` output.
-   Verify no unexpected libraries are loaded.
-3. **Controlled substitution tests**: In a test generation, replace the pinned
-   runtime directory with a version having a different OpenSSL/ICU/zlib dependency;
-   verify admission refuses (`RuntimeDependencyMissing` or `UnqualifiedInstallation`).
-4. **Missing-library tests**: Temporarily remove a platform-baseline library (e.g.,
-   `libicuuc.so`) in the disposable instance; verify the runtime fails to start
-   and the verifier records the missing dependency.
-5. **Roll-forward check**: Verify `DOTNET_ROLL_FORWARD=LatestPatch` with the pinned
-   runtime directory does not resolve to a different patch with different native
-   dependencies.
-
-No single `ldd` or one trivial code path is claimed exhaustive. The qualification
-plan (T01, T10, T19) requires both static and runtime evidence across the
-supported feature surface.
-
 ### 2.5 Test-only assets that must never enter the production closure
 
 Verified in the current tree:
@@ -457,6 +408,70 @@ platform baseline (A17–A24) is version-constrained and evidence-bound. However
 Gate A is satisfied as an inventory for application-controlled artifacts; the
 native runtime `dlopen` baseline and the fresh publish dependency inspection are
 explicit remediation items before B6-S1 can be claimed.
+
+### 2.7 Native .NET runtime dependency closure (remediation for B6-Q1-F04)
+
+The .NET runtime loads native libraries via `dlopen` that are not part of the
+managed `deps.json` asset graph. For the qualified profile, each must be
+explicitly classified:
+
+| Native dependency | Load mechanism | Triggering feature | File/library family | Expected resolution source | Deployment controls bytes? | Minimum platform requirement | Mandatory/conditional/excluded | Independent observation | Refusal on unsupported/substituted version |
+|---|---|---|---|---|---|---|---|---|---|
+| ICU (libicuuc, libicui18n, libicudata) | `dlopen` by `System.Globalization` / `GlobalizationNative` | Non-invariant globalization; culture-aware formatting, collation, casing | ICU 70+ (distro package) | OS package (`libicu70` or distro equivalent) | No (platform baseline) | glibc ≥ 2.43; ICU ≥ 70 | Conditional — only if `DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=0` (default) | `ldd` on `GlobalizationNative.so`; runtime `Assembly.Load` of culture data; `dotnet --info` globalization mode | Refuse admission if invariant mode is declared but ICU loads, or if ICU version < minimum |
+| OpenSSL (libssl, libcrypto) | `dlopen` by `System.Net.Security` / `SslStream` / `HttpClient` | TLS/SSL, HTTPS, certificate validation | OpenSSL 3.0+ (distro package) | OS package (`libssl3`, `libcrypto3`) | No (platform baseline) | OpenSSL 3.0.x compatible | Mandatory for any TLS use | `ldd` on `System.Net.Security.Native.so`; `openssl version`; TLS handshake probe | Refuse if OpenSSL < 3.0 or ABI-incompatible; record exact version in platform baseline |
+| zlib (libz) | `dlopen` by `System.IO.Compression` / `DeflateStream` / `GZipStream` | Compression streams | zlib 1.2.11+ (distro package) | OS package (`zlib1g` or equivalent) | No (platform baseline) | zlib ≥ 1.2.11 | Mandatory | `ldd` on `System.IO.Compression.Native.so`; compression round-trip probe | Refuse if zlib missing or version < minimum |
+| Native runtime loader (hostfxr, `libhostfxr.so`, `libcoreclr.so`, `libclrjit.so`, `libmscordaccore.so`, `libmscordbi.so`, `libSOS.so`) | `dlopen` by `hostfxr` / runtime startup | All managed execution | .NET 10.0.x shared framework | OS/runtime install (`/usr/lib/dotnet/shared/Microsoft.NETCore.App/<version>/`) | Yes (pinned by B6 as A19/A20) | Exact version from `runtimeconfig.json` | Mandatory | Recursive inventory SHA-256 (A19); `dotnet --list-runtimes`; `ldd` on each `.so` | Refuse on any version/inventory mismatch; exact pin required |
+
+**Globalization mode decision**: The design must choose one:
+
+- **Invariant globalization** (`DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1`): ICU is not
+  loaded. The manifest records this mode; admission verifies the environment
+  variable is set and that no ICU libraries are loaded by the runtime (observed via
+  `ldd`/`/proc/<pid>/maps` on a test execution). This is a bounded platform
+  limitation: culture-aware operations throw or use invariant behavior.
+
+- **Non-invariant globalization** (default): ICU is a qualified platform-baseline
+  dependency. The manifest records the minimum ICU version; admission checks the
+  distro package version and `ldd` evidence. A root-owned ICU update changes the
+  loader input without changing the Gagamba manifest; this is accepted as a
+  platform-baseline residual and recorded in the qualification limitations.
+
+The design recommends **invariant globalization** for the initial B6 qualification
+to eliminate the ICU conditional dependency and simplify the closure. The
+globalization mode is its own owner decision (**HD-5**), separate from the
+native-host platform-scope decision (**HD-3**). If the owner selects non-invariant
+globalization (**HD-5**), the non-invariant row applies and the qualification
+record must list the ICU version as a platform-baseline limitation. Invariant
+globalization is conditional on demonstrated compatibility and does not alter the
+untrusted target's requirements; selecting it does not remove the OpenSSL, zlib or
+native-runtime closure obligations.
+
+The same reasoning applies to OpenSSL and zlib: they are mandatory platform-baseline
+components with recorded minimum versions. The manifest's `platform` section is
+extended with `icuVersion`, `opensslVersion`, `zlibVersion` (or `globalizationMode:
+"invariant"`) and admission verifies them.
+
+**Verification plan** (supplements Gate C):
+
+1. **Static inspection**: `ldd` on `GlobalizationNative.so`, `System.Net.Security.Native.so`,
+   `System.IO.Compression.Native.so`, and each runtime `.so` in the pinned shared
+   framework directory. Record every `NEEDED` entry and its resolved path.
+2. **Runtime observation**: Launch a minimal test process under the pinned runtime
+   with the cleared environment; capture `/proc/<pid>/maps` and `ldd -v` output.
+   Verify no unexpected libraries are loaded.
+3. **Controlled substitution tests**: In a test generation, replace the pinned
+   runtime directory with a version having a different OpenSSL/ICU/zlib dependency;
+   verify admission refuses (`RuntimeDependencyMissing` or `UnqualifiedInstallation`).
+4. **Missing-library tests**: Temporarily remove a platform-baseline library (e.g.,
+   `libicuuc.so`) in the disposable instance; verify the runtime fails to start
+   and the verifier records the missing dependency.
+5. **Roll-forward check**: Verify `DOTNET_ROLL_FORWARD=LatestPatch` with the pinned
+   runtime directory does not resolve to a different patch with different native
+   dependencies.
+
+No single `ldd` or one trivial code path is claimed exhaustive. The qualification
+plan (T01, T10, T19) requires both static and runtime evidence across the
+supported feature surface.
 
 ---
 
@@ -691,12 +706,40 @@ or a manifest entry with no file, refuses.
 
 **Qualification record association (remediation for B6-Q1-F13)**: The receipt's
 `qualificationId` and `qualificationRecordSha256` provide an explicit, deterministic
-binding. The verifier:
+binding.
+
+**`qualificationId` grammar (Q2-F06).** `qualificationId` is a bounded canonical
+identifier, not a free-form string:
+
+- **Permitted characters (ASCII):** `A-Z`, `a-z`, `0-9`, `.`, `_`, `-`.
+- **Length:** 1–128 characters inclusive; an empty value is rejected.
+- **Case:** case-sensitive, with no case folding, Unicode normalization or alias.
+  The canonical form is the exact ASCII bytes; two identifiers differing only in
+  case are distinct.
+- **Rejected:** any character outside the permitted set (including the path
+  separators `/` and `\`, NUL and control characters, whitespace and any non-ASCII
+  character); the traversal sequences `.` and `..` as the entire value; a leading
+  or trailing `.`; and any empty or over-length value.
+- **Safe path construction:** the verifier validates the identifier against this
+  grammar before touching the filesystem, then opens exactly one record path
+  `/opt/gagamba/qualifications/<qualificationId>.json` with the same
+  descriptor-relative `RESOLVE_BENEATH|RESOLVE_NO_SYMLINKS|RESOLVE_NO_MAGICLINKS`
+  policy used for installed artifacts. Because the identifier is a single validated
+  path component, there is no path escape and no directory enumeration; a malformed
+  identifier is a refusal, not a search.
+- **Exactly one association:** the grammatically valid identifier selects exactly
+  one record path, which must hash-match the receipt's
+  `qualificationRecordSha256`. There is no enumeration, wildcard or
+  latest-file-wins fallback. An absent, extra, ambiguous, malformed or
+  unauthenticated record yields `Unqualified`.
+
+The verifier:
 
 1. Reads `active` → gets `artifactSetSha256`.
 2. Reads the generation's `install-receipt.json` → gets `qualificationId` and
    `qualificationRecordSha256`.
-3. Opens `/opt/gagamba/qualifications/<qualificationId>.json` (no directory
+3. Validates `qualificationId` against the grammar above, then opens the single
+   `/opt/gagamba/qualifications/<qualificationId>.json` (no directory
    enumeration, no latest-file-wins).
 4. Verifies the record's `artifactSetSha256` matches `active`.
 5. Verifies the record's SHA-256 equals `qualificationRecordSha256`.
@@ -718,12 +761,22 @@ binding. The verifier:
 | Stale/superseded qualification (different `qualificationId`) | `Unqualified`; receipt points to specific record; old records remain but are not selected |
 | Record for another digest | `Unqualified`; record `artifactSetSha256` ≠ `active` |
 | Record for another RID, protocol or profile | `Unqualified`; manifest/profile/RID mismatch |
-| Unaccepted producer-only evidence | `Unqualified`; record must have `acceptedAtUtc` from trusted owner action |
+| Unaccepted producer-only evidence | `Unqualified`; acceptance requires a root-owned (uid 0) 0444 record selected by the receipt-bound `qualificationId` + `qualificationRecordSha256`; a producer-generated report or a bare `acceptedAtUtc` field cannot approve itself |
 | Conflicting qualification metadata | `Unqualified`; any field mismatch refuses |
 
-A self-generated test report cannot automatically approve itself. The transition
-from locally tested candidate to accepted qualification record is a separate
-trusted action (root runs `qualify-install.sh` after reviewing evidence).
+A self-generated test report cannot automatically approve itself. Acceptance is a
+separate trusted owner/operator action performed by root: it must reference an
+accepted qualification decision and the exact artifact-set identity
+(`artifactSetSha256`), and it writes the root-owned 0444 record selected by
+`qualificationId`. Root ownership and mode of the record are the verifier's
+acceptance basis; a timestamp, a receipt or a producer-generated report cannot
+approve itself. `qualify-install.sh` is a future implementation proposal for that
+action, not an implemented or independently qualified authority. If the record
+cannot be authenticated against the trusted installation policy — that is, it is
+not root-owned 0444, or its identifier is malformed, or its
+`qualificationRecordSha256` does not match the receipt, or its
+digest/profile/RID/scope/build do not match the manifest — verification returns
+`Unqualified`.
 
 ### 4.6 Installed-provider descriptor
 
@@ -1045,6 +1098,34 @@ Total: ≤ 256 bytes. The controller verifies every field matches its expected
 identity from the manifest. `Role` must be 0. Mismatch → controller sends
 `InstallationEchoResponse` with `Success=0` and aborts.
 
+**Projection from `InstallationIdentity` to the echo payload (Q2-F09).** The echo
+carries the subset of the §6.1 `InstallationIdentity` struct that the receiver needs
+to decide the handshake; it is not a full re-transmission of that struct. The
+mapping is explicit:
+
+- `ArtifactSetSha256` covers both `InstallationIdentity.ArtifactSetSha256` and
+  `InstallationIdentity.Generation` (the design requires
+  `Generation == ArtifactSetSha256`).
+- Offset 32 carries the **sender's role closure**: `RecoveryClosureSha256` when
+  `Role = 0` (this request) or `OwnerClosureSha256` when `Role = 1` (the
+  `OwnerInstallationEcho` of §6.2.5). The receiver selects the expected value for
+  the role it expects and never trusts the peer's own claim.
+- `OwnerProtocol`, `CoordinatorProtocol` and `Bootstrap` map to the like-named
+  `InstallationIdentity` fields.
+- `Qualified` maps to `InstallationIdentity.Qualified`.
+- The optional tail `ProfileId`/`ProfileVersion` maps to the like-named fields.
+- `InstallationIdentity.ManifestSchema` is **not** carried in the echo: the
+  manifest-schema constant is compared against the compiled value at admission,
+  and the handshake is not the schema-version check point. `CoordinatorSha256`,
+  `SeccompFilterSha256` and `RuntimeInventorySha256` are likewise not carried
+  separately; they are covered by the `ArtifactSetSha256` closure and the
+  role-closure checks.
+
+This projection is a documented mapping only. It adds no message field, changes no
+message id, ordering, channel or authority, and does not make either peer the source
+of the other's expected identity. If a future implementation needs a field not in
+this projection, that is a new wire decision, not an implied one.
+
 #### 6.2.4 `InstallationEchoResponse` (controller → recovery)
 
 Payload (binary):
@@ -1129,9 +1210,25 @@ paths.
 | 5 | Reconnection cannot change generation | `Reconnect` refused; no new association; identity fixed at startup |
 | 6 | Stale/incompatible controller cannot adopt owner | execution/generation/installation echo + protocol versions; mismatch refuses |
 | 7 | Mixed protocol versions cannot silently interoperate | compiled constants compared at every handshake; mismatch refuses |
-| 8 | Replaced helper cannot be used by filename | manifest role/hash; no PATH; coordinator/filter staged from verified fds |
+| 8 | Replaced helper cannot be used by filename | manifest role/hash; no PATH; coordinator/filter staged from verified source paths with claimed digests under a verified staging parent (no retained source-root fd); Bubblewrap executes the pinned coordinator through `/proc/self/fd/11` |
 | 9 | Missing native/managed dependency prevents admission | exact deps/runtime asset set; missing/extra refuses |
 | 10 | Controller failure does not cause uncontrolled resolution | recovery/owner already loaded; no PATH; restart uses install generation, not ambient paths |
+
+### 6.4 Recovery after controller death
+
+Facts that must survive controller death:
+
+- The recovery process's own installation identity, role closure hashes, runtime
+  pin and generation (in memory and retained fds).
+- The owner's identity echo and installation generation (in the owner; recovery
+  observes only stop/lifetime, not release).
+- The durable `StopRecord` deadline, boot/epoch/frequency, execution/lease
+  generation and journal state (existing B5 contract).
+- The recovery's retained domain/staging handles and pidfd.
+
+Recovery does **not** reconstruct release authority from disk paths, PIDs,
+passive identifiers or a new installation. It may inspect/reconcile/stop under
+the existing contract; all B5 deadline/boot/clock restrictions remain.
 
 ### 6.5 Deployment generations
 
@@ -1163,23 +1260,7 @@ This is the smallest policy that preserves no-substitution and the accepted
 recovery contract. It may lose recovery continuity after a controller crash plus
 a deployment change; that is a conservative `Unknown`, not a silent adoption.
 
-### 6.4 Recovery after controller death
-
-Facts that must survive controller death:
-
-- The recovery process's own installation identity, role closure hashes, runtime
-  pin and generation (in memory and retained fds).
-- The owner's identity echo and installation generation (in the owner; recovery
-  observes only stop/lifetime, not release).
-- The durable `StopRecord` deadline, boot/epoch/frequency, execution/lease
-  generation and journal state (existing B5 contract).
-- The recovery's retained domain/staging handles and pidfd.
-
-Recovery does **not** reconstruct release authority from disk paths, PIDs,
-passive identifiers or a new installation. It may inspect/reconcile/stop under
-the existing contract; all B5 deadline/boot/clock restrictions remain.
-
-### 6.5 Gate D result
+### 6.6 Gate D result
 
 All surviving actors agree on one installed identity/generation; no new RELEASE,
 reconnect or recovery authority is created.
@@ -1526,6 +1607,11 @@ manufacture approval.
 - **HD-4 (generation retention):** confirm old immutable generations are retained
   until explicit removal (no auto-GC) and that removal requires no active
   holders.
+- **HD-5 (globalization mode):** select invariant globalization for the trusted
+  managed controller/owner/recovery components (recommended, conditional on
+  demonstrated compatibility) or record the non-invariant ICU baseline with its
+  platform-baseline limitation. This is a separate decision from HD-3 and does not
+  impose invariant globalization on the untrusted target.
 
 ---
 

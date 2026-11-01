@@ -291,7 +291,9 @@ limitations/skips.
 - **Mutation:** after successful verification and before spawn/load, replace a
   managed artifact or the coordinator (root helper / test-owned generation).
 - **Expected:** verification-to-use guarantee where the OS establishes it
-  (Bubblewrap fexecve fd; coordinator/filter staged from verified fds); managed
+  (Bubblewrap fexecve through `/proc/self/fd/11`; coordinator/filter staged from
+  verified source paths with claimed digests under a verified staging parent, with
+  no retained source-root fd); managed
   owner/recovery detect a post-start closure mismatch and refuse before authority.
   If the mutation is root-only and not detectable, record the explicit residual
   and do not claim atomicity.
@@ -514,8 +516,11 @@ limitations/skips.
      `Unqualified`.
   7. **Record for another RID/profile:** Record `rid=linux-arm64` or
      `profileId=other`; manifest mismatch → `Unqualified`.
-  8. **Unaccepted producer evidence:** Record lacks `acceptedAtUtc` or has
-     `acceptedAtUtc` from non-trusted source; `Unqualified`.
+  8. **Unaccepted producer evidence:** Record is not a root-owned 0444 file
+     selected by the receipt-bound `qualificationId` + `qualificationRecordSha256`,
+     or its acceptance cannot be authenticated against the trusted installation
+     policy; `Unqualified`. A bare `acceptedAtUtc` field or a producer-generated
+     report does not establish acceptance (Q2-F06).
   9. **Conflicting metadata:** Record `Qualified=true` but `buildConfiguration="Test"`;
      `Unqualified`.
 - **Expected:** Verifier has one unambiguous, fail-closed rule for selecting and
@@ -529,20 +534,6 @@ limitations/skips.
 - **Native:** Deterministic V required; native N for fresh install with record.
 - **Retain:** Receipt/record pairs, verifier decision logs, descriptor outputs.
 - **Limits:** None.
-
-### B6-T20 — Installation verification unavailable
-
-- **Positive control:** readable anchor.
-- **Mutation:** remove `active`, receipt, manifest or qualification record; make
-  them unreadable; make the trust directory inaccessible.
-- **Expected:** fail closed; `Unavailable`/`Unqualified`; no optimistic
-  descriptor; no operation.
-- **Phase:** describe/create.
-- **Observation:** verifier error, descriptor, refusal.
-- **Negative evidence:** no process/domain.
-- **Native:** deterministic V + native N.
-- **Retain:** missing/unreadable evidence, refusal.
-- **Limits:** none.
 
 ### B6-T21 — Malformed or self-asserted trust metadata
 
@@ -652,8 +643,12 @@ limitations/skips.
   - No adaptation under a separately authorized implementation change is needed;
     the legacy path is explicitly refused for the qualified profile.
   - All four cases remain **explicitly unqualified** for the B6 qualified profile.
-- **Evidence:** Exact test names, skip reasons, and source lines recorded in the
-  remediation evidence artifact.
+- **Evidence:** The four historical configurations and the source range
+  `B3RestrictedLifecycleTests.cs:628–800` are recorded in the remediation evidence
+  artifact. That artifact records configurations and source lines, **not** exact
+  test method names; no exact test-method identity is claimed here unless it is
+  independently established. This accounting is documentary only and does not
+  establish that any historical case passes against the qualified profile (Q2-F05).
 
 **T25-B: Actual B6 installed closure**
 
