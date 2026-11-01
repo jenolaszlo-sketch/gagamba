@@ -16,10 +16,13 @@
     </PackageReference>
   </ItemGroup>
 
+  <!-- These assertions require qualification hooks. Debug has its own bin/obj
+       paths and is also the configuration used by RecoveryHarness's owner process.
+       AdditionalProperties overrides solution configuration mapping explicitly. -->
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj" />
+    <ProjectReference Include="..\..\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj" AdditionalProperties="Configuration=Debug" />
     <ProjectReference Include="..\..\src\Gagamba.Execution\Gagamba.Execution.csproj" />
-    <ProjectReference Include="..\..\src\Gagamba.Execution.Linux.M1.Owner\Gagamba.Execution.Linux.M1.Owner.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\..\src\Gagamba.Execution.Linux.M1.Owner\Gagamba.Execution.Linux.M1.Owner.csproj" ReferenceOutputAssembly="false" AdditionalProperties="Configuration=Debug" />
   </ItemGroup>
 
 </Project>

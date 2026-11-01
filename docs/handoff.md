@@ -1,5 +1,10 @@
 # Gagamba handoff
 
+> **B6 S1 FOCUSED REMEDIATION IMPLEMENTED LOCALLY — FINAL RECEIPT / INDEPENDENT Q2 REQUIRED (2026-11-01).**
+> [REM-01 evidence](evidence/rc2b-06-b6-impl-01-s1-rem-01.md): original Release solution failure and empty-DefineConstants bypass reproduced; explicit isolated instrumented test references, effective compiler invariant checks, and actual metadata/IL gates implemented. Final build matrix **45/45**; Q1-comparable deterministic suite **1,245 passed / 0 failed / 289 environmental skips**; supplemental actual Release M1 **1,019/0/199**; complete Release test assertions retained.
+> Q1 remains **S1 SUPPORTED WITH QUALIFICATIONS**; owner disposition remains **FOCUSED S1 REMEDIATION REQUIRED** until an owner decision. Next: finish the source-bound local verification receipt, then separately commissioned **GAGAMBA-RC2B-06-B6-IMPL-01-S1-Q2**. No independent acceptance, push, privileged/native qualification, production activation or S2 implementation. The inherited internal clock-overload qualification and S2 dependency/installation obligations are explicit in the evidence. Historical blocks below remain unchanged.
+
+
 > **B6 WIRE CONTRACT ACCEPTED WITH QUALIFICATIONS — READY FOR IMPLEMENTATION COMMISSION (2026-11-01).**
 > Owner decision: [RC2B-06 B6 Wire Owner Acceptance](decisions/rc2b-06-b6-wire-owner-acceptance.md) (addendum to [B6 Specification Owner Acceptance](decisions/rc2b-06-b6-spec-owner-acceptance.md)). Independent wire-Q1 review **WIRE DELTA SUPPORTED WITH QUALIFICATIONS**, preserved with provenance at the [canonical index](reviews/rc2b-06-b6-wire-q1-independent-review.md) and [reviewer evidence](reviews/rc2b-06-b6-wire-q1-evidence/) (byte-identical, SHA-256 verified).
 > Reviewed source: wire-delta `6f4778e…` (tree `bb9c0bf…`), parent B6 owner decision `59d7ac0…`; accepted B5 baseline / `origin/main` `2cd8c1d…`.

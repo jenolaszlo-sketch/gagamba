@@ -21,7 +21,7 @@
     <!-- D6.4/D6.5/D6.6 same-project test variant: identical M1 source
          inventory, distinct identity and isolated output paths. -->
     <ProjectReference Include="..\..\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj"
-                      AdditionalProperties="AssemblyName=Gagamba.Execution.Linux.M1.TestFixture;IsPackable=false;GagambaWp05D64FixtureEnabled=true;BaseIntermediateOutputPath=obj/d6-4-variant/;MSBuildProjectExtensionsPath=obj/d6-4-variant/;BaseOutputPath=bin/d6-4-variant/" />
+                      AdditionalProperties="Configuration=Debug;AssemblyName=Gagamba.Execution.Linux.M1.TestFixture;IsPackable=false;GagambaWp05D64FixtureEnabled=true;BaseIntermediateOutputPath=obj/d6-4-variant/;MSBuildProjectExtensionsPath=obj/d6-4-variant/;BaseOutputPath=bin/d6-4-variant/" />
     <ProjectReference Include="..\..\src\Gagamba.Execution\Gagamba.Execution.csproj" />
     <Compile Include="..\Gagamba.Execution.Linux.M1.Tests\Recovery\RecoveryTestSupport.cs" Link="RecoveryTestSupport.cs" />
   </ItemGroup>
@@ -31,7 +31,7 @@
   <Target Name="RestoreD64Variant" BeforeTargets="Restore">
     <MSBuild Projects="$(MSBuildThisFileDirectory)..\..\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj"
              Targets="Restore"
-             Properties="AssemblyName=Gagamba.Execution.Linux.M1.TestFixture;IsPackable=false;GagambaWp05D64FixtureEnabled=true;BaseIntermediateOutputPath=obj/d6-4-variant/;MSBuildProjectExtensionsPath=obj/d6-4-variant/;BaseOutputPath=bin/d6-4-variant/" />
+             Properties="Configuration=Debug;AssemblyName=Gagamba.Execution.Linux.M1.TestFixture;IsPackable=false;GagambaWp05D64FixtureEnabled=true;BaseIntermediateOutputPath=obj/d6-4-variant/;MSBuildProjectExtensionsPath=obj/d6-4-variant/;BaseOutputPath=bin/d6-4-variant/" />
   </Target>
 
 </Project>

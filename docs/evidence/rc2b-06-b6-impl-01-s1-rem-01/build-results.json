@@ -1,0 +1,722 @@
+[
+  {
+    "Name": "order-1-Release",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+      "-c",
+      "Release",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "inspect-order-1-Release",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "run",
+      "--project",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+      "-c",
+      "Release",
+      "--no-launch-profile",
+      "--",
+      "--production",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll"
+    ]
+  },
+  {
+    "Name": "order-2-Debug",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+      "-c",
+      "Debug",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "inspect-order-2-Debug",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "run",
+      "--project",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+      "-c",
+      "Release",
+      "--no-launch-profile",
+      "--",
+      "--instrumented",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order\\bin\\Gagamba.Execution.Linux.M1\\debug\\Gagamba.Execution.Linux.M1.dll"
+    ]
+  },
+  {
+    "Name": "order-3-Release",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+      "-c",
+      "Release",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "inspect-order-3-Release",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "run",
+      "--project",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+      "-c",
+      "Release",
+      "--no-launch-profile",
+      "--",
+      "--production",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll"
+    ]
+  },
+  {
+    "Name": "order-4-Release",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+      "-c",
+      "Release",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "inspect-order-4-Release",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "run",
+      "--project",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+      "-c",
+      "Release",
+      "--no-launch-profile",
+      "--",
+      "--production",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll"
+    ]
+  },
+  {
+    "Name": "order-5-Debug",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+      "-c",
+      "Debug",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "inspect-order-5-Debug",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "run",
+      "--project",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+      "-c",
+      "Release",
+      "--no-launch-profile",
+      "--",
+      "--instrumented",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order\\bin\\Gagamba.Execution.Linux.M1\\debug\\Gagamba.Execution.Linux.M1.dll"
+    ]
+  },
+  {
+    "Name": "order-6-Debug",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+      "-c",
+      "Debug",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "inspect-order-6-Debug",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "run",
+      "--project",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+      "-c",
+      "Release",
+      "--no-launch-profile",
+      "--",
+      "--instrumented",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order\\bin\\Gagamba.Execution.Linux.M1\\debug\\Gagamba.Execution.Linux.M1.dll"
+    ]
+  },
+  {
+    "Name": "order-7-Test",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+      "-c",
+      "Test",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "inspect-order-7-Test",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "run",
+      "--project",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+      "-c",
+      "Release",
+      "--no-launch-profile",
+      "--",
+      "--instrumented",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order\\bin\\Gagamba.Execution.Linux.M1\\test\\Gagamba.Execution.Linux.M1.dll"
+    ]
+  },
+  {
+    "Name": "fresh-debug",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+      "-c",
+      "Debug",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\fresh-debug",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "inspect-fresh-debug",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "run",
+      "--project",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+      "-c",
+      "Release",
+      "--no-launch-profile",
+      "--",
+      "--instrumented",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\fresh-debug\\bin\\Gagamba.Execution.Linux.M1\\debug\\Gagamba.Execution.Linux.M1.dll"
+    ]
+  },
+  {
+    "Name": "owner-release",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1.Owner\\Gagamba.Execution.Linux.M1.Owner.csproj",
+      "-c",
+      "Release",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\owner",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "recovery-release",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1.Recovery\\Gagamba.Execution.Linux.M1.Recovery.csproj",
+      "-c",
+      "Release",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\recovery",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "solution-release",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\Gagamba.sln",
+      "-c",
+      "Release",
+      "-m",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\solution",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "missing-symbol",
+    "Exit": 1,
+    "Expected": "GAGAMBA002",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+      "-c",
+      "Release",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\missing-symbol",
+      "--nologo",
+      "-p:DefineConstants=TRACE"
+    ]
+  },
+  {
+    "Name": "empty-symbols",
+    "Exit": 1,
+    "Expected": "GAGAMBA002",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+      "-c",
+      "Release",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\empty-symbols",
+      "--nologo",
+      "-p:DefineConstants="
+    ]
+  },
+  {
+    "Name": "fixture-only",
+    "Exit": 1,
+    "Expected": "GAGAMBA002",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+      "-c",
+      "Release",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\fixture-only",
+      "--nologo",
+      "-p:DefineConstants=GAGAMBA_WP05_D6_4_TEST_FIXTURE"
+    ]
+  },
+  {
+    "Name": "production-and-fixture",
+    "Exit": 1,
+    "Expected": "GAGAMBA004",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+      "-c",
+      "Release",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\production-and-fixture",
+      "--nologo",
+      "-p:DefineConstants=GAGAMBA_PRODUCTION%3BGAGAMBA_WP05_D6_4_TEST_FIXTURE"
+    ]
+  },
+  {
+    "Name": "release-fixture-carrier",
+    "Exit": 1,
+    "Expected": "GAGAMBA004",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+      "-c",
+      "Release",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\release-fixture-carrier",
+      "--nologo",
+      "-p:GagambaWp05D64FixtureEnabled=true"
+    ]
+  },
+  {
+    "Name": "spoof-helper-properties",
+    "Exit": 1,
+    "Expected": "GAGAMBA002",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+      "-c",
+      "Release",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\spoof-helper-properties",
+      "--nologo",
+      "-p:DefineConstants=",
+      "-p:_GagambaHasProductionSymbol=True"
+    ]
+  },
+  {
+    "Name": "unknown-configuration",
+    "Exit": 1,
+    "Expected": "GAGAMBA001",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+      "-c",
+      "Unclassified",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\unknown",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "fixture-without-isolated-paths",
+    "Exit": 1,
+    "Expected": "GAGAMBA008",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+      "-c",
+      "Debug",
+      "-p:GagambaWp05D64FixtureEnabled=true",
+      "-p:AssemblyName=Gagamba.Execution.Linux.M1.TestFixture",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\unisolated-fixture",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "debug-forced-production",
+    "Exit": 1,
+    "Expected": "GAGAMBA003",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+      "-c",
+      "Debug",
+      "-p:DefineConstants=GAGAMBA_PRODUCTION",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\forced-debug",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "debug-fixture-symbol-alone",
+    "Exit": 1,
+    "Expected": "GAGAMBA006",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+      "-c",
+      "Debug",
+      "-p:DefineConstants=GAGAMBA_WP05_D6_4_TEST_FIXTURE",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\fixture-symbol",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "owner-empty-symbols",
+    "Exit": 1,
+    "Expected": "GAGAMBA002",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1.Owner\\Gagamba.Execution.Linux.M1.Owner.csproj",
+      "-c",
+      "Release",
+      "-p:DefineConstants=",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\owner-empty",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "recovery-empty-symbols",
+    "Exit": 1,
+    "Expected": "GAGAMBA002",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1.Recovery\\Gagamba.Execution.Linux.M1.Recovery.csproj",
+      "-c",
+      "Release",
+      "-p:DefineConstants=",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\recovery-empty",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "solution-empty-symbols",
+    "Exit": 1,
+    "Expected": "GAGAMBA002",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\Gagamba.sln",
+      "-c",
+      "Release",
+      "-p:DefineConstants=",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\solution-empty",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "stale-valid-output-empty-symbols",
+    "Exit": 1,
+    "Expected": "GAGAMBA002",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+      "-c",
+      "Release",
+      "-p:DefineConstants=",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "project-reference-empty-symbols",
+    "Exit": 1,
+    "Expected": "GAGAMBA002",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\ReferenceProbe.csproj",
+      "-c",
+      "Release",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\reference",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "publish-m1",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "publish",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+      "-c",
+      "Release",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\publish-m1",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "publish-m1-empty-symbols",
+    "Exit": 1,
+    "Expected": "GAGAMBA002",
+    "Passed": true,
+    "Arguments": [
+      "publish",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+      "-c",
+      "Release",
+      "--no-build",
+      "-p:DefineConstants=",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\publish-m1",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "publish-owner",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "publish",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1.Owner\\Gagamba.Execution.Linux.M1.Owner.csproj",
+      "-c",
+      "Release",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\publish-owner",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "publish-owner-empty-symbols",
+    "Exit": 1,
+    "Expected": "GAGAMBA002",
+    "Passed": true,
+    "Arguments": [
+      "publish",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1.Owner\\Gagamba.Execution.Linux.M1.Owner.csproj",
+      "-c",
+      "Release",
+      "--no-build",
+      "-p:DefineConstants=",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\publish-owner",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "publish-recovery",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "publish",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1.Recovery\\Gagamba.Execution.Linux.M1.Recovery.csproj",
+      "-c",
+      "Release",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\publish-recovery",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "publish-recovery-empty-symbols",
+    "Exit": 1,
+    "Expected": "GAGAMBA002",
+    "Passed": true,
+    "Arguments": [
+      "publish",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1.Recovery\\Gagamba.Execution.Linux.M1.Recovery.csproj",
+      "-c",
+      "Release",
+      "--no-build",
+      "-p:DefineConstants=",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\publish-recovery",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "stale-instrumented-binary-inspection",
+    "Exit": 1,
+    "Expected": "FAIL",
+    "Passed": true,
+    "Arguments": [
+      "run",
+      "--project",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+      "-c",
+      "Release",
+      "--no-launch-profile",
+      "--",
+      "--production",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll"
+    ]
+  },
+  {
+    "Name": "stale-instrumented-no-build-publish",
+    "Exit": 1,
+    "Expected": "FAIL",
+    "Passed": true,
+    "Arguments": [
+      "publish",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+      "-c",
+      "Release",
+      "--no-build",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "owner-stale-ref-disabled",
+    "Exit": 1,
+    "Expected": "FAIL",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1.Owner\\Gagamba.Execution.Linux.M1.Owner.csproj",
+      "-c",
+      "Release",
+      "-p:BuildProjectReferences=false",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\owner",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "restore-valid-release",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+      "-c",
+      "Release",
+      "--no-incremental",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "inspect-restored-release",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "run",
+      "--project",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+      "-c",
+      "Release",
+      "--no-launch-profile",
+      "--",
+      "--production",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll"
+    ]
+  }
+]

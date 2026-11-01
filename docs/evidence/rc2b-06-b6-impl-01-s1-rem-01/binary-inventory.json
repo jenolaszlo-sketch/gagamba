@@ -1,0 +1,167 @@
+[
+  {
+    "path": "src/Gagamba.Execution.Linux.M1/bin/Release/net10.0/Gagamba.Execution.dll",
+    "size": 179712,
+    "sha256": "4000a725d0e9b753967ee47519a67ddde5b752b3aad8baf578b7b6bba76d4977"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1/bin/Release/net10.0/Gagamba.Execution.Linux.M1.deps.json",
+    "size": 2026,
+    "sha256": "39615e8ed2657ed70434d6f467a679e56330d3efbe7664e0aeca4e3cc4c19bcb"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1/bin/Release/net10.0/Gagamba.Execution.Linux.M1.dll",
+    "size": 591872,
+    "sha256": "fba92a5befcff21de30555957b0bbbf63df906c1fc399478074c0c59b2d864a7"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1/bin/Debug/net10.0/Gagamba.Execution.dll",
+    "size": 179712,
+    "sha256": "4000a725d0e9b753967ee47519a67ddde5b752b3aad8baf578b7b6bba76d4977"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1/bin/Debug/net10.0/Gagamba.Execution.Linux.M1.deps.json",
+    "size": 2026,
+    "sha256": "39615e8ed2657ed70434d6f467a679e56330d3efbe7664e0aeca4e3cc4c19bcb"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1/bin/Debug/net10.0/Gagamba.Execution.Linux.M1.dll",
+    "size": 653312,
+    "sha256": "81a5cba03afb0f9834a0d99c56be102c55d0b7edd3fd4ac5bcf083716ffc2277"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1.Owner/bin/Release/net10.0/Gagamba.Execution.dll",
+    "size": 179712,
+    "sha256": "4000a725d0e9b753967ee47519a67ddde5b752b3aad8baf578b7b6bba76d4977"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1.Owner/bin/Release/net10.0/Gagamba.Execution.Linux.M1.dll",
+    "size": 591872,
+    "sha256": "fba92a5befcff21de30555957b0bbbf63df906c1fc399478074c0c59b2d864a7"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1.Owner/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Owner.deps.json",
+    "size": 2568,
+    "sha256": "2eae945b187310a9cde8f6054352d8e2d943343541126b41405f827bea31e821"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1.Owner/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Owner.dll",
+    "size": 7680,
+    "sha256": "dcc5d81b36bee00719bbf3cb97702b3ba23f48d157e76be6a560facec10da1cf"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1.Owner/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Owner.exe",
+    "size": 162816,
+    "sha256": "80d7ff54b9995368af15e0d827e91922855ff22a830ceb0203ddee456345f697"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1.Owner/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Owner.runtimeconfig.json",
+    "size": 342,
+    "sha256": "c230a317a54dd960bcbeb5f347f52e18dc665a26f7efda2159fced9a5ac7e097"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1.Owner/bin/Release/net10.0/System.IO.Hashing.dll",
+    "size": 56104,
+    "sha256": "cea6795cf9f7b139b2215ff6de794a6f6e44e78640fb30fa4c0d5fa8472df8e5"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1.Owner/bin/Debug/net10.0/Gagamba.Execution.dll",
+    "size": 179712,
+    "sha256": "4000a725d0e9b753967ee47519a67ddde5b752b3aad8baf578b7b6bba76d4977"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1.Owner/bin/Debug/net10.0/Gagamba.Execution.Linux.M1.dll",
+    "size": 591872,
+    "sha256": "fba92a5befcff21de30555957b0bbbf63df906c1fc399478074c0c59b2d864a7"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1.Owner/bin/Debug/net10.0/Gagamba.Execution.Linux.M1.Owner.deps.json",
+    "size": 2568,
+    "sha256": "2eae945b187310a9cde8f6054352d8e2d943343541126b41405f827bea31e821"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1.Owner/bin/Debug/net10.0/Gagamba.Execution.Linux.M1.Owner.dll",
+    "size": 7680,
+    "sha256": "3815104172fc8e6cd082f5e50affb04740991ffb062b41ed9c473256481b9861"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1.Owner/bin/Debug/net10.0/Gagamba.Execution.Linux.M1.Owner.exe",
+    "size": 162816,
+    "sha256": "80d7ff54b9995368af15e0d827e91922855ff22a830ceb0203ddee456345f697"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1.Owner/bin/Debug/net10.0/Gagamba.Execution.Linux.M1.Owner.runtimeconfig.json",
+    "size": 270,
+    "sha256": "256dda2706e1151bb95987b6b5be610bf68d64e058285b19e7e958222fc90414"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1.Owner/bin/Debug/net10.0/System.IO.Hashing.dll",
+    "size": 56104,
+    "sha256": "cea6795cf9f7b139b2215ff6de794a6f6e44e78640fb30fa4c0d5fa8472df8e5"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1.Recovery/bin/Release/net10.0/Gagamba.Execution.dll",
+    "size": 179712,
+    "sha256": "4000a725d0e9b753967ee47519a67ddde5b752b3aad8baf578b7b6bba76d4977"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1.Recovery/bin/Release/net10.0/Gagamba.Execution.Linux.M1.dll",
+    "size": 591872,
+    "sha256": "fba92a5befcff21de30555957b0bbbf63df906c1fc399478074c0c59b2d864a7"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1.Recovery/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Recovery.deps.json",
+    "size": 2526,
+    "sha256": "e290f442915d73a51b7669e5be950e73029ddf48f766928f67659b50a1601c2c"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1.Recovery/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Recovery.dll",
+    "size": 5632,
+    "sha256": "409436c7136d459a5cf3b45b1fefc3fbddff9fcfe5987e294d8f27ff3a9fea8b"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1.Recovery/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Recovery.exe",
+    "size": 162816,
+    "sha256": "0f804b38a8efb58d80c4f783fa293f7cf5c6b7e637a06e5aec11a54cdd53ed92"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1.Recovery/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Recovery.runtimeconfig.json",
+    "size": 342,
+    "sha256": "c230a317a54dd960bcbeb5f347f52e18dc665a26f7efda2159fced9a5ac7e097"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1.Recovery/bin/Release/net10.0/System.IO.Hashing.dll",
+    "size": 56104,
+    "sha256": "cea6795cf9f7b139b2215ff6de794a6f6e44e78640fb30fa4c0d5fa8472df8e5"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1/bin/d6-4-variant/Debug/net10.0/Gagamba.Execution.dll",
+    "size": 187392,
+    "sha256": "e8c81df7886ef5d777d375e8d834c604a1bccf7c3a035513de679dc07e8e2683"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1/bin/d6-4-variant/Debug/net10.0/Gagamba.Execution.Linux.M1.TestFixture.deps.json",
+    "size": 2062,
+    "sha256": "792c3588ab2be459a95493184512818de0f8726219bf033544b8fa3fd47ab252"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1/bin/d6-4-variant/Debug/net10.0/Gagamba.Execution.Linux.M1.TestFixture.dll",
+    "size": 653824,
+    "sha256": "6827d44330d479e09290ef9bd872809e3712b98244f99fa4eb46efe751fae0d8"
+  },
+  {
+    "path": "artifacts/b6-s1-rem-01/before-empty/bin/Gagamba.Execution.Linux.M1/release/Gagamba.Execution.dll",
+    "size": 179712,
+    "sha256": "b0de56a6cb27703c760f1e77b2ace0990cc2efc435ae5672be47b5f6ff6bee4a"
+  },
+  {
+    "path": "artifacts/b6-s1-rem-01/before-empty/bin/Gagamba.Execution.Linux.M1/release/Gagamba.Execution.Linux.M1.deps.json",
+    "size": 2026,
+    "sha256": "39615e8ed2657ed70434d6f467a679e56330d3efbe7664e0aeca4e3cc4c19bcb"
+  },
+  {
+    "path": "artifacts/b6-s1-rem-01/before-empty/bin/Gagamba.Execution.Linux.M1/release/Gagamba.Execution.Linux.M1.dll",
+    "size": 619008,
+    "sha256": "f0c187217274b34075d4d137967af8c5c14e96ffe05bb216e5a7eed09ecbb326"
+  }
+]

@@ -1,0 +1,57 @@
+<Project>
+  <PropertyGroup>
+    <_GagambaDotnetHost>$(NetCoreRoot)dotnet</_GagambaDotnetHost>
+    <_GagambaDotnetHost Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(NetCoreRoot)dotnet.exe</_GagambaDotnetHost>
+  </PropertyGroup>
+  <!-- Refuse a missing Release symbol before resolving project references too.
+       Otherwise conflicting global-property instances may race over dependency
+       outputs before the compiler-phase check can report the real violation. -->
+  <Target Name="RejectMissingGagambaProductionSymbol" BeforeTargets="PrepareForBuild"
+          Condition="'$(Configuration)' == 'Release' And ('$(MSBuildProjectName)' == 'Gagamba.Execution.Linux.M1' Or '$(MSBuildProjectName)' == 'Gagamba.Execution.Linux.M1.Owner' Or '$(MSBuildProjectName)' == 'Gagamba.Execution.Linux.M1.Recovery')">
+    <Error Code="GAGAMBA002" Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(DefineConstants)', '(^|[;,\s])GAGAMBA_PRODUCTION($|[;,\s])')) != 'True'"
+           Text="Release requires the effective compiler symbol GAGAMBA_PRODUCTION before resolving references. Refusing production candidate." />
+  </Target>
+  <!-- CoreCompile receives DefineConstants directly (Microsoft.CSharp.Core.targets).
+       BeforeTargets runs even when incremental compilation is skipped. The publish
+       hook also validates publication without rebuilding of an existing candidate.
+       No user-supplied 'validated' property can opt out of this target. -->
+  <Target Name="ValidateGagambaCompilationIdentity"
+          BeforeTargets="CoreCompile;ComputeFilesToPublish"
+          Condition="'$(MSBuildProjectName)' == 'Gagamba.Execution.Linux.M1' Or '$(MSBuildProjectName)' == 'Gagamba.Execution.Linux.M1.Owner' Or '$(MSBuildProjectName)' == 'Gagamba.Execution.Linux.M1.Recovery'">
+    <Error Code="GAGAMBA001" Condition="'$(Configuration)' != 'Release' And '$(Configuration)' != 'Debug' And '$(Configuration)' != 'Test'"
+           Text="Trusted M1 components support only Release (production), Debug or Test (instrumented)." />
+    <Error Code="GAGAMBA002" Condition="'$(Configuration)' == 'Release' And $([System.Text.RegularExpressions.Regex]::IsMatch('$(DefineConstants)', '(^|[;,\s])GAGAMBA_PRODUCTION($|[;,\s])')) != 'True'"
+           Text="Release requires the effective compiler symbol GAGAMBA_PRODUCTION. DefineConstants='$(DefineConstants)'. Refusing production candidate." />
+    <Error Code="GAGAMBA003" Condition="'$(Configuration)' != 'Release' And $([System.Text.RegularExpressions.Regex]::IsMatch('$(DefineConstants)', '(^|[;,\s])GAGAMBA_PRODUCTION($|[;,\s])')) == 'True'"
+           Text="Instrumented Debug/Test compilation must not define GAGAMBA_PRODUCTION." />
+    <Error Code="GAGAMBA004" Condition="'$(Configuration)' == 'Release' And (('$(GagambaWp05D64FixtureEnabled)' != '' And '$(GagambaWp05D64FixtureEnabled)' != 'false') Or $([System.Text.RegularExpressions.Regex]::IsMatch('$(DefineConstants)', '(^|[;,\s])GAGAMBA_WP05_D6_4_TEST_FIXTURE($|[;,\s])')) == 'True' Or '$(AssemblyName)' == 'Gagamba.Execution.Linux.M1.TestFixture')"
+           Text="Release production compilation cannot use the D6.4 instrumented fixture carrier, symbol or assembly identity." />
+    <Error Code="GAGAMBA005" Condition="'$(GagambaWp05D64FixtureEnabled)' != '' And '$(GagambaWp05D64FixtureEnabled)' != 'true' And '$(GagambaWp05D64FixtureEnabled)' != 'false'"
+           Text="GagambaWp05D64FixtureEnabled must be empty, true or false." />
+    <Error Code="GAGAMBA006" Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(DefineConstants)', '(^|[;,\s])GAGAMBA_WP05_D6_4_TEST_FIXTURE($|[;,\s])')) == 'True' And '$(GagambaWp05D64FixtureEnabled)' != 'true'"
+           Text="The D6.4 compiler symbol requires its isolated fixture carrier." />
+    <Error Code="GAGAMBA007" Condition="'$(GagambaWp05D64FixtureEnabled)' == 'true' And ('$(MSBuildProjectName)' != 'Gagamba.Execution.Linux.M1' Or '$(AssemblyName)' != 'Gagamba.Execution.Linux.M1.TestFixture' Or $([System.Text.RegularExpressions.Regex]::IsMatch('$(DefineConstants)', '(^|[;,\s])GAGAMBA_WP05_D6_4_TEST_FIXTURE($|[;,\s])')) != 'True')"
+           Text="D6.4 requires the M1 TestFixture identity and effective fixture symbol; use the dedicated D6_4.Tests project reference." />
+    <Error Code="GAGAMBA008" Condition="'$(GagambaWp05D64FixtureEnabled)' == 'true' And ('$(UseArtifactsOutput)' == 'true' Or !$([System.Text.RegularExpressions.Regex]::IsMatch('$(BaseIntermediateOutputPath)', '(^|[\\/])d6-4-variant([\\/]|$)')) Or !$([System.Text.RegularExpressions.Regex]::IsMatch('$(MSBuildProjectExtensionsPath)', '(^|[\\/])d6-4-variant([\\/]|$)')) Or !$([System.Text.RegularExpressions.Regex]::IsMatch('$(BaseOutputPath)', '(^|[\\/])d6-4-variant([\\/]|$)')))"
+           Text="D6.4 requires isolated d6-4-variant intermediate, restore and binary roots. ArtifactsPath output remapping is unsupported for this specialized fixture." />
+    <Message Importance="High" Text="Gagamba compilation identity validated: $(MSBuildProjectName), $(Configuration), $(AssemblyName), DefineConstants=$(DefineConstants)" />
+  </Target>
+  <!-- Inspect actual output after every trusted Release build, including incremental
+       copies. The verifier is an independent process/project and is never a runtime
+       dependency. It can also be invoked directly by a reviewer. -->
+  <Target Name="VerifyGagambaProductionBinary" AfterTargets="CopyFilesToOutputDirectory"
+          Condition="'$(Configuration)' == 'Release' And ('$(MSBuildProjectName)' == 'Gagamba.Execution.Linux.M1' Or '$(MSBuildProjectName)' == 'Gagamba.Execution.Linux.M1.Owner' Or '$(MSBuildProjectName)' == 'Gagamba.Execution.Linux.M1.Recovery')">
+    <Exec Command="&quot;$(_GagambaDotnetHost)&quot; run --project &quot;$(MSBuildThisFileDirectory)eng/VerifyProductionAssembly/VerifyProductionAssembly.csproj&quot; -c Release --no-launch-profile -- --production &quot;$(TargetDir)Gagamba.Execution.Linux.M1.dll&quot;" />
+  </Target>
+  <!-- Publication without rebuilding must inspect the build output used as publish input, rather than trust properties or a
+       previous build's success. A final gate also checks the published M1 copy. -->
+  <Target Name="VerifyGagambaProductionPublish" BeforeTargets="ComputeFilesToPublish"
+          DependsOnTargets="ValidateGagambaCompilationIdentity"
+          Condition="'$(Configuration)' == 'Release' And ('$(MSBuildProjectName)' == 'Gagamba.Execution.Linux.M1' Or '$(MSBuildProjectName)' == 'Gagamba.Execution.Linux.M1.Owner' Or '$(MSBuildProjectName)' == 'Gagamba.Execution.Linux.M1.Recovery')">
+    <Exec Command="&quot;$(_GagambaDotnetHost)&quot; run --project &quot;$(MSBuildThisFileDirectory)eng/VerifyProductionAssembly/VerifyProductionAssembly.csproj&quot; -c Release --no-launch-profile -- --production &quot;$(TargetDir)Gagamba.Execution.Linux.M1.dll&quot;" />
+  </Target>
+  <Target Name="VerifyGagambaPublishedBinary" AfterTargets="Publish"
+          Condition="'$(Configuration)' == 'Release' And ('$(MSBuildProjectName)' == 'Gagamba.Execution.Linux.M1' Or '$(MSBuildProjectName)' == 'Gagamba.Execution.Linux.M1.Owner' Or '$(MSBuildProjectName)' == 'Gagamba.Execution.Linux.M1.Recovery')">
+    <Exec Command="&quot;$(_GagambaDotnetHost)&quot; run --project &quot;$(MSBuildThisFileDirectory)eng/VerifyProductionAssembly/VerifyProductionAssembly.csproj&quot; -c Release --no-launch-profile -- --production &quot;$(PublishDir)Gagamba.Execution.Linux.M1.dll&quot;" />
+  </Target>
+</Project>
