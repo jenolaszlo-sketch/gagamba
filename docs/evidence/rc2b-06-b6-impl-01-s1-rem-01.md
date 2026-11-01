@@ -3,13 +3,13 @@
 Date: 2026-11-01 (Asia/Manila)
 Remediation slice: focused production/test build separation
 Baseline source SHA: `1cbe4dfe9c4d19aba8708079b2f617b2ddafcbc0`
-Final source SHA: implementation commit identified in section A; verification receipt follows the implementation commit
+Final tested implementation SHA: `66896754de2610b1610c665f73d3cc0f88675641`; tree `62613e8e407eca25c9d0438d041a89d8e9c5b9fa`
 Branch: canonical `main`
 Host: Microsoft Windows 11 Home Single Language, 10.0.26200, x64
 SDK: .NET 10.0.401; MSBuild 18.9.11.42413; runtime 10.0.12
 Native prerequisites: Windows deterministic environment; Ubuntu WSL2 stopped, docker-desktop WSL2 running (inventory only)
 Qualification scope: managed build configuration, assembly metadata/IL, portable regression tests
-Explicit exclusions: privileged/native qualification, installed artifact trust, S2+, wire changes, publication, production activation
+Explicit exclusions: privileged/native qualification, installed artifact trust, S2+, wire changes, package publication, production activation
 
 ## A. Source baseline and custody
 
@@ -18,13 +18,13 @@ Starting commit `1cbe4dfe9c4d19aba8708079b2f617b2ddafcbc0`, tree `cb178340c21a17
 
 Tracked source was clean. The canonical checkout already contained unrelated **untracked** review files, tools, native spikes and old test results: see `artifacts/b6-s1-rem-01/initial-status.txt`. They were preserved, not staged or overwritten. Thus this was a clean tracked baseline, not an empty-untracked checkout. The initial worktree inventory contains **74 total entries including canonical main**; all paths and historical heads are retained. No worktree was created or removed.
 
-Implementation/source binding and post-commit verification are recorded in the final evidence receipt below. `source-inputs.sha256` beside this report binds each changed build/probe input independently of documentation commits. No existing runtime `.cs` file or existing test assertion source was edited. The original S1 evidence remains unchanged at [S1 record](rc2b-06-b6-impl-01-s1-production-build-separation.md).
+Final tested implementation: `66896754de2610b1610c665f73d3cc0f88675641`, tree `62613e8e407eca25c9d0438d041a89d8e9c5b9fa`, parent `635a01212440fe1df680e3231214594598e0fa74`. Post-commit verification ran with a clean tracked tree before this documentation-only receipt. The receipt changes no build or test input. Implementation/source binding and post-commit verification are recorded below. `source-inputs.sha256` beside this report binds each changed build/probe input independently of documentation commits. No existing runtime `.cs` file or existing test assertion source was edited. The original S1 evidence remains unchanged at [S1 record](rc2b-06-b6-impl-01-s1-production-build-separation.md).
 
 Q1 is external historical evidence at `C:/Users/Laszlos/source/repos/Solo/b6-impl-01-s1-q1-review`. All twelve required reports, the additional report files, probe source and actual `evidence/MANIFEST.md` were inspected. Root report/probe hashes are preserved in `q1-evidence.sha256`; none of those files were modified. Q1 is **S1 SUPPORTED WITH QUALIFICATIONS**; owner disposition is **FOCUSED S1 REMEDIATION REQUIRED**, not owner acceptance.
 
 Accepted [specification decision](../decisions/rc2b-06-b6-spec-owner-acceptance.md), [wire decision](../decisions/rc2b-06-b6-wire-owner-acceptance.md), [design](../design/rc2b-06-b6-installed-artifact-trust.md) and [qualification plan](../plans/rc2b-06-b6-qualification.md) remain authoritative. Installation trust/native T24 mutation and installed-record enforcement are not implemented here.
 
-Raw evidence is retained locally under ignored `artifacts/b6-s1-rem-01/`; durable summaries and its SHA-256/length manifest are beside this report. Large binaries, TRX and multi-megabyte IL/build logs are not committed. The custodian is this canonical checkout and its local artifacts directory; this is producer evidence, not a recreated independent review. The final Git IDs are supplied in the handoff, since a document cannot embed its own containing commit/tree ID without changing it.
+Raw evidence is retained locally under ignored `artifacts/b6-s1-rem-01/`; durable summaries and its SHA-256/length manifest are beside this report. Large binaries, TRX and multi-megabyte IL/build logs are not committed. The custodian is this canonical checkout and its local artifacts directory; this is producer evidence, not a recreated independent review. The final Git IDs are supplied in the final response to this commission, since a document cannot embed its own containing commit/tree ID without changing it.
 
 ## B. Original Q1 findings
 
@@ -56,7 +56,7 @@ A producer evidence audit also found an instrumented transitive-reference defect
 
 An MSBuild global `DefineConstants` prevents the props assignment from appending the production symbol. `Microsoft.CSharp.Core.targets` supplies **the effective `$(DefineConstants)` directly to Csc**. A label or early assignment is consequently insufficient.
 
-The late invariant target runs immediately before CoreCompile (after `_BeforeVBCSCoreCompile` dependencies), including incremental builds. `compiler-diagnostic.log` records the target sequence and the actual Csc DefineConstants parameter. An additional early missing-symbol rejection runs before PrepareForBuild, preventing invalid Release graphs from resolving differently scoped dependency instances first. This was added after an adversarial solution probe hit CS2012 while two global-property instances targeted the shared Execution output (the diagnostic mentioned Defender). That unrelated compilation failure was **not** counted as successful symbol enforcement. `early-refusal.log` demonstrates the final intended GAGAMBA002 diagnostic for all three trusted projects.
+The late invariant target runs immediately before CoreCompile (after `_BeforeVBCSCoreCompile` dependencies), including incremental builds. `final-6689675-compiler-diagnostic.log` records the target sequence and the actual Csc DefineConstants parameter. An additional early missing-symbol rejection runs before PrepareForBuild, preventing invalid Release graphs from resolving differently scoped dependency instances first. This was added after an adversarial solution probe hit CS2012 while two global-property instances targeted the shared Execution output (the diagnostic mentioned Defender). That unrelated compilation failure was **not** counted as successful symbol enforcement. `early-refusal.log` demonstrates the final intended GAGAMBA002 diagnostic for all three trusted projects.
 
 ## E. Implementation
 
@@ -105,11 +105,11 @@ dotnet run --project eng/VerifyProductionAssembly -c Release -- --instrumented <
 
 The tool checks **the accepted seven**, preserving the original count: Int01QualificationFault; Int01Qualification; OwnerSafetyMonitor.QualificationNativeStop; BubblewrapAdapter.QualificationBeforeCaptureStore; CopyTestHooks; BarrierDeathException; JournalFileStorage.QualificationBeforeRename. CopyTestHooks and BarrierDeathException are actually namespace-level types in SafeCopyIn.cs, despite shorthand nested notation in parts of the design and old review probe; the new verifier uses their actual metadata names.
 
-Production: **0/4 hook types, 0/3 hook properties**, all **12/12** expected safety types present. All method bodies are decoded; metadata names, fields/accessors, references, generated hook names, IL token references and selected canonical fault strings are inspected. Full production and instrumented type/IL dumps are retained. The verifier's README states that TypeSpec/generic signature operands are opaque tokens, with referenced names covered through metadata tables; this is a bounded inspection, not a general IL proof or a cryptographic provenance verifier.
+Production: **0/4 hook types, 0/3 hook properties**, all **12/12** expected safety types present. All method bodies are decoded; metadata names, fields/accessors, references, generated hook names, IL token references and selected canonical fault strings are inspected. Full production and instrumented type/IL dumps are retained as `final-6689675-production-il.log` and `final-6689675-instrumented-il.log`. The verifier's README states that TypeSpec/generic signature operands are opaque tokens, with referenced names covered through metadata tables; this is a bounded inspection, not a general IL proof or a cryptographic provenance verifier.
 
 Instrumented Debug and Test retain all seven; D6.4 retains them plus its specialized fixture identity. A hook-enabled Debug DLL relabeled by path as Release is rejected. The unsafe pre-fix Release DLL is rejected even with the correct AssemblyConfiguration label. Metadata absence removes the seven reflection/environ-switch activation surfaces; no runtime switch was introduced to resurrect them. Instrumented hook behavior remains exercised by the unchanged copy/binding and recovery tests.
 
-FakeDomainClock and RelativeTestClock reside in test source, absent from production M1. **Clock qualification preserved explicitly:** Reconciler's internal IDomainClock constructor still exists in Release, as at S1; production call sites use the sealed StopwatchDomainClock overload. The old Q1 inventory's wording "sealed in production" should not be read as metadata removal of that overload. This remediation neither removes it nor claims universal absence of every injection interface; Q2 should examine this inherited design/implementation qualification separately from the exact seven exclusions. All 61 B5 clock/deadline/authority tests execute against actual Release M1 in the supplementary suite.
+FakeDomainClock is declared in `tests/Gagamba.Execution.Linux.M1.Tests/Recovery/RecoveryTestSupport.cs:226`; RelativeTestClock is nested in `Recovery/Wp05B5C3ClockTrustTests.cs:200` of the same test project. Both are absent from production M1. Legitimate sealed StopwatchDomainClock, launch-domain clocks and owner clocks remain production code. **Clock qualification preserved explicitly:** Reconciler's internal IDomainClock constructor (`src/Gagamba.Execution.Linux.M1/Recovery/Reconciler.cs:141`) still exists in Release, as at S1; production call sites use the sealed StopwatchDomainClock overload. The old Q1 inventory's wording "sealed in production" should not be read as metadata removal of that overload. This remediation neither removes it nor claims universal absence of every injection interface; Q2 should examine this inherited design/implementation qualification separately from the exact seven exclusions. All 61 B5 clock/deadline/authority tests execute against actual Release M1 in the supplementary suite.
 
 The legitimate production FixtureConstructorMarker sentinel remains: it is safety code that refuses unexpected fixture output, not the fixture itself. Positive-control inspection caught and corrected an overly broad initial string ban before acceptance.
 
@@ -134,7 +134,7 @@ Framework: .NET 10, xUnit v3 3.2.0, Microsoft.NET.Test.Sdk 18.0.1, VS runner 3.1
 | D6.4 Release runner / Debug TestFixture | 3 | 0 | 0 | 3 |
 | Additional actual Release M1 candidate regression | 1019 | 0 | 199 | 1218 |
 
-The additional production compilation reuses the original friend test assembly name in an isolated project/output path; it is not deployed and does not replace the main suite. It explicitly omits five hook-dependent files: Preparation/{BindingTests,CopyInTests,NativeCopyInTests}.cs and Recovery/{IntegratedBarrierTests,NonRootQualificationTests}.cs. This accounts for **101 cases (31 portable passes, 70 environmental skips)** relative to the full instrumented suite, with **zero unexpected added/changed outcomes**. Full per-test accounting is retained in `production-supplement-instrumented-only-tests.json`. All those assertions still execute or report their original environmental skip in the full suites. No original test is excluded from M1.Tests Release or Debug.
+The additional production compilation reuses the original friend test assembly name in an isolated project/output path; it is not deployed and does not replace the main suite. It explicitly omits five hook-dependent files: Preparation/{BindingTests,CopyInTests,NativeCopyInTests}.cs and Recovery/{IntegratedBarrierTests,NonRootQualificationTests}.cs. This accounts for **101 cases (31 portable passes, 70 environmental skips)** relative to the full instrumented suite, with **zero unexpected added/changed outcomes**. Full per-test accounting is retained in `final-production-supplement-instrumented-only-tests.json`. All those assertions still execute or report their original environmental skip in the full suites. No original test is excluded from M1.Tests Release or Debug.
 
 All 289 Debug skips retain Q1's totals: M1 269 are named Linux/openat2/cgroup/pidfd/socket/mount/lifetime prerequisites; Linux 16 comprise 14 Linux-native and 2 delegated-cgroup cases; macOS 4 comprise 3 Unix helper-shim and 1 Unix-permissions cases. Exact disjoint M1 skip reasons/counts are recorded from TRX, not guessed categories. Native skips are **not passes**. Producer S1's 366/160 and Q1's 1245/289 remain separate historical observations. This run reproduces Q1's broader inventory.
 
@@ -200,4 +200,27 @@ Commission ID: **GAGAMBA-RC2B-06-B6-IMPL-01-S1-Q2**. Construct probes independen
 
 ## Final evidence receipt
 
-Implementation commit, final verification identifiers, artifact hashes and selected disposition are recorded in the evidence-only follow-up after committing the bounded implementation. Until that receipt is present this document records the measured implementation work, not a completed disposition.
+**Disposition: S1 REMEDIATED WITH QUALIFICATIONS — Q2 REQUIRED.**
+
+Both Q1 major defects have bounded corrective implementations and independently executable producer evidence. This is a proposal for independent Q2 verification, not independent closure or owner acceptance. Native/S2, installed trust and the inherited clock-overload qualification in G/J remain explicit.
+
+- Final tested implementation: `66896754de2610b1610c665f73d3cc0f88675641`, tree `62613e8e407eca25c9d0438d041a89d8e9c5b9fa`.
+- Intermediate local remediation: `635a01212440fe1df680e3231214594598e0fa74`, tree `a1340ab5d87a867243e3f587a19c6219361efbfc`; its owner Debug inventory was provisional and is superseded by this corrected final inventory.
+- Final evidence-only commit follows this implementation and changes only documentation/evidence. Its full commit/tree IDs are reported in the final response to this commission. All twelve build/probe inputs match `source-inputs.sha256`.
+- Exact-source expanded matrix: **51/51**, `artifacts/b6-s1-rem-01/final-6689675-matrix/results.json`. Both stale Debug-in-Release and stale Release-in-Debug owner closures refuse with actual metadata mismatch, including disabled reference builds. Full solution Release `-m`, direct M1/owner/recovery Release, direct Debug owner/recovery and Test M1 all pass their proper binary profiles. Valid publish and invalid no-build publish controls pass their intended checks.
+- Final standard-output parallel solution build: **0 errors / 0 warnings**, `final-6689675-solution-release.log`. The solution Debug owner copies match the Debug M1 and Execution source binaries; the same equality holds for Release. Fresh-root solution hash assertions are retained in `final-6689675-matrix/solution-debug-owner-hashes.txt`.
+- Exact-source tests: **1,245 passed / 0 failed / 289 skipped** in the eight Debug projects; **1,050/0/269** main Release runner; **3/0/0** D6.4 Release runner; **1,019/0/199** supplementary actual Release M1. Final TRX summary is beside this report, and all raw TRX remain local. All 61 B5 cases pass in both full M1 Debug and supplementary actual Release M1. No unexpected supplemental outcome differences; 101 explicit instrumented-only cases remain covered by the complete suite.
+- Final production metadata/IL: **0/7** hook surfaces, **12/12** safety types, **3,326** method bodies decoded; Release MVID `ac5b8b37-28fe-4911-a8d2-6832da52362b`. Debug: **7/7** hooks and **12/12** safety types, **3,474** bodies decoded; MVID `627fda5b-2f16-43d9-922b-dcedefa40533`. Corrected Debug owner and D6.4 copies pass instrumented inspection.
+
+| Final local artifact | SHA-256 |
+| --- | --- |
+| M1 | `640E7A9182B91E9EABE5ABA84FFEFF043AED257F2AF3487AD623D7C1809D96E7` |
+| Owner | `444E9D5B0FF8997224E84B819A5E9F68FD691721BFEE17D40862677E6E04F2C5` |
+| Recovery | `BAD3A505E11BA929B579460FB35A4878B2253F2C701BB09E79F665B9D21631E6` |
+| Execution | `785F6AA49318BCB787B56626A605944E48C1F5BE0A74ECC2B4B872D309CD7A75` |
+| M1 Debug | `EDE575A351BD5DFC627B556BD511B9014728642204A6C42FB74D25B383C9435A` |
+| D6.4 TestFixture | `CC3783958E17D1B2C746AB6D7FE019CE70E96F89181F5527990FDC6C9098AA72` |
+
+Hashes above bind normal canonical-output candidates to the exact tested implementation. The final binary inventory also includes their copied closures and clearly separates the unsafe historical negative control. It does not declare an installed artifact set.
+
+Final custody/Git checks: all **74** initial worktree entries preserved (73 noncanonical heads/branches unchanged); all **16** Q1 report/probe hashes unchanged; original S1 evidence and accepted decisions unchanged; no existing runtime or test assertion `.cs` changed. The pre-existing untracked inventory exactly matches the initial inventory. Remote main remains `1cbe4dfe9c4d19aba8708079b2f617b2ddafcbc0`; remediation commits are local only. Documentation preparation and `git diff --check` pass. No privileged operation, native qualification, S2 implementation, production activation, push or package publication occurred. Raw outputs are intentionally retained rather than cleaned; no test-owned native resources were created by this task. Managed test fixture cleanup has only the scope established by its passing assertions, with no new native cleanup claim.

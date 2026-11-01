@@ -1,6 +1,7 @@
 [
   {
-    "file": "trx/final-D64/Laszlos_LAPTOP-KBD8D8JG_2026-11-01_23_26_59_net10.0.trx",
+    "file": "final-6689675-trx/Release/Gagamba.Execution.Linux.M1.D6_4.Tests/Laszlos_LAPTOP-KBD8D8JG_2026-11-01_23_42_39_net10.0.trx",
+    "configuration": "Release",
     "counters": {
       "total": "3",
       "executed": "3",
@@ -22,29 +23,8 @@
     "skipReasons": {}
   },
   {
-    "file": "trx/Release/Gagamba.Execution.Linux.M1.D6_4.Tests/Laszlos_LAPTOP-KBD8D8JG_2026-11-01_23_19_10_net10.0.trx",
-    "counters": {
-      "total": "3",
-      "executed": "3",
-      "passed": "3",
-      "failed": "0",
-      "error": "0",
-      "timeout": "0",
-      "aborted": "0",
-      "inconclusive": "0",
-      "passedButRunAborted": "0",
-      "notRunnable": "0",
-      "notExecuted": "0",
-      "disconnected": "0",
-      "warning": "0",
-      "completed": "0",
-      "inProgress": "0",
-      "pending": "0"
-    },
-    "skipReasons": {}
-  },
-  {
-    "file": "trx/Release/Gagamba.Execution.Linux.M1.Tests/Laszlos_LAPTOP-KBD8D8JG_2026-11-01_23_19_01_net10.0.trx",
+    "file": "final-6689675-trx/Release/Gagamba.Execution.Linux.M1.Tests/Laszlos_LAPTOP-KBD8D8JG_2026-11-01_23_42_22_net10.0.trx",
+    "configuration": "Release",
     "counters": {
       "total": "1319",
       "executed": "1050",
@@ -86,7 +66,8 @@
     }
   },
   {
-    "file": "trx/Debug/Gagamba.Conformance.Tests/Laszlos_LAPTOP-KBD8D8JG_2026-11-01_23_18_09_net10.0.trx",
+    "file": "final-6689675-trx/Debug/Gagamba.Conformance.Tests/Laszlos_LAPTOP-KBD8D8JG_2026-11-01_23_41_29_net10.0.trx",
+    "configuration": "Debug",
     "counters": {
       "total": "6",
       "executed": "6",
@@ -108,7 +89,8 @@
     "skipReasons": {}
   },
   {
-    "file": "trx/Debug/Gagamba.Execution.Linux.M1.D6_4.Tests/Laszlos_LAPTOP-KBD8D8JG_2026-11-01_23_18_53_net10.0.trx",
+    "file": "final-6689675-trx/Debug/Gagamba.Execution.Linux.M1.D6_4.Tests/Laszlos_LAPTOP-KBD8D8JG_2026-11-01_23_42_10_net10.0.trx",
+    "configuration": "Debug",
     "counters": {
       "total": "3",
       "executed": "3",
@@ -130,7 +112,8 @@
     "skipReasons": {}
   },
   {
-    "file": "trx/Debug/Gagamba.Execution.Linux.M1.Tests/Laszlos_LAPTOP-KBD8D8JG_2026-11-01_23_17_52_net10.0.trx",
+    "file": "final-6689675-trx/Debug/Gagamba.Execution.Linux.M1.Tests/Laszlos_LAPTOP-KBD8D8JG_2026-11-01_23_41_12_net10.0.trx",
+    "configuration": "Debug",
     "counters": {
       "total": "1319",
       "executed": "1050",
@@ -172,7 +155,8 @@
     }
   },
   {
-    "file": "trx/Debug/Gagamba.Execution.Linux.Tests/Laszlos_LAPTOP-KBD8D8JG_2026-11-01_23_18_28_net10.0.trx",
+    "file": "final-6689675-trx/Debug/Gagamba.Execution.Linux.Tests/Laszlos_LAPTOP-KBD8D8JG_2026-11-01_23_41_45_net10.0.trx",
+    "configuration": "Debug",
     "counters": {
       "total": "42",
       "executed": "26",
@@ -197,7 +181,8 @@
     }
   },
   {
-    "file": "trx/Debug/Gagamba.Execution.MacOS.Tests/Laszlos_LAPTOP-KBD8D8JG_2026-11-01_23_18_33_net10.0.trx",
+    "file": "final-6689675-trx/Debug/Gagamba.Execution.MacOS.Tests/Laszlos_LAPTOP-KBD8D8JG_2026-11-01_23_41_50_net10.0.trx",
+    "configuration": "Debug",
     "counters": {
       "total": "51",
       "executed": "47",
@@ -222,7 +207,8 @@
     }
   },
   {
-    "file": "trx/Debug/Gagamba.Execution.Tests/Laszlos_LAPTOP-KBD8D8JG_2026-11-01_23_18_02_net10.0.trx",
+    "file": "final-6689675-trx/Debug/Gagamba.Execution.Tests/Laszlos_LAPTOP-KBD8D8JG_2026-11-01_23_41_22_net10.0.trx",
+    "configuration": "Debug",
     "counters": {
       "total": "68",
       "executed": "68",
@@ -244,7 +230,8 @@
     "skipReasons": {}
   },
   {
-    "file": "trx/Debug/Gagamba.Execution.Windows.Tests/Laszlos_LAPTOP-KBD8D8JG_2026-11-01_23_18_41_net10.0.trx",
+    "file": "final-6689675-trx/Debug/Gagamba.Execution.Windows.Tests/Laszlos_LAPTOP-KBD8D8JG_2026-11-01_23_41_57_net10.0.trx",
+    "configuration": "Debug",
     "counters": {
       "total": "30",
       "executed": "30",
@@ -266,7 +253,8 @@
     "skipReasons": {}
   },
   {
-    "file": "trx/Debug/Gagamba.Runtime.Tests/Laszlos_LAPTOP-KBD8D8JG_2026-11-01_23_18_20_net10.0.trx",
+    "file": "final-6689675-trx/Debug/Gagamba.Runtime.Tests/Laszlos_LAPTOP-KBD8D8JG_2026-11-01_23_41_39_net10.0.trx",
+    "configuration": "Debug",
     "counters": {
       "total": "15",
       "executed": "15",
@@ -288,7 +276,8 @@
     "skipReasons": {}
   },
   {
-    "file": "production-regressions/trx/Laszlos_LAPTOP-KBD8D8JG_2026-11-01_23_20_40_net10.0.trx",
+    "file": "final-6689675-production-regressions/trx/Laszlos_LAPTOP-KBD8D8JG_2026-11-01_23_42_49_net10.0.trx",
+    "configuration": "Release",
     "counters": {
       "total": "1218",
       "executed": "1019",

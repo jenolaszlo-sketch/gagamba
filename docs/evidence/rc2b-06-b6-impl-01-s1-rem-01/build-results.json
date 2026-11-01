@@ -10,7 +10,7 @@
       "-c",
       "Release",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\order",
       "--nologo"
     ]
   },
@@ -28,7 +28,7 @@
       "--no-launch-profile",
       "--",
       "--production",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll"
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\order\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll"
     ]
   },
   {
@@ -42,7 +42,7 @@
       "-c",
       "Debug",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\order",
       "--nologo"
     ]
   },
@@ -60,7 +60,7 @@
       "--no-launch-profile",
       "--",
       "--instrumented",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order\\bin\\Gagamba.Execution.Linux.M1\\debug\\Gagamba.Execution.Linux.M1.dll"
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\order\\bin\\Gagamba.Execution.Linux.M1\\debug\\Gagamba.Execution.Linux.M1.dll"
     ]
   },
   {
@@ -74,7 +74,7 @@
       "-c",
       "Release",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\order",
       "--nologo"
     ]
   },
@@ -92,7 +92,7 @@
       "--no-launch-profile",
       "--",
       "--production",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll"
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\order\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll"
     ]
   },
   {
@@ -106,7 +106,7 @@
       "-c",
       "Release",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\order",
       "--nologo"
     ]
   },
@@ -124,7 +124,7 @@
       "--no-launch-profile",
       "--",
       "--production",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll"
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\order\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll"
     ]
   },
   {
@@ -138,7 +138,7 @@
       "-c",
       "Debug",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\order",
       "--nologo"
     ]
   },
@@ -156,7 +156,7 @@
       "--no-launch-profile",
       "--",
       "--instrumented",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order\\bin\\Gagamba.Execution.Linux.M1\\debug\\Gagamba.Execution.Linux.M1.dll"
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\order\\bin\\Gagamba.Execution.Linux.M1\\debug\\Gagamba.Execution.Linux.M1.dll"
     ]
   },
   {
@@ -170,7 +170,7 @@
       "-c",
       "Debug",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\order",
       "--nologo"
     ]
   },
@@ -188,7 +188,7 @@
       "--no-launch-profile",
       "--",
       "--instrumented",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order\\bin\\Gagamba.Execution.Linux.M1\\debug\\Gagamba.Execution.Linux.M1.dll"
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\order\\bin\\Gagamba.Execution.Linux.M1\\debug\\Gagamba.Execution.Linux.M1.dll"
     ]
   },
   {
@@ -202,7 +202,7 @@
       "-c",
       "Test",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\order",
       "--nologo"
     ]
   },
@@ -220,7 +220,7 @@
       "--no-launch-profile",
       "--",
       "--instrumented",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order\\bin\\Gagamba.Execution.Linux.M1\\test\\Gagamba.Execution.Linux.M1.dll"
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\order\\bin\\Gagamba.Execution.Linux.M1\\test\\Gagamba.Execution.Linux.M1.dll"
     ]
   },
   {
@@ -234,7 +234,7 @@
       "-c",
       "Debug",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\fresh-debug",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\fresh-debug",
       "--nologo"
     ]
   },
@@ -252,7 +252,7 @@
       "--no-launch-profile",
       "--",
       "--instrumented",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\fresh-debug\\bin\\Gagamba.Execution.Linux.M1\\debug\\Gagamba.Execution.Linux.M1.dll"
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\fresh-debug\\bin\\Gagamba.Execution.Linux.M1\\debug\\Gagamba.Execution.Linux.M1.dll"
     ]
   },
   {
@@ -266,8 +266,40 @@
       "-c",
       "Release",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\owner",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\owner",
       "--nologo"
+    ]
+  },
+  {
+    "Name": "owner-debug",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1.Owner\\Gagamba.Execution.Linux.M1.Owner.csproj",
+      "-c",
+      "Debug",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\owner",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "owner-debug-inspection",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "run",
+      "--project",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+      "-c",
+      "Release",
+      "--no-launch-profile",
+      "--",
+      "--instrumented",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\owner\\bin\\Gagamba.Execution.Linux.M1.Owner\\debug\\Gagamba.Execution.Linux.M1.dll"
     ]
   },
   {
@@ -281,8 +313,40 @@
       "-c",
       "Release",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\recovery",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\recovery",
       "--nologo"
+    ]
+  },
+  {
+    "Name": "recovery-debug",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1.Recovery\\Gagamba.Execution.Linux.M1.Recovery.csproj",
+      "-c",
+      "Debug",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\recovery",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "recovery-debug-inspection",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "run",
+      "--project",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+      "-c",
+      "Release",
+      "--no-launch-profile",
+      "--",
+      "--instrumented",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\recovery\\bin\\Gagamba.Execution.Linux.M1.Recovery\\debug\\Gagamba.Execution.Linux.M1.dll"
     ]
   },
   {
@@ -297,8 +361,25 @@
       "Release",
       "-m",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\solution",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\solution",
       "--nologo"
+    ]
+  },
+  {
+    "Name": "solution-debug-owner-inspection",
+    "Exit": 0,
+    "Expected": "",
+    "Passed": true,
+    "Arguments": [
+      "run",
+      "--project",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+      "-c",
+      "Release",
+      "--no-launch-profile",
+      "--",
+      "--instrumented",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\solution\\bin\\Gagamba.Execution.Linux.M1.Owner\\debug\\Gagamba.Execution.Linux.M1.dll"
     ]
   },
   {
@@ -312,7 +393,7 @@
       "-c",
       "Release",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\missing-symbol",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\missing-symbol",
       "--nologo",
       "-p:DefineConstants=TRACE"
     ]
@@ -328,7 +409,7 @@
       "-c",
       "Release",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\empty-symbols",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\empty-symbols",
       "--nologo",
       "-p:DefineConstants="
     ]
@@ -344,7 +425,7 @@
       "-c",
       "Release",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\fixture-only",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\fixture-only",
       "--nologo",
       "-p:DefineConstants=GAGAMBA_WP05_D6_4_TEST_FIXTURE"
     ]
@@ -360,7 +441,7 @@
       "-c",
       "Release",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\production-and-fixture",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\production-and-fixture",
       "--nologo",
       "-p:DefineConstants=GAGAMBA_PRODUCTION%3BGAGAMBA_WP05_D6_4_TEST_FIXTURE"
     ]
@@ -376,7 +457,7 @@
       "-c",
       "Release",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\release-fixture-carrier",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\release-fixture-carrier",
       "--nologo",
       "-p:GagambaWp05D64FixtureEnabled=true"
     ]
@@ -392,7 +473,7 @@
       "-c",
       "Release",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\spoof-helper-properties",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\spoof-helper-properties",
       "--nologo",
       "-p:DefineConstants=",
       "-p:_GagambaHasProductionSymbol=True"
@@ -409,7 +490,7 @@
       "-c",
       "Unclassified",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\unknown",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\unknown",
       "--nologo"
     ]
   },
@@ -426,7 +507,7 @@
       "-p:GagambaWp05D64FixtureEnabled=true",
       "-p:AssemblyName=Gagamba.Execution.Linux.M1.TestFixture",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\unisolated-fixture",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\unisolated-fixture",
       "--nologo"
     ]
   },
@@ -442,7 +523,7 @@
       "Debug",
       "-p:DefineConstants=GAGAMBA_PRODUCTION",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\forced-debug",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\forced-debug",
       "--nologo"
     ]
   },
@@ -458,7 +539,7 @@
       "Debug",
       "-p:DefineConstants=GAGAMBA_WP05_D6_4_TEST_FIXTURE",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\fixture-symbol",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\fixture-symbol",
       "--nologo"
     ]
   },
@@ -474,7 +555,7 @@
       "Release",
       "-p:DefineConstants=",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\owner-empty",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\owner-empty",
       "--nologo"
     ]
   },
@@ -490,7 +571,7 @@
       "Release",
       "-p:DefineConstants=",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\recovery-empty",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\recovery-empty",
       "--nologo"
     ]
   },
@@ -506,7 +587,7 @@
       "Release",
       "-p:DefineConstants=",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\solution-empty",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\solution-empty",
       "--nologo"
     ]
   },
@@ -522,7 +603,7 @@
       "Release",
       "-p:DefineConstants=",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\order",
       "--nologo"
     ]
   },
@@ -533,11 +614,11 @@
     "Passed": true,
     "Arguments": [
       "build",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\ReferenceProbe.csproj",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\ReferenceProbe.csproj",
       "-c",
       "Release",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\reference",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\reference",
       "--nologo"
     ]
   },
@@ -552,7 +633,7 @@
       "-c",
       "Release",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\publish-m1",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\publish-m1",
       "--nologo"
     ]
   },
@@ -569,7 +650,7 @@
       "--no-build",
       "-p:DefineConstants=",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\publish-m1",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\publish-m1",
       "--nologo"
     ]
   },
@@ -584,7 +665,7 @@
       "-c",
       "Release",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\publish-owner",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\publish-owner",
       "--nologo"
     ]
   },
@@ -601,7 +682,7 @@
       "--no-build",
       "-p:DefineConstants=",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\publish-owner",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\publish-owner",
       "--nologo"
     ]
   },
@@ -616,7 +697,7 @@
       "-c",
       "Release",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\publish-recovery",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\publish-recovery",
       "--nologo"
     ]
   },
@@ -633,7 +714,7 @@
       "--no-build",
       "-p:DefineConstants=",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\publish-recovery",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\publish-recovery",
       "--nologo"
     ]
   },
@@ -651,7 +732,7 @@
       "--no-launch-profile",
       "--",
       "--production",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll"
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\order\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll"
     ]
   },
   {
@@ -666,7 +747,7 @@
       "Release",
       "--no-build",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\order",
       "--nologo"
     ]
   },
@@ -682,7 +763,23 @@
       "Release",
       "-p:BuildProjectReferences=false",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\owner",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\owner",
+      "--nologo"
+    ]
+  },
+  {
+    "Name": "owner-debug-stale-production-ref-disabled",
+    "Exit": 1,
+    "Expected": "FAIL",
+    "Passed": true,
+    "Arguments": [
+      "build",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1.Owner\\Gagamba.Execution.Linux.M1.Owner.csproj",
+      "-c",
+      "Debug",
+      "-p:BuildProjectReferences=false",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\owner",
       "--nologo"
     ]
   },
@@ -698,7 +795,7 @@
       "Release",
       "--no-incremental",
       "--artifacts-path",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\order",
       "--nologo"
     ]
   },
@@ -716,7 +813,7 @@
       "--no-launch-profile",
       "--",
       "--production",
-      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\build-matrix-complete\\order\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll"
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\artifacts\\b6-s1-rem-01\\final-6689675-matrix\\order\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll"
     ]
   }
 ]
