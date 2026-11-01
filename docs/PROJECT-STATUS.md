@@ -1,5 +1,11 @@
 # Gagamba project status
 
+> **B6 SPECIFICATION COMPLETE — READY WITH QUALIFICATIONS (2026-11-01).**
+> Specification commit follows baseline `2cd8c1d716ed2e3e61156819730cd3d39e81844b` (tree `e9ed9989ee35c43557e0a93fdec4d313af4f740e`).
+> Design: [RC2B-06 B6 installed-artifact trust](design/rc2b-06-b6-installed-artifact-trust.md); qualification plan: [B6-T01–T25](plans/rc2b-06-b6-qualification.md); source gaps: [B6-SPEC-01 evidence](evidence/rc2b-06-b6-spec-01.md).
+> Recommended architecture: root-owned immutable local installation (generation = artifact-set SHA-256) + root-owned receipt + accepted qualification record; explicit platform baseline for bwrap/.NET/loader/kernel. Caller-populated B3 pins are rejected for production. Descriptor is passive; no new RELEASE authority.
+> **No B6 implementation, test execution, native run, installer, package build or production activation occurred.** B3-F04/F06 and B5-L04 remain open implementation obligations; HD-1–HD-4 require owner decisions. B6/B7, Hufu, packaging, native Linux/macOS and production remain gated. Historical blocks below are unchanged.
+
 > **B5 ACCEPTED WITH QUALIFICATIONS (2026-11-01).**
 > Owner decision: [RC2B-05-B5 Owner Acceptance](decisions/rc2b-05-b5-owner-acceptance.md).
 > Independent review: [SUPPORTED WITH QUALIFICATIONS](reviews/rc2b-05-b5-q1-independent-security-review.md), review commit `d5852f46bb3db08b8f37386851bf22bd7a99b48f`.

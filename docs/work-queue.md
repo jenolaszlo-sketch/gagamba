@@ -1,5 +1,10 @@
 # Current work queue
 
+> **B6 SPECIFICATION COMPLETE — READY WITH QUALIFICATIONS (2026-11-01).**
+> Baseline `2cd8c1d716ed2e3e61156819730cd3d39e81844b`; [design](design/rc2b-06-b6-installed-artifact-trust.md), [B6-T01–T25 plan](plans/rc2b-06-b6-qualification.md), [source/gap trace](evidence/rc2b-06-b6-spec-01.md).
+> Next activity: **independent B6 specification review**, not implementation. B6 implementation requires a separate `GAGAMBA-RC2B-06-B6-IMPL-01` commission; B3-F04/F06 and B5-L04 remain implementation obligations. HD-1–HD-4 require owner decisions.
+> No production activation, installer, package release, B6/B7 implementation, Hufu or native Linux/macOS work is authorized. Historical blocks below are unchanged.
+
 > **B5 ACCEPTED WITH QUALIFICATIONS (2026-11-01).**
 > Owner decision: [RC2B-05-B5 Owner Acceptance](decisions/rc2b-05-b5-owner-acceptance.md); independent review: [SUPPORTED WITH QUALIFICATIONS](reviews/rc2b-05-b5-q1-independent-security-review.md) at review commit `d5852f46bb3db08b8f37386851bf22bd7a99b48f`.
 > Tested implementation `0bf045d0ec3e4cb560edb2bc3b4e7065efaa7b9c`, tree `80d138f81c82b61243e23c0865eb6a1ca516cc54`; producer evidence `9cba151ee82bdba301251f0c12fc1550c9e6d5d6`, tree `155da2cfd0d185eba0b6187b3e69f390cd6c348e`; baseline `e7818b5a876c220cb4f803b6cc1f9c55027d3c66`.
