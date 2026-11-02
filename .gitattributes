@@ -27,3 +27,6 @@ eng/linux-m1/remove-generation.sh text eol=lf
 eng/linux-m1/test-install-common.sh text eol=lf
 eng/linux-m1/verify-install.sh text eol=lf
 tests/Gagamba.Execution.Linux.M1.Tests/Installation/manifest-v1.golden.json -text
+
+# Preserve the raw Q1 reports, probes, logs, TRX and source tar, including original whitespace.
+docs/reviews/rc2b-06-b6-impl-01-s2-q1-evidence/** -text -whitespace

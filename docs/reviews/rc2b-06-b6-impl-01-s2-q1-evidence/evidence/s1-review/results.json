@@ -1,0 +1,401 @@
+[
+    {
+        "Name":  "order-1-Release",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "build",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\src-8b897e4\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+                          "-c",
+                          "Release",
+                          "--artifacts-path",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\evidence\\s1-review\\order",
+                          "--nologo"
+                      ]
+    },
+    {
+        "Name":  "inspect-order-1-Release",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "run",
+                          "--project",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\src-8b897e4\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+                          "-c",
+                          "Release",
+                          "--no-launch-profile",
+                          "--",
+                          "--production",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\evidence\\s1-review\\order\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll"
+                      ]
+    },
+    {
+        "Name":  "order-2-Debug",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "build",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\src-8b897e4\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+                          "-c",
+                          "Debug",
+                          "--artifacts-path",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\evidence\\s1-review\\order",
+                          "--nologo"
+                      ]
+    },
+    {
+        "Name":  "inspect-order-2-Debug",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "run",
+                          "--project",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\src-8b897e4\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+                          "-c",
+                          "Release",
+                          "--no-launch-profile",
+                          "--",
+                          "--instrumented",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\evidence\\s1-review\\order\\bin\\Gagamba.Execution.Linux.M1\\debug\\Gagamba.Execution.Linux.M1.dll"
+                      ]
+    },
+    {
+        "Name":  "order-3-Release",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "build",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\src-8b897e4\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+                          "-c",
+                          "Release",
+                          "--artifacts-path",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\evidence\\s1-review\\order",
+                          "--nologo"
+                      ]
+    },
+    {
+        "Name":  "inspect-order-3-Release",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "run",
+                          "--project",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\src-8b897e4\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+                          "-c",
+                          "Release",
+                          "--no-launch-profile",
+                          "--",
+                          "--production",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\evidence\\s1-review\\order\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll"
+                      ]
+    },
+    {
+        "Name":  "order-4-Release",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "build",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\src-8b897e4\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+                          "-c",
+                          "Release",
+                          "--artifacts-path",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\evidence\\s1-review\\order",
+                          "--nologo"
+                      ]
+    },
+    {
+        "Name":  "inspect-order-4-Release",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "run",
+                          "--project",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\src-8b897e4\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+                          "-c",
+                          "Release",
+                          "--no-launch-profile",
+                          "--",
+                          "--production",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\evidence\\s1-review\\order\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll"
+                      ]
+    },
+    {
+        "Name":  "order-5-Debug",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "build",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\src-8b897e4\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+                          "-c",
+                          "Debug",
+                          "--artifacts-path",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\evidence\\s1-review\\order",
+                          "--nologo"
+                      ]
+    },
+    {
+        "Name":  "inspect-order-5-Debug",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "run",
+                          "--project",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\src-8b897e4\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+                          "-c",
+                          "Release",
+                          "--no-launch-profile",
+                          "--",
+                          "--instrumented",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\evidence\\s1-review\\order\\bin\\Gagamba.Execution.Linux.M1\\debug\\Gagamba.Execution.Linux.M1.dll"
+                      ]
+    },
+    {
+        "Name":  "order-6-Debug",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "build",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\src-8b897e4\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+                          "-c",
+                          "Debug",
+                          "--artifacts-path",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\evidence\\s1-review\\order",
+                          "--nologo"
+                      ]
+    },
+    {
+        "Name":  "inspect-order-6-Debug",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "run",
+                          "--project",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\src-8b897e4\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+                          "-c",
+                          "Release",
+                          "--no-launch-profile",
+                          "--",
+                          "--instrumented",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\evidence\\s1-review\\order\\bin\\Gagamba.Execution.Linux.M1\\debug\\Gagamba.Execution.Linux.M1.dll"
+                      ]
+    },
+    {
+        "Name":  "order-7-Test",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "build",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\src-8b897e4\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+                          "-c",
+                          "Test",
+                          "--artifacts-path",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\evidence\\s1-review\\order",
+                          "--nologo"
+                      ]
+    },
+    {
+        "Name":  "inspect-order-7-Test",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "run",
+                          "--project",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\src-8b897e4\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+                          "-c",
+                          "Release",
+                          "--no-launch-profile",
+                          "--",
+                          "--instrumented",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\evidence\\s1-review\\order\\bin\\Gagamba.Execution.Linux.M1\\test\\Gagamba.Execution.Linux.M1.dll"
+                      ]
+    },
+    {
+        "Name":  "fresh-debug",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "build",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\src-8b897e4\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+                          "-c",
+                          "Debug",
+                          "--artifacts-path",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\evidence\\s1-review\\fresh-debug",
+                          "--nologo"
+                      ]
+    },
+    {
+        "Name":  "inspect-fresh-debug",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "run",
+                          "--project",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\src-8b897e4\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+                          "-c",
+                          "Release",
+                          "--no-launch-profile",
+                          "--",
+                          "--instrumented",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\evidence\\s1-review\\fresh-debug\\bin\\Gagamba.Execution.Linux.M1\\debug\\Gagamba.Execution.Linux.M1.dll"
+                      ]
+    },
+    {
+        "Name":  "owner-release",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "build",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\src-8b897e4\\src\\Gagamba.Execution.Linux.M1.Owner\\Gagamba.Execution.Linux.M1.Owner.csproj",
+                          "-c",
+                          "Release",
+                          "--artifacts-path",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\evidence\\s1-review\\owner",
+                          "--nologo"
+                      ]
+    },
+    {
+        "Name":  "owner-debug",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "build",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\src-8b897e4\\src\\Gagamba.Execution.Linux.M1.Owner\\Gagamba.Execution.Linux.M1.Owner.csproj",
+                          "-c",
+                          "Debug",
+                          "--artifacts-path",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\evidence\\s1-review\\owner",
+                          "--nologo"
+                      ]
+    },
+    {
+        "Name":  "owner-debug-inspection",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "run",
+                          "--project",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\src-8b897e4\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+                          "-c",
+                          "Release",
+                          "--no-launch-profile",
+                          "--",
+                          "--instrumented",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\evidence\\s1-review\\owner\\bin\\Gagamba.Execution.Linux.M1.Owner\\debug\\Gagamba.Execution.Linux.M1.dll"
+                      ]
+    },
+    {
+        "Name":  "recovery-release",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "build",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\src-8b897e4\\src\\Gagamba.Execution.Linux.M1.Recovery\\Gagamba.Execution.Linux.M1.Recovery.csproj",
+                          "-c",
+                          "Release",
+                          "--artifacts-path",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\evidence\\s1-review\\recovery",
+                          "--nologo"
+                      ]
+    },
+    {
+        "Name":  "recovery-debug",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "build",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\src-8b897e4\\src\\Gagamba.Execution.Linux.M1.Recovery\\Gagamba.Execution.Linux.M1.Recovery.csproj",
+                          "-c",
+                          "Debug",
+                          "--artifacts-path",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\evidence\\s1-review\\recovery",
+                          "--nologo"
+                      ]
+    },
+    {
+        "Name":  "recovery-debug-inspection",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "run",
+                          "--project",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\src-8b897e4\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+                          "-c",
+                          "Release",
+                          "--no-launch-profile",
+                          "--",
+                          "--instrumented",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\evidence\\s1-review\\recovery\\bin\\Gagamba.Execution.Linux.M1.Recovery\\debug\\Gagamba.Execution.Linux.M1.dll"
+                      ]
+    },
+    {
+        "Name":  "solution-release",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "build",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\src-8b897e4\\Gagamba.sln",
+                          "-c",
+                          "Release",
+                          "-m",
+                          "--artifacts-path",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\evidence\\s1-review\\solution",
+                          "--nologo"
+                      ]
+    },
+    {
+        "Name":  "solution-debug-owner-inspection",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "run",
+                          "--project",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\src-8b897e4\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+                          "-c",
+                          "Release",
+                          "--no-launch-profile",
+                          "--",
+                          "--instrumented",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\evidence\\s1-review\\solution\\bin\\Gagamba.Execution.Linux.M1.Owner\\debug\\Gagamba.Execution.Linux.M1.dll"
+                      ]
+    },
+    {
+        "Name":  "missing-symbol",
+        "Exit":  1,
+        "Expected":  "GAGAMBA002",
+        "Passed":  false,
+        "Arguments":  [
+                          "build",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\src-8b897e4\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+                          "-c",
+                          "Release",
+                          "--artifacts-path",
+                          "C:\\Users\\Laszlos\\source\\repos\\gagamba-b6-s2-q1-review\\evidence\\s1-review\\missing-symbol",
+                          "--nologo",
+                          "-p:DefineConstants=TRACE"
+                      ]
+    }
+]

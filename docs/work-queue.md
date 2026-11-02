@@ -1,5 +1,12 @@
 # Current work queue
 
+> **S2 OWNER ACCEPTANCE PENDING FOCUSED TRUST-STORE DECISION (2026-11-03).**
+> S1 remains ACCEPTED WITH QUALIFICATIONS. The bounded S2 implementation is complete. Independent S2-Q1 returned **SUPPORTED WITH QUALIFICATIONS** for the 14-artifact candidate, SHA-256 `31d8ebc21c227e8ed6cf9e6952b69365a71f6ec02786c0cf0fa8a0ab8906e133`.
+> F01 clarifies build-user versus installed ownership. F02 adds a root-controlled publication decision under `/etc/gagamba` that the installed verifier never reads. F03 defers holder-argument cleanup while removal refuses. These retain their original MINOR severity. F04 and F05 remain qualification items for the writable WSL2 root and deferred integration/native closure.
+> **Next queued decision:** resolve F02 publication, retry and withdrawal semantics and record the S2 disposition. Queue S3 identity propagation only after acceptance. Keep privileged native qualification, loader closure and production activation separate.
+> Root-owned native qualification remains pending. Production restricted execution is unavailable. S3, later stages and privileged execution require separate commissions.
+> [Owner decision and F02 audit](decisions/rc2b-06-b6-impl-01-s2-owner-acceptance.md) · [Independent Q1 evidence index](reviews/rc2b-06-b6-impl-01-s2-q1-independent-review.md)
+
 > **B6-S2 IMPLEMENTED WITH RESTRICTIONS. Independent S2-Q1 is next (2026-11-02).**
 > Recovery found the accepted S1 baseline and 73 clean historical worktrees. Installed-artifact verification and guarded tools are implemented at `8b897e4`. The preserved 14-artifact candidate has SHA-256 `31d8ebc21c227e8ed6cf9e6952b69365a71f6ec02786c0cf0fa8a0ab8906e133`.
 > All 51 S1 build probes passed. Non-root WSL2 tests exercised real file-descriptor and publication refusals. The observed WSL2 filesystem root is mode `0777` and fails the trusted-ancestor check. Privileged installation, qualification acceptance, identity echoes and production execution remain gated.
