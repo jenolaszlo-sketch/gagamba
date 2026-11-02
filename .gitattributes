@@ -18,3 +18,12 @@ docs/evidence/linux-m1/wp05-release-protocol-implementation-2026-10-18.md -text
 # Q2 S1 remediation requalification review evidence (nested tree).
 # Must remain byte-identical to the reviewer's self-excluded SHA-256 manifest.
 docs/reviews/rc2b-06-b6-impl-01-s1-q2-evidence/** -text
+
+# Preserve executable Linux installer scripts and the B6 canonical-byte test vector.
+eng/linux-m1/build-install-candidate.sh text eol=lf
+eng/linux-m1/install-candidate.sh text eol=lf
+eng/linux-m1/qualify-install.sh text eol=lf
+eng/linux-m1/remove-generation.sh text eol=lf
+eng/linux-m1/test-install-common.sh text eol=lf
+eng/linux-m1/verify-install.sh text eol=lf
+tests/Gagamba.Execution.Linux.M1.Tests/Installation/manifest-v1.golden.json -text
