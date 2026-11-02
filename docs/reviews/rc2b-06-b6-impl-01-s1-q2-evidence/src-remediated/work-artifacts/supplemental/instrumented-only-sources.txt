@@ -1,0 +1,5 @@
+Preparation/BindingTests.cs
+Preparation/CopyInTests.cs
+Preparation/NativeCopyInTests.cs
+Recovery/IntegratedBarrierTests.cs
+Recovery/NonRootQualificationTests.cs

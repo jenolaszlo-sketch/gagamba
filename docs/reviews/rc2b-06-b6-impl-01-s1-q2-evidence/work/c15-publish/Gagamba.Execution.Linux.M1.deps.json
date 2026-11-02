@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "Gagamba.Execution.Linux.M1/0.1.0-preview.4": {
+        "dependencies": {
+          "Gagamba.Execution": "0.1.0-preview.4"
+        },
+        "runtime": {
+          "Gagamba.Execution.Linux.M1.dll": {}
+        }
+      },
+      "Gagamba.Execution/0.1.0-preview.4": {
+        "runtime": {
+          "Gagamba.Execution.dll": {
+            "assemblyVersion": "0.1.0.0",
+            "fileVersion": "0.1.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Gagamba.Execution.Linux.M1/0.1.0-preview.4": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Gagamba.Execution/0.1.0-preview.4": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

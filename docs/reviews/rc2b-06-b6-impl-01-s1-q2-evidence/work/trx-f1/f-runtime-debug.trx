@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="b67bf0d2-5e77-439b-80bc-8328c9a98090" name="Laszlos@LAPTOP-KBD8D8JG 2026-11-02 00:49:11" runUser="LAPTOP-KBD8D8JG\Laszlos" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-11-02T00:49:11.1839128+08:00" queuing="2026-11-02T00:49:11.1839134+08:00" start="2026-11-02T00:49:09.2089459+08:00" finish="2026-11-02T00:49:11.3542814+08:00" />
+  <TestSettings name="default" id="c27ceb36-79eb-4f2f-9e9f-001ea622ef27">
+    <Deployment runDeploymentRoot="Laszlos_LAPTOP-KBD8D8JG_2026-11-02_00_49_11" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="157bcc90-31b4-4bb3-9a0f-7f0aa92d9a7f" testId="1d88874d-f2fd-0012-0d06-47702ebc58e5" testName="Gagamba.Runtime.Tests.Ar5OrchestratorTests.CallerCancellationAfterLaunchTerminatesExecution" computerName="LAPTOP-KBD8D8JG" duration="00:00:00.0235859" startTime="2026-11-02T00:49:11.1400141+08:00" endTime="2026-11-02T00:49:11.1636432+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="157bcc90-31b4-4bb3-9a0f-7f0aa92d9a7f" />
+    <UnitTestResult executionId="7084d10a-ed3d-4e72-a5b5-9ba3b89c3efb" testId="870680c1-36f4-236b-7ea5-d3b97077516e" testName="Gagamba.Runtime.Tests.ExecutionRuntimeTests.PublicSurfaceStaysOpaque" computerName="LAPTOP-KBD8D8JG" duration="00:00:00.0024447" startTime="2026-11-02T00:49:11.1331088+08:00" endTime="2026-11-02T00:49:11.1355784+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7084d10a-ed3d-4e72-a5b5-9ba3b89c3efb" />
+    <UnitTestResult executionId="2e0834cb-e322-48c4-85ab-9ef1d981d549" testId="ae329134-4172-bdca-f035-8a2a514a8a51" testName="Gagamba.Runtime.Tests.ExecutionRuntimeTests.EmptyRequirementsAcceptWhenProviderUsable" computerName="LAPTOP-KBD8D8JG" duration="00:00:00.0002905" startTime="2026-11-02T00:49:11.1320435+08:00" endTime="2026-11-02T00:49:11.1323629+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2e0834cb-e322-48c4-85ab-9ef1d981d549" />
+    <UnitTestResult executionId="ed98b9ca-294a-4c61-b377-46f0739bf045" testId="fc8ccc1c-cb2f-59f0-6c2a-ec5719ae07c8" testName="Gagamba.Runtime.Tests.RestrictedRuntimeB1Tests.RestrictedSelectionIsSeparateAndUnavailableWithoutInstalledQualification" computerName="LAPTOP-KBD8D8JG" duration="00:00:00.2504909" startTime="2026-11-02T00:49:10.8541489+08:00" endTime="2026-11-02T00:49:11.1123788+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ed98b9ca-294a-4c61-b377-46f0739bf045" />
+    <UnitTestResult executionId="fdef600c-a537-48c3-b385-9e3697d4ff6f" testId="7e399691-d4e2-7a58-49da-fd33095203f6" testName="Gagamba.Runtime.Tests.ExecutionRuntimeTests.SelectsProviderForCurrentOs" computerName="LAPTOP-KBD8D8JG" duration="00:00:00.0044323" startTime="2026-11-02T00:49:11.1270645+08:00" endTime="2026-11-02T00:49:11.1316505+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="fdef600c-a537-48c3-b385-9e3697d4ff6f" />
+    <UnitTestResult executionId="ac764177-9c31-4f1d-adfd-fed75fcb074a" testId="ed95426a-3ee6-ad59-79de-5778c336869c" testName="Gagamba.Runtime.Tests.ExecutionRuntimeTests.OwnerDeathCleanupNeverFakedAcrossRuntime" computerName="LAPTOP-KBD8D8JG" duration="00:00:00.0003346" startTime="2026-11-02T00:49:11.1325944+08:00" endTime="2026-11-02T00:49:11.1329533+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ac764177-9c31-4f1d-adfd-fed75fcb074a" />
+    <UnitTestResult executionId="114e5e4e-8359-4196-99e2-b71570384461" testId="55ca8e01-fcd2-cba4-30b5-5166613bf274" testName="Gagamba.Runtime.Tests.Ar5OrchestratorTests.CaptureUnsupportedDiscardsBeforeLaunchAndReportsCleanupFailure" computerName="LAPTOP-KBD8D8JG" duration="00:00:00.0012049" startTime="2026-11-02T00:49:11.1326002+08:00" endTime="2026-11-02T00:49:11.1338225+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="114e5e4e-8359-4196-99e2-b71570384461" />
+    <UnitTestResult executionId="29873ef5-e0ee-413e-84f6-7f80d2245625" testId="b04bd92f-be77-cdfb-3b26-36474dfa0a62" testName="Gagamba.Runtime.Tests.Ar5OrchestratorTests.SynchronousWaitFaultStillStopsAndObservesCleanup" computerName="LAPTOP-KBD8D8JG" duration="00:00:00.0014952" startTime="2026-11-02T00:49:11.2598353+08:00" endTime="2026-11-02T00:49:11.2613655+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="29873ef5-e0ee-413e-84f6-7f80d2245625" />
+    <UnitTestResult executionId="746f520d-684f-48c6-8b0b-dc12cc0d5d75" testId="c3d32e26-9d3b-2921-ecaf-39ef5350914a" testName="Gagamba.Runtime.Tests.Ar5OrchestratorTests.NaturalAndNonzeroRemainDistinct(code: 7, cause: NonzeroExit)" computerName="LAPTOP-KBD8D8JG" duration="00:00:00.0003626" startTime="2026-11-02T00:49:11.1394296+08:00" endTime="2026-11-02T00:49:11.1398073+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="746f520d-684f-48c6-8b0b-dc12cc0d5d75" />
+    <UnitTestResult executionId="c99642da-46fd-403f-a7ad-10d53bb8ba5d" testId="8b40c621-f29e-6743-f3d3-70a1bf93bcf7" testName="Gagamba.Runtime.Tests.Ar5OrchestratorTests.ExplicitStopAfterLaunchTerminatesExecution" computerName="LAPTOP-KBD8D8JG" duration="00:00:00.0278904" startTime="2026-11-02T00:49:11.2617016+08:00" endTime="2026-11-02T00:49:11.2896214+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c99642da-46fd-403f-a7ad-10d53bb8ba5d" />
+    <UnitTestResult executionId="26000c4e-694e-4720-92d7-c178bf64c773" testId="31a2631f-6692-bcce-4172-dd0342cd7fa7" testName="Gagamba.Runtime.Tests.Ar5OrchestratorTests.NaturalAndNonzeroRemainDistinct(code: 0, cause: NaturalExit)" computerName="LAPTOP-KBD8D8JG" duration="00:00:00.0044733" startTime="2026-11-02T00:49:11.1347512+08:00" endTime="2026-11-02T00:49:11.1392450+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="26000c4e-694e-4720-92d7-c178bf64c773" />
+    <UnitTestResult executionId="644b440e-c1f6-46f5-89d4-e1033821bbe3" testId="b0cb671e-c91b-9e27-2a46-f7fde40b10fa" testName="Gagamba.Runtime.Tests.ExecutionRuntimeTests.UnmetRequirementIsNamedInRefusal" computerName="LAPTOP-KBD8D8JG" duration="00:00:00.2602719" startTime="2026-11-02T00:49:10.8541475+08:00" endTime="2026-11-02T00:49:11.1217719+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="644b440e-c1f6-46f5-89d4-e1033821bbe3" />
+    <UnitTestResult executionId="716574b3-94c3-49d5-9260-de5f1c25ace1" testId="1c2cb6f9-cfac-5771-c957-0e30cec4bccf" testName="Gagamba.Runtime.Tests.Ar5OrchestratorTests.FailedTerminationLeavesCleanupUnknownAndRedactsProviderReason" computerName="LAPTOP-KBD8D8JG" duration="00:00:00.0953645" startTime="2026-11-02T00:49:11.1640345+08:00" endTime="2026-11-02T00:49:11.2594635+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="716574b3-94c3-49d5-9260-de5f1c25ace1" />
+    <UnitTestResult executionId="7b84d291-96b4-40bf-8878-81f4253852e2" testId="519d80c2-b83d-85ce-0bf7-03bb7b5ffd4e" testName="Gagamba.Runtime.Tests.Ar5OrchestratorTests.ObservationFailureAndProviderReasonsStayUnknownAndRedacted" computerName="LAPTOP-KBD8D8JG" duration="00:00:00.0139337" startTime="2026-11-02T00:49:11.1183688+08:00" endTime="2026-11-02T00:49:11.1323441+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7b84d291-96b4-40bf-8878-81f4253852e2" />
+    <UnitTestResult executionId="2970c089-c0d8-4198-bed0-3c670f97b3c5" testId="467a7a35-27e5-181d-9b4d-a2c90e7e03da" testName="Gagamba.Runtime.Tests.Ar5OrchestratorTests.ExplicitStopRequestsTerminationAndObservesTerminal" computerName="LAPTOP-KBD8D8JG" duration="00:00:00.2508875" startTime="2026-11-02T00:49:10.8541528+08:00" endTime="2026-11-02T00:49:11.1123815+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2970c089-c0d8-4198-bed0-3c670f97b3c5" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Gagamba.Runtime.Tests.Ar5OrchestratorTests.FailedTerminationLeavesCleanupUnknownAndRedactsProviderReason" storage="c:\users\laszlos\source\repos\solo\b6-impl-01-s1-q2-review\src-remediated\tests\gagamba.runtime.tests\bin\debug\net10.0\gagamba.runtime.tests.dll" id="1c2cb6f9-cfac-5771-c957-0e30cec4bccf">
+      <Execution id="716574b3-94c3-49d5-9260-de5f1c25ace1" />
+      <TestMethod codeBase="C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\tests\Gagamba.Runtime.Tests\bin\Debug\net10.0\Gagamba.Runtime.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Gagamba.Runtime.Tests.Ar5OrchestratorTests" name="FailedTerminationLeavesCleanupUnknownAndRedactsProviderReason" />
+    </UnitTest>
+    <UnitTest name="Gagamba.Runtime.Tests.Ar5OrchestratorTests.ObservationFailureAndProviderReasonsStayUnknownAndRedacted" storage="c:\users\laszlos\source\repos\solo\b6-impl-01-s1-q2-review\src-remediated\tests\gagamba.runtime.tests\bin\debug\net10.0\gagamba.runtime.tests.dll" id="519d80c2-b83d-85ce-0bf7-03bb7b5ffd4e">
+      <Execution id="7b84d291-96b4-40bf-8878-81f4253852e2" />
+      <TestMethod codeBase="C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\tests\Gagamba.Runtime.Tests\bin\Debug\net10.0\Gagamba.Runtime.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Gagamba.Runtime.Tests.Ar5OrchestratorTests" name="ObservationFailureAndProviderReasonsStayUnknownAndRedacted" />
+    </UnitTest>
+    <UnitTest name="Gagamba.Runtime.Tests.Ar5OrchestratorTests.CallerCancellationAfterLaunchTerminatesExecution" storage="c:\users\laszlos\source\repos\solo\b6-impl-01-s1-q2-review\src-remediated\tests\gagamba.runtime.tests\bin\debug\net10.0\gagamba.runtime.tests.dll" id="1d88874d-f2fd-0012-0d06-47702ebc58e5">
+      <Execution id="157bcc90-31b4-4bb3-9a0f-7f0aa92d9a7f" />
+      <TestMethod codeBase="C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\tests\Gagamba.Runtime.Tests\bin\Debug\net10.0\Gagamba.Runtime.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Gagamba.Runtime.Tests.Ar5OrchestratorTests" name="CallerCancellationAfterLaunchTerminatesExecution" />
+    </UnitTest>
+    <UnitTest name="Gagamba.Runtime.Tests.Ar5OrchestratorTests.NaturalAndNonzeroRemainDistinct(code: 7, cause: NonzeroExit)" storage="c:\users\laszlos\source\repos\solo\b6-impl-01-s1-q2-review\src-remediated\tests\gagamba.runtime.tests\bin\debug\net10.0\gagamba.runtime.tests.dll" id="c3d32e26-9d3b-2921-ecaf-39ef5350914a">
+      <Execution id="746f520d-684f-48c6-8b0b-dc12cc0d5d75" />
+      <TestMethod codeBase="C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\tests\Gagamba.Runtime.Tests\bin\Debug\net10.0\Gagamba.Runtime.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Gagamba.Runtime.Tests.Ar5OrchestratorTests" name="NaturalAndNonzeroRemainDistinct" />
+    </UnitTest>
+    <UnitTest name="Gagamba.Runtime.Tests.ExecutionRuntimeTests.EmptyRequirementsAcceptWhenProviderUsable" storage="c:\users\laszlos\source\repos\solo\b6-impl-01-s1-q2-review\src-remediated\tests\gagamba.runtime.tests\bin\debug\net10.0\gagamba.runtime.tests.dll" id="ae329134-4172-bdca-f035-8a2a514a8a51">
+      <Execution id="2e0834cb-e322-48c4-85ab-9ef1d981d549" />
+      <TestMethod codeBase="C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\tests\Gagamba.Runtime.Tests\bin\Debug\net10.0\Gagamba.Runtime.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Gagamba.Runtime.Tests.ExecutionRuntimeTests" name="EmptyRequirementsAcceptWhenProviderUsable" />
+    </UnitTest>
+    <UnitTest name="Gagamba.Runtime.Tests.RestrictedRuntimeB1Tests.RestrictedSelectionIsSeparateAndUnavailableWithoutInstalledQualification" storage="c:\users\laszlos\source\repos\solo\b6-impl-01-s1-q2-review\src-remediated\tests\gagamba.runtime.tests\bin\debug\net10.0\gagamba.runtime.tests.dll" id="fc8ccc1c-cb2f-59f0-6c2a-ec5719ae07c8">
+      <Execution id="ed98b9ca-294a-4c61-b377-46f0739bf045" />
+      <TestMethod codeBase="C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\tests\Gagamba.Runtime.Tests\bin\Debug\net10.0\Gagamba.Runtime.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Gagamba.Runtime.Tests.RestrictedRuntimeB1Tests" name="RestrictedSelectionIsSeparateAndUnavailableWithoutInstalledQualification" />
+    </UnitTest>
+    <UnitTest name="Gagamba.Runtime.Tests.ExecutionRuntimeTests.PublicSurfaceStaysOpaque" storage="c:\users\laszlos\source\repos\solo\b6-impl-01-s1-q2-review\src-remediated\tests\gagamba.runtime.tests\bin\debug\net10.0\gagamba.runtime.tests.dll" id="870680c1-36f4-236b-7ea5-d3b97077516e">
+      <Execution id="7084d10a-ed3d-4e72-a5b5-9ba3b89c3efb" />
+      <TestMethod codeBase="C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\tests\Gagamba.Runtime.Tests\bin\Debug\net10.0\Gagamba.Runtime.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Gagamba.Runtime.Tests.ExecutionRuntimeTests" name="PublicSurfaceStaysOpaque" />
+    </UnitTest>
+    <UnitTest name="Gagamba.Runtime.Tests.Ar5OrchestratorTests.ExplicitStopAfterLaunchTerminatesExecution" storage="c:\users\laszlos\source\repos\solo\b6-impl-01-s1-q2-review\src-remediated\tests\gagamba.runtime.tests\bin\debug\net10.0\gagamba.runtime.tests.dll" id="8b40c621-f29e-6743-f3d3-70a1bf93bcf7">
+      <Execution id="c99642da-46fd-403f-a7ad-10d53bb8ba5d" />
+      <TestMethod codeBase="C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\tests\Gagamba.Runtime.Tests\bin\Debug\net10.0\Gagamba.Runtime.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Gagamba.Runtime.Tests.Ar5OrchestratorTests" name="ExplicitStopAfterLaunchTerminatesExecution" />
+    </UnitTest>
+    <UnitTest name="Gagamba.Runtime.Tests.Ar5OrchestratorTests.CaptureUnsupportedDiscardsBeforeLaunchAndReportsCleanupFailure" storage="c:\users\laszlos\source\repos\solo\b6-impl-01-s1-q2-review\src-remediated\tests\gagamba.runtime.tests\bin\debug\net10.0\gagamba.runtime.tests.dll" id="55ca8e01-fcd2-cba4-30b5-5166613bf274">
+      <Execution id="114e5e4e-8359-4196-99e2-b71570384461" />
+      <TestMethod codeBase="C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\tests\Gagamba.Runtime.Tests\bin\Debug\net10.0\Gagamba.Runtime.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Gagamba.Runtime.Tests.Ar5OrchestratorTests" name="CaptureUnsupportedDiscardsBeforeLaunchAndReportsCleanupFailure" />
+    </UnitTest>
+    <UnitTest name="Gagamba.Runtime.Tests.ExecutionRuntimeTests.OwnerDeathCleanupNeverFakedAcrossRuntime" storage="c:\users\laszlos\source\repos\solo\b6-impl-01-s1-q2-review\src-remediated\tests\gagamba.runtime.tests\bin\debug\net10.0\gagamba.runtime.tests.dll" id="ed95426a-3ee6-ad59-79de-5778c336869c">
+      <Execution id="ac764177-9c31-4f1d-adfd-fed75fcb074a" />
+      <TestMethod codeBase="C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\tests\Gagamba.Runtime.Tests\bin\Debug\net10.0\Gagamba.Runtime.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Gagamba.Runtime.Tests.ExecutionRuntimeTests" name="OwnerDeathCleanupNeverFakedAcrossRuntime" />
+    </UnitTest>
+    <UnitTest name="Gagamba.Runtime.Tests.ExecutionRuntimeTests.SelectsProviderForCurrentOs" storage="c:\users\laszlos\source\repos\solo\b6-impl-01-s1-q2-review\src-remediated\tests\gagamba.runtime.tests\bin\debug\net10.0\gagamba.runtime.tests.dll" id="7e399691-d4e2-7a58-49da-fd33095203f6">
+      <Execution id="fdef600c-a537-48c3-b385-9e3697d4ff6f" />
+      <TestMethod codeBase="C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\tests\Gagamba.Runtime.Tests\bin\Debug\net10.0\Gagamba.Runtime.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Gagamba.Runtime.Tests.ExecutionRuntimeTests" name="SelectsProviderForCurrentOs" />
+    </UnitTest>
+    <UnitTest name="Gagamba.Runtime.Tests.ExecutionRuntimeTests.UnmetRequirementIsNamedInRefusal" storage="c:\users\laszlos\source\repos\solo\b6-impl-01-s1-q2-review\src-remediated\tests\gagamba.runtime.tests\bin\debug\net10.0\gagamba.runtime.tests.dll" id="b0cb671e-c91b-9e27-2a46-f7fde40b10fa">
+      <Execution id="644b440e-c1f6-46f5-89d4-e1033821bbe3" />
+      <TestMethod codeBase="C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\tests\Gagamba.Runtime.Tests\bin\Debug\net10.0\Gagamba.Runtime.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Gagamba.Runtime.Tests.ExecutionRuntimeTests" name="UnmetRequirementIsNamedInRefusal" />
+    </UnitTest>
+    <UnitTest name="Gagamba.Runtime.Tests.Ar5OrchestratorTests.SynchronousWaitFaultStillStopsAndObservesCleanup" storage="c:\users\laszlos\source\repos\solo\b6-impl-01-s1-q2-review\src-remediated\tests\gagamba.runtime.tests\bin\debug\net10.0\gagamba.runtime.tests.dll" id="b04bd92f-be77-cdfb-3b26-36474dfa0a62">
+      <Execution id="29873ef5-e0ee-413e-84f6-7f80d2245625" />
+      <TestMethod codeBase="C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\tests\Gagamba.Runtime.Tests\bin\Debug\net10.0\Gagamba.Runtime.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Gagamba.Runtime.Tests.Ar5OrchestratorTests" name="SynchronousWaitFaultStillStopsAndObservesCleanup" />
+    </UnitTest>
+    <UnitTest name="Gagamba.Runtime.Tests.Ar5OrchestratorTests.ExplicitStopRequestsTerminationAndObservesTerminal" storage="c:\users\laszlos\source\repos\solo\b6-impl-01-s1-q2-review\src-remediated\tests\gagamba.runtime.tests\bin\debug\net10.0\gagamba.runtime.tests.dll" id="467a7a35-27e5-181d-9b4d-a2c90e7e03da">
+      <Execution id="2970c089-c0d8-4198-bed0-3c670f97b3c5" />
+      <TestMethod codeBase="C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\tests\Gagamba.Runtime.Tests\bin\Debug\net10.0\Gagamba.Runtime.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Gagamba.Runtime.Tests.Ar5OrchestratorTests" name="ExplicitStopRequestsTerminationAndObservesTerminal" />
+    </UnitTest>
+    <UnitTest name="Gagamba.Runtime.Tests.Ar5OrchestratorTests.NaturalAndNonzeroRemainDistinct(code: 0, cause: NaturalExit)" storage="c:\users\laszlos\source\repos\solo\b6-impl-01-s1-q2-review\src-remediated\tests\gagamba.runtime.tests\bin\debug\net10.0\gagamba.runtime.tests.dll" id="31a2631f-6692-bcce-4172-dd0342cd7fa7">
+      <Execution id="26000c4e-694e-4720-92d7-c178bf64c773" />
+      <TestMethod codeBase="C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\tests\Gagamba.Runtime.Tests\bin\Debug\net10.0\Gagamba.Runtime.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner3/netcore/" className="Gagamba.Runtime.Tests.Ar5OrchestratorTests" name="NaturalAndNonzeroRemainDistinct" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="1d88874d-f2fd-0012-0d06-47702ebc58e5" executionId="157bcc90-31b4-4bb3-9a0f-7f0aa92d9a7f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="870680c1-36f4-236b-7ea5-d3b97077516e" executionId="7084d10a-ed3d-4e72-a5b5-9ba3b89c3efb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ae329134-4172-bdca-f035-8a2a514a8a51" executionId="2e0834cb-e322-48c4-85ab-9ef1d981d549" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fc8ccc1c-cb2f-59f0-6c2a-ec5719ae07c8" executionId="ed98b9ca-294a-4c61-b377-46f0739bf045" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="7e399691-d4e2-7a58-49da-fd33095203f6" executionId="fdef600c-a537-48c3-b385-9e3697d4ff6f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ed95426a-3ee6-ad59-79de-5778c336869c" executionId="ac764177-9c31-4f1d-adfd-fed75fcb074a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="55ca8e01-fcd2-cba4-30b5-5166613bf274" executionId="114e5e4e-8359-4196-99e2-b71570384461" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b04bd92f-be77-cdfb-3b26-36474dfa0a62" executionId="29873ef5-e0ee-413e-84f6-7f80d2245625" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c3d32e26-9d3b-2921-ecaf-39ef5350914a" executionId="746f520d-684f-48c6-8b0b-dc12cc0d5d75" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8b40c621-f29e-6743-f3d3-70a1bf93bcf7" executionId="c99642da-46fd-403f-a7ad-10d53bb8ba5d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="31a2631f-6692-bcce-4172-dd0342cd7fa7" executionId="26000c4e-694e-4720-92d7-c178bf64c773" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b0cb671e-c91b-9e27-2a46-f7fde40b10fa" executionId="644b440e-c1f6-46f5-89d4-e1033821bbe3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="1c2cb6f9-cfac-5771-c957-0e30cec4bccf" executionId="716574b3-94c3-49d5-9260-de5f1c25ace1" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="519d80c2-b83d-85ce-0bf7-03bb7b5ffd4e" executionId="7b84d291-96b4-40bf-8878-81f4253852e2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="467a7a35-27e5-181d-9b4d-a2c90e7e03da" executionId="2970c089-c0d8-4198-bed0-3c670f97b3c5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="15" executed="15" passed="15" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.12)&#xD;
+[xUnit.net 00:00:00.45]   Discovering: Gagamba.Runtime.Tests&#xD;
+[xUnit.net 00:00:00.65]   Discovered:  Gagamba.Runtime.Tests&#xD;
+[xUnit.net 00:00:00.83]   Starting:    Gagamba.Runtime.Tests&#xD;
+[xUnit.net 00:00:01.33]   Finished:    Gagamba.Runtime.Tests&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

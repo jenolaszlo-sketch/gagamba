@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework><IsPackable>false</IsPackable>
+    <AssemblyName>Gagamba.Execution.Linux.M1.Tests</AssemblyName>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+    <PackageReference Include="xunit.v3" Version="3.2.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" PrivateAssets="all" />
+    <ProjectReference Include="C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated/src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj" />
+    <ProjectReference Include="C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated/src/Gagamba.Execution/Gagamba.Execution.csproj" />
+    <Compile Include="C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\tests\Gagamba.Execution.Linux.M1.Tests/**/*.cs" Exclude="C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\tests\Gagamba.Execution.Linux.M1.Tests\Preparation\BindingTests.cs;C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\tests\Gagamba.Execution.Linux.M1.Tests\Preparation\CopyInTests.cs;C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\tests\Gagamba.Execution.Linux.M1.Tests\Preparation\NativeCopyInTests.cs;C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\tests\Gagamba.Execution.Linux.M1.Tests\Recovery\IntegratedBarrierTests.cs;C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\tests\Gagamba.Execution.Linux.M1.Tests\Recovery\NonRootQualificationTests.cs;C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\tests\Gagamba.Execution.Linux.M1.Tests/bin/**/*.cs;C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\tests\Gagamba.Execution.Linux.M1.Tests/obj/**/*.cs" />
+  </ItemGroup>
+</Project>

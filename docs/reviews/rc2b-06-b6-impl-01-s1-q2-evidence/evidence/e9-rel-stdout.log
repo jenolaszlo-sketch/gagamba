@@ -1,0 +1,30 @@
+  Determining projects to restore...
+  Restored C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj (in 235 ms).
+  Restored C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\src\Gagamba.Execution\Gagamba.Execution.csproj (in 235 ms).
+C:\Users\Laszlos\.nuget\packages\microsoft.build.tasks.git\10.0.401\build\Microsoft.Build.Tasks.Git.targets(25,5): warning : Unable to locate repository with working directory that contains directory 'C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\src\Gagamba.Execution'. [C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\src\Gagamba.Execution\Gagamba.Execution.csproj]
+C:\Users\Laszlos\.nuget\packages\microsoft.sourcelink.common\10.0.401\build\Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\src\Gagamba.Execution\Gagamba.Execution.csproj]
+  Gagamba.Execution -> C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\work\e9-rel-artifacts\bin\Gagamba.Execution\release\Gagamba.Execution.dll
+C:\Users\Laszlos\.nuget\packages\microsoft.build.tasks.git\10.0.401\build\Microsoft.Build.Tasks.Git.targets(25,5): warning : Unable to locate repository with working directory that contains directory 'C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\src\Gagamba.Execution.Linux.M1'. [C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj]
+C:\Users\Laszlos\.nuget\packages\microsoft.sourcelink.common\10.0.401\build\Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj]
+  Gagamba compilation identity validated: Gagamba.Execution.Linux.M1, Release, Gagamba.Execution.Linux.M1, DefineConstants=;GAGAMBA_PRODUCTION;TRACE;RELEASE;NET;NET10_0;NETCOREAPP;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER
+  Gagamba.Execution.Linux.M1 -> C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\work\e9-rel-artifacts\bin\Gagamba.Execution.Linux.M1\release\Gagamba.Execution.Linux.M1.dll
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Release
+  MVID: 3a0c5f8c-8d8a-4cc4-965c-b22a5e9d569c
+  SHA-256: 7AFA96DB8266975D01D83F2E41594EF607082A9B402B1D03D62D3F2BCA3F06CB
+  Mode: production
+  Type-name entries: 354; methods with bodies decoded: 3326; user strings: 2653
+  Seven surfaces: 0/4 hook types and 0/3 hook properties present
+  Core production types: 12/12 present
+  RESULT: PASS
+
+Build succeeded.
+
+C:\Users\Laszlos\.nuget\packages\microsoft.build.tasks.git\10.0.401\build\Microsoft.Build.Tasks.Git.targets(25,5): warning : Unable to locate repository with working directory that contains directory 'C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\src\Gagamba.Execution'. [C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\src\Gagamba.Execution\Gagamba.Execution.csproj]
+C:\Users\Laszlos\.nuget\packages\microsoft.sourcelink.common\10.0.401\build\Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\src\Gagamba.Execution\Gagamba.Execution.csproj]
+C:\Users\Laszlos\.nuget\packages\microsoft.build.tasks.git\10.0.401\build\Microsoft.Build.Tasks.Git.targets(25,5): warning : Unable to locate repository with working directory that contains directory 'C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\src\Gagamba.Execution.Linux.M1'. [C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj]
+C:\Users\Laszlos\.nuget\packages\microsoft.sourcelink.common\10.0.401\build\Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj]
+    4 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:04.52

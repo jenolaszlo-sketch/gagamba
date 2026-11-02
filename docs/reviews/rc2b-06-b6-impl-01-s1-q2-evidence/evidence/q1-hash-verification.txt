@@ -1,0 +1,21 @@
+# Q1 evidence integrity re-verification (Q2)
+# Source: producer's docs/evidence/rc2b-06-b6-impl-01-s1-rem-01/q1-evidence.sha256 (16 entries)
+# Target: C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q1-review
+# Method: Get-FileHash SHA-256 comparison, executed 2026-11-02
+OK   BINARY-INSPECTION.md
+OK   BUILD-ISOLATION.md
+OK   DEPENDENCY-CLOSURE.md
+OK   evidence/MANIFEST.md
+OK   FINAL-HANDOFF.md
+OK   FINDINGS.md
+OK   HOOK-INVENTORY.md
+OK   InspectHooks.cs
+OK   OWNER-HANDOFF.md
+OK   probes/InspectHooks/InspectHooks.csproj
+OK   probes/InspectHooks/Program.cs
+OK   REGRESSION-RESULTS.md
+OK   REPORT.md
+OK   SAFETY-PRESERVATION.md
+OK   SOURCE-BINDING.md
+OK   T24-QUALIFICATION.md
+RESULT: 16/16 byte-identical; Q1 evidence preserved unchanged.
