@@ -4,6 +4,8 @@ import json
 import os
 from pathlib import Path
 import tempfile
+import threading
+from unittest.mock import patch
 import unittest
 
 MODULE = Path(__file__).resolve().parents[1] / "install_common.py"
@@ -125,12 +127,111 @@ class InstallToolingTests(unittest.TestCase):
                 os.close(rootfd)
                 os.close(instfd)
 
+    def test_interruption_after_rename_retains_both_generations(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            installations = root / "installations"
+            installations.mkdir()
+            rootfd = os.open(root, os.O_RDONLY | os.O_DIRECTORY)
+            instfd = os.open(installations, os.O_RDONLY | os.O_DIRECTORY)
+            old, new = "a" * 64, "b" * 64
+            try:
+                (installations / ".first").mkdir()
+                install._publish_generation(instfd, rootfd, ".first", old)
+                (installations / ".next").mkdir()
+                with patch.object(install, "_atomic_write", side_effect=OSError("interruption before active rename")):
+                    with self.assertRaisesRegex(OSError, "interruption"):
+                        install._publish_generation(instfd, rootfd, ".next", new)
+                self.assertEqual((root / "active").read_bytes(), (old + "\n").encode())
+                self.assertTrue((installations / old).is_dir())
+                self.assertTrue((installations / new).is_dir())
+                (installations / ".retry").mkdir()
+                with self.assertRaises(FileExistsError):
+                    install._publish_generation(instfd, rootfd, ".retry", new)
+            finally:
+                os.close(rootfd)
+                os.close(instfd)
+
+    def test_reader_sees_complete_generation_on_both_sides_of_pointer_swap(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            inst = root / "installations"
+            inst.mkdir()
+            rootfd = os.open(root, os.O_RDONLY | os.O_DIRECTORY)
+            instfd = os.open(inst, os.O_RDONLY | os.O_DIRECTORY)
+            old, new = "a" * 64, "b" * 64
+            ready, observed = threading.Event(), threading.Event()
+            failures = []
+            def read_existing():
+                try:
+                    self.assertTrue(ready.wait(5))
+                    selected = (root / "active").read_text().rstrip("\n")
+                    self.assertEqual(selected, old)
+                    self.assertEqual((inst / selected / "payload").read_text(), selected)
+                    self.assertEqual((inst / new / "payload").read_text(), new)
+                except BaseException as error:
+                    failures.append(error)
+                finally:
+                    observed.set()
+            write = install._atomic_write
+            def pause_before_swap(*args):
+                ready.set()
+                self.assertTrue(observed.wait(5))
+                write(*args)
+            try:
+                for stage, value in ((".first", old), (".next", new)):
+                    (inst / stage).mkdir()
+                    (inst / stage / "payload").write_text(value)
+                install._publish_generation(instfd, rootfd, ".first", old)
+                reader = threading.Thread(target=read_existing)
+                reader.start()
+                with patch.object(install, "_atomic_write", side_effect=pause_before_swap):
+                    install._publish_generation(instfd, rootfd, ".next", new)
+                reader.join(5)
+                self.assertEqual([], failures)
+                self.assertEqual((root / "active").read_bytes(), (new + "\n").encode())
+            finally:
+                os.close(rootfd)
+                os.close(instfd)
+
+    def test_pinned_source_changed_while_copying_refuses(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            source, dest = root / "src", root / "dst"
+            for directory in (source, dest):
+                (directory / "owner").mkdir(parents=True)
+            content = b"x" * 70000
+            path = source / "owner" / "a.bin"
+            path.write_bytes(content)
+            sfd = os.open(source, os.O_RDONLY | os.O_DIRECTORY)
+            dfd = os.open(dest, os.O_RDONLY | os.O_DIRECTORY)
+            meta = {"length": len(content), "sha256": hashlib.sha256(content).hexdigest(), "mode": "0444"}
+            try:
+                install._copy_artifact(sfd, dfd, "owner/a.bin", meta)
+                (dest / "owner" / "a.bin").unlink()
+                read = os.read
+                def touch_after_read(fd, count):
+                    data = read(fd, count)
+                    os.utime(path, ns=(1, 1))
+                    return data
+                with patch.object(os, "read", side_effect=touch_after_read):
+                    with self.assertRaisesRegex(install.Refuse, "file changed"):
+                        install._copy_artifact(sfd, dfd, "owner/a.bin", meta)
+            finally:
+                os.close(sfd)
+                os.close(dfd)
+
     def test_retention_always_refuses_unknown_and_active(self):
         digest = "a" * 64
         with self.assertRaisesRegex(install.Refuse, "active"):
             install.retention_refusal(digest, digest, "Unknown")
         with self.assertRaisesRegex(install.Refuse, "Unknown"):
             install.retention_refusal(digest, "b" * 64, "Unknown")
+        with self.assertRaisesRegex(install.Refuse, "cleanup"):
+            install.retention_refusal(digest, "b" * 64, "None")
+        for state in ("HELD", "live-owner", "live-recovery", "stopping-authority", "cleanup-incomplete", "controller-dead"):
+            with self.subTest(state=state), self.assertRaises(install.Refuse):
+                install.retention_refusal(digest, "b" * 64, state)
         with self.assertRaisesRegex(install.Refuse, "grammar"):
             install.retention_refusal("../bad", None, "Unknown")
 

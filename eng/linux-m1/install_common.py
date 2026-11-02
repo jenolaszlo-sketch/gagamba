@@ -470,8 +470,15 @@ def _check_existing(rootfd: int, instfd: int, generation: str) -> None:
         _tool("check-association", os.path.join(base, "manifest.json"), receipt_path, record_path)
 
 
+def _require_install_host() -> None:
+    host = os.uname()
+    require(host.sysname == "Linux" and host.machine == "x86_64" and "microsoft-standard-wsl2" in host.release.lower(),
+            "experimental installation requires WSL2 x86-64")
+
+
 def install(candidate: str, expected_digest: str, generation: str) -> None:
     require(os.geteuid() == 0, "installer requires uid 0")
+    _require_install_host()
     require(HEX64.fullmatch(expected_digest) and generation == expected_digest, "digest/generation mismatch")
     srcfd = _open_dir_path(os.path.abspath(candidate))
     rootfd = _ensure_trusted_root()
@@ -554,6 +561,7 @@ def _acceptance(qualification_id: str, digest: str, record_hash: str) -> None:
 
 def qualify(record_path: str) -> None:
     require(os.geteuid() == 0, "qualification installer requires uid 0")
+    _require_install_host()
     rootfd = _secure_root()
     lockfd = _lock(rootfd)
     try:
@@ -572,6 +580,7 @@ def qualify(record_path: str) -> None:
             _acceptance(qid, digest, record_hash)
             generation_path = os.path.dirname(manifest)
             _tool("check-staged", generation_path)
+            _tool("check-platform", manifest)
             receipt = parse_json(_trusted_file(receipt_path))
             require(receipt["artifactSetSha256"] == digest, "active and receipt differ")
             already_bound = (receipt["qualificationId"] == qid and
@@ -632,6 +641,7 @@ def retention_refusal(digest: str, active: str | None, holders: str) -> None:
     require(HEX64.fullmatch(digest) is not None, "generation digest grammar")
     require(active != digest, "refuse to remove active generation")
     require(holders == "None", f"holder state {holders}; generation retained")
+    raise Refuse("independent cleanup and ownership evidence unavailable; generation retained")
 
 
 def main(argv: list[str]) -> int:

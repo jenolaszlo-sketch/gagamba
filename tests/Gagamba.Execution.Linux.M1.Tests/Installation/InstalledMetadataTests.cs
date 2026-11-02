@@ -175,6 +175,22 @@ public sealed class InstalledMetadataTests
     }
 
     [Fact]
+    public void FilesAndAncestorsUseTheNativeVerifiersMetadataPolicy()
+    {
+        var directory = new InstalledFileSystem.Snapshot(1,1,0x41ed,0,0,2,4096,8,1,0,1,0);
+        InstalledFileSystem.RequireDirectory(directory,true,0,true);
+        foreach (var bad in new[]{directory with { Mode=0x43ff },directory with { Mode=0x41ff },
+                     directory with { Mode=0x41fd },directory with { Uid=1000 },directory with { Gid=1000 }})
+            Assert.Throws<InvalidDataException>(() => InstalledFileSystem.RequireDirectory(bad,true,0,true));
+        var file = directory with { Mode=0x8124,Nlink=1 };
+        InstalledFileSystem.RequireRegular(file,true,0,0,0x124,4096);
+        foreach (var bad in new[]{file with { Mode=0x8126 },file with { Mode=0x8924 },file with { Mode=0x8524 },
+                     file with { Mode=0x1124 },file with { Mode=0xa124 },file with { Mode=0xc124 },
+                     file with { Uid=1000 },file with { Gid=1000 },file with { Nlink=2 }})
+            Assert.Throws<InvalidDataException>(() => InstalledFileSystem.RequireRegular(bad,true,0,0,0x124,4096));
+    }
+
+    [Fact]
     public void ActiveHasOnlyOneCanonicalEncoding()
     {
         Assert.Equal(GoldenDigest,InstalledMetadata.Active(Encoding.ASCII.GetBytes(GoldenDigest+"\n")));
@@ -183,10 +199,16 @@ public sealed class InstalledMetadataTests
     }
 
     [Fact]
-    public void RelabelingInstrumentedAssemblyCannotMakeItProduction()
+    public void ActualAssemblyConfigurationAndRoleAreVerified()
     {
         var bytes = File.ReadAllBytes(typeof(InstalledManifest).Assembly.Location);
         var artifact = new InstalledArtifact("owner-m1","managed","owner/Gagamba.Execution.Linux.M1.dll",InstallJson.Hash(bytes),bytes.Length,"0444");
-        Assert.Throws<InvalidDataException>(() => InstalledPayload.Check(artifact,bytes));
+        var config = System.Reflection.CustomAttributeExtensions.GetCustomAttribute<System.Reflection.AssemblyConfigurationAttribute>(
+            typeof(InstalledManifest).Assembly)!.Configuration;
+        if (config == "Release") InstalledPayload.Check(artifact,bytes);
+        else Assert.Throws<InvalidDataException>(() => InstalledPayload.Check(artifact,bytes));
+        var substituted = File.ReadAllBytes(typeof(InstalledMetadataTests).Assembly.Location);
+        var relabeled = artifact with { Sha256=InstallJson.Hash(substituted), Length=substituted.Length };
+        Assert.Throws<InvalidDataException>(() => InstalledPayload.Check(relabeled,substituted));
     }
 }

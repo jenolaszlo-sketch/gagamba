@@ -30,6 +30,7 @@ $project = Join-Path $EvidenceDirectory 'ProductionRegression.csproj'
     <ProjectReference Include="$repo/src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj" />
     <ProjectReference Include="$repo/src/Gagamba.Execution/Gagamba.Execution.csproj" />
     <Compile Include="$tests/**/*.cs" Exclude="$excludes" />
+    <EmbeddedResource Include="$tests/Installation/manifest-v1.golden.json" LogicalName="B6.ManifestV1" />
   </ItemGroup>
 </Project>
 "@ | Set-Content $project

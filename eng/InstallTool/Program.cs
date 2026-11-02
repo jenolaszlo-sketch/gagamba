@@ -14,11 +14,14 @@ try
         case ["check-staged",var staging]:
             InstalledArtifactInspection.CheckPayload(staging,true);
             break;
+        case ["check-platform",var hostManifest]:
+            InstalledArtifactInspection.CheckPlatform(Read(hostManifest));
+            break;
         case ["check-association",var manifest,var receipt,var record]:
             InstalledArtifactInspection.CheckAssociation(Read(manifest),Read(receipt),Read(record));
             break;
         default:
-            Console.Error.WriteLine("Expected verify-active, check-payload DIR, check-staged DIR, or check-association MANIFEST RECEIPT RECORD");
+            Console.Error.WriteLine("Expected verify-active, check-payload DIR, check-staged DIR, check-platform MANIFEST or check-association MANIFEST RECEIPT RECORD");
             return 2;
     }
     return 0;

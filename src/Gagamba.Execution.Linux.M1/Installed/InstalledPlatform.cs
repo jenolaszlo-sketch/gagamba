@@ -19,6 +19,22 @@ internal static partial class InstalledFileSystem
         return digest;
     }
 
+    [System.Runtime.InteropServices.DllImport("libc", EntryPoint = "fstatat", SetLastError = true)]
+    private static extern int StatAt(int directory, string name, out Stat64 info, int flags);
+
+    internal static void CheckLoaderPreload()
+    {
+        using var etc = OpenAbsoluteDirectory("/etc",true);
+        const string name = "ld.so.preload";
+        if (StatAt(etc.Value,name,out _,0x100 /* AT_SYMLINK_NOFOLLOW */) != 0)
+        {
+            if (System.Runtime.InteropServices.Marshal.GetLastPInvokeError() == 2) return;
+            throw new InvalidDataException("loader preload state unknown");
+        }
+        using var fd = OpenRegular(etc.Value,name,true,0,0,0);
+        InstallJson.Require((fd.Snapshot.Permissions & 0x12) == 0, "mutable loader preload");
+    }
+
     internal static string PlatformDigest(string directory, string name, uint? mode = null)
     {
         using var dir = OpenAbsoluteDirectory(directory,true);

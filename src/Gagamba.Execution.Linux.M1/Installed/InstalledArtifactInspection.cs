@@ -21,6 +21,9 @@ public static class InstalledArtifactInspection
         else InstalledFileSystem.VerifyPayload(root,false);
     }
 
+    public static void CheckPlatform(byte[] manifestBytes) =>
+        InstalledPayload.CheckPlatform(InstalledManifest.Parse(manifestBytes));
+
     public static void CheckAssociation(byte[] manifestBytes, byte[] receiptBytes, byte[] recordBytes)
     {
         var manifest = InstalledManifest.Parse(manifestBytes);

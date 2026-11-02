@@ -125,6 +125,13 @@ internal static class InstalledPayload
     // This is a read-only installation check. Execution prerequisites, loader closure and release remain separately gated.
     internal static void CheckHost(InstalledManifest manifest)
     {
+        CheckPlatform(manifest);
+        InstallJson.Require(DirectPeerIdentity.FeatureAvailable(), "unprivileged direct peer prerequisites");
+    }
+
+    internal static void CheckPlatform(InstalledManifest manifest)
+    {
+        InstallJson.Require(OperatingSystem.IsLinux() && RuntimeInformation.ProcessArchitecture == Architecture.X64, "Linux x86-64 required");
         var p = manifest.Platform;
         string kernel = File.ReadAllText("/proc/sys/kernel/osrelease").TrimEnd();
         InstallJson.Require(RuntimeInformation.ProcessArchitecture == Architecture.X64 &&
@@ -141,8 +148,7 @@ internal static class InstalledPayload
             InstalledFileSystem.PlatformDigest("/usr/lib/x86_64-linux-gnu","ld-linux-x86-64.so.2") == InstallJson.Hex(p,"loaderSha256") &&
             InstalledFileSystem.PlatformDigest("/usr/bin","bwrap",0x1ed) == HelperInstallation.PinnedSha256,
             "platform dependency baseline");
-        try { InstallJson.Require(File.ReadAllBytes("/etc/ld.so.preload").Length == 0, "loader preload"); }
-        catch (FileNotFoundException) { }
-        InstallJson.Require(File.Exists("/sys/fs/cgroup/cgroup.controllers") && DirectPeerIdentity.FeatureAvailable(), "kernel prerequisites");
+        InstalledFileSystem.CheckLoaderPreload();
+        InstallJson.Require(File.Exists("/sys/fs/cgroup/cgroup.controllers"), "cgroup2 required");
     }
 }

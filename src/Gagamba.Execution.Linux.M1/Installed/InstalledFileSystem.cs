@@ -38,7 +38,7 @@ internal static partial class InstalledFileSystem
     [DllImport("libc", EntryPoint = "syscall", SetLastError = true)]
     private static extern long Syscall(long number, int fd, IntPtr buffer, nuint count);
 
-    private readonly record struct Snapshot(ulong Dev, ulong Ino, uint Mode, uint Uid, uint Gid,
+    internal readonly record struct Snapshot(ulong Dev, ulong Ino, uint Mode, uint Uid, uint Gid,
         ulong Nlink, long Size, long Blocks, long MtimeSec, long MtimeNsec, long CtimeSec, long CtimeNsec)
     {
         public bool IsFile => (Mode & S_IFMT) == S_IFREG;
@@ -272,7 +272,7 @@ internal static partial class InstalledFileSystem
         uint mode = Convert.ToUInt32(artifact.Mode, 8);
         RequireRegular(pinnedStat, scan.Trusted, scan.Trusted ? 0u : null, scan.Trusted ? 0u : null,
             mode, MaxArtifactBytes);
-        if (pinnedStat.Size != artifact.Length || pinnedStat.Nlink != 1) throw Invalid("Artifact size or link count mismatch: " + path);
+        if (pinnedStat.Size != artifact.Length) throw Invalid("Artifact size mismatch: " + path);
         EnsureNotSparse(pinnedStat, path);
         using var readable = ReopenPinned(pathFd);
         Same(pinnedStat, readable.Snapshot, "Artifact changed before hashing: " + path);
@@ -304,7 +304,6 @@ internal static partial class InstalledFileSystem
         using var path = OpenPath(dirFd, name);
         var s = path.Snapshot;
         RequireRegular(s, trusted, uid, gid, mode, maxBytes);
-        if (s.Nlink != 1) throw Invalid("File link count is not one: " + name);
         EnsureNotSparse(s, name);
         using var read = ReopenPinned(path.Value);
         Same(s, read.Snapshot, "File changed while being opened: " + name);
@@ -395,7 +394,7 @@ internal static partial class InstalledFileSystem
             s.MtimeSec, s.MtimeNsec, s.CtimeSec, s.CtimeNsec);
     }
 
-    private static void RequireDirectory(Snapshot s, bool trusted, uint? uid, bool requireExact0755)
+    internal static void RequireDirectory(Snapshot s, bool trusted, uint? uid, bool requireExact0755)
     {
         if (!s.IsDir) throw Invalid("Directory expected.");
         // Candidate ancestors (including /tmp) are not a trust anchor. Each component was opened without following links.
@@ -410,9 +409,9 @@ internal static partial class InstalledFileSystem
             throw Invalid("Generation directory mode must be exactly 0755.");
     }
 
-    private static void RequireRegular(Snapshot s, bool trusted, uint? uid, uint? gid, uint? mode, long max)
+    internal static void RequireRegular(Snapshot s, bool trusted, uint? uid, uint? gid, uint? mode, long max)
     {
-        if (!s.IsFile || s.Size < 0 || s.Size > max) throw Invalid("Regular file size/type is invalid.");
+        if (!s.IsFile || s.Nlink != 1 || s.Size < 0 || s.Size > max) throw Invalid("Regular file size/type is invalid.");
         if (uid.HasValue && s.Uid != uid.Value) throw Invalid("File uid mismatch.");
         if (gid.HasValue && s.Gid != gid.Value) throw Invalid("File gid mismatch.");
         if (mode.HasValue && s.Permissions != mode.Value) throw Invalid("File mode mismatch.");
