@@ -1,5 +1,10 @@
 # Gagamba handoff
 
+> **B2 WIRE DELTA ACCEPTED WITH QUALIFICATIONS — S3 READY TO RESUME (2026-11-03).**
+> S2 remains accepted with qualifications. Independent design review and owner acceptance resolve the historical S3 blocker. Qualified non-integrated B2 requires a direct echo from the original verified launcher’s owner child and refuses delegated-parent B2 before allocation.
+> Resume GAGAMBA-RC2B-06-B6-IMPL-01-S3 at S3-A–E. Use the same S2 projection for both echo checks, keep 23–26 stop-capable throughout, and gate recovery Ready on controller confirmation 12. Return implementation evidence for S3-Q1. Root-owned native qualification and production activation remain separate.
+> [Owner decision and S3 handoff](decisions/rc2b-06-b6-s3-b2-wire-owner-acceptance.md) · [Reviewed amendment](design/rc2b-06-b6-s3-b2-wire-delta-01.md) · [Qualification matrix](evidence/rc2b-06-b6-s3-b2-wire-delta-01.md)
+
 > **B6-S3 B2 wire amendment independently reviewed (2026-11-03). S3 remains blocked.**
 > The proposed v2 lifeline path binds a direct owner echo to the original spawn pidfd. The independent design review passed within the accepted trusted-launcher model. The owner decision and native qualification are pending.
 > [Amendment](design/rc2b-06-b6-s3-b2-wire-delta-01.md) · [Qualification matrix](evidence/rc2b-06-b6-s3-b2-wire-delta-01.md) · [Independent review](reviews/rc2b-06-b6-s3-b2-wire-delta-01-independent-review.md)

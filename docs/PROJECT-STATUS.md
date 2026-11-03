@@ -1,5 +1,10 @@
 # Gagamba project status
 
+> **B2 WIRE DELTA ACCEPTED WITH QUALIFICATIONS — S3 READY TO RESUME (2026-11-03).**
+> S2 remains accepted with qualifications. Independent design review and owner acceptance resolve the historical S3 blocker. Qualified non-integrated B2 requires a direct echo from the original verified launcher’s owner child and refuses delegated-parent B2 before allocation.
+> The design blocker is closed. S3 implementation is outstanding. Independent S3-Q1, root-owned native qualification and production activation remain separate gates.
+> [Owner decision and S3 handoff](decisions/rc2b-06-b6-s3-b2-wire-owner-acceptance.md) · [Reviewed amendment](design/rc2b-06-b6-s3-b2-wire-delta-01.md) · [Qualification matrix](evidence/rc2b-06-b6-s3-b2-wire-delta-01.md)
+
 > **S3 BLOCKED BY ACCEPTED CONTRACT CONFLICT (2026-11-03).**
 > The B2 owner socket terminates in recovery. The required controller validation of owner echo 36 needs an approved transport/recipient mapping that preserves the recovery envelope and role gates. The user directed recording the conflict and stopping.
 > S2 remains accepted with qualifications. Next decision is a bounded B2 wire amendment specifying an authenticated direct channel or recovery forwarding, including identity provenance, sequence, descriptor and stopping semantics.
