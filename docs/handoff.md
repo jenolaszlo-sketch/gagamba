@@ -1,5 +1,9 @@
 # Gagamba handoff
 
+> **B6-S3 B2 wire amendment independently reviewed (2026-11-03). S3 remains blocked.**
+> The proposed v2 lifeline path binds a direct owner echo to the original spawn pidfd. The independent design review passed within the accepted trusted-launcher model. The owner decision and native qualification are pending.
+> [Amendment](design/rc2b-06-b6-s3-b2-wire-delta-01.md) · [Qualification matrix](evidence/rc2b-06-b6-s3-b2-wire-delta-01.md) · [Independent review](reviews/rc2b-06-b6-s3-b2-wire-delta-01-independent-review.md)
+
 > **S3 BLOCKED BY ACCEPTED CONTRACT CONFLICT (2026-11-03).**
 > The B2 owner socket terminates in recovery. The required controller validation of owner echo 36 needs an approved transport/recipient mapping that preserves the recovery envelope and role gates. The user directed recording the conflict and stopping.
 > S2 remains accepted with qualifications. Next decision is a bounded B2 wire amendment specifying an authenticated direct channel or recovery forwarding, including identity provenance, sequence, descriptor and stopping semantics.
