@@ -1,5 +1,19 @@
 # B6-S2 owner decision on independent Q1
 
+## Final resolution · 2026-11-03 · GAGAMBA-RC2B-06-B6-S2-F02-OWNER-DECISION-01
+
+**GAGAMBA B6-S2 ACCEPTED WITH QUALIFICATIONS.** This addendum resolves the pending decision recorded at `dcedb8f29a1318c2d6b39db23cc53be55869b8dd` (tree `25a7d18305d4be4e7c12f4e510fd451397f7b7aa`). It applies to reviewed S2 implementation `8b897e4ebb8e53385199083a38086a9713f0e07a` (tree `af1dc67cf6c74979eb24e9395724b86f264f9a3f`) and the candidate identified in §5 below.
+
+**F02 BOUNDED DESIGN DELTA ACCEPTED WITH QUALIFICATIONS.** The owner approves a separately provisioned administrative decision that binds the exact artifact set and qualification record before publication. The installed receipt selects the protected runtime record. Withdrawal blocks later publication using that approval and leaves existing published qualifications subject to the installed verification contract. Q1’s original F02 severity is MINOR and its verdict is **SUPPORTED WITH QUALIFICATIONS**. [F02 owner decision and twelve-condition audit](rc2b-06-b6-s2-f02-trust-store-owner-decision.md)
+
+**Accepted scope.** Canonical artifact identity, exact installed-generation verification, qualification-record association, protected administrative acceptance policy, fail-closed trust decisions, non-root native filesystem verification, installation transaction implementation, conservative generation retention, S1 production/test separation and B1–B5 lifecycle preservation.
+
+**Retained qualifications.** The observed WSL2 root is `0:0 0777`. Privileged installation, a genuine root-owned Qualified result and native crash durability remain pending. Native loader/runtime closure, owner/recovery identity echoes, pre-RELEASE generation binding, descriptor v2, general revocation, native Linux-host and Arm64 qualification remain open. Production restricted execution is unavailable.
+
+**Next implementation commission.** S3: Trusted Installation Identity Propagation must derive expected identity from S2’s verified installed generation and implement the already accepted controller/owner/recovery wire binding. Native qualification and production activation have separate gates. [Accepted wire obligations](rc2b-06-b6-wire-owner-acceptance.md)
+
+## Historical owner decision at `dcedb8f`
+
 **S2 OWNER ACCEPTANCE PENDING FOCUSED TRUST-STORE DECISION.**
 
 2026-11-03 · GAGAMBA-RC2B-06-B6-IMPL-01-S2-OWNER-01. Q1 supports the bounded S2 implementation with qualifications. F02 requires a decision on who provisions an additional root-controlled authorization file and what ending that authorization means. The historical review, accepted specification and wire decisions retain their original dispositions.

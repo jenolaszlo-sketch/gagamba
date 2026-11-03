@@ -1,5 +1,11 @@
 # Gagamba handoff
 
+> **GAGAMBA B6-S2 ACCEPTED WITH QUALIFICATIONS (2026-11-03).**
+> F02’s bounded design delta is accepted with qualifications. A separately authorized root administrator approves the exact artifact-set digest and qualification-record hash before publication. Withdrawal blocks later publication using that approval. The installed verifier continues to use the protected receipt-selected `/opt/gagamba` record.
+> **S3: Trusted Installation Identity Propagation** is ready for a separate commission. Carry the expected identity from S2’s verified installed generation through the accepted controller/owner/recovery binding. Preserve the v1 path, refusal ordering, deadlines and stop authority. Echoes cannot establish their own expected identity.
+> Root-owned installation qualification on a suitable disposable WSL2 host, full native loader closure and production activation remain separately gated.
+> [F02 policy decision](decisions/rc2b-06-b6-s2-f02-trust-store-owner-decision.md) · [Final S2 owner acceptance](decisions/rc2b-06-b6-impl-01-s2-owner-acceptance.md)
+
 > **S2 OWNER ACCEPTANCE PENDING FOCUSED TRUST-STORE DECISION (2026-11-03).**
 > S1 remains ACCEPTED WITH QUALIFICATIONS. The bounded S2 implementation is complete. Independent S2-Q1 returned **SUPPORTED WITH QUALIFICATIONS** for the 14-artifact candidate, SHA-256 `31d8ebc21c227e8ed6cf9e6952b69365a71f6ec02786c0cf0fa8a0ab8906e133`.
 > F01 clarifies build-user versus installed ownership. F02 adds a root-controlled publication decision under `/etc/gagamba` that the installed verifier never reads. F03 defers holder-argument cleanup while removal refuses. These retain their original MINOR severity. F04 and F05 remain qualification items for the writable WSL2 root and deferred integration/native closure.
