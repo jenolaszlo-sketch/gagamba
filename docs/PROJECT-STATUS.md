@@ -1,5 +1,10 @@
 # Gagamba project status
 
+> **S3 BLOCKED BY ACCEPTED CONTRACT CONFLICT (2026-11-03).**
+> The B2 owner socket terminates in recovery. The required controller validation of owner echo 36 needs an approved transport/recipient mapping that preserves the recovery envelope and role gates. The user directed recording the conflict and stopping.
+> S2 remains accepted with qualifications. Next decision is a bounded B2 wire amendment specifying an authenticated direct channel or recovery forwarding, including identity provenance, sequence, descriptor and stopping semantics.
+> [S3 source map and blocker handoff](evidence/rc2b-06-b6-impl-01-s3.md)
+
 > **GAGAMBA B6-S2 ACCEPTED WITH QUALIFICATIONS (2026-11-03).**
 > F02’s bounded design delta is accepted with qualifications. A separately authorized root administrator approves the exact artifact-set digest and qualification-record hash before publication. Withdrawal blocks later publication using that approval. The installed verifier continues to use the protected receipt-selected `/opt/gagamba` record.
 > S2-Q1 remains **SUPPORTED WITH QUALIFICATIONS**. The accepted 14-artifact set is `31d8ebc21c227e8ed6cf9e6952b69365a71f6ec02786c0cf0fa8a0ab8906e133`. Next is **S3: Trusted Installation Identity Propagation**, using S2’s verified generation and the accepted wire contract.

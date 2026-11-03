@@ -1,0 +1,92 @@
+{
+  "revision": "142cc2308dfbe7fbab5231e1db0a6fcecc9922e6",
+  "method": "git cat-file blob with one-based source ranges",
+  "entries": [
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryHost.cs",
+      "gitBlob": "ad3f7af363e8929d4879f6432a1e4acb2046eb0e",
+      "excerpts": [
+        {
+          "first": 63,
+          "last": 85,
+          "text": "            return IntegratedRecoveryHost.Run(config,scope,wire,control,controllerFd,ownerPath);\n\n        Process owner;\n        OwnerProtocolChannel? ownerChannel = null;\n        if (config.DelegatedParent is not null)\n        {\n            owner = B2RetainedDomain.Start(scope, config, ownerPath);\n        }\n        else\n        {\n            if (!FdPassing.TryCreateInheritableSocketPair(out var recoveryEnd, out var ownerEnd, out _)) return 3;\n            ownerChannel = new OwnerProtocolChannel(recoveryEnd, config.Execution, config.Generation, true);\n            if (!RecoveryInterop.Protect(recoveryEnd)) { PreparationInterop.CloseFd(ownerEnd); ownerChannel.Dispose(); return 3; }\n            var spawned = scope.TrySpawnOwner(ownerPath,\n                [\"--exec\", config.Execution.ToString(\"D\"), \"--lease\", config.Generation.ToString(\"D\"), \"--b2-lifeline\", \"1\"], ownerEnd);\n            if (!spawned.Ok) { ownerChannel.Dispose(); return 3; }\n            owner = spawned.Process!;\n            if (!ownerChannel.TrySend(OwnerProtocolMessageType.B2StartLifeline,\n                    JsonSerializer.SerializeToUtf8Bytes(new B2OwnerStart(Environment.ProcessId, config.EvidenceDirectory)), out _)\n                || !ownerChannel.TryReceiveAllowedWithin(3000, out _, out _, OwnerProtocolMessageType.B2LifelineReady))\n            { ownerChannel.Dispose(); return 3; }\n        }\n        using var ownedOwnerChannel = ownerChannel;"
+        },
+        {
+          "first": 112,
+          "last": 116,
+          "text": "        }\n        RecoveryEvidence.Write(config.EvidenceDirectory, \"ready.json\", Snapshot());\n        if (!FdPassing.TrySendMessage(control, wire.Create(RecoveryMessage.Ready, JsonSerializer.SerializeToUtf8Bytes(Snapshot())), out _))\n        { controllerLost = true; controlUsable = false; Stop(\"ControllerTransportLost\"); }\n        RecoverySnapshot? last = null;"
+        },
+        {
+          "first": 154,
+          "last": 165,
+          "text": "                else if (!RecoveryInterop.IsTransientReceiveError(error))\n                { controlUsable = false; controllerLost = true; Stop(\"ControllerTransportLost\"); }\n            }\n            if (ownerUsable && ownerChannel is not null)\n            {\n                if (ownerChannel.TryReceiveAllowedWithin(0, out _, out var error, OwnerProtocolMessageType.B2StopObserved))\n                {\n                    if (stopSent) obligation.OwnerAcknowledged = true;\n                }\n                else if (!RecoveryInterop.IsTransientReceiveError(error)) { ownerUsable = false; Stop(\"OwnerTransportLost\"); }\n            }\n            var current = Snapshot();"
+        },
+        {
+          "first": 182,
+          "last": 199,
+          "text": "internal sealed record B2OwnerStart(int RecoveryPid, string EvidenceDirectory);\ninternal static class B2OwnerLifeline\n{\n    internal static int Run(int fd, Guid execution, Guid generation)\n    {\n        using var channel = new OwnerProtocolChannel(fd, execution, generation, true);\n        if (!RecoveryInterop.IsUnprivileged || !RecoveryInterop.Protect(fd)\n            || !channel.TryReceive(OwnerProtocolMessageType.B2StartLifeline, out var message, out _)) return 3;\n        var start = JsonSerializer.Deserialize<B2OwnerStart>(message!.Payload);\n        if (start is null || start.RecoveryPid != RecoveryInterop.GetParentPid()\n            || !RecoveryInterop.VerifyPeer(fd, start.RecoveryPid, RecoveryInterop.GetUid())\n            || !Path.IsPathFullyQualified(start.EvidenceDirectory)) return 3;\n        if (!PidFd.TryOpen(start.RecoveryPid, out var pidfd, out _) || !PreparationInterop.HasCloexec(pidfd)) return 3;\n        using var recoveryPidfd = new Microsoft.Win32.SafeHandles.SafeFileHandle((IntPtr)pidfd, true);\n        if (!channel.TrySend(OwnerProtocolMessageType.B2LifelineReady, [], out _)) return 3;\n        var deadline = Stopwatch.GetTimestamp() + 35 * Stopwatch.Frequency;\n        var cause = \"RecoveryLifelineLost\";\n        var ack = false;"
+        }
+      ]
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryConnection.cs",
+      "gitBlob": "c7c520ad541d75c5393c436d4ff90fd7d45f2353",
+      "excerpts": [
+        {
+          "first": 78,
+          "last": 106,
+          "text": "            OwnerRendezvous? rendezvous=null;\n            if(config.Integrated is not null)\n            {\n                if(!FdPassing.TryReceiveRecord(control,7000,out var record,out _)) throw new IOException(\"Recovery rendezvous missing\");\n                using(record!)\n                {\n                    if(!wire.Accept(record!.Payload,out var type,out var data) || type!=RecoveryMessage.Rendezvous\n                        || record.DescriptorCount!=1) throw new IOException(\"Recovery lifetime role refused\");\n                    rendezvous=JsonSerializer.Deserialize<OwnerRendezvous>(data) ?? throw new IOException(\"Rendezvous identity missing\");\n                    if(rendezvous.Version!=1 || rendezvous.LifetimeRole!=DirectBootstrapRole.OwnerProcessReference)\n                        throw new IOException(\"Owner lifetime role refused\");\n                    var association=rendezvous.Association; association.Validate();\n                    if(association.Execution!=config.Execution || association.Generation!=config.Integrated.StoreGeneration\n                        || association.OriginalSession!=config.Session || association.Controller!=config.Integrated.Controller\n                        || association.Recovery!=(DirectProcessIdentity.Current() with {Pid=child.Id}))\n                        throw new IOException(\"Immutable recovery/owner association refused\");\n                    var descriptors=record.DetachDescriptors();\n                    ownerReference=new Microsoft.Win32.SafeHandles.SafeFileHandle((IntPtr)descriptors[0],true);\n                    if(!DirectPeerIdentity.LiveReference(descriptors[0],association.Owner)\n                        || !DirectPeerIdentity.LiveReference(recoveryReference!.DangerousGetHandle().ToInt32(),association.Recovery))\n                        throw new IOException(\"Original helper lifetime lost\");\n                }\n            }\n            else if (!FdPassing.TryReceiveMessage(control, 7000, out var ready, out _)\n                || !wire.Accept(ready, out var type, out _) || type != RecoveryMessage.Ready)\n                throw new IOException(\"Recovery association refused\");\n            var connection = new RecoveryConnection(child, wire, control) {Rendezvous=rendezvous,\n                OwnerReference=ownerReference,RecoveryReference=recoveryReference};\n            ownerReference=null; recoveryReference=null;"
+        }
+      ]
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryProtocol.cs",
+      "gitBlob": "dedc1e29fc511b6ab1a9d6da807c078a5b7eff9f",
+      "excerpts": [
+        {
+          "first": 8,
+          "last": 39,
+          "text": "// No release/preparation type has a representation in this B2-only protocol.\ninternal enum RecoveryMessage : byte { Associate = 1, Ready = 2, Stop = 3, Inspect = 4, Snapshot = 5, Reconnect = 6, Refused = 7, Rendezvous = 8 }\ninternal sealed class RecoveryWire\n{\n    internal const int MaxPayload = 512;\n    internal static int PayloadBound(RecoveryMessage type) => type is RecoveryMessage.Rendezvous or RecoveryMessage.Ready or RecoveryMessage.Snapshot ? 4096 : MaxPayload;\n    private readonly OwnerProtocolSequencer _sequence;\n    internal RecoveryWire(Guid execution, Guid generation) => _sequence = new(execution, generation);\n    internal byte[] Create(RecoveryMessage type, ReadOnlySpan<byte> payload = default)\n    {\n        if (!Enum.IsDefined(type) || payload.Length > PayloadBound(type)) throw new ArgumentException(\"Invalid B2 frame\");\n        // Distinct magic prevents a controller packet being used as an owner packet.\n        var frame = _sequence.Create((OwnerProtocolMessageType)(byte)type, payload);\n        frame[0] ^= 0x20;\n        return frame;\n    }\n    internal bool Accept(byte[] frame, out RecoveryMessage type, out byte[] payload)\n    {\n        type = default; payload = [];\n        if (frame.Length < OwnerProtocol.HeaderBytes || frame.Length > OwnerProtocol.HeaderBytes + 4096) return false;\n        if (!Enum.IsDefined((RecoveryMessage)frame[6]) || frame.Length > OwnerProtocol.HeaderBytes + PayloadBound((RecoveryMessage)frame[6])) return false;\n        var copy = frame.ToArray(); copy[0] ^= 0x20;\n        var allowed = Enum.GetValues<RecoveryMessage>().Select(x => (OwnerProtocolMessageType)(byte)x).ToArray();\n        // TryAccept also checks execution, generation and next per-direction sequence.\n        if (!_sequence.TryAccept(copy, (OwnerProtocolMessageType)frame[6], out var message, out _)\n            || !allowed.Contains(message!.Type)) return false;\n        type = (RecoveryMessage)(byte)message.Type; payload = message.Payload;\n        return type == RecoveryMessage.Associate ? payload.Length == 48\n            : type is RecoveryMessage.Ready or RecoveryMessage.Snapshot or RecoveryMessage.Rendezvous ? payload.Length <= PayloadBound(type)\n            : payload.Length == 0;\n    }\n}"
+        }
+      ]
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/DirectSession.cs",
+      "gitBlob": "350f686b2c726bf3d2ebbfc4cb59d9562f54f80c",
+      "excerpts": [
+        {
+          "first": 9,
+          "last": 18,
+          "text": "internal sealed record DirectAssociation(Guid Execution, Guid Generation, Guid OriginalSession,\n    DirectProcessIdentity Controller, DirectProcessIdentity Owner, DirectProcessIdentity Recovery)\n{\n    internal void Validate()\n    {\n        if (Execution == Guid.Empty || Generation == Guid.Empty || OriginalSession == Guid.Empty\n            || Controller.Pid == Owner.Pid || Controller.Pid == Recovery.Pid || Owner.Pid == Recovery.Pid)\n            throw new InvalidDataException(\"Original direct association refused\");\n        Controller.Validate(); Owner.Validate(); Recovery.Validate();\n    }"
+        },
+        {
+          "first": 111,
+          "last": 125,
+          "text": "        }\n    }\n    internal static byte[] Transcript(DirectAssociation a, byte[] controllerChallenge, byte[] ownerChallenge)\n    {\n        using var buffer = new MemoryStream(); using var writer = new BinaryWriter(buffer, Encoding.UTF8, true);\n        writer.Write(\"gagamba-int01-direct-v1\"); writer.Write(\"original-controller\"); writer.Write(\"transaction-owner\");\n        writer.Write(a.Execution.ToByteArray()); writer.Write(a.Generation.ToByteArray()); writer.Write(a.OriginalSession.ToByteArray());\n        foreach (var identity in new[] { a.Controller, a.Owner, a.Recovery })\n        {\n            writer.Write(identity.Pid); writer.Write(identity.Uid); writer.Write(identity.Gid);\n            writer.Write(identity.PidNamespace); writer.Write(identity.UserNamespace);\n        }\n        writer.Write(controllerChallenge); writer.Write(ownerChallenge); writer.Flush(); return buffer.ToArray();\n    }\n    internal static byte[] Confirmation(byte[] secret, byte[] transcript, string role)"
+        }
+      ]
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/IntegratedB3Client.cs",
+      "gitBlob": "580dd264fa5250cc57129ff732917d3d61e661ac",
+      "excerpts": [
+        {
+          "first": 65,
+          "last": 78,
+          "text": "            if(_disposed || _stopRequested) throw new IOException(\"Preparation stopped before direct association\");\n            var rendezvous=recovery.Rendezvous ?? throw new IOException(\"Missing original owner association\");\n            var deadline=DirectStream.Deadline((int)Math.Clamp((Math.Min(expiresAt,acceptedAt+10_000_000_000L)-OwnerSafetyMonitor.Now())/1_000_000L,0,5000));\n            var session=DirectSession.Establish(DirectOwnerListener.Connect(rendezvous.Address,deadline),rendezvous.Association,\n                recovery.OwnerReference!.DangerousGetHandle().ToInt32(),false,deadline);\n            _channel=new OwnerProtocolChannel(session,execution,lease);\n            if(!_channel.TryReceive(OwnerProtocolMessageType.StagedObjects,out var objects,out var error)\n                || !OwnerPreparationSpecificationCodec.TryDecodeStagedObjects(objects!.Payload,out var staged,out error))\n                throw new IOException(\"Integrated staged closure unavailable\");\n            var admitted=authorize(staged!);\n            if(admitted.Identity.ExecutionId!=execution || admitted.Identity.IssuerId!=issuer || admitted.Identity.GenerationId!=generation\n                || !admitted.Identity.ManifestDigest.AsSpan().SequenceEqual(ManifestCodec.ComputeDigestBytes(admitted.Manifest)))\n                throw new IOException(\"Original controller manifest binding refused\");\n            if(!_channel.TrySend(OwnerProtocolMessageType.ManifestAuthorization,OwnerManifestAuthorizationCodec.Encode("
+        }
+      ]
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-wire-owner-acceptance.md",
+      "gitBlob": "501487227208d935c3ab1337c9f87055c9e14b8d",
+      "excerpts": [
+        {
+          "first": 192,
+          "last": 214,
+          "text": "### WI-03: B2 Owner Echo Ordering and Verification\n- Keep `B2LifelineReady` semantics intact\n- Introduce owner echo at reviewed B2 insertion point (after `B2LifelineReady`)\n- Identify actual verification recipient\n- Establish trusted expected identity provenance\n- Ensure qualified admission cannot precede successful verification\n- Preserve independent stop behavior\n- Test failed, late, missing, replayed echoes\n\n### WI-04: Integrated Owner Identity\n- Show how expected installation identity reaches owner independently of echo\n- `DirectAssociation` process-identity structure must not be presented as containing artifact-set digest\n- Any extension must preserve authenticated association, roles, session binding\n\n### WI-05: Explicit Decoder Constraints\nImplement message-specific:\n- Payload bounds (512 bytes)\n- Shape validation (`HasValidControlPayloadShape` case for 36)\n- Message direction (recovery 9/10: recovery\u2192controller / controller\u2192recovery; owner 36: owner\u2192controller)\n- Role authorization (add 36 to `DirectControl`, `ForbiddenRecovery`)\n- Sequence/replay refusal (existing sequencer)\n- Version compatibility\n"
+        }
+      ]
+    }
+  ]
+}
