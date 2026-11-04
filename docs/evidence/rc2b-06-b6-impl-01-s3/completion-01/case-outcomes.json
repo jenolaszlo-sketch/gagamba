@@ -1,0 +1,146 @@
+{
+  "scope": "D/PN/native mechanisms and actual production refusals, not 28 full-system qualified passes",
+  "source": "0eb7a7174efb04237a7d69732a6589d1e945125c",
+  "cases": [
+    {
+      "case": 1,
+      "executed": "D and real PN complete causal sequence, both credential checks, exact rights, Stop/26/reap and fd baseline",
+      "remaining": "**Pending Q:** full trusted installation/actual helper positive, S2 and loaded checks coupled to Ready."
+    },
+    {
+      "case": 2,
+      "executed": "PN R sibling using identical fixture image refuses at original-peer pin; original object/one-shot export tests reused",
+      "remaining": "**Pending Q:** identical installed role bytes and original verified installed-launch association."
+    },
+    {
+      "case": 3,
+      "executed": "PN actual R connector and R writing O's duplicated established socket refuse; nested13/control forwarding refuses",
+      "remaining": "Full production topology corroboration remains Q; no forwarding alternative introduced."
+    },
+    {
+      "case": 4,
+      "executed": "D/PN genuine O wrong closure; native actual entry/dependency replacement and foreign/missing mapped path observations",
+      "remaining": "**Pending Q:** full protected five-file loaded-role positive/mutations and production allowlist decisions."
+    },
+    {
+      "case": 5,
+      "executed": "D/PN genuine O wrong set refuses; existing actual S2 payload mutations pass",
+      "remaining": "**Pending Q:** another installed artifact/set field with stable role closure."
+    },
+    {
+      "case": 6,
+      "executed": "PN wrong execution with valid peer/bytes refuses before12/Ready; original D header controls reused",
+      "remaining": "Production installed positive remains case1 Q."
+    },
+    {
+      "case": 7,
+      "executed": "PN wrong protocol lease with matching SHA refuses; lease and full installation generation stay distinct",
+      "remaining": "Production installed positive remains case1 Q."
+    },
+    {
+      "case": 8,
+      "executed": "D generation/clean-Ready/all20 proof fields and no-reopen gates; PN final owner-pin death after12 refuses C commit",
+      "remaining": "**Pending Q:** active selector swaps before12/final return and stale installed SHA under current lease."
+    },
+    {
+      "case": 9,
+      "executed": "PN same/next duplicate36, wrong prior counter, actual copied R writer, consumed-listener reconnect refusal",
+      "remaining": "The named prior-session fixture uses a wrong next counter, not a captured old qualified packet; full installed prior-session control remains Q."
+    },
+    {
+      "case": 10,
+      "executed": "PN nested13, duplicate11, repeated12 with same/new sequence refuse; terminal barrier tests reused",
+      "remaining": "No generic nested owner decoder added; full production control remains Q."
+    },
+    {
+      "case": 11,
+      "executed": "D three namespace/role/version constraints; PN recovery magic on evidence and36 on lifeline refuse",
+      "remaining": "Full qualified cross-wrapper injections remain Q/I; no namespace domains merged."
+    },
+    {
+      "case": 12,
+      "executed": "Native27/32/38/unknown/wrong37 on evidence refuse against valid controls; integrated37/38 injection refuses",
+      "remaining": "Qualified production counterpart remains Q; no lifecycle handler receives evidence input."
+    },
+    {
+      "case": 13,
+      "executed": "Native header/echo truncation, declared length, reserved/Qualified, empty and surplus records refuse; D strict Ready shape/native types",
+      "remaining": "Full installed progression control remains Q."
+    },
+    {
+      "case": 14,
+      "executed": "D profile/shape bounds; native77/tail/oversize, actual payload MSG_TRUNC, unknown timestamp cmsg, rights overflow and actual11/38 MSG_CTRUNC refuse/close",
+      "remaining": "Dedicated evidence-buffer MSG_CTRUNC not separately forced; full installed profile/loader positive remains Q."
+    },
+    {
+      "case": 15,
+      "executed": "Native11/38 file/pipe/socket/dead/unrelated/zero/two/overflow transfers refuse, live original positive and copy-close assertions pass",
+      "remaining": "Full original installed-launch handoff remains Q."
+    },
+    {
+      "case": 16,
+      "executed": "PN sibling/C-in-place-of-O/O-in-place-of-C, real wrong writer, rapid death/reparent on R loss; native claimed UID/GID/PID/user-namespace mismatch refuses",
+      "remaining": "Actual alternate credential/time-namespace migration and forced numeric PID reuse not performed; no privileged namespace setup authorized."
+    },
+    {
+      "case": 17,
+      "executed": "PN missing24/36/half-close, delayed12, late36 at D and signal fail-closed behavior; D exact deadline bounds",
+      "remaining": "Full installed timing/loader latency remains Q; no claim of every native EINTR or final-byte scheduling interleaving."
+    },
+    {
+      "case": 18,
+      "executed": "PN O death before36, queued36 and after12 before C's final gate refuses; original child is reaped",
+      "remaining": "**Pending Q:** same windows coupled to actual installed checks."
+    },
+    {
+      "case": 19,
+      "executed": "PN R death before/after38/11 and while O worker blocked triggers independent O stop/C refusal; known adopted children reaped",
+      "remaining": "Full production topology remains Q; delivered/queued fd lifetimes are bounded by scoped sockets/process exit."
+    },
+    {
+      "case": 20,
+      "executed": "PN C death during R/O worker, after36/12; C worker blocked during O/R death. Surviving R stops once/reaps independently",
+      "remaining": "**Pending Q:** actual protected-filesystem hashing stall and all production windows."
+    },
+    {
+      "case": 21,
+      "executed": "PN drops10/12/Ready separately: no O/no R Ready/no C commit; no retries",
+      "remaining": "Complete trusted positive remains Q."
+    },
+    {
+      "case": 22,
+      "executed": "PN missing24, prematureReady,36 on lifeline, Stop before38 and during blocked worker refuse/preempt;25/26 proceeds",
+      "remaining": "Qualified installed interleavings remain Q;24 never synthesized."
+    },
+    {
+      "case": 23,
+      "executed": "Native sentinel pipe untouched across ordinary/empty/253-right evidence records; typed11/38 substitutions close copies",
+      "remaining": "Full installed handoff remains Q; no unexpected descriptor is used as writer/authority."
+    },
+    {
+      "case": 24,
+      "executed": "PN forbidden ReleaseRequest on recovery control, owner lifeline and evidence; no writer/capability exists; original one-attempt/release tests retained",
+      "remaining": "**Pending I/Q:** actual integrated physical one-attempt native lifecycle; recovery remains stop-only."
+    },
+    {
+      "case": 25,
+      "executed": "Actual Release v1 controls and22 legacy cases pass; actual qualified delegated startup refuses before allocation via existing wire tests",
+      "remaining": "**Pending L:** two delegated-parent v1 domain cases; no operator delegation supplied."
+    },
+    {
+      "case": 26,
+      "executed": "15 PN integrated GID1/order/loss scenarios; B2-only11/12/37/38 refuse; wrong first/duplicate echo blocks description",
+      "remaining": "**Pending I/Q:** real journal/staged domain/HELD/release baseline and qualified integrated production topology."
+    },
+    {
+      "case": 27,
+      "executed": "All61 C3 tests, original absolute stop obligation and native first-stop/count/deadline observations; no renewal",
+      "remaining": "**Pending L/I/Q:** installed-handshake interleave with a real delegated durable domain and delayed exits."
+    },
+    {
+      "case": 28,
+      "executed": "D all final snapshot proofs/strict native types; PN withheld26 keeps acknowledgement false/Unproven despite observed exit/reap; existing uncertainty/cleanup tests pass",
+      "remaining": "**Pending L/I/Q:** real domain-empty/clock/cleanup-identity mutations coupled to qualified loss; process exit does not prove cleanup."
+    }
+  ]
+}

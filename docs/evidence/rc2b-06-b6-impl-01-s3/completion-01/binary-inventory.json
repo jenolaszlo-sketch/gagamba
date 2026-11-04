@@ -1,0 +1,106 @@
+{
+  "source": "0eb7a7174efb04237a7d69732a6589d1e945125c",
+  "scope": "Actual Release fixtures, helpers, core and supplemental test outputs; not an installed artifact set",
+  "artifacts": [
+    {
+      "path": "artifacts/rc2b-06-b6-s3-complete/release/bin/InstallTool/release/Gagamba.Execution.dll",
+      "sha256": "ea5a1959634ed99da7ae33f4ed15ed25347d4659c88f93ca33521d544d7b3c7a",
+      "bytes": 179712
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-complete/release/bin/InstallTool/release/Gagamba.Execution.Linux.M1.dll",
+      "sha256": "75fc08e5d0eee8f06f0805183404f0dbbb2911935bdf92dfe9c0f39be315981d",
+      "bytes": 742400
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-complete/release/bin/Gagamba.Execution.Linux.M1.Recovery/release/Gagamba.Execution.dll",
+      "sha256": "ea5a1959634ed99da7ae33f4ed15ed25347d4659c88f93ca33521d544d7b3c7a",
+      "bytes": 179712
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-complete/release/bin/Gagamba.Execution.Linux.M1.Recovery/release/Gagamba.Execution.Linux.M1.dll",
+      "sha256": "75fc08e5d0eee8f06f0805183404f0dbbb2911935bdf92dfe9c0f39be315981d",
+      "bytes": 742400
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-complete/release/bin/Gagamba.Execution.Linux.M1.Recovery/release/Gagamba.Execution.Linux.M1.Recovery.dll",
+      "sha256": "201ee6384e7586e7e7478cc78816a3edae9967907e9ce8a19bf927894983893d",
+      "bytes": 5632
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-complete/release/bin/Gagamba.Execution.Linux.M1.Owner/release/Gagamba.Execution.dll",
+      "sha256": "ea5a1959634ed99da7ae33f4ed15ed25347d4659c88f93ca33521d544d7b3c7a",
+      "bytes": 179712
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-complete/release/bin/Gagamba.Execution.Linux.M1.Owner/release/Gagamba.Execution.Linux.M1.dll",
+      "sha256": "75fc08e5d0eee8f06f0805183404f0dbbb2911935bdf92dfe9c0f39be315981d",
+      "bytes": 742400
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-complete/release/bin/Gagamba.Execution.Linux.M1.Owner/release/Gagamba.Execution.Linux.M1.Owner.dll",
+      "sha256": "e6e04d0adae0141197981a647161f0160f6dbe3416f3ca2888be6a39b57b2284",
+      "bytes": 7680
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-complete/release/bin/Gagamba.Execution.Linux.M1/release/Gagamba.Execution.dll",
+      "sha256": "ea5a1959634ed99da7ae33f4ed15ed25347d4659c88f93ca33521d544d7b3c7a",
+      "bytes": 179712
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-complete/release/bin/Gagamba.Execution.Linux.M1/release/Gagamba.Execution.Linux.M1.dll",
+      "sha256": "75fc08e5d0eee8f06f0805183404f0dbbb2911935bdf92dfe9c0f39be315981d",
+      "bytes": 742400
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-complete/release/bin/Gagamba.Execution/release/Gagamba.Execution.dll",
+      "sha256": "ea5a1959634ed99da7ae33f4ed15ed25347d4659c88f93ca33521d544d7b3c7a",
+      "bytes": 179712
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-complete/release/bin/B2Controller/release/Gagamba.Execution.dll",
+      "sha256": "ea5a1959634ed99da7ae33f4ed15ed25347d4659c88f93ca33521d544d7b3c7a",
+      "bytes": 179712
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-complete/release/bin/B2Controller/release/Gagamba.Execution.Linux.M1.B2Controller.dll",
+      "sha256": "a068b527ff3c054a6cf81111b6fe08b67d5f5a3cc03a2d1aed28f4dd2c3b9578",
+      "bytes": 129024
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-complete/release/bin/B2Controller/release/Gagamba.Execution.Linux.M1.dll",
+      "sha256": "75fc08e5d0eee8f06f0805183404f0dbbb2911935bdf92dfe9c0f39be315981d",
+      "bytes": 742400
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-complete/production-regressions/bin/Release/net10.0/Gagamba.Execution.dll",
+      "sha256": "7b849b838b2bbccefb80db740598002afe04bc3fc16d199c88fcdbde5050f07b",
+      "bytes": 179712
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-complete/production-regressions/bin/Release/net10.0/Gagamba.Execution.Linux.M1.dll",
+      "sha256": "8a82d7b4753067bda0b50adc9db77fcc514d8920dab49c5550f002d7d842e968",
+      "bytes": 741888
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-complete/production-regressions/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Tests.dll",
+      "sha256": "49076d26d5cd6f2005c94e6cee9f9e19f3c7218121bc72196ac36b4aef23b4a7",
+      "bytes": 1402368
+    }
+  ],
+  "testLauncher": {
+    "source": "0eb7a7174efb04237a7d69732a6589d1e945125c",
+    "uid": 1000,
+    "gid": 1000,
+    "kernel": "6.6.114.1-microsoft-standard-WSL2",
+    "testApphostSha256": "b2dd7d8cb05cd72ea391e1d4273fc66ea3ed1be4d9fd93f599d60bd5a0d09624",
+    "testRunner": "/mnt/c/Users/Laszlos/source/repos/Gagamba/artifacts/rc2b-06-b6-s3-complete/production-regressions/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Tests.dll",
+    "fixtureSha256": "a068b527ff3c054a6cf81111b6fe08b67d5f5a3cc03a2d1aed28f4dd2c3b9578",
+    "scope": "Native components and actual Release refusals, no trusted installation positive"
+  },
+  "externalPeer": {
+    "project": "artifacts/rc2b-06-b6-s3-complete/buffer-probe/BufferProbe.csproj",
+    "sourceSha256": "7c1f1829032c0dea45fdfcf78994c3a8f8c4383993a4bc8573fcc9a187fc7b13",
+    "dllSha256": "91e4cb3efef5ceb1f5d346c9cc407cc15104ffe0000aa550f0e12c60944db323"
+  }
+}

@@ -1,3 +1,134 @@
+# S3 focused handshake completion and qualification delta
+
+Date: 2026-11-04 (Asia/Manila)
+Commission: GAGAMBA-RC2B-06-B6-IMPL-01-S3-COMPLETE-01
+Starting commit: `a88f8913fe0b7854a4779f8aad7dc55b79fe6b18`, tree `41a3b4673bed1809a2dcd2707e8068f6ea676e68`
+Completion source: `0eb7a7174efb04237a7d69732a6589d1e945125c`, tree `aa71ce6a7ae6e55ffa822d4edac77c8d74233f55`
+Runtime implementation: unchanged from `5b2fe73567a9c33df50fc7c662436a67814a86f4`, tree `170f3e4913447f8b5bd1d2b1fa0f7e92e16877d9`
+Canonical branch: `main`, `C:\Users\Laszlos\source\repos\Gagamba`
+Host: Windows NT 10.0.26200 x64, SDK 10.0.401; WSL2 x86-64 kernel 6.6.114.1-microsoft-standard-WSL2, glibc 2.43, SDK 10.0.114, runtime 10.0.14, uid/gid 1000, effective/permitted capabilities zero
+Prerequisites: actual seqpacket/stream sockets, SO_PEERPIDFD, pidfds, SCM_CREDENTIALS, procfs, posix_spawn, CLOEXEC and unprivileged subreaping
+Scope: bounded S3 implementation verification, actual multi-process mechanisms and Release-configuration refusal controls
+Exclusions: trusted-root installation positives, full installed loader closure, delegated native HELD/confinement, privileged operations, S4/B7, production activation, packages and push
+
+**S3 IMPLEMENTED WITH QUALIFICATIONS — READY FOR INDEPENDENT Q1.** The focused completion delta adds verification only: 12 test/fixture/tool paths, 65 canonical M1 cases, real three-actor mechanism traces, actual loaded-image observations and actual production-helper refusals. No reproducible production defect was demonstrated; no runtime source was changed. All safely available bounded checks listed here pass. Required installed/native qualifications remain explicitly Pending below. This is an implementation handoff, not independent review, owner acceptance or a claim that 28 full-system cases passed.
+
+The complete preceding partial report, historical blocker and raw archive remain preserved byte-for-byte below. Earlier partial results retain their original source and scope. [Pre-code 28-case reconciliation](rc2b-06-b6-impl-01-s3/completion-01/pre-code-reconciliation.md) records implementation, existing tests, prior executions, missing assertions and N/Q prerequisites before new code. [Completion source binding, inventories and TRX class counts](rc2b-06-b6-impl-01-s3/completion-01/source-binding.json) · [Binary hashes](rc2b-06-b6-impl-01-s3/completion-01/binary-inventory.json) · [Raw logs, commands, JSONL chronology and process/descriptor observations](rc2b-06-b6-impl-01-s3/completion-01/verification.zip).
+
+## Completion mapping and production boundary
+
+| WI | Existing implementation, retained | Completion evidence and qualification |
+|---|---|---|
+| WI-01 | Canonical S2-derived identity and role hashes, immutable full projection | Existing golden/projection tests reused; actual Release helper root refusal and independent managed mapping controls. Full Qualified S2→loaded-role positive remains Q. |
+| WI-02 | Strict v2 bootstrap and unchanged v1; early qualified delegated refusal | Full wire/config suite reused; actual Release v1 Ready/Stop/reap control versus v2 refusal, legacy B2 22/22. Both delegated v1 domain cases remain unavailable. |
+| WI-03 | 9/10, original lifeline24, 38/11, direct37/36, confirmation12 and separate final Ready gate | 50 non-integrated process scenarios (49 isolated PN, one actual production-owner refusal), exhaustive Ready-property tests, typed transfers, peer/record credentials, loss/stalled-worker/timeout observations. Actual installed production positive remains Q. |
+| WI-04 | Integrated 9/10 before8/GID1; first qualified direct36 before StagedObjects | 15 actual three-process GID1/order probes. Existing direct/safety and lifecycle regressions retained. Writer-held WriterReady is untouched; writerless probes never emit WriterReady or HELD. Full actual integrated staging/HELD remains I/Q. |
+| WI-05 | Exact messages/namespaces/roles/sequences, no type13, no generic evidence transfer | Existing 51 portable S3 cases reused; 24 additional portable cases and 41 new native cases. Actual ancillary, malformed-frame, stale-listener, descriptor and forbidden-message probes pass. Original golden-vector file is unchanged. |
+| WI-06 | Production binaries and original S1 separation gates | 51/51 S1, 1157/0/261 supplemental actual Release, 136/136 actual Release-core S3 components, actual Release helpers and 8 loaded-image scenarios. Bounded production-configuration checks complete; actual qualified installation/complete loader/native lifecycle qualification remains Pending. |
+
+Only argument-free fixed-root S2 `VerifyActive()` can create the production trusted selection. The isolated executable contains synthetic expected bytes and calls production codecs, authentication, custody, phase policy and stop primitives. Its `PN-ready` event and barrier Boolean cannot create a `LoadedInstallation`, `RecoveryConnection`, production-qualified result, journal, domain, preparation capability or physical writer. No injected production trust source or allow-unqualified path was added. Actual helper refusals use the unchanged production entry points.
+
+## Actual B2 and integrated chronologies
+
+The successful **PN mechanism** trace in `topology-final/valid-*` records three different real processes with O→R→C parentage. C creates the fresh abstract listener, retains its original spawned R pidfd and sends Associate1. R sends9. C validates and sends10. Only then R spawns/pins O through `M1RecoveryScope.TrySpawnOwner` and sends23; O sends24. R records receipt24, sends38 with its original C pin, and exports its sealed original O pin once in11. C verifies that received pin before accepting the connection or sending37. Both peers execute `B2ProcessIdentity.VerifyPeer`, including actual SO_PEERPIDFD/SO_PEERCRED, live original references, credentials, namespaces and lineage. O's actual received37 and C's actual received36 each pass SCM_CREDENTIALS, zero-rights and half-close/drain checks. C validates the echo, sends12; R accepts12 before sending clean Ready2. C separately validates the snapshot and final live pins before its PN phase commit. Ordinary Stop25, acknowledgement26 and native original-child reaping follow. Scoped socket/pidfd counts return exactly to each surviving C's baseline.
+
+Successful counters are observed on the real transports: C→R `1.1,10.2,12.3`, R→C `9.1,11.2,2.3`, R→O `23.1,38.2,25.3`, O→R `24.1,26.2`, evidence `37.1` and `36.1`. JSONL records have actor, PID, monotonic time, type/sequence, rights count and phase. Receive-side causal barriers are asserted; cross-process file-write timing is not treated as syscall ordering proof. The independent expected [golden bytes](rc2b-06-b6-impl-01-s3/golden-wire-vectors.json) and their original synthetic scope remain unchanged.
+
+These PN actors do **not** substitute a synthetic S2 verification. Full C-side pre12/final S2 revalidation and successful R/O loaded-role verification require the unavailable trusted installation. The actual Release owner control follows 23/24, receives38 and connects to the real original C; C sends37, then the production owner fails its fixed-root S2 check, withholds36, exits, and R reaps it. C sends no12 and returns no qualified result. The actual Release recovery control accepts inherited sockets/bootstrap/Associate but refuses v2 before9/O; its matching v1 control reaches Ready, Stop, acknowledgement and reap, retaining the existing 30-second R lifetime.
+
+The integrated PN trace records9/10 before rendezvous8, transfers the original C reference and independent safety lifeline through existing DirectBootstrap32, establishes the actual `DirectSession` GID1 transcript, then carries36 as the first qualified `OwnerProtocolChannel` message before a decoded **non-authoritative fixture description**. No B2 listener/evidence socket or 11/12/37/38 is used in normal integrated traces. Injected B2-only packets, wrong original session, wrong R/O identity, early description and duplicate36 refuse. The actual `OwnerSafetyMonitor` stops independently during a deliberately blocked worker or peer loss. These writerless tests do not run the journal/domain transaction, emit WriterReady, create staged objects, reach HELD, or perform physical RELEASE. Full I/Q remains Pending; absence of HELD in a writerless fixture is not native HELD qualification.
+
+## Loaded artifacts and native failure observations
+
+Each of eight private-copy loaded-image scenarios first forces and observes the actual Release entry, M1 and contract assemblies, hashes their bytes, captures fstat device/inode/size and executes the production `RequireMapped` method against real CLR mappings. The matching control passes. Atomic pathname replacement of entry/private dependency (different bytes), a foreign same filename, an incorrect expected location and a missing component produce the recorded mapping/file refusal. Replacement never rewrites the currently mapped inode in place. Unexpected duplicate and dynamic assemblies are actually loaded and inventoried; their facts are observed, **not** falsely reported as a successful test of the full production assembly allowlist. Full `LoadedInstallation.VerifyLoaded` positives and all its protected-path/allowlist/runtime/deps/loader decisions remain Q because S2 correctly refuses before reaching them. Every scenario confirms that fixed-root verification returns no trusted installation. Correct bytes from R or a sibling still fail process authentication; correct O with wrong digest/closure fails comparison.
+
+The native record tests use a valid same-build/kernel exchange before each mutation. They cover types27/32/38/unknown/wrong37, wrong magic/execution/lease, malformed lengths/header/echo/reserved/Qualified, tail forms, empty and surplus records, missing actual credentials, and a real extra kernel timestamp cmsg. A harmless sentinel pipe retains its exact two bytes after rejection, including an empty record and 253 attached references; no delivered copy remains. On11/38, actual file/pipe/socket/dead/unrelated/zero/two references refuse, retained originals stay live/CLOEXEC, and every delivered copy closes. Sending253 pidfds forces actual MSG_CTRUNC in the rights-only receiver and closes all installed copies. An archived external peer separately observes actual kernel MSG_TRUNC (`flags=0x40000020`, 1072-byte frame/561-byte receive buffer), then the unchanged Release evidence receiver refuses it; its valid control accepts. The dedicated 4096-byte ancillary buffer's own MSG_CTRUNC branch was not separately forced beyond the kernel's legal SCM_RIGHTS bound.
+
+Native loss probes cover C death during O hashing, C death during R hashing, C death after36/12, C verification blocked during R/O death, R death around38/11, O death before/with queued36/after12, lifeline loss, pre38 Stop and Stop during blocked verification. Original stop count remains one; O acknowledges/exits and original R reaps where R survives. When R dies, the private fixture supervisor adopts/reaps its known descendants. Missing10 creates no O; missing12 creates no R Ready; missing Ready creates no C commit. A local R Ready is distinguished from final C acceptance after an observed O death. Withheld26 preserves `OwnerAcknowledged=false` and `NativeStop=Unproven` despite known exit/reap. No missing domain/cleanup fact is inferred from process exit.
+
+The late36 probe attempts its send after the original absolute D; C expires at that original bound and cannot qualify. Signal probes observe real SIGUSR1 callbacks and fail closed on an inconclusive live-pin observation **before** D, without extending D. They are not proof that every recvmsg/poll branch returned EINTR or that a signal run waited until timeout. Full installed worker/timing and final-selection races remain Q.
+
+## Results and accounting
+
+All rows below bind to completion source `0eb7a7174efb04237a7d69732a6589d1e945125c`; preliminary development runs retain their separate logs. Commands and exact TRX test/class inventories are archived.
+
+| Executed scope | Passed | Failed | Skipped |
+|---|---:|---:|---:|
+| Complete M1 Debug | 1188 | 0 | 331 |
+| Complete M1 Release runner (explicit Debug dependency retained) | 1188 | 0 | 331 |
+| Supplemental actual Release | 1157 | 0 | 261 |
+| S1 build/binary separation | 51 | 0 | 0 |
+| Actual Release-core Linux S3 batch | 136 | 0 | 0 |
+| Three-process topology driver, including actual owner refusal | 65 | 0 | 0 |
+| Actual loaded-image scenarios | 8 | 0 | 0 |
+| Actual Release helper v1 control/v2 refusal | 2 | 0 | 0 |
+| External MSG_TRUNC positive/negative observations | 2 | 0 | 0 |
+| Actual Release legacy non-delegated B2 | 22 | 0 | 0 |
+| Linux direct/safety/C3/S2 mixed subset | 91 | 0 | 0 |
+| Nonprivileged S2 transactions | 11 | 0 | 0 |
+| Fixture SelfTest | 15 | 0 | 0 |
+
+The canonical addition is **24 portable passes +41 Windows-native skips**: 1164/0/290 →1188/0/331; actual Release supplemental 1133/0/220 →1157/0/261. The new classes are `InstallationCompletionTests` (24), `InstallationTransferNativeTests` (22) and `InstallationEvidenceEdgeTests` (19). Linux's136 consists of **75 portable +61 native components**, not136 native installed handshakes. The65 driver scenarios consist of49 isolated B2 mechanisms,15 integrated mechanisms and one actual production-owner refusal. No row total means unique coverage of every adversarial subcase or full-system qualification. All 61 existing B5 C3 cases pass in the complete suites and mixed Linux batch. S2 trust-verifier cases remain in the full M1 runs; native file and11 transaction controls also run.
+
+The actual Release supplemental runner retains the pre-existing five hook-dependent source exclusions (31 passes/70 skips, 101 total difference); those assertions remain in the complete Debug/Release-runner suites. No historical tests were disabled or rewritten. The two delegated-parent v1 native domain cases were **not run**, not hidden passes/skips. The preserved test ELF apphost SHA-256 is recorded with actual Release DLL hashes; it is a same-entry test launcher, never a substituted Owner/Recovery. Full native confinement/HELD is not inferred from direct primitives.
+
+This runner's TRX summary reports `notExecuted=0` even when individual results contain `NotExecuted`. Skip counts above reconcile individual outcomes, console totals and total-minus-executed; the receipt preserves both the raw summary and reconciled outcome counts. No skip is counted as a pass.
+
+Earlier failures are retained and classified: the first integrated probe wrongly counted a deliberate type11 injection as ordinary progression; the initial dynamic-assembly probe compared different managed wrapper objects; the first production v1 control incorrectly expected R exit within10 seconds instead of its original30-second lifetime. These were test/oracle corrections, not demonstrated runtime defects. Signal labeling was corrected after examining actual timing. WSL Git ownership and Windows-owned launcher chmod stopped orchestration before affected tests; command-scoped Git ownership acknowledgement and the executable launcher completed them without host policy changes. No failing-before production behavior is invented.
+
+## Updated 28-case outcomes
+
+D = portable deterministic behavior; PN = actual unprivileged mechanism with isolated identity, no installed authority; R = actual production-configuration refusal; L = legacy regression; I = full delegated integrated lifecycle; Q = qualified root-owned production installation. “Pending” remains unproved, even when a component control passed. See the pre-code reconciliation for original implementation/tests/prior evidence and the raw source binding for individual scenario names.
+
+[Machine-readable dispositions for all 28 cases](rc2b-06-b6-impl-01-s3/completion-01/case-outcomes.json).
+
+| # | Completion outcome actually established | Remaining qualification |
+|---:|---|---|
+| 1 | D and real PN complete causal sequence, both credential checks, exact rights, Stop/26/reap and fd baseline | **Pending Q:** full trusted installation/actual helper positive, S2 and loaded checks coupled to Ready. |
+| 2 | PN R sibling using identical fixture image refuses at original-peer pin; original object/one-shot export tests reused | **Pending Q:** identical installed role bytes and original verified installed-launch association. |
+| 3 | PN actual R connector and R writing O's duplicated established socket refuse; nested13/control forwarding refuses | Full production topology corroboration remains Q; no forwarding alternative introduced. |
+| 4 | D/PN genuine O wrong closure; native actual entry/dependency replacement and foreign/missing mapped path observations | **Pending Q:** full protected five-file loaded-role positive/mutations and production allowlist decisions. |
+| 5 | D/PN genuine O wrong set refuses; existing actual S2 payload mutations pass | **Pending Q:** another installed artifact/set field with stable role closure. |
+| 6 | PN wrong execution with valid peer/bytes refuses before12/Ready; original D header controls reused | Production installed positive remains case1 Q. |
+| 7 | PN wrong protocol lease with matching SHA refuses; lease and full installation generation stay distinct | Production installed positive remains case1 Q. |
+| 8 | D generation/clean-Ready/all 20 proof fields and no-reopen gates; PN final owner-pin death after12 refuses C commit | **Pending Q:** active selector swaps before12/final return and stale installed SHA under current lease. |
+| 9 | PN same/next duplicate36, wrong prior counter, actual copied R writer, consumed-listener reconnect refusal | The named prior-session fixture uses a wrong next counter, not a captured old qualified packet; full installed prior-session control remains Q. |
+| 10 | PN nested13, duplicate11, repeated12 with same/new sequence refuse; terminal barrier tests reused | No generic nested owner decoder added; full production control remains Q. |
+| 11 | D three namespace/role/version constraints; PN recovery magic on evidence and36 on lifeline refuse | Full qualified cross-wrapper injections remain Q/I; no namespace domains merged. |
+| 12 | Native27/32/38/unknown/wrong37 on evidence refuse against valid controls; integrated37/38 injection refuses | Qualified production counterpart remains Q; no lifecycle handler receives evidence input. |
+| 13 | Native header/echo truncation, declared length, reserved/Qualified, empty and surplus records refuse; D strict Ready shape/native types | Full installed progression control remains Q. |
+| 14 | D profile/shape bounds; native77/tail/oversize, actual payload MSG_TRUNC, unknown timestamp cmsg, rights overflow and actual11/38 MSG_CTRUNC refuse/close | Dedicated evidence-buffer MSG_CTRUNC not separately forced; full installed profile/loader positive remains Q. |
+| 15 | Native11/38 file/pipe/socket/dead/unrelated/zero/two/overflow transfers refuse, live original positive and copy-close assertions pass | Full original installed-launch handoff remains Q. |
+| 16 | PN sibling/C-in-place-of-O/O-in-place-of-C, real wrong writer, rapid death/reparent on R loss; native claimed UID/GID/PID/user-namespace mismatch refuses | Actual alternate credential/time-namespace migration and forced numeric PID reuse not performed; no privileged namespace setup authorized. |
+| 17 | PN missing24/36/half-close, delayed12, late36 at D and signal fail-closed behavior; D exact deadline bounds | Full installed timing/loader latency remains Q; no claim of every native EINTR or final-byte scheduling interleaving. |
+| 18 | PN O death before36, queued36 and after12 before C's final gate refuses; original child is reaped | **Pending Q:** same windows coupled to actual installed checks. |
+| 19 | PN R death before/after38/11 and while O worker blocked triggers independent O stop/C refusal; known adopted children reaped | Full production topology remains Q; delivered/queued fd lifetimes are bounded by scoped sockets/process exit. |
+| 20 | PN C death during R/O worker, after36/12; C worker blocked during O/R death. Surviving R stops once/reaps independently | **Pending Q:** actual protected-filesystem hashing stall and all production windows. |
+| 21 | PN drops10/12/Ready separately: no O/no R Ready/no C commit; no retries | Complete trusted positive remains Q. |
+| 22 | PN missing24, prematureReady,36 on lifeline, Stop before38 and during blocked worker refuse/preempt;25/26 proceeds | Qualified installed interleavings remain Q;24 never synthesized. |
+| 23 | Native sentinel pipe untouched across ordinary/empty/253-right evidence records; typed11/38 substitutions close copies | Full installed handoff remains Q; no unexpected descriptor is used as writer/authority. |
+| 24 | PN forbidden ReleaseRequest on recovery control, owner lifeline and evidence; no writer/capability exists; original one-attempt/release tests retained | **Pending I/Q:** actual integrated physical one-attempt native lifecycle; recovery remains stop-only. |
+| 25 | Actual Release v1 controls and22 legacy cases pass; actual qualified delegated startup refuses before allocation via existing wire tests | **Pending L:** two delegated-parent v1 domain cases; no operator delegation supplied. |
+| 26 | 15 PN integrated GID1/order/loss scenarios; B2-only11/12/37/38 refuse; wrong first/duplicate echo blocks description | **Pending I/Q:** real journal/staged domain/HELD/release baseline and qualified integrated production topology. |
+| 27 | All 61 C3 tests, original absolute stop obligation and native first-stop/count/deadline observations; no renewal | **Pending L/I/Q:** installed-handshake interleave with a real delegated durable domain and delayed exits. |
+| 28 | D all final snapshot proofs/strict native types; PN withheld26 keeps acknowledgement false/Unproven despite observed exit/reap; existing uncertainty/cleanup tests pass | **Pending L/I/Q:** real domain-empty/clock/cleanup-identity mutations coupled to qualified loss; process exit does not prove cleanup. |
+
+## Authority, preservation and S3-Q1 handoff
+
+Runtime source and all accepted S1/S2/B2 decisions are unchanged. No recovery RELEASE message, physical writer, bearer, admission callback, trusted-result factory, qualification-store policy or journal/schema change was added. RecoveryObligation.ReleaseAuthority stays false; the sole owner physical writer and one-attempt limiter remain the existing implementations. C3 deadline, first-cause stopping, controller/owner loss, HELD and conservative Unknown continue under their original contracts. No disk identity or marker reconstructs authority. The public production restricted factory remains unavailable.
+
+The starting HEAD/tree and clean tracked state matched exactly. All 44 original untracked files retain their SHA-256 bytes, all 74 worktree registrations match allowing canonical HEAD advancement, all 18 preceding local commits remain ancestors, and the preceding report/source map/archive and governing decision hashes are preserved. The enclosing documentation commit supplies the final checkout/tree receipt. No branch/worktree creation, reset, rebase, stash, clean, push or privileged operation occurred. Live/tracking origin/main remains `401e1ea7f0be06b27bc188c827dd951016b3c62a`.
+
+Final read-only production inspection returns **`Unqualified Directory is group/other writable.`**, exit1. `/` is still0:0 mode0777 and `/opt/gagamba` is absent. The cgroup root is0:0 mode0555 and not writable; no delegated parent was supplied or provisioned. No known Owner/Recovery/B2Controller helper remains. Original/adopted fixture children were reaped; private test build/candidate copies and raw logs remain intentionally retained. Domain emptiness, cgroup removal and full temporary filesystem removal are not claimed.
+
+Independent **GAGAMBA-RC2B-06-B6-IMPL-01-S3-Q1** should review runtime source 5b2fe7 together with this exact 0eb7a71 verification delta, construct independent adversarial probes, challenge both kernel authentication checks/original custody/ancillary disposal, and review final S2+live-pin gates and stop service under hashing. The pending Q/I/L cells are explicit follow-on qualification obligations. They require a separately authorized suitable trusted-root installation, actual rebuilt 14-artifact qualification and operator delegation where applicable; the old S2 artifact digest does not qualify rebuilt S3 binaries. Full native loader/dlopen qualification, descriptorv2, complete pre-RELEASE enforcement and activation remain separately gated. No S4/B7 work is included.
+
+Completion archive SHA-256: `b4f4244654049a4b65a03cbc44baed45b3a4ef554da870ed63b74b8f16c339de`. Historical resumption archive remains `4a3e29ceaa2821f4cbbd3974b6a505b9c4370241737e6979145c004496770bc5`.
+
+---
+
+## Preserved preceding partial implementation and historical evidence
+
 # B6-S3 trusted installation identity propagation — resumed implementation
 
 Date: 2026-11-04 (Asia/Manila)

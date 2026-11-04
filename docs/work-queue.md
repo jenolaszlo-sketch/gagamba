@@ -1,5 +1,11 @@
 # Current work queue
 
+> **S3 IMPLEMENTED WITH QUALIFICATIONS — READY FOR INDEPENDENT Q1 (2026-11-04).**
+> Focused verification is committed at `0eb7a7174efb04237a7d69732a6589d1e945125c`; runtime source remains unchanged from `5b2fe73567a9c33df50fc7c662436a67814a86f4`. No demonstrated runtime defect or new authority path was introduced.
+> M1 Debug/Release runner 1188/0/331 each; actual Release supplemental 1157/0/261; S1 51/51; Release-core Linux 75 portable +61 native components; topology driver 65/65, loaded-image scenarios 8/8, actual helper controls 2/2, external truncation controls 2/2, legacy B2 22/22, mixed Linux 91/91 and S2 transactions 11/11. Counts do not establish 28 full-system passes.
+> Next: GAGAMBA-RC2B-06-B6-IMPL-01-S3-Q1. Trusted-root production positives/selector races/complete loaded closure and delegated native HELD/domain cases remain Pending. Root is still 0:0 0777; `/opt/gagamba` is absent and no delegated parent was provisioned. No privileged installation, activation, S4/B7 or push.
+> [Completion delta, 28 outcomes and qualifications](evidence/rc2b-06-b6-impl-01-s3.md) · [Exact source, inventories and raw evidence](evidence/rc2b-06-b6-impl-01-s3/completion-01/source-binding.json)
+
 > **S3 PARTIALLY IMPLEMENTED — SOURCE CHECKPOINT AND QUALIFICATION HANDOFF (2026-11-04).**
 > Installation-identity codecs, S2 projection, qualified B2 evidence/Ready gates, integrated identity propagation and loaded-role checks are committed at `5b2fe73567a9c33df50fc7c662436a67814a86f4`. The accepted B2 wire blocker is resolved.
 > Current checks: M1 Debug and Release runner 1164/0/290 each; actual Release supplemental 1133/0/220; S1 51/51; actual Release-core S3 batch 51 portable +20 native component passes; legacy B2 22/22, mixed native/direct/C3/S2 91/91 and S2 transactions 11/11. Full qualified B2/B3, production loaded-closure positives/mutations and remaining 28-row subcases are pending. These are not 28 full-system passes.
