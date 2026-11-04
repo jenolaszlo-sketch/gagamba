@@ -18,12 +18,13 @@ public sealed class B2EvidenceNativeTests
         Assert.True(RecoveryInterop.IsUnprivileged);Assert.True(DirectPeerIdentity.FeatureAvailable());return path;
     }
     [Theory]
+    [InlineData("premature",false)]
     [InlineData("valid",true)][InlineData("wrong-digest",false)][InlineData("wrong-closure",false)]
     [InlineData("wrong-role",false)][InlineData("wrong-execution",false)][InlineData("wrong-lease",false)]
     [InlineData("duplicate",false)][InlineData("release",false)][InlineData("oversize",false)]
     [InlineData("rights",false)][InlineData("empty",false)][InlineData("empty-rights",false)]
     [InlineData("missing",false)][InlineData("wrong-original-pin",false)][InlineData("impostor-writer",false)]
-    public void ActualPeerAndActualRecordAreBothRequired(string mode,bool accepted)
+    public async Task ActualPeerAndActualRecordAreBothRequired(string mode,bool accepted)
     {
         string fixture=Fixture();Guid session=Guid.NewGuid(),execution=Guid.NewGuid(),lease=Guid.NewGuid();
         using var listener=B2EvidenceSocket.Listen(session);
@@ -41,6 +42,8 @@ public sealed class B2EvidenceNativeTests
             long deadline=InstallationDeadline.Create();using var socket=listener.Accept(deadline,()=>{});
             using var peer=DirectPeerIdentity.Verify(socket.Descriptor,B2ProcessIdentity.Identity(child.Id),mode=="wrong-original-pin"?selfFd:childFd);
             var seq=new OwnerProtocolSequencer(execution,lease);
+            if(mode=="premature") Assert.Equal("SENT",await child.StandardOutput.ReadLineAsync(TestContext.Current.CancellationToken)
+                .AsTask().WaitAsync(TimeSpan.FromSeconds(5),TestContext.Current.CancellationToken));
             socket.Send(seq,OwnerProtocolMessageType.B2OwnerExpectation,InstallationWire.Expectation(session,InstallationWireTests.Identity),deadline,()=>{});
             // Shorter missing-frame bound; all other cases use the original bounded exchange.
             if(mode=="missing") deadline=InstallationDeadline.Now+100_000_000L;

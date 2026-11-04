@@ -30,6 +30,11 @@ internal static class B6EvidenceProbe
             using var socket=B2EvidenceSocket.Connect(session,deadline,()=>B2ProcessIdentity.RequireLive(pin,parent));
             using var checkedPeer=DirectPeerIdentity.Verify(socket.Descriptor,B2ProcessIdentity.Identity(parent),pin);
             var seq=new OwnerProtocolSequencer(execution,lease);
+            if(mode=="premature")
+            {
+                socket.Send(seq,OwnerProtocolMessageType.OwnerInstallationEcho,InstallationWire.Echo(Synthetic,1),deadline,()=>{});
+                Console.WriteLine("SENT");Console.Out.Flush();Console.ReadLine();return 0;
+            }
             var expected=socket.Receive(seq,OwnerProtocolMessageType.B2OwnerExpectation,B2ProcessIdentity.Identity(parent),pin,deadline,()=>{});
             if(InstallationWire.ReadExpectation(expected,session)!=Synthetic) return 3;
             byte[] p=InstallationWire.Echo(Synthetic,1);

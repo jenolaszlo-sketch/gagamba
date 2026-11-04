@@ -63,6 +63,12 @@ internal sealed class B2EvidenceSocket : IDisposable
         if(type is not (OwnerProtocolMessageType.B2OwnerExpectation or OwnerProtocolMessageType.OwnerInstallationEcho))
             throw new IOException("B2 evidence direction/type");
         service();_=InstallationDeadline.Remaining(deadline);
+        if(type==OwnerProtocolMessageType.B2OwnerExpectation)
+        {
+            var pending=new DirectUnix.PollFd{Fd=Descriptor,Events=1|0x2000};
+            if(DirectUnix.Poll(ref pending,(UIntPtr)1,0)<0 || pending.Revents!=0)
+                throw new IOException("premature B2 evidence record");
+        }
         if(!FdPassing.TrySendMessage(Descriptor,wire.Create(type,payload),out _)) throw new IOException("B2 evidence send failed");
         if(DirectUnix.Shutdown(Descriptor,1)!=0) throw new IOException("B2 evidence half-close failed");
     }
