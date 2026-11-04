@@ -1,0 +1,12 @@
+[GNUPG:] NEWSIG
+gpg: Signature made Fri Aug 28 06:43:09 2026 MPST
+gpg:                using RSA key 843938DF228D22F7B3742BC0D94AA3F0EFE21092
+[GNUPG:] KEY_CONSIDERED 843938DF228D22F7B3742BC0D94AA3F0EFE21092 0
+[GNUPG:] SIG_ID PttXklL86e6aVlHH80lE0hcyHG8 2026-08-27 1787870589
+[GNUPG:] GOODSIG D94AA3F0EFE21092 Ubuntu CD Image Automatic Signing Key (2012) <cdimage@ubuntu.com>
+[GNUPG:] VALIDSIG 843938DF228D22F7B3742BC0D94AA3F0EFE21092 2026-08-27 1787870589 0 4 0 1 10 00 843938DF228D22F7B3742BC0D94AA3F0EFE21092
+[GNUPG:] TRUST_UNDEFINED 0 pgp
+gpg: Good signature from "Ubuntu CD Image Automatic Signing Key (2012) <cdimage@ubuntu.com>" [unknown]
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+Primary key fingerprint: 8439 38DF 228D 22F7 B374  2BC0 D94A A3F0 EFE2 1092

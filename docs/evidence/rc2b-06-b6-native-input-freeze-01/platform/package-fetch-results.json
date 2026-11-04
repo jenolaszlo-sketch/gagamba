@@ -1,0 +1,32 @@
+[
+  {
+    "name": "resolute-updates-InRelease",
+    "url": "https://archive.ubuntu.com/ubuntu/dists/resolute-updates/InRelease",
+    "exit": 0,
+    "bytes": 137401
+  },
+  {
+    "name": "resolute-updates-main-Packages.xz",
+    "url": "https://archive.ubuntu.com/ubuntu/dists/resolute-updates/main/binary-amd64/Packages.xz",
+    "exit": 0,
+    "bytes": 804284
+  },
+  {
+    "name": "ubuntu-archive-keyring.gpg",
+    "url": "https://archive.ubuntu.com/ubuntu/project/ubuntu-archive-keyring.gpg",
+    "exit": 0,
+    "bytes": 3607
+  },
+  {
+    "name": "bubblewrap_0.11.1-1ubuntu0.3_amd64.deb",
+    "url": "https://archive.ubuntu.com/ubuntu/pool/main/b/bubblewrap/bubblewrap_0.11.1-1ubuntu0.3_amd64.deb",
+    "exit": 0,
+    "bytes": 51032
+  },
+  {
+    "name": "bubblewrap_0.11.1-1ubuntu0.1_amd64.deb",
+    "url": "https://archive.ubuntu.com/ubuntu/pool/main/b/bubblewrap/bubblewrap_0.11.1-1ubuntu0.1_amd64.deb",
+    "exit": 22,
+    "bytes": null
+  }
+]

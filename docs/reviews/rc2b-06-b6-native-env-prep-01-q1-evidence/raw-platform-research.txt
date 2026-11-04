@@ -1,0 +1,192 @@
+[glibc] linux: Add posix_spawnattr_{get, set}cgroup_np (BZ 26371) (https://sourceware.org/pipermail/glibc-cvs/2023q3/083001.html)
+citeturn11view0 [wordlim: 200] Crawled: yesterday; Content type: text/html; Source: open({"ref_id":"https://sourceware.org/pipermail/glibc-cvs/2023q3/083001.html","lineno":null}); Total lines: 1040
+L0: # [glibc] linux: Add posix_spawnattr_{get, set}cgroup_np (BZ 26371)
+L1: 
+L2: Adhemerval Zanella azanella@sourceware.org
+L3: Tue Sep 5 16:09:59 GMT 2023
+L4: 
+L5:   * Previous message (by thread): 【0†[glibc] linux: Define __ASSUME_CLONE3 to 0 for alpha, ia64, nios2, sh, and sparc】
+L6:   * Next message (by thread): 【1†[glibc] posix: Add pidfd_spawn and pidfd_spawnp (BZ 30349)】
+L7:   * Messages sorted by: 【2†[ date ]】 【3†[ thread ]】 【4†[ subject ]】 【5†[ author ]】
+--------------------------------------------------------------------------------
+Get Ubuntu on WSL | Download | Ubuntu (https://ubuntu.com/download/wsl)
+citeturn11view1 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({"ref_id":"https://ubuntu.com/download/wsl","lineno":null}); Total lines: 326
+L0: 【0†Google Tag Manager†www.googletagmanager.com】
+L1: 
+L2: [Input: Search our sites] [Input: Search our sites]
+L3: 
+L4:   * 【1†Desktop】
+L5:   * 【2†Server】
+L6:   * 【3†WSL】
+L7:   * 【4†Core】
+L8:   * 【5†Cloud】
+L9: 
+L10: Register for Ubuntu Summit 26.10
+L11: 
+L12: Live on Nov 12-13. Join us in celebrating the world of open source. 【6†Learn more ›】
+L13: 
+L14: Close
+L15: 
+L16: # Get Ubuntu on WSL
+L17: 
+L18: * * *
+--------------------------------------------------------------------------------
+Ubuntu – Details of package bubblewrap in resolute-updates (https://packages.ubuntu.com/resolute-updates/bubblewrap)
+citeturn11view2 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({"ref_id":"https://packages.ubuntu.com/resolute-updates/bubblewrap","lineno":null}); Total lines: 90
+L0: 【0†packages】 Skip to content
+L1: 
+L2: [Input] [Select] [Input] 【0†all options】
+L3: 
+L4: » 【1†Ubuntu†www.ubuntu.com】 » 【0†Packages】 » 【2†resolute-updates】 » 【3†admin】 » bubblewrap
+L5: 
+L6: [  【4†jammy】  ] [  【5†jammy-updates】  ] [  【6†noble】  ] [  【7†noble-updates】  ] [  【8†resolute】  ] [  resolute-updates  ] [  【9†stonking】  ] [  【10†tenacious】  ]
+L7: 
+L8: [ Source: 【11†bubblewrap】  ]
+L9: 
+L10: # Package: bubblewrap (0.11.1-1ubuntu0.3)
+L11: 
+L12: ## Links for bubblewrap
+--------------------------------------------------------------------------------
+systemd.resource-control (https://www.freedesktop.org/software/systemd/man/devel/systemd.resource-control.html)
+citeturn11view3 [wordlim: 200] Crawled: today; Content type: text/html; Source: open({"ref_id":"https://www.freedesktop.org/software/systemd/man/devel/systemd.resource-control.html","lineno":null}); Total lines: 733
+L0: 【0†Index】 · 【1†Directives】 systemd 263~devel
+L1: 
+L2: * * *
+L3: 
+L4: ## Name
+L5: 
+L6: systemd.resource-control — Resource control unit settings
+L7: 
+L8: ## Synopsis
+L9: 
+L10: ``slice`.slice`, ``scope`.scope`, ``service`.service`, ``socket`.socket`, ``mount`.mount`, ``swap`.swap`
+--------------------------------------------------------------------------------
+[glibc] linux: Add posix_spawnattr_{get, set}cgroup_np (BZ 26371) (https://sourceware.org/pipermail/glibc-cvs/2023q3/083001.html)
+citeturn11view4 [wordlim: 200] Crawled: yesterday; Content type: text/html; Source: find({"ref_id":"https://sourceware.org/pipermail/glibc-cvs/2023q3/083001.html","pattern":"GLIBC_2.39"}); Total lines: 1040
+L469:     +GLIBC_2.39 posix_spawnattr_setcgroup_np F
+L470:      GLIBC_2.4 __confstr_chk F
+L471:      GLIBC_2.4 __fgets_chk F
+L472:      GLIBC_2.4 __fgets_unlocked_chk F
+L473:     diff --git a/sysdeps/unix/sysv/linux/mips/mips64/n32/libc.abilist b/sysdeps/unix/sysv/linux/mips/mips64/n32/libc.abilist
+L474:     index a2748b7b74..56f414dbd0 100644
+L475:     --- a/sysdeps/unix/sysv/linux/mips/mips64/n32/libc.abilist
+L476:     +++ b/sysdeps/unix/sysv/linux/mips/mips64/n32/libc.abilist
+L477:     @@ -2757,6 +2757,8 @@ GLIBC_2.38 strlcat F
+L478:      GLIBC_2.38 strlcpy F
+L479:      GLIBC_2.38 wcslcat F
+L480:      GLIBC_2.38 wcslcpy F
+L481:     +GLIBC_2.39 posix_spawnattr_getcgroup_np F
+L489:     +++ b/sysdeps/unix/sysv/linux/mips/mips64/n64/libc.abilist
+L490:     @@ -2659,6 +2659,8 @@ GLIBC_2.38 strlcat F
+L491:      GLIBC_2.38 strlcpy F
+L492:      GLIBC_2.38 wcslcat F
+L493:      GLIBC_2.38 wcslcpy F
+L494:     +GLIBC_2.39 posix_spawnattr_getcgroup_np F
+L495:     +GLIBC_2.39 posix_spawnattr_setcgroup_np F
+L496:      GLIBC_2.4 __confstr_chk F
+L497:      GLIBC_2.4 __fgets_chk F
+L498:      GLIBC_2.4 __fgets_unlocked_chk F
+L499:     diff --git a/sysdeps/unix/sysv/linux/nios2/libc.abilist b/sysdeps/unix/sysv/linux/nios2/libc.abilist
+L500:     index 947495a0e2..f5a157ea94 100644
+L501:     --- a/sysdeps/unix/sysv/linux/nios2/libc.abilist
+L502:     +++ b/sysdeps/unix/sysv/linux/nios2/libc.abilist
+L503:     @@ -2798,3 +2798,5 @@ GLIBC_2.38 strlcat F
+L504:      GLIBC_2.38 strlcpy F
+L505:      GLIBC_2.38 wcslcat F
+L506:      GLIBC_2.38 wcslcpy F
+L507:     +GLIBC_2.39 posix_spawnattr_getcgroup_np F
+L508:     +GLIBC_2.39 posix_spawnattr_setcgroup_np F
+L509:     diff --git a/sysdeps/unix/sysv/linux/or1k/libc.abilist b/sysdeps/unix/sysv/linux/or1k/libc.abilist
+L510:     index 115f1039e7..85b552f1cb 100644
+L511:     --- a/sysdeps/unix/sysv/linux/or1k/libc.abilist
+L512:     +++ b/sysdeps/unix/sysv/linux/or1k/libc.abilist
+L513:     @@ -2180,3 +2180,5 @@ GLIBC_2.38 strlcat F
+L514:      GLIBC_2.38 strlcpy F
+L515:      GLIBC_2.38 wcslcat F
+L516:      GLIBC_2.38 wcslcpy F
+L517:     +GLIBC_2.39 posix_spawnattr_getcgroup_np F
+L518:     +GLIBC_2.39 posix_spawnattr_setcgroup_np F
+L519:     diff --git a/sysdeps/unix/sysv/linux/powerpc/powerpc32/fpu/libc.abilist b/sysdeps/unix/sysv/linux/powerpc/powerpc32/fpu/libc.abilist
+L520:     index 19c4c325b0..cadb16c12f 100644
+L521:     --- a/sysdeps/unix/sysv/linux/powerpc/powerpc32/fpu/libc.abilist
+L522:     +++ b/sysdeps/unix/sysv/linux/powerpc/powerpc32/fpu/libc.abilist
+L523:     @@ -2825,6 +2825,8 @@ GLIBC_2.38 strlcat F
+L524:      GLIBC_2.38 strlcpy F
+L525:      GLIBC_2.38 wcslcat F
+L526:      GLIBC_2.38 wcslcpy F
+L527:     +GLIBC_2.39 posix_spawnattr_getcgroup_np F
+L528:     +GLIBC_2.39 posix_spawnattr_setcgroup_np F
+L529:      GLIBC_2.4 _IO_fprintf F
+L530:      GLIBC_2.4 _IO_printf F
+L531:      GLIBC_2.4 _IO_sprintf F
+L532:     diff --git a/sysdeps/unix/sysv/linux/powerpc/powerpc32/nofpu/libc.abilist b/sysdeps/unix/sysv/linux/powerpc/powerpc32/nofpu/libc.abilist
+L533:     index 3e043c4044..50c5b99728 100644
+L534:     --- a/sysdeps/unix/sysv/linux/powerpc/powerpc32/nofpu/libc.abilist
+L535:     +++ b/sysdeps/unix/sysv/linux/powerpc/powerpc32/nofpu/libc.abilist
+L536:     @@ -2858,6 +2858,8 @@ GLIBC_2.38 strlcat F
+L537:      GLIBC_2.38 strlcpy F
+L538:      GLIBC_2.38 wcslcat F
+L539:      GLIBC_2.38 wcslcpy F
+L540:     +GLIBC_2.39 posix_spawnattr_getcgroup_np F
+L541:     +GLIBC_2.39 posix_spawnattr_setcgroup_np F
+L542:      GLIBC_2.4 _IO_fprintf F
+L543:      GLIBC_2.4 _IO_printf F
+L544:      GLIBC_2.4 _IO_sprintf F
+L545:     diff --git a/sysdeps/unix/sysv/linux/powerpc/powerpc64/be/libc.abilist b/sysdeps/unix/sysv/linux/powerpc/powerpc64/be/libc.abilist
+L546:     index e4f3a766bb..81c63385af 100644
+L547:     --- a/sysdeps/unix/sysv/linux/powerpc/powerpc64/be/libc.abilist
+L548:     +++ b/sysdeps/unix/sysv/linux/powerpc/powerpc64/be/libc.abilist
+L549:     @@ -2579,6 +2579,8 @@ GLIBC_2.38 strlcat F
+L550:      GLIBC_2.38 strlcpy F
+L551:      GLIBC_2.38 wcslcat F
+L552:      GLIBC_2.38 wcslcpy F
+L553:     +GLIBC_2.39 posix_spawnattr_getcgroup_np F
+L554:     +GLIBC_2.39 posix_spawnattr_setcgroup_np F
+L555:      GLIBC_2.4 _IO_fprintf F
+L556:      GLIBC_2.4 _IO_printf F
+L557:      GLIBC_2.4 _IO_sprintf F
+L558:     diff --git a/sysdeps/unix/sysv/linux/powerpc/powerpc64/le/libc.abilist b/sysdeps/unix/sysv/linux/powerpc/powerpc64/le/libc.abilist
+L559:     index dafe1c4a59..af9be18108 100644
+L560:     --- a/sysdeps/unix/sysv/linux/powerpc/powerpc64/le/libc.abilist
+L561:     +++ b/sysdeps/unix/sysv/linux/powerpc/powerpc64/le/libc.abilist
+L562:     @@ -2893,3 +2893,5 @@ GLIBC_2.38 strlcat F
+L563:      GLIBC_2.38 strlcpy F
+L564:      GLIBC_2.38 wcslcat F
+L565:      GLIBC_2.38 wcslcpy F
+L566:     +GLIBC_2.39 posix_spawnattr_getcgroup_np F
+L567:     +GLIBC_2.39 posix_spawnattr_setcgroup_np F
+L568:     diff --git a/sysdeps/unix/sysv/linux/riscv/rv32/libc.abilist b/sysdeps/unix/sysv/linux/riscv/rv32/libc.abilist
+L569:     index b9740a1afc..2266a88ad5 100644
+L570:     --- a/sysdeps/unix/sysv/linux/riscv/rv32/libc.abilist
+L571:     +++ b/sysdeps/unix/sysv/linux/riscv/rv32/libc.abilist
+L572:     @@ -2436,3 +2436,5 @@ GLIBC_2.38 strlcat F
+L573:      GLIBC_2.38 strlcpy F
+L574:      GLIBC_2.38 wcslcat F
+L575:      GLIBC_2.38 wcslcpy F
+L576:     +GLIBC_2.39 posix_spawnattr_getcgroup_np F
+L577:     +GLIBC_2.39 posix_spawnattr_setcgroup_np F
+L578:     diff --git a/sysdeps/unix/sysv/linux/riscv/rv64/libc.abilist b/sysdeps/unix/sysv/linux/riscv/rv64/libc.abilist
+L579:     index e3b4656aa2..4776ae32b8 100644
+L580:     --- a/sysdeps/unix/sysv/linux/riscv/rv64/libc.abilist
+L581:     +++ b/sysdeps/unix/sysv/linux/riscv/rv64/libc.abilist
+L582:     @@ -2636,3 +2636,5 @@ GLIBC_2.38 strlcat F
+L583:      GLIBC_2.38 strlcpy F
+L584:      GLIBC_2.38 wcslcat F
+L585:      GLIBC_2.38 wcslcpy F
+L586:     +GLIBC_2.39 posix_spawnattr_getcgroup_np F
+L587:     +GLIBC_2.39 posix_spawnattr_setcgroup_np F
+L588:     diff --git a/sysdeps/unix/sysv/linux/s390/s390-32/libc.abilist b/sysdeps/unix/sysv/linux/s390/s390-32/libc.abilist
+L589:     index 84cb7a50ed..5d1d7d07a5 100644
+L590:     --- a/sysdeps/unix/sysv/linux/s390/s390-32/libc.abilist
+L591:     +++ b/sysdeps/unix/sysv/linux/s390/s390-32/libc.abilist
+L592:     @@ -2823,6 +2823,8 @@ GLIBC_2.38 strlcat F
+L593:      GLIBC_2.38 strlcpy F
+L594:      GLIBC_2.38 wcslcat F
+L595:      GLIBC_2.38 wcslcpy F
+L596:     +GLIBC_2.39 posix_spawnattr_getcgroup_np F
+L597:     +GLIBC_2.39 posix_spawnattr_setcgroup_np F
+L598:      GLIBC_2.4 _IO_fprintf F
+L599:      GLIBC_2.4 _IO_printf F
+L600:      GLIBC_2.4 _IO_sprintf F
+L601:     diff --git a/sysdeps/unix/sysv/linux/s390/s390-64/libc.abilist b/sysdeps/unix/sysv/linux/s390/s390-64/libc.abilist
+

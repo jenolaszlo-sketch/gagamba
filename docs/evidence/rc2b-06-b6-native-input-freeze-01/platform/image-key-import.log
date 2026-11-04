@@ -1,0 +1,6 @@
+gpg: keyblock resource '/c/Users/Laszlos/source/repos/Solo/C:\\Users\\Laszlos\\source\\repos\\Solo\\native-input-freeze-01\\platform\\gpg-isolated/pubring.kbx': No such file or directory
+gpg: key D94AA3F0EFE21092: 102 signatures not checked due to missing keys
+gpg: no writable keyring found: Not found
+gpg: error reading 'C:\\Users\\Laszlos\\source\\repos\\Solo\\native-input-freeze-01\\platform\\ubuntu-cdimage-2012.asc': General error
+gpg: import from 'C:\\Users\\Laszlos\\source\\repos\\Solo\\native-input-freeze-01\\platform\\ubuntu-cdimage-2012.asc' failed: General error
+gpg: Total number processed: 0

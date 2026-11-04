@@ -1,0 +1,12 @@
+{
+  "source": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-native-env-prep-01-q1",
+  "reviewedCommit": "af4300f5dff7e4e49fca98233911a44a15894a43",
+  "reviewedTree": "2d0ece92e20247d3d61ac84e9215837a713e9921",
+  "manifestEntries": 25,
+  "allEntriesVerified": true,
+  "manifestSelfExcluded": true,
+  "manifestSha256": "f5d21890bc2c366452c3dbed2a104c9c04b6678b1fe29b48741f0cdde515a880",
+  "packageFiles": 26,
+  "packageBytes": 339176.0,
+  "pathSetExact": true
+}

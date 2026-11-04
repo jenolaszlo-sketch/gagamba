@@ -1,0 +1,180 @@
+[
+  {
+    "package": "libc6_2.43-2ubuntu2.4_amd64.deb",
+    "packageSha256": "a613b457f3ff9c84ebd28af8a05afdec22605ad9aed87c71e3a6ae5170aeb9ca",
+    "signedIndexMatch": true,
+    "files": [
+      {
+        "path": "usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+        "sha256": "bda779ea9e9ad234f60315477d7cfd0bdde861cd8ddd9df8cdaf62f18c4cec14",
+        "bytes": 254864,
+        "uid": 0,
+        "gid": 0,
+        "archiveMode": "0o755",
+        "elf": {
+          "class": "ELF64",
+          "endian": "little",
+          "machine": 62,
+          "dtNeeded": [],
+          "glibcStrings": [
+            "GLIBC_2.2.5",
+            "GLIBC_2.3",
+            "GLIBC_2.34",
+            "GLIBC_2.35",
+            "GLIBC_2.4"
+          ]
+        }
+      },
+      {
+        "path": "usr/lib/x86_64-linux-gnu/libc.so.6",
+        "sha256": "85e64f97e348786a8fb4d9f3d52fec289e2fb86bba20f0731dfe61990525e0f7",
+        "bytes": 2190608,
+        "uid": 0,
+        "gid": 0,
+        "archiveMode": "0o755",
+        "elf": {
+          "class": "ELF64",
+          "endian": "little",
+          "machine": 62,
+          "dtNeeded": [
+            "ld-linux-x86-64.so.2"
+          ],
+          "glibcStrings": [
+            "GLIBC_2.10",
+            "GLIBC_2.11",
+            "GLIBC_2.12",
+            "GLIBC_2.13",
+            "GLIBC_2.14",
+            "GLIBC_2.15",
+            "GLIBC_2.16",
+            "GLIBC_2.17",
+            "GLIBC_2.18",
+            "GLIBC_2.2.5",
+            "GLIBC_2.2.6",
+            "GLIBC_2.22",
+            "GLIBC_2.23",
+            "GLIBC_2.24",
+            "GLIBC_2.25",
+            "GLIBC_2.26",
+            "GLIBC_2.27",
+            "GLIBC_2.28",
+            "GLIBC_2.29",
+            "GLIBC_2.3",
+            "GLIBC_2.3.2",
+            "GLIBC_2.3.3",
+            "GLIBC_2.3.4",
+            "GLIBC_2.30",
+            "GLIBC_2.31",
+            "GLIBC_2.32",
+            "GLIBC_2.33",
+            "GLIBC_2.34",
+            "GLIBC_2.35",
+            "GLIBC_2.36",
+            "GLIBC_2.38",
+            "GLIBC_2.39",
+            "GLIBC_2.4",
+            "GLIBC_2.41",
+            "GLIBC_2.42",
+            "GLIBC_2.43",
+            "GLIBC_2.5",
+            "GLIBC_2.6",
+            "GLIBC_2.7",
+            "GLIBC_2.8",
+            "GLIBC_2.9"
+          ]
+        },
+        "exports": [
+          {
+            "name": "posix_spawnattr_getcgroup_np",
+            "version": "GLIBC_2.39",
+            "size": 15,
+            "defined": true
+          },
+          {
+            "name": "posix_spawnattr_setcgroup_np",
+            "version": "GLIBC_2.39",
+            "size": 13,
+            "defined": true
+          }
+        ]
+      }
+    ],
+    "executed": false
+  },
+  {
+    "package": "dotnet-host-10.0_10.0.14-0ubuntu1~26.04.1_amd64.deb",
+    "packageSha256": "97376e078ec7ba5dc5f56bcfb148959a18ca588853699ef18cb930d31a3105c4",
+    "signedIndexMatch": true,
+    "files": [
+      {
+        "path": "usr/lib/dotnet/dotnet",
+        "sha256": "ef4e6ecd78a6ad75f97927be4188200b86fd9ea600fc8cb4d1d93d8d1d6fe755",
+        "bytes": 72200,
+        "uid": 0,
+        "gid": 0,
+        "archiveMode": "0o755",
+        "elf": {
+          "class": "ELF64",
+          "endian": "little",
+          "machine": 62,
+          "dtNeeded": [
+            "libstdc++.so.6",
+            "libm.so.6",
+            "libgcc_s.so.1",
+            "libc.so.6",
+            "ld-linux-x86-64.so.2"
+          ],
+          "glibcStrings": [
+            "GLIBC_2.14",
+            "GLIBC_2.16",
+            "GLIBC_2.2.5",
+            "GLIBC_2.3",
+            "GLIBC_2.33",
+            "GLIBC_2.34",
+            "GLIBC_2.38",
+            "GLIBC_2.4"
+          ]
+        }
+      }
+    ],
+    "executed": false
+  },
+  {
+    "package": "dotnet-hostfxr-10.0_10.0.14-0ubuntu1~26.04.1_amd64.deb",
+    "packageSha256": "2c14d90a5a01221a24959896763b3c350c5130e2ff5b2af9ccef15fac8faf46f",
+    "signedIndexMatch": true,
+    "files": [
+      {
+        "path": "usr/lib/dotnet/host/fxr/10.0.14/libhostfxr.so",
+        "sha256": "19d79085ccb8db06552efa3db9b1da00455ea8a222013074a220b4cce5ce7506",
+        "bytes": 314672,
+        "uid": 0,
+        "gid": 0,
+        "archiveMode": "0o644",
+        "elf": {
+          "class": "ELF64",
+          "endian": "little",
+          "machine": 62,
+          "dtNeeded": [
+            "libstdc++.so.6",
+            "libm.so.6",
+            "libgcc_s.so.1",
+            "libc.so.6",
+            "ld-linux-x86-64.so.2"
+          ],
+          "glibcStrings": [
+            "GLIBC_2.14",
+            "GLIBC_2.16",
+            "GLIBC_2.2.5",
+            "GLIBC_2.3",
+            "GLIBC_2.33",
+            "GLIBC_2.34",
+            "GLIBC_2.38",
+            "GLIBC_2.4"
+          ]
+        }
+      }
+    ],
+    "executed": false
+  }
+]

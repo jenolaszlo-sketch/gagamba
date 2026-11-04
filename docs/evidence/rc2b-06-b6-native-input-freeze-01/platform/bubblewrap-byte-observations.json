@@ -1,0 +1,44 @@
+[
+  {
+    "package": "bubblewrap_0.11.1-1ubuntu0.3_amd64.deb",
+    "packageBytes": 51032,
+    "packageSha256": "d3a6c1b6b0e0474eaed6dbd055c0d601fd875af153976a0dc4aae75f4ea10868",
+    "signedIndexMatch": true,
+    "control": "Package: bubblewrap\nVersion: 0.11.1-1ubuntu0.3\nArchitecture: amd64\nMaintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>\nInstalled-Size: 133\nDepends: libc6 (>= 2.38), libcap2 (>= 1:2.10), libselinux1 (>= 3.1~)\nSection: admin\nPriority: optional\nMulti-Arch: foreign\nHomepage: https://github.com/containers/bubblewrap\nDescription: utility for unprivileged chroot and namespace manipulation\n bubblewrap uses Linux namespaces to launch unprivileged containers.\n These containers can be used to sandbox semi-trusted applications such\n as Flatpak apps, image/video thumbnailers and web browser components,\n or to run programs in a different library stack such as a Flatpak runtime\n or a different Debian release.\n .\n By default, this package relies on a kernel with user namespaces enabled.\n Official Debian and Ubuntu kernels are suitable.\n .\n On kernels without user namespaces, system administrators can make the\n bwrap executable setuid root, allowing it to create unprivileged\n containers even though ordinary user processes cannot.\nOriginal-Maintainer: Utopia Maintenance Team <pkg-utopia-maintainers@lists.alioth.debian.org>\n",
+    "memberPath": "./usr/bin/bwrap",
+    "archiveUid": 0,
+    "archiveGid": 0,
+    "archiveMode": "0o755",
+    "archivePaxHeaders": {},
+    "binaryBytes": 80424,
+    "binarySha256": "523da3e7399044be5163aee6f57a77a6bef7454376e28f0a0627920bae1b76b6",
+    "requiredBinarySha256": "523da3e7399044be5163aee6f57a77a6bef7454376e28f0a0627920bae1b76b6",
+    "matchesRequiredBinary": true,
+    "elf": {
+      "class": "ELF64",
+      "endian": "little",
+      "machine": 62,
+      "dtNeeded": [
+        "libselinux.so.1",
+        "libcap.so.2",
+        "libc.so.6"
+      ],
+      "glibcStrings": [
+        "GLIBC_2.14",
+        "GLIBC_2.2.5",
+        "GLIBC_2.28",
+        "GLIBC_2.3",
+        "GLIBC_2.3.4",
+        "GLIBC_2.33",
+        "GLIBC_2.34",
+        "GLIBC_2.38",
+        "GLIBC_2.4",
+        "GLIBC_2.7",
+        "GLIBC_2.8",
+        "GLIBC_2.9"
+      ]
+    },
+    "installedMetadataVerified": false,
+    "executed": false
+  }
+]

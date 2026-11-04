@@ -1,0 +1,12 @@
+[GNUPG:] NEWSIG
+gpg: Signature made Wed Nov  4 14:39:41 2026 MPST
+gpg:                using RSA key F6ECB3762474EDA9D21B7022871920D1991BC93C
+[GNUPG:] KEY_CONSIDERED F6ECB3762474EDA9D21B7022871920D1991BC93C 0
+[GNUPG:] SIG_ID SqqY7CZn8E3jlzYnpeakE+5X+KE 2026-11-04 1793774381
+[GNUPG:] GOODSIG 871920D1991BC93C Ubuntu Archive Automatic Signing Key (2018) <ftpmaster@ubuntu.com>
+gpg: Good signature from "Ubuntu Archive Automatic Signing Key (2018) <ftpmaster@ubuntu.com>" [unknown]
+[GNUPG:] VALIDSIG F6ECB3762474EDA9D21B7022871920D1991BC93C 2026-11-04 1793774381 0 4 0 1 10 01 F6ECB3762474EDA9D21B7022871920D1991BC93C
+[GNUPG:] TRUST_UNDEFINED 0 pgp
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+Primary key fingerprint: F6EC B376 2474 EDA9 D21B  7022 8719 20D1 991B C93C

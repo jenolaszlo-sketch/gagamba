@@ -1,0 +1,132 @@
+[
+  {
+    "path": "bind-documents.py",
+    "length": 1267,
+    "sha256": "0ceb5ed0a2eaaeb2d16dab9e89fb157e374a8cc9a3b41fd3f5acb10e15ce4a50"
+  },
+  {
+    "path": "canonical-status-after.txt",
+    "length": 2118,
+    "sha256": "e3da7a1aa73b2b89b2f21faad402c59abe92529fb61a8196b3d9edecd7480fa5"
+  },
+  {
+    "path": "canonical-status-before.txt",
+    "length": 2118,
+    "sha256": "e3da7a1aa73b2b89b2f21faad402c59abe92529fb61a8196b3d9edecd7480fa5"
+  },
+  {
+    "path": "committed-documents/01-rc2b-06-b6-native-env-prep-01.md",
+    "length": 38300,
+    "sha256": "4a046cf8b4113937d6cebbd9bff17011a48c8ba52a41b97fe6843f6fdc3927c8"
+  },
+  {
+    "path": "committed-documents/02-rc2b-06-b6-native-qualification-matrix.md",
+    "length": 43023,
+    "sha256": "0f01a7ff381c56fcea22ef478085017b8997c4a17a4305245f347f0430c9e443"
+  },
+  {
+    "path": "committed-documents/03-rc2b-06-b6-native-provisioning-runbook.md",
+    "length": 28161,
+    "sha256": "79a17e277c6bb17328a7cf72c1330e2bb1c4e546ddb91b426b5346203bcae767"
+  },
+  {
+    "path": "committed-documents/04-rc2b-06-b6-native-env-prep-01.md",
+    "length": 11799,
+    "sha256": "9e7d2f1f9be2b24a99d378597071e4086124f81252040c9a540f80db54e6ab7c"
+  },
+  {
+    "path": "committed-documents/rc2b-06-b6-native-env-prep-01.md",
+    "length": 38300,
+    "sha256": "4a046cf8b4113937d6cebbd9bff17011a48c8ba52a41b97fe6843f6fdc3927c8"
+  },
+  {
+    "path": "committed-documents/rc2b-06-b6-native-provisioning-runbook.md",
+    "length": 28161,
+    "sha256": "79a17e277c6bb17328a7cf72c1330e2bb1c4e546ddb91b426b5346203bcae767"
+  },
+  {
+    "path": "committed-documents/rc2b-06-b6-native-qualification-matrix.md",
+    "length": 43023,
+    "sha256": "0f01a7ff381c56fcea22ef478085017b8997c4a17a4305245f347f0430c9e443"
+  },
+  {
+    "path": "document-binding.json",
+    "length": 1467,
+    "sha256": "92d8830c0a36aad9293bff4e30b6c420cdb9e454c8c05ec199ee19eca71f1466"
+  },
+  {
+    "path": "final-preservation.json",
+    "length": 1101,
+    "sha256": "2dcb1b812f59349f47afbde12385c1b91dfa2ad40d84737436cc80203a9b753e"
+  },
+  {
+    "path": "findings.md",
+    "length": 3811,
+    "sha256": "8da3ec646ca06b3067ab137b538c8dc21bbf00c6665864e8e9efb3381aa697df"
+  },
+  {
+    "path": "owner-handoff.md",
+    "length": 3152,
+    "sha256": "3814f592f466c9269fabff7505bfb9ce85e84380735ce1129a872856dc56aa3e"
+  },
+  {
+    "path": "package-validation.json",
+    "length": 679,
+    "sha256": "0d91c5e6bf07c71dcaf61a846cbad940f711eaccc58fa5ad383617bab3374d2e"
+  },
+  {
+    "path": "plan-changed-paths.txt",
+    "length": 668,
+    "sha256": "aaa0c0659e8f092db33b0cea8030d1be23e1205be3a1436ab88d50c963ff7648"
+  },
+  {
+    "path": "platform-research-index.md",
+    "length": 1158,
+    "sha256": "6f9180eea0bedd8301566d9662000fbc80b02d00a722e7ceb4fc27cc126cf6ae"
+  },
+  {
+    "path": "qualification-matrix.md",
+    "length": 4177,
+    "sha256": "1473695d405c4947de5373fd24a66dbf2d5673a7b5787a4b0abc2918d9dbe854"
+  },
+  {
+    "path": "raw-contract-source.txt",
+    "length": 19490,
+    "sha256": "9e285331df33b5721fb6081980c909c5add7c151c1316fd039203ca752267e56"
+  },
+  {
+    "path": "raw-driver-source.txt",
+    "length": 6160,
+    "sha256": "706b033c7cfc84bf085fd163cf75f0c01c0af22cf130709e84b91cb38d02da7b"
+  },
+  {
+    "path": "raw-platform-research.txt",
+    "length": 10510,
+    "sha256": "00d30a7a1411693a67914baa9605090419224c09d85cce5efa00875ba1510481"
+  },
+  {
+    "path": "report.md",
+    "length": 15058,
+    "sha256": "60acc27a95f498fe1a8f069199bcf38dcbe7bddaa37a60e766b5464624582424"
+  },
+  {
+    "path": "untracked-before.json",
+    "length": 7670,
+    "sha256": "7d6abbd93c9703626d07455e1e68c18b2538d45847549cb3d39a4318637fc7e1"
+  },
+  {
+    "path": "worktrees-after.txt",
+    "length": 12660,
+    "sha256": "3d83f7ca105005a83151e45e73fd58c6d519c07c5e595f0b6085d7d0661d6631"
+  },
+  {
+    "path": "worktrees-before.txt",
+    "length": 12660,
+    "sha256": "3d83f7ca105005a83151e45e73fd58c6d519c07c5e595f0b6085d7d0661d6631"
+  },
+  {
+    "path": "SHA256SUMS.txt",
+    "length": 2485,
+    "sha256": "f5d21890bc2c366452c3dbed2a104c9c04b6678b1fe29b48741f0cdde515a880"
+  }
+]

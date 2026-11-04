@@ -1,0 +1,13 @@
+M	docs/PROJECT-STATUS.md
+A	docs/evidence/rc2b-06-b6-native-env-prep-01.md
+A	docs/evidence/rc2b-06-b6-native-env-prep-01/ci-jobs.json
+A	docs/evidence/rc2b-06-b6-native-env-prep-01/review-inputs.json
+A	docs/evidence/rc2b-06-b6-native-env-prep-01/source-inputs.json
+A	docs/evidence/rc2b-06-b6-native-env-prep-01/untracked-before.json
+A	docs/evidence/rc2b-06-b6-native-env-prep-01/validation.json
+A	docs/evidence/rc2b-06-b6-native-env-prep-01/worktrees-before.txt
+M	docs/handoff.md
+A	docs/plans/rc2b-06-b6-native-env-prep-01.md
+A	docs/plans/rc2b-06-b6-native-provisioning-runbook.md
+A	docs/plans/rc2b-06-b6-native-qualification-matrix.md
+M	docs/work-queue.md

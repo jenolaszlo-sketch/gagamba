@@ -1,0 +1,7 @@
+gpg: key 3B4FE6ACC0B21F32: public key "Ubuntu Archive Automatic Signing Key (2012) <ftpmaster@ubuntu.com>" imported
+gpg: no gpg-agent running in this session
+gpg: key D94AA3F0EFE21092: "Ubuntu CD Image Automatic Signing Key (2012) <cdimage@ubuntu.com>" not changed
+gpg: key 871920D1991BC93C: public key "Ubuntu Archive Automatic Signing Key (2018) <ftpmaster@ubuntu.com>" imported
+gpg: Total number processed: 3
+gpg:               imported: 2
+gpg:              unchanged: 1

@@ -1,0 +1,12 @@
+{
+  "inReleaseSha256": "ce901b9ba2edc360b58e5536fee6ced8f9e4cbf204a4ff1c5206784391182f7d",
+  "indexSha256": "559ddb9e0c3ec452907be6c245e6a88476bffb7719743827af80431f9be2ac06",
+  "indexBytes": 804284,
+  "indexMatchesSignedRelease": true,
+  "baseInReleaseSha256": "45f95ce276cdba3e41870516a130e03c58b8b7a79e9546b0efe9e526d255740c",
+  "baseIndexSha256": "ed9ac41cb263efaecc5a06a0742dc56570e2fb5ff94c4f2e4b2fbdcddd73cf24",
+  "baseIndexBytes": 1480032,
+  "baseIndexMatchesSignedRelease": true,
+  "signatureVerification": "archive-signature-verification.log",
+  "selectedRecords": 60
+}

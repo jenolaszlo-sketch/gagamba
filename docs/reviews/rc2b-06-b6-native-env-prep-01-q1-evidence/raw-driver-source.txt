@@ -1,0 +1,39 @@
+eng/qualify-s3-loaded.py:7:p.add_argument('--fixture',type=pathlib.Path,required=True)
+eng/qualify-s3-loaded.py:8:p.add_argument('--artifacts',type=pathlib.Path,required=True)
+eng/qualify-s3-production-refusal.py:6:p=argparse.ArgumentParser();p.add_argument('--recovery',type=pathlib.Path,required=True);p.add_argument('--owner',type=pathlib.Path,required=True);p.add_argument('--artifacts',type=pathlib.Path,required=True);o=p.parse_args()
+eng/qualify-s3-completion.py:10:p.add_argument('--fixture',type=pathlib.Path,required=True)
+eng/qualify-s3-completion.py:11:p.add_argument('--artifacts',type=pathlib.Path,required=True)
+eng/qualify-s3-completion.py:13:p.add_argument('--production-owner',type=pathlib.Path)
+eng/qualify-s3-completion.py:57:        argv=['dotnet',str(options.fixture.resolve()),'--b6-topology','controller',mode,str(directory.resolve())]
+eng/qualify-s3-completion.py:166:        record={'mode':mode,'scope':'PN actual native C-R-O mechanism, synthetic identity, no installation qualification',
+eng/qualify-b2.py:10:parser.add_argument('--delegated-parent', type=pathlib.Path)
+eng/qualify-b2.py:11:parser.add_argument('--artifacts', type=pathlib.Path, required=True)
+eng/qualify-b2.py:238:class B2Domains(unittest.TestCase):
+eng/qualify-b2.py:262:    suite.addTests(unittest.defaultTestLoader.loadTestsFromTestCase(B2Domains))
+tests/Fixtures/B2Controller/B6EvidenceProbe.cs:9:// Explicit synthetic identity fixture. This executable has no production installation,
+tests/Fixtures/B2Controller/B6EvidenceProbe.cs:55:                    var runtime=RuntimePin();
+tests/Fixtures/B2Controller/B6EvidenceProbe.cs:56:                    using var writer=QualifiedLauncher.Start(runtime,System.Reflection.Assembly.GetExecutingAssembly().Location,
+tests/Fixtures/B2Controller/B6EvidenceProbe.cs:58:                    Console.WriteLine("SENT");Console.Out.Flush();Console.ReadLine();return QualifiedLauncher.TryReap(writer,5000,out var code)&&code==0?0:7;
+tests/Fixtures/B2Controller/B6EvidenceProbe.cs:81:    internal static ExperimentalRuntimePin RuntimePin()
+tests/Fixtures/B2Controller/B6EvidenceProbe.cs:86:            ExperimentalRuntimePin.Inventory(shared),fxr,ExperimentalRuntimePin.Inventory(fxr),version);
+tests/Fixtures/B2Controller/B6IntegratedProbe.cs:19:        var runtime=B6EvidenceProbe.RuntimePin();Deadline=InstallationDeadline.Create();
+tests/Fixtures/B2Controller/B6IntegratedProbe.cs:20:        var pair=QualifiedLauncher.Pair();using var control=new SafeFileHandle((IntPtr)pair.Parent,true);
+tests/Fixtures/B2Controller/B6IntegratedProbe.cs:21:        using var recovery=QualifiedLauncher.Start(runtime,Entry,Args("recovery"),(pair.Child,3,"GAGAMBA_B2_CONTROL_FD"));PreparationInterop.CloseFd(pair.Child);
+tests/Fixtures/B2Controller/B6IntegratedProbe.cs:64:            bool reaped=QualifiedLauncher.TryReap(recovery,8000,out int code);if(!reaped){_=PidFd.TrySignal(rpin.DangerousGetHandle().ToInt32(),9,out _);reaped=QualifiedLauncher.TryReap(recovery,3000,out code);}
+tests/Fixtures/B2Controller/B6IntegratedProbe.cs:91:            var runtime=B6EvidenceProbe.RuntimePin();var pair=QualifiedLauncher.Pair();protocol=new((IntPtr)pair.Parent,true);
+tests/Fixtures/B2Controller/B6IntegratedProbe.cs:95:            var safe=QualifiedLauncher.Pair();safety=new((IntPtr)safe.Parent,true);
+tests/Fixtures/B2Controller/B6IntegratedProbe.cs:135:            var identity=new OwnerDirectIdentity(Session,a.Controller,a.Recovery,B6EvidenceProbe.RuntimePin());
+tests/Fixtures/B2Controller/B6TopologyProbe.cs:16:// explicitly synthetic installation identity, no LoadedInstallation, admission,
+tests/Fixtures/B2Controller/B6TopologyProbe.cs:35:    private string[] Args(string role)=>["--b6-topology",role,Mode,Dir,Session.ToString(),Execution.ToString(),Lease.ToString(),Deadline.ToString(System.Globalization.CultureInfo.InvariantCulture)];
+tests/Fixtures/B2Controller/B6TopologyProbe.cs:77:            p.Event("started",new{ParentPid=RecoveryInterop.GetParentPid(),Uid=RecoveryInterop.GetUid(),Gid=DirectUnix.GetGid(),Scope="PN synthetic identity; no production qualification"});
+tests/Fixtures/B2Controller/B6TopologyProbe.cs:88:        var runtime=B6EvidenceProbe.RuntimePin();Deadline=InstallationDeadline.Create();
+tests/Fixtures/B2Controller/B6TopologyProbe.cs:89:        var pair=QualifiedLauncher.Pair();using var control=new SafeFileHandle((IntPtr)pair.Parent,true);
+tests/Fixtures/B2Controller/B6TopologyProbe.cs:91:        using var recovery=QualifiedLauncher.Start(runtime,Entry,Args("recovery"),(pair.Child,3,"GAGAMBA_B2_CONTROL_FD"));
+tests/Fixtures/B2Controller/B6TopologyProbe.cs:176:            bool reaped=QualifiedLauncher.TryReap(recovery,8000,out int code);
+tests/Fixtures/B2Controller/B6TopologyProbe.cs:177:            if(!reaped){_=PidFd.TrySignal(recoveryPin.DangerousGetHandle().ToInt32(),9,out _);reaped=QualifiedLauncher.TryReap(recovery,3000,out code);}
+tests/Fixtures/B2Controller/B6TopologyProbe.cs:233:            var runtime=B6EvidenceProbe.RuntimePin();var pair=QualifiedLauncher.Pair();life=new((IntPtr)pair.Parent,true);
+tests/Fixtures/B2Controller/B6TopologyProbe.cs:265:                var extra=QualifiedLauncher.Pair();using var unused=new SafeFileHandle((IntPtr)extra.Parent,true);
+tests/Fixtures/B2Controller/B6TopologyProbe.cs:266:                decoy=QualifiedLauncher.Start(runtime,Entry,Args("decoy"),(extra.Child,3,"GAGAMBA_BOOTSTRAP_FD"));PreparationInterop.CloseFd(extra.Child);
+tests/Fixtures/B2Controller/B6TopologyProbe.cs:309:            if(decoy is not null){decoy.Kill();Check(QualifiedLauncher.TryReap(decoy,3000,out _),"decoy reap");decoy.Dispose();}
+tests/Fixtures/B2Controller/B6TopologyProbe.cs:347:            Check(InstallationWire.ReadExpectation(expected,Session)==Identity,"synthetic challenge mismatch");Event("accept37",new{KernelCredentials=true,ZeroRights=true,Drained=true});
+tests/Fixtures/B2Controller/B6TopologyProbe.cs:390:        finally{Result(new{Scope="PN synthetic identity only; no loaded-installation authority",Mode,EchoSent=echo,Stopped=stopped,AcknowledgementSent=ack,ReleaseAuthority=false,Refusal=refusal});}

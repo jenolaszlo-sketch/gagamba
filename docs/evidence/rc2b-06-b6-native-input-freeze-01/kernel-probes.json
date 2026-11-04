@@ -1,0 +1,273 @@
+{
+  "schema": "gagamba-kernel-probes-draft-v1",
+  "status": "SOURCE-DERIVED SPECIFICATION; probe executable IMPLEMENTATION-REQUIRED; not executed",
+  "runtime_identity": "Dedicated non-root qualification UID/GID; CapEff=0000000000000000 and CapPrm=0000000000000000; capture uid/gid, boot_id, uname -a, PID/user/mount/net/IPC/UTS/time namespace identities, cgroup path and mount/device/inode before each scenario.",
+  "field_names": [
+    "source",
+    "minimum_documented_platform_condition",
+    "proposed_exact_syscall_command_interface",
+    "runtime_identity",
+    "positive_observation",
+    "negative_observation",
+    "qualification_predicate",
+    "root_required"
+  ],
+  "global_capture": {
+    "read_only_command_interface": [
+      "uname -a",
+      "id",
+      "cat /proc/self/status (CapEff, CapPrm)",
+      "cat /proc/sys/kernel/random/boot_id",
+      "readlink /proc/self/ns/{pid,user,mnt,net,ipc,uts,time}",
+      "statfs/statx of /sys/fs/cgroup and target delegated paths",
+      "read cgroup.controllers and cgroup.subtree_control"
+    ],
+    "interface_status": "The read-only host inventory commands are proposed. A structured probe runner and controlled fixtures are absent and IMPLEMENTATION-REQUIRED. Do not treat a command list, header, kernel version, or simulated syscall as a result.",
+    "kernel_binding": "Candidate builder records actual `uname -r` as source.toolchain.kernel and platform.kernelMin. InstalledPayload.CheckPlatform requires current uname release equality with manifest kernelMin. 6.6.114.1-microsoft-standard-WSL2 is only a historical observed baseline; a kernel update requires candidate/profile rebind and requalification, not an assumed compatible upgrade."
+  },
+  "probes": [
+    {
+      "id": "namespace.user",
+      "source": [
+        "docs/plans/rc2b-06-b6-native-env-prep-01.md:120-135",
+        "src/Gagamba.Execution.Linux.M1/Launch/BubblewrapAdapter.cs"
+      ],
+      "minimum_documented_platform_condition": {
+        "value": null,
+        "reason": "Source requires user namespaces; no minimum kernel release is frozen in the inspected contract. Verify actual unprivileged operation."
+      },
+      "proposed_exact_syscall_command_interface": "IMPLEMENTATION-REQUIRED runner: unshare(CLONE_NEWUSER) in child; write uid_map/gid_map only as the unprivileged caller's supported mapping procedure; child reports getuid/getgid and /proc/self/ns/user inode; attempt a prohibited mapping/control and require kernel refusal. No sudo or privileged fallback.",
+      "runtime_identity": "Dedicated non-root UID/GID with empty CapEff/CapPrm.",
+      "positive_observation": "Child enters a distinct user namespace and reports expected mapped identity; parent verifies namespace inode differs and child exits/reaps.",
+      "negative_observation": "Unsupported/disabled userns or invalid map fails before target dispatch; no host identity/capability gain.",
+      "qualification_predicate": "Actual syscall positive and invalid-map/disabled negative captured on exact candidate kernel; namespace and capability identities recorded; child reaped.",
+      "root_required": false
+    },
+    {
+      "id": "namespace.mount",
+      "source": [
+        "docs/plans/rc2b-06-b6-native-env-prep-01.md:120-135",
+        "src/Gagamba.Execution.Linux.M1/Launch/BubblewrapAdapter.cs"
+      ],
+      "minimum_documented_platform_condition": {
+        "value": null,
+        "reason": "No minimum release specified by inspected source; actual userns/mount operation required."
+      },
+      "proposed_exact_syscall_command_interface": "IMPLEMENTATION-REQUIRED runner: after user namespace mapping, unshare(CLONE_NEWNS); apply production-equivalent mount propagation/private setup on disposable fixture mounts; compare /proc/self/ns/mnt and mountinfo; attempt forbidden host path access.",
+      "runtime_identity": "Dedicated non-root UID/GID with empty effective/permitted capabilities; user namespace only as production launch path requires.",
+      "positive_observation": "Distinct mount namespace and expected private fixture mounts; no host source or trusted-install path rebound.",
+      "negative_observation": "Unshare/mount restriction fails closed; host mount table and trusted paths remain unchanged.",
+      "qualification_predicate": "Actual namespace and mount syscalls observed; positive and forbidden-path controls pass; before/after mountinfo shows no host mutation.",
+      "root_required": false
+    },
+    {
+      "id": "namespace.pid",
+      "source": [
+        "docs/plans/rc2b-06-b6-native-env-prep-01.md:120-135",
+        "src/Gagamba.Execution.Linux.M1/Launch/BubblewrapAdapter.cs"
+      ],
+      "minimum_documented_platform_condition": {
+        "value": null,
+        "reason": "No minimum release specified; source requires namespace operation, not a kernel-version-only check."
+      },
+      "proposed_exact_syscall_command_interface": "IMPLEMENTATION-REQUIRED runner: unshare(CLONE_NEWPID), fork child, record parent/child getpid and /proc/<pid>/ns/pid identity, exercise wait/reap in namespace PID 1 fixture.",
+      "runtime_identity": "Dedicated non-root UID/GID with empty effective/permitted capabilities.",
+      "positive_observation": "Child has namespace PID 1 as expected and parent sees correct host PID; child is waited/reaped.",
+      "negative_observation": "Denied/unsupported namespace refuses before target dispatch; no orphan remains.",
+      "qualification_predicate": "Parent/child PID and namespace identities agree with expected mapping and bounded reap; denial control has no surviving child.",
+      "root_required": false
+    },
+    {
+      "id": "namespace.net",
+      "source": [
+        "docs/plans/rc2b-06-b6-native-env-prep-01.md:120-135",
+        "src/Gagamba.Execution.Linux.M1/Launch/BubblewrapAdapter.cs"
+      ],
+      "minimum_documented_platform_condition": {
+        "value": null,
+        "reason": "No minimum release specified in source; verify actual netns isolation/denial."
+      },
+      "proposed_exact_syscall_command_interface": "IMPLEMENTATION-REQUIRED runner: unshare(CLONE_NEWNET); compare /proc/self/ns/net and network interface/routes in isolated fixture; verify no unintended external connectivity or host interface changes.",
+      "runtime_identity": "Dedicated non-root UID/GID with empty effective/permitted capabilities.",
+      "positive_observation": "Distinct network namespace with only expected loopback/fixture state.",
+      "negative_observation": "Unsupported namespace fails before target dispatch; no host networking changes.",
+      "qualification_predicate": "Kernel operation and isolation observed; before/after host view unchanged; cleanup complete.",
+      "root_required": false
+    },
+    {
+      "id": "namespace.ipc",
+      "source": [
+        "docs/plans/rc2b-06-b6-native-env-prep-01.md:120-135",
+        "src/Gagamba.Execution.Linux.M1/Launch/BubblewrapAdapter.cs"
+      ],
+      "minimum_documented_platform_condition": {
+        "value": null,
+        "reason": "No minimum release specified; actual IPC namespace operation required."
+      },
+      "proposed_exact_syscall_command_interface": "IMPLEMENTATION-REQUIRED runner: unshare(CLONE_NEWIPC); create a unique SysV IPC sentinel in fixture namespace and show it absent in peer host IPC namespace; remove namespace by reaping child.",
+      "runtime_identity": "Dedicated non-root UID/GID with empty effective/permitted capabilities.",
+      "positive_observation": "Distinct IPC namespace and isolated sentinel.",
+      "negative_observation": "Unsupported/denied operation refuses; no host IPC object is created or removed.",
+      "qualification_predicate": "Distinct namespace and sentinel isolation demonstrated with complete fixture cleanup.",
+      "root_required": false
+    },
+    {
+      "id": "namespace.uts",
+      "source": [
+        "docs/plans/rc2b-06-b6-native-env-prep-01.md:120-135",
+        "src/Gagamba.Execution.Linux.M1/Launch/BubblewrapAdapter.cs"
+      ],
+      "minimum_documented_platform_condition": {
+        "value": null,
+        "reason": "No minimum release specified; actual UTS namespace operation required."
+      },
+      "proposed_exact_syscall_command_interface": "IMPLEMENTATION-REQUIRED runner: unshare(CLONE_NEWUTS), set fixture hostname inside child, compare uname/gethostname against parent; do not change host hostname.",
+      "runtime_identity": "Dedicated non-root UID/GID with empty effective/permitted capabilities.",
+      "positive_observation": "Child hostname differs only inside distinct UTS namespace; parent value unchanged.",
+      "negative_observation": "Denied/unsupported UTS namespace fails before target dispatch; parent hostname unchanged.",
+      "qualification_predicate": "Namespace identity and isolated hostname confirmed; parent before/after values identical.",
+      "root_required": false
+    },
+    {
+      "id": "namespace.time-common",
+      "source": [
+        "docs/plans/rc2b-06-b6-native-env-prep-01.md:120-135",
+        "src/Gagamba.Execution.Linux.M1/Launch/BubblewrapAdapter.cs"
+      ],
+      "minimum_documented_platform_condition": {
+        "value": null,
+        "reason": "Common time namespace is explicitly to be checked; no minimum release is specified in the inspected contract."
+      },
+      "proposed_exact_syscall_command_interface": "IMPLEMENTATION-REQUIRED read-only check: stat/readlink /proc/self/ns/time and /proc/self/ns/time_for_children; for launch fixture compare child IDs and clock_gettime(CLOCK_MONOTONIC/CLOCK_BOOTTIME) offsets. Do not use unshare(CLONE_NEWTIME) unless a separately scoped fixture explicitly tests that operation.",
+      "runtime_identity": "Dedicated non-root UID/GID with empty effective/permitted capabilities.",
+      "positive_observation": "Record current/time_for_children namespace identities and clock observations; they match the accepted expected launch behavior.",
+      "negative_observation": "Unexpected namespace change or clock offset causes qualification refusal; no clock manipulation.",
+      "qualification_predicate": "Observed namespace IDs and monotonic clock behavior are bound to candidate and agree with source/runtime expectations; unexplained offset is unresolved.",
+      "root_required": false
+    },
+    {
+      "id": "openat2",
+      "source": [
+        "src/Gagamba.Execution.Linux.M1/Installed/InstalledPayload.cs",
+        "src/Gagamba.Execution.Linux.M1/Installed/InstalledManifest.cs",
+        "docs/plans/rc2b-06-b6-native-env-prep-01.md:120-124"
+      ],
+      "minimum_documented_platform_condition": {
+        "value": "Linux5.6 introduces openat2; required resolve flags and permission must actually work",
+        "reference": "https://man7.org/linux/man-pages/man2/openat2.2.html"
+      },
+      "proposed_exact_syscall_command_interface": "IMPLEMENTATION-REQUIRED runner: syscall(SYS_openat2, dirfd, relativePath, struct open_how{flags=O_RDONLY|O_CLOEXEC, resolve=RESOLVE_BENEATH|RESOLVE_NO_SYMLINKS|RESOLVE_NO_MAGICLINKS}, sizeof(open_how)); then test symlink, magic-link, .. escape, missing path, and valid fd-relative member. Production-equivalent flags must be source-bound before implementation.",
+      "runtime_identity": "Dedicated non-root UID/GID with empty effective/permitted capabilities.",
+      "positive_observation": "Valid relative object opens and returned fd identity/hash matches independently inspected object.",
+      "negative_observation": "Symlink/magic-link/escape fixtures refuse; missing/invalid paths return bounded errors, with no fallback path traversal.",
+      "qualification_predicate": "Actual syscall exercised against positive and adversarial fixtures using production-resolved flags; fd identity stable; no symlink fallback.",
+      "root_required": false
+    },
+    {
+      "id": "pidfd.open-signal-wait-poll",
+      "source": [
+        "src/Gagamba.Execution.Linux.M1/Native/AtomicCgroupSpawn.cs",
+        "src/Gagamba.Execution.Linux.M1/Recovery",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/B2ProcessIdentity.cs"
+      ],
+      "minimum_documented_platform_condition": {
+        "value": "Linux5.3 introduces pidfd_open; actual signal/poll/wait operations and child ownership must be qualified separately",
+        "reference": "https://man7.org/linux/man-pages/man2/pidfd_open.2.html"
+      },
+      "proposed_exact_syscall_command_interface": "IMPLEMENTATION-REQUIRED runner: pidfd_open(childPid,0); poll(pidfd,POLLIN,finiteTimeout); pidfd_send_signal(pidfd,SIGTERM,NULL,0) on controlled child; waitid(P_PIDFD,pidfd,&siginfo,WEXITED) or exact production wait path; also test exited/reused PID and wrong pidfd. Record ENOSYS/EINVAL/EPERM distinctly.",
+      "runtime_identity": "Dedicated non-root UID/GID with empty effective/permitted capabilities; child is its direct controlled fixture.",
+      "positive_observation": "pidfd refers to expected original child, signal reaches it, poll observes exit, wait reports/reaps same process; no numeric-PID substitution.",
+      "negative_observation": "Invalid/dead/wrong pidfd fails closed; foreign process is not signaled; bounded poll does not confuse timeout with exit.",
+      "qualification_predicate": "All pidfd operations actually used by production pass positive and wrong-target controls with stable process identity and complete reap.",
+      "root_required": false
+    },
+    {
+      "id": "socket.peerpidfd-passcred-scmcredentials",
+      "source": [
+        "src/Gagamba.Execution.Linux.M1/Recovery/B2ProcessIdentity.cs",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryInterop.cs",
+        "docs/evidence/rc2b-06-b6-impl-01-s3.md: actual B2 and integrated chronologies"
+      ],
+      "minimum_documented_platform_condition": {
+        "value": null,
+        "reason": "SO_PEERPIDFD and kernel credential behavior are runtime requirements; no source-pinned minimum is asserted here."
+      },
+      "proposed_exact_syscall_command_interface": "IMPLEMENTATION-REQUIRED runner: socket(AF_UNIX, SOCK_SEQPACKET|SOCK_CLOEXEC,0); setsockopt(SOL_SOCKET,SO_PASSCRED,1); connect/accept fixture; getsockopt(SOL_SOCKET,SO_PEERPIDFD); sendmsg/recvmsg and assert SCM_CREDENTIALS pid/uid/gid on each datagram; compare peer pidfd to original retained pidfd. Exact option constants/ABI must be taken from source/header during implementation.",
+      "runtime_identity": "Dedicated non-root UID/GID; both peers controlled, separately identified processes.",
+      "positive_observation": "Peer pidfd and SCM_CREDENTIALS identify same expected live peer; each received record has expected credentials.",
+      "negative_observation": "Missing credentials, wrong pid/uid/gid, stale/wrong peer pidfd or mismatched original reference is refused before message authority is accepted.",
+      "qualification_predicate": "Actual kernel-supplied peer/record identity agrees across socket option, credentials and original process reference; wrong-peer control refuses.",
+      "root_required": false
+    },
+    {
+      "id": "socket-rights-cloexec-truncation",
+      "source": [
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryInterop.cs",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/B2ProcessIdentity.cs",
+        "docs/evidence/rc2b-06-b6-impl-01-s3.md: native record tests"
+      ],
+      "minimum_documented_platform_condition": {
+        "value": null,
+        "reason": "Required sendmsg/recvmsg semantics are exercised; no minimum release is inferred."
+      },
+      "proposed_exact_syscall_command_interface": "IMPLEMENTATION-REQUIRED runner: sendmsg(SCM_RIGHTS) over AF_UNIX SOCK_SEQPACKET; recvmsg with MSG_CMSG_CLOEXEC and deliberately bounded control buffer; fcntl(F_GETFD) each received fd; exercise MSG_CTRUNC and MSG_TRUNC, wrong counts/types and zero/many descriptors; close every installed received copy and verify sender originals remain valid. Separate receiver branch must reach the dedicated 4096-byte evidence buffer test case.",
+      "runtime_identity": "Dedicated non-root UID/GID; descriptors are harmless pipe/socket/pidfd fixtures created by runner.",
+      "positive_observation": "Expected rights arrive with FD_CLOEXEC; peer sentinel data and retained sender originals remain correct.",
+      "negative_observation": "Wrong rights/cardinality/type and both truncation flags refuse; all received copies close and no protocol authority is accepted.",
+      "qualification_predicate": "Real kernel ancillary data tested for valid control and every required malformed/truncated case; dedicated evidence receiver MSG_CTRUNC is observed, not inferred from other receiver coverage.",
+      "root_required": false
+    },
+    {
+      "id": "subreaper",
+      "source": [
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryInterop.cs",
+        "docs/plans/rc2b-06-b6-native-env-prep-01.md:120-124"
+      ],
+      "minimum_documented_platform_condition": {
+        "value": null,
+        "reason": "PR_SET_CHILD_SUBREAPER is a runtime API requirement; source contract does not supply a pinned minimum release."
+      },
+      "proposed_exact_syscall_command_interface": "IMPLEMENTATION-REQUIRED runner: prctl(PR_SET_CHILD_SUBREAPER,1); child forks grandchild then exits; supervisor waits with waitid/waitpid and verifies adopted grandchild's PPID and exact reap; negative control without subreaper confirms it is not falsely attributed.",
+      "runtime_identity": "Dedicated non-root supervisor; controlled child/grandchild only.",
+      "positive_observation": "Orphaned known descendant is adopted by designated supervisor and reaped; wait status tied to exact child identity.",
+      "negative_observation": "Non-child/unrelated process cannot be claimed; absent subreaper behavior leaves case unsupported/failed, never inferred from child exit.",
+      "qualification_predicate": "Kernel adoption and wait/reap observed with PID lineage and no remaining fixture descendants; no unrelated child reaped.",
+      "root_required": false
+    },
+    {
+      "id": "seccomp",
+      "source": [
+        "src/Gagamba.Execution.Linux.M1/Launch/BubblewrapAdapter.cs",
+        "docs/evidence/rc2b-06-b6-impl-01-s2/candidate-manifest.json policy.seccompFilterSha256"
+      ],
+      "minimum_documented_platform_condition": {
+        "value": null,
+        "reason": "The exact filter is candidate-bound; no kernel version minimum guarantees the required actions. Execute filter on target."
+      },
+      "proposed_exact_syscall_command_interface": "IMPLEMENTATION-REQUIRED runner: production-equivalent prctl(PR_SET_NO_NEW_PRIVS,1), seccomp(SECCOMP_SET_MODE_FILTER,SECCOMP_FILTER_FLAG_TSYNC, sock_fprog) using exact candidate 672-byte filter/hash; run permitted sentinel syscall and controlled forbidden syscall in child; capture SIGSYS/errno/action and wait/reap.",
+      "runtime_identity": "Dedicated non-root UID/GID with empty capabilities; filter applied only to disposable test child.",
+      "positive_observation": "Allowed sentinel works and denied syscall is blocked exactly as policy specifies; child remains bounded/reaped.",
+      "negative_observation": "Filter installation failure or unexpected action refuses before target dispatch; no permissive fallback.",
+      "qualification_predicate": "Exact candidate filter bytes/hash installed by kernel and positive/negative actions match frozen policy; no host-wide filter changes.",
+      "root_required": false
+    },
+    {
+      "id": "cgroupv2-delegation-atomic-placement",
+      "source": [
+        "src/Gagamba.Execution.Linux.M1/Native/AtomicCgroupSpawn.cs:27,131,461-492",
+        "src/Gagamba.Execution.Linux.M1/Native/CgroupInterop.cs:56-201,355",
+        "docs/plans/rc2b-06-b6-native-env-prep-01.md:127-135"
+      ],
+      "minimum_documented_platform_condition": {
+        "value": "Linux5.7 CLONE_INTO_CGROUP, glibc>=2.43 per Gagamba, required libc export, cgroup2 and actual delegated kernel permission",
+        "reference": "https://man7.org/linux/man-pages/man2/clone.2.html"
+      },
+      "proposed_exact_syscall_command_interface": "IMPLEMENTATION-REQUIRED runner after separately authorized operator setup: verify cgroup2 mount and memory+pids in controllers/subtree_control; confirm actual service parent P and supervisor leaf P/supervisor; as non-root create child under P/domains, set/read back memory.max=134217728, memory.swap.max=0, pids.max=48; use production posix_spawnattr_init, setflags(POSIX_SPAWN_SETCGROUP=0x100), posix_spawnattr_setcgroup_np(attr, child_dirfd), posix_spawn; finite child records /proc/self/cgroup as its first action behind an explicit readiness barrier; supervisor corroborates child cgroup.procs and retained identity. A later membership-only sample cannot establish placement from first action. Verify cgroup.procs write permissions at target/common ancestor without writing outside controlled fixture. Exercise missing controller/permission and sibling target controls. Stop with child cgroup.kill; observe cgroup.events populated=0, empty cgroup.procs and wait/reap; retain original descriptors.",
+      "runtime_identity": "Dedicated non-root qualification UID/GID with authority limited to its delegated P/domains subtree; no cgroup.threads or subtree_control writes from runtime; outer limits operator-controlled.",
+      "positive_observation": "Actual atomic spawn places child in target domain before first user instruction; exact three limits read back; stop accepted, populated transitions 1→0 and original child reaped; synthetic outside process survives.",
+      "negative_observation": "Unavailable controller, swap file, supervisor leaf placement, target/common-ancestor write authorization or atomic spawn symbol causes fail-closed refusal before dispatch; sibling/outside process cannot be moved/killed.",
+      "qualification_predicate": "Non-root positive and negative controls prove initial membership, bounded authority, limit readback, original-fd continuity, stop/population/reap; exact boot/mount/cgroup IDs and permissions captured. Operator-created delegation itself is separately authorized and evidenced.",
+      "root_required": false
+    }
+  ]
+}
