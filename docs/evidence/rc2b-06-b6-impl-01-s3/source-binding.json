@@ -1,0 +1,1755 @@
+{
+  "date": "2026-11-04",
+  "timezone": "Asia/Manila",
+  "baseline": {
+    "commit": "1fa53da68704210a9ecd7fbd2c65aa5c1ed270ae",
+    "tree": "d1110fd9aceee105154399a005928c7794472964"
+  },
+  "source": {
+    "commit": "5b2fe73567a9c33df50fc7c662436a67814a86f4",
+    "tree": "170f3e4913447f8b5bd1d2b1fa0f7e92e16877d9"
+  },
+  "branch": "main",
+  "commits": [
+    {
+      "commit": "98e1960fecc5a6de82591df0632b7d6cb316f2e5",
+      "tree": "32a673c56ce5daea5c2e58d372405b8c5026a4c3",
+      "parent": "1fa53da68704210a9ecd7fbd2c65aa5c1ed270ae",
+      "subject": "Implement S3 installation identity codecs and qualified helper gates"
+    },
+    {
+      "commit": "7e31616bd8c5f3c8251935df2bfa59a4cc9bafc0",
+      "tree": "17b5e0ddac6b27a7f2e14bbdd16d04c5122298f1",
+      "parent": "98e1960fecc5a6de82591df0632b7d6cb316f2e5",
+      "subject": "Refine S3 mapped-file checks and prove credentialled native refusals"
+    },
+    {
+      "commit": "4230c9ef48bc094417f00f5682fd240b9b525010",
+      "tree": "e925a2a91517abba8d21c0b363c3746ffc46b0cf",
+      "parent": "7e31616bd8c5f3c8251935df2bfa59a4cc9bafc0",
+      "subject": "Keep qualified helper closure verification off safety readers"
+    },
+    {
+      "commit": "294145d5cdd67153f0eb5545535fbbe4ddadfec4",
+      "tree": "4cba59155dc48ac3ba0c6f7bafa379f4f1fc4fb6",
+      "parent": "4230c9ef48bc094417f00f5682fd240b9b525010",
+      "subject": "Refuse B2 owner evidence queued before the controller expectation"
+    },
+    {
+      "commit": "f6565de877f26fe699da89d7857b22435e1bd31d",
+      "tree": "9d6282705c9761f05c1976890099979fec0f9d53",
+      "parent": "294145d5cdd67153f0eb5545535fbbe4ddadfec4",
+      "subject": "Assert exact S3 descriptor cleanup and original spawn custody"
+    },
+    {
+      "commit": "5b2fe73567a9c33df50fc7c662436a67814a86f4",
+      "tree": "170f3e4913447f8b5bd1d2b1fa0f7e92e16877d9",
+      "parent": "f6565de877f26fe699da89d7857b22435e1bd31d",
+      "subject": "Preserve integrated writer handoff while checking owner closure before acquisition"
+    }
+  ],
+  "governingCommittedSha256": {
+    "docs/design/rc2b-06-b6-s3-b2-wire-delta-01.md": "88beb1a2e40658c19f14acc96b3fd9215c7bc5b94e59f3a961c3ee27f63e3ad6",
+    "docs/evidence/rc2b-06-b6-s3-b2-wire-delta-01.md": "6c7daf1d3763da234b65cdf44451fff94316c8c254bafc6164b59bbb0fca0fbc",
+    "docs/reviews/rc2b-06-b6-s3-b2-wire-delta-01-independent-review.md": "23405a8f61cb5c52867d4f72199d027ee364ab68a39768b6aec14b900cd4f01f",
+    "docs/decisions/rc2b-06-b6-s3-b2-wire-owner-acceptance.md": "7d74d2043b813ab7f17a75b99af2af2512812b76083e3f5b6df81c8fd0e976ea",
+    "docs/decisions/rc2b-06-b6-wire-owner-acceptance.md": "77b40c195fdd90950048548010ff95fff676bfcfede21b3f75420ffaefda1d59",
+    "docs/decisions/rc2b-06-b6-impl-01-s2-owner-acceptance.md": "0243b19228d0e427437d993d003ad4d43876eea2e2525716ad9ca598bcf18f99",
+    "docs/decisions/rc2b-06-b6-s2-f02-trust-store-owner-decision.md": "e318125f91e20350824aeb70042b35a37c33d54fcde8350a4d353dccfaeb0adb"
+  },
+  "changedFiles": [
+    {
+      "path": "src/Gagamba.Execution.Linux.M1.Owner/Program.cs",
+      "gitBlob": "c5a60e91479e191e9a29e6197f873594d91c1013",
+      "sha256": "2622e7f21c31f8ef0e6058c4ba8ddf8895f252cd4b6cec135d8b7ab2a125749b",
+      "change": "modified"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/B2EvidenceSocket.cs",
+      "gitBlob": "83f278e267f2dedf6a9b2f55cc7b2ff7c98b6db0",
+      "sha256": "3c325617fd7d426cd7d25763e605f03bdf0d3d2ccbb906ff5f5a0c97b7259942",
+      "change": "added"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/B2InstallationBarrier.cs",
+      "gitBlob": "c0c2ea45135475baca042a618dc99dd1e2613a14",
+      "sha256": "77d2675541aa330ff67b15117be989dc1aa37fc8da987fe787ac8417624cbabc",
+      "change": "added"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/B2ProcessIdentity.cs",
+      "gitBlob": "7364df812197987d9ab5105fb9ed8f78a69d90ef",
+      "sha256": "fa5e47018b248b13fd95f6bddfba05a5b0af2892ed15ea0ed12368f7fcc4734b",
+      "change": "added"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/InstallationDeadline.cs",
+      "gitBlob": "1109b51cefd8bed292e4c39ad756a178f0d6eec8",
+      "sha256": "c85b7c6c0b4e11daee79b3718420df394a4e586940fb0f43d1042bdd0ff24df6",
+      "change": "added"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/InstallationWire.cs",
+      "gitBlob": "35d8c5824590d5cea225a315736519d39b7d5889",
+      "sha256": "6a7efd44230892926667e9ec6f5e705a35b4b7dbb34ebe05f7204ab47ed333bd",
+      "change": "added"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/IntegratedB3Client.cs",
+      "gitBlob": "881977a89935e673bd012f3655195912258cc37d",
+      "sha256": "26bd5d7cdeea7bf9c7f8735352c6c0264e57182ca30d77b8e2cdf800a0382288",
+      "change": "modified"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/IntegratedOwnerLaunch.cs",
+      "gitBlob": "3f533013aeab0bfa374834ef2d3f39cacc05e12d",
+      "sha256": "7c4b088aa7a302383537b05d819fbe181915fe0282d229c362fe80be071229d3",
+      "change": "modified"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/IntegratedRecoveryHost.cs",
+      "gitBlob": "5aac24167fd1c2d5b033b1d7cebd00ca1d6baf64",
+      "sha256": "1b8b900972bd2a6bdb76fcaf32716eec3d2a5a6807074c8df62773ba61a263a5",
+      "change": "modified"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/OwnerDirectConnection.cs",
+      "gitBlob": "87a5c8334a90142464dd81bc15f405238ab55e60",
+      "sha256": "e63a42efa983506c18119c9a07c0424f7a1643d61bbded138eda9055d440e19f",
+      "change": "modified"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/OwnerSafetyMonitor.cs",
+      "gitBlob": "e621fe44885bfe9807ca8913cfc6605e5ded4caf",
+      "sha256": "6b1897befd9e9137d7233a685820160acb7976ac3fe259d1c821d07de7410bc0",
+      "change": "modified"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedB2Owner.cs",
+      "gitBlob": "20c0a415abf99ca5cbc1a5f46f0e74957756bd61",
+      "sha256": "748e8400d44fb43e3e5f16eed55ac1dc5c52c9dbddc94e160db502b9c18d55f7",
+      "change": "added"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedB2Recovery.cs",
+      "gitBlob": "7ec31a9baa87806f011bc279ff37cc208b89b772",
+      "sha256": "cd190427003f33c89de722a9cc69d8aa9666e46c2aaa9c9a726e7876f7eb9f01",
+      "change": "added"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedLauncher.cs",
+      "gitBlob": "b1b8a291da75bc913c77c2377fb41f0b53d19eae",
+      "sha256": "8cfe4a60c66ede8c6e30eaa0da7646513bf1b489d6fd461fdd1a46c6e21f9f83",
+      "change": "added"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedOwnerPreflight.cs",
+      "gitBlob": "52274a4e917ed583ff01e0a3e78c8e985b69451b",
+      "sha256": "ee1550f891c0f6cc08b9e807779c12979a2a3d839113ad7df681b8a76631383e",
+      "change": "added"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedRecoveryConnection.cs",
+      "gitBlob": "2f6f779d6b5414c22790a7fb8a892b253e044963",
+      "sha256": "3094233b4fe9a5b53d86079bd4ae283672eafa2ce3fbc5b810ce2605f5f42ac0",
+      "change": "added"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedRecoveryEcho.cs",
+      "gitBlob": "d3078409ecf9bcef325668cfb81709ee36a7af93",
+      "sha256": "63aed3fa6c81c14e885a9d38bece1c4365fc016c0d17957a448a96a13f809f65",
+      "change": "added"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryConnection.cs",
+      "gitBlob": "c9209966a172242c4a7a74aab56137f1c015d1dd",
+      "sha256": "67b34defb22abc9c29d1e270c0f267087610d34996e538877f9d6aceaa7dc0d6",
+      "change": "modified"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryDiagnosticWriter.cs",
+      "gitBlob": "dfd36466776688727bab73680c20f6721fba3997",
+      "sha256": "5884e7918e2470f3bd1be68d94dbe4723cd7239fcbf6180663a80ab9c0199ba9",
+      "change": "added"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryHost.cs",
+      "gitBlob": "fceb231b74d0d4d437aaa6e8e80dbd8e2bbb54ac",
+      "sha256": "f5159ebbf6bc2299b58d632f3a9b4d59aa70ebc2e896884a8fe2d76e6e296485",
+      "change": "modified"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryProtocol.cs",
+      "gitBlob": "f19017dccce5b83d42bb9276c6e8839d13564061",
+      "sha256": "78ba4ccd7f190e846ecfb52512d249795edf01d009f1f4034442207ea38b2c2a",
+      "change": "modified"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Installed/InstallationIdentity.cs",
+      "gitBlob": "cb961388efe0d4ec1842f067caa3b9d01ce4a562",
+      "sha256": "460ee651b1e8b8d24943c7630c5f651f35d305db9830bbaa8b618fe2a07ad190",
+      "change": "added"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Installed/InstalledMetadata.cs",
+      "gitBlob": "d3b7d1951e16337bb61334a6b29bb2baa4bb8acf",
+      "sha256": "9df3798b7d1603fcd55511438f9a20f48627338b20a4276bd0add351adad9c96",
+      "change": "modified"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Installed/LoadedInstallation.cs",
+      "gitBlob": "e40d3b01864eadda311fc010ec2808ff490f35c3",
+      "sha256": "ee1ff1255ccc4c57c91bcd3ceeb08cc3e40cf23184809bdb1429be7fad7d7662",
+      "change": "added"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Lifecycle/M1RecoveryScope.cs",
+      "gitBlob": "adac3781af73560edd90d22921c52ebffbc50c1f",
+      "sha256": "f1815590e2f20a768ac0d42a859a53f7299b1691fef0d9e8780a8eeeabace697",
+      "change": "modified"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerPreparationSpecification.cs",
+      "gitBlob": "9fb17a1ce150841a202fc0483510c90a2bbb276f",
+      "sha256": "45d731ee318c8b18ff043b22923171ddfe609ddfd5e94fd19b74136f1146c16c",
+      "change": "modified"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerPreparationTransaction.cs",
+      "gitBlob": "4d142c693483b22dc1727914f876ea82c0031535",
+      "sha256": "b50d71cf1be3b36324892f7f2c5ba2af458053914d35ac9c0ddd82d3e2105663",
+      "change": "modified"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Native/FdPassing.cs",
+      "gitBlob": "d3218813533bcd32257191723e2298a084f5c39a",
+      "sha256": "f7762004b141ccf58938724b5dc023e7b9155dd83422607f33dbb0fb4380b934",
+      "change": "modified"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Native/OwnerProtocol.cs",
+      "gitBlob": "4fda0060db3c8c166369a0aacccf91f87c42d449",
+      "sha256": "21db7266e126a3b9225195fd2162d563bb628feb154b9d98023a19622741c308",
+      "change": "modified"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Restricted/B3Qualification.cs",
+      "gitBlob": "5e4eed4ec05911df9bd8782d042d19197741b9ad",
+      "sha256": "883f84b2d8eae4bdb9406a3bc5c61b6ffa32c9437ed53730034da59a832a6a70",
+      "change": "modified"
+    },
+    {
+      "path": "tests/Fixtures/B2Controller/B6EvidenceProbe.cs",
+      "gitBlob": "83485a18ca7a903afc3dac499a5512475cc9c861",
+      "sha256": "f8fd298cd86f0fd4ec9d410859e1e97c5a34ff47ebe2e00139b30a751bffcfd6",
+      "change": "added"
+    },
+    {
+      "path": "tests/Fixtures/B2Controller/Program.cs",
+      "gitBlob": "f22649fc061c5a3851f8794ea01c28c46ed765c5",
+      "sha256": "660263ae2d8bc9531170551184abb6ab25ec0323ba6e99c9727ab51915ef6244",
+      "change": "modified"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/Installation/B2EvidenceNativeTests.cs",
+      "gitBlob": "5878cb5edd51bca22585bfa656f3577de01c1266",
+      "sha256": "e06624357d13ead1783499dd34da78df394762e8c6ac269be8cfe6296d1ca5ca",
+      "change": "added"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/Installation/InstallationHandshakeTests.cs",
+      "gitBlob": "e42fa012518bd2079a03c634f6a490a3b15cb4ed",
+      "sha256": "62791e83c121bd27cf4c9e9725df9ec927f463d09265c3cd482ce2cff764077b",
+      "change": "added"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/Installation/InstallationWireTests.cs",
+      "gitBlob": "0c1a863fb95388c40410c532d59efd2f3abba07a",
+      "sha256": "0a218ce1886678715f16ffb3cc11f0a02bbb3697006174a7ad4b636fc3fe0897",
+      "change": "added"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/Installation/LoadedMappingTests.cs",
+      "gitBlob": "9640c500d77db18e6ad145986ccb1182a3fc0d31",
+      "sha256": "879eb92b08a91e12efa7b4be69bb2fbc0d6174b4b40db351942f98f3fdf7fa8f",
+      "change": "added"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/Installation/QualifiedLauncherNativeTests.cs",
+      "gitBlob": "88e3432f8bb464f1f46c516f5923817ca1af86fa",
+      "sha256": "11082713230ccde6f61d631c2326cf40c67dc0a34885046db2ab1abcad5781d2",
+      "change": "added"
+    }
+  ],
+  "preservedUntracked": [
+    {
+      "Path": "-",
+      "Sha256": "f9518e249eda3d3ea589d58b19d9f1b92eee4c0ed0bc1c69f78e1d119d46dc0b"
+    },
+    {
+      "Path": "; done; grep -c M1.Tests.ReleaseArbiterTests _LAPTOP-KBD8D8JG_2026-10-18_10_10_39.trx",
+      "Sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "Path": "NEM-INDEPENDENT-REVIEW.md",
+      "Sha256": "186d7c2c7e133ca60c4623577f2e1a57fdd5a09ae1a6d56bfb53195db318df9a"
+    },
+    {
+      "Path": "VerifyProductionBuild.cs",
+      "Sha256": "3832edac847d5e4a0171b403e6bae207d3a728ff116070f4a40a3866eafbeac7"
+    },
+    {
+      "Path": "docs/reviews/rc2b-04-b4-q1f01-q1-independent-review.md",
+      "Sha256": "8f06bcb860f3535ca9868176c217a253c707fc0cdc8a627f48d96d9934b90389"
+    },
+    {
+      "Path": "docs/reviews/restricted-consumer-rc2a-01-glm-independent.md",
+      "Sha256": "77d2404c61dbf1af76e8448b966f03482186d95fff5bf6a676a32fe6c7d8e4d0"
+    },
+    {
+      "Path": "eng/__pycache__/b4-native-matrix.cpython-314.pyc",
+      "Sha256": "f77c55106a543c07dc8e3bdb8cd204c85a672aa07b07660d98e91dbcee728517"
+    },
+    {
+      "Path": "eng/__pycache__/int01-fault-matrix.cpython-314.pyc",
+      "Sha256": "47204dc88137e52018818adc1e49bb5af252c30f6d224b8f37c248a63e4f39b7"
+    },
+    {
+      "Path": "eng/__pycache__/int01-native-matrix.cpython-314.pyc",
+      "Sha256": "8b7d950601131bf4f45acb5b1bffdb77bb8b8bcd29fb4f37e5eadd1e04aecb1f"
+    },
+    {
+      "Path": "eng/__pycache__/int01_cleanup.cpython-314.pyc",
+      "Sha256": "9c6608fdf0977e3f25d8f210f4fcf854c9497c0906fb8f299107b2a4ebd8b4e9"
+    },
+    {
+      "Path": "eng/__pycache__/qualification_gate.cpython-314.pyc",
+      "Sha256": "df51701e804be983cca837e2766d589dfc4ea0196732f3b9032261ab600bf64d"
+    },
+    {
+      "Path": "eng/__pycache__/test-b3-exec-oracle.cpython-314.pyc",
+      "Sha256": "ac9ef1d24678ae82a60fb74b8860fb55d9dc9137e2f0fb1636a4086815c2536d"
+    },
+    {
+      "Path": "eng/tests/__pycache__/test_int01_cleanup.cpython-314.pyc",
+      "Sha256": "78c6889775235facb270342117613c4e1b3873b288d4f776376d9616c60d4641"
+    },
+    {
+      "Path": "eng/tests/__pycache__/test_preparation_checkout.cpython-314.pyc",
+      "Sha256": "1f608fa7f369cf88455da9a4d6a466b69051438c135689b7c1c726736caea590"
+    },
+    {
+      "Path": "eng/tests/__pycache__/test_qualification_gate.cpython-314.pyc",
+      "Sha256": "3365f2bf7f2dbe3d1902c0074c267988c4a6cf865d5a2a4d8e83e1d9087a5189"
+    },
+    {
+      "Path": "inspect-assembly.cs",
+      "Sha256": "e578804d8f00487eff584f70476a855a175eaaf55e6dedac7377f999cceae799"
+    },
+    {
+      "Path": "spikes/Gw1bLaunch.Tests/TestResults/qual-windows-full.trx",
+      "Sha256": "3b2756460901622ecb342057dd3abcece094493fab4f4b9b02e0ae4167ec3ef9"
+    },
+    {
+      "Path": "spikes/cgexec/cgexec.c",
+      "Sha256": "102bab1305508ab162d3d333a7eb4aab25f413cdc8d5c02eb60d1081c5445337"
+    },
+    {
+      "Path": "spikes/cgspawn/cgspawn.c",
+      "Sha256": "11a8eab1d9f69f0ea82209bd99e5b0fee1c8e05cca893ee563d33d48af688312"
+    },
+    {
+      "Path": "spikes/cgspawn/run-c.sh",
+      "Sha256": "67e013794c99dd4fcce1fef2db25a8617bc6a2082c7668ea3fdbf9e8128aa3f7"
+    },
+    {
+      "Path": "spikes/cgspawn/run-d.sh",
+      "Sha256": "669197db42014efee8172b83fd46d38bb02125b19a4b6c487d23eb2e18ed438c"
+    },
+    {
+      "Path": "spikes/cgspawn/run-f.sh",
+      "Sha256": "3a7a347ce2e686d1082cc24be7f351feb41661c71caba321a03b8843d5eb035e"
+    },
+    {
+      "Path": "spikes/cgspawn/run.sh",
+      "Sha256": "2f8878029d51f94a82b7b2040cbade183585d5ff6b84ae4bd161a42b85d0a985"
+    },
+    {
+      "Path": "spikes/pspawn/pspawn.c",
+      "Sha256": "26c6803c9e32ceaaf9b335bcea3a3590255b5052cec0b983bbd2b28058426c6e"
+    },
+    {
+      "Path": "spikes/pspawn/run-k.sh",
+      "Sha256": "2361d333a5a577653446b5c3a0a9341d842f4daaf50f6aa3b3c7b4a405b93a0e"
+    },
+    {
+      "Path": "spikes/pspawn/run.sh",
+      "Sha256": "2c6287293434b916d37ae8ee2075a7b36f5252ffc23997f00e372d873a317767"
+    },
+    {
+      "Path": "spikes/strace-clone.sh",
+      "Sha256": "c1968f072bfa21f2d9d5ad7265d29fd854dfb600ff2a54084f48f98615faeceb"
+    },
+    {
+      "Path": "spikes/strace-grep.sh",
+      "Sha256": "8e161214200992c89332c3c73cf4b75080632341c199363baed314a19a8e9479"
+    },
+    {
+      "Path": "spikes/strace-owner.sh",
+      "Sha256": "17a8452c17ed5135939c4df82d9e7c59dc74248035f945ae84d4ea106c18b75d"
+    },
+    {
+      "Path": "spikes/strace-tail.sh",
+      "Sha256": "5a12cec52d8f656ba6cc0a54afbfdd5dc614aaf229884b4b3f493b94d17aa040"
+    },
+    {
+      "Path": "spikes/strace-window.sh",
+      "Sha256": "dbc5ae1455e38aefc1e87162689a94a26b24b94526b1441577b569cc9f36dd77"
+    },
+    {
+      "Path": "spikes/wp05-qual-probe/Program.cs",
+      "Sha256": "1174ea63ee5c2d43fb786b2a397fd267c7aad1fa6808cf8faf2f2bdb517a24f2"
+    },
+    {
+      "Path": "spikes/wp05-qual-probe/wp05-qual-probe.csproj",
+      "Sha256": "c299ec65c19b75d1f4fd4ce516c09ee667a141b87a68a37ec76169cc3f86df2c"
+    },
+    {
+      "Path": "tests/Fixtures/Gagamba.Fixture.SelfTest/TestResults/qual-windows-full.trx",
+      "Sha256": "0d7f23fdb4efe63fc111c1416ac07b4cc6832f7ef1be7740a4b28e70b20f6dca"
+    },
+    {
+      "Path": "tests/Gagamba.Conformance.Tests/TestResults/qual-windows-full.trx",
+      "Sha256": "26d090a85c43abfdc2022dcd84941f197aa8711245f39b471748ec97bc2e3e10"
+    },
+    {
+      "Path": "tests/Gagamba.Execution.Linux.M1.Tests/TestResults/qual-windows-full.trx",
+      "Sha256": "cd624363cb3705163202ed66a760443cacbedfa220a7ece46c6d94670acacb3e"
+    },
+    {
+      "Path": "tests/Gagamba.Execution.Linux.M1.Tests/TestResults/win-m1-remediation.trx",
+      "Sha256": "504ae5f4c94e2335619d8c7eb6e5370c935aaef68a008760a68dcd5b2e1ef6c9"
+    },
+    {
+      "Path": "tests/Gagamba.Execution.Linux.Tests/TestResults/qual-windows-full.trx",
+      "Sha256": "e5b59bb0d7e73f59ee984b5acf12ac0cd53bf552a504912432b173afa148f605"
+    },
+    {
+      "Path": "tests/Gagamba.Execution.MacOS.Tests/TestResults/qual-windows-full.trx",
+      "Sha256": "8768613c37dbb0c393a16c8db539442bf55e79755bef810b6c7e92f1ed105cbe"
+    },
+    {
+      "Path": "tests/Gagamba.Execution.Tests/TestResults/qual-windows-full.trx",
+      "Sha256": "020c20fa47fe0586a63cebff60c202721b548aa81299b828b4d4e791993e6d30"
+    },
+    {
+      "Path": "tests/Gagamba.Execution.Windows.Tests/TestResults/qual-windows-full.trx",
+      "Sha256": "a4d13d1dc1262d337921032e4a3ce2e6f1982a407275678dd028510eea41f03b"
+    },
+    {
+      "Path": "tests/Gagamba.Runtime.Tests/TestResults/qual-windows-full.trx",
+      "Sha256": "95aca0fbe3f6263209b16ca352f0a13d0b3d605188ad9f1b8330012b1d7b86d7"
+    },
+    {
+      "Path": "tools/VerifyProductionBuild/Program.cs",
+      "Sha256": "dc11a44a9e11023c9bae2fe9d0b48238ee0b625c563a5af293be125d88d42959"
+    },
+    {
+      "Path": "tools/VerifyProductionBuild/VerifyProductionBuild.csproj",
+      "Sha256": "1525c416189f0cfb574ae1cb7081cd8829924187a5af4d07cc0479ac79ce170a"
+    }
+  ],
+  "preservedWorktreeCount": 74,
+  "remoteTracking": "401e1ea7f0be06b27bc188c827dd951016b3c62a",
+  "remoteStatus": "0\t17",
+  "testResults": [
+    {
+      "path": "artifacts/rc2b-06-b6-s3-resume/debug/s3-debug.trx",
+      "sha256": "e1aab0f1ef8a20d8a6af2e87fd98e422942be90577f1078fdc17eb49e387305c",
+      "counters": {
+        "total": "1454",
+        "executed": "1164",
+        "passed": "1164",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "classes": {
+        "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationWireTests": {
+          "Passed": 24
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_F_FieldMutationTests": {
+          "Passed": 284
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnershipV3CodecTests": {
+          "Passed": 20
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.JournalTests": {
+          "Passed": 62
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests": {
+          "NotExecuted": 20,
+          "Passed": 1
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests": {
+          "NotExecuted": 33
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Execution.ReleaseArbiterTests": {
+          "Passed": 16
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05B5C3TypedOutcomeTests": {
+          "Passed": 9
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests": {
+          "NotExecuted": 21
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installation.InstalledMetadataTests": {
+          "Passed": 63
+        },
+        "Gagamba.Execution.Linux.M1.Tests.PreparationIdentityTests": {
+          "Passed": 10
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeStagingCleanupTests": {
+          "NotExecuted": 8
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests": {
+          "NotExecuted": 20
+        },
+        "Gagamba.Execution.Linux.M1.Tests.RestrictedControl.RestrictedControlB1Tests": {
+          "Passed": 46
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests": {
+          "NotExecuted": 14,
+          "Passed": 1
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05AbortOracleFinalReviewerProbeTests": {
+          "Passed": 9
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests": {
+          "NotExecuted": 23
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Preparation.ClosureOwnershipTests": {
+          "Passed": 7
+        },
+        "Gagamba.Execution.Linux.M1.Tests.RestrictedControl.RestrictedControlB3Tests": {
+          "Passed": 14
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_V_VectorQualificationTests": {
+          "Passed": 27
+        },
+        "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests": {
+          "NotExecuted": 32
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05B5C3JournalTests": {
+          "Passed": 6
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05B5C3HistoricalFixtureTests": {
+          "Passed": 12
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Preparation.PublicationTests": {
+          "Passed": 8
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainHandleTransferTests": {
+          "Passed": 10
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorStatusReaderTests": {
+          "Passed": 11
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_V_A5RefusalCatalogTests": {
+          "Passed": 79
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests": {
+          "NotExecuted": 14,
+          "Passed": 7
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerDeathQualificationTests": {
+          "NotExecuted": 7
+        },
+        "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests": {
+          "NotExecuted": 17
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Preparation.CapabilityClosureTests": {
+          "Passed": 9
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.RecoveryConnectionDisposalTests": {
+          "NotExecuted": 3,
+          "Passed": 4
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationHandshakeTests": {
+          "Passed": 21
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Execution.Wp05ReleaseContractProbes": {
+          "Passed": 13
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ForgedAbortOracleTests": {
+          "Passed": 23
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainIdentityTests": {
+          "Passed": 4
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Execution.Wp05D69C1AmbiguousIntentTests": {
+          "Passed": 16
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05B5C3DeadlineTests": {
+          "Passed": 10
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Execution.Wp05D68C2StopCapabilityTests": {
+          "Passed": 13
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Contracts.ManifestTests": {
+          "Passed": 19
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests": {
+          "NotExecuted": 10
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_B_BoundaryTests": {
+          "Passed": 20
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.ReconcilerTests": {
+          "Passed": 18
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.RecoveryB2Tests": {
+          "Passed": 37
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05B5C3AuthorityTests": {
+          "Passed": 9
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Launch.ReleaseFrameTests": {
+          "Passed": 17
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainLeaseTests": {
+          "Passed": 11
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Execution.ReleaseAdmissionTests": {
+          "Passed": 9
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05V3IndependentQualificationTests": {
+          "Passed": 5
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Preparation.BindingTests": {
+          "Passed": 10
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.OwnerSafetyMonitorTests": {
+          "Passed": 2,
+          "NotExecuted": 4
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Qualification.QualificationHarnessSelfTests": {
+          "Passed": 7
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorProtocolQualificationTests": {
+          "Passed": 11
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Preparation.CopyInTests": {
+          "Passed": 20
+        },
+        "Gagamba.Execution.Linux.M1.Tests.StateModelTests": {
+          "Passed": 41
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05B5C3ClockTrustTests": {
+          "Passed": 14
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Preparation.StagingCleanupTests": {
+          "Passed": 9
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness": {
+          "NotExecuted": 5
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Contracts.RestrictedPublicProjectionTests": {
+          "Passed": 9
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Launch.SeccompFilterPinTests": {
+          "NotExecuted": 4
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnershipV3TransitionTests": {
+          "Passed": 18
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.PidFdChildReaperTests": {
+          "NotExecuted": 3
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerBootstrapTests": {
+          "Passed": 7
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.JournalFencingTests": {
+          "NotExecuted": 6
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.RetainedDirectoryCleanupTests": {
+          "NotExecuted": 3
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installation.LoadedMappingTests": {
+          "Passed": 6,
+          "NotExecuted": 1
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.ReleaseRecoveryClassificationTests": {
+          "Passed": 11
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.RecoveryB2NativeTests": {
+          "NotExecuted": 2
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Native.ReleaseProtocolTests": {
+          "NotExecuted": 4
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Restricted.OwnerHeldWireCodecTests": {
+          "Passed": 6
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Launch.ProtectedCaptureTests": {
+          "Passed": 1,
+          "NotExecuted": 7
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ForgedAbortOracleHostileProbeTests": {
+          "Passed": 1
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.OwnerSafetyDisposalTests": {
+          "NotExecuted": 1
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.PreparationOwnershipTests": {
+          "Passed": 4
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests": {
+          "NotExecuted": 17
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05TerminationObserverTests": {
+          "NotExecuted": 3
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests": {
+          "NotExecuted": 3
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installation.QualifiedLauncherNativeTests": {
+          "NotExecuted": 2
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_E_EvidenceExportTests": {
+          "Passed": 2
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Launch.Wp05SigpipeDispositionTests": {
+          "NotExecuted": 1
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05B5C3FailingBeforeTests": {
+          "Passed": 1
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05LeaseProcessProbes": {
+          "NotExecuted": 1
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installed.InstalledFileSystemNativeTests": {
+          "NotExecuted": 1
+        }
+      },
+      "source": "5b2fe73567a9c33df50fc7c662436a67814a86f4"
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-resume/release-runner/s3-release-runner.trx",
+      "sha256": "b59416bd23126bea02b2ad64753ffd03f4051702239c0fab718fc0cbae79a343",
+      "counters": {
+        "total": "1454",
+        "executed": "1164",
+        "passed": "1164",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "classes": {
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05B5C3HistoricalFixtureTests": {
+          "Passed": 12
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_B_BoundaryTests": {
+          "Passed": 20
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests": {
+          "NotExecuted": 23
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests": {
+          "NotExecuted": 14,
+          "Passed": 1
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_F_FieldMutationTests": {
+          "Passed": 284
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainHandleTransferTests": {
+          "Passed": 10
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.JournalTests": {
+          "Passed": 62
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Execution.Wp05D68C2StopCapabilityTests": {
+          "Passed": 13
+        },
+        "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests": {
+          "NotExecuted": 17
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorProtocolQualificationTests": {
+          "Passed": 11
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.ReleaseRecoveryClassificationTests": {
+          "Passed": 11
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.RecoveryB2Tests": {
+          "Passed": 37
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Preparation.StagingCleanupTests": {
+          "Passed": 9
+        },
+        "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests": {
+          "NotExecuted": 32
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationHandshakeTests": {
+          "Passed": 21
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.ReconcilerTests": {
+          "Passed": 18
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorStatusReaderTests": {
+          "Passed": 11
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Execution.Wp05D69C1AmbiguousIntentTests": {
+          "Passed": 16
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationWireTests": {
+          "Passed": 24
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Contracts.RestrictedPublicProjectionTests": {
+          "Passed": 9
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Contracts.ManifestTests": {
+          "Passed": 19
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_V_A5RefusalCatalogTests": {
+          "Passed": 79
+        },
+        "Gagamba.Execution.Linux.M1.Tests.StateModelTests": {
+          "Passed": 41
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installation.InstalledMetadataTests": {
+          "Passed": 63
+        },
+        "Gagamba.Execution.Linux.M1.Tests.RestrictedControl.RestrictedControlB3Tests": {
+          "Passed": 14
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Preparation.PublicationTests": {
+          "Passed": 8
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests": {
+          "NotExecuted": 20,
+          "Passed": 1
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnershipV3CodecTests": {
+          "Passed": 20
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Preparation.BindingTests": {
+          "Passed": 10
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ForgedAbortOracleTests": {
+          "Passed": 23
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests": {
+          "NotExecuted": 33
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05B5C3AuthorityTests": {
+          "Passed": 9
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.PidFdChildReaperTests": {
+          "NotExecuted": 3
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests": {
+          "NotExecuted": 21
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Execution.Wp05ReleaseContractProbes": {
+          "Passed": 13
+        },
+        "Gagamba.Execution.Linux.M1.Tests.RestrictedControl.RestrictedControlB1Tests": {
+          "Passed": 46
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Qualification.QualificationHarnessSelfTests": {
+          "Passed": 7
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.RetainedDirectoryCleanupTests": {
+          "NotExecuted": 3
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.OwnerSafetyMonitorTests": {
+          "NotExecuted": 4,
+          "Passed": 2
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Restricted.OwnerHeldWireCodecTests": {
+          "Passed": 6
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Launch.ProtectedCaptureTests": {
+          "Passed": 1,
+          "NotExecuted": 7
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installation.LoadedMappingTests": {
+          "Passed": 6,
+          "NotExecuted": 1
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeStagingCleanupTests": {
+          "NotExecuted": 8
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Preparation.CopyInTests": {
+          "Passed": 20
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Execution.ReleaseArbiterTests": {
+          "Passed": 16
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installation.QualifiedLauncherNativeTests": {
+          "NotExecuted": 2
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainLeaseTests": {
+          "Passed": 11
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05B5C3ClockTrustTests": {
+          "Passed": 14
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests": {
+          "NotExecuted": 17
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnershipV3TransitionTests": {
+          "Passed": 18
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05B5C3JournalTests": {
+          "Passed": 6
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_V_VectorQualificationTests": {
+          "Passed": 27
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests": {
+          "Passed": 7,
+          "NotExecuted": 14
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests": {
+          "NotExecuted": 20
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Launch.ReleaseFrameTests": {
+          "Passed": 17
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.JournalFencingTests": {
+          "NotExecuted": 6
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Execution.ReleaseAdmissionTests": {
+          "Passed": 9
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_E_EvidenceExportTests": {
+          "Passed": 2
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.RecoveryB2NativeTests": {
+          "NotExecuted": 2
+        },
+        "Gagamba.Execution.Linux.M1.Tests.PreparationIdentityTests": {
+          "Passed": 10
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05B5C3DeadlineTests": {
+          "Passed": 10
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05B5C3TypedOutcomeTests": {
+          "Passed": 9
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05AbortOracleFinalReviewerProbeTests": {
+          "Passed": 9
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05B5C3FailingBeforeTests": {
+          "Passed": 1
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests": {
+          "NotExecuted": 10
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Native.ReleaseProtocolTests": {
+          "NotExecuted": 4
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerBootstrapTests": {
+          "Passed": 7
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness": {
+          "NotExecuted": 5
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Launch.SeccompFilterPinTests": {
+          "NotExecuted": 4
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerDeathQualificationTests": {
+          "NotExecuted": 7
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Preparation.CapabilityClosureTests": {
+          "Passed": 9
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05V3IndependentQualificationTests": {
+          "Passed": 5
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.RecoveryConnectionDisposalTests": {
+          "NotExecuted": 3,
+          "Passed": 4
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests": {
+          "NotExecuted": 3
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Launch.Wp05SigpipeDispositionTests": {
+          "NotExecuted": 1
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05TerminationObserverTests": {
+          "NotExecuted": 3
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Preparation.ClosureOwnershipTests": {
+          "Passed": 7
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.PreparationOwnershipTests": {
+          "Passed": 4
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainIdentityTests": {
+          "Passed": 4
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.OwnerSafetyDisposalTests": {
+          "NotExecuted": 1
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05LeaseProcessProbes": {
+          "NotExecuted": 1
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installed.InstalledFileSystemNativeTests": {
+          "NotExecuted": 1
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ForgedAbortOracleHostileProbeTests": {
+          "Passed": 1
+        }
+      },
+      "source": "5b2fe73567a9c33df50fc7c662436a67814a86f4"
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-resume/production-regressions/trx/Laszlos_LAPTOP-KBD8D8JG_2026-11-04_09_59_18_net10.0.trx",
+      "sha256": "de8e4ea56bd08e34d4b309afe16fd655f97ce65cde29836bf19515d073df7e5a",
+      "counters": {
+        "total": "1353",
+        "executed": "1133",
+        "passed": "1133",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "classes": {
+        "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_F_FieldMutationTests": {
+          "Passed": 284
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests": {
+          "NotExecuted": 14,
+          "Passed": 7
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installation.InstalledMetadataTests": {
+          "Passed": 63
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ForgedAbortOracleTests": {
+          "Passed": 23
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Preparation.ClosureOwnershipTests": {
+          "Passed": 7
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.JournalTests": {
+          "Passed": 62
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Launch.ReleaseFrameTests": {
+          "Passed": 17
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_B_BoundaryTests": {
+          "Passed": 20
+        },
+        "Gagamba.Execution.Linux.M1.Tests.StateModelTests": {
+          "Passed": 41
+        },
+        "Gagamba.Execution.Linux.M1.Tests.RestrictedControl.RestrictedControlB1Tests": {
+          "Passed": 46
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installation.LoadedMappingTests": {
+          "NotExecuted": 1,
+          "Passed": 6
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Execution.Wp05D68C2StopCapabilityTests": {
+          "Passed": 13
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.OwnerSafetyDisposalTests": {
+          "NotExecuted": 1
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.RecoveryB2Tests": {
+          "Passed": 37
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05AbortOracleFinalReviewerProbeTests": {
+          "Passed": 9
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05B5C3ClockTrustTests": {
+          "Passed": 14
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerBootstrapTests": {
+          "Passed": 7
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05V3IndependentQualificationTests": {
+          "Passed": 5
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests": {
+          "NotExecuted": 10
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.RecoveryConnectionDisposalTests": {
+          "NotExecuted": 3,
+          "Passed": 4
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests": {
+          "NotExecuted": 21
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests": {
+          "NotExecuted": 20
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_V_VectorQualificationTests": {
+          "Passed": 27
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests": {
+          "NotExecuted": 20,
+          "Passed": 1
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installation.QualifiedLauncherNativeTests": {
+          "NotExecuted": 2
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05B5C3HistoricalFixtureTests": {
+          "Passed": 12
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Contracts.RestrictedPublicProjectionTests": {
+          "Passed": 9
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness": {
+          "NotExecuted": 5
+        },
+        "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests": {
+          "NotExecuted": 32
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Preparation.CapabilityClosureTests": {
+          "Passed": 9
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnershipV3TransitionTests": {
+          "Passed": 18
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Execution.ReleaseArbiterTests": {
+          "Passed": 16
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Preparation.PublicationTests": {
+          "Passed": 8
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Native.ReleaseProtocolTests": {
+          "NotExecuted": 4
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05B5C3DeadlineTests": {
+          "Passed": 10
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationWireTests": {
+          "Passed": 24
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainIdentityTests": {
+          "Passed": 4
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Execution.Wp05D69C1AmbiguousIntentTests": {
+          "Passed": 16
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainLeaseTests": {
+          "Passed": 11
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnershipV3CodecTests": {
+          "Passed": 20
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationHandshakeTests": {
+          "Passed": 21
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Execution.ReleaseAdmissionTests": {
+          "Passed": 9
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_V_A5RefusalCatalogTests": {
+          "Passed": 79
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installed.InstalledFileSystemNativeTests": {
+          "NotExecuted": 1
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorProtocolQualificationTests": {
+          "Passed": 11
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainHandleTransferTests": {
+          "Passed": 10
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests": {
+          "NotExecuted": 3
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Contracts.ManifestTests": {
+          "Passed": 19
+        },
+        "Gagamba.Execution.Linux.M1.Tests.RestrictedControl.RestrictedControlB3Tests": {
+          "Passed": 14
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.ReconcilerTests": {
+          "Passed": 18
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.OwnerSafetyMonitorTests": {
+          "NotExecuted": 4,
+          "Passed": 2
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05B5C3TypedOutcomeTests": {
+          "Passed": 9
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05B5C3AuthorityTests": {
+          "Passed": 9
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests": {
+          "NotExecuted": 17
+        },
+        "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests": {
+          "NotExecuted": 17
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05B5C3JournalTests": {
+          "Passed": 6
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.ReleaseRecoveryClassificationTests": {
+          "Passed": 11
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerDeathQualificationTests": {
+          "NotExecuted": 7
+        },
+        "Gagamba.Execution.Linux.M1.Tests.PreparationIdentityTests": {
+          "Passed": 10
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorStatusReaderTests": {
+          "Passed": 11
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Preparation.StagingCleanupTests": {
+          "Passed": 9
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Restricted.OwnerHeldWireCodecTests": {
+          "Passed": 6
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Launch.ProtectedCaptureTests": {
+          "NotExecuted": 7,
+          "Passed": 1
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.JournalFencingTests": {
+          "NotExecuted": 6
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Qualification.QualificationHarnessSelfTests": {
+          "Passed": 7
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeStagingCleanupTests": {
+          "NotExecuted": 8
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Launch.SeccompFilterPinTests": {
+          "NotExecuted": 4
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05TerminationObserverTests": {
+          "NotExecuted": 3
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.RetainedDirectoryCleanupTests": {
+          "NotExecuted": 3
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ForgedAbortOracleHostileProbeTests": {
+          "Passed": 1
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Execution.Wp05ReleaseContractProbes": {
+          "Passed": 13
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.PidFdChildReaperTests": {
+          "NotExecuted": 3
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Qualification.Q2A_E_EvidenceExportTests": {
+          "Passed": 2
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05B5C3FailingBeforeTests": {
+          "Passed": 1
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.PreparationOwnershipTests": {
+          "Passed": 4
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05LeaseProcessProbes": {
+          "NotExecuted": 1
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.RecoveryB2NativeTests": {
+          "NotExecuted": 2
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Launch.Wp05SigpipeDispositionTests": {
+          "NotExecuted": 1
+        }
+      },
+      "source": "5b2fe73567a9c33df50fc7c662436a67814a86f4"
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-resume/native-final/s3-native-final.trx",
+      "sha256": "7d93569785617bc01591ac9c442f8a146737fad21b0faa91a13453e106a0c789",
+      "counters": {
+        "total": "71",
+        "executed": "71",
+        "passed": "71",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "classes": {
+        "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationWireTests": {
+          "Passed": 24
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationHandshakeTests": {
+          "Passed": 21
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installation.QualifiedLauncherNativeTests": {
+          "Passed": 2
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installation.LoadedMappingTests": {
+          "Passed": 7
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests": {
+          "Passed": 17
+        }
+      },
+      "source": "f6565de877f26fe699da89d7857b22435e1bd31d (preliminary Debug native run; exercised component sources unchanged in final source)"
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-resume/native-production/s3-native-production.trx",
+      "sha256": "5482d9023f57ee37ca42183cbc0d0027fb2d961d9e83d0b15b5db4174d3b5993",
+      "counters": {
+        "total": "71",
+        "executed": "71",
+        "passed": "71",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "classes": {
+        "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests": {
+          "Passed": 17
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationHandshakeTests": {
+          "Passed": 21
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationWireTests": {
+          "Passed": 24
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installation.LoadedMappingTests": {
+          "Passed": 7
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installation.QualifiedLauncherNativeTests": {
+          "Passed": 2
+        }
+      },
+      "source": "5b2fe73567a9c33df50fc7c662436a67814a86f4"
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-resume/legacy-primitives/s3-legacy-and-s2.trx",
+      "sha256": "37694357e988cc36d28833c8fc9f9130c58c510dea1d3f71ac33a013f2fe96c9",
+      "counters": {
+        "total": "91",
+        "executed": "91",
+        "passed": "91",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "classes": {
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05B5C3ClockTrustTests": {
+          "Passed": 14
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests": {
+          "Passed": 21
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05B5C3DeadlineTests": {
+          "Passed": 10
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05B5C3AuthorityTests": {
+          "Passed": 9
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.OwnerSafetyMonitorTests": {
+          "Passed": 6
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05B5C3TypedOutcomeTests": {
+          "Passed": 9
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05B5C3HistoricalFixtureTests": {
+          "Passed": 12
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.RecoveryB2NativeTests": {
+          "Passed": 2
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05B5C3JournalTests": {
+          "Passed": 6
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05B5C3FailingBeforeTests": {
+          "Passed": 1
+        },
+        "Gagamba.Execution.Linux.M1.Tests.Installed.InstalledFileSystemNativeTests": {
+          "Passed": 1
+        }
+      },
+      "source": "5b2fe73567a9c33df50fc7c662436a67814a86f4"
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-resume/baseline/d64-Debug/d64.trx",
+      "sha256": "22628a4815be8e49a0ba803851added13dcb4e077595397ddc8185071cacdefc",
+      "counters": {
+        "total": "3",
+        "executed": "3",
+        "passed": "3",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "classes": {
+        "Gagamba.Execution.Linux.M1.D6_4.Tests.Wp05B5C3NotAttemptedFallbackTests": {
+          "Passed": 3
+        }
+      },
+      "source": "7e31616bd8c5f3c8251935df2bfa59a4cc9bafc0 (baseline regression receipt)"
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-resume/baseline/d64-Release/d64.trx",
+      "sha256": "2aaadbf570ee3ab9e71c59725e8c554f008c7d39f5ed01ea742ca8694cd462e9",
+      "counters": {
+        "total": "3",
+        "executed": "3",
+        "passed": "3",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "classes": {
+        "Gagamba.Execution.Linux.M1.D6_4.Tests.Wp05B5C3NotAttemptedFallbackTests": {
+          "Passed": 3
+        }
+      },
+      "source": "7e31616bd8c5f3c8251935df2bfa59a4cc9bafc0 (baseline regression receipt)"
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-resume/baseline/fixture/fixture.trx",
+      "sha256": "8c78c383919f539ecc0ee99adca47260a06d1b02fa313887a60c7f8eadfb4805",
+      "counters": {
+        "total": "15",
+        "executed": "15",
+        "passed": "15",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "classes": {
+        "ProtocolValidatorTests": {
+          "Passed": 7
+        },
+        "TreeRunnerTests": {
+          "Passed": 2
+        },
+        "EvidenceValidatorTests": {
+          "Passed": 6
+        }
+      },
+      "source": "7e31616bd8c5f3c8251935df2bfa59a4cc9bafc0 (baseline regression receipt)"
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-resume/baseline/Gagamba.Conformance.Tests/Gagamba.Conformance.Tests.trx",
+      "sha256": "f5710f7239a6ab064885b9a79a61a72ea4c95650868abee05e1ac776c5fb852e",
+      "counters": {
+        "total": "6",
+        "executed": "6",
+        "passed": "6",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "classes": {
+        "Gagamba.Conformance.Tests.ConformanceTests": {
+          "Passed": 5
+        },
+        "Gagamba.Conformance.Tests.BrokenProviderTests": {
+          "Passed": 1
+        }
+      },
+      "source": "7e31616bd8c5f3c8251935df2bfa59a4cc9bafc0 (baseline regression receipt)"
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-resume/baseline/Gagamba.Execution.Linux.Tests/Gagamba.Execution.Linux.Tests.trx",
+      "sha256": "d02cffbd2a3967e93ff16b6b14af230a640a3573353d5e090f1252435e939c98",
+      "counters": {
+        "total": "42",
+        "executed": "26",
+        "passed": "26",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "classes": {
+        "Gagamba.Execution.Linux.Tests.ProviderTests": {
+          "Passed": 18
+        },
+        "Gagamba.Execution.Linux.Tests.PureTests": {
+          "Passed": 8
+        },
+        "Gagamba.Execution.Linux.Tests.LifecycleRegressions": {
+          "NotExecuted": 14
+        },
+        "Gagamba.Execution.Linux.Tests.Ar5LinuxTests": {
+          "NotExecuted": 2
+        }
+      },
+      "source": "7e31616bd8c5f3c8251935df2bfa59a4cc9bafc0 (baseline regression receipt)"
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-resume/baseline/Gagamba.Execution.MacOS.Tests/Gagamba.Execution.MacOS.Tests.trx",
+      "sha256": "59c8128d858d586a2c22b905bb94975d2372674867a1abd20354e8ea230b2781",
+      "counters": {
+        "total": "51",
+        "executed": "47",
+        "passed": "47",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "classes": {
+        "Gagamba.Execution.MacOS.Tests.PureTests": {
+          "Passed": 9
+        },
+        "Gagamba.Execution.MacOS.Tests.ProviderTests": {
+          "Passed": 17
+        },
+        "Gagamba.Execution.MacOS.Tests.Ar4MacTests": {
+          "Passed": 4
+        },
+        "Gagamba.Execution.MacOS.Tests.Ar3Regressions": {
+          "NotExecuted": 4,
+          "Passed": 16
+        },
+        "Gagamba.Execution.MacOS.Tests.Ar5MacTests": {
+          "Passed": 1
+        }
+      },
+      "source": "7e31616bd8c5f3c8251935df2bfa59a4cc9bafc0 (baseline regression receipt)"
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-resume/baseline/Gagamba.Execution.Tests/Gagamba.Execution.Tests.trx",
+      "sha256": "f77eb19b35e71c8319feb1b0b8da4e68cd19e958c49370a8ad3ffa82e06fb313",
+      "counters": {
+        "total": "68",
+        "executed": "68",
+        "passed": "68",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "classes": {
+        "Gagamba.Execution.Tests.Ar5OutputTests": {
+          "Passed": 3
+        },
+        "Gagamba.Execution.Tests.Ar4CoreTests": {
+          "Passed": 3
+        },
+        "Gagamba.Execution.Tests.Restricted.RestrictedContractTests": {
+          "Passed": 38
+        },
+        "Gagamba.Execution.Tests.ProviderContractTests": {
+          "Passed": 7
+        },
+        "Gagamba.Execution.Tests.Restricted.Rc2a02PublicBoundaryTests": {
+          "Passed": 10
+        },
+        "Gagamba.Execution.Tests.MatrixTests": {
+          "Passed": 2
+        },
+        "Gagamba.Execution.Tests.NegotiationTests": {
+          "Passed": 5
+        }
+      },
+      "source": "7e31616bd8c5f3c8251935df2bfa59a4cc9bafc0 (baseline regression receipt)"
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-resume/baseline/Gagamba.Execution.Windows.Tests/Gagamba.Execution.Windows.Tests.trx",
+      "sha256": "d0db799284a758808946203c205c8f5bf9e75041bcec3e36b568e79a79ae4318",
+      "counters": {
+        "total": "30",
+        "executed": "30",
+        "passed": "30",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "classes": {
+        "Gagamba.Execution.Windows.Tests.ProviderTreeTests": {
+          "Passed": 14
+        },
+        "Gagamba.Execution.Windows.Tests.LifecycleRegressions": {
+          "Passed": 9
+        },
+        "Gagamba.Execution.Windows.Tests.Ar4WindowsTests": {
+          "Passed": 2
+        },
+        "Gagamba.Execution.Windows.Tests.Ar5WindowsTests": {
+          "Passed": 5
+        }
+      },
+      "source": "7e31616bd8c5f3c8251935df2bfa59a4cc9bafc0 (baseline regression receipt)"
+    },
+    {
+      "path": "artifacts/rc2b-06-b6-s3-resume/baseline/Gagamba.Runtime.Tests/Gagamba.Runtime.Tests.trx",
+      "sha256": "519be6be56ac85b2498a183747a946d459a8d6c282fd122f8ea8b98dc4bcdedf",
+      "counters": {
+        "total": "15",
+        "executed": "15",
+        "passed": "15",
+        "failed": "0",
+        "error": "0",
+        "timeout": "0",
+        "aborted": "0",
+        "inconclusive": "0",
+        "passedButRunAborted": "0",
+        "notRunnable": "0",
+        "notExecuted": "0",
+        "disconnected": "0",
+        "warning": "0",
+        "completed": "0",
+        "inProgress": "0",
+        "pending": "0"
+      },
+      "classes": {
+        "Gagamba.Runtime.Tests.Ar5OrchestratorTests": {
+          "Passed": 9
+        },
+        "Gagamba.Runtime.Tests.ExecutionRuntimeTests": {
+          "Passed": 5
+        },
+        "Gagamba.Runtime.Tests.RestrictedRuntimeB1Tests": {
+          "Passed": 1
+        }
+      },
+      "source": "7e31616bd8c5f3c8251935df2bfa59a4cc9bafc0 (baseline regression receipt)"
+    }
+  ],
+  "s1Probes": {
+    "passed": 51,
+    "failed": 0,
+    "skipped": 0,
+    "source": "5b2fe73567a9c33df50fc7c662436a67814a86f4"
+  },
+  "note": "Full installed-helper qualification and unexecuted matrix subcases remain pending. Component counts are not full-system passes."
+}

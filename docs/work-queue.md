@@ -1,5 +1,11 @@
 # Current work queue
 
+> **S3 PARTIALLY IMPLEMENTED — SOURCE CHECKPOINT AND QUALIFICATION HANDOFF (2026-11-04).**
+> Installation-identity codecs, S2 projection, qualified B2 evidence/Ready gates, integrated identity propagation and loaded-role checks are committed at `5b2fe73567a9c33df50fc7c662436a67814a86f4`. The accepted B2 wire blocker is resolved.
+> Current checks: M1 Debug and Release runner 1164/0/290 each; actual Release supplemental 1133/0/220; S1 51/51; actual Release-core S3 batch 51 portable +20 native component passes; legacy B2 22/22, mixed native/direct/C3/S2 91/91 and S2 transactions 11/11. Full qualified B2/B3, production loaded-closure positives/mutations and remaining 28-row subcases are pending. These are not 28 full-system passes.
+> Next: complete/review the source-bound pending matrix for GAGAMBA-RC2B-06-B6-IMPL-01-S3-Q1 before S3 owner acceptance. Root remains `0:0 0777`, fixed-root inspection refuses, and `/opt/gagamba` is absent. No privileged installation, production activation, S4 or push.
+> [S3 evidence, all 28 dispositions and handoff](evidence/rc2b-06-b6-impl-01-s3.md) · [Exact source/files/binaries and raw logs](evidence/rc2b-06-b6-impl-01-s3/source-binding.json)
+
 > **B2 WIRE DELTA ACCEPTED WITH QUALIFICATIONS — S3 READY TO RESUME (2026-11-03).**
 > S2 remains accepted with qualifications. Independent design review and owner acceptance resolve the historical S3 blocker. Qualified non-integrated B2 requires a direct echo from the original verified launcher’s owner child and refuses delegated-parent B2 before allocation.
 > Resume GAGAMBA-RC2B-06-B6-IMPL-01-S3 under WI-01–06. Implement the reviewed codecs, custody and Ready gates. Track the 28 specified adversarial cases against their positive controls. Queue S3-Q1 after implementation. Root-owned native qualification and production activation remain separate.
