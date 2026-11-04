@@ -162,6 +162,7 @@ public sealed class InstallationWireTests
         c.Validate();Assert.Equal(c,RecoveryConfiguration.Decode(JsonSerializer.SerializeToUtf8Bytes(c)) with{Secret=c.Secret,Recovery=c.Recovery,Owner=c.Owner});
         Assert.Throws<InvalidDataException>(()=>(c with{Version=1}).Validate());
         Assert.Throws<InvalidDataException>(()=>(c with{DelegatedParent="/must-not-open"}).Validate());
+        Assert.Throws<InvalidDataException>(()=>RecoveryConnection.Start(c with{DelegatedParent="/must-not-open"}));
         Assert.Throws<InvalidDataException>(()=>(c with{B2InstallationIdentity=null}).Validate());
         var json=JsonSerializer.Serialize(c);
         Assert.Throws<InvalidDataException>(()=>RecoveryConfiguration.Decode(Encoding.UTF8.GetBytes(json[..^1]+",\"Version\":2}")));

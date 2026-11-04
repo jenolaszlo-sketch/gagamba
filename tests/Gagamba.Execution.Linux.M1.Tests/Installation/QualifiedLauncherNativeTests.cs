@@ -44,6 +44,8 @@ public sealed class QualifiedLauncherNativeTests
             Assert.True(DirectPeerIdentity.LiveReference(spawn.PidFd,B2ProcessIdentity.Identity(process.Id)));
             using var unrelated=Process.GetCurrentProcess();
             Assert.False(scope.SendOriginalB2OwnerReference(unrelated,transfer.Parent,[1]));
+            using var replacement=Process.GetProcessById(process.Id);
+            Assert.False(scope.SendOriginalB2OwnerReference(replacement,transfer.Parent,[1]));
             Assert.True(scope.SendOriginalB2OwnerReference(process,transfer.Parent,[1]));
             Assert.False(scope.SendOriginalB2OwnerReference(process,transfer.Parent,[1]));
             Assert.True(FdPassing.TryReceiveRecord(transfer.Child,1000,out var record,out error),error);

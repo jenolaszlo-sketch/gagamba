@@ -34,7 +34,7 @@ public sealed class B2EvidenceNativeTests
         Assert.True(PidFd.TryOpen(child.Id,out int childFd,out _));using var childPin=new SafeFileHandle((IntPtr)childFd,true);
         Assert.True(PidFd.TryOpen(Environment.ProcessId,out int selfFd,out _));using var selfPin=new SafeFileHandle((IntPtr)selfFd,true);
         static int NativeHandles()=>Directory.GetFiles("/proc/self/fd").Select(p=>new FileInfo(p).LinkTarget)
-            .Count(t=>t is not null && (t.StartsWith("socket:",StringComparison.Ordinal) || t=="anon_inode:[pidfd]"));
+            .Count(t=>t is not null && (t.StartsWith("socket:",StringComparison.Ordinal) || t=="anon_inode:[pidfd]" || t=="/tmp"));
         int before=NativeHandles();
         bool success=false;string? refusal=null;
         try
@@ -62,7 +62,7 @@ public sealed class B2EvidenceNativeTests
         Assert.True(PidFd.TryExited(childFd,0,out var exited,out _));Assert.True(exited);
         // Socket and peer/received-right lifetimes ended. The listener was consumed by accept.
         int after=NativeHandles();
-        Assert.True(after<=before,"transient evidence handles leaked");
+        Assert.Equal(before-1,after); // accepting closed exactly the one listener; every transient copy is gone
         if(Environment.GetEnvironmentVariable("GAGAMBA_S3_OBSERVATIONS") is {Length:>0} observations)
         {
             Directory.CreateDirectory(observations);
