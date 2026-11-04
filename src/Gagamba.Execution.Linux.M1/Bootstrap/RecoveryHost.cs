@@ -53,12 +53,15 @@ internal static class RecoveryHost
         // Domain-bearing requests are not part of the B2 wire. A supplied parent
         // must nevertheless pass existing M1 verification; never provision it.
         if (config.DelegatedParent is not null && !scope.TryOpenDelegatedParent(config.DelegatedParent).Ok) return 3;
-        var wire = new RecoveryWire(config.Execution, config.Generation);
+        var wire = new RecoveryWire(config.Execution, config.Generation,config.Version,config.Integrated is not null,false);
         if (!FdPassing.TryReceiveMessage(control, 5000, out var frame, out _)
             || !wire.Accept(frame, out var type, out var payload) || type != RecoveryMessage.Associate
             || !association.Authenticate(payload)) return 3;
         CryptographicOperations.ZeroMemory(payload); CryptographicOperations.ZeroMemory(frame);
 
+        var installation=config.Version==2?QualifiedRecoveryEcho.Run(config,wire,control,controllerFd):null;
+        if(config.Version==2 && config.Integrated is null)
+            return QualifiedB2Recovery.Run(config,scope,wire,control,controllerFd,installation!);
         if(config.Integrated is not null)
             return IntegratedRecoveryHost.Run(config,scope,wire,control,controllerFd,ownerPath);
 

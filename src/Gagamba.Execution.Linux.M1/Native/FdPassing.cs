@@ -574,6 +574,8 @@ internal sealed class ReceivedFdRecord : IDisposable
     internal byte[] Payload { get; }
 
     internal int DescriptorCount => _descriptors?.Length ?? 0;
+    // Borrowed only while the record owns it; callers validate before a single detach.
+    internal int BorrowDescriptor(int index) => (_descriptors ?? throw new ObjectDisposedException(nameof(ReceivedFdRecord)))[index];
 
     internal int[] DetachDescriptors()
     {

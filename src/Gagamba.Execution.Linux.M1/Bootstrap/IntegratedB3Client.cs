@@ -50,10 +50,12 @@ internal sealed class IntegratedB3Client : IDisposable
         long acceptedAt,long expiresAt,Func<IReadOnlyList<StagedObjectDescription>,(RestrictedManifest Manifest,PreparationIdentity Identity)> authorize)
     {
         var integrated=profile.IntegratedRecovery ?? throw new IOException("Missing integrated experimental pins");
-        var config=new RecoveryConfiguration(1,execution,lease,Guid.NewGuid(),Environment.ProcessId,RecoveryInterop.GetUid(),[],
+        // A qualified request has no alternate expected-identity provider.
+        var installed=profile.QualifiedInstallation ? Installed.LoadedInstallation.Verify("provider") : null;
+        var config=new RecoveryConfiguration((ushort)(installed is null?1:2),execution,lease,Guid.NewGuid(),Environment.ProcessId,RecoveryInterop.GetUid(),[],
             integrated.Recovery,integrated.Owner,integrated.EvidenceDirectory,profile.DelegatedParentPath,
             new IntegratedRecoverySpecification(profile with {IntegratedRecovery=null},issuer,generation,acceptedAt,expiresAt,
-                DirectProcessIdentity.Current(),integrated.Runtime));
+                DirectProcessIdentity.Current(),integrated.Runtime,installed?.Identity));
         var recovery=RecoveryConnection.Start(config);
         lock(_publication)
         {
@@ -65,9 +67,19 @@ internal sealed class IntegratedB3Client : IDisposable
             if(_disposed || _stopRequested) throw new IOException("Preparation stopped before direct association");
             var rendezvous=recovery.Rendezvous ?? throw new IOException("Missing original owner association");
             var deadline=DirectStream.Deadline((int)Math.Clamp((Math.Min(expiresAt,acceptedAt+10_000_000_000L)-OwnerSafetyMonitor.Now())/1_000_000L,0,5000));
+            if(recovery.Installation is not null) deadline=Math.Min(deadline,DirectStream.Deadline(InstallationDeadline.Remaining(recovery.InstallationDeadlineNs)));
             var session=DirectSession.Establish(DirectOwnerListener.Connect(rendezvous.Address,deadline),rendezvous.Association,
                 recovery.OwnerReference!.DangerousGetHandle().ToInt32(),false,deadline);
-            _channel=new OwnerProtocolChannel(session,execution,lease);
+            _channel=new OwnerProtocolChannel(session,execution,lease){InstallationOwner=recovery.Installation is null?null:false};
+            if(recovery.Installation is { } selection)
+            {
+                if(!_channel.TryReceiveAllowedWithin(InstallationDeadline.Remaining(recovery.InstallationDeadlineNs),out var echo,out _,
+                    OwnerProtocolMessageType.OwnerInstallationEcho) ||
+                    InstallationWire.CompareEcho(echo!.Payload,selection.Identity,1,true)!=InstallationMismatch.None)
+                {RequestNativeStop();throw new IOException("qualified integrated owner identity refused");}
+                _=InstallationDeadline.Verify(()=>{selection.Revalidate();return true;},recovery.InstallationDeadlineNs,
+                    ()=>{if(_stopRequested || _disposed || !IsLive) throw new IOException("integrated identity gate stopped");});
+            }
             if(!_channel.TryReceive(OwnerProtocolMessageType.StagedObjects,out var objects,out var error)
                 || !OwnerPreparationSpecificationCodec.TryDecodeStagedObjects(objects!.Payload,out var staged,out error))
                 throw new IOException("Integrated staged closure unavailable");

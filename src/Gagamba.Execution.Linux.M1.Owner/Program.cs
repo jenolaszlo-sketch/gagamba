@@ -19,7 +19,8 @@ if (!OperatingSystem.IsLinux())
 }
 
 if (args.Length % 2 != 0) return 3;
-var b2 = args.Length == 6 && args[4] == "--b2-lifeline" && args[5] == "1";
+var b2 = args.Length == 6 && args[4] == "--b2-lifeline" && args[5] is "1" or "2";
+var qualifiedB2=b2 && args[5]=="2";
 if (b2) args = args[..4];
 var arguments = new Dictionary<string, string>(StringComparer.Ordinal);
 for (var index = 0; index + 1 < args.Length; index += 2)
@@ -69,5 +70,6 @@ if (!OwnerBootstrap.TryValidate(map, out var bootstrapError))
     return 3;
 }
 
-return b2 ? B2OwnerLifeline.Run(bootstrapFd, executionId, leaseGeneration)
+return qualifiedB2 ? QualifiedB2Owner.Run(bootstrapFd,executionId,leaseGeneration)
+    : b2 ? B2OwnerLifeline.Run(bootstrapFd, executionId, leaseGeneration)
     : OwnerPreparationTransaction.Run(bootstrapFd, executionId, leaseGeneration);

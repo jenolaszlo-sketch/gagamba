@@ -95,6 +95,10 @@ internal static class OwnerPreparationSpecificationCodec
 
         try
         {
+            var json=Installed.InstallJson.Read(encoded.ToArray());
+            if(json.TryGetProperty("DirectIdentity",out var direct) && direct.ValueKind!=JsonValueKind.Null &&
+                direct.TryGetProperty("InstallationIdentity",out var identity) && identity.ValueKind!=JsonValueKind.Null)
+                Installed.InstallationIdentity.ValidateJson(identity);
             var decoded = JsonSerializer.Deserialize<OwnerPreparationSpecification>(encoded, Options);
             if (decoded is null)
             {
@@ -106,7 +110,7 @@ internal static class OwnerPreparationSpecificationCodec
             specification = decoded;
             return true;
         }
-        catch (Exception ex) when (ex is JsonException or ArgumentException or InvalidOperationException)
+        catch (Exception ex) when (ex is JsonException or ArgumentException or InvalidOperationException or InvalidDataException)
         {
             error = $"invalid owner preparation request: {ex.GetType().Name}";
             return false;
@@ -343,7 +347,7 @@ internal static class OwnerPreparationSpecificationCodec
             value = JsonSerializer.Deserialize<T>(payload, DescriptionOptions);
             return value is not null;
         }
-        catch (Exception ex) when (ex is JsonException or ArgumentException or InvalidOperationException)
+        catch (Exception ex) when (ex is JsonException or ArgumentException or InvalidOperationException or InvalidDataException)
         {
             error = $"invalid owner protocol description: {ex.GetType().Name}";
             return false;

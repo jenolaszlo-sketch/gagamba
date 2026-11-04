@@ -10,7 +10,7 @@ using Microsoft.Win32.SafeHandles;
 namespace Gagamba.Execution.Linux.M1.Bootstrap;
 
 internal sealed record OwnerDirectIdentity(Guid OriginalSession, DirectProcessIdentity Controller, DirectProcessIdentity Recovery,
-    ExperimentalRuntimePin Runtime);
+    ExperimentalRuntimePin Runtime, Installed.InstallationIdentity? InstallationIdentity=null);
 internal sealed record OwnerRendezvous(string Address, DirectAssociation Association,ushort Version=1,
     DirectBootstrapRole LifetimeRole=DirectBootstrapRole.OwnerProcessReference);
 

@@ -85,6 +85,24 @@ internal sealed record HeldOwnerStopOutcome(bool Accepted, StopDecision? Decisio
 
 internal sealed class M1RecoveryScope : IDisposable
 {
+    private readonly object _b2Custody=new();
+    private Process? _b2Owner;
+    private SafeProcessHandle? _b2SafeHandle;
+    private SafeFileHandle? _b2Pidfd;
+    private bool _b2Exported;
+    // Only the sealed original spawn slot can export. No caller-selected PID/fd/path.
+    internal bool SendOriginalB2OwnerReference(Process owner,int socket,byte[] frame)
+    {
+        lock(_b2Custody)
+        {
+            if(_disposed || _b2Exported || !ReferenceEquals(owner,_b2Owner) || _b2SafeHandle is null || _b2SafeHandle.IsClosed ||
+                !ReferenceEquals(owner.SafeHandle,_b2SafeHandle) || _b2Pidfd is null || _b2Pidfd.IsClosed ||
+                !_owners.TryGetValue(owner.Id,out var original) || !ReferenceEquals(original,owner)) return false;
+            int fd=_b2Pidfd.DangerousGetHandle().ToInt32();
+            B2ProcessIdentity.RequireLive(fd,owner.Id);_b2Exported=true;
+            return FdPassing.TrySendTransfer(socket,[fd],frame,out _);
+        }
+    }
     private readonly object _retentionGate = new();
     internal int RetainedDomainCount { get { lock (_retentionGate) return _retainedRecoveryLeases.Count; } }
     internal bool RetentionValid
@@ -195,7 +213,7 @@ internal sealed class M1RecoveryScope : IDisposable
     /// PID before any owner-loss-dependent state exists. A missing or
     /// non-CLOEXEC pidfd terminates the owner and refuses (missing-pidfd
     /// refusal); no PID/`/proc`/journal fallback exists.</summary>
-    internal OwnerSpawnResult TrySpawnOwner(string ownerDll, string[] arguments, int ownerSocketFd, ExperimentalRuntimePin? runtime = null)
+    internal OwnerSpawnResult TrySpawnOwner(string ownerDll, string[] arguments, int ownerSocketFd, ExperimentalRuntimePin? runtime = null, bool qualified = false, QualifiedLauncher.InstalledPlan? installedLaunch = null)
     {
         var psi = new ProcessStartInfo
         {
@@ -206,7 +224,7 @@ internal sealed class M1RecoveryScope : IDisposable
             UseShellExecute = false,
         };
         psi.ArgumentList.Add(ownerDll);
-        if(runtime is not null) psi=runtime.StartInfo(ownerDll);
+        if(runtime is not null && installedLaunch is null) psi=runtime.StartInfo(ownerDll);
         foreach (var argument in arguments)
         {
             psi.ArgumentList.Add(argument);
@@ -217,7 +235,10 @@ internal sealed class M1RecoveryScope : IDisposable
         Process? process = null;
         try
         {
-            process = Process.Start(psi);
+            if(installedLaunch is not null && (!qualified || installedLaunch.Assembly!=ownerDll)) throw new IOException("installed launch role mismatch");
+            process = installedLaunch is not null ? installedLaunch.Spawn(arguments,(ownerSocketFd,3,"GAGAMBA_BOOTSTRAP_FD"))
+                : qualified ? QualifiedLauncher.Start(runtime ?? throw new IOException("qualified runtime missing"),ownerDll,arguments,
+                    (ownerSocketFd,3,"GAGAMBA_BOOTSTRAP_FD")) : Process.Start(psi);
             if (process is null)
             {
                 return new OwnerSpawnResult(null, -1, "owner process start returned null");
@@ -239,6 +260,14 @@ internal sealed class M1RecoveryScope : IDisposable
             var handle = new SafeFileHandle(new IntPtr(pidFd), ownsHandle: true);
             _retainedOwnerPidFds[process.Id] = handle;
             _owners[process.Id] = process;
+            if(qualified)
+            {
+                lock(_b2Custody)
+                {
+                    if(_b2Owner is not null) throw new IOException("qualified owner slot already sealed");
+                    _b2Owner=process;_b2SafeHandle=process.SafeHandle;_b2Pidfd=handle;
+                }
+            }
             return new OwnerSpawnResult(process, pidFd, string.Empty);
         }
         catch (Exception ex)
@@ -345,7 +374,10 @@ internal sealed class M1RecoveryScope : IDisposable
         // launched. There is no interval with two usable writer leases.
         request.Writer.Dispose();
 
-        if (!FdPassing.TryCreateInheritableSocketPair(out var parentSocket, out var childSocket, out var socketError))
+        int parentSocket,childSocket;
+        bool qualified=request.Integrated?.Identity.InstallationIdentity is not null;
+        if(qualified) (parentSocket,childSocket)=QualifiedLauncher.Pair();
+        else if (!FdPassing.TryCreateInheritableSocketPair(out parentSocket, out childSocket, out var socketError))
         {
             return new OwnerPreparationOutcome(false, null, null, null, socketError);
         }
@@ -353,7 +385,7 @@ internal sealed class M1RecoveryScope : IDisposable
         var spawned = TrySpawnOwner(
             request.OwnerDllPath,
             new[] { "--exec", request.ExecutionId.ToString("D"), "--lease", request.LeaseGeneration.ToString("D") },
-            childSocket, request.Integrated?.Runtime);
+            childSocket, request.Integrated?.Runtime,qualified:qualified);
         if (!spawned.Ok || spawned.Process is null)
         {
             PreparationInterop.CloseFd(parentSocket);
@@ -1199,6 +1231,12 @@ internal sealed class M1RecoveryScope : IDisposable
             return new OwnerExitResult(false, -1, false, "owner pidfd did not signal exit within the bound");
         }
 
+        if(QualifiedLauncher.Owns(owner))
+        {
+            if(!QualifiedLauncher.TryReap(owner,timeoutMs,out int code))
+                return new OwnerExitResult(false,-1,false,"native original child was not reapable within the bound");
+            return new OwnerExitResult(true,code,code!=0,string.Empty);
+        }
         if (!owner.WaitForExit(timeoutMs))
         {
             return new OwnerExitResult(false, -1, false, "owner was not reapable within the bound");

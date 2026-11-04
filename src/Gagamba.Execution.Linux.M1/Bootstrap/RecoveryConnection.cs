@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Gagamba.Execution.Linux.M1.Installed;
 using System.Security.Cryptography;
 using System.Text.Json;
 using Gagamba.Execution.Linux.M1.Native;
@@ -16,9 +17,11 @@ internal sealed class RecoveryConnection : IDisposable
     internal Process Process { get; }
     internal RecoveryWire Wire { get; }
     internal int Control => _control.Descriptor;
-    internal OwnerRendezvous? Rendezvous { get; private set; }
-    internal Microsoft.Win32.SafeHandles.SafeFileHandle? OwnerReference { get; private set; }
-    internal Microsoft.Win32.SafeHandles.SafeFileHandle? RecoveryReference { get; private set; }
+    internal LoadedInstallation? Installation {get;init;}
+    internal long InstallationDeadlineNs {get;init;}
+    internal OwnerRendezvous? Rendezvous { get; init; }
+    internal Microsoft.Win32.SafeHandles.SafeFileHandle? OwnerReference { get; init; }
+    internal Microsoft.Win32.SafeHandles.SafeFileHandle? RecoveryReference { get; init; }
     internal RecoveryConnection(Process process, RecoveryWire wire, int control)
     {
         Process = process;
@@ -27,6 +30,7 @@ internal sealed class RecoveryConnection : IDisposable
     }
     internal static RecoveryConnection Start(RecoveryConfiguration requested)
     {
+        if(requested.Version==2) return QualifiedRecoveryConnection.Start(requested);
         if (!RecoveryInterop.Supported || !RecoveryInterop.IsUnprivileged) throw new InvalidOperationException("B2 requires unprivileged Linux");
         var config = requested with { ControllerPid = Environment.ProcessId, ControllerUid = RecoveryInterop.GetUid(), Secret = RandomNumberGenerator.GetBytes(32) };
         if(config.Integrated is not null)

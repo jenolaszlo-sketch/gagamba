@@ -56,6 +56,7 @@ internal sealed record B3FixtureProfile(
 #endif
 )
 {
+    internal bool QualifiedInstallation {get;init;}
     internal const string ProfileId = "ae4-linux-fixed-fixture-v1";
     internal const long MaxExpiresLeadNanoseconds = 120_000_000_000L;
     internal const ulong MaxBudgetBytes = 64UL * 1024 * 1024;

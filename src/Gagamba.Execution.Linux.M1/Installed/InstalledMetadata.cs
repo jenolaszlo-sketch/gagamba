@@ -82,9 +82,12 @@ internal enum InstalledState { Unavailable, Unqualified, InstalledUnqualified, Q
 
 internal sealed class InstalledResult
 {
-    private InstalledResult(InstalledState state, string reason, string? digest = null, string? qualificationId = null)
-        => (State, Reason, Digest, QualificationId) = (state, reason, digest, qualificationId);
+    private InstalledResult(InstalledState state, string reason, string? digest = null, string? qualificationId = null, InstalledManifest? manifest = null)
+        => (State, Reason, Digest, QualificationId, Manifest, Identity) =
+            (state, reason, digest, qualificationId, manifest, manifest is null ? null : InstallationIdentity.Project(manifest));
 
+    internal InstalledManifest? Manifest { get; }
+    internal InstallationIdentity? Identity { get; }
     internal InstalledState State { get; }
     internal string Reason { get; }
     internal string? Digest { get; }
@@ -92,5 +95,5 @@ internal sealed class InstalledResult
     internal static InstalledResult Unavailable(string reason) => new(InstalledState.Unavailable,reason);
     internal static InstalledResult Unqualified(string reason) => new(InstalledState.Unqualified,reason);
     internal static InstalledResult Fresh(InstalledManifest manifest) => new(InstalledState.InstalledUnqualified,"no selected acceptance",manifest.Digest);
-    internal static InstalledResult Qualified(InstalledManifest manifest,string id) => new(InstalledState.Qualified,"accepted installed record",manifest.Digest,id);
+    internal static InstalledResult Qualified(InstalledManifest manifest,string id) => new(InstalledState.Qualified,"accepted installed record",manifest.Digest,id,manifest);
 }

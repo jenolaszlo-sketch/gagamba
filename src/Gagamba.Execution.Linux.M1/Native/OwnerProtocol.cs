@@ -49,6 +49,9 @@ internal enum OwnerProtocolMessageType : byte
     CaptureRead = 34, // direct original controller only; checked copied bytes, no descriptors
     CaptureBytes = 35,
     DirectRendezvous = 33, // bounded address only; never a release endpoint
+    OwnerInstallationEcho = 36,
+    B2OwnerExpectation = 37,
+    B2EchoBootstrap = 38,
 
 }
 
@@ -92,6 +95,9 @@ internal static class OwnerProtocol
                 or OwnerProtocolMessageType.B2LifelineReady
                 or OwnerProtocolMessageType.B2SafetyStop
                 or OwnerProtocolMessageType.B2StopObserved => message.Payload.Length == 0,
+            OwnerProtocolMessageType.OwnerInstallationEcho => InstallationWire.EchoShape(message.Payload,1,true),
+            // 37/38 are only decoded by the dedicated B2 phase codec, never generic control.
+            OwnerProtocolMessageType.B2OwnerExpectation or OwnerProtocolMessageType.B2EchoBootstrap => false,
             OwnerProtocolMessageType.DirectRendezvous => message.Payload.Length is > 0 and <= 2048,
             OwnerProtocolMessageType.B2StartLifeline => message.Payload.Length is > 0 and <= 4096,
             OwnerProtocolMessageType.StagingAccounted => message.Payload.Length == 16,
@@ -287,8 +293,10 @@ internal sealed class OwnerProtocolChannel : IDisposable
     private readonly OwnerProtocolSequencer _sequencer;
     private bool _disposed;
     private readonly DirectSession? _direct;
+    internal bool? InstallationOwner {get;init;}
     internal bool RecoveryOnly { get; set; }
     internal static bool DirectControl(OwnerProtocolMessageType type) => type is
+        OwnerProtocolMessageType.OwnerInstallationEcho or
         OwnerProtocolMessageType.StagedObjects or OwnerProtocolMessageType.ManifestAuthorization
         or OwnerProtocolMessageType.PreparedDescription or OwnerProtocolMessageType.PreparedAcknowledgement
         or OwnerProtocolMessageType.HeldReady or OwnerProtocolMessageType.AbortHeld
@@ -298,6 +306,7 @@ internal sealed class OwnerProtocolChannel : IDisposable
         or OwnerProtocolMessageType.CaptureRead or OwnerProtocolMessageType.CaptureBytes
         or OwnerProtocolMessageType.Aborted or OwnerProtocolMessageType.BarrierReached or OwnerProtocolMessageType.Continue;
     private static bool ForbiddenRecovery(OwnerProtocolMessageType type) => type is
+        OwnerProtocolMessageType.OwnerInstallationEcho or OwnerProtocolMessageType.B2OwnerExpectation or OwnerProtocolMessageType.B2EchoBootstrap or
         OwnerProtocolMessageType.StagedObjects or OwnerProtocolMessageType.ManifestAuthorization
         or OwnerProtocolMessageType.HeldReady or OwnerProtocolMessageType.AbortHeld
         or OwnerProtocolMessageType.HeldAborted or OwnerProtocolMessageType.ReleaseRequest
@@ -339,6 +348,9 @@ internal sealed class OwnerProtocolChannel : IDisposable
 
         if ((RecoveryOnly && ForbiddenRecovery(type)) || (_direct is not null && !DirectControl(type)))
         { error = "owner channel authority role refused"; return false; }
+        if((type==OwnerProtocolMessageType.OwnerInstallationEcho && InstallationOwner==false)
+            || type is OwnerProtocolMessageType.B2OwnerExpectation or OwnerProtocolMessageType.B2EchoBootstrap)
+        {error="installation sender role refused";return false;}
         var frame = _sequencer.Create(type, payload);
         if (_direct is not null)
         {
@@ -361,7 +373,8 @@ internal sealed class OwnerProtocolChannel : IDisposable
             return false;
         }
 
-        if (_direct is not null) { error = "no descriptor transfer on direct release session"; return false; }
+        if (_direct is not null || !OwnerProtocol.IsTransferType(type) || (RecoveryOnly && ForbiddenRecovery(type)))
+        { error = "descriptor transfer role refused"; return false; }
         var frame = _sequencer.Create(type, payload);
         return FdPassing.TrySendTransfer(_socket, descriptors, frame, out error);
     }
@@ -399,6 +412,8 @@ internal sealed class OwnerProtocolChannel : IDisposable
             return false;
         }
 
+        if(InstallationOwner==true && allowedTypes.Contains(OwnerProtocolMessageType.OwnerInstallationEcho))
+        {error="installation receiver role refused";return false;}
         if ((RecoveryOnly && allowedTypes.Any(ForbiddenRecovery))
             || (_direct is not null && allowedTypes.Any(type => !DirectControl(type))))
         { error = "owner receive authority role refused"; return false; }

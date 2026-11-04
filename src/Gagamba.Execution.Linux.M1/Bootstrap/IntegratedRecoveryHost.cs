@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Gagamba.Execution.Linux.M1.Installed;
 using System.Text.Json;
 using Gagamba.Execution.Linux.M1.Lifecycle;
 using Gagamba.Execution.Linux.M1.Native;
@@ -10,7 +11,7 @@ namespace Gagamba.Execution.Linux.M1.Bootstrap;
 
 internal sealed record B3IntegratedProfile(PinnedExecutable Recovery,PinnedExecutable Owner,ExperimentalRuntimePin Runtime,string EvidenceDirectory);
 internal sealed record IntegratedRecoverySpecification(B3FixtureProfile Profile,Guid Issuer,Guid StoreGeneration,
-    long AcceptedAtNs,long ExpiresAtNs,DirectProcessIdentity Controller,ExperimentalRuntimePin Runtime);
+    long AcceptedAtNs,long ExpiresAtNs,DirectProcessIdentity Controller,ExperimentalRuntimePin Runtime,InstallationIdentity? InstallationIdentity=null);
 
 internal static class IntegratedRecoveryHost
 {
@@ -21,7 +22,7 @@ internal static class IntegratedRecoveryHost
         spec.Runtime.VerifyCurrent();
         foreach(var directory in new[] {spec.Profile.SourceRootPath,spec.Profile.StagingParentPath,spec.Profile.JournalDirectory,config.EvidenceDirectory})
             ExperimentalRuntimePin.VerifyPrivateDirectory(directory);
-        ExperimentalRuntimePin.VerifyPrivateClosure(config.Owner); ExperimentalRuntimePin.VerifyPrivateClosure(config.Recovery);
+        if(config.Version==1) {ExperimentalRuntimePin.VerifyPrivateClosure(config.Owner); ExperimentalRuntimePin.VerifyPrivateClosure(config.Recovery);}
         if(config.DelegatedParent is null || config.DelegatedParent!=spec.Profile.DelegatedParentPath
             || spec.Profile.OwnerDllPath!=ownerPath || spec.Controller.Pid!=config.ControllerPid
             || spec.Controller.Uid!=config.ControllerUid || spec.Controller!=(DirectProcessIdentity.Current() with {Pid=config.ControllerPid})
@@ -42,7 +43,7 @@ internal static class IntegratedRecoveryHost
         using var journalStorage=new JournalFileStorage();
         var journal=new OwnershipJournal(journalStorage,spec.Profile.JournalDirectory);
         using var launch=new IntegratedOwnerLaunch(new OwnerDirectIdentity(config.Session,spec.Controller,
-            DirectProcessIdentity.Current(),spec.Runtime),controllerFd,spec.AcceptedAtNs,
+            DirectProcessIdentity.Current(),spec.Runtime,spec.InstallationIdentity),controllerFd,spec.AcceptedAtNs,
             (process,pidfd)=> {lock(stateGate) {owner=process;ownerPidfd=pidfd;}},
             (rendezvous,pidfd)=>
             {

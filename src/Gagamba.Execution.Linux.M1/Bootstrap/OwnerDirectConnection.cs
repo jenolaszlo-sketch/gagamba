@@ -78,8 +78,17 @@ internal sealed class OwnerDirectConnection : IDisposable
                     try
                     {
                         listener.SealAssociation();
-                        var channel=new OwnerProtocolChannel(session,request.ExecutionId,request.LeaseGeneration);
+                        var channel=new OwnerProtocolChannel(session,request.ExecutionId,request.LeaseGeneration){InstallationOwner=identity.InstallationIdentity is null?null:true};
                         safety.BindController(channel);
+                        if(identity.InstallationIdentity is { } expected)
+                        {
+                            long echoDeadline=Math.Min(request.ExpiresAtNs,InstallationDeadline.Now+5_000_000_000L);
+                            void Service() {if(safety.StopLatched) throw new IOException("owner echo stopped");}
+                            var installed=InstallationDeadline.Verify(()=>Installed.LoadedInstallation.Verify("owner",expected),echoDeadline,Service);
+                            Service();
+                            if(!channel.TrySend(OwnerProtocolMessageType.OwnerInstallationEcho,InstallationWire.Echo(installed.Identity,1),out _))
+                                throw new IOException("qualified owner echo failed");
+                        }
                         return new OwnerDirectConnection(channel,safety);
                     }
                     catch { session.Dispose(); throw; }
