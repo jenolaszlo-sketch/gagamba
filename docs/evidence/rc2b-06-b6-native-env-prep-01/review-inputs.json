@@ -1,0 +1,230 @@
+[
+  {
+    "package": "gagamba-s3-q1-review",
+    "file": "AGENTS.md",
+    "length": 2088,
+    "sha256": "99f4b917d86c2912921a7900d6380fb57b1db1cf5d50b1d2424c39eb118139a6"
+  },
+  {
+    "package": "gagamba-s3-q1-review",
+    "file": "case-matrix-partial.md",
+    "length": 8005,
+    "sha256": "654227a7fb5143de8e737e41c018d4654421a92ad0215090c3a92b985d802049"
+  },
+  {
+    "package": "gagamba-s3-q1-review",
+    "file": "qualification-partial.md",
+    "length": 4477,
+    "sha256": "57039faa87debebc3058869c5e577f1b4819fb252e5bc017d7dd4649ba6ac253"
+  },
+  {
+    "package": "gagamba-s3-q1-review",
+    "file": "README.md",
+    "length": 10629,
+    "sha256": "04336c03b7cdd6b34b6403f8fdd4c85287fb678b312702e393db05aad79fae52"
+  },
+  {
+    "package": "gagamba-s3-q1-review",
+    "file": "SHA256SUMS.txt",
+    "length": 867,
+    "sha256": "7763161f151e8e67dda2ec87a195945ee2ca09126ff1ceeb97dfe52106be0a09"
+  },
+  {
+    "package": "gagamba-s3-q1-review-cont-01",
+    "file": "case-assessment.md",
+    "length": 29220,
+    "sha256": "0fab70b1902e4a6b115ec6578db10bfb53d9710558ca7389e94354463580dda0"
+  },
+  {
+    "package": "gagamba-s3-q1-review-cont-01",
+    "file": "continuation-report.md",
+    "length": 13732,
+    "sha256": "d82feeeaf4363a689f62691c4f70b3c78944c105859de940e87c1507dd8fd7bc"
+  },
+  {
+    "package": "gagamba-s3-q1-review-cont-01",
+    "file": "owner-handoff.md",
+    "length": 652,
+    "sha256": "ff5ea2046193cdb89895f8b9eae37b0c856648173356707b3924fe41a12fe25c"
+  },
+  {
+    "package": "gagamba-s3-q1-review-cont-01",
+    "file": "report-0eb7a71.md",
+    "length": 33842,
+    "sha256": "b28a2ed0c2c3f0c199a86ae8927f8f0538632457e1e454cb4436e7f9a5b505a8"
+  },
+  {
+    "package": "gagamba-s3-q1-review-cont-01",
+    "file": "report-21f0aa7.md",
+    "length": 58727,
+    "sha256": "139629a626af817a62fc4ff322e5f68976082208a1b5b60af679b478e12cc55e"
+  },
+  {
+    "package": "gagamba-s3-q1-review-cont-01",
+    "file": "report-a88f891.md",
+    "length": 33842,
+    "sha256": "b28a2ed0c2c3f0c199a86ae8927f8f0538632457e1e454cb4436e7f9a5b505a8"
+  },
+  {
+    "package": "gagamba-s3-q1-review-cont-01",
+    "file": "SHA256SUMS.txt",
+    "length": 3637,
+    "sha256": "551862d23d5b8bdece4ab25d8af3c50dd26275cd204bd9a78e334e729bc5fe98"
+  },
+  {
+    "package": "gagamba-s3-q1-gap-closure-01",
+    "file": "case-assessment-gap.md",
+    "length": 13608,
+    "sha256": "83cb6caf022d60c515a2f149fb9667a9cbe6f1ee6013458e2537e3b325278d40"
+  },
+  {
+    "package": "gagamba-s3-q1-gap-closure-01",
+    "file": "commands.md",
+    "length": 2017,
+    "sha256": "e8e2491c72c3d4a6c7ccb3595140450fcf89febf846d09cdd2ed33fe15e06d5d"
+  },
+  {
+    "package": "gagamba-s3-q1-gap-closure-01",
+    "file": "gap-matrix-before-tests.md",
+    "length": 4879,
+    "sha256": "4b69c273d689ae058fd38da95cf4817c5889861d115ceb4f6e387c346d8efd6e"
+  },
+  {
+    "package": "gagamba-s3-q1-gap-closure-01",
+    "file": "report.md",
+    "length": 10841,
+    "sha256": "38391cbedb6e4de7361648c56f3775fe7d83a1f818b285204a8e3b0294fba6f8"
+  },
+  {
+    "package": "gagamba-s3-q1-gap-closure-01",
+    "file": "root-owned-qualification.md",
+    "length": 2622,
+    "sha256": "1ad86d2f95f9410513eb2e8fa7f5e097d7998b31ae6f14beb5b0ebb4b69a9228"
+  },
+  {
+    "package": "gagamba-s3-q1-gap-closure-01",
+    "file": "SHA256SUMS.txt",
+    "length": 3011,
+    "sha256": "cc31ed1a20c6f9d35ac1246e353f8e813864272735bb33c9cea5c3a9078ca419"
+  },
+  {
+    "package": "gagamba-s3-q1-gap-closure-02",
+    "file": "case-assessment-updated.md",
+    "length": 15530,
+    "sha256": "a3c3ec4eea403548b2eeefe6a558d01048ec015d698a3197185a8622501e987b"
+  },
+  {
+    "package": "gagamba-s3-q1-gap-closure-02",
+    "file": "commands.md",
+    "length": 1782,
+    "sha256": "f060c50382e395540ebe5b53b0b04be140a75e075e0aede8c1c9ea6ce3bf193d"
+  },
+  {
+    "package": "gagamba-s3-q1-gap-closure-02",
+    "file": "continuation-report.md",
+    "length": 8105,
+    "sha256": "a27ecd7a476444edf4f22c83b78199f2fd3f81d4548a66d1fb4e71317ea96a8d"
+  },
+  {
+    "package": "gagamba-s3-q1-gap-closure-02",
+    "file": "gap-matrix-before-tests.md",
+    "length": 3398,
+    "sha256": "cbc2d1d04c7f0900278991ae8bf0459fc125339e09d4cc797d97ee01e4bebf15"
+  },
+  {
+    "package": "gagamba-s3-q1-gap-closure-02",
+    "file": "owner-handoff.md",
+    "length": 544,
+    "sha256": "bdae6f43492d55efa51c868f75b2e37806fd5d185786f8f32d96ca9738abc678"
+  },
+  {
+    "package": "gagamba-s3-q1-gap-closure-02",
+    "file": "SHA256SUMS.txt",
+    "length": 2326,
+    "sha256": "e003f1745f531d0177652249cafa622758a8b9bbb50ef2701f99c28ccac33b0f"
+  },
+  {
+    "package": "gagamba-s3-q1-gap-closure-02",
+    "file": "unexecuted-probe.md",
+    "length": 909,
+    "sha256": "09b05c16c1282995461ab428a10ed7f771beb41e4010e8d20154e11f9f9f4a5c"
+  },
+  {
+    "package": "gagamba-s3-q1-gap-closure-03",
+    "file": "case-assessment-updated.md",
+    "length": 18878,
+    "sha256": "94de697cb896150bfefb391ebcb7c14c91a0e67c7ea67244f450ef6e3465a60a"
+  },
+  {
+    "package": "gagamba-s3-q1-gap-closure-03",
+    "file": "commands.md",
+    "length": 2199,
+    "sha256": "8e53627e2c3edcf1dded49e6397c21d6aec9dcf28cb3d7d7bbf6b9d993f96df6"
+  },
+  {
+    "package": "gagamba-s3-q1-gap-closure-03",
+    "file": "environment-and-status.md",
+    "length": 820,
+    "sha256": "9ec87b57b8ebaff71ac935e6c81c5abc12536f478868f4bf087bc8ffb8be479b"
+  },
+  {
+    "package": "gagamba-s3-q1-gap-closure-03",
+    "file": "owner-handoff.md",
+    "length": 711,
+    "sha256": "2f93eea0df5fb3d65ea03a77f2e0db02ef17c6976cb69a90e6a728701a022bd2"
+  },
+  {
+    "package": "gagamba-s3-q1-gap-closure-03",
+    "file": "pressure-review.md",
+    "length": 1035,
+    "sha256": "9add4ee9ff7962c47ea4a6ec875dde77131660fdcb5e3bed425e34194b28d20a"
+  },
+  {
+    "package": "gagamba-s3-q1-gap-closure-03",
+    "file": "report.md",
+    "length": 9398,
+    "sha256": "1d5f92b49814fd556b113f973f98284845a85fac0a823afc32b328a0e0a66005"
+  },
+  {
+    "package": "gagamba-s3-q1-gap-closure-03",
+    "file": "SHA256SUMS.txt",
+    "length": 5369,
+    "sha256": "a976cce17ebc1b69dc5f8a31840388cce08b0febe2734f2609dbb70a3c5ffdcb"
+  },
+  {
+    "package": "gagamba-s3-q1-gap-closure-03",
+    "file": "syscall-probe-design.md",
+    "length": 809,
+    "sha256": "c6a10704ea55ecb5f39b14e9d7883e52baacfee222a8c8fce4acaaf7b8394c4d"
+  },
+  {
+    "package": "gagamba-s3-q1-final-nonroot-01",
+    "file": "case-assessment-final.md",
+    "length": 20851,
+    "sha256": "f61793d10b3cdace1aaef6c54c9c00cd559fb6b95bffe9958bae3ecc23fd8788"
+  },
+  {
+    "package": "gagamba-s3-q1-final-nonroot-01",
+    "file": "commands.md",
+    "length": 2012,
+    "sha256": "d1a1464d9639d702c2d3545eff6e1aa04c16ed291705621fdd359e383521c319"
+  },
+  {
+    "package": "gagamba-s3-q1-final-nonroot-01",
+    "file": "owner-handoff.md",
+    "length": 702,
+    "sha256": "984d08e3c8e01318cd38f2f48d122941968658f77b8d2340fdd10726125d8a05"
+  },
+  {
+    "package": "gagamba-s3-q1-final-nonroot-01",
+    "file": "report.md",
+    "length": 11472,
+    "sha256": "9cb280cc213105cf909c66fb57bd008ecd64ba96fe356b0dfca68bbbf13eef2a"
+  },
+  {
+    "package": "gagamba-s3-q1-final-nonroot-01",
+    "file": "SHA256SUMS.txt",
+    "length": 2724,
+    "sha256": "e5c30c6430ecfcacdc82edd842e8698bcbeb2657117dad2820d7e5e821d056b8"
+  }
+]

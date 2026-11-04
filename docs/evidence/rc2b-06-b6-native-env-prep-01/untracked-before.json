@@ -1,0 +1,222 @@
+[
+  {
+    "path": "-",
+    "length": 3000,
+    "sha256": "f9518e249eda3d3ea589d58b19d9f1b92eee4c0ed0bc1c69f78e1d119d46dc0b"
+  },
+  {
+    "path": "; done; grep -c M1.Tests.ReleaseArbiterTests _LAPTOP-KBD8D8JG_2026-10-18_10_10_39.trx",
+    "length": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "NEM-INDEPENDENT-REVIEW.md",
+    "length": 84062,
+    "sha256": "186d7c2c7e133ca60c4623577f2e1a57fdd5a09ae1a6d56bfb53195db318df9a"
+  },
+  {
+    "path": "VerifyProductionBuild.cs",
+    "length": 6913,
+    "sha256": "3832edac847d5e4a0171b403e6bae207d3a728ff116070f4a40a3866eafbeac7"
+  },
+  {
+    "path": "docs/reviews/rc2b-04-b4-q1f01-q1-independent-review.md",
+    "length": 16103,
+    "sha256": "8f06bcb860f3535ca9868176c217a253c707fc0cdc8a627f48d96d9934b90389"
+  },
+  {
+    "path": "docs/reviews/restricted-consumer-rc2a-01-glm-independent.md",
+    "length": 16888,
+    "sha256": "77d2404c61dbf1af76e8448b966f03482186d95fff5bf6a676a32fe6c7d8e4d0"
+  },
+  {
+    "path": "eng/__pycache__/b4-native-matrix.cpython-314.pyc",
+    "length": 23617,
+    "sha256": "f77c55106a543c07dc8e3bdb8cd204c85a672aa07b07660d98e91dbcee728517"
+  },
+  {
+    "path": "eng/__pycache__/int01-fault-matrix.cpython-314.pyc",
+    "length": 29037,
+    "sha256": "47204dc88137e52018818adc1e49bb5af252c30f6d224b8f37c248a63e4f39b7"
+  },
+  {
+    "path": "eng/__pycache__/int01-native-matrix.cpython-314.pyc",
+    "length": 30069,
+    "sha256": "8b7d950601131bf4f45acb5b1bffdb77bb8b8bcd29fb4f37e5eadd1e04aecb1f"
+  },
+  {
+    "path": "eng/__pycache__/int01_cleanup.cpython-314.pyc",
+    "length": 5642,
+    "sha256": "9c6608fdf0977e3f25d8f210f4fcf854c9497c0906fb8f299107b2a4ebd8b4e9"
+  },
+  {
+    "path": "eng/__pycache__/qualification_gate.cpython-314.pyc",
+    "length": 22329,
+    "sha256": "df51701e804be983cca837e2766d589dfc4ea0196732f3b9032261ab600bf64d"
+  },
+  {
+    "path": "eng/__pycache__/test-b3-exec-oracle.cpython-314.pyc",
+    "length": 3402,
+    "sha256": "ac9ef1d24678ae82a60fb74b8860fb55d9dc9137e2f0fb1636a4086815c2536d"
+  },
+  {
+    "path": "eng/tests/__pycache__/test_int01_cleanup.cpython-314.pyc",
+    "length": 15980,
+    "sha256": "78c6889775235facb270342117613c4e1b3873b288d4f776376d9616c60d4641"
+  },
+  {
+    "path": "eng/tests/__pycache__/test_preparation_checkout.cpython-314.pyc",
+    "length": 3706,
+    "sha256": "1f608fa7f369cf88455da9a4d6a466b69051438c135689b7c1c726736caea590"
+  },
+  {
+    "path": "eng/tests/__pycache__/test_qualification_gate.cpython-314.pyc",
+    "length": 16075,
+    "sha256": "3365f2bf7f2dbe3d1902c0074c267988c4a6cf865d5a2a4d8e83e1d9087a5189"
+  },
+  {
+    "path": "inspect-assembly.cs",
+    "length": 4325,
+    "sha256": "e578804d8f00487eff584f70476a855a175eaaf55e6dedac7377f999cceae799"
+  },
+  {
+    "path": "spikes/Gw1bLaunch.Tests/TestResults/qual-windows-full.trx",
+    "length": 4275,
+    "sha256": "3b2756460901622ecb342057dd3abcece094493fab4f4b9b02e0ae4167ec3ef9"
+  },
+  {
+    "path": "spikes/cgexec/cgexec.c",
+    "length": 1848,
+    "sha256": "102bab1305508ab162d3d333a7eb4aab25f413cdc8d5c02eb60d1081c5445337"
+  },
+  {
+    "path": "spikes/cgspawn/cgspawn.c",
+    "length": 1967,
+    "sha256": "11a8eab1d9f69f0ea82209bd99e5b0fee1c8e05cca893ee563d33d48af688312"
+  },
+  {
+    "path": "spikes/cgspawn/run-c.sh",
+    "length": 809,
+    "sha256": "67e013794c99dd4fcce1fef2db25a8617bc6a2082c7668ea3fdbf9e8128aa3f7"
+  },
+  {
+    "path": "spikes/cgspawn/run-d.sh",
+    "length": 882,
+    "sha256": "669197db42014efee8172b83fd46d38bb02125b19a4b6c487d23eb2e18ed438c"
+  },
+  {
+    "path": "spikes/cgspawn/run-f.sh",
+    "length": 1050,
+    "sha256": "3a7a347ce2e686d1082cc24be7f351feb41661c71caba321a03b8843d5eb035e"
+  },
+  {
+    "path": "spikes/cgspawn/run.sh",
+    "length": 599,
+    "sha256": "2f8878029d51f94a82b7b2040cbade183585d5ff6b84ae4bd161a42b85d0a985"
+  },
+  {
+    "path": "spikes/pspawn/pspawn.c",
+    "length": 1765,
+    "sha256": "26c6803c9e32ceaaf9b335bcea3a3590255b5052cec0b983bbd2b28058426c6e"
+  },
+  {
+    "path": "spikes/pspawn/run-k.sh",
+    "length": 1376,
+    "sha256": "2361d333a5a577653446b5c3a0a9341d842f4daaf50f6aa3b3c7b4a405b93a0e"
+  },
+  {
+    "path": "spikes/pspawn/run.sh",
+    "length": 735,
+    "sha256": "2c6287293434b916d37ae8ee2075a7b36f5252ffc23997f00e372d873a317767"
+  },
+  {
+    "path": "spikes/strace-clone.sh",
+    "length": 289,
+    "sha256": "c1968f072bfa21f2d9d5ad7265d29fd854dfb600ff2a54084f48f98615faeceb"
+  },
+  {
+    "path": "spikes/strace-grep.sh",
+    "length": 289,
+    "sha256": "8e161214200992c89332c3c73cf4b75080632341c199363baed314a19a8e9479"
+  },
+  {
+    "path": "spikes/strace-owner.sh",
+    "length": 305,
+    "sha256": "17a8452c17ed5135939c4df82d9e7c59dc74248035f945ae84d4ea106c18b75d"
+  },
+  {
+    "path": "spikes/strace-tail.sh",
+    "length": 158,
+    "sha256": "5a12cec52d8f656ba6cc0a54afbfdd5dc614aaf229884b4b3f493b94d17aa040"
+  },
+  {
+    "path": "spikes/strace-window.sh",
+    "length": 307,
+    "sha256": "dbc5ae1455e38aefc1e87162689a94a26b24b94526b1441577b569cc9f36dd77"
+  },
+  {
+    "path": "spikes/wp05-qual-probe/Program.cs",
+    "length": 4668,
+    "sha256": "1174ea63ee5c2d43fb786b2a397fd267c7aad1fa6808cf8faf2f2bdb517a24f2"
+  },
+  {
+    "path": "spikes/wp05-qual-probe/wp05-qual-probe.csproj",
+    "length": 238,
+    "sha256": "c299ec65c19b75d1f4fd4ce516c09ee667a141b87a68a37ec76169cc3f86df2c"
+  },
+  {
+    "path": "tests/Fixtures/Gagamba.Fixture.SelfTest/TestResults/qual-windows-full.trx",
+    "length": 21154,
+    "sha256": "0d7f23fdb4efe63fc111c1416ac07b4cc6832f7ef1be7740a4b28e70b20f6dca"
+  },
+  {
+    "path": "tests/Gagamba.Conformance.Tests/TestResults/qual-windows-full.trx",
+    "length": 9821,
+    "sha256": "26d090a85c43abfdc2022dcd84941f197aa8711245f39b471748ec97bc2e3e10"
+  },
+  {
+    "path": "tests/Gagamba.Execution.Linux.M1.Tests/TestResults/qual-windows-full.trx",
+    "length": 901682,
+    "sha256": "cd624363cb3705163202ed66a760443cacbedfa220a7ece46c6d94670acacb3e"
+  },
+  {
+    "path": "tests/Gagamba.Execution.Linux.M1.Tests/TestResults/win-m1-remediation.trx",
+    "length": 908845,
+    "sha256": "504ae5f4c94e2335619d8c7eb6e5370c935aaef68a008760a68dcd5b2e1ef6c9"
+  },
+  {
+    "path": "tests/Gagamba.Execution.Linux.Tests/TestResults/qual-windows-full.trx",
+    "length": 71301,
+    "sha256": "e5b59bb0d7e73f59ee984b5acf12ac0cd53bf552a504912432b173afa148f605"
+  },
+  {
+    "path": "tests/Gagamba.Execution.MacOS.Tests/TestResults/qual-windows-full.trx",
+    "length": 76878,
+    "sha256": "8768613c37dbb0c393a16c8db539442bf55e79755bef810b6c7e92f1ed105cbe"
+  },
+  {
+    "path": "tests/Gagamba.Execution.Tests/TestResults/qual-windows-full.trx",
+    "length": 28952,
+    "sha256": "020c20fa47fe0586a63cebff60c202721b548aa81299b828b4d4e791993e6d30"
+  },
+  {
+    "path": "tests/Gagamba.Execution.Windows.Tests/TestResults/qual-windows-full.trx",
+    "length": 44545,
+    "sha256": "a4d13d1dc1262d337921032e4a3ce2e6f1982a407275678dd028510eea41f03b"
+  },
+  {
+    "path": "tests/Gagamba.Runtime.Tests/TestResults/qual-windows-full.trx",
+    "length": 21019,
+    "sha256": "95aca0fbe3f6263209b16ca352f0a13d0b3d605188ad9f1b8330012b1d7b86d7"
+  },
+  {
+    "path": "tools/VerifyProductionBuild/Program.cs",
+    "length": 6939,
+    "sha256": "dc11a44a9e11023c9bae2fe9d0b48238ee0b625c563a5af293be125d88d42959"
+  },
+  {
+    "path": "tools/VerifyProductionBuild/VerifyProductionBuild.csproj",
+    "length": 402,
+    "sha256": "1525c416189f0cfb574ae1cb7081cd8829924187a5af4d07cc0479ac79ce170a"
+  }
+]

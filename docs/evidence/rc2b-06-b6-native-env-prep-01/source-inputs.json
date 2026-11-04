@@ -1,0 +1,182 @@
+[
+  {
+    "path": "AGENTS.md",
+    "length": 2054,
+    "sha256": "d2aca8898025dc61ae2c7802ab3b0f981691e736b7ae296a8e41926ca152e1d9"
+  },
+  {
+    "path": "docs/design/rc2b-06-b6-installed-artifact-trust.md",
+    "length": 115088,
+    "sha256": "f727ea026f9ef4eafe2bfb21af87ad9bee493149645e9e6576a3f85c694ca5f6"
+  },
+  {
+    "path": "docs/plans/rc2b-06-b6-qualification.md",
+    "length": 48155,
+    "sha256": "99b64aac027c1a84494cb5a7dfa488a8c44c69120afe83932ebf0c9436feaea4"
+  },
+  {
+    "path": "docs/decisions/rc2b-06-b6-spec-owner-acceptance.md",
+    "length": 16267,
+    "sha256": "1b079e5feafdef5a606e8124e844a67cc36f4ec32a60d8663ef1ee17bff6c99c"
+  },
+  {
+    "path": "docs/decisions/rc2b-06-b6-wire-owner-acceptance.md",
+    "length": 13547,
+    "sha256": "77b40c195fdd90950048548010ff95fff676bfcfede21b3f75420ffaefda1d59"
+  },
+  {
+    "path": "docs/decisions/rc2b-06-b6-impl-01-s1-owner-acceptance.md",
+    "length": 25614,
+    "sha256": "47ca9cf76335472ef5b52621e304ccd4c4cb0093599bc59ca118689d9d69fc3a"
+  },
+  {
+    "path": "docs/decisions/rc2b-06-b6-impl-01-s2-owner-acceptance.md",
+    "length": 22403,
+    "sha256": "0243b19228d0e427437d993d003ad4d43876eea2e2525716ad9ca598bcf18f99"
+  },
+  {
+    "path": "docs/decisions/rc2b-06-b6-s2-f02-trust-store-owner-decision.md",
+    "length": 11099,
+    "sha256": "e318125f91e20350824aeb70042b35a37c33d54fcde8350a4d353dccfaeb0adb"
+  },
+  {
+    "path": "docs/decisions/rc2b-06-b6-s3-b2-wire-owner-acceptance.md",
+    "length": 16096,
+    "sha256": "5600c61de7807f2c1f7f51524b86b901f6ce90bd5d3460c839d09938e403db22"
+  },
+  {
+    "path": "docs/evidence/rc2b-06-b6-impl-01-s3.md",
+    "length": 58727,
+    "sha256": "139629a626af817a62fc4ff322e5f68976082208a1b5b60af679b478e12cc55e"
+  },
+  {
+    "path": "docs/handoff.md",
+    "length": 212600,
+    "sha256": "40dd31d26f3030d2dacd62d43f47133751dc1694de330723383d5eeadb8819a4"
+  },
+  {
+    "path": "docs/work-queue.md",
+    "length": 191239,
+    "sha256": "ce90f8dd1b9e68827f8a7bc64c663ea7e659c9b6d6c96dfb2c0f623e353309cf"
+  },
+  {
+    "path": "docs/PROJECT-STATUS.md",
+    "length": 56382,
+    "sha256": "b40ce305e06a6862867c0631feb9af4b2b1a39dd24dd0e314a897abfb81895f9"
+  },
+  {
+    "path": "eng/linux-m1/build-install-candidate.sh",
+    "length": 6709,
+    "sha256": "867ee36c2559c8cf3a6b4a2d9273c5e5d8876a2dd835d6c7a1055d73fb3f68ed"
+  },
+  {
+    "path": "eng/linux-m1/build-install-candidate.py",
+    "length": 12737,
+    "sha256": "c9a1e7cd545f9df7c413ff2e0e5abc436ae191f8ff1b716f13276b5ca125c99e"
+  },
+  {
+    "path": "eng/linux-m1/install-candidate.sh",
+    "length": 119,
+    "sha256": "e91b0cc644895ef76f65ae92013d9a414b77be93e1a3d3dd536f70ce185f781a"
+  },
+  {
+    "path": "eng/linux-m1/verify-install.sh",
+    "length": 231,
+    "sha256": "1d3534fa552ff6db0c4c3c98085e3a105da1591aa9d0fd6bd10709aadd77ff52"
+  },
+  {
+    "path": "eng/linux-m1/qualify-install.sh",
+    "length": 119,
+    "sha256": "e41d8e9b6a0d7970452cc838998f9afbf59d86d9c566ea92b46d6688445a9169"
+  },
+  {
+    "path": "eng/linux-m1/install_common.py",
+    "length": 28650,
+    "sha256": "f28f30bbca7f74b4fdb188cee5a5fac7c87e245785c47432ee2c86e5827dc649"
+  },
+  {
+    "path": "eng/InstallTool/Program.cs",
+    "length": 1571,
+    "sha256": "a7fa71753774c6627ec5edb8ba64967176c81d71bdbfd9c558db641f9af68ad4"
+  },
+  {
+    "path": "eng/InstallTool/InstallTool.csproj",
+    "length": 367,
+    "sha256": "0c7eb802e0a2b89b82ab4718a52ec43ae5a5e26a368d222014bd819bf33c2d3b"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1/Installed/InstalledFileSystem.cs",
+    "length": 30228,
+    "sha256": "184cf54d65405273936309cbb093e9224730a7e6ef28f52ade8131bfe534a219"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1/Installed/InstalledPayload.cs",
+    "length": 10410,
+    "sha256": "8ee4f7169967e00ce19f056c422becb456d8a5d12f75d35c9743eb154e5d829b"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1/Installed/InstalledMetadata.cs",
+    "length": 6045,
+    "sha256": "9df3798b7d1603fcd55511438f9a20f48627338b20a4276bd0add351adad9c96"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1/Installed/InstalledManifest.cs",
+    "length": 12821,
+    "sha256": "3fae468013fb39d218572abc4262e0daae7222efa3595116e5a38eba5064439e"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1/Installed/LoadedInstallation.cs",
+    "length": 10394,
+    "sha256": "ee1ff1255ccc4c57c91bcd3ceeb08cc3e40cf23184809bdb1429be7fad7d7662"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ExperimentalRuntimePin.cs",
+    "length": 6338,
+    "sha256": "7a2f45d7fcfcdcac7c802962626bf7fa980d1f79785b5627d090a3d6de0a8eb5"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedLauncher.cs",
+    "length": 7290,
+    "sha256": "8cfe4a60c66ede8c6e30eaa0da7646513bf1b489d6fd461fdd1a46c6e21f9f83"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1/Launch/HelperInstallation.cs",
+    "length": 4314,
+    "sha256": "cb23d352bec8e6b620cb9d6eb86f695593ec8a374a7766c3c3f5cd60530447df"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1/Native/CgroupInterop.cs",
+    "length": 31165,
+    "sha256": "d31fa2276694822c28647cdcb5161f5e889cb0edfc019158180c9a88a1ddb397"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1/Native/AtomicCgroupSpawn.cs",
+    "length": 21538,
+    "sha256": "67cb32bae2d78e1b4a70b3f755e5cc85c264f98fa37491df214dd8bdd910e800"
+  },
+  {
+    "path": "src/Gagamba.Execution.Linux.M1/Restricted/B3Qualification.cs",
+    "length": 48202,
+    "sha256": "883f84b2d8eae4bdb9406a3bc5c61b6ffa32c9437ed53730034da59a832a6a70"
+  },
+  {
+    "path": "eng/qualify-b2.py",
+    "length": 18199,
+    "sha256": "252f92ebea313ba0d6cfa2a2c6b7f1f7d005b7caeb3a65b9e742b4eab629bf68"
+  },
+  {
+    "path": "eng/qualify-s3-completion.py",
+    "length": 13354,
+    "sha256": "107ff294ef5197c461b5b0ba52bfa06ef6da16f1274ec97c148dcd94788babc8"
+  },
+  {
+    "path": "eng/qualify-s3-loaded.py",
+    "length": 2601,
+    "sha256": "c6c2f6eb1870aa0f4a94ed530898c4e8763173399d266f7a0aa208584f279dcf"
+  },
+  {
+    "path": "eng/qualify-s3-production-refusal.py",
+    "length": 6299,
+    "sha256": "6a1d8ff65be42da0a85be07a4ac75fa24092cec7aa851601909781092c09557f"
+  }
+]
