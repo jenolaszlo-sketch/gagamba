@@ -16,7 +16,7 @@ internal static class QualifiedB2Recovery
         using var diagnostics=new RecoveryDiagnosticWriter(config.EvidenceDirectory);
         var obligation=new RecoveryObligation();Process? owner=null;int ownerPin=-1;
         var pair=QualifiedLauncher.Pair();using var life=new Microsoft.Win32.SafeHandles.SafeFileHandle((IntPtr)pair.Parent,true);
-        var seq=new OwnerProtocolSequencer(config.Execution,config.Generation);
+        var seq=new OwnerProtocolSequencer(config.Execution,config.Generation);var custody=new object();
         bool boundSent=false,controlUsable=true,ownerUsable=true,controllerLost=false,ownerExited=false,ready=false,stopSent=false,confirmed=false,killed=false;
         long lifetime=long.MaxValue;B2RecoveryReadyBarrier? barrier=null;B2Binding? binding=null;
         RecoverySnapshot Snapshot()=>new(Environment.ProcessId,owner?.Id??0,config.ControllerPid,RecoveryInterop.GetSid(0),
@@ -54,7 +54,7 @@ internal static class QualifiedB2Recovery
                 if(DirectUnix.Poll(ref poll,(UIntPtr)1,0)<0 || poll.Revents!=0) {controlUsable=false;controllerLost=true;Stop("ControllerTransportLost");}
             }
             if(owner is not null && ownerUsable && stopSent && FdPassing.TryReceiveMessage(pair.Parent,0,out var ack,out _))
-            {if(seq.TryAccept(ack,OwnerProtocolMessageType.B2StopObserved,out _,out _)) obligation.OwnerAcknowledged=true;else Stop("OwnerProtocolLost");}
+            {if(seq.TryAccept(ack,OwnerProtocolMessageType.B2StopObserved,out var ackMessage,out _) && ackMessage!.Payload.Length==0) obligation.OwnerAcknowledged=true;else Stop("OwnerProtocolLost");}
             if(!ready && InstallationDeadline.Now>=deadline) Stop("InstallationExpired");
             if(InstallationDeadline.Now>=lifetime) Stop("BootstrapLifetimeExpired");
         }
@@ -86,11 +86,16 @@ internal static class QualifiedB2Recovery
             lifetime=checked(InstallationDeadline.Now+30_000_000_000L);Positive();
             barrier.Lifeline(InstallationDeadline.Now);
             B2ProcessIdentity.RequireLive(ownerPin,owner.Id);B2ProcessIdentity.CheckProcess(owner.Id,Environment.ProcessId);
-            if(!FdPassing.TrySendTransfer(pair.Parent,[controllerFd],seq.Create(OwnerProtocolMessageType.B2EchoBootstrap,InstallationWire.Binding(binding)),out _))
-                throw new IOException("B2 controller reference lost");
+            lock(custody)
+            {
+                B2ProcessIdentity.RequireLive(controllerFd,config.ControllerPid);
+                if(!FdPassing.TrySendTransfer(pair.Parent,[controllerFd],seq.Create(OwnerProtocolMessageType.B2EchoBootstrap,InstallationWire.Binding(binding)),out _))
+                    throw new IOException("B2 controller reference lost");
+            }
             Positive();
-            if(!scope.SendOriginalB2OwnerReference(owner,control,wire.Create(RecoveryMessage.B2OwnerBound,InstallationWire.Binding(binding))))
-                throw new IOException("B2 owner reference lost");
+            lock(custody)
+                if(!scope.SendOriginalB2OwnerReference(owner,control,wire.Create(RecoveryMessage.B2OwnerBound,InstallationWire.Binding(binding))))
+                    throw new IOException("B2 owner reference lost");
             barrier.ReferencesSent(InstallationDeadline.Now);boundSent=true;
             while(!confirmed) {Positive();Thread.Sleep(2);}
             Positive();

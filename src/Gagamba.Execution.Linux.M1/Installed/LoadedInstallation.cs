@@ -71,7 +71,8 @@ internal sealed class LoadedInstallation
             if(required.Contains(assembly)) continue;
             // The provider's installed role contains these two assemblies. The trusted
             // embedding controller application is outside that role, not an attested helper.
-            if(role=="provider" && !requiredNames.Contains(assembly.GetName().Name)) continue;
+            if(role=="provider" && !requiredNames.Contains(assembly.GetName().Name) &&
+                !File.Exists(Path.Combine(runtime.RuntimeDirectory,assembly.GetName().Name+".dll"))) continue;
             if(requiredNames.Contains(assembly.GetName().Name) || !assembly.Location.StartsWith(runtime.RuntimeDirectory+"/",StringComparison.Ordinal))
                 throw new InvalidDataException("foreign or duplicate loaded assembly");
             InstalledFileSystem.VerifyPlatformConsumption(assembly.Location);
@@ -107,8 +108,17 @@ internal sealed class LoadedInstallation
 
 internal static partial class InstalledFileSystem
 {
-    internal static IEnumerable<string> MappedPaths() => File.ReadLines("/proc/self/maps").Select(line=>line.Split(' ',StringSplitOptions.RemoveEmptyEntries))
-        .Where(p=>p.Length>=6 && p[5].StartsWith('/')).Select(p=>string.Join(" ",p.Skip(5))).Distinct(StringComparer.Ordinal).ToArray();
+    // Required managed images are checked individually with RequireMapped, including
+    // read-only IL mappings. This additional inventory concerns persisted native code.
+    // CLR JIT/IPC anonymous memory is not a disk artifact or a new identity source.
+    internal static bool ExecutableFileMapping(string line,out string path)
+    {
+        var p=line.Split(' ',StringSplitOptions.RemoveEmptyEntries);path=string.Empty;
+        if(p.Length<6 || !p[1].Contains('x') || !p[5].StartsWith('/') || p[5].StartsWith("/memfd:",StringComparison.Ordinal)) return false;
+        path=string.Join(" ",p.Skip(5));return true;
+    }
+    internal static IEnumerable<string> MappedPaths()=>File.ReadLines("/proc/self/maps")
+        .Select(line=>ExecutableFileMapping(line,out var path)?path:null).OfType<string>().Distinct(StringComparer.Ordinal).ToArray();
     internal static void VerifyPlatformConsumption(string path)
     {
         using var dir=OpenAbsoluteDirectory(Path.GetDirectoryName(path)!,true);

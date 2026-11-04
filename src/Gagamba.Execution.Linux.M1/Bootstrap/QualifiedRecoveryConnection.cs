@@ -56,7 +56,11 @@ internal static class QualifiedRecoveryConnection
         }
         byte[] Payload(ReceivedFdRecord record)=>record.Payload[OwnerProtocol.HeaderBytes..];
         void Send(RecoveryMessage type,byte[] payload)
-        {Pins();if(!FdPassing.TrySendMessage(control,wire.Create(type,payload),out _)) throw new IOException("qualified control send failed");}
+        {
+            Pins();var frame=wire.Create(type,payload);
+            try{if(!FdPassing.TrySendMessage(control,frame,out _)) throw new IOException("qualified control send failed");}
+            finally{if(type==RecoveryMessage.Associate) CryptographicOperations.ZeroMemory(frame);}
+        }
         try
         {
             if(config.Integrated is null) listener=B2EvidenceSocket.Listen(config.Session);

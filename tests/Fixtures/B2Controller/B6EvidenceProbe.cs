@@ -49,7 +49,7 @@ internal static class B6EvidenceProbe
                     var runtime=RuntimePin();
                     using var writer=QualifiedLauncher.Start(runtime,System.Reflection.Assembly.GetExecutingAssembly().Location,
                         ["--b6-evidence","writer",session.ToString(),execution.ToString(),lease.ToString()],(socket.Descriptor,3,"GAGAMBA_B6_FIXTURE_FD"));
-                    Console.WriteLine("SENT");Console.Out.Flush();Console.ReadLine();return 0;
+                    Console.WriteLine("SENT");Console.Out.Flush();Console.ReadLine();return QualifiedLauncher.TryReap(writer,5000,out var code)&&code==0?0:7;
                 }
                 var raw=new OwnerProtocolSequencer(execution,lease).Create(
                     mode=="release"?OwnerProtocolMessageType.ReleaseRequest:OwnerProtocolMessageType.OwnerInstallationEcho,p);
@@ -57,13 +57,13 @@ internal static class B6EvidenceProbe
                 if(mode=="rights" || mode=="empty-rights")
                 {
                     if(PreparationInterop.OpenDirectory("/tmp",out int fd)!=0) return 6;
-                    try {FdPassing.TrySendTransfer(socket.Descriptor,[fd],mode=="empty-rights"?[]:raw,out _);}finally{PreparationInterop.CloseFd(fd);}
+                    try {if(!FdPassing.TrySendTransfer(socket.Descriptor,[fd],mode=="empty-rights"?[]:raw,out _)) return 6;}finally{PreparationInterop.CloseFd(fd);}
                 }
-                else if(mode=="empty") FdPassing.TrySendTransfer(socket.Descriptor,[],[],out _);
+                else if(mode=="empty") {if(DirectUnix.Send(socket.Descriptor,IntPtr.Zero,UIntPtr.Zero,0x4000)!=0) return 6;}
                 else
                 {
-                    FdPassing.TrySendMessage(socket.Descriptor,raw,out _);
-                    if(mode=="duplicate") FdPassing.TrySendMessage(socket.Descriptor,raw,out _);
+                    if(!FdPassing.TrySendMessage(socket.Descriptor,raw,out _)) return 6;
+                    if(mode=="duplicate" && !FdPassing.TrySendMessage(socket.Descriptor,raw,out _)) return 6;
                 }
                 DirectUnix.Shutdown(socket.Descriptor,1);
             }

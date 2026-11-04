@@ -35,7 +35,7 @@ public sealed class B2EvidenceNativeTests
         static int NativeHandles()=>Directory.GetFiles("/proc/self/fd").Select(p=>new FileInfo(p).LinkTarget)
             .Count(t=>t is not null && (t.StartsWith("socket:",StringComparison.Ordinal) || t=="anon_inode:[pidfd]"));
         int before=NativeHandles();
-        bool success=false;
+        bool success=false;string? refusal=null;
         try
         {
             long deadline=InstallationDeadline.Create();using var socket=listener.Accept(deadline,()=>{});
@@ -47,18 +47,28 @@ public sealed class B2EvidenceNativeTests
             var echo=socket.Receive(seq,OwnerProtocolMessageType.OwnerInstallationEcho,B2ProcessIdentity.Identity(child.Id),childFd,deadline,()=>{});
             success=InstallationWire.CompareEcho(echo,InstallationWireTests.Identity,1)==InstallationMismatch.None;
         }
-        catch(IOException) {success=false;}
-        catch(InvalidDataException) {success=false;}
+        catch(IOException e) {success=false;refusal=e.Message;}
+        catch(InvalidDataException e) {success=false;refusal=e.Message;}
         finally
         {
             try{child.StandardInput.WriteLine("done");child.StandardInput.Flush();}catch(IOException){}
             if(!child.WaitForExit(5000)) {child.Kill();Assert.True(child.WaitForExit(5000));}
         }
         Assert.Equal(accepted,success);
-        if(accepted) Assert.True(child.ExitCode==0,child.StandardError.ReadToEnd());
+        if(mode!="wrong-original-pin") Assert.True(child.ExitCode==0,child.StandardError.ReadToEnd());
         Assert.True(PidFd.TryExited(childFd,0,out var exited,out _));Assert.True(exited);
         // Socket and peer/received-right lifetimes ended. The listener was consumed by accept.
-        Assert.True(NativeHandles()<=before,"transient evidence handles leaked");
+        int after=NativeHandles();
+        Assert.True(after<=before,"transient evidence handles leaked");
+        if(Environment.GetEnvironmentVariable("GAGAMBA_S3_OBSERVATIONS") is {Length:>0} observations)
+        {
+            Directory.CreateDirectory(observations);
+            File.WriteAllText(Path.Combine(observations,"evidence-"+mode+".json"),System.Text.Json.JsonSerializer.Serialize(new{
+                Scope="Native component; synthetic artifact identity; no production authority",Mode=mode,Accepted=success,
+                ControllerPid=Environment.ProcessId,OriginalChildPid=child.Id,Uid=RecoveryInterop.GetUid(),Gid=DirectUnix.GetGid(),
+                SenderPinCloexec=PreparationInterop.HasCloexec(childFd),ChildExited=exited,ChildExitCode=child.ExitCode,
+                SocketAndPidfdCountBefore=before,SocketAndPidfdCountAfter=after,Refusal=refusal}));
+        }
     }
     [Fact] public void TypedPinReceiverRejectsOrdinaryDescriptorAndClosesItsCopy()
     {

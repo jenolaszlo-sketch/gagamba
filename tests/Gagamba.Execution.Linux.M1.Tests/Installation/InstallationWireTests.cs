@@ -57,6 +57,31 @@ public sealed class InstallationWireTests
                 H(BitConverter.GetBytes(tuple.Item2.Length))+H(tuple.Item2),H(frame));
         }
     }
+    [Fact] public void OwnerHeadersAndFrozenNamespacesHaveExactGoldenValues()
+    {
+        Assert.Equal(Enumerable.Range(1,35).Select(i=>(byte)i),Enum.GetValues<OwnerProtocolMessageType>().Select(t=>(byte)t).Where(i=>i<=35));
+        Assert.Equal(Enumerable.Range(1,8).Select(i=>(byte)i),Enum.GetValues<RecoveryMessage>().Select(t=>(byte)t).Where(i=>i<=8));
+        foreach(var item in new[]{(OwnerProtocolMessageType.OwnerInstallationEcho,InstallationWire.Echo(Identity,1)),
+            (OwnerProtocolMessageType.B2OwnerExpectation,InstallationWire.Expectation(Session,Identity)),
+            (OwnerProtocolMessageType.B2EchoBootstrap,InstallationWire.Binding(Binding))})
+        {
+            string expected="504f314d0100"+((byte)item.Item1).ToString("x2")+"0033221100554477668899aabbccddeeff433221106554877698a9bacbdcedfe0f01000000"+
+                Convert.ToHexStringLower(BitConverter.GetBytes(item.Item2.Length))+Convert.ToHexStringLower(item.Item2);
+            Assert.Equal(expected,Convert.ToHexStringLower(new OwnerProtocolSequencer(Execution,Lease).Create(item.Item1,item.Item2)));
+        }
+        Assert.Throws<ArgumentException>(()=>new RecoveryWire(Execution,Lease,2,false,false).Create((RecoveryMessage)13));
+    }
+    [Fact] public void GenericOwnerChannelsCannotGrantEvidenceDirectionOrDescriptorRoles()
+    {
+        using var recovery=new OwnerProtocolChannel(123,Execution,Lease,false){RecoveryOnly=true};
+        using var controller=new OwnerProtocolChannel(123,Execution,Lease,false){InstallationOwner=false};
+        using var owner=new OwnerProtocolChannel(123,Execution,Lease,false){InstallationOwner=true};
+        Assert.False(recovery.TrySend(OwnerProtocolMessageType.OwnerInstallationEcho,InstallationWire.Echo(Identity,1),out _));
+        Assert.False(controller.TrySend(OwnerProtocolMessageType.OwnerInstallationEcho,InstallationWire.Echo(Identity,1),out _));
+        Assert.False(owner.TryReceiveAllowedWithin(0,out _,out _,OwnerProtocolMessageType.OwnerInstallationEcho));
+        foreach(var type in new[]{OwnerProtocolMessageType.OwnerInstallationEcho,OwnerProtocolMessageType.B2OwnerExpectation,OwnerProtocolMessageType.B2EchoBootstrap})
+            Assert.False(owner.TrySendTransfer(type,[],[456],out _));
+    }
     [Theory][InlineData(0)][InlineData(1)] public void EchoPositiveAndMutations(byte role)
     {
         var p=InstallationWire.Echo(Identity,role);

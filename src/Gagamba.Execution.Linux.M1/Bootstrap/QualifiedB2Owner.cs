@@ -44,7 +44,8 @@ internal static class QualifiedB2Owner
         {
             B2ProcessIdentity.Procfs();B2ProcessIdentity.RequireLive(recoveryFd,recovery);B2ProcessIdentity.CheckProcess(recovery,null);
             if(!FdPassing.TryReceiveMessage(fd,5000,out var startFrame,out _) ||
-                !seq.TryAccept(startFrame,OwnerProtocolMessageType.B2StartLifeline,out var startMessage,out _)) return 3;
+                !seq.TryAccept(startFrame,OwnerProtocolMessageType.B2StartLifeline,out var startMessage,out _) ||
+                !OwnerProtocol.HasValidControlPayloadShape(startMessage!)) return 3;
             var start=JsonSerializer.Deserialize<B2OwnerStart>(startMessage!.Payload);
             if(start is null || start.RecoveryPid!=recovery || !Path.IsPathFullyQualified(start.EvidenceDirectory)) return 3;
             evidence=start.EvidenceDirectory;
