@@ -16,6 +16,7 @@ internal static class B6EvidenceProbe
     {
         try
         {
+            if(args[1].StartsWith("edge-",StringComparison.Ordinal))return B6EvidenceMutationProbe.Run(args);
             string mode=args[1];Guid session=Guid.Parse(args[2]),execution=Guid.Parse(args[3]),lease=Guid.Parse(args[4]);
             if(mode=="writer")
             {

@@ -14,6 +14,8 @@ if(args.Length==1 && args[0]=="--b6-launch")
     if(!FdPassing.TrySendMessage(3,System.Text.Encoding.ASCII.GetBytes("MAPPED"),out _)) return 33;
     return FdPassing.TryReceiveMessage(3,5000,out var stop,out _) && stop.AsSpan().SequenceEqual(new byte[]{43})?0:34;
 }
+if (args.Length==3 && args[0]=="--b6-loaded") return B6LoadedRoleProbe.Run(args[1],args[2]);
+if (args.Length is 4 or 8 && args[0] == "--b6-topology") return B6TopologyProbe.Run(args);
 if (args.Length == 5 && args[0] == "--b6-evidence") return B6EvidenceProbe.Run(args);
 if (args.Length == 1 && args[0] == "--int01-controller") return await IntegratedControllerProbe.Run();
 if (args.Length == 1 && args[0] == "--direct-peer") return DirectAuthProbe.Run();
