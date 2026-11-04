@@ -12,16 +12,17 @@ internal sealed class IntegratedOwnerLaunch : IDisposable
     internal int ControllerPidfd { get; }
     internal long AcceptedAtNs { get; }
     internal ExperimentalRuntimePin Runtime => Identity.Runtime;
+    internal QualifiedLauncher.InstalledPlan? InstalledPlan {get;}
     internal Action<Process,int> OwnerSpawned { get; }
     internal Action<OwnerRendezvous,int> Rendezvous { get; }
     private readonly SafeFileHandle _safety;
     private readonly SafeFileHandle _ownerSafety;
     internal int OwnerSafetyFd => _ownerSafety.DangerousGetHandle().ToInt32();
     internal IntegratedOwnerLaunch(OwnerDirectIdentity identity, int controllerPidfd, long acceptedAt,
-        Action<Process,int> ownerSpawned, Action<OwnerRendezvous,int> rendezvous)
+        Action<Process,int> ownerSpawned, Action<OwnerRendezvous,int> rendezvous, QualifiedLauncher.InstalledPlan? installedPlan=null)
     {
         Identity=identity; ControllerPidfd=controllerPidfd; AcceptedAtNs=acceptedAt;
-        OwnerSpawned=ownerSpawned; Rendezvous=rendezvous;
+        OwnerSpawned=ownerSpawned; Rendezvous=rendezvous;InstalledPlan=installedPlan;
         var pair=new int[2];
         if(DirectUnix.SocketPair(1,5|DirectUnix.Cloexec|DirectUnix.Nonblock,0,pair)!=0)
             throw new IOException("Dedicated recovery safety lifeline unavailable");

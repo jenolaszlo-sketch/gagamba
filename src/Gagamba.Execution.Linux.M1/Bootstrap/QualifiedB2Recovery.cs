@@ -33,9 +33,15 @@ internal static class QualifiedB2Recovery
         }
         void Service()
         {
-            if(!PidFd.TryExited(controllerFd,0,out bool exited,out _) || exited) {controllerLost=true;Stop("ControllerExited");}
-            if(owner is not null && (!scope.TryOwnerPidFdExited(owner,0,out exited,out _) || exited))
-            {ownerExited=scope.WaitForOwner(owner,TimeSpan.Zero).Exited;Stop("OwnerExited");}
+            if(!PidFd.TryExited(controllerFd,0,out bool exited,out var pinError))
+            {if(!RecoveryInterop.IsTransientPidfdError(pinError)) {controllerLost=true;Stop("ControllerExitEvidenceUnavailable");}}
+            else if(exited) {controllerLost=true;Stop("ControllerExited");}
+            if(owner is not null)
+            {
+                if(!scope.TryOwnerPidFdExited(owner,0,out exited,out pinError))
+                {if(!RecoveryInterop.IsTransientPidfdError(pinError)) Stop("OwnerExitEvidenceUnavailable");}
+                else if(exited) {ownerExited=scope.WaitForOwner(owner,TimeSpan.Zero).Exited;Stop("OwnerExited");}
+            }
             string error="control record timed out";
             if(controlUsable && FdPassing.TryReceiveMessage(control,0,out var frame,out error))
             {

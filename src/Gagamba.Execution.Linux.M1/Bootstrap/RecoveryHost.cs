@@ -42,9 +42,11 @@ internal static class RecoveryHost
         using var association = new RecoveryAssociation(config.Session, config.Secret);
         CryptographicOperations.ZeroMemory(config.Secret);
         if (config.ControllerPid != expectedParent || config.ControllerUid != uid
-            || config.Recovery.Verify("Gagamba.Execution.Linux.M1.Recovery") != System.Reflection.Assembly.GetEntryAssembly()!.Location)
+            || (config.Version==1?config.Recovery.Verify("Gagamba.Execution.Linux.M1.Recovery"):
+                Path.Combine(config.Recovery.Directory,"Gagamba.Execution.Linux.M1.Recovery.dll")) != System.Reflection.Assembly.GetEntryAssembly()!.Location)
             return 3;
-        var ownerPath = config.Owner.Verify("Gagamba.Execution.Linux.M1.Owner");
+        var ownerPath = config.Version==1?config.Owner.Verify("Gagamba.Execution.Linux.M1.Owner"):
+            Path.Combine(config.Owner.Directory,"Gagamba.Execution.Linux.M1.Owner.dll");
         if (!PidFd.TryOpen(expectedParent, out var controllerFd, out _) || !PreparationInterop.HasCloexec(controllerFd)) return 3;
         using var controllerHandle = new Microsoft.Win32.SafeHandles.SafeFileHandle((IntPtr)controllerFd, true);
         if (!PidFd.TryExited(controllerFd, 0, out var controllerExited, out _) || controllerExited || !RecoveryInterop.DetachLifetime()) return 3;
@@ -63,7 +65,7 @@ internal static class RecoveryHost
         if(config.Version==2 && config.Integrated is null)
             return QualifiedB2Recovery.Run(config,scope,wire,control,controllerFd,installation!);
         if(config.Integrated is not null)
-            return IntegratedRecoveryHost.Run(config,scope,wire,control,controllerFd,ownerPath);
+            return IntegratedRecoveryHost.Run(config,scope,wire,control,controllerFd,ownerPath,installation);
 
         Process owner;
         OwnerProtocolChannel? ownerChannel = null;

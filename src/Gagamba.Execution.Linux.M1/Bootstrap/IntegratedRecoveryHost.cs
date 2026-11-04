@@ -16,10 +16,10 @@ internal sealed record IntegratedRecoverySpecification(B3FixtureProfile Profile,
 internal static class IntegratedRecoveryHost
 {
     // One bounded preparation worker; this thread remains the native safety monitor and original reaper.
-    internal static int Run(RecoveryConfiguration config,M1RecoveryScope scope,RecoveryWire wire,int control,int controllerFd,string ownerPath)
+    internal static int Run(RecoveryConfiguration config,M1RecoveryScope scope,RecoveryWire wire,int control,int controllerFd,string ownerPath,LoadedInstallation? installed=null)
     {
         var spec=config.Integrated!;
-        spec.Runtime.VerifyCurrent();
+        if(config.Version==1) spec.Runtime.VerifyCurrent();
         foreach(var directory in new[] {spec.Profile.SourceRootPath,spec.Profile.StagingParentPath,spec.Profile.JournalDirectory,config.EvidenceDirectory})
             ExperimentalRuntimePin.VerifyPrivateDirectory(directory);
         if(config.Version==1) {ExperimentalRuntimePin.VerifyPrivateClosure(config.Owner); ExperimentalRuntimePin.VerifyPrivateClosure(config.Recovery);}
@@ -65,7 +65,7 @@ internal static class IntegratedRecoveryHost
                         throw new IOException("Direct rendezvous/lifetime publication failed");
                     Volatile.Write(ref rendezvousSent,true);
                 }
-            });
+            },installed?.OwnerLaunch);
         var preparation=Task.Run(()=>
         {
             if(!CgroupInterop.TryReadBootId(out var boot,out _) || !journal.TryAcquireWriter(out var writer,out _) || writer is null)

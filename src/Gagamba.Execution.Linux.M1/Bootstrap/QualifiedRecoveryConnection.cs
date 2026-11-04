@@ -41,12 +41,12 @@ internal static class QualifiedRecoveryConnection
             Pins();var poll=new DirectUnix.PollFd{Fd=control,Events=1|0x2000};
             if(DirectUnix.Poll(ref poll,(UIntPtr)1,0)<0 || poll.Revents!=0) throw new IOException("unexpected control/loss during owner evidence");
         }
-        ReceivedFdRecord Receive(RecoveryMessage expected)
+        ReceivedFdRecord Receive(RecoveryMessage expected,long? limit=null)
         {
             while(true)
             {
                 Pins();
-                if(FdPassing.TryReceiveRecord(control,InstallationDeadline.Remaining(deadline,10),out var record,out var error))
+                if(FdPassing.TryReceiveRecord(control,InstallationDeadline.Remaining(Math.Min(deadline,limit??deadline),10),out var record,out var error))
                 {
                     if(wire.Accept(record!.Payload,out var type,out _) && type==expected) return record;
                     record.Dispose();throw new IOException("qualified recovery transition refused");
@@ -80,10 +80,12 @@ internal static class QualifiedRecoveryConnection
             finally {CryptographicOperations.ZeroMemory(bytes);PreparationInterop.CloseFd(credential);credential=-1;}
             var auth=new byte[48];config.Session.TryWriteBytes(auth);config.Secret.CopyTo(auth,16);
             try {Send(RecoveryMessage.Associate,auth);}finally{CryptographicOperations.ZeroMemory(auth);}
-            using(var echo=Receive(RecoveryMessage.InstallationEchoRequest))
+            long recoveryEchoDeadline=Math.Min(deadline,InstallationDeadline.Now+5_000_000_000L);
+            using(var echo=Receive(RecoveryMessage.InstallationEchoRequest,recoveryEchoDeadline))
             {
                 if(echo.DescriptorCount!=0) throw new IOException("recovery echo rights refused");
                 var reason=InstallationWire.CompareEcho(Payload(echo),selected.Identity,0,config.Integrated is not null);
+                _=InstallationDeadline.Remaining(recoveryEchoDeadline);
                 Send(RecoveryMessage.InstallationEchoResponse,InstallationWire.Response(selected.Identity,reason));
                 if(reason!=InstallationMismatch.None) throw new IOException("recovery loaded identity mismatch");
                 barrier?.Recovery(Payload(echo),InstallationDeadline.Now);
@@ -99,16 +101,17 @@ internal static class QualifiedRecoveryConnection
                     ownerPin=B2ProcessIdentity.ReceivePin(bound,binding.OwnerPid);
                     barrier!.Bound(binding,InstallationDeadline.Now);
                 }
-                using(var evidence=listener!.Accept(deadline,Service))
+                long ownerEchoDeadline=Math.Min(deadline,InstallationDeadline.Now+5_000_000_000L);
+                using(var evidence=listener!.Accept(ownerEchoDeadline,Service))
                 {
                     B2ProcessIdentity.VerifyPeer(evidence.Descriptor,ownerPin.DangerousGetHandle().ToInt32(),binding,true);
                     var seq=new OwnerProtocolSequencer(config.Execution,config.Generation);
-                    evidence.Send(seq,OwnerProtocolMessageType.B2OwnerExpectation,InstallationWire.Expectation(config.Session,selected.Identity),deadline,Service);
+                    evidence.Send(seq,OwnerProtocolMessageType.B2OwnerExpectation,InstallationWire.Expectation(config.Session,selected.Identity),ownerEchoDeadline,Service);
                     var ownerEcho=evidence.Receive(seq,OwnerProtocolMessageType.OwnerInstallationEcho,B2ProcessIdentity.Identity(binding.OwnerPid),
-                        ownerPin.DangerousGetHandle().ToInt32(),deadline,Service);
+                        ownerPin.DangerousGetHandle().ToInt32(),ownerEchoDeadline,Service);
                     if(InstallationWire.CompareEcho(ownerEcho,selected.Identity,1)!=InstallationMismatch.None) throw new IOException("owner identity mismatch");
                     B2ProcessIdentity.VerifyPeer(evidence.Descriptor,ownerPin.DangerousGetHandle().ToInt32(),binding,true);Service();
-                    barrier!.Owner(ownerEcho,InstallationDeadline.Now);
+                    _=InstallationDeadline.Remaining(ownerEchoDeadline);barrier!.Owner(ownerEcho,InstallationDeadline.Now);
                 }
                 _=InstallationDeadline.Verify(()=>{selected.Revalidate();return true;},deadline,Service);
                 Service();Send(RecoveryMessage.B2OwnerEchoAccepted,barrier!.Confirmation(InstallationDeadline.Now));

@@ -385,7 +385,7 @@ internal sealed class M1RecoveryScope : IDisposable
         var spawned = TrySpawnOwner(
             request.OwnerDllPath,
             new[] { "--exec", request.ExecutionId.ToString("D"), "--lease", request.LeaseGeneration.ToString("D") },
-            childSocket, request.Integrated?.Runtime,qualified:qualified);
+            childSocket, request.Integrated?.Runtime,qualified:qualified,installedLaunch:request.Integrated?.InstalledPlan);
         if (!spawned.Ok || spawned.Process is null)
         {
             PreparationInterop.CloseFd(parentSocket);

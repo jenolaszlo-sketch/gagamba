@@ -41,7 +41,7 @@ internal static class OwnerPreparationTransaction
             return 20;
         }
 
-        if(request.DirectIdentity is not null) request.DirectIdentity.Runtime.VerifyCurrent();
+        if(request.DirectIdentity is {InstallationIdentity:null}) request.DirectIdentity.Runtime.VerifyCurrent();
         return RunTransaction(request, channel);
     }
 

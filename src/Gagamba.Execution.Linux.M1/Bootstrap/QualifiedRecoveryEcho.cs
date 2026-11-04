@@ -21,7 +21,11 @@ internal static class QualifiedRecoveryEcho
         var selected=InstallationDeadline.Verify(()=>
         {
             var selection=LoadedInstallation.Verify("recovery",expected);
-            if(config.Integrated is null) selection.OwnerLaunch=QualifiedLauncher.InstalledPlan.Prepare(selection,"owner");
+            if(config.Recovery.Verify("Gagamba.Execution.Linux.M1.Recovery")!=System.Reflection.Assembly.GetEntryAssembly()!.Location ||
+                config.Owner.Verify("Gagamba.Execution.Linux.M1.Owner")!=Path.Combine(selection.Executable("owner").Directory,"Gagamba.Execution.Linux.M1.Owner.dll") ||
+                (config.Integrated is not null && config.Integrated.Runtime!=selection.Runtime()))
+                throw new IOException("verified role launch binding refused");
+            selection.OwnerLaunch=QualifiedLauncher.InstalledPlan.Prepare(selection,"owner");
             return selection;
         },deadline,Service);
         if(!FdPassing.TrySendMessage(control,wire.Create(RecoveryMessage.InstallationEchoRequest,InstallationWire.Echo(selected.Identity,0)),out _))
