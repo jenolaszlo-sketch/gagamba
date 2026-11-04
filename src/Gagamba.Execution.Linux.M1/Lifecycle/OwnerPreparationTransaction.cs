@@ -41,18 +41,13 @@ internal static class OwnerPreparationTransaction
             return 20;
         }
 
-        if(request.DirectIdentity is {InstallationIdentity:null}) request.DirectIdentity.Runtime.VerifyCurrent();
+        if(request.DirectIdentity is {InstallationIdentity:not null}) QualifiedOwnerPreflight.Verify(request,channel);
+        else if(request.DirectIdentity is not null) request.DirectIdentity.Runtime.VerifyCurrent();
         return RunTransaction(request, channel);
     }
 
     private static int RunTransaction(OwnerPreparationSpecification request, OwnerProtocolChannel channel)
     {
-        // Qualified identity is checked with the independent safety monitor armed,
-        // before this owner acquires its journal writer or any domain/staging authority.
-        bool qualified=request.DirectIdentity?.InstallationIdentity is not null;
-        if(qualified && !channel.TrySend(OwnerProtocolMessageType.WriterReady,[],out _)) return 24;
-        using var earlyDirect=qualified?OwnerDirectConnection.Accept(request,channel):null;
-        using var earlySafety=earlyDirect?.Safety;
         using var storage = new JournalFileStorage();
 #if !GAGAMBA_PRODUCTION
         if(Int01Qualification.Is(request.QualificationFault,"integrated-ambiguous-intent"))
@@ -94,15 +89,13 @@ internal static class OwnerPreparationTransaction
                 return 23;
             }
 
-            string channelError=string.Empty;
-            if (!qualified && !channel.TrySend(OwnerProtocolMessageType.WriterReady, ReadOnlySpan<byte>.Empty, out channelError))
+            if (!channel.TrySend(OwnerProtocolMessageType.WriterReady, ReadOnlySpan<byte>.Empty, out var channelError))
             {
                 return 24;
             }
 
-            using var direct = qualified || request.DirectIdentity is null ? null : OwnerDirectConnection.Accept(request,channel);
-            using var legacySafety=direct?.Safety;
-            var safety=earlySafety??legacySafety;
+            using var direct = request.DirectIdentity is null ? null : OwnerDirectConnection.Accept(request,channel);
+            using var safety = direct?.Safety;
 #if !GAGAMBA_PRODUCTION
             var fault = request.QualificationFault;
             if(fault is not null && safety is not null)
@@ -113,7 +106,7 @@ internal static class OwnerPreparationTransaction
             var cutoff = Math.Min(request.ExpiresAtNs,request.AcceptedAtNs+10_000_000_000L);
             void Point(string stage) { }
 #endif
-            var controllerChannel = earlyDirect?.Channel ?? direct?.Channel ?? channel;
+            var controllerChannel = direct?.Channel ?? channel;
 
             if (!channel.TryReceiveTransfer(
                     OwnerProtocolMessageType.StartAuthority,
