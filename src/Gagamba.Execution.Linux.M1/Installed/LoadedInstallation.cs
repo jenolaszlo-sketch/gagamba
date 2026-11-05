@@ -25,10 +25,7 @@ internal sealed class LoadedInstallation
     }
     internal void Revalidate()
     {
-        var next=InstalledFileSystem.VerifyActive();
-        if(next.State!=InstalledState.Qualified || next.Identity!=Identity || next.QualificationId!=Selection.QualificationId
-            || next.QualificationRecordSha256!=Selection.QualificationRecordSha256)
-            throw new InvalidDataException("original S2 selection no longer qualified");
+        ReleaseGenerationGate.RequireStillQualified(InstalledFileSystem.VerifyActive(), Selection);
     }
     internal FinalAdmissionVerifier.Grant VerifyFinalAdmission()
     {

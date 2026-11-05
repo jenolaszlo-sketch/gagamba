@@ -130,6 +130,20 @@ internal sealed class IntegratedB3Client : IDisposable
         {
             if(_disposed || _channel is null || _held?.Description is not { } description)
                 return new(false,null,null,"original direct release session unavailable");
+            // Q10 mandatory non-waiver: re-read the trusted active installation
+            // in the same critical section as the ReleaseRequest send, with no
+            // intervening I/O. An admission-time or preparation-time
+            // verification never substitutes for this fresh observation. A
+            // missing, malformed, unavailable, stale, replaced or mismatched
+            // observation refuses before the request exists. Unqualified
+            // experimental operations retain no installation and keep their
+            // accepted behavior (no installed-generation model to re-read).
+            var bound=Volatile.Read(ref _recovery)?.Installation;
+            if(bound is not null)
+            {
+                var (q10Verified,q10Reason,q10Error)=Installed.ReleaseGenerationGate.RequireBoundGenerationActive(bound);
+                if(!q10Verified) return new(false,null,null,q10Error,q10Reason);
+            }
             var request=OwnerHeldWireCodec.RequestFromIdentity(description.ExecutionId,description.PreparationId,description.GenerationId,
                 description.ManifestDigest,correlation.AsSpan(),!correlation.IsDefault);
             if(!_channel.TrySend(OwnerProtocolMessageType.ReleaseRequest,OwnerHeldWireCodec.EncodeReleaseRequest(request),out var error)

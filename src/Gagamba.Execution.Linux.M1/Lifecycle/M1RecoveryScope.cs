@@ -13,6 +13,7 @@ using Gagamba.Execution.Linux.M1.Preparation;
 using Gagamba.Execution.Linux.M1.Preparation.Native;
 using Gagamba.Execution.Linux.M1.Recovery;
 using Gagamba.Execution.Restricted;
+using Gagamba.Execution.Restricted.Control;
 
 namespace Gagamba.Execution.Linux.M1.Lifecycle;
 
@@ -79,7 +80,10 @@ internal sealed record HeldOwnerAbortOutcome(bool Accepted, bool OwnerExited, bo
     bool NoTargetInitializationMarkerAbsent = false, bool ReleaseAttempted = false);
 
 internal sealed record HeldOwnerReleaseOutcome(bool Accepted, ReleaseDecision? Decision,
-    OwnerExecutionFacts? Outcome, string Error);
+    OwnerExecutionFacts? Outcome, string Error,
+    // Q10: a pre-RELEASE active-generation reread refused before any request
+    // was sent. None for every non-generation outcome.
+    RestrictedRefusalReason GenerationRefusal = RestrictedRefusalReason.None);
 
 internal sealed record HeldOwnerStopOutcome(bool Accepted, StopDecision? Decision, string Error);
 

@@ -663,6 +663,17 @@ internal sealed class B3PreparationOwner : IRestrictedOperationOwner, IDisposabl
         }
 
         var outcome = _integrated?.Release(correlation) ?? _scope!.ReleaseHeld(held, correlation);
+        if (outcome.GenerationRefusal is not RestrictedRefusalReason.None)
+        {
+            // Q10 mandatory non-waiver: the fresh active-generation reread
+            // refused before any ReleaseRequest existed. Submit the existing
+            // stop path with the original context and C3 authority; the
+            // release verdict stays Refused/NotCommitted regardless of the
+            // stop outcome, retained stopping authority is unchanged and no
+            // newer generation is adopted.
+            _ = StopCore(RestrictedStopReason.Invalidation);
+            return RefusedResult(outcome.GenerationRefusal);
+        }
         if (!outcome.Accepted || outcome.Decision is null)
         {
             return new RestrictedOwnerReleaseResult(RestrictedReleaseKind.Unknown,
