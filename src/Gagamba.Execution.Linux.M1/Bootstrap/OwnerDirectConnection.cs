@@ -12,10 +12,19 @@ internal sealed class OwnerDirectConnection : IDisposable
     internal OwnerProtocolChannel Channel { get; }
     internal OwnerSafetyMonitor Safety { get; }
     private OwnerDirectConnection(OwnerProtocolChannel channel,OwnerSafetyMonitor safety) {Channel=channel;Safety=safety;}
-    internal static OwnerDirectConnection Accept(OwnerPreparationSpecification request,OwnerProtocolChannel recovery)
+    internal static OwnerDirectConnection Accept(OwnerPreparationSpecification request,OwnerProtocolChannel recovery,
+        OwnerAuthorityContext authority)
     {
         var identity=request.DirectIdentity!;
         identity.Controller.Validate(); identity.Recovery.Validate();
+        // Retention classification and wire shape must agree. This is a refusal
+        // check, not a new grant: a qualified association cannot proceed without
+        // the owner's first retained installation, and a legacy association cannot
+        // borrow qualified authority from a caller-chosen context.
+        if(identity.InstallationIdentity is not null && authority is not OwnerAuthorityContext.Qualified)
+            throw new IOException("qualified direct association lost retained owner installation authority");
+        if(identity.InstallationIdentity is null && authority is not OwnerAuthorityContext.Legacy)
+            throw new IOException("unqualified direct association cannot carry retained installed authority");
         recovery.RecoveryOnly=true;
         // The concrete parent is the trusted recovery; never infer controller authority from parentage.
         if(identity.Recovery.Pid!=RecoveryInterop.GetParentPid() || identity.Recovery!=(DirectProcessIdentity.Current() with {Pid=identity.Recovery.Pid})
@@ -80,13 +89,20 @@ internal sealed class OwnerDirectConnection : IDisposable
                         listener.SealAssociation();
                         var channel=new OwnerProtocolChannel(session,request.ExecutionId,request.LeaseGeneration){InstallationOwner=identity.InstallationIdentity is null?null:true};
                         safety.BindController(channel);
-                        if(identity.InstallationIdentity is { } expected)
+                        if(identity.InstallationIdentity is not null)
                         {
+                            if(authority is not OwnerAuthorityContext.Qualified qualified)
+                                throw new IOException("qualified direct association lost retained owner installation authority");
                             long echoDeadline=Math.Min(request.ExpiresAtNs,InstallationDeadline.Now+5_000_000_000L);
                             void Service() {if(safety.StopLatched) throw new IOException("owner echo stopped");}
-                            var installed=InstallationDeadline.Verify(()=>Installed.LoadedInstallation.Verify("owner",expected),echoDeadline,Service);
+                            var installed=InstallationDeadline.Verify(
+                                ()=>Installed.LoadedInstallation.Verify("owner",qualified.Identity),echoDeadline,Service);
                             Service();
-                            if(!channel.TrySend(OwnerProtocolMessageType.OwnerInstallationEcho,InstallationWire.Echo(installed.Identity,1),out _))
+                            // Compare the echo observation to the first retained tuple
+                            // (identity, qualification id and raw record hash). Never
+                            // adopt the later observation in its place.
+                            qualified.RequireEcho(installed.Selection);
+                            if(!channel.TrySend(OwnerProtocolMessageType.OwnerInstallationEcho,InstallationWire.Echo(qualified.Identity,1),out _))
                                 throw new IOException("qualified owner echo failed");
                         }
                         return new OwnerDirectConnection(channel,safety);

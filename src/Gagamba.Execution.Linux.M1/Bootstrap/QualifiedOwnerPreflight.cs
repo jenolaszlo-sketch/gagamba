@@ -10,7 +10,10 @@ internal static class QualifiedOwnerPreflight
     // The original recovery bootstrap already carries the S2 expectation. Verify the
     // actual role before taking the writer, without reinterpreting WriterReady=2.
     // DirectBootstrap/DirectSession subsequently authenticate C before echo 36.
-    internal static void Verify(OwnerPreparationSpecification request,OwnerProtocolChannel recovery)
+    // The actual verified selection is returned and retained for the rest of this
+    // owner process; it is never reconstructed from the wire or replaced by a later
+    // echo.
+    internal static OwnerAuthorityContext Verify(OwnerPreparationSpecification request,OwnerProtocolChannel recovery)
     {
         var identity=request.DirectIdentity!;identity.Recovery.Validate();
         if(identity.Recovery.Pid!=RecoveryInterop.GetParentPid() ||
@@ -28,6 +31,8 @@ internal static class QualifiedOwnerPreflight
             if(DirectUnix.Poll(ref poll,(UIntPtr)1,0)<0 || poll.Revents!=0)
                 throw new IOException("pre-writer stop or premature control");
         }
-        _=InstallationDeadline.Verify(()=>LoadedInstallation.Verify("owner",identity.InstallationIdentity),deadline,Service);
+        var installation=InstallationDeadline.Verify(
+            ()=>LoadedInstallation.Verify("owner",identity.InstallationIdentity),deadline,Service);
+        return OwnerAuthorityContext.Qualified.FromVerified(installation);
     }
 }

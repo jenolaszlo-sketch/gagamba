@@ -43,6 +43,7 @@ internal sealed class HeldReleasePhase
     private readonly long _setupDeadline;
     private readonly long _overallDeadline;
     private bool _pendingAbortHeld;
+    private readonly OwnerAuthorityContext _authority;
     private readonly OwnerSafetyMonitor? _safety;
 
     internal HeldReleasePhase(
@@ -56,8 +57,14 @@ internal sealed class HeldReleasePhase
         PreparedTransaction capability,
         long setupDeadline,
         long overallDeadline,
+        OwnerAuthorityContext authority,
         OwnerSafetyMonitor? safety = null)
     {
+        // Retention must survive the in-process handoff to HELD. This is a
+        // consistency refusal only; P1 does not consume the context for release.
+        if(request.DirectIdentity?.InstallationIdentity is not null && authority is not OwnerAuthorityContext.Qualified)
+            throw new InvalidDataException("qualified HELD phase requires retained owner installation authority");
+        _authority = authority;
         _safety = safety;
         _request = request;
         _channel = channel;
@@ -82,6 +89,8 @@ internal sealed class HeldReleasePhase
         };
         safety?.BindArbiter(_arbiter);
     }
+
+    internal OwnerAuthorityContext Authority => _authority;
 
     /// <summary>Sends the owner-origin HELD establishment frame, then serves
     /// exactly one bounded request at a time until abort, controller loss or

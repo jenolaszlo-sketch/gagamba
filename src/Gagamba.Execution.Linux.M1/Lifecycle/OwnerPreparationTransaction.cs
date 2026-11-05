@@ -41,13 +41,35 @@ internal static class OwnerPreparationTransaction
             return 20;
         }
 
-        if(request.DirectIdentity is {InstallationIdentity:not null}) QualifiedOwnerPreflight.Verify(request,channel);
-        else if(request.DirectIdentity is not null) request.DirectIdentity.Runtime.VerifyCurrent();
-        return RunTransaction(request, channel);
+        OwnerAuthorityContext authority;
+        if(request.DirectIdentity is {InstallationIdentity:not null})
+            authority=QualifiedOwnerPreflight.Verify(request,channel);
+        else
+        {
+            if(request.DirectIdentity is not null) request.DirectIdentity.Runtime.VerifyCurrent();
+            authority=OwnerAuthorityContext.LegacyContext;
+        }
+
+        return RunTransaction(request, channel, authority);
     }
 
-    private static int RunTransaction(OwnerPreparationSpecification request, OwnerProtocolChannel channel)
+    private static int RunTransaction(OwnerPreparationSpecification request, OwnerProtocolChannel channel,
+        OwnerAuthorityContext authority)
     {
+        // P1 refuses a retention/wire mismatch before any journal, writer,
+        // allocation or staging effect. Context retention alone is not a grant.
+        if(request.DirectIdentity?.InstallationIdentity is not null && authority is not OwnerAuthorityContext.Qualified)
+        {
+            SendAbort(channel, "owner retained installation authority is unavailable");
+            return 20;
+        }
+
+        if(request.DirectIdentity?.InstallationIdentity is null && authority is OwnerAuthorityContext.Qualified)
+        {
+            SendAbort(channel, "owner retained installation authority does not match the request");
+            return 20;
+        }
+
         using var storage = new JournalFileStorage();
 #if !GAGAMBA_PRODUCTION
         if(Int01Qualification.Is(request.QualificationFault,"integrated-ambiguous-intent"))
@@ -94,7 +116,8 @@ internal static class OwnerPreparationTransaction
                 return 24;
             }
 
-            using var direct = request.DirectIdentity is null ? null : OwnerDirectConnection.Accept(request,channel);
+            using var direct = request.DirectIdentity is null ? null :
+                OwnerDirectConnection.Accept(request,channel,authority);
             using var safety = direct?.Safety;
 #if !GAGAMBA_PRODUCTION
             var fault = request.QualificationFault;
@@ -448,7 +471,8 @@ internal static class OwnerPreparationTransaction
                 // decision instead of aborting unconditionally.
                 var exitCode = new HeldReleasePhase(
                         request, controllerChannel, launcher, heldExecution, primaryLease,
-                        journal, activeWriter, publication.Capability, setupDeadline, overallDeadline, safety)
+                        journal, activeWriter, publication.Capability, setupDeadline, overallDeadline,
+                        authority, safety)
                     .Run(launch.CoordinatorStatusFrame);
                 publication.Capability.Dispose();
                 GC.KeepAlive(store);
