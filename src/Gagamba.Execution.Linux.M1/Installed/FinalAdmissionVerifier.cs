@@ -111,6 +111,18 @@ internal static class FinalAdmissionVerifier
                 throw new InvalidDataException("final admission is unavailable: " + ex.Message, ex);
             }
         }
+
+#if !GAGAMBA_PRODUCTION
+        // Deterministic tests need protected-verification-shaped evidence on a
+        // host without provisioned protected stores. Excluded from Release: the
+        // production gate still obtains its only grant from VerifyInstalled.
+        internal static Grant ForTest(FinalAdmissionBinding binding, InstalledResult selection)
+        {
+            ArgumentNullException.ThrowIfNull(binding);
+            ArgumentNullException.ThrowIfNull(selection);
+            return new Grant(binding, selection);
+        }
+#endif
     }
 
     internal static Grant VerifyInstalled(InstalledResult selection) => Grant.VerifyInstalled(selection);

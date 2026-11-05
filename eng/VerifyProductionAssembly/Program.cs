@@ -51,6 +51,7 @@ var coreTypes = new HashSet<string>(StringComparer.Ordinal)
     "Gagamba.Execution.Linux.M1.Bootstrap.OwnerDirectConnection",
     "Gagamba.Execution.Linux.M1.Bootstrap.IntegratedRecoveryHost",
     "Gagamba.Execution.Linux.M1.Lifecycle.StopwatchDomainClock",
+    "Gagamba.Execution.Linux.M1.Lifecycle.OwnerManifestAdmissionGate",
 };
 // Exact case/stage/evidence strings taken from Bootstrap/Int01QualificationFault.cs.
 var faultStrings = new[]
@@ -72,6 +73,11 @@ var forbiddenProdStrings = new[]
     "NotAttemptedStopTestFixture", "Int01QualificationFault", "Int01Qualification",
     "CopyTestHooks", "BarrierDeathException", "QualificationNativeStop",
     "QualificationBeforeCaptureStore", "QualificationBeforeRename",
+};
+// Debug-only authority factories must be absent from the production candidate.
+var forbiddenAuthorityFactories = new[]
+{
+    "Grant::ForTest", "Qualified::ForTest",
 };
 
 using var stream = File.OpenRead(path);
@@ -115,6 +121,11 @@ if (production)
 {
     if (foundHookTypes.Length > 0) errors.Add("qualification hook types remain: " + string.Join(", ", foundHookTypes));
     if (foundHookProperties.Length > 0) errors.Add("qualification hook properties remain: " + string.Join(", ", foundHookProperties));
+    var foundAuthorityFactories = forbiddenAuthorityFactories
+        .Where(label => methodBodies.Any(body => body.Name == label))
+        .OrderBy(x => x, StringComparer.Ordinal).ToArray();
+    if (foundAuthorityFactories.Length > 0)
+        errors.Add("debug-only authority factories remain: " + string.Join(", ", foundAuthorityFactories));
     var forbiddenMetadata = metadataNames.Where(IsForbiddenName).Distinct(StringComparer.Ordinal).OrderBy(x => x, StringComparer.Ordinal).ToArray();
     if (forbiddenMetadata.Length > 0) errors.Add("forbidden metadata names/references: " + string.Join(", ", forbiddenMetadata));
     var forbiddenUserStrings = userStrings.Where(s => faultStrings.Contains(s, StringComparer.Ordinal) ||

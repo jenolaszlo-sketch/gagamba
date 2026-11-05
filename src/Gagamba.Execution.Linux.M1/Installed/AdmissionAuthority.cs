@@ -39,7 +39,10 @@ internal static class AdmissionAuthority
         var manifest = selection.Manifest;
         var record = binding.Record;
         var selector = binding.Selector;
-        return selection.State == InstalledState.Qualified && manifest is not null &&
+        return selector.Accepted &&
+            record.Acceptance == "final-native-accepted" &&
+            record.BuildConfiguration == "Production" &&
+            selection.State == InstalledState.Qualified && manifest is not null &&
             selection.Identity is not null &&
             selection.QualificationId == record.QualificationId &&
             selection.QualificationRecordSha256 == record.QualificationRecordSha256 &&

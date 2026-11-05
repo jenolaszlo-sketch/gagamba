@@ -56,15 +56,26 @@ internal static class OwnerPreparationTransaction
     private static int RunTransaction(OwnerPreparationSpecification request, OwnerProtocolChannel channel,
         OwnerAuthorityContext authority)
     {
-        // P1 refuses a retention/wire mismatch before any journal, writer,
+        // P1/P2 refuse a retention/wire mismatch before any journal, writer,
         // allocation or staging effect. Context retention alone is not a grant.
-        if(request.DirectIdentity?.InstallationIdentity is not null && authority is not OwnerAuthorityContext.Qualified)
+        // A qualified direct request must also carry the actual first verified
+        // loaded installation, not merely a context-shaped object.
+        if(request.DirectIdentity?.InstallationIdentity is not null)
         {
-            SendAbort(channel, "owner retained installation authority is unavailable");
-            return 20;
-        }
+            if(authority is not OwnerAuthorityContext.Qualified retained)
+            {
+                SendAbort(channel, "owner retained installation authority is unavailable");
+                return 20;
+            }
 
-        if(request.DirectIdentity?.InstallationIdentity is null && authority is OwnerAuthorityContext.Qualified)
+            try { _=retained.RequireLoadedInstallation(); }
+            catch(InvalidDataException)
+            {
+                SendAbort(channel, "owner retained installation authority is unavailable");
+                return 20;
+            }
+        }
+        else if(authority is OwnerAuthorityContext.Qualified)
         {
             SendAbort(channel, "owner retained installation authority does not match the request");
             return 20;
@@ -379,6 +390,32 @@ internal static class OwnerPreparationTransaction
             {
                 SendAbort(channel, "manifest authorization identity does not match the owner transaction");
                 return 39;
+            }
+
+            // P2: a new qualified manifest authority requires a fresh protected
+            // final-admission grant bound to the owner's first retained S2
+            // selection. The manifest is now known, and this refusal precedes
+            // the Prepared transition, capability mint and publisher call.
+            // Effects already performed above (journal, writer, allocation and
+            // staging) are unchanged and remain P4 sink obligations.
+            if(request.DirectIdentity?.InstallationIdentity is not null)
+            {
+                if(authority is not OwnerAuthorityContext.Qualified admitted)
+                {
+                    SendAbort(controllerChannel, "owner retained installation authority is unavailable");
+                    return 47;
+                }
+
+                if(!OwnerManifestAdmissionGate.TryRequire(admitted, out var admissionError))
+                {
+                    SendAbort(controllerChannel, $"owner final admission refused: {admissionError}");
+                    return 47;
+                }
+            }
+            else if(authority is not OwnerAuthorityContext.Legacy)
+            {
+                SendAbort(controllerChannel, "owner manifest authority context is invalid");
+                return 47;
             }
 
             var description = new OwnerPreparedDescription(

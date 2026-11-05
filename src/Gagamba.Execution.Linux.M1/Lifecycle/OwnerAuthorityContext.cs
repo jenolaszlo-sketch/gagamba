@@ -44,8 +44,13 @@ internal abstract class OwnerAuthorityContext
         internal string QualificationRecordSha256 => Selection.QualificationRecordSha256 ??
             throw new InvalidDataException("retained qualification record hash is absent");
 
-        internal LoadedInstallation Installation => _installation ??
-            throw new InvalidOperationException("retained selection has no loaded installation");
+        internal LoadedInstallation Installation => RequireLoadedInstallation();
+
+        /// <summary>Require the actual first verified installation object. P2
+        /// uses this to enter the protected final-admission verifier; a context
+        /// shaped for tests without a verified installation cannot supply it.</summary>
+        internal LoadedInstallation RequireLoadedInstallation() => _installation ??
+            throw new InvalidDataException("retained qualified selection has no verified loaded installation");
 
         internal static Qualified FromVerified(LoadedInstallation installation) =>
             new(installation, installation.Selection);
