@@ -106,6 +106,22 @@ Commands were run from `C:\Users\Laszlos\source\repos\Gagamba` on the host above
 
 The reference full-run baseline was **1,276 passed / 331 skipped / 0 failed (1,607 total)**. P2 adds exactly 14 deterministic tests: **1,290 / 331 / 0 (1,621)**. The 331 native skips were not executed and are not passes.
 
+### 6.1 Executed commands
+
+```text
+dotnet build tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Debug
+dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Debug --no-build --filter "FullyQualifiedName~OwnerManifestAdmissionGateTests"
+dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Debug --no-build --filter "FullyQualifiedName~OwnerAuthorityContextTests|FullyQualifiedName~OwnerManifestAdmissionGateTests|FullyQualifiedName~FinalAcceptanceTests|FullyQualifiedName~ReleaseGenerationGateTests|FullyQualifiedName~InstallationWireTests|FullyQualifiedName~RecoveryB2Tests|FullyQualifiedName~DirectAuthenticationTests|FullyQualifiedName~ReleaseArbiterTests"
+dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Debug --no-build
+dotnet build src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj -c Release
+dotnet build src/Gagamba.Execution.Linux.M1.Owner/Gagamba.Execution.Linux.M1.Owner.csproj -c Release
+dotnet build src/Gagamba.Execution.Linux.M1.Recovery/Gagamba.Execution.Linux.M1.Recovery.csproj -c Release
+dotnet run --project eng/VerifyProductionAssembly/VerifyProductionAssembly.csproj -c Release --no-launch-profile -- --production "src/Gagamba.Execution.Linux.M1/bin/Release/net10.0/Gagamba.Execution.Linux.M1.dll"
+dotnet run --project eng/VerifyProductionAssembly/VerifyProductionAssembly.csproj -c Release --no-launch-profile -- --production "src/Gagamba.Execution.Linux.M1/bin/Debug/net10.0/Gagamba.Execution.Linux.M1.dll"
+```
+
+The last command is the Debug negative control; it fails as expected and names `Grant::ForTest, Qualified::ForTest`.
+
 ### 6.1 Test-to-claim mapping
 
 | Test | P2 claim |
