@@ -1,5 +1,7 @@
 # Current work queue
 
+> **Q10 PRE-RELEASE ACTIVE-GENERATION REREAD IMPLEMENTED (2026-11-05).** Implementation `7251c37...`: fresh trusted S2 reread inside the send critical section; refusal prevents the request and submits the existing stop path with original context/C3; 9 deterministic gate tests, acceptance 69/69, full Windows M1 runner 1266/331/0 (1597). Next: independent Terra High Q1 against [evidence](evidence/rc2b-06-b6-q10-release-generation-01.md) and the [reviewer handoff](reviews/rc2b-06-b6-q10-release-generation-01-terra-q1-handoff.md). Native qualification rows remain pending and are not counted as passes. No push.
+>
 > **GAGAMBA-WORKTREE-CONSOLIDATION-01 COMPLETE (2026-11-05).** One canonical checkout on `main`; 73 linked worktrees retired after verified inventory, protection and supersession analysis; 99 branches preserved; recovery package with verified bundles at `Solo/gagamba-worktree-consolidation-01-evidence-glm-20261105T130733Z` (73-entry SHA-256 manifest). Verification at `cdf577a`: Debug build 0/0, `FinalAcceptanceTests` 69/69, full Windows M1 runner 1257/331/0 (1588). No new worktree may be created without explicit owner authorization (see AGENTS.md policy). Next milestone unchanged: native Mechanism B qualification per the Q1 blocked-by-environment disposition.
 >
 > **B6-F02 MECHANISM B IMPLEMENTED WITH QUALIFICATIONS — READY FOR INDEPENDENT Q1 (2026-11-05).**
