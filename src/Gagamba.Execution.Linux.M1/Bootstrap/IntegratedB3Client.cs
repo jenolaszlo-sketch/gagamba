@@ -52,6 +52,14 @@ internal sealed class IntegratedB3Client : IDisposable
         var integrated=profile.IntegratedRecovery ?? throw new IOException("Missing integrated experimental pins");
         // A qualified request has no alternate expected-identity provider.
         var installed=profile.QualifiedInstallation ? Installed.LoadedInstallation.Verify("provider") : null;
+        if(installed is not null)
+        {
+            // Final admission is separate from S2 Qualified and is checked before
+            // RecoveryConnection.Start can spawn any recovery or owner process.
+            var finalAdmission=installed.VerifyFinalAdmission();
+            if(!Installed.AdmissionAuthority.IsFinalAdmissionEligible(installed.Selection,finalAdmission))
+                throw new IOException("final admission unavailable");
+        }
         var config=new RecoveryConfiguration((ushort)(installed is null?1:2),execution,lease,Guid.NewGuid(),Environment.ProcessId,RecoveryInterop.GetUid(),[],
             integrated.Recovery,integrated.Owner,integrated.EvidenceDirectory,profile.DelegatedParentPath,
             new IntegratedRecoverySpecification(profile with {IntegratedRecovery=null},issuer,generation,acceptedAt,expiresAt,

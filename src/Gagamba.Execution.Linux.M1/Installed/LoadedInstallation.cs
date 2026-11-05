@@ -26,8 +26,16 @@ internal sealed class LoadedInstallation
     internal void Revalidate()
     {
         var next=InstalledFileSystem.VerifyActive();
-        if(next.State!=InstalledState.Qualified || next.Identity!=Identity || next.QualificationId!=Selection.QualificationId)
+        if(next.State!=InstalledState.Qualified || next.Identity!=Identity || next.QualificationId!=Selection.QualificationId
+            || next.QualificationRecordSha256!=Selection.QualificationRecordSha256)
             throw new InvalidDataException("original S2 selection no longer qualified");
+    }
+    internal FinalAdmissionVerifier.Grant VerifyFinalAdmission()
+    {
+        if(Selection.State!=InstalledState.Qualified || Selection.QualificationId is null
+            || Selection.QualificationRecordSha256 is null)
+            throw new InvalidDataException("final admission requires a qualified S2 selection");
+        return FinalAdmissionVerifier.VerifyInstalled(Selection);
     }
     internal PinnedExecutable Executable(string role)
     {

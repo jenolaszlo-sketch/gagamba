@@ -82,9 +82,11 @@ internal enum InstalledState { Unavailable, Unqualified, InstalledUnqualified, Q
 
 internal sealed class InstalledResult
 {
-    private InstalledResult(InstalledState state, string reason, string? digest = null, string? qualificationId = null, InstalledManifest? manifest = null)
-        => (State, Reason, Digest, QualificationId, Manifest, Identity) =
-            (state, reason, digest, qualificationId, manifest, manifest is null ? null : InstallationIdentity.Project(manifest));
+    private InstalledResult(InstalledState state, string reason, string? digest = null, string? qualificationId = null,
+        string? qualificationRecordSha256 = null, InstalledManifest? manifest = null)
+        => (State, Reason, Digest, QualificationId, QualificationRecordSha256, Manifest, Identity) =
+            (state, reason, digest, qualificationId, qualificationRecordSha256, manifest,
+                manifest is null ? null : InstallationIdentity.Project(manifest));
 
     internal InstalledManifest? Manifest { get; }
     internal InstallationIdentity? Identity { get; }
@@ -92,8 +94,12 @@ internal sealed class InstalledResult
     internal string Reason { get; }
     internal string? Digest { get; }
     internal string? QualificationId { get; }
+    // The raw receipt-selected record hash is retained so final admission can bind
+    // to the exact S2 approval rather than only its identifier.
+    internal string? QualificationRecordSha256 { get; }
     internal static InstalledResult Unavailable(string reason) => new(InstalledState.Unavailable,reason);
     internal static InstalledResult Unqualified(string reason) => new(InstalledState.Unqualified,reason);
     internal static InstalledResult Fresh(InstalledManifest manifest) => new(InstalledState.InstalledUnqualified,"no selected acceptance",manifest.Digest);
-    internal static InstalledResult Qualified(InstalledManifest manifest,string id) => new(InstalledState.Qualified,"accepted installed record",manifest.Digest,id,manifest);
+    internal static InstalledResult Qualified(InstalledManifest manifest,string id,string recordSha256) =>
+        new(InstalledState.Qualified,"accepted installed record",manifest.Digest,id,recordSha256,manifest);
 }

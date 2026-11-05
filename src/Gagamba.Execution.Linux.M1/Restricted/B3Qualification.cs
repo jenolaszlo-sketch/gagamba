@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Security.Cryptography;
 using Gagamba.Execution.Linux.M1.Bootstrap;
 using Gagamba.Execution.Linux.M1.Execution;
+using Gagamba.Execution.Linux.M1.Installed;
 using Gagamba.Execution.Linux.M1.Launch;
 using Gagamba.Execution.Linux.M1.Lifecycle;
 using Gagamba.Execution.Linux.M1.Native;
@@ -89,6 +90,13 @@ internal static class B3Qualification
             if (RecoveryInterop.GetUid() == 0)
             {
                 return new B3QualificationCreation(null, RestrictedRefusalReason.UnqualifiedInstallation);
+            }
+
+            // A qualified installation is the integrated installed profile. The
+            // legacy nonintegrated owner path is not a fallback for production.
+            if (profile.QualifiedInstallation && profile.IntegratedRecovery is null)
+            {
+                return new B3QualificationCreation(null, RestrictedRefusalReason.InvalidBinding);
             }
 
             foreach (var path in new[] { profile.OwnerDllPath, profile.DelegatedParentPath, profile.SourceRootPath,
@@ -174,6 +182,16 @@ internal static class B3Qualification
             if(profile.QualificationFault is not null && profile.IntegratedRecovery is null)
                 return new B3QualificationCreation(null, RestrictedRefusalReason.UnqualifiedInstallation);
 #endif
+            // Final acceptance is an additional eligibility gate for the installed
+            // profile. It is checked before B3PreparationOwner can create its journal
+            // directory or any operation/session authority.
+            if (profile.QualifiedInstallation)
+            {
+                var installed = LoadedInstallation.Verify("provider");
+                var finalAdmission = installed.VerifyFinalAdmission();
+                if (!AdmissionAuthority.IsFinalAdmissionEligible(installed.Selection, finalAdmission))
+                    return new B3QualificationCreation(null, RestrictedRefusalReason.UnqualifiedInstallation);
+            }
             var provider = new RestrictedProviderDescriptor();
             var owner = new B3PreparationOwner(profile, provider);
             return new B3QualificationCreation(

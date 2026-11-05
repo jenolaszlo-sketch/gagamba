@@ -46,7 +46,7 @@ internal static partial class InstalledFileSystem
         public uint Permissions => Mode & 0xFFF;
     }
 
-    private sealed class Fd : IDisposable
+    internal sealed class Fd : IDisposable
     {
         public int Value { get; private set; }
         public Snapshot Snapshot { get; }
@@ -137,7 +137,9 @@ internal static partial class InstalledFileSystem
             InstalledPayload.CheckDependencies(manifest, scan.Configs);
 
             // A fresh installation has no qualification association and is never Qualified.
-            if (receipt.QualificationId is null || receipt.QualificationRecordSha256 is null)
+            var qualificationId = receipt.QualificationId;
+            var qualificationRecordSha256 = receipt.QualificationRecordSha256;
+            if (qualificationId is null || qualificationRecordSha256 is null)
             {
                 RecheckSelectors(root.Value, installations.Value, qualifications.Value,
                     digest, rootBefore, installationsBefore, qualificationsBefore, activeBefore,
@@ -156,7 +158,7 @@ internal static partial class InstalledFileSystem
             RecheckSelectors(root.Value, installations.Value, qualifications.Value,
                 digest, rootBefore, installationsBefore, qualificationsBefore, activeBefore,
                 generationBefore, manifestBefore, receiptBefore, recordName, recordBefore);
-            return InstalledResult.Qualified(manifest, receipt.QualificationId);
+            return InstalledResult.Qualified(manifest, qualificationId, qualificationRecordSha256);
         }
         catch (NotSupportedException ex) { return InstalledResult.Unavailable(ex.Message); }
         catch (DllNotFoundException ex) { return InstalledResult.Unavailable("Native verification primitive unavailable: " + ex.Message); }
@@ -332,6 +334,43 @@ internal static partial class InstalledFileSystem
             return current;
         }
         catch { current.Dispose(); throw; }
+    }
+
+    internal sealed class ProtectedDirectory : IDisposable
+    {
+        private readonly Fd _fd;
+
+        internal ProtectedDirectory(Fd fd) => _fd = fd;
+
+        internal Snapshot Snapshot => _fd.Snapshot;
+
+        internal byte[] ReadFile(string name, int maxBytes, out Snapshot snapshot)
+        {
+            if (name.Length is < 1 or > 255 || name is "." or ".." || name.Contains('/') || name.Contains('\\') || name.Contains('\0'))
+                throw Invalid("Protected file name is not a bounded single component.");
+            return ReadTrustedFile(_fd.Value, name, 0, 0, 0x124, maxBytes, true, out snapshot);
+        }
+
+        public void Dispose() => _fd.Dispose();
+    }
+
+    // Final-acceptance stores are separate from the S2 generation inventory. Their
+    // leaf directories are managed 0755; every ancestor is checked root-owned and
+    // not group/other writable by OpenAbsoluteDirectory.
+    internal static ProtectedDirectory OpenProtectedDirectory(string absolutePath)
+    {
+        EnsureLinuxX64();
+        var fd = OpenAbsoluteDirectory(absolutePath, trustedAncestors: true);
+        try
+        {
+            RequireDirectory(fd.Snapshot, trusted: true, uid: 0, requireExact0755: true);
+            return new ProtectedDirectory(fd);
+        }
+        catch
+        {
+            fd.Dispose();
+            throw;
+        }
     }
 
     private static Fd OpenDirectory(int parentFd, string name, bool trusted, uint? uid = null,
