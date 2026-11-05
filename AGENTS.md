@@ -32,3 +32,10 @@ staging trees or change sibling repositories. Keep native helpers and test-only
 unsandboxed controls outside public production execution paths. Preserve the
 original proposal verbatim. Run appropriate focused tests and keep planned work
 distinct from measured guarantees.
+
+Repository layout policy: Gagamba uses one canonical checkout on main. No linked
+worktrees and no parallel checkout proliferation. Independent reviewers use
+read-only access to canonical main or external evidence packages. Temporary
+branches require explicit exceptional authorization. Preserve unique work before
+retiring historical references. No history rewriting or force operations. No
+push without authorization.
