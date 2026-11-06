@@ -25,6 +25,11 @@ internal static class QualifiedRecoveryEcho
                 config.Owner.Verify("Gagamba.Execution.Linux.M1.Owner")!=Path.Combine(selection.Executable("owner").Directory,"Gagamba.Execution.Linux.M1.Owner.dll") ||
                 (config.Integrated is not null && config.Integrated.Runtime!=selection.Runtime()))
                 throw new IOException("verified role launch binding refused");
+            // Normal installed execution must be admitted before recovery opens
+            // the delegated parent or creates its initial writer/intent. B2
+            // evidence-only startup has no operation admission transition.
+            if(config.Integrated is not null)
+                RecoveryInitializationAdmission.Require(selection,expected);
             selection.OwnerLaunch=QualifiedLauncher.InstalledPlan.Prepare(selection,"owner");
             return selection;
         },deadline,Service);

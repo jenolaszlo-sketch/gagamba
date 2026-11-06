@@ -18,6 +18,12 @@ internal static class IntegratedRecoveryHost
     // One bounded preparation worker; this thread remains the native safety monitor and original reaper.
     internal static int Run(RecoveryConfiguration config,M1RecoveryScope scope,RecoveryWire wire,int control,int controllerFd,string ownerPath,LoadedInstallation? installed=null)
     {
+        // Local enforcement also covers direct callers omitting the retained
+        // context. This applies only to new initialization, never cleanup.
+        RecoveryInitializationAdmission.RequireIntegrated(config,installed,control,controllerFd);
+#if !GAGAMBA_PRODUCTION
+        RecoveryInitializationTestFixture.BeforeInitialization.Value?.Invoke();
+#endif
         var spec=config.Integrated!;
         if(config.Version==1) spec.Runtime.VerifyCurrent();
         foreach(var directory in new[] {spec.Profile.SourceRootPath,spec.Profile.StagingParentPath,spec.Profile.JournalDirectory,config.EvidenceDirectory})

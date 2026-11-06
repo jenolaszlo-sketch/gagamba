@@ -270,6 +270,11 @@ internal sealed class B3PreparationOwner : IRestrictedOperationOwner, IDisposabl
 
     internal B3PreparationOwner(B3FixtureProfile profile, RestrictedProviderDescriptor provider)
     {
+        if (profile.QualifiedInstallation && profile.IntegratedRecovery is null)
+        {
+            throw new InvalidOperationException("Qualified B3 construction requires the integrated recovery topology.");
+        }
+
         _profile = profile;
         if(profile.IntegratedRecovery is null) _scope=new M1RecoveryScope();
         else _integrated=new IntegratedB3Client();
