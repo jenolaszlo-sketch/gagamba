@@ -67,14 +67,19 @@ internal sealed class HeldReleasePhase
     {
         // Retention must survive the in-process handoff to HELD. This is a
         // consistency refusal only; P1 does not consume the context for release.
-        if(request.DirectIdentity?.InstallationIdentity is not null && authority is not OwnerAuthorityContext.Qualified)
-            throw new InvalidDataException("qualified HELD phase requires retained owner installation authority");
-        else if (authority is not OwnerAuthorityContext.Legacy)
+        if (request.DirectIdentity?.InstallationIdentity is not null)
+        {
+            if (authority is not OwnerAuthorityContext.Qualified)
+                throw new InvalidDataException("qualified HELD phase requires retained owner installation authority");
+        }
+        else if (authority is not OwnerAuthorityContext.Qualified && authority is not OwnerAuthorityContext.Legacy)
+        {
             // P3 fail-closed: this phase retains only a qualified context or
             // the legacy unqualified context; a validation-shaped context has
             // no factory today and must refuse by construction.
             throw new InvalidDataException(
                 "held release phase requires a retained qualified or legacy owner authority context");
+        }
         _authority = authority;
         _safety = safety;
         _request = request;
