@@ -121,7 +121,7 @@ Commands run from `C:\Users\Laszlos\source\repos\Gagamba` on the host above.
 | Release `Gagamba.Execution.Linux.M1.Recovery` build | **0 warnings, 0 errors**; production verifier PASS |
 | Negative production-verifier control on the Debug assembly | FAIL as expected, including **`Grant::ForTest, Qualified::ForTest`** |
 
-Reference baseline full run: **1290 passed / 331 skipped / 0 failed (1621 total)**. This remediation adds exactly 5 deterministic tests: **1295 / 331 / 0 (1626)**. The 331 native skips were not executed and are **not** passes.
+Reference baseline full run: **1290 passed / 331 skipped / 0 failed (1621 total)**. This remediation adds exactly 5 deterministic tests: **1295 / 331 / 0 (1626)**. The `OwnerManifestAdmissionGateTests` class grew from 14 to 19 and the P1+P2 two-class subset from 24 to 29 (the prior producer focused filter reported 179 passed / 20 skipped / 199 total; P2-Q1 documented a one-test direct-vstest selection difference). The 331 native skips were not executed and are **not** passes.
 
 ### 6.1 Executed commands
 
