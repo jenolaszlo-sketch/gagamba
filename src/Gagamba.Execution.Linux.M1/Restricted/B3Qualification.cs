@@ -185,15 +185,18 @@ internal static class B3Qualification
             // Final acceptance is an additional eligibility gate for the installed
             // profile. It is checked before B3PreparationOwner can create its journal
             // directory or any operation/session authority.
+            LoadedInstallation? providerInstallation = null;
             if (profile.QualifiedInstallation)
             {
-                var installed = LoadedInstallation.Verify("provider");
-                var finalAdmission = installed.VerifyFinalAdmission();
-                if (!AdmissionAuthority.IsFinalAdmissionEligible(installed.Selection, finalAdmission))
+                providerInstallation = LoadedInstallation.Verify("provider");
+                var finalAdmission = providerInstallation.VerifyFinalAdmission();
+                if (!AdmissionAuthority.IsFinalAdmissionEligible(providerInstallation.Selection, finalAdmission))
                     return new B3QualificationCreation(null, RestrictedRefusalReason.UnqualifiedInstallation);
             }
             var provider = new RestrictedProviderDescriptor();
-            var owner = new B3PreparationOwner(profile, provider);
+            // Carry the original verified selection into the constructor's
+            // independent pre-effect check; never adopt a later observation.
+            var owner = new B3PreparationOwner(profile, provider, providerInstallation);
             return new B3QualificationCreation(
                 new RestrictedExecutionOperation(provider, owner), RestrictedRefusalReason.None, owner);
         }
@@ -269,12 +272,19 @@ internal sealed class B3PreparationOwner : IRestrictedOperationOwner, IDisposabl
     private RestrictedCleanup? _cleanup;
 
     internal B3PreparationOwner(B3FixtureProfile profile, RestrictedProviderDescriptor provider)
+        : this(profile, provider, null)
+    {
+    }
+
+    internal B3PreparationOwner(B3FixtureProfile profile, RestrictedProviderDescriptor provider,
+        LoadedInstallation? providerInstallation)
     {
         if (profile.QualifiedInstallation && profile.IntegratedRecovery is null)
         {
             throw new InvalidOperationException("Qualified B3 construction requires the integrated recovery topology.");
         }
 
+        B3ProviderAdmission.Require(profile, providerInstallation);
         _profile = profile;
         if(profile.IntegratedRecovery is null) _scope=new M1RecoveryScope();
         else _integrated=new IntegratedB3Client();

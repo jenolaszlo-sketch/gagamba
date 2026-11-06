@@ -67,7 +67,7 @@ public sealed class B3PreparationOwnerTopologyTests
     }
 
     [Fact]
-    public void IntegratedConstructorRemainsOnIntegratedClassification()
+    public void LegacyIntegratedConstructorRemainsOnIntegratedClassification()
     {
         var journalDirectory = Path.Combine(Path.GetTempPath(), "gagamba-f02-" + Guid.NewGuid().ToString("N"));
         var integrated = new B3IntegratedProfile(
@@ -77,7 +77,7 @@ public sealed class B3PreparationOwnerTopologyTests
             "evidence");
         try
         {
-            var owner = new B3PreparationOwner(Profile(journalDirectory, qualified: true, integrated: integrated),
+            var owner = new B3PreparationOwner(Profile(journalDirectory, qualified: false, integrated: integrated),
                 new RestrictedProviderDescriptor());
             Assert.True(Directory.Exists(journalDirectory));
             Assert.Null(typeof(B3PreparationOwner).GetField("_scope", BindingFlags.Instance | BindingFlags.NonPublic)!
