@@ -3,10 +3,13 @@ using Gagamba.Execution.Linux.M1.Installed;
 namespace Gagamba.Execution.Linux.M1.Lifecycle;
 
 /// <summary>
-/// P2 owner-side boundary for new qualified manifest authority. A qualified
-/// direct Start path may not reach the Prepared transition, capability mint or
-/// HELD publication without a fresh protected final-admission grant bound to
-/// the owner's first retained S2 selection.
+/// P2 owner-side boundary for new qualified authority. A qualified direct Start
+/// path must pass the same single decision twice: once before its first
+/// protected initialization effect (journal, writer, allocation, domain or
+/// staging) and again at the operation-bound manifest acceptance before the
+/// Prepared transition, capability mint or HELD publication. Both call sites
+/// obtain a fresh protected final-admission grant bound to the owner's first
+/// retained S2 selection; the second is not a reuse of the first.
 ///
 /// This is a refusal gate only. It reuses the existing protected
 /// <see cref="LoadedInstallation.VerifyFinalAdmission"/> and

@@ -74,6 +74,26 @@ internal static class OwnerPreparationTransaction
                 SendAbort(channel, "owner retained installation authority is unavailable");
                 return 20;
             }
+
+            // Owner sequencing clarification (GAGAMBA-RC2B-06-B6-ALT-B-P2-
+            // SEQUENCE-REM-01): qualified integrated execution requires valid
+            // final admission before its first protected initialization effect.
+            // This early check uses the same trusted S2/final-admission
+            // mechanisms as the operation-bound late check below, binds the
+            // original retained identity, qualification ID and record hash, and
+            // refuses here - before new JournalFileStorage, OwnershipJournal,
+            // TryAcquireWriter, ScopedAllocationContext.TryCreate,
+            // TryCreateDomain or staging - when evidence is missing,
+            // unavailable, malformed, withdrawn, stale or mismatched. It never
+            // accepts caller-supplied authority, a Boolean, a wire echo or a
+            // synthetic grant. The late check re-runs independently and
+            // refuses withdrawal or generation replacement that happens after
+            // this observation.
+            if(!OwnerManifestAdmissionGate.TryRequire(retained, out var initialAdmissionError))
+            {
+                SendAbort(channel, $"owner initial final admission refused: {initialAdmissionError}");
+                return 48;
+            }
         }
         else if(authority is OwnerAuthorityContext.Qualified)
         {
@@ -392,12 +412,14 @@ internal static class OwnerPreparationTransaction
                 return 39;
             }
 
-            // P2: a new qualified manifest authority requires a fresh protected
-            // final-admission grant bound to the owner's first retained S2
-            // selection. The manifest is now known, and this refusal precedes
-            // the Prepared transition, capability mint and publisher call.
-            // Effects already performed above (journal, writer, allocation and
-            // staging) are unchanged and remain P4 sink obligations.
+            // P2 (late, operation-bound) final-admission recheck. It is an
+            // independent fresh protected verification, not a reuse of the
+            // early result: the manifest is now known and this refusal precedes
+            // the Prepared transition, capability mint and publisher call. It
+            // still rejects withdrawal or generation replacement that occurred
+            // after the early check. Journal, writer, allocation, domain and
+            // staging effects already performed above remain P4 sink
+            // obligations; the validation context remains non-constructible.
             if(request.DirectIdentity?.InstallationIdentity is not null)
             {
                 if(authority is not OwnerAuthorityContext.Qualified admitted)

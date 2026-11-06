@@ -101,6 +101,10 @@ public sealed class OwnerManifestAdmissionGateTests
         type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
             .Single(constructor => constructor.GetParameters().Length == 0);
 
+    private static MethodBase SingleConstructor(Type type) =>
+        type.GetConstructors(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+            .Single();
+
     [Fact]
     public void ExactRetainedTupleWithProtectedGrantIsAccepted()
     {
@@ -223,8 +227,14 @@ public sealed class OwnerManifestAdmissionGateTests
         var journalConstructor = DefaultConstructor(typeof(JournalFileStorage));
 
         var gateOffsets = IlCallScanner.CallOffsets(runTransaction, gate);
-        Assert.Single(gateOffsets);
-        Assert.Single(IlCallScanner.CallOffsets(runTransaction, requireInstallation));
+        // Owner sequencing clarification: the same shared decision is required
+        // at two boundaries - the early pre-effect check and the operation-bound
+        // late recheck.
+        Assert.Equal(2, gateOffsets.Count);
+        var initialGate = gateOffsets.Min();
+        var operationBoundGate = gateOffsets.Max();
+        var requireOffsets = IlCallScanner.CallOffsets(runTransaction, requireInstallation);
+        Assert.Single(requireOffsets);
 
         var decodeOffsets = IlCallScanner.CallOffsets(runTransaction, decodeAuthorization);
         var publishOffsets = IlCallScanner.CallOffsets(runTransaction, publish);
@@ -233,14 +243,122 @@ public sealed class OwnerManifestAdmissionGateTests
         Assert.NotEmpty(publishOffsets);
         Assert.NotEmpty(journalOffsets);
 
-        // Ordering: protected context before the journal/writer, operation-bound
-        // final admission after the manifest is known, and before the mint.
-        Assert.True(IlCallScanner.CallOffsets(runTransaction, requireInstallation)[0] < journalOffsets[0],
+        // Ordering: protected context and the early final-admission check before
+        // the journal/writer, and the operation-bound final admission after the
+        // manifest is known and before the mint.
+        Assert.True(requireOffsets[0] < journalOffsets[0],
             "the verified installation must be required before journal construction");
-        Assert.True(gateOffsets[0] > decodeOffsets[0],
-            "the final-admission gate must follow manifest authorization decoding");
-        Assert.True(gateOffsets[0] < publishOffsets[0],
-            "the final-admission gate must precede capability publication");
+        Assert.True(initialGate > requireOffsets[0],
+            "the early final-admission check must follow the retained installation requirement");
+        Assert.True(initialGate < journalOffsets[0],
+            "the early final-admission check must precede journal construction");
+        Assert.True(operationBoundGate > decodeOffsets[0],
+            "the operation-bound final-admission gate must follow manifest authorization decoding");
+        Assert.True(operationBoundGate < publishOffsets[0],
+            "the operation-bound final-admission gate must precede capability publication");
+    }
+
+    [Fact]
+    public void InitialFinalAdmissionPrecedesEveryProtectedInitializationEffect()
+    {
+        // Instrumented effect boundaries: the production IL must call the early
+        // final-admission decision before any protected initialization effect,
+        // so a refusal there cannot perform the effect. This is a structural
+        // dominance check, not only the returned refusal value.
+        var runTransaction = Method(typeof(OwnerPreparationTransaction), "RunTransaction");
+        var gate = Method(typeof(OwnerManifestAdmissionGate), "TryRequire");
+        var gateOffsets = IlCallScanner.CallOffsets(runTransaction, gate);
+        Assert.Equal(2, gateOffsets.Count);
+        var initialGate = gateOffsets.Min();
+        var operationBoundGate = gateOffsets.Max();
+
+        var initializationEffects = new (string Name, MethodBase Method)[]
+        {
+            ("journal storage construction", DefaultConstructor(typeof(JournalFileStorage))),
+            ("ownership journal construction", SingleConstructor(typeof(OwnershipJournal))),
+            ("exclusive writer acquisition", Method(typeof(OwnershipJournal), "TryAcquireWriter")),
+            ("scoped allocation context", Method(typeof(ScopedAllocationContext), "TryCreate")),
+            ("domain creation", Method(typeof(CgroupInterop), "TryCreateDomain")),
+            ("staging copy", Method(typeof(SafeCopyIn), "Prepare")),
+        };
+
+        foreach (var (name, effect) in initializationEffects)
+        {
+            var offsets = IlCallScanner.CallOffsets(runTransaction, effect);
+            Assert.NotEmpty(offsets);
+            Assert.True(initialGate < offsets.Min(),
+                $"the early final-admission check must precede {name}");
+        }
+
+        // The operation-bound recheck deliberately runs after initialization and
+        // guards the later Prepared/mint/HELD transition.
+        var publishOffsets = IlCallScanner.CallOffsets(runTransaction, Method(typeof(PreparationPublisher), "Publish"));
+        Assert.NotEmpty(publishOffsets);
+        Assert.True(operationBoundGate < publishOffsets.Min(),
+            "the operation-bound recheck must precede capability publication");
+    }
+
+    [Fact]
+    public void EarlyAdmissionAcceptedThenWithdrawalRefusesAtTheOperationBoundRecheck()
+    {
+        var selection = Bound();
+        var accepted = GrantFor(selection);
+
+        // Early observation: the retained tuple is eligible.
+        Assert.Null(Record.Exception(() =>
+            OwnerManifestAdmissionGate.RequireEligible(selection, accepted)));
+
+        // A later withdrawal produces a fresh ineligible grant. The same shared
+        // decision refuses; the accepted early result is never cached as
+        // manifest authority.
+        var withdrawn = FinalAdmissionVerifier.Grant.ForTest(
+            accepted.Binding with { Selector = accepted.Binding.Selector with { Accepted = false } },
+            accepted.Selection);
+        Assert.False(AdmissionAuthority.IsFinalAdmissionEligible(selection, withdrawn));
+        Assert.Throws<InvalidDataException>(() =>
+            OwnerManifestAdmissionGate.RequireEligible(selection, withdrawn));
+    }
+
+    [Fact]
+    public void EarlyGenerationAcceptedThenReplacementRefusesAtTheOperationBoundRecheck()
+    {
+        var selection = Bound();
+        var earlyGrant = GrantFor(selection);
+        Assert.Null(Record.Exception(() =>
+            OwnerManifestAdmissionGate.RequireEligible(selection, earlyGrant)));
+
+        // A replacement generation observed later cannot satisfy the retained
+        // selection, so the operation-bound recheck refuses the manifest grant.
+        var replacement = InstalledResult.Qualified(ChangedManifest(), "Q1", RecordHash);
+        var replacementGrant = GrantFor(replacement);
+        Assert.Throws<InvalidDataException>(() =>
+            OwnerManifestAdmissionGate.RequireEligible(selection, replacementGrant));
+    }
+
+    [Fact]
+    public void EarlyAdmissionAcceptedThenChangedQualificationIdRefusesAtTheOperationBoundRecheck()
+    {
+        var selection = Bound();
+        var earlyGrant = GrantFor(selection);
+        Assert.Null(Record.Exception(() =>
+            OwnerManifestAdmissionGate.RequireEligible(selection, earlyGrant)));
+
+        var replacement = InstalledResult.Qualified(Manifest(), "Q2", RecordHash);
+        Assert.Throws<InvalidDataException>(() =>
+            OwnerManifestAdmissionGate.RequireEligible(selection, GrantFor(replacement)));
+    }
+
+    [Fact]
+    public void InitialFinalAdmissionRefusesWithoutAProtectedInstallation()
+    {
+        // Correct controller/process authentication can produce a retained
+        // context shape, but the early boundary still requires the actual
+        // verified LoadedInstallation and refuses without it. No caller value,
+        // Boolean or wire echo substitutes for the protected verification.
+        var retained = OwnerAuthorityContext.Qualified.ForTest(Bound());
+
+        Assert.False(OwnerManifestAdmissionGate.TryRequire(retained, out var error));
+        Assert.StartsWith("UnqualifiedInstallation:", error, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -296,8 +414,12 @@ public sealed class OwnerManifestAdmissionGateTests
     }
 
     [Fact]
-    public void ManifestGateHasExactlyOneProductionCallSite()
+    public void ManifestGateIsCalledOnlyFromRunTransactionAtBothBoundaries()
     {
+        // Anti-bypass: no type other than the one transaction implementation may
+        // obtain the admission decision. The sequencing clarification adds a
+        // second call (the early pre-effect check) inside that same method, so
+        // the owning-method set is unchanged while the call count is now two.
         var gate = Method(typeof(OwnerManifestAdmissionGate), "TryRequire");
         var callSites = new List<string>();
         foreach (var type in typeof(OwnerManifestAdmissionGate).Assembly.GetTypes())
@@ -319,6 +441,9 @@ public sealed class OwnerManifestAdmissionGateTests
 
         Assert.Equal(new[] { "OwnerPreparationTransaction.RunTransaction" },
             callSites.OrderBy(site => site, StringComparer.Ordinal).ToArray());
+
+        var runTransaction = Method(typeof(OwnerPreparationTransaction), "RunTransaction");
+        Assert.Equal(2, IlCallScanner.CallOffsets(runTransaction, gate).Count);
     }
 
     [Fact]
