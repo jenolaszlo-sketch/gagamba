@@ -1,0 +1,65 @@
+# Alternative B P4 implementation handoff
+
+Date: 2026-11-06 (Asia/Manila)
+Investigation: GAGAMBA-RC2B-06-B6-ALT-B-P4-01
+Investigated source: `6480efaa305c7689cf387eaa100cdfe1ef1436ef`, tree `d85b7d630ac0958826f4e9199c4fa9e08bd5ea0c`, canonical `main`
+Status: **FIRST IMPLEMENTATION PACKAGE READY — PLANNING ONLY; NO PRODUCTION IMPLEMENTATION IN P4-01.**
+
+The [complete sink inventory](../evidence/rc2b-06-b6-alt-b-p4-01-sink-inventory.md) is the source/contract/probe basis. The [accepted plan](rc2b-06-b6-integrated-start-authority-impl-01.md), [owner design](../decisions/rc2b-06-b6-integrated-start-authority-owner-decision-01.md) and [P2 sequencing clarification](../decisions/rc2b-06-b6-alt-b-p2-sequence-rem-01-owner-clarification.md) govern. This handoff authorizes nothing beyond the current investigation; a subsequent implementation commission must name its scope.
+
+## P4-02 recommended first package: installed integrated recovery initialization refusal
+
+**Finding F01; inventory S07–S11.** Close the actual direct-Start route to the recovery initial writer/AllocationIntent before O can run its P2 check. This is a refusal-only initialization gate; it does not grant recovery manifest or RELEASE authority. Keep the existing owner early and late checks and owner/controller generation gates.
+
+| Required item | Concrete implementation boundary |
+|---|---|
+| Entry and first effect | `RecoveryConnection.Start(v2 integrated)` → QualifiedRecoveryConnection → RecoveryHost.RunCore. First affected capability is delegated-parent acquisition at RecoveryHost:58; first writer is IntegratedRecoveryHost:71; initial durable intent is M1RecoveryScope:371, before owner spawn:389 |
+| Trusted context | Actual retained recovery-role LoadedInstallation from QualifiedRecoveryEcho.Run, originating from fixed-root `LoadedInstallation.Verify("recovery", expected)`. Require full InstallationIdentity equality with the authenticated original Integrated specification. Protected final verifier must bind that retained S2 selection/qualification ID/raw record hash; wire identity, successful echo and profile Boolean are insufficient |
+| Earliest safe check | In QualifiedRecoveryEcho's existing bounded verification worker, immediately after successful loaded-role verification/launch binding and before returning a positive echo/selection for an integrated request. Reuse its existing deadline and Service callback. The context is not available before S2, so defer qualified integrated parent acquisition until this check succeeds |
+| Local sink refusal | At the start of IntegratedRecoveryHost.Run, before JournalFileStorage, safety-pair construction or worker launch, require the retained selection, exact original identity and fresh protected final eligibility for v2 integrated initialization. This closes its optional-null alternate entry too. Missing, unavailable, stale, withdrawn, mismatched or malformed evidence throws/refuses; no legacy fallback |
+| Smallest source scope | `Bootstrap/QualifiedRecoveryEcho.cs`, `Bootstrap/RecoveryHost.cs`, `Bootstrap/IntegratedRecoveryHost.cs`; optionally one narrowly named shared initialization helper over existing LoadedInstallation/AdmissionAuthority APIs. No wire/schema/store/transport/public API changes |
+| Ordering | Preserve RecoveryHost's private peer/config/Associate/pin checks and original subreaper safety initialization. For v2 integrated only, move TryOpenDelegatedParent from its pre-S2 position to after the new echo-worker initialization check. Preserve v1 parent opening/order. v2 nonintegrated B2 still has no parent and bypasses this new execution-initialization gate |
+| Shared mechanism | Helper requires a real retained LoadedInstallation, expected identity equality, `VerifyFinalAdmission()` and `AdmissionAuthority.IsFinalAdmissionEligible(selection, grant)`. Do not call OwnerManifestAdmissionGate from recovery or manufacture OwnerAuthorityContext.Qualified for R. If a required private prerequisite cannot be supplied, refuse that entry and mark it incomplete. Never accept a bare grant-shaped tuple or synthetic S2 in production |
+| Failure/cleanup | Refuse before new parent/writer/intent/owner operation effects. C may already have spawned R for bootstrap; close/stop existing bootstrap lifelines and preserve detached R's obligations if O could exist. A second fresh refusal after earlier valid admission may leave earlier authorized resources; use original stop/reap/reconciliation, never reset deadlines or infer cleanup from missing files/PIDs |
+| Dependencies | Uses existing S2, protected final verifier and original deadlines/stop service. Independent of F02 and Slice E. No independent issuer, validation context, reconnect, second owner or alternate topology |
+| Native qualification | Deterministic implementation can be completed and reported with native pending. Real protected positive/refusal and direct-Start resource trace require separately authorized Slice N; cannot manufacture an installed-positive fixture on Windows |
+
+A successful controller preflight is insufficient to cover the direct caller. Conversely, do not put an unconditional final-admission check on every RecoveryConnection.Start: the accepted non-integrated qualified B2 stop/evidence topology has no execution-admission transition. T01 explicitly permits Start to establish bootstrap machinery. The required new boundary is before integrated operation initialization, with source-local refusal at its sink.
+
+Perform protected reads outside stop/custody/runtime/journal locks. Keep existing bounded verification service effective throughout and reject late worker success after stop or expiry. At the IntegratedRecoveryHost local check, use the original setup/operation deadline and original controller-loss/stop observations; do not create another allowance. A missing accepted mechanism for a positive local read must result in refusal, not an unbounded synchronous read or a skipped check. If the check is factored into a sealed initialization prerequisite, its production creation must perform these exact protected checks, and the local sink must reject absent/mismatched prerequisites; do not expose an injectable verifier in Release.
+
+Required tests for P4-02:
+
+1. Actual recovery initialization entry refuses null selection, wrong full identity, wrong qualification ID/hash, absent/withdrawn/unavailable final evidence and synthetic/context-shaped data before parent open, initial writer, durable intent or owner spawn. A valid authenticated process/S2 tuple alone must reach the admission decision and fail there. Exercise both normal RecoveryHost dispatch and direct IntegratedRecoveryHost entry.
+2. Instrumented counting boundaries on actual production wiring, not just a pure eligibility helper: zero affected effects on initial refusal. A negative control with the new call removed/bypassed must fail the assertion. Confirm selected context is never replaced by an echo/fresh observation.
+3. Successful deterministic verifier fixture advances only the expected initialization path; a separate fresh local refusal after early success cannot continue to intent/spawn. Such fixtures are explicitly simulated, not protected grants. Release builds must exclude test factories/hooks.
+4. Existing qualified non-integrated B2 evidence-only path remains permitted without final execution admission; delegated v2 B2 and v1 installed claims still refuse. Both accepted v1 branches retain their behavior.
+5. Stop/loss/expiry while verification is blocked prevents progression and preserves first cause/original deadline. Already admitted stop, owner reap, retained-domain stop and cleanup writer reacquisition require no new admission. Actual-arbiter/C3 tests stay green.
+6. Native pending pair: real S2 and protected final acceptance → expected initialization under original topology; same S2 with absent final acceptance via a direct Start caller → no affected parent/writer/intent/operation-owner effects, independently observed stop/reap. Record exact cutpoints, descriptor custody and component cleanup. No target/native-positive substitution.
+
+## Subsequent bounded constructor correction
+
+**F02; inventory S02.** `B3PreparationOwner` in `Restricted/B3Qualification.cs:271–281` currently accepts the prohibited qualified/non-integrated profile and creates a journal directory. The sole production caller is already protected by TryCreate; the independent direct-constructor probe demonstrates a sink omission, not a reachable factory bypass.
+
+The smallest first correction is a local `QualifiedInstallation && IntegratedRecovery is null` refusal at constructor entry, before scope/client/journal/directory creation. For qualified integrated direct construction, also require actual provider S2/final verification before directory effects (reuse the protected mechanism; a sealed prerequisite passed from the factory is an alternative only if no caller can forge it). Retain the factory guard. Do not derive installation identity from the Boolean; authenticated v2 owner identity remains decisive downstream. The ordinary legacy constructor retains its behavior.
+
+Tests must invoke the real constructor with an absent unique journal directory: prohibited qualified topology and missing/invalid qualified authority refuse with zero directory effects; legitimate legacy creates the directory and cleans it up. Run Debug and Release; verify a bypassed local guard reproduces the negative result. Test the valid qualified integrated route with instrumented decisions, reserving protected positives for native qualification. No owner/stop lifecycle dependency on F01; keep these changes separately attributable. Do not broaden the change into all low-level journal constructors or cleanup writers.
+
+## Boundaries that need no P4 admission insertion
+
+- QualifiedB2Owner and QualifiedB2Recovery establish original-process S2 evidence and bounded stop lifelines only. They cannot request a manifest, acquire a writer, allocate/stage or reach HELD/RELEASE. The accepted qualified delegated-parent B2 refusal already precedes effects. Preserve these controls and legitimate legacy delegated B2.
+- The owner transaction's missing qualified context and qualified/wire mismatch refuse before journal effects. Its actual first owner preflight, early final check, later direct echo and independent manifest recheck retain accepted P1/P2 ordering.
+- Owner HELD and the after-intent generation gate retain P3/R1; controller Q10 remains. P3 informational O1/O2 are not demonstrated production bypasses.
+- Recovery safety stop, B2 stop acknowledgement/loss handling, owner safety monitor, retained-domain cleanup, reaping, writer fencing and reconciliation use original authority. Do not gate them on current final acceptance or administrative locks.
+- PreparationOwnershipCoordinator and low-level fixture callers have no production call path at the investigated SHA. Future callers require an explicit sink audit; `internal` alone is no authorization proof.
+- Validation remains non-constructible/unreachable. No Slice E early-direct ordering, GAVA, issuer, driver or v3 bootstrap implementation belongs in P4-02.
+
+## Verification and completion gates
+
+Use the accepted T01–T23 mapping in the inventory. P4-02 particularly covers T01–T05/T21 at integrated initialization, T06–T09 actor/custody preservation, T13–T15 stop/expiry, T19 compatibility and T23 no-stop-lock regression. T10–T12/T22 remain P3/native obligations; T16–T18/T20 remain atomic Slice E. Preserve the accepted observation-to-effect residual.
+
+Focused inherited regressions should include FinalAcceptanceTests, installation wire, recovery B2, direct authentication, owner authority/manifest and actual-arbiter generation tests, prepared transaction, B3/INT-01, B4 capture/blocked-observer stop, B5 C3/reconciliation, isolated D6.4 and production/instrumented closure checks. Select exact filters after implementation and report native skips explicitly. The P3 reference is 1,335 passed / 331 skipped / zero failed; do not claim that historical count as a new run. Do not automatically rerun the full Windows M1 suite.
+
+The accepted plan §8 requires exact committed source/tests on main, actual wiring and negative controls, independent owner/controller gates preserved, original stopping without renewed admission, explicit incomplete Q04/bootstrap status, pending native positives and rechecked historical untracked paths/worktree. P4-01 produced planning/evidence only; a future implementation must satisfy those gates before reporting its refusal slice complete. Even then it cannot claim full P1–P4/Q04/S09/validation bootstrap or production activation.
+
+Work stays on canonical main. Preserve historical evidence and all 44 untracked paths/bytes; no production/test changes under this commission, no branches/worktrees, reset/clean/restore/rebase/prune, push, privileged provisioning, activation, native qualification or automatic independent review. Raw evidence and checksums: `C:\Users\Laszlos\source\repos\Solo\gagamba-alt-b-p4-01`.
