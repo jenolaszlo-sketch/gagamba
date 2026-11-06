@@ -6,6 +6,11 @@
 // post-release fact is derived from the trusted coordinator status sequence,
 // the retained reaper, the bounded capture drains and the retained domain
 // handles.
+// P3 (owner decision 3.2): a retained qualified authority additionally
+// verifies its exact generation immediately before the release gate; a
+// refusal is the conservative post-intent decision that latches the
+// existing stop path so the owner becomes safe without a controller
+// request. The legacy context keeps its existing behavior.
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Security.Cryptography;
@@ -64,6 +69,12 @@ internal sealed class HeldReleasePhase
         // consistency refusal only; P1 does not consume the context for release.
         if(request.DirectIdentity?.InstallationIdentity is not null && authority is not OwnerAuthorityContext.Qualified)
             throw new InvalidDataException("qualified HELD phase requires retained owner installation authority");
+        else if (authority is not OwnerAuthorityContext.Legacy)
+            // P3 fail-closed: this phase retains only a qualified context or
+            // the legacy unqualified context; a validation-shaped context has
+            // no factory today and must refuse by construction.
+            throw new InvalidDataException(
+                "held release phase requires a retained qualified or legacy owner authority context");
         _authority = authority;
         _safety = safety;
         _request = request;
@@ -83,12 +94,23 @@ internal sealed class HeldReleasePhase
         }
 
         _arbiter = new ReleaseArbiter(capability, journal, writer, new OwnerClock(),
-            Prerequisites, execution)
+            Prerequisites, execution,
+            // P3: the pre-RELEASE generation verification is a construction-time
+            // dependency of the retained qualified authority, created as a
+            // method group so no closure, caller callback or Boolean forms.
+            // Legacy keeps the existing no-verification behavior.
+            _authority is OwnerAuthorityContext.Qualified ? VerifyOwnerReleaseGeneration : null)
         {
             TestBarrier = HandleArbiterBarrier,
         };
         safety?.BindArbiter(_arbiter);
     }
+
+    /// <summary>P3 owner-side pre-RELEASE active-generation verification for
+    /// the retained qualified authority. Delegates to the single shared Q10
+    /// decision; the arbiter wraps any failure fail-closed.</summary>
+    private OwnerGenerationGateRefusal? VerifyOwnerReleaseGeneration() =>
+        OwnerReleaseGenerationGate.Verify(_authority);
 
     internal OwnerAuthorityContext Authority => _authority;
 
@@ -208,6 +230,7 @@ internal sealed class HeldReleasePhase
         if(Int01Qualification.Reached(_request.QualificationFault,"owner-before-release-reply"))
         { _channel.Dispose();_pendingAbortHeld=true;return; }
         SendReleaseDecision(decision);
+        LatchOwnerGateStopTail(decision);
         if (decision.Kind == ReleaseDecisionKind.Released)
         {
             _safety?.Released();
@@ -222,6 +245,7 @@ internal sealed class HeldReleasePhase
         }
 #else
         SendReleaseDecision(decision);
+        LatchOwnerGateStopTail(decision);
         if (decision.Kind == ReleaseDecisionKind.Released)
         {
             _safety?.Released();
@@ -230,6 +254,24 @@ internal sealed class HeldReleasePhase
             SendExecutionOutcome(facts);
         }
 #endif
+    }
+
+    /// <summary>P3 tail latch: an owner generation-gate refusal happens after
+    /// a durable release intent, so the operation returns to stop semantics.
+    /// The reason tags are safe to recognize because the arbiter never
+    /// produced them before P3. The monitor latch runs the original stop path
+    /// so the owner becomes safe without a controller request and the held
+    /// loop aborts through the existing retained path.</summary>
+    private void LatchOwnerGateStopTail(ReleaseDecision decision)
+    {
+        if (decision.Kind == ReleaseDecisionKind.Refused
+            && decision.DurableRelease == ReleaseDisposition.MayHaveExecuted
+            && decision.Delivery == DeliveryResult.NotAttempted
+            && decision.RefusalReason is RestrictedRefusalReason.UnqualifiedInstallation
+                or RestrictedRefusalReason.InstallationUnavailable)
+        {
+            _safety?.AcceptStop(StopCauseKind.SetupFault);
+        }
     }
 
     private ReleaseDecision RefusedRelease(string reason, ReleaseCorrelationBinding binding,

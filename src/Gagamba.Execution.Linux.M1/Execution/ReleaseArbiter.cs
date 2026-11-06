@@ -3,6 +3,12 @@
 // capability consumption and exactly one nonblocking RELEASE write; the
 // committed delivery observation is persisted after the gate. No journal I/O
 // occurs while the arbitration gate is held.
+// P3 (owner decision 3.2): after the durable intent the owner-side
+// pre-RELEASE active-generation verification runs outside every lock; its
+// refusal is the last final-gate entry check before capability consumption,
+// keeps the conservative post-intent shape and submits the existing stop
+// path outside the gates as a best-effort durable tail. Retained decisions
+// still win first and a duplicate never creates a second attempt.
 using System.Collections.Immutable;
 using Gagamba.Execution.Linux.M1.Launch;
 using Gagamba.Execution.Restricted.Control;
@@ -20,6 +26,11 @@ internal sealed class ReleaseArbiter
     private readonly ITransactionClock _clock;
     private readonly Func<ReleasePrerequisites> _prerequisites;
     private readonly IReleaseWriteChannel _transport;
+    // P3 owner pre-RELEASE generation verification. A construction-time
+    // dependency wired only from the sealed owner phase for a retained
+    // qualified authority context; never a settable caller callback, Boolean
+    // or wire echo. Null keeps legacy behavior unchanged.
+    private readonly Func<OwnerGenerationGateRefusal?>? _ownerGenerationGate;
     private readonly object _gate = new();
     private readonly object _journalGate = new();
     internal Action<string>? TestBarrier { get; set; }
@@ -42,7 +53,8 @@ internal sealed class ReleaseArbiter
         JournalWriterLease writer,
         ITransactionClock clock,
         Func<ReleasePrerequisites> prerequisites,
-        IReleaseWriteChannel transport)
+        IReleaseWriteChannel transport,
+        Func<OwnerGenerationGateRefusal?>? ownerGenerationGate = null)
     {
         _capability = capability ?? throw new ArgumentNullException(nameof(capability));
         _journal = journal ?? throw new ArgumentNullException(nameof(journal));
@@ -50,6 +62,7 @@ internal sealed class ReleaseArbiter
         _clock = clock ?? throw new ArgumentNullException(nameof(clock));
         _prerequisites = prerequisites ?? throw new ArgumentNullException(nameof(prerequisites));
         _transport = transport ?? throw new ArgumentNullException(nameof(transport));
+        _ownerGenerationGate = ownerGenerationGate;
     }
 
     internal ReleaseDecision RequestRelease(ReleaseRequest request)
@@ -274,6 +287,17 @@ internal sealed class ReleaseArbiter
         }
 
         Barrier("after-intent");
+
+        // P3 owner-side pre-RELEASE active-generation verification. It runs
+        // after durable intent and the outside-lock after-intent barrier and
+        // outside _gate, _journalGate and every capability lock. No journal
+        // I/O, protocol wait or unrelated I/O may follow the successful
+        // observation before final gate entry. The result is consumed only
+        // for this invocation: it is never cached across requests, adopted
+        // or supplied by the controller, and any retained stop/deadline/
+        // duplicate decision below wins over it unchanged.
+        var ownerGenerationRefusal = InvokeOwnerGenerationGate();
+        var ownerGateTailPending = false;
         lock (_gate)
         {
             if (_retainedRelease is not null)
@@ -332,45 +356,77 @@ internal sealed class ReleaseArbiter
                 return _retainedRelease;
             }
 
-            Barrier("before-consume");
-            if (!_capability.TryConsume(out var violation))
+            // P3 refusal: the last final-gate entry check before capability
+            // consumption. The durable intent already exists, so the refusal
+            // keeps the conservative post-intent shape, closes the capability
+            // exactly once and must not reach the durable commit block. The
+            // stop tail is submitted after this lock is released through the
+            // existing stop path under the original context and C3 authority.
+            if (ownerGenerationRefusal is not null)
             {
-                _retainedRelease = Refused(
+                ConsumeCapability();
+                _retainedRelease = new ReleaseDecision(
+                    ReleaseDecisionKind.Refused,
                     ReleaseDisposition.MayHaveExecuted,
-                    RestrictedRefusalReason.InvalidBinding,
-                    $"release gate refused: capability consumption rejected ({violation})",
-                    ReleaseCorrelationBinding.Accepted);
-                return _retainedRelease;
+                    DeliveryResult.NotAttempted,
+                    DurableCommitted: false,
+                    LiveExecutionExcluded: true,
+                    $"release gate refused: owner pre-RELEASE generation verification failed ({ownerGenerationRefusal.Error})",
+                    ReleaseCorrelationBinding.Accepted,
+                    ownerGenerationRefusal.Reason);
+                ownerGateTailPending = true;
             }
-
-            Barrier("after-consume");
-            _releaseRuntimeCommitted = true;
-            var frame = CoordinatorProtocol.EncodeRelease(
-                _capability.Identity, request.OverallDeadlineNanoseconds);
-            ReleasePipeWriteResult send;
-            try
+            else
             {
-                send = _transport.TryWriteOnce(frame);
-            }
-            catch (Exception ex) when (ex is IOException or InvalidOperationException or OverflowException)
-            {
-                send = ReleasePipeWriteResult.Unknown;
-            }
+                Barrier("before-consume");
+                if (!_capability.TryConsume(out var violation))
+                {
+                    _retainedRelease = Refused(
+                        ReleaseDisposition.MayHaveExecuted,
+                        RestrictedRefusalReason.InvalidBinding,
+                        $"release gate refused: capability consumption rejected ({violation})",
+                        ReleaseCorrelationBinding.Accepted);
+                    return _retainedRelease;
+                }
 
-            Barrier("after-write");
-            var delivery = MapDelivery(send);
-            var liveExcluded = send is ReleasePipeWriteResult.WouldBlock
-                or ReleasePipeWriteResult.BrokenPipe
-                or ReleasePipeWriteResult.Partial;
-            _retainedRelease = new ReleaseDecision(
-                ReleaseDecisionKind.Released,
-                ReleaseDisposition.MayHaveExecuted,
-                delivery,
-                DurableCommitted: false,
-                LiveExecutionExcluded: liveExcluded,
-                $"release won the gate; transport result {send}",
-                ReleaseCorrelationBinding.Accepted,
-                RestrictedRefusalReason.None);
+                Barrier("after-consume");
+                _releaseRuntimeCommitted = true;
+                var frame = CoordinatorProtocol.EncodeRelease(
+                    _capability.Identity, request.OverallDeadlineNanoseconds);
+                ReleasePipeWriteResult send;
+                try
+                {
+                    send = _transport.TryWriteOnce(frame);
+                }
+                catch (Exception ex) when (ex is IOException or InvalidOperationException or OverflowException)
+                {
+                    send = ReleasePipeWriteResult.Unknown;
+                }
+
+                Barrier("after-write");
+                var delivery = MapDelivery(send);
+                var liveExcluded = send is ReleasePipeWriteResult.WouldBlock
+                    or ReleasePipeWriteResult.BrokenPipe
+                    or ReleasePipeWriteResult.Partial;
+                _retainedRelease = new ReleaseDecision(
+                    ReleaseDecisionKind.Released,
+                    ReleaseDisposition.MayHaveExecuted,
+                    delivery,
+                    DurableCommitted: false,
+                    LiveExecutionExcluded: liveExcluded,
+                    $"release won the gate; transport result {send}",
+                    ReleaseCorrelationBinding.Accepted,
+                    RestrictedRefusalReason.None);
+            }
+        }
+
+        if (ownerGateTailPending)
+        {
+            SubmitOwnerGateRefusalStopTail();
+            lock (_gate)
+            {
+                return _retainedRelease!;
+            }
         }
 
         var committedAt = _clock.NowNanoseconds;
@@ -494,6 +550,72 @@ internal sealed class ReleaseArbiter
         lock (_gate)
         {
             if (_retainedRelease is { Kind: ReleaseDecisionKind.AmbiguousPersistence } retained)
+            {
+                _retainedRelease = retained with
+                {
+                    Reason = $"{retained.Reason}; tail stop limitation: {limitation}",
+                };
+            }
+        }
+    }
+
+    // P3 owner pre-RELEASE generation verification. Verification availability
+    // is not authorization: any failure to complete refuses fail-closed as
+    // unverified, never as a pass.
+    private OwnerGenerationGateRefusal? InvokeOwnerGenerationGate()
+    {
+        if (_ownerGenerationGate is null)
+        {
+            return null;
+        }
+
+        try
+        {
+            return _ownerGenerationGate();
+        }
+        catch (Exception exception)
+        {
+            return new OwnerGenerationGateRefusal(
+                RestrictedRefusalReason.InstallationUnavailable,
+                $"owner generation verification could not complete: {exception.Message}");
+        }
+    }
+
+    // P3 stop tail for a generation-gate refusal: the stop is submitted
+    // outside every gate (OwnerSafetyMonitor keeps its native stop ahead of
+    // this best-effort durable settlement) under the original C3 authority.
+    // A limitation is recorded on the retained refusal; the refusal is never
+    // retried and never turned into a release.
+    private void SubmitOwnerGateRefusalStopTail()
+    {
+        string limitation;
+        try
+        {
+            var tailStop = RequestStop(StopCauseKind.SetupFault);
+            if (tailStop.Accepted && tailStop.DurableStop)
+            {
+                return;
+            }
+
+            limitation = tailStop.Reason;
+        }
+        catch (Exception exception)
+        {
+            // The refusal is already retained and excludes live execution;
+            // the limitation is recorded, never surfaced as a retry path.
+            limitation = exception.Message;
+        }
+
+        RecordOwnerGateTailStopLimitation(limitation);
+    }
+
+    private void RecordOwnerGateTailStopLimitation(string limitation)
+    {
+        lock (_gate)
+        {
+            if (_retainedRelease is { Kind: ReleaseDecisionKind.Refused, RefusalReason:
+                    RestrictedRefusalReason.UnqualifiedInstallation
+                    or RestrictedRefusalReason.InstallationUnavailable } retained)
             {
                 _retainedRelease = retained with
                 {

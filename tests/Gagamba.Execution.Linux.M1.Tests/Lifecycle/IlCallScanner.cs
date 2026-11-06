@@ -14,7 +14,7 @@ internal static class IlCallScanner
         .Select(field => (OpCode)field.GetValue(null)!)
         .ToDictionary(opcode => unchecked((ushort)opcode.Value));
 
-    internal static IReadOnlyList<int> CallOffsets(MethodBase method, MethodBase target)
+    internal static IReadOnlyList<int> CallOffsets(MethodBase method, MemberInfo target)
     {
         ArgumentNullException.ThrowIfNull(method);
         ArgumentNullException.ThrowIfNull(target);

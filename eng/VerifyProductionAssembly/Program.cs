@@ -77,7 +77,7 @@ var forbiddenProdStrings = new[]
 // Debug-only authority factories must be absent from the production candidate.
 var forbiddenAuthorityFactories = new[]
 {
-    "Grant::ForTest", "Qualified::ForTest",
+    "Grant::ForTest", "Qualified::ForTest", "OwnerReleaseGenerationGate::VerifyObserved",
 };
 
 using var stream = File.OpenRead(path);
