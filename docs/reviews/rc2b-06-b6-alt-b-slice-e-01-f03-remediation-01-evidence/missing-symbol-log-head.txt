@@ -1,0 +1,2 @@
+first4bytes=EF BB BF 64
+containsGAGAMBA002=True

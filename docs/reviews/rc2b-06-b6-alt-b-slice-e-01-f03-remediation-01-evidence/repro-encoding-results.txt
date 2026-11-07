@@ -1,0 +1,5 @@
+PSVersion=5.1.26100.9711
+ORIG exit=1 containsGAGAMBA002=False
+ORIG first4=64 6F 74 6E
+FIX  exit=1 containsGAGAMBA002=True
+FIX  first4=EF BB BF 64

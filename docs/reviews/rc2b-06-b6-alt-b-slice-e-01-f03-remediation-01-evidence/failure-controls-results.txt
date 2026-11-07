@@ -1,0 +1,1 @@
+CONTROL correct_ok=stub-correct exit=1 ok=True True zero_ok=stub-zero-despite-diagnostic exit=0 ok=False False wrong_ok=stub-wrong-diagnostic exit=1 ok=False False missing_ok=stub-missing-diagnostic exit=1 ok=False False
