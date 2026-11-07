@@ -1,6 +1,15 @@
 [CmdletBinding()]
 param([string]$EvidenceDirectory)
 $ErrorActionPreference = 'Stop'
+# F-03: pin log capture to a single explicit encoding. Windows PowerShell 5.1
+# `>>` (Out-File) defaults to UTF-16LE while `Set-Content` defaults to a
+# single-byte encoding; the mixed log is then mis-decoded by `Get-Content`, so
+# an expected diagnostic (e.g. GAGAMBA002) is not found and the negative
+# control falsely fails. Forcing Out-File to UTF-8 (and the header write / log
+# read below to UTF-8) makes diagnostic capture deterministic across Windows
+# PowerShell 5.1 and PowerShell 7. This does not change any verifier decision,
+# exit-code check or acceptance rule.
+$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8'
 $repo = Split-Path -Parent $PSScriptRoot
 if (-not $EvidenceDirectory) {
     $EvidenceDirectory = Join-Path $repo ('artifacts/b6-build-regression/' + [Guid]::NewGuid().ToString('N'))
@@ -14,10 +23,23 @@ $recovery = Join-Path $repo 'src/Gagamba.Execution.Linux.M1.Recovery/Gagamba.Exe
 $tool = Join-Path $repo 'eng/VerifyProductionAssembly/VerifyProductionAssembly.csproj'
 function Invoke-Probe([string]$Name, [string[]]$Arguments, [string]$ExpectedDiagnostic = '') {
     $log = Join-Path $EvidenceDirectory ($Name + '.log')
-    ('dotnet ' + ($Arguments -join ' ')) | Set-Content $log
-    & dotnet @Arguments >> $log 2>&1
-    $code = $LASTEXITCODE
-    $text = Get-Content -LiteralPath $log -Raw
+    ('dotnet ' + ($Arguments -join ' ')) | Set-Content -LiteralPath $log -Encoding UTF8
+    # A negative control may legitimately write its diagnostic to stderr (for
+    # example the assembly verifier's `RESULT: FAIL`). Windows PowerShell 5.1
+    # turns native stderr into an error record, which aborts the harness under
+    # $ErrorActionPreference='Stop'. Relax the preference only around the
+    # capture so the exit code and text can be evaluated; the Probe-failed
+    # throw below still enforces every assertion.
+    $probeErrorAction = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    try {
+        & dotnet @Arguments >> $log 2>&1
+        $code = $LASTEXITCODE
+    }
+    finally {
+        $ErrorActionPreference = $probeErrorAction
+    }
+    $text = Get-Content -LiteralPath $log -Raw -Encoding UTF8
     $ok = if ($ExpectedDiagnostic) { $code -ne 0 -and $text.Contains($ExpectedDiagnostic) } else { $code -eq 0 }
     $rows.Add([pscustomobject]@{Name=$Name; Exit=$code; Expected=$ExpectedDiagnostic; Passed=$ok; Arguments=$Arguments})
     $rows | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $EvidenceDirectory 'results.json')
