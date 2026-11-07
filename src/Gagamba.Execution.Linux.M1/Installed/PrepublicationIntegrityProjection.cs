@@ -83,6 +83,20 @@ internal sealed class PrepublicationIntegrityProjection
             InstallJson.IsHex(evidence.OwnerClosureSha256, 64) &&
             InstallJson.IsHex(evidence.RecoveryClosureSha256, 64),
             "prepublication closure digest");
+        // F-01 semantic integrity (GAGAMBA-RC2B-06-B6-ALT-B-SLICE-E-01-F01-IMPL-01):
+        // bind every derived field to a deterministic function of the authoritative
+        // manifest rather than trusting well-formed values. In RELEASE the manifest
+        // is produced only by the fixed-root verifier supplied through Verify(), so
+        // these checks make the projection the accepted role-closure and platform
+        // projection of the verified active selection. RoleHash throws when the
+        // manifest lacks a required role artifact, and InstallJson.Hex throws when
+        // the platform runtime-inventory metadata is absent or malformed, so both
+        // fail closed without any fallback.
+        InstallJson.Require(evidence.OwnerClosureSha256 == InstallationIdentity.RoleHash(manifest, 1) &&
+            evidence.RecoveryClosureSha256 == InstallationIdentity.RoleHash(manifest, 0),
+            "prepublication role closure mismatch");
+        InstallJson.Require(evidence.RuntimeInventorySha256 == InstallJson.Hex(manifest.Platform, "runtimeInventorySha256"),
+            "prepublication runtime inventory mismatch");
         InstallJson.Require(provenance is PrepublicationIntegrityProvenance.ProtectedActiveSelection
             or PrepublicationIntegrityProvenance.DeterministicTestOnly, "prepublication provenance");
         return new PrepublicationIntegrityProjection(evidence.ArtifactSetSha256, manifest.SourceCommit,

@@ -215,4 +215,67 @@ public sealed class PrepublicationIntegrityProjectionTests
 
         Assert.Throws<InvalidDataException>(() => PrepublicationIntegrityProjection.ForTest(evidence));
     }
+
+    // F-01 semantic integrity (GAGAMBA-RC2B-06-B6-ALT-B-SLICE-E-01-F01-IMPL-01):
+    // every derived field must equal the accepted manifest projection, not merely be
+    // well formed. These bind the three relationships added to FromEvidence.
+    [Fact]
+    public void SemanticGateAcceptsFullyConsistentEvidence()
+    {
+        var manifest = Manifest();
+        var projection = PrepublicationIntegrityProjection.ForTest(Evidence(manifest));
+
+        Assert.Equal(InstallationIdentity.RoleHash(manifest, 1), projection.OwnerClosureSha256);
+        Assert.Equal(InstallationIdentity.RoleHash(manifest, 0), projection.RecoveryClosureSha256);
+        Assert.Equal(InstallJson.Hex(manifest.Platform, "runtimeInventorySha256"), projection.RuntimeInventorySha256);
+        Assert.Null(projection.QualificationId);
+        Assert.Null(projection.QualificationRecordSha256);
+        Assert.Equal(PrepublicationIntegrityProvenance.DeterministicTestOnly, projection.Provenance);
+    }
+
+    // Reproduces the three independent Q1 cases B5/B6/B7: a structurally valid but
+    // semantically incorrect derived field must now be refused, not accepted.
+    [Theory]
+    [InlineData("b5-incorrect-owner-closure")]
+    [InlineData("b6-incorrect-recovery-closure")]
+    [InlineData("b7-incorrect-runtime-inventory")]
+    public void SemanticGateRefusesWellFormedButIncorrectDerivedFields(string mutation)
+    {
+        var manifest = Manifest();
+        var evidence = Evidence(manifest);
+        evidence = mutation switch
+        {
+            "b5-incorrect-owner-closure" => evidence with { OwnerClosureSha256 = new string('e', 64) },
+            "b6-incorrect-recovery-closure" => evidence with { RecoveryClosureSha256 = new string('e', 64) },
+            "b7-incorrect-runtime-inventory" => evidence with { RuntimeInventorySha256 = new string('e', 64) },
+            _ => throw new ArgumentException(mutation),
+        };
+
+        Assert.Throws<InvalidDataException>(() => PrepublicationIntegrityProjection.ForTest(evidence));
+    }
+
+    [Fact]
+    public void SemanticGateRefusesManifestMissingRequiredRoleMaterial()
+    {
+        var manifest = Manifest();
+        var withoutRoles = manifest with { Artifacts = Array.Empty<InstalledArtifact>() };
+        var evidence = new InstalledIntegrityEvidence(withoutRoles.Digest, withoutRoles,
+            new string('a', 64), new string('b', 64), new string('c', 64));
+
+        // RoleHash resolves each required role artifact with Single and throws when absent.
+        Assert.Throws<InvalidOperationException>(() => PrepublicationIntegrityProjection.ForTest(evidence));
+    }
+
+    [Fact]
+    public void SemanticGateRefusesManifestMissingRuntimeInventoryMetadata()
+    {
+        var manifest = Manifest();
+        using var document = System.Text.Json.JsonDocument.Parse("{}");
+        var withoutRuntime = manifest with { Platform = document.RootElement.Clone() };
+        var evidence = new InstalledIntegrityEvidence(withoutRuntime.Digest, withoutRuntime,
+            InstallationIdentity.RoleHash(manifest, 1), InstallationIdentity.RoleHash(manifest, 0), new string('a', 64));
+
+        // The platform lacks the runtime-inventory property; the manifest value cannot be read.
+        Assert.Throws<KeyNotFoundException>(() => PrepublicationIntegrityProjection.ForTest(evidence));
+    }
 }
