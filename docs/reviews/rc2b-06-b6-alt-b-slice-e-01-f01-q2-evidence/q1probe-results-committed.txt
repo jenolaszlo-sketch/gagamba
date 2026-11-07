@@ -1,0 +1,33 @@
+=== TYPE SURFACE ===
+A1.private-ctors	PASS	ctors=1
+A2.factories	Verify(),FromEvidence(InstalledIntegrityEvidence,PrepublicationIntegrityProvenance),ForTest(InstalledIntegrityEvidence)	
+A2b.no-bool-or-result-factory	PASS	
+A2c.is-internal-not-public	PASS	
+A3.read-only-properties	PASS	ArtifactSetSha256,SourceCommit,SourceTree,RuntimeInventorySha256,OwnerClosureSha256,RecoveryClosureSha256,Provenance,QualificationId,QualificationRecordSha256
+A4.evidence-is-internal-record	PASS	visibility=Public, HideBySig, SpecialName, RTSpecialName
+=== CONSTRUCTION / EVIDENCE CROSS-CHECK ===
+B1.consistent-evidence-builds	PASS	projection
+B2.mismatched-artifact-digest-refused	PASS	
+B3.short-digest-refused	PASS	
+B4.uppercase-digest-refused	PASS	
+B5.wrong-but-wellformed-owner-closure	refused	cross-check of closure against manifest.RoleHash is absent in FromEvidence
+B6.wrong-but-wellformed-recovery-closure	refused	
+B7.wrong-but-wellformed-runtime-inventory	refused	
+B8.non-hex-closure-refused	PASS	
+B9.undefined-provenance-refused	PASS	
+B10.null-manifest-refused	PASS	
+B11.null-evidence-refused	PASS	
+=== TEST SEAM / REFUSAL / IMMUTABILITY ===
+C0.ForTest-found	present	
+C0b.ftResult-null	ok	PrepublicationIntegrityProjection
+C1.ForTest-tagged-test-only	PASS	
+C2.null-qualification-association	PASS	
+C3.protected-route-tags-protected	PASS	
+C4.protected-result-null-qual	PASS	
+C5.Verify-refuses-unprovisioned	PASS	InvalidDataException
+=== RELEASE ASSEMBLY ===
+D1.release-has-projection-type	PASS	
+D2.release-no-ForTest-seam	PASS	
+D3.release-Verify-present	PASS	
+D4.release-private-ctors	PASS	
+SUMMARY	failures=0

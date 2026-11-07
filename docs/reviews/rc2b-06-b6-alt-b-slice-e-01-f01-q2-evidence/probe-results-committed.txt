@@ -1,0 +1,27 @@
+=== SEMANTIC CONSTRUCTION (independent cases) ===
+P1.valid-evidence-accepted	PASS	ACCEPTED
+P2.B5-wrong-owner-refused	PASS	
+P3.B6-wrong-recovery-refused	PASS	
+P4.B7-wrong-runtime-refused	PASS	
+P5.roles-are-distinct	distinct	owner vs recovery RoleHash
+P5b.swapped-owner-recovery-refused	PASS	swapped closures
+P6.owner-artifact-substitution-changes-rolehash	changed	
+P6b.owner-artifact-substitution-with-old-closure-refused	PASS	
+P6c.recovery-unchanged-still-valid-on-owner-mutation	PASS	consistent tuple for mutated manifest builds
+P7.substituted-digest-refused	PASS	
+P8.missing-role-material-fails-closed	PASS	refused(InvalidOperationException)
+P9.missing-runtime-metadata-fails-closed	PASS	refused(KeyNotFoundException)
+P10.contradictory-digest-and-closure-refused	PASS	
+=== IMMUTABILITY / PROVENANCE / PROMOTION ===
+P11.projection-immutable	PASS	
+P12.null-qualification-association	PASS	
+P13.no-authority-promotion	PASS	
+P14.only-private-ctors	PASS	ctors=1
+P15.FromEvidence-private	PASS	
+P16.Verify-internal-only-type-factory	PASS	
+=== RELEASE ASSEMBLY ===
+R1.release-no-ForTest	PASS	
+R2.release-verify-present	PASS	
+R3.release-private-ctors	PASS	
+R4.release-internal-type	PASS	
+SUMMARY	failures=0
