@@ -52,6 +52,7 @@ var coreTypes = new HashSet<string>(StringComparer.Ordinal)
     "Gagamba.Execution.Linux.M1.Bootstrap.IntegratedRecoveryHost",
     "Gagamba.Execution.Linux.M1.Lifecycle.StopwatchDomainClock",
     "Gagamba.Execution.Linux.M1.Lifecycle.OwnerManifestAdmissionGate",
+    "Gagamba.Execution.Linux.M1.Installed.PrepublicationIntegrityProjection",
 };
 // Exact case/stage/evidence strings taken from Bootstrap/Int01QualificationFault.cs.
 var faultStrings = new[]
@@ -75,9 +76,12 @@ var forbiddenProdStrings = new[]
     "QualificationBeforeCaptureStore", "QualificationBeforeRename",
 };
 // Debug-only authority factories must be absent from the production candidate.
+// PrepublicationIntegrityProjection::ForTest is the E-1 (SLICE-E-01) test seam;
+// it fabricates no authority but must not be compiled into RELEASE.
 var forbiddenAuthorityFactories = new[]
 {
     "Grant::ForTest", "Qualified::ForTest", "OwnerReleaseGenerationGate::VerifyObserved",
+    "PrepublicationIntegrityProjection::ForTest",
 };
 
 using var stream = File.OpenRead(path);
