@@ -1,0 +1,17 @@
+canonical-function-extracted lines=24 contains-dotnet-call=True
+q1-negative-correct exit=1 passed=True
+CASE q1-negative-correct stubExit=1 diag='GAGAMBA002' expected='GAGAMBA002' ok=True threw=False eapBefore=Stop eapAfter=Stop
+q1-zero-despite-diag exit=0 passed=False
+CASE q1-zero-despite-diag stubExit=0 diag='GAGAMBA002' expected='GAGAMBA002' ok=False threw=True eapBefore=Stop eapAfter=Stop
+q1-wrong-diag exit=1 passed=False
+CASE q1-wrong-diag stubExit=1 diag='GAGAMBA999' expected='GAGAMBA002' ok=False threw=True eapBefore=Stop eapAfter=Stop
+q1-missing-diag exit=1 passed=False
+CASE q1-missing-diag stubExit=1 diag='' expected='GAGAMBA002' ok=False threw=True eapBefore=Stop eapAfter=Stop
+q1-exit2-with-diag exit=2 passed=True
+CASE q1-exit2-with-diag stubExit=2 diag='GAGAMBA002' expected='GAGAMBA002' ok=True threw=False eapBefore=Stop eapAfter=Stop
+q1-success-expected-ok exit=0 passed=True
+CASE q1-success-expected-ok stubExit=0 diag='' expected='' ok=True threw=False eapBefore=Stop eapAfter=Stop
+q1-success-expected-but-nonzero exit=1 passed=False
+CASE q1-success-expected-but-nonzero stubExit=1 diag='' expected='' ok=False threw=True eapBefore=Stop eapAfter=Stop
+q1-stderr-fail-control exit=1 passed=True
+CASE q1-stderr-fail-control stubExit=1 diag='FAIL' expected='FAIL' ok=True threw=False eapBefore=Stop eapAfter=Stop

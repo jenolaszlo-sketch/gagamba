@@ -1,0 +1,15 @@
+Verifier source identical to F-03 baseline (git diff empty): yes
+
+=== RELEASE assembly ===
+exit=0
+Seven surfaces: 0/4 hook types and 0/3 hook properties present
+Core production types: 14/14 present
+RESULT: PASS
+
+
+=== Debug inspected as production ===
+exit=1
+dotnet.exe : RESULT: FAIL
+    + CategoryInfo          : NotSpecified: (RESULT: FAIL:String) [], RemoteException
+  - qualification hook types remain: Gagamba.Execution.Linux.M1.Bootstrap.Int01Qualification, 
+  - debug-only authority factories remain: Grant::ForTest, OwnerReleaseGenerationGate::VerifyObserved, 

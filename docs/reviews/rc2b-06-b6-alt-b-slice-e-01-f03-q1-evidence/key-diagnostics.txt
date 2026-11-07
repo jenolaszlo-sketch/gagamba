@@ -1,0 +1,7 @@
+missing-symbol.log first4bytes=EF BB BF 64
+containsGAGAMBA002=True
+header-line-1-contains-diagnostic=False
+
+lines containing GAGAMBA002:
+[5] C:\Users\Laszlos\source\repos\Gagamba\Directory.Build.targets(11,5): error GAGAMBA002: Release requi
+[9] C:\Users\Laszlos\source\repos\Gagamba\Directory.Build.targets(11,5): error GAGAMBA002: Release requi

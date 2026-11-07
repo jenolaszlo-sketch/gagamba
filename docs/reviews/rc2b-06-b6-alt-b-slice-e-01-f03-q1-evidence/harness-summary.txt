@@ -1,0 +1,59 @@
+PowerShell version: 5.1.26100.9711
+Windows M1 harness: total=51 failed=0
+
+
+Name                                      Exit Expected   Passed
+----                                      ---- --------   ------
+order-1-Release                              0              True
+inspect-order-1-Release                      0              True
+order-2-Debug                                0              True
+inspect-order-2-Debug                        0              True
+order-3-Release                              0              True
+inspect-order-3-Release                      0              True
+order-4-Release                              0              True
+inspect-order-4-Release                      0              True
+order-5-Debug                                0              True
+inspect-order-5-Debug                        0              True
+order-6-Debug                                0              True
+inspect-order-6-Debug                        0              True
+order-7-Test                                 0              True
+inspect-order-7-Test                         0              True
+fresh-debug                                  0              True
+inspect-fresh-debug                          0              True
+owner-release                                0              True
+owner-debug                                  0              True
+owner-debug-inspection                       0              True
+recovery-release                             0              True
+recovery-debug                               0              True
+recovery-debug-inspection                    0              True
+solution-release                             0              True
+solution-debug-owner-inspection              0              True
+missing-symbol                               1 GAGAMBA002   True
+empty-symbols                                1 GAGAMBA002   True
+fixture-only                                 1 GAGAMBA002   True
+production-and-fixture                       1 GAGAMBA004   True
+release-fixture-carrier                      1 GAGAMBA004   True
+spoof-helper-properties                      1 GAGAMBA002   True
+unknown-configuration                        1 GAGAMBA001   True
+fixture-without-isolated-paths               1 GAGAMBA008   True
+debug-forced-production                      1 GAGAMBA003   True
+debug-fixture-symbol-alone                   1 GAGAMBA006   True
+owner-empty-symbols                          1 GAGAMBA002   True
+recovery-empty-symbols                       1 GAGAMBA002   True
+solution-empty-symbols                       1 GAGAMBA002   True
+stale-valid-output-empty-symbols             1 GAGAMBA002   True
+project-reference-empty-symbols              1 GAGAMBA002   True
+publish-m1                                   0              True
+publish-m1-empty-symbols                     1 GAGAMBA002   True
+publish-owner                                0              True
+publish-owner-empty-symbols                  1 GAGAMBA002   True
+publish-recovery                             0              True
+publish-recovery-empty-symbols               1 GAGAMBA002   True
+stale-instrumented-binary-inspection         1 FAIL         True
+stale-instrumented-no-build-publish          1 FAIL         True
+owner-stale-ref-disabled                     1 FAIL         True
+owner-debug-stale-production-ref-disabled    1 FAIL         True
+restore-valid-release                        0              True
+inspect-restored-release                     0              True
+
+
