@@ -527,6 +527,358 @@
           "targetVerification": "Tracked file exists at the stated baseline"
         }
       ]
+    },
+    {
+      "source": "docs/reviews/rc2b-06-b6-native-env-prep-01-q1-evidence/committed-documents/01-rc2b-06-b6-native-env-prep-01.md",
+      "expectedGitBlob": "8a17d0159a420078f5ddb883b4c2ae25066ede48",
+      "expectedSha256": "4a046cf8b4113937d6cebbd9bff17011a48c8ba52a41b97fe6843f6fdc3927c8",
+      "protection": "Verbatim independent-review copy bound by document-binding.json and SHA256SUMS.txt",
+      "verifiedAtCommit": "9ca765c6af9bcc1665bc80e4c28f1a77d3c8d81d",
+      "originalSource": "docs/plans/rc2b-06-b6-native-env-prep-01.md",
+      "originalSourceCommit": "af4300f5dff7e4e49fca98233911a44a15894a43",
+      "references": [
+        {
+          "reference": "../evidence/rc2b-06-b6-native-env-prep-01.md",
+          "target": "docs/evidence/rc2b-06-b6-native-env-prep-01.md",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            11
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "121138770297f5693ce50613f3c6cd7021019c8c",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        },
+        {
+          "reference": "../design/rc2b-06-b6-installed-artifact-trust.md",
+          "target": "docs/design/rc2b-06-b6-installed-artifact-trust.md",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            17
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "7f9f615f75527221e81b7aaa498f4b564acb62b9",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        },
+        {
+          "reference": "rc2b-06-b6-qualification.md",
+          "target": "docs/plans/rc2b-06-b6-qualification.md",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            17
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "f951734e9fac12d94d79854b1e72b386d20de60f",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        },
+        {
+          "reference": "../decisions/rc2b-06-b6-spec-owner-acceptance.md",
+          "target": "docs/decisions/rc2b-06-b6-spec-owner-acceptance.md",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            18
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "5e689f39269fae28556e42ed9ec218949ac0df38",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        },
+        {
+          "reference": "../decisions/rc2b-06-b6-wire-owner-acceptance.md",
+          "target": "docs/decisions/rc2b-06-b6-wire-owner-acceptance.md",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            19
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "501487227208d935c3ab1337c9f87055c9e14b8d",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        },
+        {
+          "reference": "../decisions/rc2b-06-b6-impl-01-s1-owner-acceptance.md",
+          "target": "docs/decisions/rc2b-06-b6-impl-01-s1-owner-acceptance.md",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            20
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "913f19edd8b8c2b03bbecd07c12ef945278422ed",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        },
+        {
+          "reference": "../decisions/rc2b-06-b6-impl-01-s2-owner-acceptance.md",
+          "target": "docs/decisions/rc2b-06-b6-impl-01-s2-owner-acceptance.md",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            21
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "58e6bc5147e1b8030a157f58b98ea867e840c8c2",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        },
+        {
+          "reference": "../decisions/rc2b-06-b6-s2-f02-trust-store-owner-decision.md",
+          "target": "docs/decisions/rc2b-06-b6-s2-f02-trust-store-owner-decision.md",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            22
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "a71647ec38d8e00de4a4fedfd9768df9486ee57a",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        },
+        {
+          "reference": "../decisions/rc2b-06-b6-s3-b2-wire-owner-acceptance.md",
+          "target": "docs/decisions/rc2b-06-b6-s3-b2-wire-owner-acceptance.md",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            23
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "76b70f6832733c7cf58ffaa56afbd3df1a9f014a",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        },
+        {
+          "reference": "../evidence/rc2b-06-b6-impl-01-s3.md",
+          "target": "docs/evidence/rc2b-06-b6-impl-01-s3.md",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            24
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "096204a54fb9dd50a3d34d3f5285034df034f230",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        }
+      ]
+    },
+    {
+      "source": "docs/reviews/rc2b-06-b6-native-env-prep-01-q1-evidence/committed-documents/04-rc2b-06-b6-native-env-prep-01.md",
+      "expectedGitBlob": "121138770297f5693ce50613f3c6cd7021019c8c",
+      "expectedSha256": "9e7d2f1f9be2b24a99d378597071e4086124f81252040c9a540f80db54e6ab7c",
+      "protection": "Verbatim independent-review copy bound by document-binding.json and SHA256SUMS.txt",
+      "verifiedAtCommit": "9ca765c6af9bcc1665bc80e4c28f1a77d3c8d81d",
+      "originalSource": "docs/evidence/rc2b-06-b6-native-env-prep-01.md",
+      "originalSourceCommit": "af4300f5dff7e4e49fca98233911a44a15894a43",
+      "references": [
+        {
+          "reference": "rc2b-06-b6-native-env-prep-01/source-inputs.json",
+          "target": "docs/evidence/rc2b-06-b6-native-env-prep-01/source-inputs.json",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            23
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "340e761cb4fe9ba625f0173453cd57fedbd14588",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        },
+        {
+          "reference": "rc2b-06-b6-native-env-prep-01/ci-jobs.json",
+          "target": "docs/evidence/rc2b-06-b6-native-env-prep-01/ci-jobs.json",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            29
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "6e4fd7e75d18ab90a995e7fa1cda975fffc2e3e5",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        },
+        {
+          "reference": "rc2b-06-b6-native-env-prep-01/review-inputs.json",
+          "target": "docs/evidence/rc2b-06-b6-native-env-prep-01/review-inputs.json",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            33
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "f8d3688470312543a1d30aeb712e269ddcac88c8",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        },
+        {
+          "reference": "../plans/rc2b-06-b6-native-env-prep-01.md",
+          "target": "docs/plans/rc2b-06-b6-native-env-prep-01.md",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            53
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "8a17d0159a420078f5ddb883b4c2ae25066ede48",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        },
+        {
+          "reference": "../plans/rc2b-06-b6-native-qualification-matrix.md",
+          "target": "docs/plans/rc2b-06-b6-native-qualification-matrix.md",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            54
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "c27c3629a3c0fb57246eb9424081cd86a2fdc718",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        },
+        {
+          "reference": "../plans/rc2b-06-b6-native-provisioning-runbook.md",
+          "target": "docs/plans/rc2b-06-b6-native-provisioning-runbook.md",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            55
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "ce7feba5d05488374f8b711ffbf05d0cf72c35be",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        },
+        {
+          "reference": "rc2b-06-b6-native-env-prep-01/untracked-before.json",
+          "target": "docs/evidence/rc2b-06-b6-native-env-prep-01/untracked-before.json",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            66
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "4ac4572e4e1a6074af40554784bc2e4a1b4d967b",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        },
+        {
+          "reference": "rc2b-06-b6-native-env-prep-01/worktrees-before.txt",
+          "target": "docs/evidence/rc2b-06-b6-native-env-prep-01/worktrees-before.txt",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            66
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "0841679faf053ac70db225b696d519be2cde34e1",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        },
+        {
+          "reference": "rc2b-06-b6-native-env-prep-01/validation.json",
+          "target": "docs/evidence/rc2b-06-b6-native-env-prep-01/validation.json",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            66
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "c8412eff7634494cd3b1bb296f24a1ecd40fdc02",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        }
+      ]
+    },
+    {
+      "source": "docs/reviews/rc2b-06-b6-native-env-prep-01-q1-evidence/committed-documents/rc2b-06-b6-native-env-prep-01.md",
+      "expectedGitBlob": "8a17d0159a420078f5ddb883b4c2ae25066ede48",
+      "expectedSha256": "4a046cf8b4113937d6cebbd9bff17011a48c8ba52a41b97fe6843f6fdc3927c8",
+      "protection": "Verbatim independent-review copy bound by document-binding.json and SHA256SUMS.txt",
+      "verifiedAtCommit": "9ca765c6af9bcc1665bc80e4c28f1a77d3c8d81d",
+      "originalSource": "docs/plans/rc2b-06-b6-native-env-prep-01.md",
+      "originalSourceCommit": "af4300f5dff7e4e49fca98233911a44a15894a43",
+      "references": [
+        {
+          "reference": "../evidence/rc2b-06-b6-native-env-prep-01.md",
+          "target": "docs/evidence/rc2b-06-b6-native-env-prep-01.md",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            11
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "121138770297f5693ce50613f3c6cd7021019c8c",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        },
+        {
+          "reference": "../design/rc2b-06-b6-installed-artifact-trust.md",
+          "target": "docs/design/rc2b-06-b6-installed-artifact-trust.md",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            17
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "7f9f615f75527221e81b7aaa498f4b564acb62b9",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        },
+        {
+          "reference": "rc2b-06-b6-qualification.md",
+          "target": "docs/plans/rc2b-06-b6-qualification.md",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            17
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "f951734e9fac12d94d79854b1e72b386d20de60f",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        },
+        {
+          "reference": "../decisions/rc2b-06-b6-spec-owner-acceptance.md",
+          "target": "docs/decisions/rc2b-06-b6-spec-owner-acceptance.md",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            18
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "5e689f39269fae28556e42ed9ec218949ac0df38",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        },
+        {
+          "reference": "../decisions/rc2b-06-b6-wire-owner-acceptance.md",
+          "target": "docs/decisions/rc2b-06-b6-wire-owner-acceptance.md",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            19
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "501487227208d935c3ab1337c9f87055c9e14b8d",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        },
+        {
+          "reference": "../decisions/rc2b-06-b6-impl-01-s1-owner-acceptance.md",
+          "target": "docs/decisions/rc2b-06-b6-impl-01-s1-owner-acceptance.md",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            20
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "913f19edd8b8c2b03bbecd07c12ef945278422ed",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        },
+        {
+          "reference": "../decisions/rc2b-06-b6-impl-01-s2-owner-acceptance.md",
+          "target": "docs/decisions/rc2b-06-b6-impl-01-s2-owner-acceptance.md",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            21
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "58e6bc5147e1b8030a157f58b98ea867e840c8c2",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        },
+        {
+          "reference": "../decisions/rc2b-06-b6-s2-f02-trust-store-owner-decision.md",
+          "target": "docs/decisions/rc2b-06-b6-s2-f02-trust-store-owner-decision.md",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            22
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "a71647ec38d8e00de4a4fedfd9768df9486ee57a",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        },
+        {
+          "reference": "../decisions/rc2b-06-b6-s3-b2-wire-owner-acceptance.md",
+          "target": "docs/decisions/rc2b-06-b6-s3-b2-wire-owner-acceptance.md",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            23
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "76b70f6832733c7cf58ffaa56afbd3df1a9f014a",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        },
+        {
+          "reference": "../evidence/rc2b-06-b6-impl-01-s3.md",
+          "target": "docs/evidence/rc2b-06-b6-impl-01-s3.md",
+          "classification": "archived-copy-original-relative-directory",
+          "sourceLines": [
+            24
+          ],
+          "expectedOccurrences": 1,
+          "verifiedTargetGitBlobAtBaseline": "096204a54fb9dd50a3d34d3f5285034df034f230",
+          "targetVerification": "Tracked file exists at verifiedAtCommit; resolved from originalSource directory"
+        }
+      ]
     }
   ]
 }
