@@ -1,0 +1,32 @@
+﻿diff --git a/src/Gagamba.Execution.Linux.M1/Installed/InstalledFileSystem.Prepublication.cs b/src/Gagamba.Execution.Linux.M1/Installed/InstalledFileSystem.Prepublication.cs
+index 579c0b2..ec30fcc 100644
+--- a/src/Gagamba.Execution.Linux.M1/Installed/InstalledFileSystem.Prepublication.cs
++++ b/src/Gagamba.Execution.Linux.M1/Installed/InstalledFileSystem.Prepublication.cs
+@@ -18,6 +18,11 @@ internal static partial class InstalledFileSystem
+     /// inconsistent or untrusted. Native protected success is pending; on an
+     /// unprovisioned host this refuses.
+     /// </summary>
++    // F-02: the fixed-root integrity prefix below mirrors VerifyActive
++    // (InstalledFileSystem.cs). The shared parity contract is enforced by
++    // InstalledVerificationParityTests; any change to the shared prefix must be
++    // applied to both paths and re-reviewed. Qualification-record association is
++    // intentionally absent here and must never be added to this path.
+     internal static InstalledIntegrityEvidence VerifyActiveIntegrity()
+     {
+         try
+diff --git a/src/Gagamba.Execution.Linux.M1/Installed/InstalledFileSystem.cs b/src/Gagamba.Execution.Linux.M1/Installed/InstalledFileSystem.cs
+index d3b651d..7f1eed8 100644
+--- a/src/Gagamba.Execution.Linux.M1/Installed/InstalledFileSystem.cs
++++ b/src/Gagamba.Execution.Linux.M1/Installed/InstalledFileSystem.cs
+@@ -105,6 +105,11 @@ internal static partial class InstalledFileSystem
+ 
+     /// <summary>Verifies the fixed production installation. Only this method may return a
+     /// trusted state, and Qualified requires a receipt-bound accepted record and host checks.</summary>
++    // F-02: the fixed-root integrity prefix below is mirrored by
++    // VerifyActiveIntegrity (InstalledFileSystem.Prepublication.cs). The shared
++    // parity contract is enforced by InstalledVerificationParityTests; any change
++    // to the shared prefix must be applied to both paths and re-reviewed. The
++    // qualified-only association/result behavior must remain local to this path.
+     internal static InstalledResult VerifyActive()
+     {
+         try

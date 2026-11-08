@@ -1,0 +1,39 @@
+﻿== M-01-remove-Walk-prepublication ==
+FAILED: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.SharedIntegrityPrefixAppearsInBothPaths
+  ASSERTION: VerifyActiveIntegrity no longer references Walk
+FAILED: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.SharedIntegrityPrefixOrderIsIdenticalInBothPaths
+  ASSERTION: VerifyActiveIntegrity no longer references Walk
+== M-02-remove-CheckHost-prepublication ==
+FAILED: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.BothPathsRequireHostBaselineAndSelectorRecheck
+  ASSERTION: prepublication verification must retain CheckHost
+== M-03-inject-AcceptRecord-prepublication ==
+FAILED: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.IntentionalQualifiedAndPrepublicationDifferencesAreEncoded
+  ASSERTION: qualification-record acceptance must remain qualified-path only
+FAILED: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.PrepublicationPathNeverEstablishesQualificationAssociation
+  ASSERTION: prepublication verification must not accept a qualification record
+== M-04-remove-AcceptRecord-qualified ==
+FAILED: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.QualifiedPathRetainsRecordSelectionAndAcceptance
+  ASSERTION: qualified verification must retain record acceptance
+FAILED: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.IntentionalQualifiedAndPrepublicationDifferencesAreEncoded
+  ASSERTION: qualification-record acceptance must remain qualified-path only
+== M-05-remove-CheckHost-qualified ==
+FAILED: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.BothPathsRequireHostBaselineAndSelectorRecheck
+  ASSERTION: qualified verification must retain CheckHost
+== M-06-remove-RecheckSelectors-prepublication ==
+FAILED: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.BothPathsRequireHostBaselineAndSelectorRecheck
+  ASSERTION: prepublication verification must retain RecheckSelectors
+== M-07-swap-Walk-EnsureExact-prepublication ==
+FAILED: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.SharedIntegrityPrefixOrderIsIdenticalInBothPaths
+  ASSERTION: VerifyActiveIntegrity shared-prefix static order diverged at EnsureExact
+== M-08-move-CheckHost-after-return ==
+BUILD-REJECTED (no test run): error CS0162 "Unreachable code detected" at InstalledFileSystem.Prepublication.cs(69,13); TreatWarningsAsErrors turns the warning into an error, so this bypass cannot be introduced into the build.
+== M-09-conditional-bypass-CheckHost-prepublication ==
+NOT DETECTED: 10/10 parity tests passed with the call-preserving conditional bypass in place (documented static-presence limitation; see report sections 6, 7 and 11).
+== M-10-remove-SelectedRecordName-qualified ==
+FAILED: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.QualifiedPathRetainsRecordSelectionAndAcceptance
+  ASSERTION: qualified verification must retain record selection
+== M-11-remove-CheckDependencies-prepublication ==
+FAILED: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.SharedIntegrityPrefixAppearsInBothPaths
+  ASSERTION: VerifyActiveIntegrity no longer references InstalledPayload.CheckDependencies
+FAILED: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.SharedIntegrityPrefixOrderIsIdenticalInBothPaths
+  ASSERTION: VerifyActiveIntegrity no longer references InstalledPayload.CheckDependencies

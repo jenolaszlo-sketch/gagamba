@@ -1,0 +1,72 @@
+﻿MUTATION: M-00-baseline
+DESCRIPTION: Unmutated scratch copy; prediction: 10/10 pass (positive control)
+SUMMARY: Passed!  - Failed:     0, Passed:    10, Skipped:     0, Total:    10, Duration: 81 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+FAILING-TESTS: 
+BUILD-ERRORS: 
+
+MUTATION: M-01-remove-Walk-prepublication
+DESCRIPTION: Removed the Walk(...) call from VerifyActiveIntegrity; prediction: SharedIntegrityPrefixAppearsInBothPaths and the shared-prefix order test fail
+SUMMARY: Failed!  - Failed:     2, Passed:     8, Skipped:     0, Total:    10, Duration: 94 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+FAILING-TESTS: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.SharedIntegrityPrefixAppearsInBothPaths; Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.SharedIntegrityPrefixOrderIsIdenticalInBothPaths
+BUILD-ERRORS: 
+
+MUTATION: M-02-remove-CheckHost-prepublication
+DESCRIPTION: Removed InstalledPayload.CheckHost(manifest) from VerifyActiveIntegrity; prediction: BothPathsRequireHostBaselineAndSelectorRecheck fails
+SUMMARY: Failed!  - Failed:     1, Passed:     9, Skipped:     0, Total:    10, Duration: 93 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+FAILING-TESTS: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.BothPathsRequireHostBaselineAndSelectorRecheck
+BUILD-ERRORS: 
+
+MUTATION: M-03-inject-AcceptRecord-prepublication
+DESCRIPTION: Injected an InstalledMetadata.AcceptRecord call into VerifyActiveIntegrity; prediction: PrepublicationPathNeverEstablishesQualificationAssociation and the intentional-differences test fail
+SUMMARY: Failed!  - Failed:     2, Passed:     8, Skipped:     0, Total:    10, Duration: 94 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+FAILING-TESTS: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.IntentionalQualifiedAndPrepublicationDifferencesAreEncoded; Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.PrepublicationPathNeverEstablishesQualificationAssociation
+BUILD-ERRORS: 
+
+MUTATION: M-04-remove-AcceptRecord-qualified
+DESCRIPTION: Removed InstalledMetadata.AcceptRecord(...) from VerifyActive; prediction: QualifiedPathRetainsRecordSelectionAndAcceptance and the intentional-differences test fail
+SUMMARY: Failed!  - Failed:     2, Passed:     8, Skipped:     0, Total:    10, Duration: 94 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+FAILING-TESTS: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.QualifiedPathRetainsRecordSelectionAndAcceptance; Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.IntentionalQualifiedAndPrepublicationDifferencesAreEncoded
+BUILD-ERRORS: 
+
+MUTATION: M-05-remove-CheckHost-qualified
+DESCRIPTION: Removed InstalledPayload.CheckHost(manifest) from VerifyActive's qualified branch; prediction: BothPathsRequireHostBaselineAndSelectorRecheck fails
+SUMMARY: Failed!  - Failed:     1, Passed:     9, Skipped:     0, Total:    10, Duration: 93 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+FAILING-TESTS: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.BothPathsRequireHostBaselineAndSelectorRecheck
+BUILD-ERRORS: 
+
+MUTATION: M-06-remove-RecheckSelectors-prepublication
+DESCRIPTION: Removed the RecheckSelectors(...) block from VerifyActiveIntegrity; prediction: BothPathsRequireHostBaselineAndSelectorRecheck fails
+SUMMARY: Failed!  - Failed:     1, Passed:     9, Skipped:     0, Total:    10, Duration: 93 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+FAILING-TESTS: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.BothPathsRequireHostBaselineAndSelectorRecheck
+BUILD-ERRORS: 
+
+MUTATION: M-07-swap-Walk-EnsureExact-prepublication
+DESCRIPTION: Swapped the Walk and EnsureExact statements in VerifyActiveIntegrity; prediction: SharedIntegrityPrefixOrderIsIdenticalInBothPaths fails
+SUMMARY: Failed!  - Failed:     1, Passed:     9, Skipped:     0, Total:    10, Duration: 95 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+FAILING-TESTS: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.SharedIntegrityPrefixOrderIsIdenticalInBothPaths
+BUILD-ERRORS: 
+
+MUTATION: M-08-move-CheckHost-after-return
+DESCRIPTION: Moved the CheckHost call after the return statement in VerifyActiveIntegrity; prediction: build rejection (TreatWarningsAsErrors -> CS0162) or documented non-detection if it compiles
+SUMMARY: (no test summary - build failure?)
+FAILING-TESTS: 
+BUILD-ERRORS: C:\Users\Laszlos\AppData\Local\Temp\opencode\f02-parity-mutation\src\Gagamba.Execution.Linux.M1\Installed\InstalledFileSystem.Prepublication.cs(69,13): error CS0162: Unreachable code detected [C:\Users\Laszlos\AppData\Local\Temp\opencode\f02-parity-mutation\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj]
+
+MUTATION: M-09-conditional-bypass-CheckHost-prepublication
+DESCRIPTION: Guarded CheckHost with an always-false runtime condition, preserving the IL call token; prediction: NOT detected statically or behaviorally (documented static-presence limitation)
+SUMMARY: Passed!  - Failed:     0, Passed:    10, Skipped:     0, Total:    10, Duration: 82 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+FAILING-TESTS: 
+BUILD-ERRORS: 
+
+MUTATION: M-10-remove-SelectedRecordName-qualified
+DESCRIPTION: Replaced InstalledMetadata.SelectedRecordName(receipt) with a direct field read in VerifyActive; prediction: QualifiedPathRetainsRecordSelectionAndAcceptance fails
+SUMMARY: Failed!  - Failed:     1, Passed:     9, Skipped:     0, Total:    10, Duration: 93 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+FAILING-TESTS: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.QualifiedPathRetainsRecordSelectionAndAcceptance
+BUILD-ERRORS: 
+
+MUTATION: M-11-remove-CheckDependencies-prepublication
+DESCRIPTION: Removed InstalledPayload.CheckDependencies(...) from VerifyActiveIntegrity; prediction: SharedIntegrityPrefixAppearsInBothPaths and the shared-prefix order test fail
+SUMMARY: Failed!  - Failed:     2, Passed:     8, Skipped:     0, Total:    10, Duration: 94 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+FAILING-TESTS: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.SharedIntegrityPrefixAppearsInBothPaths; Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.SharedIntegrityPrefixOrderIsIdenticalInBothPaths
+BUILD-ERRORS: 
+

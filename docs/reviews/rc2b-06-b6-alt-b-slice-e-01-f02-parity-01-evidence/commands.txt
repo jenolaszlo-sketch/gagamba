@@ -1,0 +1,35 @@
+F-02-PARITY-01 exact commands (Windows PowerShell 5.1, .NET 10.0, canonical checkout)
+
+# Focused parity suite (canonical, Debug)
+dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Debug --nologo --filter "FullyQualifiedName~InstalledVerificationParityTests"
+
+# Full Windows M1 suite (canonical, Debug)
+dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Debug --nologo
+
+# E-1/F-01 projection class (canonical, Debug)
+dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Debug --nologo --filter "FullyQualifiedName~PrepublicationIntegrityProjectionTests"
+
+# Focused authority/installed/release-generation/final-acceptance (canonical, Debug)
+dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Debug --nologo --filter "FullyQualifiedName~Installed|FullyQualifiedName~Authority|FullyQualifiedName~ReleaseGenerationGate|FullyQualifiedName~FinalAcceptance"
+
+# Release build (runs the production verifier automatically via Directory.Build.targets)
+dotnet build src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj -c Release --nologo
+
+# Explicit production verifier: RELEASE expects PASS/exit 0; DEBUG-as-production expects FAIL/exit 1
+dotnet run --project eng/VerifyProductionAssembly/VerifyProductionAssembly.csproj -c Release --no-launch-profile -- --production "src/Gagamba.Execution.Linux.M1/bin/Release/net10.0/Gagamba.Execution.Linux.M1.dll"
+dotnet run --project eng/VerifyProductionAssembly/VerifyProductionAssembly.csproj -c Release --no-launch-profile -- --production "src/Gagamba.Execution.Linux.M1/bin/Debug/net10.0/Gagamba.Execution.Linux.M1.dll"
+
+# External mutation controls (disposable scratch; canonical source untouched):
+#   scratch = C:\Users\Laszlos\AppData\Local\Temp\opencode\f02-parity-mutation
+robocopy src   "<scratch>\src"   /E /XD bin obj
+robocopy tests "<scratch>\tests" /E /XD bin obj
+robocopy eng   "<scratch>\eng"   /E /XD bin obj
+copy Directory.Build.props,Directory.Build.targets "<scratch>\"
+powershell -NoProfile -ExecutionPolicy Bypass -File mutation-harness.ps1
+#   Each mutation: apply to the scratch copy -> dotnet test (Debug, parity filter) -> restore pristine.
+#   The harness forces an M1 rebuild per mutation (explicit LastWriteTime bump) because Copy-Item
+#   preserves timestamps and would otherwise let a stale assembly satisfy the incremental build.
+
+# Scratch source tree was hash-compared against the canonical checkout before the final mutation
+# run ("scratch tree == canonical (excluding bin/obj)") and the scratch was deleted after evidence
+# extraction (canonical source never mutated).

@@ -1,0 +1,17 @@
+﻿# Full Windows M1 suite (Debug) - essential excerpt of the raw console log (raw log retained in local staging, not committed).
+# Command: dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Debug --nologo
+# Build: Gagamba compilation identity validated for M1/Owner as Debug (instrumented); 0 build warning/error lines.
+
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Debug
+  MVID: 9d312b37-9461-4226-89e8-a03b962d21db
+  SHA-256: 5AC95F272B678F140230EF21E32A1BC2C7CFC27A58C87F6896808DB86FE17C29
+  Mode: instrumented
+  Type-name entries: 498; methods with bodies decoded: 4253; user strings: 3922
+  Seven surfaces: 4/4 hook types and 3/3 hook properties present
+  Core production types: 14/14 present
+  RESULT: PASS
+
+... (331 skipped native/missing-environment cases elided) ...
+
+Passed!  - Failed:     0, Passed:  1401, Skipped:   331, Total:  1732, Duration: 7 s - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)

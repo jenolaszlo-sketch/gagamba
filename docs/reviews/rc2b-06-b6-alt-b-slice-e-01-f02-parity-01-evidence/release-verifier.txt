@@ -1,0 +1,9 @@
+Assembly: Gagamba.Execution.Linux.M1
+Configuration: Release
+MVID: d9b60c61-b76b-4fd4-8726-68d48a84e881
+SHA-256: 71F224D7195D5C0D8B25A9C1098480316C9363789BA90B465A40897CB25C3CDB
+Mode: production
+Type-name entries: 475; methods with bodies decoded: 4100; user strings: 3789
+Seven surfaces: 0/4 hook types and 0/3 hook properties present
+Core production types: 14/14 present
+RESULT: PASS

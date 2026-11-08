@@ -1,0 +1,21 @@
+F-02-PARITY-01 verified starting baseline (2026-11-08, Asia/Manila)
+
+Repository:      C:\Users\Laszlos\source\repos\Gagamba (canonical checkout)
+Branch:          main
+HEAD:            071acbec4c376463e37f470aab484bc5765a74db
+Tree:            e894c1f2f9d95bcf2a6964e38ce4394c671badde
+Worktrees:       1 (C:/Users/Laszlos/source/repos/Gagamba [main])
+Tracked/index:   clean at start
+Historical untracked paths: 44, all preserved (contents unchanged)
+origin/main:     53850aa158cf26f5a40fb9bd51c606a111188ef3 (recorded only; local main was 10 ahead; no push)
+
+Authorized changes made by this commission (no other files):
+  M src/Gagamba.Execution.Linux.M1/Installed/InstalledFileSystem.cs                      (+5 comment lines only)
+  M src/Gagamba.Execution.Linux.M1/Installed/InstalledFileSystem.Prepublication.cs       (+5 comment lines only)
+  A tests/Gagamba.Execution.Linux.M1.Tests/Installed/InstalledVerificationParityTests.cs (new test file)
+
+Working-tree SHA-256 (pre-commit; equals committed blob content): see source-hashes.txt
+Production comment-only diff: see production-diff.txt
+
+Baseline matched the commission exactly. No reset, clean, merge, rebase, prune, history
+rewrite, additional branch/worktree or remote synchronization was performed.
