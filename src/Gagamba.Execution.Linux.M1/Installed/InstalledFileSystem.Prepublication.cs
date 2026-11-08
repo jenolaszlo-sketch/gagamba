@@ -18,6 +18,11 @@ internal static partial class InstalledFileSystem
     /// inconsistent or untrusted. Native protected success is pending; on an
     /// unprovisioned host this refuses.
     /// </summary>
+    // F-02: the fixed-root integrity prefix below mirrors VerifyActive
+    // (InstalledFileSystem.cs). The shared parity contract is enforced by
+    // InstalledVerificationParityTests; any change to the shared prefix must be
+    // applied to both paths and re-reviewed. Qualification-record association is
+    // intentionally absent here and must never be added to this path.
     internal static InstalledIntegrityEvidence VerifyActiveIntegrity()
     {
         try

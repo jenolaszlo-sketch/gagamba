@@ -105,6 +105,11 @@ internal static partial class InstalledFileSystem
 
     /// <summary>Verifies the fixed production installation. Only this method may return a
     /// trusted state, and Qualified requires a receipt-bound accepted record and host checks.</summary>
+    // F-02: the fixed-root integrity prefix below is mirrored by
+    // VerifyActiveIntegrity (InstalledFileSystem.Prepublication.cs). The shared
+    // parity contract is enforced by InstalledVerificationParityTests; any change
+    // to the shared prefix must be applied to both paths and re-reviewed. The
+    // qualified-only association/result behavior must remain local to this path.
     internal static InstalledResult VerifyActive()
     {
         try
