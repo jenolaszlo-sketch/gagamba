@@ -1,0 +1,139 @@
+﻿# Reviewer mutation matrix (17 runs; external scratch copy only; canonical source untouched).
+# Filter: FullyQualifiedName~InstalledVerificationParityTests | FullyQualifiedName~PrepublicationIntegrityProjectionTests (33 tests).
+
+MUTATION: Q0-baseline
+DESCRIPTION: Unmutated scratch copy; expected: parity 10/10 + projection class 23/23 all pass
+SUMMARY: Passed!  - Failed:     0, Passed:    33, Skipped:     0, Total:    33, Duration: 115 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+FAILED: 
+BUILD-ERRORS: 
+ASSERTIONS: 
+
+
+MUTATION: R-01-remove-Walk-prepublication
+DESCRIPTION: Deleted 'Walk(generation.Value, ...)' from VerifyActiveIntegrity
+SUMMARY: Failed!  - Failed:     2, Passed:    31, Skipped:     0, Total:    33, Duration: 114 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+FAILED: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.SharedIntegrityPrefixOrderIsIdenticalInBothPaths; Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.SharedIntegrityPrefixAppearsInBothPaths
+BUILD-ERRORS: 
+ASSERTIONS: VerifyActiveIntegrity no longer references Walk | VerifyActiveIntegrity no longer references Walk
+
+
+MUTATION: R-02-remove-EnsureExact-prepublication
+DESCRIPTION: Deleted 'EnsureExact(scan, includeReceipt: true);' from VerifyActiveIntegrity
+SUMMARY: Failed!  - Failed:     2, Passed:    31, Skipped:     0, Total:    33, Duration: 96 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+FAILED: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.SharedIntegrityPrefixOrderIsIdenticalInBothPaths; Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.SharedIntegrityPrefixAppearsInBothPaths
+BUILD-ERRORS: 
+ASSERTIONS: VerifyActiveIntegrity no longer references EnsureExact | VerifyActiveIntegrity no longer references EnsureExact
+
+
+MUTATION: R-03-remove-CheckDependencies-prepublication
+DESCRIPTION: Deleted 'InstalledPayload.CheckDependencies(manifest, scan.Configs);' from VerifyActiveIntegrity
+SUMMARY: Failed!  - Failed:     2, Passed:    31, Skipped:     0, Total:    33, Duration: 131 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+FAILED: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.SharedIntegrityPrefixOrderIsIdenticalInBothPaths; Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.SharedIntegrityPrefixAppearsInBothPaths
+BUILD-ERRORS: 
+ASSERTIONS: VerifyActiveIntegrity no longer references InstalledPayload.CheckDependencies | VerifyActiveIntegrity no longer references InstalledPayload.CheckDependencies
+
+
+MUTATION: R-04-remove-CheckHost-prepublication
+DESCRIPTION: Deleted 'InstalledPayload.CheckHost(manifest);' from VerifyActiveIntegrity
+SUMMARY: Failed!  - Failed:     1, Passed:    32, Skipped:     0, Total:    33, Duration: 103 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+FAILED: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.BothPathsRequireHostBaselineAndSelectorRecheck
+BUILD-ERRORS: 
+ASSERTIONS: prepublication verification must retain CheckHost
+
+
+MUTATION: R-05-remove-CheckHost-qualified
+DESCRIPTION: Deleted the qualified-branch 'InstalledPayload.CheckHost(manifest);' from VerifyActive
+SUMMARY: Failed!  - Failed:     1, Passed:    32, Skipped:     0, Total:    33, Duration: 101 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+FAILED: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.BothPathsRequireHostBaselineAndSelectorRecheck
+BUILD-ERRORS: 
+ASSERTIONS: qualified verification must retain CheckHost
+
+
+MUTATION: R-06-remove-RecheckSelectors-prepublication
+DESCRIPTION: Deleted the 3-line RecheckSelectors(...) block from VerifyActiveIntegrity
+SUMMARY: Failed!  - Failed:     1, Passed:    32, Skipped:     0, Total:    33, Duration: 101 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+FAILED: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.BothPathsRequireHostBaselineAndSelectorRecheck
+BUILD-ERRORS: 
+ASSERTIONS: prepublication verification must retain RecheckSelectors
+
+
+MUTATION: R-07-remove-AcceptRecord-qualified
+DESCRIPTION: Deleted 'InstalledMetadata.AcceptRecord(recordBytes, receipt, manifest);' from VerifyActive
+SUMMARY: Failed!  - Failed:     2, Passed:    31, Skipped:     0, Total:    33, Duration: 103 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+FAILED: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.IntentionalQualifiedAndPrepublicationDifferencesAreEncoded; Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.QualifiedPathRetainsRecordSelectionAndAcceptance
+BUILD-ERRORS: 
+ASSERTIONS: qualification-record acceptance must remain qualified-path only | qualified verification must retain record acceptance
+
+
+MUTATION: R-08-inject-AcceptRecord-prepublication
+DESCRIPTION: Injected an InstalledMetadata.AcceptRecord call into VerifyActiveIntegrity
+SUMMARY: Failed!  - Failed:     2, Passed:    31, Skipped:     0, Total:    33, Duration: 110 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+FAILED: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.PrepublicationPathNeverEstablishesQualificationAssociation; Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.IntentionalQualifiedAndPrepublicationDifferencesAreEncoded
+BUILD-ERRORS: 
+ASSERTIONS: prepublication verification must not accept a qualification record | qualification-record acceptance must remain qualified-path only
+
+
+MUTATION: R-09-remove-SelectedRecordName-qualified
+DESCRIPTION: Replaced InstalledMetadata.SelectedRecordName(receipt) with a direct field read in VerifyActive
+SUMMARY: Failed!  - Failed:     1, Passed:    32, Skipped:     0, Total:    33, Duration: 116 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+FAILED: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.QualifiedPathRetainsRecordSelectionAndAcceptance
+BUILD-ERRORS: 
+ASSERTIONS: qualified verification must retain record selection
+
+
+MUTATION: R-10-reorder-SameDigest-Receipt-prepublication
+DESCRIPTION: Swapped SameDigest and InstalledMetadata.Receipt statements in VerifyActiveIntegrity
+SUMMARY: (no test summary)
+FAILED: 
+BUILD-ERRORS: C:\Users\Laszlos\AppData\Local\Temp\opencode\f02-parity-q1\mut\src\Gagamba.Execution.Linux.M1\Installed\InstalledFileSystem.Prepublication.cs(46,43): error CS0841: Cannot use local variable 'receiptBytes' before it is declared [C:\Users\Laszlos\AppData\Local\Temp\opencode\f02-parity-q1\mut\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj]
+ASSERTIONS: 
+
+
+MUTATION: R-10b-reorder-EnsureExact-CheckDependencies-prepublication
+DESCRIPTION: Swapped EnsureExact and InstalledPayload.CheckDependencies statements in VerifyActiveIntegrity (both calls remain present)
+SUMMARY: Failed!  - Failed:     1, Passed:    32, Skipped:     0, Total:    33, Duration: 98 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+FAILED: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.SharedIntegrityPrefixOrderIsIdenticalInBothPaths
+BUILD-ERRORS: 
+ASSERTIONS: VerifyActiveIntegrity shared-prefix static order diverged at InstalledPayload.CheckDependencies
+
+
+MUTATION: R-11-remove-Walk-qualified
+DESCRIPTION: Deleted 'Walk(generation.Value, ...)' from VerifyActive
+SUMMARY: Failed!  - Failed:     2, Passed:    31, Skipped:     0, Total:    33, Duration: 105 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+FAILED: Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.SharedIntegrityPrefixOrderIsIdenticalInBothPaths; Gagamba.Execution.Linux.M1.Tests.Installed.InstalledVerificationParityTests.SharedIntegrityPrefixAppearsInBothPaths
+BUILD-ERRORS: 
+ASSERTIONS: VerifyActive no longer references Walk | VerifyActive no longer references Walk
+
+
+MUTATION: CP-01-CheckHost-behind-env-guard-prepublication
+DESCRIPTION: Prepublication CheckHost guarded by an environment variable (bypassable check; IL call token preserved)
+SUMMARY: Passed!  - Failed:     0, Passed:    33, Skipped:     0, Total:    33, Duration: 87 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+FAILED: 
+BUILD-ERRORS: 
+ASSERTIONS: 
+
+
+MUTATION: CP-02-RecheckSelectors-swallowing-prepublication
+DESCRIPTION: Prepublication RecheckSelectors wrapped in a swallowing try/catch (non-enforcing recheck; IL call token preserved)
+SUMMARY: Passed!  - Failed:     0, Passed:    33, Skipped:     0, Total:    33, Duration: 88 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+FAILED: 
+BUILD-ERRORS: 
+ASSERTIONS: 
+
+
+MUTATION: CP-03-AcceptRecord-behind-env-guard-qualified
+DESCRIPTION: Qualified-path AcceptRecord guarded by an environment variable (record acceptance bypassable; IL call token preserved)
+SUMMARY: Passed!  - Failed:     0, Passed:    33, Skipped:     0, Total:    33, Duration: 86 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+FAILED: 
+BUILD-ERRORS: 
+ASSERTIONS: 
+
+
+MUTATION: CP-04-F01-semantic-requires-behind-false-guard
+DESCRIPTION: F-01 semantic Require checks in FromEvidence wrapped in a runtime-false guard (IL tokens preserved)
+SUMMARY: Failed!  - Failed:     5, Passed:    28, Skipped:     0, Total:    33, Duration: 103 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+FAILED: Gagamba.Execution.Linux.M1.Tests.Installed.PrepublicationIntegrityProjectionTests.SemanticGateRefusesWellFormedButIncorrectDerivedFields; Gagamba.Execution.Linux.M1.Tests.Installed.PrepublicationIntegrityProjectionTests.SemanticGateRefusesManifestMissingRuntimeInventoryMetadata; Gagamba.Execution.Linux.M1.Tests.Installed.PrepublicationIntegrityProjectionTests.SemanticGateRefusesManifestMissingRequiredRoleMaterial
+BUILD-ERRORS: 
+ASSERTIONS: Assert.Throws() Failure: No exception was thrown | Assert.Throws() Failure: No exception was thrown | Assert.Throws() Failure: No exception was thrown | Assert.Throws() Failure: No exception was thrown
+
+

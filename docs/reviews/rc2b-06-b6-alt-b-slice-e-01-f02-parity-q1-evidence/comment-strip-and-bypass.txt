@@ -1,0 +1,39 @@
+# Call-preserving bypass findings and comment-only IL equivalence (reviewer-run)
+
+## Comment-only equivalence (Q1-H item 4)
+
+Method-body IL SHA-256, committed Debug build vs a scratch build with the two F-02 comment
+blocks removed (all other source identical):
+
+  VerifyActive          committed 62145748CDBCC2ED49DFB078ADEDA5954D3C38B44A16548BB17073792E547143 1030 bytes
+                        stripped  62145748CDBCC2ED49DFB078ADEDA5954D3C38B44A16548BB17073792E547143 1030 bytes
+  VerifyActiveIntegrity committed 78C979236FBFE3F2A46F7B84EEB32FDD10945C1F0A75EF663321711314ACB5D9  739 bytes
+                        stripped  78C979236FBFE3F2A46F7B84EEB32FDD10945C1F0A75EF663321711314ACB5D9  739 bytes
+
+Result: byte-identical method bodies; the comment-only edits change no executable IL.
+The whole-DLL hash/MVID does change across builds because the deterministic build embeds the
+commit revision (SourceLink): INFO `0.1.0-preview.4+d221b24be3d19c775c5118e419b2e88769fea2ce`.
+Identities are commit-bound; source blob hashes are the correct anchors.
+
+## Call-preserving bypass results (reviewer mutations CP-01..CP-04)
+
+- CP-01 prepublication `CheckHost` behind `Environment.GetEnvironmentVariable("GAGAMBA_Q1_SKIP_HOST") is null`:
+  compiled; parity + projection class 33/33 pass -> NOT detected. Behaviorally meaningful on a
+  provisioned host (environment-controlled bypass of the host baseline).
+- CP-02 prepublication `RecheckSelectors` wrapped in `try { ... } catch (Exception) { }`:
+  compiled; 33/33 pass -> NOT detected. Store-change (TOCTOU) enforcement silently disabled.
+- CP-03 qualified-path `AcceptRecord` behind `GAGAMBA_Q1_SKIP_RECORD` env guard:
+  compiled; 33/33 pass -> NOT detected. Receipt-bound record acceptance bypassable while the
+  method still returns `InstalledResult.Qualified`.
+- CP-04 F-01 semantic `Require` block in `FromEvidence` behind `Environment.ProcessId < 0`:
+  compiled; detected by the EXISTING E-1/F-01 class -> 5 failures:
+  `SemanticGateRefusesWellFormedButIncorrectDerivedFields` (3 theory cases),
+  `SemanticGateRefusesManifestMissingRequiredRoleMaterial`,
+  `SemanticGateRefusesManifestMissingRuntimeInventoryMetadata`.
+
+Interpretation: the parity suite is a structural call-presence/order control, exactly as bounded
+by the accepted architecture decision (Option B §5: token scanning "detects presence/absence of
+calls, not the internal semantics of a called helper"; §10 defers native differential parity to
+Slice N). Call-preserving conditional bypasses require branch-dominance analysis or
+provisioned-host behavior, both explicitly outside the accepted Option B guarantee. Where a
+direct behavioral test exists (F-01 semantics), guarding the check is detected.

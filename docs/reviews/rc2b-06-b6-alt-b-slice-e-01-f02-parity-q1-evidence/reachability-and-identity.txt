@@ -1,0 +1,27 @@
+﻿# Independent reachability and identity checks (reviewer probe).
+
+== callers of InstalledFileSystem.VerifyActiveIntegrity (Debug) ==
+Gagamba.Execution.Linux.M1.Installed.PrepublicationIntegrityProjection::Verify
+== callers of PrepublicationIntegrityProjection.Verify (Debug) ==
+(no callers)
+== callers of InstalledFileSystem.VerifyActiveIntegrity (Release) ==
+Gagamba.Execution.Linux.M1.Installed.PrepublicationIntegrityProjection::Verify
+== callers of PrepublicationIntegrityProjection.Verify (Release) ==
+(no callers)
+== exported (public) types, Release ==
+exported type count: 1
+Gagamba.Execution.Linux.M1.Installed.InstalledArtifactInspection
+== exported (public) types, Debug ==
+exported type count: 1
+Gagamba.Execution.Linux.M1.Installed.InstalledArtifactInspection
+== assembly identities (current HEAD) ==
+Debug   MVID ac25e3b5-6b96-4ac7-9ba4-b2eb6897ce05 INFO 0.1.0-preview.4+d221b24be3d19c775c5118e419b2e88769fea2ce
+Debug   SHA-256 311222F59CBEDAF8A7495EA90E3624525C067CF564425AA025A423DECA049373
+Release MVID 2167863b-cf8f-40d7-b6d6-a9c5fff122b3 INFO 0.1.0-preview.4+d221b24be3d19c775c5118e419b2e88769fea2ce
+Release SHA-256 4A2F83C9330D49A7BF4EA50666A4E9C5704764D51CD83041CA52F7B0F9D6CC2F
+
+== method-body IL hashes (reviewer probe) ==
+Debug   VerifyActive          62145748CDBCC2ED49DFB078ADEDA5954D3C38B44A16548BB17073792E547143 1030
+Debug   VerifyActiveIntegrity 78C979236FBFE3F2A46F7B84EEB32FDD10945C1F0A75EF663321711314ACB5D9 739
+Release VerifyActive          E88223DD400FCC5227C09A4487D81A5CE4492862D31E3F5183D2AC8BD023905D 959
+Release VerifyActiveIntegrity D36D5A559F314E42751C67268BB7A629A556154E0C303C453B49FB4646E5D90D 715

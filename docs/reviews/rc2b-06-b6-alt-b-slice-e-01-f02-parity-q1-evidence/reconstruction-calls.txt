@@ -1,0 +1,174 @@
+﻿# Independent IL call reconstruction (reviewer probe, Debug M1 at d221b24).
+# Raw decode of call/callvirt/newobj/ldftn/ldtoken-style member references in IL order.
+
+== VerifyActive (InstalledFileSystem.cs) ==
+000002 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::EnsureLinuxX64
+000015 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::OpenAbsoluteDirectory
+000022 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Snapshot
+000029 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000035 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::RequireDirectory
+000042 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Value
+000054 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000061 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::OpenDirectory
+000068 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Value
+000080 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000087 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::OpenDirectory
+000094 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Snapshot
+000101 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Snapshot
+000109 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Snapshot
+000117 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Value
+000128 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000134 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000144 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000157 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::ReadTrustedFile
+000166 Gagamba.Execution.Linux.M1.Installed.InstalledMetadata::Active
+000174 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Value
+000183 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000190 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::OpenDirectory
+000199 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Snapshot
+000208 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Value
+000219 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000225 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000235 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000248 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::ReadTrustedFile
+000257 Gagamba.Execution.Linux.M1.Installed.InstalledManifest::Parse
+000266 Gagamba.Execution.Linux.M1.Installed.InstalledManifest::get_Digest
+000278 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::SameDigest
+000286 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Value
+000297 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000303 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000313 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000326 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::ReadTrustedFile
+000337 Gagamba.Execution.Linux.M1.Installed.InstalledMetadata::Receipt
+000347 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::CreateScan
+000356 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Scan::get_Files
+000378 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::MetadataArtifact
+000383 System.Collections.Generic.Dictionary`2[[System.String, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[Gagamba.Execution.Linux.M1.Installed.InstalledArtifact, Gagamba.Execution.Linux.M1, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null]]::Add
+000391 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Scan::get_Files
+000413 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::MetadataArtifact
+000418 System.Collections.Generic.Dictionary`2[[System.String, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[Gagamba.Execution.Linux.M1.Installed.InstalledArtifact, Gagamba.Execution.Linux.M1, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null]]::Add
+000426 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Value
+000440 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::Walk
+000449 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::EnsureExact
+000459 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Scan::get_Configs
+000464 Gagamba.Execution.Linux.M1.Installed.InstalledPayload::CheckDependencies
+000472 Gagamba.Execution.Linux.M1.Installed.InstalledReceipt::get_QualificationId
+000481 Gagamba.Execution.Linux.M1.Installed.InstalledReceipt::get_QualificationRecordSha256
+000508 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Value
+000514 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Value
+000520 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Value
+000551 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::RecheckSelectors
+000559 Gagamba.Execution.Linux.M1.Installed.InstalledResult::Fresh
+000573 Gagamba.Execution.Linux.M1.Installed.InstalledMetadata::SelectedRecordName
+000581 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Value
+000589 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000595 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000605 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000618 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::ReadTrustedFile
+000631 Gagamba.Execution.Linux.M1.Installed.InstalledMetadata::AcceptRecord
+000639 Gagamba.Execution.Linux.M1.Installed.InstalledPayload::CheckHost
+000646 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Value
+000652 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Value
+000658 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Value
+000682 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::RecheckSelectors
+000694 Gagamba.Execution.Linux.M1.Installed.InstalledResult::Qualified
+000712 System.IDisposable::Dispose
+000723 System.IDisposable::Dispose
+000734 System.IDisposable::Dispose
+000745 System.IDisposable::Dispose
+000757 System.Exception::get_Message
+000762 Gagamba.Execution.Linux.M1.Installed.InstalledResult::Unavailable
+000784 System.Exception::get_Message
+000789 System.String::Concat
+000794 Gagamba.Execution.Linux.M1.Installed.InstalledResult::Unavailable
+000816 System.Exception::get_Message
+000821 System.String::Concat
+000826 Gagamba.Execution.Linux.M1.Installed.InstalledResult::Unavailable
+000843 System.Exception::get_Message
+000848 Gagamba.Execution.Linux.M1.Installed.InstalledResult::Unqualified
+000865 System.Exception::get_Message
+000870 Gagamba.Execution.Linux.M1.Installed.InstalledResult::Unqualified
+000887 System.Exception::get_Message
+000892 Gagamba.Execution.Linux.M1.Installed.InstalledResult::Unqualified
+000906 System.Exception::get_Message
+000911 Gagamba.Execution.Linux.M1.Installed.InstalledResult::Unqualified
+001013 System.Exception::get_Message
+001018 Gagamba.Execution.Linux.M1.Installed.InstalledResult::Unqualified
+
+== VerifyActiveIntegrity (InstalledFileSystem.Prepublication.cs) ==
+000002 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::EnsureLinuxX64
+000015 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::OpenAbsoluteDirectory
+000022 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Snapshot
+000029 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000035 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::RequireDirectory
+000042 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Value
+000054 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000061 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::OpenDirectory
+000068 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Value
+000080 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000087 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::OpenDirectory
+000094 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Snapshot
+000101 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Snapshot
+000109 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Snapshot
+000117 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Value
+000128 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000134 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000144 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000157 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::ReadTrustedFile
+000166 Gagamba.Execution.Linux.M1.Installed.InstalledMetadata::Active
+000174 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Value
+000183 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000190 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::OpenDirectory
+000199 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Snapshot
+000208 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Value
+000219 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000225 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000235 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000248 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::ReadTrustedFile
+000257 Gagamba.Execution.Linux.M1.Installed.InstalledManifest::Parse
+000266 Gagamba.Execution.Linux.M1.Installed.InstalledManifest::get_Digest
+000278 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::SameDigest
+000286 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Value
+000297 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000303 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000313 System.Nullable`1[[System.UInt32, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]::.ctor
+000326 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::ReadTrustedFile
+000337 Gagamba.Execution.Linux.M1.Installed.InstalledMetadata::Receipt
+000346 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::CreateScan
+000355 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Scan::get_Files
+000377 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::MetadataArtifact
+000382 System.Collections.Generic.Dictionary`2[[System.String, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[Gagamba.Execution.Linux.M1.Installed.InstalledArtifact, Gagamba.Execution.Linux.M1, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null]]::Add
+000390 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Scan::get_Files
+000412 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::MetadataArtifact
+000417 System.Collections.Generic.Dictionary`2[[System.String, System.Private.CoreLib, Version=10.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[Gagamba.Execution.Linux.M1.Installed.InstalledArtifact, Gagamba.Execution.Linux.M1, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null]]::Add
+000425 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Value
+000439 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::Walk
+000448 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::EnsureExact
+000458 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Scan::get_Configs
+000463 Gagamba.Execution.Linux.M1.Installed.InstalledPayload::CheckDependencies
+000471 Gagamba.Execution.Linux.M1.Installed.InstalledPayload::CheckHost
+000478 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Value
+000484 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Value
+000490 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem+Fd::get_Value
+000521 Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem::RecheckSelectors
+000534 Gagamba.Execution.Linux.M1.Installed.InstallationIdentity::RoleHash
+000542 Gagamba.Execution.Linux.M1.Installed.InstallationIdentity::RoleHash
+000549 Gagamba.Execution.Linux.M1.Installed.InstalledManifest::get_Platform
+000561 Gagamba.Execution.Linux.M1.Installed.InstallJson::Hex
+000566 Gagamba.Execution.Linux.M1.Installed.InstalledIntegrityEvidence::.ctor
+000584 System.IDisposable::Dispose
+000595 System.IDisposable::Dispose
+000606 System.IDisposable::Dispose
+000617 System.IDisposable::Dispose
+000634 System.Exception::get_Message
+000639 System.String::Concat
+000646 System.IO.InvalidDataException::.ctor
+000662 System.Exception::get_Message
+000667 System.String::Concat
+000674 System.IO.InvalidDataException::.ctor
+000690 System.Exception::get_Message
+000695 System.String::Concat
+000702 System.IO.InvalidDataException::.ctor
+000718 System.Exception::get_Message
+000723 System.String::Concat
+000730 System.IO.InvalidDataException::.ctor

@@ -1,0 +1,25 @@
+# Independent regression execution (Q1; canonical checkout at d221b24; Windows; .NET 10)
+
+| Check | Result |
+|---|---|
+| Focused parity suite (Debug) | 10 passed / 0 failed / 0 skipped |
+| E-1/F-01 projection class (Debug) | 23 passed / 0 failed / 0 skipped |
+| Focused installed/authority/release (Debug) | 248 passed / 0 failed / 32 skipped |
+| Full Windows M1 suite (Debug) | 1,401 passed / 0 failed / 331 skipped / 1,732 total; 0 build warning/error lines |
+| Release build (Gagamba.Execution.Linux.M1) | 0 warnings / 0 errors |
+| Production verifier (Release M1) | RESULT: PASS, exit 0 - MVID 2167863b-cf8f-40d7-b6d6-a9c5fff122b3, SHA-256 4A2F83C9..., 0/4 hook types, 0/3 hook properties, 14/14 core types |
+| Production verifier (Debug M1 as production) | RESULT: FAIL, exit 1 - names `PrepublicationIntegrityProjection::ForTest` among forbidden Debug-only factories |
+| Debug M1 identity | MVID ac25e3b5-6b96-4ac7-9ba4-b2eb6897ce05; SHA-256 311222F5...; INFO +d221b24... |
+| Release M1 identity | MVID 2167863b-...; SHA-256 4A2F83C9...; INFO +d221b24... |
+
+Notes:
+- The producer baseline counts (10 / 23 / 248+32 / 1,401+331) were independently reproduced in
+  kind. Exact binary identities differ from the producer's recorded values because the build
+  embeds the commit revision (SourceLink) and HEAD advanced from 071acbe to d221b24.
+- The 331 skips are native/missing-environment cases and are NOT native qualification; they
+  remain Slice N obligations. PowerShell 7 remains unexecuted.
+- The parity tests run against the Debug M1 assembly by project design; RELEASE claims rest on the
+  standalone production verifier and the reviewer's Release-assembly caller scans
+  (reachability-and-identity.txt), not on Debug reflection tests.
+
+Commands: see commands.txt.

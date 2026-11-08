@@ -1,0 +1,15 @@
+F-02-PARITY-Q1 verified starting baseline (2026-11-09, Asia/Manila)
+
+Repository:      C:\Users\Laszlos\source\repos\Gagamba (canonical checkout)
+Branch:          main
+HEAD:            d221b24be3d19c775c5118e419b2e88769fea2ce   (matches the commission)
+Tree:            d58f5f12f159572e41d9e44814fdf9527effc4b0   (matches)
+Impl commit:     4c5a42f0fecff90dcb30088ca0203956e7a80032   (matches)
+Impl tree:       ba021734bc42c43fd1f0c6cc8a52573707a6a972   (matches)
+Worktrees:       1 canonical (C:/Users/Laszlos/source/repos/Gagamba [main])
+Tracked/index:   clean
+Historical untracked paths: 44, all preserved
+origin/main:     53850aa158cf26f5a40fb9bd51c606a111188ef3 (unchanged; local main 12 ahead; no push)
+
+Baseline matched the commission exactly. No reset, clean, merge, rebase, prune, history rewrite,
+additional branch/worktree or remote synchronization was performed by this commission.

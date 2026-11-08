@@ -1,0 +1,68 @@
+# Comment-only production change and identity analysis (Q1-H)
+
+## Changed files across 071acbe..d221b24
+
+  docs/PROJECT-STATUS.md
+  docs/handoff.md
+  docs/work-queue.md
+  docs/reviews/rc2b-06-b6-alt-b-slice-e-01-f02-parity-01.md
+  docs/reviews/rc2b-06-b6-alt-b-slice-e-01-f02-parity-01-evidence/...   (18 files)
+  src/Gagamba.Execution.Linux.M1/Installed/InstalledFileSystem.cs                        (5 added comment lines)
+  src/Gagamba.Execution.Linux.M1/Installed/InstalledFileSystem.Prepublication.cs         (5 added comment lines)
+  tests/Gagamba.Execution.Linux.M1.Tests/Installed/InstalledVerificationParityTests.cs   (new)
+
+Only commit touching src or tests in 071acbe..d221b24: `4c5a42f test(slice-e-01): add F-02
+verification-path parity controls`.
+
+## Non-comment line check
+
+Every added/removed line in the two production files is a `//` comment line or a diff hunk
+header: the reviewer filter over `git diff 071acbe d221b24 -- <two files>` returned empty for
+any `[+-]` line that is not a header and not a `//` comment.
+
+## Added comment lines (verbatim)
+
+    // F-02: the fixed-root integrity prefix below mirrors VerifyActive
+    // (InstalledFileSystem.cs). The shared parity contract is enforced by
+    // InstalledVerificationParityTests; any change to the shared prefix must be
+    // applied to both paths and re-reviewed. Qualification-record association is
+    // intentionally absent here and must never be added to this path.
+
+    // F-02: the fixed-root integrity prefix below is mirrored by
+    // VerifyActiveIntegrity (InstalledFileSystem.Prepublication.cs). The shared
+    // parity contract is enforced by InstalledVerificationParityTests; any change
+    // to the shared prefix must be applied to both paths and re-reviewed. The
+    // qualified-only association/result behavior must remain local to this path.
+
+## Committed blob + file identities at d221b24
+
+  tests/Gagamba.Execution.Linux.M1.Tests/Installed/InstalledVerificationParityTests.cs
+    blob=1b782ae115f4d81a0dcc6a22cb50857cf6670252
+    sha256=C9862C13088F5692BAC0056C4DE5E131337F43A35469DFA29863AD2069288C2A
+  src/Gagamba.Execution.Linux.M1/Installed/InstalledFileSystem.cs
+    blob=7f1eed85a0861bd8da5253f550fdb265a70b96de
+    sha256=65CD3648448872CADBF8832CFAEF06A1C74E6C5B3F96C8A9E6A1681D0ACA40B3
+  src/Gagamba.Execution.Linux.M1/Installed/InstalledFileSystem.Prepublication.cs
+    blob=ec30fccc90d4b87eb155b8720067388d1703e251
+    sha256=C9C53F44D6AC87BE2635BBA88B73EEFBCE269BD06015962A2EF3CC214D4A5136
+
+The parity test file blob is identical at the implementation commit and at final HEAD
+(`1b782ae1...`), so the reviewed controls are exactly the committed controls.
+
+## Assembly identity consequence
+
+- `AssemblyInformationalVersion` = `0.1.0-preview.4+d221b24be3d19c775c5118e419b2e88769fea2ce`
+  for both Debug and Release: the deterministic build embeds the commit revision, so the whole-DLL
+  hash/MVID changes with the revision even when method IL is identical.
+- Producer evidence recorded identities for the working tree that became commit 4c5a42f while HEAD
+  was still 071acbe: Debug `9d312b37-...`/`5AC95F27...`, Release `d9b60c61-...`/`71F224D7...`.
+- Rebuild at d221b24: Debug `ac25e3b5-...`/`311222F5...`, Release `2167863b-...`/`4A2F83C9...`.
+- Method-body IL is identical across these builds (see comment-strip-and-bypass.txt); the change
+  is a pure identity consequence of commit binding, not a contract violation, and no production
+  activation or publication was performed.
+
+## No installed artifacts recycled
+
+No `/opt/gagamba`-style installed store or installed-artifact qualification evidence exists in this
+checkout; F-02-PARITY-01 produced and consumed none. `artifacts/` holds 72,200 untracked historical
+conformance JSON logs only (outside this package's scope). No tag or release was created.

@@ -1,0 +1,41 @@
+# F-02-PARITY-Q1 exact commands (Windows PowerShell 5.1, .NET 10, canonical checkout at d221b24)
+
+## Reviewer IL probe (external scratch; source in il-probe.cs)
+dotnet build <scratch>\probe\Probe.csproj -c Release --nologo
+dotnet <probe>.dll calls   <M1.dll> Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem VerifyActive
+dotnet <probe>.dll calls   <M1.dll> Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem VerifyActiveIntegrity
+dotnet <probe>.dll ilhash  <M1.dll> Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem <method>
+dotnet <probe>.dll callers <M1.dll> Gagamba.Execution.Linux.M1.Installed.InstalledFileSystem VerifyActiveIntegrity
+dotnet <probe>.dll callers <M1.dll> Gagamba.Execution.Linux.M1.Installed.PrepublicationIntegrityProjection Verify
+dotnet <probe>.dll exports <M1.dll>
+dotnet <probe>.dll info    <M1.dll>
+#   (run against both bin\Debug\net10.0 and bin\Release\net10.0 assemblies)
+
+## Independent regressions (canonical, Debug)
+dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Debug --nologo --filter "FullyQualifiedName~InstalledVerificationParityTests"
+dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Debug --nologo --filter "FullyQualifiedName~PrepublicationIntegrityProjectionTests"
+dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Debug --nologo --filter "FullyQualifiedName~Installed|FullyQualifiedName~Authority|FullyQualifiedName~ReleaseGenerationGate|FullyQualifiedName~FinalAcceptance"
+dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Debug --nologo
+
+## Builds and production verifier
+dotnet build src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj -c Release --nologo   # verifier runs automatically
+dotnet run --project eng/VerifyProductionAssembly/VerifyProductionAssembly.csproj -c Release --no-launch-profile -- --production "src/Gagamba.Execution.Linux.M1/bin/Release/net10.0/Gagamba.Execution.Linux.M1.dll"
+dotnet run --project eng/VerifyProductionAssembly/VerifyProductionAssembly.csproj -c Release --no-launch-profile -- --production "src/Gagamba.Execution.Linux.M1/bin/Debug/net10.0/Gagamba.Execution.Linux.M1.dll"
+
+## Reviewer mutation runs (external scratch copy; canonical source untouched)
+#   scratch = C:\Users\Laszlos\AppData\Local\Temp\opencode\f02-parity-q1\mut
+#   copied from canonical via robocopy (src, tests, eng, Directory.Build.props/.targets; bin/obj excluded)
+powershell -NoProfile -ExecutionPolicy Bypass -File run-q1-mutations.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File run-q1-part2.ps1
+#   Each mutation: apply to scratch -> dotnet test -c Debug --nologo
+#     --filter "FullyQualifiedName~InstalledVerificationParityTests|FullyQualifiedName~PrepublicationIntegrityProjectionTests"
+#   -> restore pristine. Rebuilds are forced by writing the mutated file with a current timestamp
+#   (Copy-Item preserves timestamps and can otherwise satisfy the incremental build with a stale assembly).
+
+## Comment-strip IL comparison (reviewer scratch)
+#   remove the two 5-line F-02 comment blocks from the scratch copy, then:
+dotnet build <scratch>\mut\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj -c Debug --nologo
+dotnet <probe>.dll ilhash <scratch>.dll ... VerifyActive / VerifyActiveIntegrity
+#   compare with the committed build's method-body IL hashes (see comment-strip-and-bypass.txt)
+
+# Scratch copies were deleted after evidence extraction; the canonical checkout was never mutated.
