@@ -1,0 +1,81 @@
+# P1-Q1 executed results
+
+Date: 2026-11-09 (Asia/Manila)
+Baseline: HEAD 06006a7035ca3a7615189b867584b1b3955eeb7a / tree 89330a5cf779ec35bb208e6bf9ec67bf0c12e87a
+
+## 1. Reviewer probe build (external scratch)
+
+    dotnet build %TEMP%\opencode\p1q1-probe -c Release --nologo
+
+Result: Build succeeded. 0 Warning(s), 0 Error(s).
+
+## 2. Reviewer probe run
+
+    dotnet %TEMP%\opencode\p1q1-probe\bin\Release\net10.0\p1q1-probe.dll C:\Users\Laszlos\source\repos\Gagamba
+
+Result: SUMMARY|pass=91|fail=0 (exit 0). Raw output retained as reviewer-vectors.txt.
+Release assembly scanned: reviewer rebuild sha256=5b649daef37a5d2fe5466a5b6cdd3647b7e8a1d636d77ec49028f15c8443b5a7
+Debug assembly scanned: rebuilt at review; 13 Validation types; 4,253 method bodies; 0 caller hits; positive control detected.
+Release assembly scanned: 13 Validation types; 4,100 method bodies; 0 caller hits; positive control detected; 0 forbidden dependencies.
+Depth boundary: root + 7 nested containers accepted; 8+ rejected (invalid CJSON-1).
+Size boundary: 65,536 accepted; 65,537 rejected (CJSON-1 size).
+Robustness: 400 byte mutations never threw, 0 silent acceptances, 0 accepted M/F/S mutations; 4 mutated K bytes accepted as new valid K objects (content addressing); 11 truncations never threw.
+
+## 3. Debug M1 rebuild
+
+    dotnet build src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj -c Debug --nologo
+
+Result: 0 Warning(s), 0 Error(s).
+
+## 4. Release M1 rebuild
+
+    dotnet build src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj -c Release --nologo
+
+Result: 0 Warning(s), 0 Error(s). Rebuilt MVID ec05b2be-2af4-4430-9e4f-475863732208,
+SHA-256 5B649DAEF37A5D2FE5466A5B6CDD3647B7E8A1D636D77EC49028F15C8443B5A7.
+(Producer build: 19a06c60... / 321F7131...; rebuilt-binary difference is the accepted
+non-bit-reproducibility qualification; source blobs are the identity anchor.)
+
+## 5. RELEASE production-assembly verifier
+
+    dotnet run --project eng/VerifyProductionAssembly -c Release --no-launch-profile --
+      --production src/Gagamba.Execution.Linux.M1/bin/Release/net10.0/Gagamba.Execution.Linux.M1.dll
+
+Result: RESULT: PASS, exit 0.
+Seven surfaces: 0/4 hook types and 0/3 hook properties present; core production types 14/14 present.
+
+## 6. Expected Debug-as-production negative control
+
+    dotnet run --project eng/VerifyProductionAssembly -c Release --no-launch-profile --
+      --production src/Gagamba.Execution.Linux.M1/bin/Debug/net10.0/Gagamba.Execution.Linux.M1.dll
+
+Result: RESULT: FAIL, exit 1 (expected).
+
+## 7. Test project build
+
+    dotnet build tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Debug --nologo
+
+Result: 0 Warning(s), 0 Error(s).
+
+## 8. Dedicated E-2-P1 filter (independent rerun)
+
+    dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Debug --no-build
+      --filter "FullyQualifiedName~Tests.Validation" --nologo
+
+Result: Passed! Failed: 0, Passed: 87, Skipped: 0, Total: 87. (83 E-2-P1 tests plus 4 pre-existing
+authority tests matching the filter.)
+
+## 9. Full Windows M1 suite (independent rerun)
+
+    dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Debug --no-build --nologo
+
+Result: Passed! Failed: 0, Passed: 1484, Skipped: 331, Total: 1815.
+The 331 native skips are unqualified and are not passes.
+
+## 10. Baseline preservation
+
+- 44 historical untracked paths present with matching SHA-256 (diff=0).
+- P0 recorded blob db25949d25babd474d00ae5b2f436e15507f22b3 unchanged.
+- D1 blob 83fe8d2649675e00b76457885fd0169b4ae77498 unchanged.
+- Entry owner decision 02 blob f5ab96c6fedc480b427beeb9e1941a64e83a2b43 unchanged.
+- No production, test, tooling, project, or frozen-artifact modification performed by Q1.

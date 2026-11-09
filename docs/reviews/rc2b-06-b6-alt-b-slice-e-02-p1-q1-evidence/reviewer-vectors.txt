@@ -1,0 +1,103 @@
+INFO|debug_m1|C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\bin\Debug\net10.0\Gagamba.Execution.Linux.M1.dll
+INFO|debug_m1_sha256|c650745a880c7cbbf8a1fa88653ee551cf8b197470cefb20c432aaaed5a5687e
+RESULT|cjson/minimal-object|PASS|accept=True failure=
+RESULT|cjson/multi-key-canonical|PASS|accept=True failure=
+RESULT|cjson/key-order-wrong|PASS|accept=False failure=CJSON-1 keys are not strictly ascending
+RESULT|cjson/duplicate-keys|PASS|accept=False failure=CJSON-1 keys are not strictly ascending
+RESULT|cjson/empty-string|PASS|accept=False failure=CJSON-1 string
+RESULT|cjson/printable-chars|PASS|accept=True failure=
+RESULT|cjson/backslash-escape|PASS|accept=True failure=
+RESULT|cjson/quote-escape|PASS|accept=True failure=
+RESULT|cjson/unsupported-newline-escape|PASS|accept=False failure=CJSON-1 string
+RESULT|cjson/raw-control-char|PASS|accept=False failure=CJSON-1 ASCII printable bytes
+RESULT|cjson/non-ascii-utf8|PASS|accept=False failure=CJSON-1 ASCII printable bytes
+RESULT|cjson/bom-prefix|PASS|accept=False failure=CJSON-1 ASCII printable bytes
+RESULT|cjson/leading-space|PASS|accept=False failure=noncanonical CJSON-1 representation
+RESULT|cjson/trailing-space|PASS|accept=False failure=noncanonical CJSON-1 representation
+RESULT|cjson/trailing-newline|PASS|accept=False failure=CJSON-1 ASCII printable bytes
+RESULT|cjson/trailing-data|PASS|accept=False failure=invalid CJSON-1
+RESULT|cjson/unsigned-zero|PASS|accept=True failure=
+RESULT|cjson/unsigned-max|PASS|accept=True failure=
+RESULT|cjson/leading-zero|PASS|accept=False failure=invalid CJSON-1
+RESULT|cjson/negative|PASS|accept=False failure=CJSON-1 unsigned canonical integer
+RESULT|cjson/decimal|PASS|accept=False failure=CJSON-1 unsigned canonical integer
+RESULT|cjson/exponent|PASS|accept=False failure=CJSON-1 unsigned canonical integer
+RESULT|cjson/overflow-int64|PASS|accept=False failure=CJSON-1 unsigned canonical integer
+RESULT|cjson/null-value|PASS|accept=True failure=
+RESULT|cjson/nested-array-object|PASS|accept=True failure=
+RESULT|cjson/depth-three|PASS|accept=True failure=
+RESULT|cjson/depth-nine|PASS|accept=False failure=invalid CJSON-1
+RESULT|cjson/truncated|PASS|accept=False failure=invalid CJSON-1
+RESULT|cjson/empty-input|PASS|accept=False failure=CJSON-1 size
+RESULT|cjson/root-array|PASS|accept=False failure=CJSON-1 root object
+RESULT|cjson/unicode-escape|PASS|accept=False failure=noncanonical CJSON-1 representation
+RESULT|cjson/slash-escape|PASS|accept=False failure=noncanonical CJSON-1 representation
+RESULT|cjson/size-at-limit|PASS|len=65536
+RESULT|cjson/size-over-limit|PASS|len=65537 failure=CJSON-1 size
+INFO|depth-boundary|arrays=6|accept=True|
+INFO|depth-boundary|arrays=7|accept=True|
+INFO|depth-boundary|arrays=8|accept=False|invalid CJSON-1
+INFO|depth-boundary|arrays=9|accept=False|invalid CJSON-1
+RESULT|determinism/parse-twice|PASS|
+RESULT|determinism/encode-equals-input|PASS|
+RESULT|determinism/hash-stable|PASS|
+RESULT|determinism/no-input-mutation|PASS|
+RESULT|determinism/hash-known-vectors|PASS|
+INFO|reviewer-chain|b2-pre|M_len=76|Hm=5889f8bd7f9fb3dd2fc52fdbafff0401257b8ad1b6b00d5553fd5c9e9a74b73f|F_len=525|Hf=76544d39a8fcbf2d2f0be8a87a5b8450301b8523f91cbb780d99bccbaba31343|S_len=465|Hs=4cda5ca26acb95d394ce8688c347e06a1631395b0f353c22ed770ee99f4eca00|K_len=1087|Hk=545177d5aee994d2c8ff0acd9552eb18900e6244ecba14b6d285593d00ec1ca1
+INFO|reviewer-chain|b3-no-release-pre|M_len=724|Hm=087362070e94a5c6881980aa53bb70eebf03bf15fa4e42034c57bf419442173f|F_len=2228|Hf=134c1fa6b33b01187a32864ecd36453f834a1114e5d25fcd9c28423d117dfcfc|S_len=467|Hs=b7916332614f37a6a038bd71406803b64b1d77442d47bc2310eabd45eba9836d|K_len=1089|Hk=c66eaba63af2f4c07243411dc3551a5883956d674559d8afdb25730cb6b93cd4
+INFO|reviewer-chain|b3-release-post|M_len=724|Hm=e4f005cb1f0b5218aed32958819ab2187afc7c76bd21c0d508011a91555396c9|F_len=2228|Hf=59e4aa96411dbb01e7aafefa1b84dcbc65fd8b60bf13790869b8cddcb0d09071|S_len=566|Hs=f4931e286c6d20ff0a71b27d5fa3c36440d9fcaa817f38f5faa58042da798112|K_len=1152|Hk=3692c29a542a15a4a532854003e5e25e23a0b1ae86bff3e9d8a6b1836c55711f
+RESULT|chain/b2-reviewer|PASS|
+RESULT|chain/b3-reviewer|PASS|
+RESULT|chain/b3-release-reviewer|PASS|
+RESULT|chain/b2-independent-digests|PASS|
+RESULT|chain/b3-verifier-digests|PASS|
+RESULT|artifact/reviewer-per-artifact|PASS|
+RESULT|semantic/case-id-disagreement|PASS|accept=False failure=case id disagreement expected=case id disagreement
+RESULT|semantic/phase-disagreement|PASS|accept=False failure=phase disagreement expected=phase disagreement
+RESULT|semantic/topology-disagreement|PASS|accept=False failure=topology disagreement expected=topology disagreement
+RESULT|semantic/session-limit-disagreement|PASS|accept=False failure=session limit disagreement expected=session limit disagreement
+RESULT|semantic/timeout-beyond-session|PASS|accept=False failure=S action timeout exceeds the F maximum session expected=S action timeout exceeds the F maximum session
+RESULT|semantic/release-template-disagreement|PASS|accept=False failure=release template disagreement expected=release template disagreement
+RESULT|semantic/authority-field-injection|PASS|accept=False failure=K field set expected=K field set
+RESULT|semantic/unsupported-k-version|PASS|accept=False failure=schemaVersion integer expected=schemaVersion integer
+RESULT|semantic/bad-boot-id|PASS|accept=False failure=F bootId expected=F bootId
+RESULT|semantic/m-aggregate-overflow|PASS|M aggregate length
+RESULT|semantic/m-object-extension|PASS|M object field set
+RESULT|sub/m-replaced|PASS|accept=False failure=F fixtureManifestSha256 does not bind M expected=F fixtureManifestSha256 does not bind M
+RESULT|sub/s-replaced|PASS|accept=False failure=S fixtureManifestSha256 does not bind M expected=S fixtureManifestSha256 does not bind M
+RESULT|sub/stale-k|PASS|accept=False failure=K actionScriptSha256 does not bind S expected=K actionScriptSha256 does not bind S
+RESULT|sub/cross-chain-k|PASS|accept=False failure=K fixtureManifestSha256 does not bind M expected=K fixtureManifestSha256 does not bind M
+RESULT|sub/f-self-asserted-hash|PASS|accept=False failure=F fixtureManifestSha256 does not bind M expected=F fixtureManifestSha256 does not bind M
+RESULT|f02/canonical-record-both-accept|PASS|
+RESULT|f02/canonical-selector-both-accept|PASS|
+RESULT|f02/hash-parity|PASS|
+RESULT|f02/lowerhex-parity|PASS|
+RESULT|f02/reject-trailing-space|PASS|mineReject=True f02Reject=True
+RESULT|f02/reject-bom|PASS|mineReject=True f02Reject=True
+RESULT|f02/reject-duplicate-field|PASS|mineReject=True f02Reject=True
+RESULT|f02/reject-unicode-escape|PASS|mineReject=True f02Reject=True
+RESULT|f02/reject-float-schema|PASS|mineReject=True f02Reject=True
+RESULT|f02/null-divergence-schema-scoped|PASS|
+RESULT|f02/unknown-field-schema-scoped|PASS|
+RESULT|reachability/debug-validation-types-present|PASS|count=13
+RESULT|reachability/debug-no-exported-types|PASS|
+RESULT|reachability/debug-no-production-caller|PASS|hits=0 scanned=4253 targets=266
+RESULT|reachability/debug-scanner-positive-control|PASS|
+RESULT|reachability/debug-no-forbidden-dependencies|PASS|bad=0
+INFO|release_m1_sha256|5b649daef37a5d2fe5466a5b6cdd3647b7e8a1d636d77ec49028f15c8443b5a7
+RESULT|reachability/release-validation-types-present|PASS|count=13
+RESULT|reachability/release-no-exported-types|PASS|
+RESULT|reachability/release-no-production-caller|PASS|hits=0 scanned=4100 targets=266
+RESULT|reachability/release-scanner-positive-control|PASS|
+RESULT|reachability/release-no-forbidden-dependencies|PASS|bad=0
+RESULT|authority/no-authority-shaped-names|PASS|bad=0
+RESULT|authority/no-public-types|PASS|bad=0
+RESULT|authority/no-authority-type-references|PASS|refs=0
+RESULT|authority/no-rwcp-or-approval-records|PASS|
+RESULT|robustness/mutations-never-throw|PASS|threw=0
+RESULT|robustness/mutations-fail-with-message|PASS|silent=0
+RESULT|robustness/mutated-mfs-identities-refused|PASS|m=0 f=0 s=0
+INFO|robustness|valid-new-k-identities=4
+RESULT|robustness/truncations-never-throw|PASS|threw=0
+RESULT|robustness/oversize-rejected|PASS|CJSON-1 size
+SUMMARY|pass=91|fail=0
