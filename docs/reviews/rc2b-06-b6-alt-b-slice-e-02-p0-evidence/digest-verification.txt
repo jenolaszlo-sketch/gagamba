@@ -1,0 +1,66 @@
+# SHA-256 verification for the E-2-P0 frozen-schema provenance reconciliation
+# Date: 2026-11-09 (Asia/Manila)
+# Baseline: 4263c8bd85bfed9c05b066d8cbc7524a1ba1a4fe / tree 934bf6567e1ee10bff59d3669bf0ca2a95c6d6d3
+# Method: Get-FileHash -Algorithm SHA256, lower-case hex; size in bytes.
+# Format: PASS<TAB>sha256<TAB>size<TAB>identity
+# Local external files are under C:/Users/Laszlos/source/repos/Solo/ and are not part of the Gagamba repository.
+
+## F02 frozen recheck manifest
+PASS	5940b98bc4158eb3887b096a047ff6451f6059a3ec45e7bc254f4ed5cc583f82	1463	F02/recheck-input-SHA256SUMS.txt
+PASS	efa70562503e75e9e77aa2cdbce54a47d76c2d74ebb8374b1dd7b27d7dca18e6	4470	F02/independent-recheck.md
+
+## F02 15-file frozen submission (manifest entry = local bytes)
+PASS	ea8c50d92a7bf7fe4bd2dca0f91155fc4533bef314fc4980036535c891822b93	18757	F02/actor-and-descriptor-binding.md
+PASS	ed8dca1edb26b0ccde009b60f3f16148a67fed323fd47e9989b605397364d200	8004	F02/acyclic-authority-sequence.md
+PASS	14dc6bd42432dc6c434c5ac10473dd1e568114ba85e11c6e95356b4534526179	5760	F02/authority-mechanism-comparison.md
+PASS	667e6118e02b081475ce1a2c851d3bfe9b0a96fdb474a2fb0598f308e9c694f7	30362	F02/case-policy-and-action-contract.md
+PASS	49d566e1bcae585d4d9566319cdbe5d6f06696dfbbd9bff6c3fda9ce7514b652	10989	F02/final-acceptance-hash-contract.md
+PASS	8cbcdd5493fe4b86b680912d1fdf7ece5fb9bd662117798402d4c90f667d73d6	9876	F02/mechanism-a-consume-before-launch.md
+PASS	f5d28dbe2473dd8a47337e4ae80a40c815bce051818e326ace1b647bf0d0b010	14325	F02/mechanism-b-session-capability.md
+PASS	c4e73095cd1f05ee7410cc97bd26d8a8c94c09a0e9e14a47eb1c1840426234b5	14152	F02/minimum-implementation-contract.md
+PASS	0900b7fe4049c941695b9dd9c421105b25f3b879bcdf2cad30239ea3aea76791	21157	F02/negative-test-specifications.md
+PASS	f3b175f755e4319a428a452103f2d20e30f2f37c764685cc971b1c5f30545bc3	8004	F02/owner-decision-proposal.md
+PASS	f22a9b3025a24b529b97adc47465c16b6b3c27b9852dd45497322d17f10c42e7	2955	F02/prior-input-provenance.json
+PASS	1f5d9d651ccd2e88d5b406e0d1fe3a1e26d64c666ee8dded27099c4da98bc963	14140	F02/publication-withdrawal-race-matrix.md
+PASS	8618e4980ab641ae815a3f05ffc781208607ea70470784901641703ab6788ff4	8720	F02/remediation-notes.md
+PASS	6b9312dc3baab780fad51a3bb4baaf22bfaec52156ef2b8d1b47356d6414b99c	83824	F02/source-provenance.json
+PASS	dfc2188b811de50d96f8e1db117c10c15c9efc1603f486607bb2fd38538b201c	9402	F02/trusted-actors-and-boundaries.md
+
+## F02 owner-package support
+PASS	a9c5dc71eb0c7b7ff9e443ea8107d55f99540cc119ee343fc18ca105b5ce4e6b	5321	F02/SHA256SUMS.txt (context only)
+PASS	5755748b27a8c11b11f6d4218a077e90ec7da09029256c8653e49b83e7224c0d	8598	OWN/final-design-binding.md
+PASS	d8ba4a64c48a6fbac2c9ca4245fcfb3147cca63e0c0ee6a3bcadf080d581d808	12042	OWN/accepted-contract-and-qualification-matrix.md
+PASS	9deeb26b63918cdc92b782e498ab3a6e870a0ae127f61ad474f3533f72b037ad	19502	OWN/negative-test-reconciliation.md
+PASS	9eb472d640335a1af259416b4afd365399977361f50e28a10b0065af6937376b	8759	OWN/implementation-authorization-boundary.md
+PASS	f09bc803728514cb46f2a13de7209839355cde3cc876d353f5171c747f8d38bb	7914	F02/independent-review.md (historical incomplete review)
+
+## Alternative B validation-context inputs
+PASS	896532d72b39e95a5e6201f74a9c37478baebdab7c7061d0c79522eaf87732bb	15291	INT/validation-bootstrap-compatibility.md
+PASS	3c4307f6e51610c1c2cd067b2eaeaeaf87eadb99d471dc65283468907aebeced	3501	Q1/validation-bootstrap-assessment.md
+PASS	9a1a195b69645423e1945b97e2ff26424a014ae785bf7076c5df521631be3054	18650	INT/implementation-and-test-handoff.md
+
+## Committed repository records
+PASS	ee0b2b81682e266488f59e0abcb870664ba25eaa0048764f885b44ae72793c79	49754	docs/decisions/rc2b-06-b6-alt-b-slice-e-02-entry-owner-01.md
+PASS	f4212a8a1302695dae53a763682c0dc79de3a47af02e29b14abffbec96e1b664	49267	docs/reviews/rc2b-06-b6-alt-b-slice-e-02-entry-01.md
+PASS	3090058f7dc0e872e4c721b5f21cd9f6ab955b87c5dab4dbc0bb978c6e17273c	4240	docs/reviews/rc2b-06-b6-alt-b-slice-e-02-entry-01-evidence/README.md
+PASS	497dcb6924d692d4f3601c33baa3320de7036e057293d4bc4836c29e52fe99de	39727	docs/reviews/rc2b-06-b6-alt-b-slice-e-entry-01.md
+PASS	573f248a41b6d0215d294b74152ab17c64478fc6ac484884dff0f001b46b84fb	24582	docs/decisions/rc2b-06-b6-alt-b-slice-e-01-entry-owner-decision-01.md
+PASS	27de68690cca7027d46b0692e52e5da71641e38e13c4037fd31937d08f823b93	14460	docs/decisions/rc2b-06-b6-alt-b-slice-e-01-owner-acceptance-01.md
+PASS	30205d32409c097624da25cfd9ed6608f1588d79f3af96231125da06e6ad194b	11681	docs/decisions/rc2b-06-b6-alt-b-slice-e-01-f01-owner-acceptance-01.md
+PASS	00f39ae2a1fc1675fa195c3af0ba040fdd05eed956e497f5e0c6fa5285a56107	26170	docs/decisions/rc2b-06-b6-alt-b-slice-e-01-f02-parity-owner-acceptance-01.md
+PASS	44c85e0062c42ddec6e98a74268d71f358a9435f506089aa416e6045d47fb944	11274	docs/decisions/rc2b-06-b6-alt-b-slice-e-01-f03-owner-acceptance-01.md
+PASS	3bdccfdf3e24d4a00fd9f2e600cee13e3eab94014def03a349023eb2bf3e4b6e	15524	docs/decisions/rc2b-06-b6-alt-b-p4-coverage-owner-acceptance-01.md
+PASS	3465b3503ad75daa40fead701fad36d165d642568bc60c98f67c3870462b6361	16956	docs/decisions/rc2b-06-b6-integrated-start-authority-owner-decision-01.md
+PASS	9b3d9774e6a1c244ccfa89e8f16a54c8678d22bdef0e0272ce1c528b8dd4f42c	19343	docs/plans/rc2b-06-b6-integrated-start-authority-impl-01.md
+PASS	5f72da6f7ef7ede6379f587521226038137e7de602e53b2b94669f366cd75b3e	9729	docs/decisions/rc2b-06-b6-f02-mechanism-b-owner-acceptance.md
+PASS	e318125f91e20350824aeb70042b35a37c33d54fcde8350a4d353dccfaeb0adb	11099	docs/decisions/rc2b-06-b6-s2-f02-trust-store-owner-decision.md
+PASS	f727ea026f9ef4eafe2bfb21af87ad9bee493149645e9e6576a3f85c694ca5f6	115088	docs/design/rc2b-06-b6-installed-artifact-trust.md
+PASS	0478e4878b7c95d6441dcc24f6fde17f2f86baf74aab41a3298df892913b9854	10959	docs/remediation-evidence-standard.md
+PASS	68a4830c16924fdfefa31e0df01c9f42ae336a106df1571048c676b7d1b2dc03	4577	docs/reviews/rc2b-06-b6-impl-01-s2-q1-evidence/QUALIFICATION-RECORD-REVIEW.md
+
+## Summary
+# 15 of 15 F02 manifest entries PASS.
+# 3 of 3 Alternative B inputs PASS.
+# 6 of 6 support objects PASS.
+# 17 of 17 committed records PASS.
+# 0 mismatches; 0 missing required inputs.

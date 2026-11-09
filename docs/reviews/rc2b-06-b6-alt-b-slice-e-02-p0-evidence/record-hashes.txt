@@ -1,0 +1,43 @@
+# SHA-256 identifiers for records used by the E-2-P0 provenance reconciliation
+# Date: 2026-11-09 (Asia/Manila)
+# Baseline: 4263c8bd85bfed9c05b066d8cbc7524a1ba1a4fe / tree 934bf6567e1ee10bff59d3669bf0ca2a95c6d6d3
+# Method: Get-FileHash -Algorithm SHA256, lower-case hex; sizes in bytes.
+# Format: sha256<TAB>size<TAB>repo-relative-path
+
+## Committed repository records
+
+ee0b2b81682e266488f59e0abcb870664ba25eaa0048764f885b44ae72793c79	49754	docs/decisions/rc2b-06-b6-alt-b-slice-e-02-entry-owner-01.md
+f4212a8a1302695dae53a763682c0dc79de3a47af02e29b14abffbec96e1b664	49267	docs/reviews/rc2b-06-b6-alt-b-slice-e-02-entry-01.md
+3090058f7dc0e872e4c721b5f21cd9f6ab955b87c5dab4dbc0bb978c6e17273c	4240	docs/reviews/rc2b-06-b6-alt-b-slice-e-02-entry-01-evidence/README.md
+497dcb6924d692d4f3601c33baa3320de7036e057293d4bc4836c29e52fe99de	39727	docs/reviews/rc2b-06-b6-alt-b-slice-e-entry-01.md
+573f248a41b6d0215d294b74152ab17c64478fc6ac484884dff0f001b46b84fb	24582	docs/decisions/rc2b-06-b6-alt-b-slice-e-01-entry-owner-decision-01.md
+27de68690cca7027d46b0692e52e5da71641e38e13c4037fd31937d08f823b93	14460	docs/decisions/rc2b-06-b6-alt-b-slice-e-01-owner-acceptance-01.md
+30205d32409c097624da25cfd9ed6608f1588d79f3af96231125da06e6ad194b	11681	docs/decisions/rc2b-06-b6-alt-b-slice-e-01-f01-owner-acceptance-01.md
+00f39ae2a1fc1675fa195c3af0ba040fdd05eed956e497f5e0c6fa5285a56107	26170	docs/decisions/rc2b-06-b6-alt-b-slice-e-01-f02-parity-owner-acceptance-01.md
+44c85e0062c42ddec6e98a74268d71f358a9435f506089aa416e6045d47fb944	11274	docs/decisions/rc2b-06-b6-alt-b-slice-e-01-f03-owner-acceptance-01.md
+3bdccfdf3e24d4a00fd9f2e600cee13e3eab94014def03a349023eb2bf3e4b6e	15524	docs/decisions/rc2b-06-b6-alt-b-p4-coverage-owner-acceptance-01.md
+3465b3503ad75daa40fead701fad36d165d642568bc60c98f67c3870462b6361	16956	docs/decisions/rc2b-06-b6-integrated-start-authority-owner-decision-01.md
+9b3d9774e6a1c244ccfa89e8f16a54c8678d22bdef0e0272ce1c528b8dd4f42c	19343	docs/plans/rc2b-06-b6-integrated-start-authority-impl-01.md
+5f72da6f7ef7ede6379f587521226038137e7de602e53b2b94669f366cd75b3e	9729	docs/decisions/rc2b-06-b6-f02-mechanism-b-owner-acceptance.md
+e318125f91e20350824aeb70042b35a37c33d54fcde8350a4d353dccfaeb0adb	11099	docs/decisions/rc2b-06-b6-s2-f02-trust-store-owner-decision.md
+f727ea026f9ef4eafe2bfb21af87ad9bee493149645e9e6576a3f85c694ca5f6	115088	docs/design/rc2b-06-b6-installed-artifact-trust.md
+0478e4878b7c95d6441dcc24f6fde17f2f86baf74aab41a3298df892913b9854	10959	docs/remediation-evidence-standard.md
+68a4830c16924fdfefa31e0df01c9f42ae336a106df1571048c676b7d1b2dc03	4577	docs/reviews/rc2b-06-b6-impl-01-s2-q1-evidence/QUALIFICATION-RECORD-REVIEW.md
+
+## P0 deliverables (pre-commit working-tree content)
+
+513d395d9cb6f6591e62a20732a33c2f4c78018865f0407cf28c2b3b962d2f85	47904	docs/reviews/rc2b-06-b6-alt-b-slice-e-02-p0.md
+11bca1f6add93abd759c5ec4afeca506e4e894e2ab79cc6ccf25da59e3c167d6	54446	docs/evidence/rc2b-06-b6-alt-b-slice-e-02-frozen-schema-provenance-p0.md
+efd7ea81a24eece6a8790f137cd2b5d32b0de8a24f72ef3be0170cff704b2756	3255	docs/reviews/rc2b-06-b6-alt-b-slice-e-02-p0-evidence/README.md
+b3119802e1ee6f3b2c380bc2f7e45c99b58b82c5cb66905a6ddd88fef58d79de	2137	docs/reviews/rc2b-06-b6-alt-b-slice-e-02-p0-evidence/baseline-and-preservation.md
+8e388a28b358dd90f565336a780ae1bc95eceb8249f3b1b9fea49ba92d3b928f	6138	docs/reviews/rc2b-06-b6-alt-b-slice-e-02-p0-evidence/digest-verification.txt
+3648f204b828c842190337b1ef58dde9536fb892fbee69afc83607790202e73e	6361	docs/reviews/rc2b-06-b6-alt-b-slice-e-02-p0-evidence/acceptance-mapping.md
+2092cdb6ceff51c589f0aa66d82103d5f870deb5d41a1c3568d61ceb6042241b	4391	docs/reviews/rc2b-06-b6-alt-b-slice-e-02-p0-evidence/schema-extraction-map.md
+595a3c208b30bebc3cb8e6bc77647ecabce12b455075b2b0b26406928d4dfd67	2915	docs/reviews/rc2b-06-b6-alt-b-slice-e-02-p0-evidence/source-and-authority-state.txt
+888e015130aec68d7818763297452af16d9d76642e191b09a549446089af2053	8624	docs/reviews/rc2b-06-b6-alt-b-slice-e-02-p0-evidence/reproducibility-commands.md
+
+## Notes
+
+- The proposed provenance record is proposed, not owner-accepted. Its hash identifies the exact bytes submitted for review.
+- The record-hashes file itself is intentionally not self-hashed.
+- A matching SHA-256 value is identity, not approval or authority.

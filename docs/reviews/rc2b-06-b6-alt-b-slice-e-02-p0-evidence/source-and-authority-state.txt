@@ -1,0 +1,77 @@
+# P0 source and authority state
+
+Date: 2026-11-09 (Asia/Manila)
+Baseline: 4263c8bd85bfed9c05b066d8cbc7524a1ba1a4fe / tree 934bf6567e1ee10bff59d3669bf0ca2a95c6d6d3
+
+## 1. Source diff from the accepted F02 baseline
+
+Command:
+
+    git diff --stat 4c5a42f0fecff90dcb30088ca0203956e7a80032 HEAD -- src tests eng
+
+Result:
+
+    (empty)
+    exit=0
+
+No tracked source, test, or engineering change exists between the accepted F-02 implementation baseline and the P0 baseline.
+
+## 2. E-2 / GAVA1 / v3 validation-pre symbols
+
+Command:
+
+    Get-ChildItem src,tests,eng -Recurse -File -Include *.cs,*.ps1,*.py,*.sh,*.csproj,*.json,*.yml,*.yaml |
+      Select-String -Pattern 'accepted-validation-catalogs|validation-catalog|GAVA|validation-pre|fixtureManifestSha256|fixturePolicySha256|actionScriptSha256|catalogApprovalSha256|ownerCatalogAcceptanceSha256|catalogReviewSha256'
+
+Result:
+
+    NO MATCHES
+
+No E-2 K/M/F/S/R/Wc/P reader, catalog store, schema field, validation-pre codec, GAVA1 implementation, or catalog approval implementation exists in the tracked source, test, or engineering trees.
+
+## 3. E-1 production reachability
+
+Observed in `src/Gagamba.Execution.Linux.M1/Installed/PrepublicationIntegrityProjection.cs`:
+
+- `Verify()` calls `InstalledFileSystem.VerifyActiveIntegrity()`.
+- `FromEvidence` is private.
+- `ForTest` is the Debug-only test seam.
+- `Verify()` has no production caller.
+
+This preserves the accepted E-1 qualification: E-1 is integrity evidence only, production-unreachable, and not validation authority.
+
+## 4. Repository state
+
+Command:
+
+    git worktree list
+    git status --porcelain -uno
+
+Result:
+
+    C:/Users/Laszlos/source/repos/Gagamba 4263c8b [main]
+    tracked_changes=0
+
+Exactly one canonical worktree remains on `main`. The 44 historical untracked paths remain preserved by content; the new P0 documentation paths are additive.
+
+## 5. Authority state
+
+- Q-E1: formally OPEN. P0 reconciliation is not P0 owner acceptance.
+- Q-E2: formally OPEN. No validation-catalog approval chain is adopted.
+- D1: NOT STARTED.
+- E-2 entry: UNAUTHORIZED.
+- E-2 implementation: UNAUTHORIZED.
+- E-3 through E-7: UNAUTHORIZED.
+- Slice N: UNAUTHORIZED.
+- Positive validation: UNAUTHORIZED.
+- E-1 production consumer: NONE.
+- OwnerAuthorityContext.Validation factory: NONE.
+- Public API expansion: NONE.
+- Schema, catalog, approval, trust anchor, capability, or protected store: NONE CREATED.
+- F02 qualification-store authority: store-specific only; not extended.
+- P4 refusal-only coverage, `NATIVE-PENDING`, and all 331 native skips: PRESERVED.
+- F-01/F-02/F-03 closures with qualifications: PRESERVED.
+
+## 6. Note on untracked build/test outputs
+
+The repository contains historical untracked build/test outputs under `eng/` and `tests/` (for example `__pycache__` and `.trx` files). They are part of the preserved 44-path inventory, not P0 source changes. P0 did not remove, rewrite, or stage them.
