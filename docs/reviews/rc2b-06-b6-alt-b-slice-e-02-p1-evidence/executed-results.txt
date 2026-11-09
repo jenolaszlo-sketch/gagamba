@@ -1,0 +1,80 @@
+# E-2-P1 executed results
+
+Date: 2026-11-09 (Asia/Manila)
+Baseline: HEAD 2dab45aa4f4be6b0f713a35b4d50bdfa6fc925be / tree b458be30925bfc71b7b96fe40b6966126d0bcf74
+
+## 1. Debug production build
+
+    dotnet build src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj -c Debug --nologo
+
+Result: Build succeeded. 0 Warning(s), 0 Error(s).
+Build-time identity instrumentation: "Mode: instrumented", seven surfaces 4/4 hook types and 3/3 hook
+properties present, core production types 14/14 present, RESULT: PASS.
+Debug M1 MVID: a50bd575-e181-4a75-99af-700bc9b97a1b
+Debug M1 SHA-256: F63DDE2FF02A7D1E9491E8F08B45E2C1AB2FA0D698885DDE45E3E423467BD0A2
+
+## 2. Debug test-project build
+
+    dotnet build tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Debug --nologo
+
+Result: Build succeeded. 0 Warning(s), 0 Error(s).
+
+## 3. Dedicated E-2-P1 test filter
+
+    dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Debug --no-build
+      --filter "FullyQualifiedName~Tests.Validation" --nologo
+
+Result: Passed! Failed: 0, Passed: 87, Skipped: 0, Total: 87.
+(83 E-2-P1 tests plus 4 pre-existing authority tests whose names match the filter:
+OwnerAuthorityContextTests.ValidationContextHasNoCallerConstructibleFactory,
+OwnerManifestAdmissionGateTests.ValidationContextRemainsNonConstructibleAndCannotSatisfyTheGate,
+OwnerReleaseGenerationGateTests.ValidationContextRemainsUnreachableAndRefusesFailClosed,
+B3ProviderAdmissionTests.ValidationShapedSelectionAndLegacyContextMixCannotGrantProviderAdmission.)
+
+## 4. Full Windows M1 suite
+
+    dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Debug --no-build --nologo
+
+Result: Passed! Failed: 0, Passed: 1484, Skipped: 331, Total: 1815.
+Historical F-02 baseline: 1,401 passed / 0 failed / 331 skipped; delta = +83 new E-2-P1 tests.
+The 331 native skips are unqualified and are not passes.
+
+## 5. Release production build
+
+    dotnet build src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj -c Release --nologo
+
+Result: Build succeeded. 0 Warning(s), 0 Error(s).
+Release M1 MVID: 19a06c60-a117-4502-a1ef-ae61ac0b83ca
+Release M1 SHA-256: 321F71315E79A190C07AA83BAD2480993F109428DC4DE374814AB1342FBD8006
+
+## 6. RELEASE production-assembly verifier
+
+    dotnet run --project eng/VerifyProductionAssembly -c Release --no-launch-profile --
+      --production src/Gagamba.Execution.Linux.M1/bin/Release/net10.0/Gagamba.Execution.Linux.M1.dll
+
+Result: RESULT: PASS, exit 0.
+Seven surfaces: 0/4 hook types and 0/3 hook properties present; core production types 14/14 present.
+
+## 7. Expected Debug-as-production negative control
+
+    dotnet run --project eng/VerifyProductionAssembly -c Release --no-launch-profile --
+      --production src/Gagamba.Execution.Linux.M1/bin/Debug/net10.0/Gagamba.Execution.Linux.M1.dll
+
+Result: RESULT: FAIL, exit 1, naming the accepted forbidden qualification hooks, authority factories
+(including PrepublicationIntegrityProjection::ForTest) and metadata/user-string/IL-token references.
+
+## 8. Fixture digest re-verification
+
+    Get-ChildItem docs/reviews/rc2b-06-b6-alt-b-slice-e-02-p1-evidence/fixtures -Recurse -File -Include *.json |
+      ForEach-Object { Get-FileHash $_.FullName -Algorithm SHA256 }
+
+Result: 8/8 fixtures match the recorded digests in fixtures/digests.txt and the constants in
+tests/Gagamba.Execution.Linux.M1.Tests/Validation/ValidationFixtures.cs.
+
+## 9. Baseline preservation (checked before commit)
+
+- 44 historical untracked paths present with matching SHA-256 (diff=0).
+- src/tests/eng changes limited to the authorized E-2-P1 files and tests.
+- P0 adopted record blob db25949d25babd474d00ae5b2f436e15507f22b3 unchanged.
+- D1 decision blob 83fe8d2649675e00b76457885fd0169b4ae77498 unchanged.
+- No network synchronization; no push; one worktree.
