@@ -1,0 +1,30 @@
+# SHA-256 verification of local external frozen inputs
+# Date: 2026-11-09 (Asia/Manila)
+# Method: Get-FileHash -Algorithm SHA256, lowercase hex; sizes in bytes.
+# These files are local under Solo/ and are NOT part of the Gagamba repository.
+# They are recorded here only to show that the local bytes match hashes in committed decisions.
+# Format: sha256<TAB>size<TAB>path
+
+# F02 15-file frozen submission
+# Recheck manifest hash bound by F02 owner acceptance §2:
+#   5940b98bc4158eb3887b096a047ff6451f6059a3ec45e7bc254f4ed5cc583f82
+# Independent recheck hash bound by F02 owner acceptance §2:
+#   efa70562503e75e9e77aa2cdbce54a47d76c2d74ebb8374b1dd7b27d7dca18e6
+667e6118e02b081475ce1a2c851d3bfe9b0a96fdb474a2fb0598f308e9c694f7	30362	Solo/gagamba-f02-authority-mechanism-decision-01/case-policy-and-action-contract.md
+ea8c50d92a7bf7fe4bd2dca0f91155fc4533bef314fc4980036535c891822b93	18757	Solo/gagamba-f02-authority-mechanism-decision-01/actor-and-descriptor-binding.md
+f5d28dbe2473dd8a47337e4ae80a40c815bce051818e326ace1b647bf0d0b010	14325	Solo/gagamba-f02-authority-mechanism-decision-01/mechanism-b-session-capability.md
+49d566e1bcae585d4d9566319cdbe5d6f06696dfbbd9bff6c3fda9ce7514b652	10989	Solo/gagamba-f02-authority-mechanism-decision-01/final-acceptance-hash-contract.md
+efa70562503e75e9e77aa2cdbce54a47d76c2d74ebb8374b1dd7b27d7dca18e6	4470	Solo/gagamba-f02-authority-mechanism-decision-01/independent-recheck.md
+5940b98bc4158eb3887b096a047ff6451f6059a3ec45e7bc254f4ed5cc583f82	1463	Solo/gagamba-f02-authority-mechanism-decision-01/recheck-input-SHA256SUMS.txt
+
+# Alternative B key reviewed inputs
+# Bound by Alternative B owner decision §4.
+896532d72b39e95a5e6201f74a9c37478baebdab7c7061d0c79522eaf87732bb	15291	Solo/gagamba-integrated-start-authority-owner-decision-01/validation-bootstrap-compatibility.md
+3c4307f6e51610c1c2cd067b2eaeaeaf87eadb99d471dc65283468907aebeced	3501	Solo/gagamba-integrated-start-authority-owner-decision-q1/validation-bootstrap-assessment.md
+9a1a195b69645423e1945b97e2ff26424a014ae785bf7076c5df521631be3054	18650	Solo/gagamba-integrated-start-authority-owner-decision-01/implementation-and-test-handoff.md
+
+# Outer package inventory, recorded for context only.
+# This file is not itself bound as an acceptance object by F02 §2; the bound object is
+# recheck-input-SHA256SUMS.txt above. The outer file lists the bound recheck manifest
+# and the same per-file hashes.
+a9c5dc71eb0c7b7ff9e443ea8107d55f99540cc119ee343fc18ca105b5ce4e6b	5321	Solo/gagamba-f02-authority-mechanism-decision-01/SHA256SUMS.txt

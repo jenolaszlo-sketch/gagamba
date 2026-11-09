@@ -1,0 +1,135 @@
+# Source and authority state at the E-2 entry baseline
+# Date: 2026-11-09 (Asia/Manila)
+# Baseline: e86254e60fb3ded770156519e1d3e15e73bf36fc / tree 69a18e8c3a1e199802f4cfc1906de2a30e3a7928
+# All commands read-only. No build or test run.
+
+## 1. E-1 production references
+
+Command:
+  git grep -n 'PrepublicationIntegrityProjection\.Verify' -- src eng
+
+Output:
+  (none)
+  exit=1
+
+Interpretation:
+  No production reference to the E-1 projection's Verify() route exists in src/ or eng/.
+
+## 2. VerifyActiveIntegrity references
+
+Command:
+  git grep -n 'VerifyActiveIntegrity' -- src eng
+
+Output:
+  src/Gagamba.Execution.Linux.M1/Installed/InstalledFileSystem.Prepublication.cs:26:    internal static InstalledIntegrityEvidence VerifyActiveIntegrity()
+  src/Gagamba.Execution.Linux.M1/Installed/InstalledFileSystem.cs:109:    // VerifyActiveIntegrity (InstalledFileSystem.Prepublication.cs). The shared
+  src/Gagamba.Execution.Linux.M1/Installed/PrepublicationIntegrityProjection.cs:66:        FromEvidence(InstalledFileSystem.VerifyActiveIntegrity(),
+
+Interpretation:
+  The only executable caller is PrepublicationIntegrityProjection.Verify, which is itself uncalled in production.
+  The other reference is a comment.
+
+## 3. InstalledIntegrityEvidence references
+
+Command:
+  git grep -n 'InstalledIntegrityEvidence' -- src eng
+
+Output:
+  src/Gagamba.Execution.Linux.M1/Installed/InstalledFileSystem.Prepublication.cs:26:    internal static InstalledIntegrityEvidence VerifyActiveIntegrity()
+  src/Gagamba.Execution.Linux.M1/Installed/InstalledFileSystem.Prepublication.cs:67:            return new InstalledIntegrityEvidence(digest, manifest,
+  src/Gagamba.Execution.Linux.M1/Installed/PrepublicationIntegrityProjection.cs:69:    private static PrepublicationIntegrityProjection FromEvidence(InstalledIntegrityEvidence evidence,
+  src/Gagamba.Execution.Linux.M1/Installed/PrepublicationIntegrityProjection.cs:114:    internal static PrepublicationIntegrityProjection ForTest(InstalledIntegrityEvidence evidence) =>
+  src/Gagamba.Execution.Linux.M1/Installed/PrepublicationIntegrityProjection.cs:134:internal sealed record InstalledIntegrityEvidence(string ArtifactSetSha256, InstalledManifest Manifest,
+
+Interpretation:
+  InstalledIntegrityEvidence is E-1's internal evidence record.
+  It is NOT the frozen v3 InstalledIntegrity type and does not imply v3-pre implementation.
+
+## 4. Validation context construction
+
+File:
+  src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerAuthorityContext.cs
+
+Relevant lines:
+  12: /// has no factory in this slice and remains unreachable until the separately
+  22: internal static OwnerAuthorityContext LegacyContext => Legacy.Instance;
+  55: internal static Qualified FromVerified(LoadedInstallation installation) =>
+  66: // protected host installation. This factory is excluded from Release.
+  67: internal static Qualified ForTest(InstalledResult selection) => new(null, selection);
+  75: internal static readonly Legacy Instance = new();
+  83: /// P1 deliberately provides no factory, so ordinary callers cannot construct
+  85: /// only factory together with the complete issuer/context/policy checks.</summary>
+  86: internal sealed class Validation : OwnerAuthorityContext
+  88: private Validation()
+
+Interpretation:
+  OwnerAuthorityContext.Validation has a private constructor and no factory.
+  Its own comment requires the atomic validation-bootstrap slice to add the only factory
+  together with the complete issuer/context/policy checks.
+
+## 5. Bootstrap parser versions
+
+File:
+  src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryProtocol.cs
+
+Relevant line:
+  156: if (Version is not (1 or 2) || Execution == Guid.Empty || Generation == Guid.Empty || Session == Guid.Empty
+
+Interpretation:
+  RecoveryConfiguration.Validate admits only Version 1 or 2.
+  No v3 validation-pre parser exists.
+
+## 6. Absence of validation implementation
+
+Command:
+  git grep -n -i -E 'GAVA1|ValidatedPreSession|accepted-validation-catalogs|validation-catalogs|validation-fixture-manifests|validation-policies|validation-actions|validation-catalog' -- src eng
+
+Output:
+  (none)
+  exit=1
+
+Command:
+  git grep -n -i -E 'GAVA1|ValidatedPreSession' -- tests
+
+Output:
+  (none)
+  exit=1
+
+Interpretation:
+  No GAVA1, ValidatedPreSession, validation-catalog store, fixture-manifest store,
+  policy store, or action store exists in src/, eng/, or tests/.
+  Test references to OwnerAuthorityContext.Validation are type-level checks only.
+
+## 7. Tracked source continuity
+
+Command:
+  git diff --stat 4c5a42f0fecff90dcb30088ca0203956e7a80032 HEAD -- src tests eng
+
+Output:
+  (empty)
+
+Interpretation:
+  The reviewed F-02 implementation is the current source state.
+  No production, test, or tooling source change exists after 4c5a42f.
+
+## 8. Tracked/index state
+
+Command:
+  git status --porcelain -uall | Measure-Object -Line
+
+Output:
+  44
+
+Interpretation:
+  The 44 lines are the preserved historical untracked paths.
+  No tracked modification or staged change exists at the recorded baseline.
+
+## 9. Source conclusions
+
+- E-1 remains production-unreachable.
+- No validation authority is constructible.
+- No K/M/F/S/P/R/Wc reader or approval implementation exists.
+- No validation context factory exists.
+- No v3 validation-pre parser exists.
+- E-2 remains entirely unimplemented.
+- This source state does not prove a future E-2 implementation safe.

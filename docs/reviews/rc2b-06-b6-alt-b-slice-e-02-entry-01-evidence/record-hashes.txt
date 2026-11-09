@@ -1,0 +1,19 @@
+# SHA-256 identifiers for committed records used by the E-2 entry assessment
+# Date: 2026-11-09 (Asia/Manila)
+# Baseline: e86254e60fb3ded770156519e1d3e15e73bf36fc / tree 69a18e8c3a1e199802f4cfc1906de2a30e3a7928
+# Method: Get-FileHash -Algorithm SHA256, lowercase hex; sizes in bytes.
+# Format: sha256<TAB>size<TAB>repo-relative-path
+
+497dcb6924d692d4f3601c33baa3320de7036e057293d4bc4836c29e52fe99de	39727	docs/reviews/rc2b-06-b6-alt-b-slice-e-entry-01.md
+573f248a41b6d0215d294b74152ab17c64478fc6ac484884dff0f001b46b84fb	24582	docs/decisions/rc2b-06-b6-alt-b-slice-e-01-entry-owner-decision-01.md
+27de68690cca7027d46b0692e52e5da71641e38e13c4037fd31937d08f823b93	14460	docs/decisions/rc2b-06-b6-alt-b-slice-e-01-owner-acceptance-01.md
+30205d32409c097624da25cfd9ed6608f1588d79f3af96231125da06e6ad194b	11681	docs/decisions/rc2b-06-b6-alt-b-slice-e-01-f01-owner-acceptance-01.md
+00f39ae2a1fc1675fa195c3af0ba040fdd05eed956e497f5e0c6fa5285a56107	26170	docs/decisions/rc2b-06-b6-alt-b-slice-e-01-f02-parity-owner-acceptance-01.md
+44c85e0062c42ddec6e98a74268d71f358a9435f506089aa416e6045d47fb944	11274	docs/decisions/rc2b-06-b6-alt-b-slice-e-01-f03-owner-acceptance-01.md
+3bdccfdf3e24d4a00fd9f2e600cee13e3eab94014def03a349023eb2bf3e4b6e	15524	docs/decisions/rc2b-06-b6-alt-b-p4-coverage-owner-acceptance-01.md
+3465b3503ad75daa40fead701fad36d165d642568bc60c98f67c3870462b6361	16956	docs/decisions/rc2b-06-b6-integrated-start-authority-owner-decision-01.md
+9b3d9774e6a1c244ccfa89e8f16a54c8678d22bdef0e0272ce1c528b8dd4f42c	19343	docs/plans/rc2b-06-b6-integrated-start-authority-impl-01.md
+5f72da6f7ef7ede6379f587521226038137e7de602e53b2b94669f366cd75b3e	9729	docs/decisions/rc2b-06-b6-f02-mechanism-b-owner-acceptance.md
+e318125f91e20350824aeb70042b35a37c33d54fcde8350a4d353dccfaeb0adb	11099	docs/decisions/rc2b-06-b6-s2-f02-trust-store-owner-decision.md
+f727ea026f9ef4eafe2bfb21af87ad9bee493149645e9e6576a3f85c694ca5f6	115088	docs/design/rc2b-06-b6-installed-artifact-trust.md
+0478e4878b7c95d6441dcc24f6fde17f2f86baf74aab41a3298df892913b9854	10959	docs/remediation-evidence-standard.md

@@ -1,0 +1,84 @@
+# In-repository provenance gap for Q-E1 and Q-E2
+# Date: 2026-11-09 (Asia/Manila)
+# Baseline: e86254e60fb3ded770156519e1d3e15e73bf36fc / tree 69a18e8c3a1e199802f4cfc1906de2a30e3a7928
+
+## 1. Exact catalog-chain field names are absent from docs/
+
+Commands:
+  git grep -n -i -- catalogSha256 -- docs
+  git grep -n -i -- catalogReviewSha256 -- docs
+  git grep -n -i -- ownerCatalogAcceptanceSha256 -- docs
+  git grep -n -i -- fixtureManifestSha256 -- docs
+  git grep -n -i -- fixturePolicySha256 -- docs
+  git grep -n -i -- actionScriptSha256 -- docs
+
+Results:
+  catalogSha256                  0 hits
+  catalogReviewSha256            0 hits
+  ownerCatalogAcceptanceSha256   0 hits
+  fixtureManifestSha256          0 hits
+  fixturePolicySha256            0 hits
+  actionScriptSha256             0 hits
+
+Interpretation:
+  No in-repository document contains the exact external catalog approval-chain field names.
+  The contract has not been reproduced or adopted as an in-repository schema record.
+
+## 2. The approval root appears only in gap statements
+
+Command:
+  git grep -l 'accepted-validation-catalogs' -- docs
+
+Output:
+  docs/decisions/rc2b-06-b6-alt-b-slice-e-01-entry-owner-decision-01.md
+  docs/reviews/rc2b-06-b6-alt-b-slice-e-entry-01.md
+
+Relevant text:
+  E-1 entry decision, Q-E2:
+    "/etc/gagamba/accepted-validation-catalogs/<Hk>.json has no accepted owner decision
+     defining its approval chain. F02 covers /etc/gagamba/accepted-qualifications/<qualificationId>.json;
+     its authority does not automatically extend to validation catalogs."
+
+  Slice E entry review, §4.3:
+    "The validation-catalog approval root /etc/gagamba/accepted-validation-catalogs/<Hk>.json
+     has not been the subject of an in-repo owner decision analogous to F02's accepted-qualifications.
+     This is a recorded gap (class 3)."
+
+Interpretation:
+  The path is named only to record that it is undecided.
+  No decision adopts the path, the V/W/A roles, the R/Wc/P representations, or the publication rules.
+
+## 3. No in-repository K/M/F/S/R/Wc/P schema file
+
+The repository has older fixture, schema, and validation evidence for other programs (for example
+WP05 release schema and fixture self-tests). Those documents are not the K/M/F/S/R/Wc/P validation
+catalog contract and do not contain its field sets.
+
+A search for the exact catalog-chain field names returns zero hits in docs/.
+A search for the exact approval root returns only the two gap statements above.
+No file under docs/ is an authoritative frozen-schema record for K/M/F/S/R/Wc/P.
+
+## 4. External inputs are present but external
+
+The local external inputs under Solo/ hash-match the committed acceptances:
+  case-policy-and-action-contract.md          667e6118...
+  actor-and-descriptor-binding.md             ea8c50d9...
+  mechanism-b-session-capability.md           f5d28dbe...
+  final-acceptance-hash-contract.md           49d566e1...
+  independent-recheck.md                      efa70562...
+  recheck-input-SHA256SUMS.txt                5940b98b...
+
+But they are not in the Gagamba repository. Their presence under Solo/ does not create
+an in-repository authority record. That is Q-E1.
+
+## 5. Result
+
+Q-E1: UNSATISFIED IN-REPOSITORY.
+  - exact bytes available locally and hash-match accepted decisions;
+  - no authoritative in-repository frozen-schema record;
+  - no repository-only reconstruction path for the exact K/M/F/S/R/Wc/P schema.
+
+Q-E2: UNSATISFIED IN-REPOSITORY.
+  - external contract specifies a complete chain;
+  - no owner decision adopts the chain, roles, representations, roots, or withdrawal semantics;
+  - F02 is store-specific and does not automatically extend.
