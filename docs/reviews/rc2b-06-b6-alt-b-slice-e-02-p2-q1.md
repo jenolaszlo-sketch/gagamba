@@ -8,7 +8,7 @@ qualification and documentation only.
 Reviewed implementation: **`9b80969ce766b6d8939775710aa77d080c3ff674`**
 (tree `fc77bc1d673f787adae2d332141f1dd5f854e883`).
 
-**Formal disposition (stated once, §21): SUPPORTED WITH QUALIFICATIONS.**
+**Formal disposition (stated once, §18): SUPPORTED WITH QUALIFICATIONS.**
 
 Evidence package:
 [rc2b-06-b6-alt-b-slice-e-02-p2-q1-evidence/](rc2b-06-b6-alt-b-slice-e-02-p2-q1-evidence/README.md).
@@ -78,9 +78,10 @@ Every producer claim was checked against this reconstruction. The complete
 enumerated check set was verified by code inspection and by hash-consistent
 mutation: R (Hk + 10 equalities), Wc (Hk + Hr + 7 equalities), P (Hk + Hr + Hw
 + 7 equalities). No rule was invented by the implementation, and no accepted
-rule was omitted. Clarifications recorded: the "duplicated value" count words
-(§[findings](rc2b-06-b6-alt-b-slice-e-02-p2-q1-evidence/findings-and-qualifications.md)
-Q1-F05) and the absence of an accepted topology↔phase cross-rule (Q1-F06).
+rule was omitted. Clarifications recorded in
+[findings-and-qualifications.md](rc2b-06-b6-alt-b-slice-e-02-p2-q1-evidence/findings-and-qualifications.md):
+the "duplicated value" count words (Q1-F05) and the absence of an accepted
+topology↔phase cross-rule (Q1-F06).
 
 ## 5. CJSON-1 and canonical-byte verification
 
