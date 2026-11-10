@@ -1,0 +1,116 @@
+# E-2-P2 executed results
+
+Date: 2026-11-09 (Asia/Manila)
+Baseline: HEAD dfa570fcfa4b55176d6cc63ad1d8c8930d4a58eb / tree e90ec80e6b9ed7ab180ae0572841b79fea440a6d
+
+## 1. Baseline verification (before modification)
+
+- Branch `main`; exactly one canonical worktree; tracked/index clean.
+- 44 historical untracked paths present with matching SHA-256 (diff=0).
+- Recorded `origin/main` 53850aa158cf26f5a40fb9bd51c606a111188ef3; local main 26
+  commits ahead; no fetch/pull/push.
+- Ancestry verified (git merge-base --is-ancestor, exit 0) for: P2 entry owner
+  decision dfa570f, P2 entry assessment 051c682, P1 owner acceptance 28275ba,
+  P1-Q1 ab5f7a7, P1 implementation 06006a7, E-2 entry owner-02 2dab45a,
+  reassessment ad52aae, D1 bdc7fa2, P0 acceptance 5b2ef14, E-2 entry 4263c8b,
+  P4 2d39380, E-1 8bd7142, F-01 1ed1fc7, F-02 e86254e, F-03 6d08ae5.
+- Binding identities: P2 owner decision blob 893b48a2a7c8290d817d038d6cbf1eb63e0b4f4a;
+  P2 assessment blob 745dbc8ca33a9b2c4ba2ae75aacca4a581b478c0; P1 acceptance blob
+  f360932adc4909b4f26e32b6005a592618dd0912; P1 verifier blob
+  fdff96b93176058f025bb814603c0678d78b6fe6; P0 blob
+  db25949d25babd474d00ae5b2f436e15507f22b3; D1 blob
+  83fe8d2649675e00b76457885fd0169b4ae77498.
+
+## 2. Debug production build
+
+    dotnet build src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj -c Debug --nologo
+
+Result: Build succeeded. 0 Warning(s), 0 Error(s).
+Build-time identity instrumentation: "Mode: instrumented", seven surfaces 4/4
+hook types and 3/3 hook properties present, core production types 14/14
+present, RESULT: PASS.
+Debug M1 MVID: 653dd463-d5a9-43ee-9782-707164e24d85
+Debug M1 SHA-256: 7869AED0EC49504BF8E2F2AD3B48E4D63D05D3ED5324B991750B027F3C87AFDC
+
+## 3. Debug test-project build
+
+    dotnet build tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Debug --nologo
+
+Result: Build succeeded. 0 Warning(s), 0 Error(s).
+
+## 4. Dedicated E-2-P2 test filter
+
+    dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Debug --no-build
+      --nologo --filter "FullyQualifiedName~Validation.DetachedEvidence"
+
+Result: Failed: 0, Passed: 33, Skipped: 0, Total: 33.
+(Includes the compiled-Release scan, which executed because the Release M1
+assembly was built at this revision; it did not skip.)
+
+## 5. Accepted P1 + P2 Validation filter
+
+    dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Debug --no-build
+      --nologo --filter "FullyQualifiedName~Tests.Validation"
+
+Result: Failed: 0, Passed: 120, Skipped: 0, Total: 120.
+(87 accepted P1 tests + 33 new P2 tests; the 4 pre-existing authority tests
+matching the filter are included in the 87 as before.)
+
+## 6. Full Windows M1 suite
+
+    dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Debug --no-build --nologo
+
+Result: Passed! Failed: 0, Passed: 1517, Skipped: 331, Total: 1848, exit=0.
+Historical P1-Q1 baseline: 1,484 passed / 0 failed / 331 skipped / 1,815;
+delta = +33 new E-2-P2 tests, skipped count unchanged. The 331 native skips are
+unqualified and are not passes. Raw output: executed/full-suite.txt.
+
+## 7. Release production build
+
+    dotnet build src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj -c Release --nologo
+
+Result: Build succeeded. 0 Warning(s), 0 Error(s).
+Release M1 MVID: 973e4468-6b9b-4afb-b48b-580545fc1c90
+Release M1 SHA-256: F234CFDA869AC780F06E88D3784A7E54C4B40B61E86F47EE278CCEEAD944F357
+Build-time instrumentation: "Mode: production", 0/4 hook types, 0/3 hook
+properties, core production types 14/14 present, RESULT: PASS.
+
+## 8. RELEASE production-assembly verifier
+
+    dotnet run --project eng/VerifyProductionAssembly -c Release --no-launch-profile --
+      --production src/Gagamba.Execution.Linux.M1/bin/Release/net10.0/Gagamba.Execution.Linux.M1.dll
+
+Result: RESULT: PASS, exit=0.
+Seven surfaces: 0/4 hook types and 0/3 hook properties present; core production
+types 14/14 present. Raw output: executed/release-verifier.txt.
+
+## 9. Expected Debug-as-production negative control
+
+    dotnet run --project eng/VerifyProductionAssembly -c Release --no-launch-profile --
+      --production src/Gagamba.Execution.Linux.M1/bin/Debug/net10.0/Gagamba.Execution.Linux.M1.dll
+
+Result: RESULT: FAIL, exit=1, naming the qualification hook types/properties,
+debug-only authority factories (Grant::ForTest, OwnerReleaseGenerationGate::VerifyObserved,
+PrepublicationIntegrityProjection::ForTest, Qualified::ForTest), forbidden
+metadata names, user strings, IL token references, and configuration 'Debug'.
+Raw output: executed/debug-as-production-verifier.txt.
+
+## 10. Fixture digest re-verification
+
+    Get-ChildItem docs/reviews/rc2b-06-b6-alt-b-slice-e-02-p2-evidence/fixtures/b2-chain,
+      docs/reviews/rc2b-06-b6-alt-b-slice-e-02-p2-evidence/fixtures/b3-chain |
+      Get-FileHash -Algorithm SHA256
+
+Result: 6/6 fixtures match fixtures/digests.txt, the constants in
+tests/.../DetachedEvidenceFixtures.cs, and the independent generator values;
+full regeneration produced byte-identical files (all six SHA-256 unchanged).
+
+## 11. Baseline preservation (checked before commit)
+
+- 44 historical untracked paths present with matching SHA-256 (diff=0).
+- Tracked modifications limited to `docs/PROJECT-STATUS.md`, `docs/handoff.md`,
+  `docs/work-queue.md`; all other changes are new authorized files.
+- P0 blob db25949d…, D1 blob 83fe8d26…, P1 implementation and test blobs,
+  `FinalAcceptanceCodec`, `eng/**`, project/solution files and frozen artifacts
+  unchanged.
+- No network synchronization; no push; one worktree; no history rewrite.
