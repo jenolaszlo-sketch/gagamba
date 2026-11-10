@@ -1,0 +1,63 @@
+# P2-Q1 identity checks (reviewer-executed, 2026-11-11 Asia/Manila)
+
+No fetch, pull, push, reset, clean, merge, rebase, prune, or stash was performed.
+
+## Repository baseline
+
+    HEAD=9b80969ce766b6d8939775710aa77d080c3ff674
+    TREE=fc77bc1d673f787adae2d332141f1dd5f854e883
+    BRANCH=main
+    WORKTREE_COUNT=1
+    DIRTY_TRACKED=0
+    ORIGIN_MAIN=53850aa158cf26f5a40fb9bd51c606a111188ef3   (recorded remote-tracking value; not synchronized)
+    AHEAD=27
+    STASH_COUNT=0
+
+## Ancestry (git merge-base --is-ancestor; exit 0 = ancestor)
+
+    P2 implementation 9b80969        -> exit 0
+    P2 entry owner dfa570f           -> exit 0
+    P1 owner acceptance 28275ba      -> exit 0
+    P0 owner acceptance 5b2ef14      -> exit 0
+    D1 decision bdc7fa2              -> exit 0
+    E-1 acceptance 8bd7142           -> exit 0
+    P4 acceptance 2d39380            -> exit 0
+    (also verified: 051c682, ab5f7a7, 06006a7, 2dab45a, ad52aae, 4263c8b — exit 0)
+
+## Historical untracked paths (canonical manifest: docs/evidence/rc2b-06-b6-native-input-freeze-01/untracked-before.json)
+
+    manifest entries=44
+    per-file SHA-256 diff_count=0
+    git untracked set count=44
+    NUL-delimited exact-set comparison: IDENTICAL (44/44)
+
+Note: a naive Compare-Object run (executed/untracked-check.txt) reports one
+"extra/missing" pair because git porcelain quotes the filename that itself
+contains a double quote (`"; done; grep -c ...trx"`); the NUL-delimited
+comparison used for the disposition shows the sets are exactly identical.
+
+## Blob identities (git hash-object)
+
+    CanonicalJson.cs            276581c492e155d7b24090db8967eb4179730df0   (= P1 accepted)
+    FrozenSchemaRules.cs        868ddbeeaafdcb070a53c2c6f6c083a1fd4e50f6   (= P1 accepted)
+    FrozenContracts.cs          3344069cd3f7b766cb4a43e6e91b18caa7d03b4f   (= P1 accepted)
+    FrozenContractVerifier.cs   fdff96b93176058f025bb814603c0678d78b6fe6   (= P1 accepted)
+    DetachedEvidenceVerifier.cs 2b482a7068b3eae4603a93d79454e9c69ce7b6d3   (= P2 report)
+    DetachedEvidenceContracts.cs 652486d4ab26fec6a975e876e59a473b66bc331c (= P2 report)
+    Installed/FinalAcceptance.cs (contains FinalAcceptanceCodec)
+                                4a3097cb48dbbc87809ffef3d53e88f21d97a14a
+                                last changed at 831c980 (F02 implementation); untouched by P1/Q1/P2
+
+## Diff scope
+
+    git diff 06006a7..HEAD --stat -- src/.../Installed Bootstrap Launch Lifecycle
+        Restricted Execution Native Preparation Recovery eng '*.csproj' '*.sln'
+    -> empty for authority-bearing production source and eng/**; the only
+       *.csproj difference inside the range is
+       docs/reviews/rc2b-06-b6-alt-b-slice-e-02-p1-q1-evidence/probe/p1q1-probe.csproj
+       (the previous Q1's evidence probe; not present in Gagamba.sln).
+
+    git show HEAD --name-status:
+    2 new production files (Validation/), 4 new test files (Validation/),
+    17 new evidence files + 1 report + 3 current-state docs modified
+    (docs/PROJECT-STATUS.md, docs/handoff.md, docs/work-queue.md).

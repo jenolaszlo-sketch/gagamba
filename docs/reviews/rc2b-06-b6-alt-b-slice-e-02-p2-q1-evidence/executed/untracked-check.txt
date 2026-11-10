@@ -1,0 +1,24 @@
+﻿# Historical untracked-path check (reviewer script, run before creating this evidence package)
+
+Reviewer script: check-untracked.ps1 (external scratch; compares every path in
+docs/evidence/rc2b-06-b6-native-input-freeze-01/untracked-before.json against the
+working tree and against the git untracked set).
+
+Output at preflight (before any evidence file existed):
+
+    entries=44
+    diff_count=0
+    git_untracked_count=44
+    extra_in_git="; done; grep -c M1.Tests.ReleaseArbiterTests _LAPTOP-KBD8D8JG_2026-10-18_10_10_39.trx"
+    missing_from_git=; done; grep -c M1.Tests.ReleaseArbiterTests _LAPTOP-KBD8D8JG_2026-10-18_10_10_39.trx
+
+The single "extra/missing" pair is the same file: git porcelain quotes the path
+that itself contains a double quote. A NUL-delimited (--porcelain -z) exact-set
+comparison was run separately and reported:
+
+    IDENTICAL: 44 untracked paths exactly match manifest
+
+After this commission's evidence files were staged as untracked, a rerun counts
+44 historical + the new q1 evidence files = 65 until this commit is made; the
+44-path manifest comparison remains diff_count=0 (rerun: entries=44,
+diff_count=0). No historical untracked path was modified, removed, or added to.
