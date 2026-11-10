@@ -7,7 +7,7 @@ reviewer session). Scope: independent qualification and documentation only.
 Reviewed implementation revision: `9b80969ce766b6d8939775710aa77d080c3ff674`
 (tree `fc77bc1d673f787adae2d332141f1dd5f854e883`).
 
-**Disposition: SUPPORTED WITH QUALIFICATIONS** (report §21).
+**Disposition: SUPPORTED WITH QUALIFICATIONS** (report §18).
 
 This package contains reviewer-owned, independently constructed and executed
 evidence. It is not producer evidence, not owner acceptance, and not
