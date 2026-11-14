@@ -1,5 +1,14 @@
 # Gagamba handoff
 
+> **ALT-B SLICE E-3 QE1 — NORMATIVE RECONCILIATION REQUIRED (2026-11-14).**
+>
+> E-2 remains closed with qualifications. All 12 selected historical F02 and Alternative B source and support objects matched their accepted raw SHA-256 identities. E3-ENTRY-F01 remains open. The verified v3-pre layout delta and release-correlation allocation are recorded. Exact pre bootstrap JSON status, null-association and AuthorityHash rules, and integrated 9/36 tail encoding still require an owner ruling or controlling source. A proposed frozen specification and owner adoption are pending that resolution. E-3 entry and implementation remain unauthorized.
+>
+> Composite Q-E1 remains open. GAVA1 headers and wire remain with E-4. Release correlation uses the existing ReleaseRequest field, with runtime owner recomputation in the E-6 atomic set. P1/P2 and all 39 inherited qualifications and 23 downstream obligations are preserved. The first E-1 production consumer and P0 external durability remain unassigned.
+>
+> RELEASE and P4 boundaries are preserved. `NATIVE-PENDING` and all 331 unqualified native skips remain in force. E-4 through E-7 and Slice N remain unauthorized. Positive validation and protected execution remain unavailable. The proposed next commission is `GAGAMBA-RC2B-06-B6-ALT-B-SLICE-E-03-QE1-NORMATIVE-OWNER-01`, a separate documentation-only ruling.
+> [Q-E1 reconciliation](reviews/rc2b-06-b6-alt-b-slice-e-03-qe1-provenance-reconciliation-01.md).
+
 > **ALT-B SLICE E-3 ENTRY ASSESSED — RECONCILIATION REQUIRED (2026-11-14).**
 >
 > E-2 remains formally closed with qualifications. E-3's refusal-only v3 validation-pre codec scope is identifiable. Entry finding E3-ENTRY-F01 remains open because the authoritative frozen v3-pre layout is absent from the committed tree and the codec-facing release-correlation responsibility still needs source reconciliation. Composite Q-E1 remains open. The GAVA1 wire prerequisite belongs to E-4 and runtime owner recomputation belongs to the E-6 atomic gate.
