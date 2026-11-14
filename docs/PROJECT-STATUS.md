@@ -1,5 +1,14 @@
 # Gagamba project status
 
+> **ALT-B SLICE E-3 QE1 — BOOTSTRAP BASE SCHEMA RESOLVED (2026-11-15).**
+>
+> FRP-01 is owner-resolved for the normative v3-pre contract. The complete closed schema requires `B2InstallationIdentity` and `B2DeadlineNs` in B2 and forbids both in integrated, including at null. BJ-01–04 are preserved. Existing integrated v2 null emission and acceptance remain a separate nonconformance with any remediation separately gated. Complete B2 and integrated structural witnesses, a size-boundary positive and 22 targeted refusals were mechanically checked.
+>
+> The partial frozen-record candidate remains unchanged. E3-ENTRY-F01 stays open pending the candidate update, independent Q1 and formal adoption. E-3 entry and implementation, E-4 through E-7 and Slice N remain unauthorized. Composite Q-E1 stays open with GAVA1 at E-4 and runtime correlation at E-6. E-2 closure and P0/D1/P1/P2, RELEASE and P4 remain preserved. `NATIVE-PENDING` and all 331 unqualified native skips remain in force. No operational approval, positive validation or protected execution.
+>
+> Proposed next commission is `GAGAMBA-RC2B-06-B6-ALT-B-SLICE-E-03-QE1-FROZEN-RECORD-PREP-R1`.
+> [Bootstrap base owner decision](decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-bootstrap-base-owner-01.md).
+
 > **ALT-B SLICE E-3 QE1 — FROZEN RECORD RECONCILIATION REQUIRED (2026-11-14).**
 >
 > E-2 stays formally closed with qualifications. The partial v3-pre candidate incorporates BJ-01–04 and IE-01–03 and preserves all 12 verified source identities. Mechanical checks cover 50 partial-field, binary, size and release-field cases. The inherited bootstrap schema and integrated B2-member presence discrepancy (FRP-01) block a complete record and Q1. E3-ENTRY-F01 stays open. Independent verification, formal adoption and E-3 entry authorization are pending. Codec implementation remains unauthorized.
