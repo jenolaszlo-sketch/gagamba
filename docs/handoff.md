@@ -1,5 +1,15 @@
 # Gagamba handoff
 
+> **ALT-B SLICE E-3 — ENTRY AUTHORIZED WITH QUALIFICATIONS (2026-11-15).**
+>
+> The exact v3-pre record remains adopted with qualifications and E3-ENTRY-F01 remains closed. One separate package is authorized for the internal, production-unreachable v3-pre structural decoder and focused managed tests. BB-02 Option A isolates the strict codec from the legacy path, and BB-02 remains open and unremediated. Q1-E01 decoded-name, duplicate-name and literal digest-value controls are mandatory.
+>
+> Implementation, independent implementation Q1 and owner implementation acceptance are pending. Exact revision qualification must verify compiled isolation, RELEASE PASS, expected Debug-as-production FAIL, legacy refusal and P4 triggers. Composite Q-E1 remains open, with GAVA1 and the handoff at E-4 and runtime owner recomputation and atomic enforcement at E-6.
+>
+> E-2 remains closed with 39 retained qualifications and 23 obligations. `NATIVE-PENDING` and all 331 unqualified skips remain in force. There is no production activation, operational approval, positive validation or protected execution.
+>
+> Proposed next commission is `GAGAMBA-RC2B-06-B6-ALT-B-SLICE-E-03-CODEC-IMPLEMENTATION-01`. [Entry owner decision](decisions/rc2b-06-b6-alt-b-slice-e-03-entry-owner-01.md).
+
 > **ALT-B SLICE E-3 QE1 — FROZEN RECORD OWNER ADOPTED WITH QUALIFICATIONS (2026-11-15).**
 >
 > Exact v3-pre record adopted. Candidate blob `f6a71562845d2cfe0aee5495864a509c5caabe7a`, raw SHA-256 `1948bab694ed37bf5c7c50524328716f3eef18d98dd1ae9971ca12100c40160e`. Q1 established 11 closed schemas, all 99 members, both bootstrap forms and the exact binary delta. Q1-E01 is accepted as non-blocking, with decoded-name and literal digest-value behavior retained for codec qualification. Independent external Git ancestry remains unverified. P0 external durability and BB-02 remain open.
