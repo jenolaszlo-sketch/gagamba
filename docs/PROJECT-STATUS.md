@@ -1,5 +1,13 @@
 # Gagamba project status
 
+> **ALT-B SLICE E-3 QE1 — FROZEN RECORD RECONCILIATION REQUIRED (2026-11-14).**
+>
+> E-2 stays formally closed with qualifications. The partial v3-pre candidate incorporates BJ-01–04 and IE-01–03 and preserves all 12 verified source identities. Mechanical checks cover 50 partial-field, binary, size and release-field cases. The inherited bootstrap schema and integrated B2-member presence discrepancy (FRP-01) block a complete record and Q1. E3-ENTRY-F01 stays open. Independent verification, formal adoption and E-3 entry authorization are pending. Codec implementation remains unauthorized.
+>
+> Composite Q-E1 remains open. GAVA1 stays with E-4 and runtime owner correlation with E-6. P1/P2, RELEASE and P4 are preserved. `NATIVE-PENDING` and all 331 unqualified native skips remain. E-4 through E-7 and Slice N remain unauthorized. Operational approval, positive validation and protected execution remain unavailable.
+>
+> Proposed next step is a separately commissioned inherited-bootstrap schema ruling. [Partial candidate](evidence/rc2b-06-b6-alt-b-slice-e-03-v3-pre-frozen-record-candidate-01.md), blob `d734d61945192a7c4e2558d949c56c4f75094fdf`, SHA-256 `c7e12dcfaf9df04177d2a7e50f805deb9bf06737f81836ce4946d56e801a28bc`. [Preparation report](reviews/rc2b-06-b6-alt-b-slice-e-03-qe1-frozen-record-prep-01.md).
+
 > **ALT-B SLICE E-3 QE1 — NORMATIVE CHOICES RESOLVED (2026-11-14).**
 >
 > E-2 remains formally closed with qualifications. The bounded owner decision binds the v3-pre JSON status, mandatory null qualification association and exact AuthorityHash capability-digest comparison. It also binds the optional integrated 9/36 profile pair, its two u8 lengths and exact expected bytes. All 12 recovered sources retain their verified raw identities. The accepted v1/v2 and B2 wire formats and 10/12 digest-confirmation rules remain in force.
