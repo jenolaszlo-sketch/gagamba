@@ -2,9 +2,9 @@
 
 **PROPOSED FROZEN RECORD — NOT INDEPENDENTLY QUALIFIED OR OWNER ADOPTED**
 
-Preparation status: partial candidate with a blocking inherited-bootstrap
-schema gap. This document is an assembly of settled rules for review.
-The complete bootstrap acceptance oracle is pending resolution of FRP-01.
+Preparation status: complete R1 candidate for separate independent Q1.
+FRP-01 is owner-resolved for the normative v3-pre contract. The complete
+record remains proposed.
 
 ## 1. Authority and scope
 
@@ -15,8 +15,18 @@ for v3-pre. The [source manifest](../reviews/rc2b-06-b6-alt-b-slice-e-03-qe1-fro
 inputs and the accepted v2 bases. Inherited rules follow the corresponding
 accepted B2 or integrated v2 contract, with only the v3 delta and the explicit
 owner rules below. The record and its vectors are derived evidence.
-[Normative traceability](../reviews/rc2b-06-b6-alt-b-slice-e-03-qe1-frozen-record-prep-01-evidence/normative-traceability.md) identifies the
-authority for each rule and the associated vectors.
+
+The [bootstrap-base owner decision](../decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-bootstrap-base-owner-01.md) at commit
+`0fcd246812ffe1a8d9fa3813caccaf5863773eaf`, blob
+`93fe2c9155a21b12fd3486b9da743260897d508e`, binds the
+[complete normative schema annex](../decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-bootstrap-base-owner-01-evidence/schema.md), blob
+`a7248152d09e19d8f3775db397f340949fa9ee57` in evidence tree
+`a78ecb5040f0525d2047641b75ad48dd59cd23d6`. Incorporate the exact
+annex bytes as normative, including all scalar domains, 99 member rows
+across 11 closed objects, required presence, null typing, prohibitions
+and historical versus v3-only authority distinctions. Use decision §4 for
+cross-field and serialization requirements. The [R1 coverage matrix](../reviews/rc2b-06-b6-alt-b-slice-e-03-qe1-frozen-record-prep-r1-evidence/delta-and-coverage.md)
+maps the exact annex rows to full witnesses and refusal cases.
 
 This scope is a data-only, internal E-3 codec contract. Authenticated INIT,
 verified original capability and matching pre catalog are future caller
@@ -34,6 +44,13 @@ independent verification, formal adoption and a separate entry decision.
 | Evidence payloads 9, 36, 37 | Selected v3-pre context, inherited channel, direction and role. Payloads have no new version member. Status 0 as specified below | Refuse status 1 or any other byte in pre. A matching payload does not select its own version or authorize mixed-version use. 37 is B2 only. |
 | Confirmations 10/12 | Inherited payloads within independently selected context; 12 is B2 only | Legacy context is not inferred from matching bytes. No new confirmation status or version field. |
 
+| Bootstrap field group | Qualified B2 v2 | Integrated v2 | B2 v3-pre | Integrated v3-pre | Authority |
+|---|---|---|---|---|---|
+| Version and authority members | Version 2; v2 qualified | Version 2; v2 qualified | Exact integer 3; required AuthorityMode and AuthorityHash | Same v3 fields | F1 line 46, BJ-03/04, bootstrap owner §2 |
+| Root B2-only members | Both required | Both prohibited | Both required and non-null | Both prohibited, including at literal null | B2 §2, BB-01 |
+| Identity and topology | B2 identity, Integrated/DelegatedParent null | Integrated.InstallationIdentity | B2 pre identity, Integrated/DelegatedParent literal null | Integrated pre identity and required delegated parent | SPEC §6.2.2, B2 §2, bootstrap owner §§2/4 |
+| Qualification and remainder | S2 Qualified; v2 rules continue | S2 Qualified; v2 rules continue | Boolean false, both required literal null associations, closed B2 member set | Same BJ rules at the integrated location, with complete closed integrated member set | BJ-01/02 and exact schema annex |
+
 The inherited M1OP version is u16 LE 1, separate from bootstrap JSON version
 and identity protocol constants. B2 §3 binds the 48-byte envelope with magic
 u32 LE at 0, version at 4, type u8 at 6, zero u8 at 7, execution and lease
@@ -46,51 +63,133 @@ socket, descriptor handling or GAVA1 implementation to the isolated codec.
 
 ## 3. Bootstrap JSON
 
-The input is the strict UTF-8 JSON byte payload on the credential channel.
-Measure actual payload bytes before parsing, exclusive of transport metadata.
-8,192 bytes satisfies the inclusive size gate and still requires valid
-complete content. Greater lengths, empty input and truncated JSON refuse.
-Version and inherited canonical integer rules apply to numbers. Member names
-are case-sensitive. Duplicate and unknown members refuse. Member order and
-ordinary JSON whitespace convey no identity. There is no general CJSON-1
-or canonical reserialization requirement. BJ-03 imposes its own literal
-string-token rule independently of ordinary JSON string decoding.
+The normative annex gives each root and nested object as a closed member
+inventory. Every listed member is required exactly once. Only declared
+literal nulls are accepted. Omission, null and an empty object have
+different structural meanings. The B2 root requires non-null
+`B2InstallationIdentity` and `B2DeadlineNs`; integrated forbids either
+name at any value. B2 selects its pre identity at
+`B2InstallationIdentity`, integrated at `Integrated.InstallationIdentity`.
+Top-level version is the integer token 3, with exact string mode
+`validation-pre`. Follow the annex for each scalar token, string domain
+and all nested bindings. The v3 schema defines no compatibility aliases or defaults.
 
-| Location/member | Type, presence and constraints | Authority |
-|---|---|---|
-| Top-level `Version` | Required integer token `3` | F1, BJ owner §2 |
-| Top-level `AuthorityMode` | Required JSON string with exact case-sensitive value `validation-pre` | F1, BJ owner §2 |
-| Top-level `AuthorityHash` | Required once. JSON string with exactly 64 literal ASCII `0–9a–f` characters in the token interior. No escaping, whitespace, prefix, separator, padding, uppercase or alternate representation | BJ-03, F1 |
-| B2 `Integrated`, `DelegatedParent` | Literal null in the B2 base shape | B2 §2, inherited by owner §2 |
-| B2 `B2InstallationIdentity` | Required selected pre identity object | B2 §2, owner §2 |
-| B2 `B2DeadlineNs` | Positive canonical signed i64 JSON integer, original absolute monotonic ns. A stale deadline cannot progress at the caller | B2 §2 |
-| Integrated `Integrated.InstallationIdentity` | Required selected pre identity object; no B2 identity location | SPEC §6.2.2, WIRE §D.2, owner §2 |
-| Integrated `B2InstallationIdentity`, `B2DeadlineNs` | Accepted B2 §2 excludes both from integrated. FRP-01 records the difference between that exclusion and current serializer output | B2 §2, inherited by owner §2 |
-| Remaining inherited objects and members | Preserve corresponding accepted v2 base. Complete accepted root and nested wire schema needs the source binding or decision in FRP-01 | F1 line 46, owner §2 |
+### Encoding and refusal
 
-### Selected identity object
+Accept one strict UTF-8 JSON object, with no BOM. Refuse malformed UTF-8,
+invalid escapes, unpaired surrogate escapes, comments, trailing commas,
+non-whitespace trailing content and multiple top-level values. ASCII
+space, tab, CR and LF are permitted outside tokens; property order and a
+final newline have no semantic effect. Compare decoded member names
+ordinally and case-sensitively. Refuse duplicate decoded names recursively,
+including escaped aliases, and refuse unknown members. Ordinary escapes
+are allowed only where the decoded value fits the exact member type,
+except BJ-03's literal AuthorityHash rule. Integer grammar and bounds
+come from the annex. No CJSON-1 or general canonical serialization applies.
 
-Each listed member is required once at the selected location. Preserve
-strict identity shape, match the original expected identity and refuse
-duplicates, unknowns, wrong type, wrong placement or mismatches.
+Count the full credential-channel JSON payload, including whitespace and
+the actual UTF-8 bytes of multibyte characters, before decoding. The
+allowed size is 1–8,192 bytes inclusive, excluding metadata or framing.
+There is no terminator. The 8,192-byte endpoint still requires complete
+valid content. Reject above-limit input, truncation, wrong member types
+or values, and any violated relationship without a structural result.
+The contract does not prescribe a diagnostic or failure order among
+multiple invalid fields.
 
-| Members | Exact rule |
+### Prior BJ rulings
+
+| Ruling | Requirement |
 |---|---|
-| `ArtifactSetSha256`, `OwnerClosureSha256`, `RecoveryClosureSha256`, `CoordinatorSha256`, `SeccompFilterSha256`, `RuntimeInventorySha256`, `Generation` | Inherited lowercase 64-hex digest strings for original set, corresponding loaded role closures, coordinator, filter, manifest runtime inventory and generation. `Generation` equals `ArtifactSetSha256`. Refuse malformed, empty or all-zero identity and mismatch under inherited rules. |
-| `ManifestSchema`, `OwnerProtocol`, `CoordinatorProtocol`, `Bootstrap` | Canonical JSON integers, each 1 under SPEC §§6.1–6.2. `Bootstrap` here is the inherited identity constant. |
-| `ProfileId`, `ProfileVersion` | Exact case-sensitive JSON strings `ae4-linux-fixed-fixture-v1` and `1`, matching the original expectation. |
-| `Qualified` | JSON Boolean false only (BJ-01). Omission, null, numeric zero, string false, true and differently cased aliases refuse. The separate binary field is a u8 zero. |
-| `qualificationId`, `qualificationRecordSha256` | Both literal JSON null, within this same object (BJ-02). Reject omission, relocation, differently cased names and any non-null value, including empty string/object or zero digest. |
+| BJ-01 | Required `Qualified` is JSON Boolean false in the selected identity. Binary pre status remains unsigned byte 0 under its separate layout. |
+| BJ-02 | Required `qualificationId` and `qualificationRecordSha256` are both literal JSON null in that same identity. Omission, relocation and all non-null values refuse. Neither is a B2-only root field. |
+| BJ-03 | Required top-level `AuthorityHash` has exactly 64 literal lowercase ASCII hexadecimal characters, no alternate spelling, escaping, prefix or normalization. Decode to 32 SHA-256 bytes. |
+| BJ-04 | Compare those bytes to the separately supplied SHA-256 of the original retained capability. Refuse missing, wrong-width or mismatched expectation. No recovery of the expected digest from the candidate. Future caller authenticates INIT and verifies the original bytes and pre catalog. The result expresses structural agreement only. |
 
-BJ-04 supplies a separately provided 32-byte comparison value. Decode the
-literal AuthorityHash hex into 32 bytes and require equality over all bytes.
-Missing, wrong-width or mismatched expectation refuses without a validated
-result. The codec performs no digest recomputation or expectation derivation
-from the bootstrap. A future authorized caller authenticates the original
-spawn-local INIT, independently verifies SHA-256 over the original retained
-capability bytes against its capability digest, and establishes the matching
-pre catalog. A catalog, artifact, release or detached evidence digest cannot
-stand in for the capability digest. [Changed-field and boundary vectors](../reviews/rc2b-06-b6-alt-b-slice-e-03-qe1-frozen-record-prep-01-evidence/bootstrap-vectors.md)
+### Cross-field checks and caller duties
+
+1. The selected topology is exactly one of the two schema roots. Version 3
+   and `validation-pre` are exact selectors. A v1/v2 parser may not derive
+   positive pre semantics from those bytes. No fallback after pre refusal.
+   The numeric top-level version and the identity `Bootstrap` constant 1
+   have different meanings. JSON Boolean false does not change during
+   integrity verification or convert to a status grant.
+2. Compare the root execution GUID, lease GUID in root `Generation`,
+   original session GUID, controller PID/UID and private association secret
+   to the explicitly supplied original data. The caller obtains that data
+   independently. Require the values to match. The codec does not generate,
+   repin or adopt identities. The identity's string `Generation` equals
+   `ArtifactSetSha256` and is separate from the root lease GUID.
+3. Each executable pin directory is
+   `/opt/gagamba/installations/<selected identity Generation>/recovery`
+   or `/opt/gagamba/installations/<selected identity Generation>/owner`
+   by its role. The closure map is exact for that role and must agree with
+   the separately supplied verified manifest projection. Check identity
+   digest and role-closure claims against that same original projection.
+   The accepted B2 §2 role preimage, filesystem checks and protected
+   source acquisition remain separate from this codec. No reading or
+   recomputing file hashes to establish authority here.
+4. For integrated only, `Controller.Pid` and `Controller.Uid` equal the
+   corresponding root fields; the GID and namespace claims must agree with
+   the supplied original controller expectation. `AcceptedAtNs <
+   ExpiresAtNs` and their positive difference is at most 120000000000.
+   Compare integrated issuer, store generation, times and profile to the
+   provided original context projection. The caller owns temporal checks
+   against real monotonic time, earlier session limits, expiry and
+   verified process provenance. B2 `B2DeadlineNs` matches the supplied
+   original deadline and obeys the existing B2 limits at the caller.
+5. Integrated `HostPath` is exactly `/usr/lib/dotnet/dotnet`,
+   `RuntimeDirectory` is `/usr/lib/dotnet/shared/Microsoft.NETCore.App/`
+   plus `RuntimeVersion`, and `HostFxrDirectory` is
+   `/usr/lib/dotnet/host/fxr/` plus that version. All runtime claims match
+   the independently verified installed-runtime projection. The decoded
+   `RuntimeInventorySha256` bytes equal those of the selected
+   identity's runtime inventory. No filesystem or loaded-process
+   qualification follows from equality.
+6. Integrated `DelegatedParent` equals `Profile.DelegatedParentPath`.
+   `Profile.OwnerDllPath` is `Owner.Directory` plus
+   `/Gagamba.Execution.Linux.M1.Owner.dll`; its digest equals the matching
+   owner map member. The profile coordinator digest equals the identity
+   coordinator digest. The F2 profile claims must match the separately
+   supplied expected projection for the fixed fixture and verified policy.
+   This includes the exact `SourceRootPath` under
+   `/opt/gagamba/validation-fixtures/<Hm>`, exact source basenames,
+   tool/input digests and enrollment IDs, delegated/staging/journal paths,
+   budget, object count and lead time. Staging parent and journal directory
+   must end in `/va-` followed by the 32 lowercase hex characters of the
+   original execution GUID with hyphens removed. Their respective base
+   paths come from the supplied verified policy projection. Do not derive
+   those bases from JSON. The caller establishes the applicable fixture
+   and case policy, positive lease/expiry bounds, ownership and custody
+   at the later atomic and native gates. The codec checks claims only.
+7. For both forms, `EvidenceDirectory` must match its supplied expected
+   path. BJ-03/04 supplies the sole top-level `AuthorityHash` source.
+   Decode its exact literal value and compare all 32 bytes to the
+   independently supplied expected SHA-256 of the original capability.
+   Absence, wrong width or mismatch refuses. An authenticated INIT and
+   independently verified exact retained capability and pre catalog are
+   prerequisites owned by the later caller. No reconstruction of the
+   expected digest from the payload, fallback to other digest identities
+   or authorization inference is permitted.
+
+Rules 2–6 use explicit data-only inputs. Apart from the stated grammar and
+internal equality checks, matching a caller projection is an exact
+semantic member comparison using the declared types. Missing required
+comparison data refuses. This assigns no protected I/O, runtime policy,
+live time measurement or trust decisions to E-3. Implementations and
+independent reviewers can build payloads and expected data independently
+from the closed schema. The complete structural witnesses and successive refusal vectors are bound below.
+
+### Bootstrap verification fixtures
+
+Use the [owner witness annex](../decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-bootstrap-base-owner-01-evidence/witnesses.md), blob
+`19886332f3fb1bcf3149f4e173642a8673fbb746`, for the exact synthetic
+P-B2 (2,693 bytes) and P-I (4,519 bytes) payloads and their full digests,
+the P-LIMIT and P-WS controls, and N01–N22. The two full witnesses are
+valid serializations under separately supplied structural expectations.
+The [R1 additions](../reviews/rc2b-06-b6-alt-b-slice-e-03-qe1-frozen-record-prep-r1-evidence/bootstrap-checks.md) bind remaining
+targeted mutations and measured identities. Fixture bytes establish no
+real authenticated context. The normative authority is the owner decision
+and schema annex, with the vectors serving as checkable evidence.
 
 ## 4. Evidence payloads
 
@@ -177,7 +276,7 @@ contract. E-3 introduces no release field, digest computation or comparison.
 
 | Requirement | E-3 responsibility | Future responsibility and status |
 |---|---|---|
-| Bootstrap, binary delta, echo and confirmations | Consolidate exact codec-facing shapes and refusals | FRP-01 blocks complete oracle; verification and adoption pending |
+| Bootstrap, binary delta, echo and confirmations | Consolidate exact codec-facing shapes and refusals | R1 candidate complete; independent verification and adoption pending |
 | Release representation and E-3/E-4 correlation | Keep the existing ReleaseRequest digest separate and preserve original identity meanings | E-4 owns GAVA1 header/wire, authenticated context and cross-format handoff evidence, without a new RELEASE opcode |
 | Runtime owner release recomputation | No codec implementation duty | E-6 recomputes and enforces against original verified context/preparation at its atomic gate |
 
@@ -191,14 +290,18 @@ with the atomic set and Slice N. R/Wc/P issuance, protected acquisition,
 publication, withdrawal and operational approval remain outside this record.
 Composite Q-E1 stays open.
 
-## 6. Outstanding owner and independent review gates
+## 6. Compatibility and remaining gates
 
-FRP-01 requires an exact accepted inherited bootstrap schema for both
-topologies, including allowed member sets, required presence/absence and
-nested encoding constraints. See [consistency audit](../reviews/rc2b-06-b6-alt-b-slice-e-03-qe1-frozen-record-prep-01-evidence/consistency-and-open-issues.md).
-The settled BJ and IE deltas are preserved. Complete bootstrap acceptance
-vectors must await that decision. Then independently verify the exact record
-and reviewer-owned vectors before submitting the record's Git blob and raw
-SHA-256, source manifest, normative decision, evidence and qualifications
-for formal owner adoption. Only that adoption can determine the status
-of E3-ENTRY-F01.
+FRP-01 is resolved for the normative v3-pre contract. BB-02 remains an
+unremediated integrated v2 implementation nonconformance. The serializer
+can emit both prohibited B2 members as null and the decoder can accept
+those null values. The proposed isolated E-3 codec does not depend on or
+authorize reuse of that behavior. Legacy remediation and any future reuse
+or exposure of affected paths require separate authorization and applicable
+independent regression qualification. No v2 null exception is introduced.
+
+E3-ENTRY-F01 remains open. Independently qualify the exact proposed record
+and reviewer-owned witnesses, then submit the candidate Git blob and raw
+SHA-256, owner decisions, schema and evidence for separate formal adoption.
+Only that decision may determine closure of E3-ENTRY-F01. E-3 entry and
+codec implementation remain separately gated.
