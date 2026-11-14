@@ -1,5 +1,16 @@
 # Gagamba project status
 
+> **ALT-B SLICE E-3 QE1 — NORMATIVE CHOICES RESOLVED (2026-11-14).**
+>
+> E-2 remains formally closed with qualifications. The bounded owner decision binds the v3-pre JSON status, mandatory null qualification association and exact AuthorityHash capability-digest comparison. It also binds the optional integrated 9/36 profile pair, its two u8 lengths and exact expected bytes. All 12 recovered sources retain their verified raw identities. The accepted v1/v2 and B2 wire formats and 10/12 digest-confirmation rules remain in force.
+>
+> E3-ENTRY-F01 remains open. Complete frozen-record preparation, independent verification and formal adoption are pending. E-3 entry and implementation remain unauthorized. Composite Q-E1 remains open. GAVA1 stays with E-4, and runtime owner correlation stays with E-6 through the existing ReleaseRequest field.
+>
+> P1/P2 and the inherited 39 qualifications and 23 downstream obligations are preserved. RELEASE and P4 boundaries remain in force. `NATIVE-PENDING` and all 331 unqualified native skips remain. E-4 through E-7 and Slice N remain unauthorized. Positive validation and protected execution remain unavailable.
+>
+> Proposed next commission is `GAGAMBA-RC2B-06-B6-ALT-B-SLICE-E-03-QE1-FROZEN-RECORD-PREP-01`, subject to separate commissioning.
+> [Normative owner decision](decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-normative-owner-01.md).
+
 > **ALT-B SLICE E-3 QE1 — NORMATIVE RECONCILIATION REQUIRED (2026-11-14).**
 >
 > E-2 remains closed with qualifications. All 12 selected historical F02 and Alternative B source and support objects matched their accepted raw SHA-256 identities. E3-ENTRY-F01 remains open. The verified v3-pre layout delta and release-correlation allocation are recorded. Exact pre bootstrap JSON status, null-association and AuthorityHash rules, and integrated 9/36 tail encoding still require an owner ruling or controlling source. A proposed frozen specification and owner adoption are pending that resolution. E-3 entry and implementation remain unauthorized.
