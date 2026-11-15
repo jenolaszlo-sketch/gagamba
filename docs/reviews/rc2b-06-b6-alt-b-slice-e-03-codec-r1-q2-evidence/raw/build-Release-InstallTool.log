@@ -1,0 +1,23 @@
+dotnet build eng/InstallTool/InstallTool.csproj -c Release --artifacts-path C:/Users/Laszlos/source/repos/Solo/gagamba-e03-codec-r1-q2/run/candidate --nologo -m:1
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Gagamba.Execution -> C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r1-q2\run\candidate\bin\Gagamba.Execution\release\Gagamba.Execution.dll
+  Gagamba compilation identity validated: Gagamba.Execution.Linux.M1, Release, Gagamba.Execution.Linux.M1, DefineConstants=;GAGAMBA_PRODUCTION;TRACE;RELEASE;NET;NET10_0;NETCOREAPP;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER
+  Gagamba.Execution.Linux.M1 -> C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r1-q2\run\candidate\bin\Gagamba.Execution.Linux.M1\release\Gagamba.Execution.Linux.M1.dll
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Release
+  MVID: ac3638a2-ba40-4132-9f77-93ae4fcc8a47
+  SHA-256: AB7F57A3003F10ABD6516425F5EDD55B180C69372BC747E4A15FBDC577ABAAF2
+  Mode: production
+  Type-name entries: 509; methods with bodies decoded: 4603; user strings: 4691
+  Seven surfaces: 0/4 hook types and 0/3 hook properties present
+  Core production types: 14/14 present
+  RESULT: PASS
+  InstallTool -> C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r1-q2\run\candidate\bin\InstallTool\release\InstallTool.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.19
+EXIT 0

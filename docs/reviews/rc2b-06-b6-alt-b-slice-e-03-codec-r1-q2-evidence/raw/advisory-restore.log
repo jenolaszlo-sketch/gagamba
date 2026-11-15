@@ -1,0 +1,6 @@
+  Determining projects to restore...
+C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-q1\source\src\Gagamba.Execution\Gagamba.Execution.csproj : error NU1900: Warning As Error: Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json. [C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-q1\source\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj]
+C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-q1\source\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj : error NU1900: Warning As Error: Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json.
+  Failed to restore C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-q1\source\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj (in 5.87 sec).
+  Failed to restore C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-q1\source\src\Gagamba.Execution\Gagamba.Execution.csproj (in 5.87 sec).
+EXIT 1

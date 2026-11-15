@@ -1,0 +1,114 @@
+{
+  "managed": {
+    "debug": {
+      "original-focused": {
+        "total": 146,
+        "passed": 146,
+        "failed": 0,
+        "skipped": 0,
+        "not-run": 0,
+        "errors": 0
+      },
+      "r1-focused": {
+        "total": 24,
+        "passed": 24,
+        "failed": 0,
+        "skipped": 0,
+        "not-run": 0,
+        "errors": 0
+      },
+      "combined-focused": {
+        "total": 170,
+        "passed": 170,
+        "failed": 0,
+        "skipped": 0,
+        "not-run": 0,
+        "errors": 0
+      },
+      "broad": {
+        "total": 1994,
+        "passed": 1663,
+        "failed": 0,
+        "skipped": 331,
+        "not-run": 0,
+        "errors": 0
+      },
+      "coreSha256": "8064e8af080ab6f0c7f31432e2cde8fd640cd9fc884cabca3dd1c2bdc6343dc6",
+      "testPositiveCallerCounts": {
+        "bootstrap": 2,
+        "binary": 4
+      }
+    },
+    "release": {
+      "original-focused": {
+        "total": 146,
+        "passed": 146,
+        "failed": 0,
+        "skipped": 0,
+        "not-run": 0,
+        "errors": 0
+      },
+      "r1-focused": {
+        "total": 24,
+        "passed": 24,
+        "failed": 0,
+        "skipped": 0,
+        "not-run": 0,
+        "errors": 0
+      },
+      "combined-focused": {
+        "total": 170,
+        "passed": 170,
+        "failed": 0,
+        "skipped": 0,
+        "not-run": 0,
+        "errors": 0
+      },
+      "broad": {
+        "total": 1994,
+        "passed": 1663,
+        "failed": 0,
+        "skipped": 331,
+        "not-run": 0,
+        "errors": 0
+      },
+      "coreSha256": "ab7f57a3003f10abd6516425f5edd55b180c69372bc747e4a15fbdc577abaaf2",
+      "testPositiveCallerCounts": {
+        "bootstrap": 2,
+        "binary": 4
+      }
+    }
+  },
+  "supplemental": {
+    "debug": {
+      "checks": 876,
+      "matched": 863,
+      "unexpected": 13,
+      "families": {
+        "other": 84,
+        "wireDuplicate": 387,
+        "projectionDuplicate": 306,
+        "policy": 68,
+        "binaryOwnership": 31
+      }
+    },
+    "release": {
+      "checks": 876,
+      "matched": 863,
+      "unexpected": 13,
+      "families": {
+        "other": 84,
+        "wireDuplicate": 387,
+        "projectionDuplicate": 306,
+        "policy": 68,
+        "binaryOwnership": 31
+      }
+    }
+  },
+  "preservation": {
+    "q1ChecksumCount": 156,
+    "inheritedNativeUnqualified": 331,
+    "productionControls": 51,
+    "preparationRegressions": 9
+  }
+}

@@ -1,0 +1,11 @@
+dotnet C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r1-q2\run\candidate\bin/VerifyProductionAssembly/release/VerifyProductionAssembly.dll --production C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r1-q2\run\candidate\bin/Gagamba.Execution.Linux.M1/release/Gagamba.Execution.Linux.M1.dll
+Assembly: Gagamba.Execution.Linux.M1
+Configuration: Release
+MVID: ac3638a2-ba40-4132-9f77-93ae4fcc8a47
+SHA-256: AB7F57A3003F10ABD6516425F5EDD55B180C69372BC747E4A15FBDC577ABAAF2
+Mode: production
+Type-name entries: 509; methods with bodies decoded: 4603; user strings: 4691
+Seven surfaces: 0/4 hook types and 0/3 hook properties present
+Core production types: 14/14 present
+RESULT: PASS
+EXIT 0

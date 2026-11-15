@@ -1,0 +1,145 @@
+{
+  "repo": "C:\\Users\\Laszlos\\source\\repos\\Gagamba",
+  "commits": {
+    "34eef4c8e7d814e15cb1bfce27df032e75766f19": "5b9bfa884b4cec86aab293b80ada1b7f73b58d11",
+    "e8099e37c1243e81f173bf0248307cf7d2fe3875": "a51ed41ee2cba8205a930749f63244c5491898c5",
+    "7713ec58cc7c292862c8c80d6b57dcacd3420b44": "e7f0854d5365aef6533d6ba731eebadc8638bac0",
+    "4a97b79e0060b001a7c1d30ae93bc66cedc52418": "dfd9519b7799155a0fd6f99a8edad27618c38a6a"
+  },
+  "ancestry": [
+    "4a97b79e0060b001a7c1d30ae93bc66cedc52418 7713ec58cc7c292862c8c80d6b57dcacd3420b44 fix(gagamba): remediate isolated E-3 codec expectations",
+    "7713ec58cc7c292862c8c80d6b57dcacd3420b44 e8099e37c1243e81f173bf0248307cf7d2fe3875 docs: preserve independent E-3 codec Q1 findings",
+    "e8099e37c1243e81f173bf0248307cf7d2fe3875 18c95f6cdf082f87bd6113141c7f967abfc82042 docs: consolidate verified historical branch evidence",
+    "18c95f6cdf082f87bd6113141c7f967abfc82042 34eef4c8e7d814e15cb1bfce27df032e75766f19 fix(ci): ignore fenced code in preparation link checks"
+  ],
+  "tracking": [
+    2,
+    0
+  ],
+  "soleWorktree": true,
+  "stashes": 0,
+  "trackedClean": true,
+  "untrackedFiles": 44,
+  "q1Checksums": 156,
+  "codeBlobs": {
+    "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodec.cs": "a8e2f1d09698bdf00fd899597cc0b637abae72f4",
+    "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodecData.cs": "ee8a7f00b160043dbd6bdad9b2bec945a21377a5",
+    "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecRemediationTests.cs": "c5f8c763b5002c6bee3ebd908cb96b0edc910cce"
+  },
+  "authorityAndEvidence": {
+    "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-v3-pre-frozen-record-candidate-01.md": {
+      "blob": "f6a71562845d2cfe0aee5495864a509c5caabe7a",
+      "rawSha256": "1948bab694ed37bf5c7c50524328716f3eef18d98dd1ae9971ca12100c40160e"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-frozen-record-owner-01.md": {
+      "blob": "d2fea61b7db323319ee59033c8b1b12ded1ffe7d",
+      "rawSha256": "c7351553eb8c82837c618d6b36a3563cafa99899841fc20b07142898b641c7d8"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-normative-owner-01.md": {
+      "blob": "f3639dc619dbfee39859afb7da553e2167d9b83d",
+      "rawSha256": "a89b9fbc1658f9df660daf89eb27725de7ba68a5ad9edea462e0a559f717c3ee"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-bootstrap-base-owner-01.md": {
+      "blob": "93fe2c9155a21b12fd3486b9da743260897d508e",
+      "rawSha256": "efa2109c6d2950544759d440c256280d1b92d63dd441ccfa7574584bc0c3a9de"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-bootstrap-base-owner-01-evidence/schema.md": {
+      "blob": "a7248152d09e19d8f3775db397f340949fa9ee57",
+      "rawSha256": "727b44d487249382fad63c7b2973056acd0e9291aed93e3d51c2e46cdb35c606"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-entry-owner-01.md": {
+      "blob": "028a7c1858b5e7b506deff9d2d8d263afe3344ac",
+      "rawSha256": "fbb0534447430df8f608c82ae978d10294a19a8b8a5fc0dbca7983811f78311e"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-entry-owner-01-evidence/surfaces-and-gates.md": {
+      "blob": "2ee20803a09e959c150646b188d6055e05cef386",
+      "rawSha256": "08c23e3d3937414d5903ebf258ee798cbe6b00d2bb79b4456f4d6c067cc98e6b"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-p4-coverage-owner-acceptance-01.md": {
+      "blob": "31ae1b08cb4663a6a9d9de657fd972fccb731cf2",
+      "rawSha256": "3bdccfdf3e24d4a00fd9f2e600cee13e3eab94014def03a349023eb2bf3e4b6e"
+    },
+    "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-implementation-01.md": {
+      "blob": "779cc2e185d88ba352d8272ea0548a057a488887",
+      "rawSha256": "a99e3e8551916b2647c725a13c226b3230ec67b05823cccb5eca42096e77f038"
+    },
+    "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-q1.md": {
+      "blob": "9340e86634bc845ee2be7fd4ccc9c3452cd7b2dc",
+      "rawSha256": "a2950fa606213915417f5cadfc780880cd8b771d7ca699c994cc49360403c119"
+    },
+    "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1.md": {
+      "blob": "3f5fdf597a86fa0e32c2c69551f3e06ba1595b04",
+      "rawSha256": "2631bce4a0e82b066d2d723da141a5d8bafb7df9127026591f1076cb55bceed5"
+    },
+    "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/closure-matrix.md": {
+      "blob": "eb6130ee486a4600487b9f840cccadc6f3dc083f",
+      "rawSha256": "699fe5d557a9daa85762fb95c730ecf1d9dee2ec62f60a58952e4ba556a181b6"
+    }
+  },
+  "r1Delta": [
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/Build-R1.ps1",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/Verify-R1.ps1",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/assemble_evidence.py",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/canonical-preflight.json",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/closure-matrix.md",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/q1-import.json",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/build-Debug-Gagamba.Execution.Linux.M1.Owner.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/build-Debug-Gagamba.Execution.Linux.M1.Recovery.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/build-Debug-Gagamba.Execution.Linux.M1.Tests.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/build-Debug-Gagamba.Execution.Linux.M1.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/build-Debug-InstallTool.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/build-Release-Gagamba.Execution.Linux.M1.Owner.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/build-Release-Gagamba.Execution.Linux.M1.Recovery.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/build-Release-Gagamba.Execution.Linux.M1.Tests.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/build-Release-Gagamba.Execution.Linux.M1.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/build-Release-InstallTool.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/build-exits.txt",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/compiled-scan.jsonl",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/focused-original-debug.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/focused-original-debug.xml",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/focused-original-release.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/focused-original-release.xml",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/managed-broad-debug.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/managed-broad-debug.xml",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/managed-broad-release.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/managed-broad-release.xml",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/p4-source.txt",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/preparation-after-q1-import.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/preparation-final.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/preparation-tests.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/production-build-controls.json",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/production-build-controls.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/q1-all-after-debug.jsonl",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/q1-all-after-release.jsonl",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/q1-probe-after-debug.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/q1-probe-after-release.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/q1-probe-before-debug.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/q1-probe-before-release.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/q1-replay-debug.json",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/q1-replay-release.json",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/regression-after-debug.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/regression-after-debug.xml",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/regression-after-release.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/regression-after-release.xml",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/regression-before-debug.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/regression-before-debug.xml",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/regression-before-release.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/regression-before-release.xml",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/scanner-build.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/source-identities.json",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/test-bindings.txt",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/verification-exits.txt",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/verifier-debug.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/verifier-release.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/raw/vstest-debug.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/reproduction.md",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/stage_r1_source.py",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence/verification-summary.json",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1.md",
+    "M\tdocs/handoff.md",
+    "M\tdocs/work-queue.md",
+    "M\tsrc/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodec.cs",
+    "M\tsrc/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodecData.cs",
+    "A\ttests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecRemediationTests.cs"
+  ]
+}

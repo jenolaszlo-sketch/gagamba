@@ -1,0 +1,57 @@
+[
+  {
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r1-q2\\run\\broad-layout/src/Gagamba.Execution.Linux.M1/bin/Release/net10.0/Gagamba.Execution.Linux.M1.dll",
+    "sha256": "ab7f57a3003f10abd6516425f5edd55b180c69372bc747e4a15fbdc577abaaf2",
+    "label": "actual Release at broad reachability discovery path"
+  },
+  {
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r1-q2\\run/focused-layout/debug/Gagamba.Execution.Linux.M1.Tests.dll",
+    "sha256": "14df86f2bdc163779b3abf20b7af0791c1d92d2050864727a51311cd2af1874b",
+    "label": "debug test DLL in C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r1-q2\\run/focused-layout/debug"
+  },
+  {
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r1-q2\\run\\broad-layout/tests/debug/Gagamba.Execution.Linux.M1.Tests.dll",
+    "sha256": "14df86f2bdc163779b3abf20b7af0791c1d92d2050864727a51311cd2af1874b",
+    "label": "debug test DLL in C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r1-q2\\run\\broad-layout/tests/debug"
+  },
+  {
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r1-q2\\run/focused-layout/debug/Gagamba.Execution.Linux.M1.dll",
+    "sha256": "8064e8af080ab6f0c7f31432e2cde8fd640cd9fc884cabca3dd1c2bdc6343dc6",
+    "label": "debug focused Gagamba.Execution.Linux.M1.dll"
+  },
+  {
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r1-q2\\run/focused-layout/debug/Gagamba.Execution.dll",
+    "sha256": "6ebfc2f6e55f55e9476bc8708c32b1d884a455e927a1ad007314b3841c517291",
+    "label": "debug focused Gagamba.Execution.dll"
+  },
+  {
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r1-q2\\run\\broad-layout/tests/debug/Gagamba.Execution.Linux.M1.dll",
+    "sha256": "8064e8af080ab6f0c7f31432e2cde8fd640cd9fc884cabca3dd1c2bdc6343dc6",
+    "label": "debug broad core fixture"
+  },
+  {
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r1-q2\\run/focused-layout/release/Gagamba.Execution.Linux.M1.Tests.dll",
+    "sha256": "6cf1542a86e0a7837e779edc22a670f89fd48f921522061dd8aaf1800ef4f1b8",
+    "label": "release test DLL in C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r1-q2\\run/focused-layout/release"
+  },
+  {
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r1-q2\\run\\broad-layout/tests/release/Gagamba.Execution.Linux.M1.Tests.dll",
+    "sha256": "6cf1542a86e0a7837e779edc22a670f89fd48f921522061dd8aaf1800ef4f1b8",
+    "label": "release test DLL in C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r1-q2\\run\\broad-layout/tests/release"
+  },
+  {
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r1-q2\\run/focused-layout/release/Gagamba.Execution.Linux.M1.dll",
+    "sha256": "ab7f57a3003f10abd6516425f5edd55b180c69372bc747e4a15fbdc577abaaf2",
+    "label": "release focused Gagamba.Execution.Linux.M1.dll"
+  },
+  {
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r1-q2\\run/focused-layout/release/Gagamba.Execution.dll",
+    "sha256": "f33ec40722e7c01dd06e4f2c52ce7db287d10ede83d2dcf2642c5e401b5c30a1",
+    "label": "release focused Gagamba.Execution.dll"
+  },
+  {
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r1-q2\\run\\broad-layout/tests/release/Gagamba.Execution.Linux.M1.dll",
+    "sha256": "8064e8af080ab6f0c7f31432e2cde8fd640cd9fc884cabca3dd1c2bdc6343dc6",
+    "label": "release broad core fixture"
+  }
+]

@@ -1,0 +1,9 @@
+VSTest version 18.7.0 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+vstest.console process failed to connect to testhost process after 15 seconds. This may occur due to machine slowness, please set environment variable VSTEST_CONNECTION_TIMEOUT to increase timeout. The process with id 8924 was still running when this message was reported.
+Results File: C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r1-q2\run/vstest\focused-debug.trx
+
+Test Run Aborted.
+EXIT 1
