@@ -1,0 +1,24 @@
+Original and candidate caller lists are identical.
+src/Gagamba.Execution.Linux.M1.Owner/Program.cs:75:    : OwnerPreparationTransaction.Run(bootstrapFd, executionId, leaseGeneration);
+src/Gagamba.Execution.Linux.M1/Bootstrap/B2RetainedDomain.cs:27:            var outcome = scope.StartOwnerPreparation(request, CancellationToken.None);
+src/Gagamba.Execution.Linux.M1/Bootstrap/IntegratedB3Client.cs:67:        var recovery=RecoveryConnection.Start(config);
+src/Gagamba.Execution.Linux.M1/Bootstrap/IntegratedRecoveryHost.cs:89:                return scope.StartOwnerPreparation(request,CancellationToken.None);
+src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedB2Recovery.cs:72:            var spawn=scope.TrySpawnOwner(plan.Assembly,
+src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedRecoveryConnection.cs:13:    internal static RecoveryConnection Start(RecoveryConfiguration requested)
+src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryConnection.cs:31:    internal static RecoveryConnection Start(RecoveryConfiguration requested)
+src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryConnection.cs:33:        if(requested.Version==2) return QualifiedRecoveryConnection.Start(requested);
+src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryHost.cs:72:            return IntegratedRecoveryHost.Run(config,scope,wire,control,controllerFd,ownerPath,installation);
+src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryHost.cs:85:            var spawned = scope.TrySpawnOwner(ownerPath,
+src/Gagamba.Execution.Linux.M1/Lifecycle/M1RecoveryScope.cs:220:    internal OwnerSpawnResult TrySpawnOwner(string ownerDll, string[] arguments, int ownerSocketFd, ExperimentalRuntimePin? runtime = null, bool qualified = false, QualifiedLauncher.InstalledPlan? installedLaunch = null)
+src/Gagamba.Execution.Linux.M1/Lifecycle/M1RecoveryScope.cs:302:    internal OwnerPreparationOutcome StartOwnerPreparation(
+src/Gagamba.Execution.Linux.M1/Lifecycle/M1RecoveryScope.cs:389:        var spawned = TrySpawnOwner(
+src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerPreparationTransaction.cs:531:                var exitCode = new HeldReleasePhase(
+src/Gagamba.Execution.Linux.M1/Restricted/B3Qualification.cs:199:            var owner = new B3PreparationOwner(profile, provider, providerInstallation);
+src/Gagamba.Execution.Linux.M1/Restricted/B3Qualification.cs:426:                outcome = _scope.StartOwnerPreparation(request, CancellationToken.None);
+
+S28 test caller
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/PreparationOwnershipTests.cs:61:        return (new PreparationOwnershipCoordinator(journal, template), journal, storage);
+
+Codec production mentions
+src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodec.cs:7:internal static class ValidationPreCodec
+src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodecBinary.cs:3:internal static class ValidationPreCodecBinary

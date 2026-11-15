@@ -1,0 +1,80 @@
+{
+  "debug": {
+    "regression-before": {
+      "total": 24,
+      "passed": 3,
+      "failed": 21,
+      "skipped": 0,
+      "not-run": 0,
+      "errors": 0
+    },
+    "regression-after": {
+      "total": 24,
+      "passed": 24,
+      "failed": 0,
+      "skipped": 0,
+      "not-run": 0,
+      "errors": 0
+    },
+    "focused-original": {
+      "total": 146,
+      "passed": 146,
+      "failed": 0,
+      "skipped": 0,
+      "not-run": 0,
+      "errors": 0
+    },
+    "managed-broad": {
+      "total": 1994,
+      "passed": 1663,
+      "failed": 0,
+      "skipped": 331,
+      "not-run": 0,
+      "errors": 0
+    },
+    "standaloneCoreSha256": "b799c3f0e9bf3339f26bae6072af1334993c45044c338fbdb18b14014933bc0e",
+    "testPositiveCallerCounts": {
+      "bootstrap": 2,
+      "binary": 4
+    }
+  },
+  "release": {
+    "regression-before": {
+      "total": 24,
+      "passed": 3,
+      "failed": 21,
+      "skipped": 0,
+      "not-run": 0,
+      "errors": 0
+    },
+    "regression-after": {
+      "total": 24,
+      "passed": 24,
+      "failed": 0,
+      "skipped": 0,
+      "not-run": 0,
+      "errors": 0
+    },
+    "focused-original": {
+      "total": 146,
+      "passed": 146,
+      "failed": 0,
+      "skipped": 0,
+      "not-run": 0,
+      "errors": 0
+    },
+    "managed-broad": {
+      "total": 1994,
+      "passed": 1663,
+      "failed": 0,
+      "skipped": 331,
+      "not-run": 0,
+      "errors": 0
+    },
+    "standaloneCoreSha256": "7044539fca015f4c8cfda4fdee84b9856a98a9619dbe61a4876929a410d22d39",
+    "testPositiveCallerCounts": {
+      "bootstrap": 2,
+      "binary": 4
+    }
+  }
+}

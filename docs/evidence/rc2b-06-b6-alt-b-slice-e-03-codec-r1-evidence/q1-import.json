@@ -1,0 +1,8 @@
+{
+  "importCommit": "7713ec58cc7c292862c8c80d6b57dcacd3420b44",
+  "importTree": "e7f0854d5365aef6533d6ba731eebadc8638bac0",
+  "checksums": 156,
+  "historicalFiles": 44,
+  "manifestSha256": "9739a964e1300444e9377bdd08c1f1e952b8aaf9f2feae9129b0c510c623ece1",
+  "authorization": "Owner confirmed completed branch cleanup, concluded Q1 and authorized byte-exact import in the R1 chat."
+}

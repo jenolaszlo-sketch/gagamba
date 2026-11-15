@@ -1,0 +1,18 @@
+{
+  "head": "e8099e37c1243e81f173bf0248307cf7d2fe3875",
+  "tree": "a51ed41ee2cba8205a930749f63244c5491898c5",
+  "origin": "https://github.com/jenolaszlo-sketch/gagamba.git",
+  "ancestry": [
+    "e8099e37c1243e81f173bf0248307cf7d2fe3875 docs: consolidate verified historical branch evidence",
+    "18c95f6cdf082f87bd6113141c7f967abfc82042 fix(ci): ignore fenced code in preparation link checks"
+  ],
+  "historicalFiles": 44,
+  "refs": 97,
+  "trackingAheadBehind": [
+    0,
+    0
+  ],
+  "worktrees": 1,
+  "stashes": 0,
+  "cleanTracked": true
+}

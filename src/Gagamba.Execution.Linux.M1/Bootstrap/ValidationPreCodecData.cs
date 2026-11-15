@@ -47,12 +47,39 @@ internal enum ValidationPreMessage
 
 internal sealed class ValidationPreBinaryExpectations(ReadOnlyMemory<byte> artifactSetSha256)
 {
-    internal ReadOnlyMemory<byte> ArtifactSetSha256 { get; } = artifactSetSha256;
-    internal ReadOnlyMemory<byte> RecoveryClosureSha256 { get; init; }
-    internal ReadOnlyMemory<byte> OwnerClosureSha256 { get; init; }
-    internal ReadOnlyMemory<byte> CoordinatorSha256 { get; init; }
-    internal ReadOnlyMemory<byte> SeccompFilterSha256 { get; init; }
-    internal ReadOnlyMemory<byte> RuntimeInventorySha256 { get; init; }
+    private readonly ReadOnlyMemory<byte> artifactSet = Snapshot(artifactSetSha256);
+
+    // ReadOnlyMemory by itself does not own its backing array. Copy both at intake
+    // and when returning the memory so neither reference can modify the binding.
+    internal ReadOnlyMemory<byte> ArtifactSetSha256 => Snapshot(artifactSet);
+    internal ReadOnlyMemory<byte> RecoveryClosureSha256
+    {
+        get => Snapshot(field);
+        init => field = Snapshot(value);
+    }
+    internal ReadOnlyMemory<byte> OwnerClosureSha256
+    {
+        get => Snapshot(field);
+        init => field = Snapshot(value);
+    }
+    internal ReadOnlyMemory<byte> CoordinatorSha256
+    {
+        get => Snapshot(field);
+        init => field = Snapshot(value);
+    }
+    internal ReadOnlyMemory<byte> SeccompFilterSha256
+    {
+        get => Snapshot(field);
+        init => field = Snapshot(value);
+    }
+    internal ReadOnlyMemory<byte> RuntimeInventorySha256
+    {
+        get => Snapshot(field);
+        init => field = Snapshot(value);
+    }
+
+    private static ReadOnlyMemory<byte> Snapshot(ReadOnlyMemory<byte> digest) =>
+        digest.Length == 32 ? digest.ToArray() : ReadOnlyMemory<byte>.Empty;
     internal Guid Session { get; init; }
     internal string? ProfileId { get; init; }
     internal string? ProfileVersion { get; init; }

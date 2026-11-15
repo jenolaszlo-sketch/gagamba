@@ -1,0 +1,393 @@
+{
+  "B2/ambiguous-original-session": {
+    "original": {
+      "test": "B2/ambiguous-original-session",
+      "expected": "refuse",
+      "actual": "None",
+      "matched": false,
+      "vector": "926548877f4e6e756432cf80b916b757a4a2dd4c638f3d848565776054a202db"
+    },
+    "before": {
+      "test": "B2/ambiguous-original-session",
+      "expected": "refuse",
+      "actual": "None",
+      "matched": false,
+      "vector": "926548877f4e6e756432cf80b916b757a4a2dd4c638f3d848565776054a202db"
+    },
+    "after": {
+      "test": "B2/ambiguous-original-session",
+      "expected": "refuse",
+      "actual": "Expectation",
+      "matched": true,
+      "vector": "926548877f4e6e756432cf80b916b757a4a2dd4c638f3d848565776054a202db"
+    }
+  },
+  "B2/disposed-original": {
+    "original": {
+      "test": "B2/disposed-original",
+      "expected": "refuse",
+      "actual": "throw ObjectDisposedException",
+      "matched": false,
+      "vector": "926548877f4e6e756432cf80b916b757a4a2dd4c638f3d848565776054a202db"
+    },
+    "before": {
+      "test": "B2/disposed-original",
+      "expected": "refuse",
+      "actual": "throw ObjectDisposedException",
+      "matched": false,
+      "vector": "926548877f4e6e756432cf80b916b757a4a2dd4c638f3d848565776054a202db"
+    },
+    "after": {
+      "test": "B2/disposed-original",
+      "expected": "refuse",
+      "actual": "Expectation",
+      "matched": true,
+      "vector": "926548877f4e6e756432cf80b916b757a4a2dd4c638f3d848565776054a202db"
+    }
+  },
+  "Integrated/Integrated/Profile/ToolSourceName/expectation-missing": {
+    "original": {
+      "test": "Integrated/Integrated/Profile/ToolSourceName/expectation-missing",
+      "expected": "refuse",
+      "actual": "None",
+      "matched": false,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    },
+    "before": {
+      "test": "Integrated/Integrated/Profile/ToolSourceName/expectation-missing",
+      "expected": "refuse",
+      "actual": "None",
+      "matched": false,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    },
+    "after": {
+      "test": "Integrated/Integrated/Profile/ToolSourceName/expectation-missing",
+      "expected": "refuse",
+      "actual": "Expectation",
+      "matched": true,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    }
+  },
+  "Integrated/Integrated/Profile/ToolSourceName/expectation-mismatch": {
+    "original": {
+      "test": "Integrated/Integrated/Profile/ToolSourceName/expectation-mismatch",
+      "expected": "refuse",
+      "actual": "None",
+      "matched": false,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    },
+    "before": {
+      "test": "Integrated/Integrated/Profile/ToolSourceName/expectation-mismatch",
+      "expected": "refuse",
+      "actual": "None",
+      "matched": false,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    },
+    "after": {
+      "test": "Integrated/Integrated/Profile/ToolSourceName/expectation-mismatch",
+      "expected": "refuse",
+      "actual": "Comparison",
+      "matched": true,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    }
+  },
+  "Integrated/Integrated/Profile/InputSourceName/expectation-missing": {
+    "original": {
+      "test": "Integrated/Integrated/Profile/InputSourceName/expectation-missing",
+      "expected": "refuse",
+      "actual": "None",
+      "matched": false,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    },
+    "before": {
+      "test": "Integrated/Integrated/Profile/InputSourceName/expectation-missing",
+      "expected": "refuse",
+      "actual": "None",
+      "matched": false,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    },
+    "after": {
+      "test": "Integrated/Integrated/Profile/InputSourceName/expectation-missing",
+      "expected": "refuse",
+      "actual": "Expectation",
+      "matched": true,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    }
+  },
+  "Integrated/Integrated/Profile/InputSourceName/expectation-mismatch": {
+    "original": {
+      "test": "Integrated/Integrated/Profile/InputSourceName/expectation-mismatch",
+      "expected": "refuse",
+      "actual": "None",
+      "matched": false,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    },
+    "before": {
+      "test": "Integrated/Integrated/Profile/InputSourceName/expectation-mismatch",
+      "expected": "refuse",
+      "actual": "None",
+      "matched": false,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    },
+    "after": {
+      "test": "Integrated/Integrated/Profile/InputSourceName/expectation-mismatch",
+      "expected": "refuse",
+      "actual": "Comparison",
+      "matched": true,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    }
+  },
+  "Integrated/Integrated/Profile/CoordinatorSourceName/expectation-missing": {
+    "original": {
+      "test": "Integrated/Integrated/Profile/CoordinatorSourceName/expectation-missing",
+      "expected": "refuse",
+      "actual": "None",
+      "matched": false,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    },
+    "before": {
+      "test": "Integrated/Integrated/Profile/CoordinatorSourceName/expectation-missing",
+      "expected": "refuse",
+      "actual": "None",
+      "matched": false,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    },
+    "after": {
+      "test": "Integrated/Integrated/Profile/CoordinatorSourceName/expectation-missing",
+      "expected": "refuse",
+      "actual": "Expectation",
+      "matched": true,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    }
+  },
+  "Integrated/Integrated/Profile/CoordinatorSourceName/expectation-mismatch": {
+    "original": {
+      "test": "Integrated/Integrated/Profile/CoordinatorSourceName/expectation-mismatch",
+      "expected": "refuse",
+      "actual": "None",
+      "matched": false,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    },
+    "before": {
+      "test": "Integrated/Integrated/Profile/CoordinatorSourceName/expectation-mismatch",
+      "expected": "refuse",
+      "actual": "None",
+      "matched": false,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    },
+    "after": {
+      "test": "Integrated/Integrated/Profile/CoordinatorSourceName/expectation-mismatch",
+      "expected": "refuse",
+      "actual": "Comparison",
+      "matched": true,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    }
+  },
+  "Integrated/Integrated/Profile/FilterSourceName/expectation-missing": {
+    "original": {
+      "test": "Integrated/Integrated/Profile/FilterSourceName/expectation-missing",
+      "expected": "refuse",
+      "actual": "None",
+      "matched": false,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    },
+    "before": {
+      "test": "Integrated/Integrated/Profile/FilterSourceName/expectation-missing",
+      "expected": "refuse",
+      "actual": "None",
+      "matched": false,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    },
+    "after": {
+      "test": "Integrated/Integrated/Profile/FilterSourceName/expectation-missing",
+      "expected": "refuse",
+      "actual": "Expectation",
+      "matched": true,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    }
+  },
+  "Integrated/Integrated/Profile/FilterSourceName/expectation-mismatch": {
+    "original": {
+      "test": "Integrated/Integrated/Profile/FilterSourceName/expectation-mismatch",
+      "expected": "refuse",
+      "actual": "None",
+      "matched": false,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    },
+    "before": {
+      "test": "Integrated/Integrated/Profile/FilterSourceName/expectation-mismatch",
+      "expected": "refuse",
+      "actual": "None",
+      "matched": false,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    },
+    "after": {
+      "test": "Integrated/Integrated/Profile/FilterSourceName/expectation-mismatch",
+      "expected": "refuse",
+      "actual": "Comparison",
+      "matched": true,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    }
+  },
+  "Integrated/Integrated/Profile/TotalBudgetBytes/expectation-missing": {
+    "original": {
+      "test": "Integrated/Integrated/Profile/TotalBudgetBytes/expectation-missing",
+      "expected": "refuse",
+      "actual": "None",
+      "matched": false,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    },
+    "before": {
+      "test": "Integrated/Integrated/Profile/TotalBudgetBytes/expectation-missing",
+      "expected": "refuse",
+      "actual": "None",
+      "matched": false,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    },
+    "after": {
+      "test": "Integrated/Integrated/Profile/TotalBudgetBytes/expectation-missing",
+      "expected": "refuse",
+      "actual": "Expectation",
+      "matched": true,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    }
+  },
+  "Integrated/Integrated/Profile/TotalBudgetBytes/expectation-mismatch": {
+    "original": {
+      "test": "Integrated/Integrated/Profile/TotalBudgetBytes/expectation-mismatch",
+      "expected": "refuse",
+      "actual": "None",
+      "matched": false,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    },
+    "before": {
+      "test": "Integrated/Integrated/Profile/TotalBudgetBytes/expectation-mismatch",
+      "expected": "refuse",
+      "actual": "None",
+      "matched": false,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    },
+    "after": {
+      "test": "Integrated/Integrated/Profile/TotalBudgetBytes/expectation-mismatch",
+      "expected": "refuse",
+      "actual": "Comparison",
+      "matched": true,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    }
+  },
+  "Integrated/Integrated/Profile/MaxObjects/expectation-missing": {
+    "original": {
+      "test": "Integrated/Integrated/Profile/MaxObjects/expectation-missing",
+      "expected": "refuse",
+      "actual": "None",
+      "matched": false,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    },
+    "before": {
+      "test": "Integrated/Integrated/Profile/MaxObjects/expectation-missing",
+      "expected": "refuse",
+      "actual": "None",
+      "matched": false,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    },
+    "after": {
+      "test": "Integrated/Integrated/Profile/MaxObjects/expectation-missing",
+      "expected": "refuse",
+      "actual": "Expectation",
+      "matched": true,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    }
+  },
+  "Integrated/Integrated/Profile/MaxObjects/expectation-mismatch": {
+    "original": {
+      "test": "Integrated/Integrated/Profile/MaxObjects/expectation-mismatch",
+      "expected": "refuse",
+      "actual": "None",
+      "matched": false,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    },
+    "before": {
+      "test": "Integrated/Integrated/Profile/MaxObjects/expectation-mismatch",
+      "expected": "refuse",
+      "actual": "None",
+      "matched": false,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    },
+    "after": {
+      "test": "Integrated/Integrated/Profile/MaxObjects/expectation-mismatch",
+      "expected": "refuse",
+      "actual": "Comparison",
+      "matched": true,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    }
+  },
+  "Integrated/ambiguous-original-session": {
+    "original": {
+      "test": "Integrated/ambiguous-original-session",
+      "expected": "refuse",
+      "actual": "None",
+      "matched": false,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    },
+    "before": {
+      "test": "Integrated/ambiguous-original-session",
+      "expected": "refuse",
+      "actual": "None",
+      "matched": false,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    },
+    "after": {
+      "test": "Integrated/ambiguous-original-session",
+      "expected": "refuse",
+      "actual": "Expectation",
+      "matched": true,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    }
+  },
+  "Integrated/disposed-original": {
+    "original": {
+      "test": "Integrated/disposed-original",
+      "expected": "refuse",
+      "actual": "throw ObjectDisposedException",
+      "matched": false,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    },
+    "before": {
+      "test": "Integrated/disposed-original",
+      "expected": "refuse",
+      "actual": "throw ObjectDisposedException",
+      "matched": false,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    },
+    "after": {
+      "test": "Integrated/disposed-original",
+      "expected": "refuse",
+      "actual": "Expectation",
+      "matched": true,
+      "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+    }
+  },
+  "binary-expectation-alias/replaced": {
+    "original": {
+      "test": "binary-expectation-alias/replaced",
+      "expected": "Comparison",
+      "actual": "None",
+      "matched": false,
+      "vector": "01000000E27CDBD796968D1367A2610A0CD842B24EBB96C8B317AB25346D39FB70245668"
+    },
+    "before": {
+      "test": "binary-expectation-alias/replaced",
+      "expected": "Comparison",
+      "actual": "None",
+      "matched": false,
+      "vector": "01000000E27CDBD796968D1367A2610A0CD842B24EBB96C8B317AB25346D39FB70245668"
+    },
+    "after": {
+      "test": "binary-expectation-alias/replaced",
+      "expected": "Comparison",
+      "actual": "Comparison",
+      "matched": true,
+      "vector": "01000000E27CDBD796968D1367A2610A0CD842B24EBB96C8B317AB25346D39FB70245668"
+    }
+  }
+}

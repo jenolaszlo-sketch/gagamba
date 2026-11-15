@@ -1,5 +1,11 @@
 # Gagamba handoff
 
+> **ALT-B SLICE E-3 — CODEC R1 IMPLEMENTED, READY FOR INDEPENDENT Q2 (2026-11-15).**
+>
+> The bounded codec changes corrected all 17 original Q1 counterexamples in Debug and Release. The original Q1 report retains its remediation-required disposition on the predecessor. Producer verification passed 146 original focused cases and 24 R1 regressions per configuration. The full managed M1 runs passed 1,663 cases each and retained all 331 unqualified native skips.
+>
+> The existing RELEASE verifier passed, Debug refused as expected, and the compiled scan found zero production codec callers. P4 remains neutral. BB-02 remains open. Independent Q2 and owner acceptance remain pending. [R1 remediation evidence](evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1.md). [Original independent Q1](reviews/rc2b-06-b6-alt-b-slice-e-03-codec-q1.md).
+
 > **GAGAMBA CONSOLIDATION — CI CORRECTION AND HISTORICAL PRESERVATION (2026-11-15).**
 >
 > The preparation verifier excludes Markdown fenced code from link extraction while retaining prose link and historical identity checks. The branch inventory binds all 99 local and 73 remote branch tips at the starting revision. Safe historical copies retain their source bytes. Divergent history remains at its original refs and no branches were deleted.

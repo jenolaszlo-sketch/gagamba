@@ -1,0 +1,11 @@
+dotnet build C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-q1\docs\reviews\rc2b-06-b6-alt-b-slice-e-03-codec-q1-evidence/scan/Scan.csproj -c Release --artifacts-path C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r1\run\scanner -p:UseSharedCompilation=false
+  Determining projects to restore...
+  Restored C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-q1\docs\reviews\rc2b-06-b6-alt-b-slice-e-03-codec-q1-evidence\scan\Scan.csproj (in 73 ms).
+  Scan -> C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r1\run\scanner\bin\Scan\release\Scan.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:02.75
+EXIT 0

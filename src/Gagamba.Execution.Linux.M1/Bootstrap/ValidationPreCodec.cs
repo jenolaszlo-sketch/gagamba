@@ -24,7 +24,7 @@ internal static class ValidationPreCodec
             return ValidationPreRefusal.Size;
         if (!IsUtf8(payload) || payload.StartsWith("\uFEFF"u8))
             return ValidationPreRefusal.Encoding;
-        if (originalCapabilityDigest.Length != 32 || originalProjection.ValueKind != JsonValueKind.Object)
+        if (originalCapabilityDigest.Length != 32)
             return ValidationPreRefusal.Expectation;
 
         JsonDocument document;
@@ -54,8 +54,9 @@ internal static class ValidationPreCodec
                 return ValidationPreRefusal.Comparison;
             if (!RelationshipsMatch(root, context.Topology))
                 return ValidationPreRefusal.Relationship;
-            if (!ProjectionMatches(root, originalProjection, rule))
-                return ValidationPreRefusal.Comparison;
+            var projectionResult = CompareProjection(root, originalProjection, rule);
+            if (projectionResult != ValidationPreRefusal.None)
+                return projectionResult;
             data = new ValidationPreBootstrapData(context.Topology, root.Clone());
             return ValidationPreRefusal.None;
         }
@@ -302,31 +303,75 @@ internal static class ValidationPreCodec
     }
 
     // This is caller-supplied typed data (a JsonElement object), not a second bootstrap.
-    // Wire constants are checked by the schema; projected values are compared by member.
-    private static bool ProjectionMatches(JsonElement claim, JsonElement original, Rule rule)
+    // Wire constants are checked by the schema. The adopted profile also binds its fixed policy claims.
+    private static ValidationPreRefusal CompareProjection(JsonElement claim, JsonElement original, Rule rule)
+    {
+        try
+        {
+            return CompareProjectionObject(claim, original, rule);
+        }
+        catch (ObjectDisposedException)
+        {
+            return ValidationPreRefusal.Expectation;
+        }
+    }
+
+    private static ValidationPreRefusal CompareProjectionObject(JsonElement claim, JsonElement original, Rule rule)
     {
         if (original.ValueKind != JsonValueKind.Object)
-            return false;
+            return ValidationPreRefusal.Expectation;
 
-        foreach (var (member, field) in Schemas[rule])
+        var fields = Schemas[rule];
+        var supplied = new Dictionary<string, JsonElement>(StringComparer.Ordinal);
+        foreach (var property in original.EnumerateObject())
         {
-            if (field is Rule.V3 or Rule.One or Rule.Four or Rule.Budget or Rule.PreMode or Rule.CapabilityHex
-                or Rule.Tool or Rule.Input or Rule.Coordinator or Rule.Filter or Rule.False or Rule.Null
-                or Rule.ProfileId or Rule.ProfileVersion)
+            string name;
+            try
+            {
+                name = property.Name;
+            }
+            catch (InvalidOperationException)
+            {
+                // The projection can contain a member name that cannot be decoded.
+                return ValidationPreRefusal.Expectation;
+            }
+
+            if (fields.TryGetValue(name, out var field) && RequiresProjection(field)
+                && !supplied.TryAdd(name, property.Value))
+                return ValidationPreRefusal.Expectation;
+        }
+
+        foreach (var (member, field) in fields)
+        {
+            if (!RequiresProjection(field))
                 continue;
 
-            if (!original.TryGetProperty(member, out var expectedMember))
-                return false;
+            var policy = field is Rule.Tool or Rule.Input or Rule.Coordinator or Rule.Filter or Rule.Budget or Rule.Four;
+            if (!supplied.TryGetValue(member, out var expectedMember))
+                return policy ? ValidationPreRefusal.Expectation : ValidationPreRefusal.Comparison;
 
             var claimedMember = claim.GetProperty(member);
-            var match = Schemas.ContainsKey(field)
-                ? ProjectionMatches(claimedMember, expectedMember, field)
-                : JsonElement.DeepEquals(claimedMember, expectedMember);
-            if (!match)
-                return false;
+            if (policy && claimedMember.ValueKind != expectedMember.ValueKind)
+                return ValidationPreRefusal.Expectation;
+
+            if (Schemas.ContainsKey(field))
+            {
+                var result = CompareProjectionObject(claimedMember, expectedMember, field);
+                if (result != ValidationPreRefusal.None)
+                    return result;
+            }
+            else if (!JsonElement.DeepEquals(claimedMember, expectedMember))
+            {
+                return ValidationPreRefusal.Comparison;
+            }
         }
-        return true;
+
+        return ValidationPreRefusal.None;
     }
+
+    private static bool RequiresProjection(Rule field) => field is not
+        (Rule.V3 or Rule.One or Rule.PreMode or Rule.CapabilityHex or Rule.False or Rule.Null
+            or Rule.ProfileId or Rule.ProfileVersion);
 
     private enum Rule
     {

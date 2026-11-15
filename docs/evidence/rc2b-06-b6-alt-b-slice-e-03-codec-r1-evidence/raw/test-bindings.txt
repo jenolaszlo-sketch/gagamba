@@ -1,0 +1,14 @@
+e21507d6dd6eb6d6a1f646efaaabafa63fd1d81a6045d8a6e75f8c0927962973  C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r1\run\original-test-layout\debug\Gagamba.Execution.Linux.M1.dll
+b799c3f0e9bf3339f26bae6072af1334993c45044c338fbdb18b14014933bc0e  C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r1\run\candidate-test-layout\debug\Gagamba.Execution.Linux.M1.dll
+b799c3f0e9bf3339f26bae6072af1334993c45044c338fbdb18b14014933bc0e  C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r1\run\managed-layout\tests\debug\Gagamba.Execution.Linux.M1.dll
+eec3d85a6d38ba94e00accbf16edcb4f80afc150c53805aae9be9588004b5f5e  C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r1\run\candidate-test-layout\debug\Gagamba.Execution.Linux.M1.Tests.dll
+eec3d85a6d38ba94e00accbf16edcb4f80afc150c53805aae9be9588004b5f5e  C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r1\run\managed-layout\tests\debug\Gagamba.Execution.Linux.M1.Tests.dll
+e21507d6dd6eb6d6a1f646efaaabafa63fd1d81a6045d8a6e75f8c0927962973  C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r1\run\probe-build\before\bin\Probe\debug\Gagamba.Execution.Linux.M1.dll
+b799c3f0e9bf3339f26bae6072af1334993c45044c338fbdb18b14014933bc0e  C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r1\run\probe-build\after\bin\Probe\debug\Gagamba.Execution.Linux.M1.dll
+a09319b9e74abe576b1df2c2fd3c8f75ae42c6485302eee78007874037207fd1  C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r1\run\original-test-layout\release\Gagamba.Execution.Linux.M1.dll
+7044539fca015f4c8cfda4fdee84b9856a98a9619dbe61a4876929a410d22d39  C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r1\run\candidate-test-layout\release\Gagamba.Execution.Linux.M1.dll
+b799c3f0e9bf3339f26bae6072af1334993c45044c338fbdb18b14014933bc0e  C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r1\run\managed-layout\tests\release\Gagamba.Execution.Linux.M1.dll
+404af757d11b8f07f3fefe70cc95bf01a36eb71c3e994609fe7c26eecc4f1526  C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r1\run\candidate-test-layout\release\Gagamba.Execution.Linux.M1.Tests.dll
+404af757d11b8f07f3fefe70cc95bf01a36eb71c3e994609fe7c26eecc4f1526  C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r1\run\managed-layout\tests\release\Gagamba.Execution.Linux.M1.Tests.dll
+a09319b9e74abe576b1df2c2fd3c8f75ae42c6485302eee78007874037207fd1  C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r1\run\probe-build\before\bin\Probe\release\Gagamba.Execution.Linux.M1.dll
+7044539fca015f4c8cfda4fdee84b9856a98a9619dbe61a4876929a410d22d39  C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r1\run\probe-build\after\bin\Probe\release\Gagamba.Execution.Linux.M1.dll

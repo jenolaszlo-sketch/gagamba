@@ -1,0 +1,197 @@
+dotnet C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r1\run\original-test-layout\release/Gagamba.Execution.Linux.M1.Tests.dll -noColor -class *ValidationPreCodecRemediationTests -xml C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r1\run\logs/regression-before-release.xml
+xUnit.net v3 In-Process Runner v3.2.0+9e422989c1 (64-bit .NET 10.0.12)
+  Discovering: Gagamba.Execution.Linux.M1.Tests
+  Discovered:  Gagamba.Execution.Linux.M1.Tests
+  Starting:    Gagamba.Execution.Linux.M1.Tests
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.RefusesConflictingDecodedSessionExpectation(topology: 1) [FAIL]
+      Assert.Equal() Failure: Values differ
+      Expected: Expectation
+      Actual:   None
+      Stack Trace:
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(171,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.AssertBootstrap(Int32 topology, JsonElement projection, ValidationPreRefusal expected)
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(69,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.RefusesConflictingDecodedSessionExpectation(Int32 topology)
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.RefusesConflictingDecodedSessionExpectation(topology: 2) [FAIL]
+      Assert.Equal() Failure: Values differ
+      Expected: Expectation
+      Actual:   None
+      Stack Trace:
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(171,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.AssertBootstrap(Int32 topology, JsonElement projection, ValidationPreRefusal expected)
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(69,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.RefusesConflictingDecodedSessionExpectation(Int32 topology)
+           at InvokeStub_ValidationPreCodecRemediationTests.RefusesConflictingDecodedSessionExpectation(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.ConstructorBindsOriginalArtifactDigest [FAIL]
+      Assert.Equal() Failure: Values differ
+      Expected: Comparison
+      Actual:   None
+      Stack Trace:
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(114,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.ConstructorBindsOriginalArtifactDigest()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.RefusesAmbiguousNestedPolicyExpectation [FAIL]
+      Assert.Equal() Failure: Values differ
+      Expected: Expectation
+      Actual:   None
+      Stack Trace:
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(171,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.AssertBootstrap(Int32 topology, JsonElement projection, ValidationPreRefusal expected)
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(99,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.RefusesAmbiguousNestedPolicyExpectation()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.CopyingOrRetrievingAnyDigestCannotTransferOwnership(mutateRetrievedMemory: False) [FAIL]
+      Assert.Equal() Failure: Values differ
+      Expected: Comparison
+      Actual:   None
+      Stack Trace:
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(155,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.CopyingOrRetrievingAnyDigestCannotTransferOwnership(Boolean mutateRetrievedMemory)
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.CopyingOrRetrievingAnyDigestCannotTransferOwnership(mutateRetrievedMemory: True) [FAIL]
+      Assert.Equal() Failure: Values differ
+      Expected: Comparison
+      Actual:   None
+      Stack Trace:
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(155,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.CopyingOrRetrievingAnyDigestCannotTransferOwnership(Boolean mutateRetrievedMemory)
+           at InvokeStub_ValidationPreCodecRemediationTests.CopyingOrRetrievingAnyDigestCannotTransferOwnership(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.IntegratedRefusesWrongKindPolicyExpectation [FAIL]
+      Assert.Equal() Failure: Values differ
+      Expected: Expectation
+      Actual:   None
+      Stack Trace:
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(171,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.AssertBootstrap(Int32 topology, JsonElement projection, ValidationPreRefusal expected)
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(44,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.IntegratedRefusesWrongKindPolicyExpectation()
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.IntegratedRefusesMissingPolicyExpectation(name: "ToolSourceName") [FAIL]
+      Assert.Equal() Failure: Values differ
+      Expected: Expectation
+      Actual:   None
+      Stack Trace:
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(171,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.AssertBootstrap(Int32 topology, JsonElement projection, ValidationPreRefusal expected)
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(22,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.IntegratedRefusesMissingPolicyExpectation(String name)
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.IntegratedRefusesMissingPolicyExpectation(name: "InputSourceName") [FAIL]
+      Assert.Equal() Failure: Values differ
+      Expected: Expectation
+      Actual:   None
+      Stack Trace:
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(171,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.AssertBootstrap(Int32 topology, JsonElement projection, ValidationPreRefusal expected)
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(22,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.IntegratedRefusesMissingPolicyExpectation(String name)
+           at InvokeStub_ValidationPreCodecRemediationTests.IntegratedRefusesMissingPolicyExpectation(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.IntegratedRefusesMissingPolicyExpectation(name: "CoordinatorSourceName") [FAIL]
+      Assert.Equal() Failure: Values differ
+      Expected: Expectation
+      Actual:   None
+      Stack Trace:
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(171,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.AssertBootstrap(Int32 topology, JsonElement projection, ValidationPreRefusal expected)
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(22,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.IntegratedRefusesMissingPolicyExpectation(String name)
+           at InvokeStub_ValidationPreCodecRemediationTests.IntegratedRefusesMissingPolicyExpectation(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.IntegratedRefusesMissingPolicyExpectation(name: "FilterSourceName") [FAIL]
+      Assert.Equal() Failure: Values differ
+      Expected: Expectation
+      Actual:   None
+      Stack Trace:
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(171,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.AssertBootstrap(Int32 topology, JsonElement projection, ValidationPreRefusal expected)
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(22,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.IntegratedRefusesMissingPolicyExpectation(String name)
+           at InvokeStub_ValidationPreCodecRemediationTests.IntegratedRefusesMissingPolicyExpectation(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.IntegratedRefusesMissingPolicyExpectation(name: "TotalBudgetBytes") [FAIL]
+      Assert.Equal() Failure: Values differ
+      Expected: Expectation
+      Actual:   None
+      Stack Trace:
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(171,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.AssertBootstrap(Int32 topology, JsonElement projection, ValidationPreRefusal expected)
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(22,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.IntegratedRefusesMissingPolicyExpectation(String name)
+           at InvokeStub_ValidationPreCodecRemediationTests.IntegratedRefusesMissingPolicyExpectation(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.IntegratedRefusesMissingPolicyExpectation(name: "MaxObjects") [FAIL]
+      Assert.Equal() Failure: Values differ
+      Expected: Expectation
+      Actual:   None
+      Stack Trace:
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(171,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.AssertBootstrap(Int32 topology, JsonElement projection, ValidationPreRefusal expected)
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(22,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.IntegratedRefusesMissingPolicyExpectation(String name)
+           at InvokeStub_ValidationPreCodecRemediationTests.IntegratedRefusesMissingPolicyExpectation(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.IntegratedRefusesContradictoryPolicyExpectation(name: "ToolSourceName", contradiction: "\"different-basename\"") [FAIL]
+      Assert.Equal() Failure: Values differ
+      Expected: Comparison
+      Actual:   None
+      Stack Trace:
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(171,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.AssertBootstrap(Int32 topology, JsonElement projection, ValidationPreRefusal expected)
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(36,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.IntegratedRefusesContradictoryPolicyExpectation(String name, String contradiction)
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.IntegratedRefusesContradictoryPolicyExpectation(name: "InputSourceName", contradiction: "\"different-basename\"") [FAIL]
+      Assert.Equal() Failure: Values differ
+      Expected: Comparison
+      Actual:   None
+      Stack Trace:
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(171,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.AssertBootstrap(Int32 topology, JsonElement projection, ValidationPreRefusal expected)
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(36,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.IntegratedRefusesContradictoryPolicyExpectation(String name, String contradiction)
+           at InvokeStub_ValidationPreCodecRemediationTests.IntegratedRefusesContradictoryPolicyExpectation(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.IntegratedRefusesContradictoryPolicyExpectation(name: "CoordinatorSourceName", contradiction: "\"different-basename\"") [FAIL]
+      Assert.Equal() Failure: Values differ
+      Expected: Comparison
+      Actual:   None
+      Stack Trace:
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(171,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.AssertBootstrap(Int32 topology, JsonElement projection, ValidationPreRefusal expected)
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(36,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.IntegratedRefusesContradictoryPolicyExpectation(String name, String contradiction)
+           at InvokeStub_ValidationPreCodecRemediationTests.IntegratedRefusesContradictoryPolicyExpectation(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.IntegratedRefusesContradictoryPolicyExpectation(name: "FilterSourceName", contradiction: "\"different-basename\"") [FAIL]
+      Assert.Equal() Failure: Values differ
+      Expected: Comparison
+      Actual:   None
+      Stack Trace:
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(171,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.AssertBootstrap(Int32 topology, JsonElement projection, ValidationPreRefusal expected)
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(36,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.IntegratedRefusesContradictoryPolicyExpectation(String name, String contradiction)
+           at InvokeStub_ValidationPreCodecRemediationTests.IntegratedRefusesContradictoryPolicyExpectation(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.IntegratedRefusesContradictoryPolicyExpectation(name: "TotalBudgetBytes", contradiction: "16777215") [FAIL]
+      Assert.Equal() Failure: Values differ
+      Expected: Comparison
+      Actual:   None
+      Stack Trace:
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(171,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.AssertBootstrap(Int32 topology, JsonElement projection, ValidationPreRefusal expected)
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(36,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.IntegratedRefusesContradictoryPolicyExpectation(String name, String contradiction)
+           at InvokeStub_ValidationPreCodecRemediationTests.IntegratedRefusesContradictoryPolicyExpectation(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.IntegratedRefusesContradictoryPolicyExpectation(name: "MaxObjects", contradiction: "5") [FAIL]
+      Assert.Equal() Failure: Values differ
+      Expected: Comparison
+      Actual:   None
+      Stack Trace:
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(171,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.AssertBootstrap(Int32 topology, JsonElement projection, ValidationPreRefusal expected)
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(36,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.IntegratedRefusesContradictoryPolicyExpectation(String name, String contradiction)
+           at InvokeStub_ValidationPreCodecRemediationTests.IntegratedRefusesContradictoryPolicyExpectation(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.RefusesDisposedProjection(topology: 1) [FAIL]
+      System.ObjectDisposedException : Cannot access a disposed object.
+      Object name: 'JsonDocument'.
+      Stack Trace:
+           at System.Text.Json.ThrowHelper.ThrowObjectDisposedException_JsonDocument()
+           at Gagamba.Execution.Linux.M1.Bootstrap.ValidationPreCodec.DecodeBootstrap(ReadOnlySpan`1 payload, ValidationPreContext context, ReadOnlySpan`1 originalCapabilityDigest, JsonElement originalProjection, ValidationPreBootstrapData& data)
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(169,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.AssertBootstrap(Int32 topology, JsonElement projection, ValidationPreRefusal expected)
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(90,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.RefusesDisposedProjection(Int32 topology)
+           at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)
+           at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.RefusesDisposedProjection(topology: 2) [FAIL]
+      System.ObjectDisposedException : Cannot access a disposed object.
+      Object name: 'JsonDocument'.
+      Stack Trace:
+           at System.Text.Json.ThrowHelper.ThrowObjectDisposedException_JsonDocument()
+           at Gagamba.Execution.Linux.M1.Bootstrap.ValidationPreCodec.DecodeBootstrap(ReadOnlySpan`1 payload, ValidationPreContext context, ReadOnlySpan`1 originalCapabilityDigest, JsonElement originalProjection, ValidationPreBootstrapData& data)
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(169,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.AssertBootstrap(Int32 topology, JsonElement projection, ValidationPreRefusal expected)
+        C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecRemediationTests.cs(90,0): at Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationPreCodecRemediationTests.RefusesDisposedProjection(Int32 topology)
+           at InvokeStub_ValidationPreCodecRemediationTests.RefusesDisposedProjection(Object, Span`1)
+           at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+  Finished:    Gagamba.Execution.Linux.M1.Tests (ID = 'de9c2b89c76de58d98892de4628bb9ebe6d8f133d1f865bf89d1b7f64cdf0785')
+=== TEST EXECUTION SUMMARY ===
+   Gagamba.Execution.Linux.M1.Tests  Total: 24, Errors: 0, Failed: 21, Skipped: 0, Not Run: 0, Time: 0.169s
+EXIT 1

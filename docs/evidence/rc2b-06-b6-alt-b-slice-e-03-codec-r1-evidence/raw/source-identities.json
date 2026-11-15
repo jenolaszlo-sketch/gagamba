@@ -1,0 +1,25 @@
+{
+  "qualifiedCommit": "34eef4c8e7d814e15cb1bfce27df032e75766f19",
+  "canonicalStart": "e8099e37c1243e81f173bf0248307cf7d2fe3875",
+  "importCommit": "7713ec58cc7c292862c8c80d6b57dcacd3420b44",
+  "implementationTreeBeforeEvidence": "7d535411183bf5e1ad73bb2e04ad1cea79b1d84a",
+  "changedPaths": {
+    "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodec.cs": {
+      "gitBlob": "a8e2f1d09698bdf00fd899597cc0b637abae72f4",
+      "gitSha256": "29cc26ed5aa026e210b173bb8d8fe367ce9260c8a2b3443b31f5b6da95931222",
+      "unfilteredWorkingCopySha256": "29cc26ed5aa026e210b173bb8d8fe367ce9260c8a2b3443b31f5b6da95931222"
+    },
+    "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodecData.cs": {
+      "gitBlob": "ee8a7f00b160043dbd6bdad9b2bec945a21377a5",
+      "gitSha256": "4cbea3e2c7773ea0113e6578b024b7cb37825bca9b127fe37068ecf6c646b7b9",
+      "unfilteredWorkingCopySha256": "4cbea3e2c7773ea0113e6578b024b7cb37825bca9b127fe37068ecf6c646b7b9"
+    },
+    "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecRemediationTests.cs": {
+      "gitBlob": "c5f8c763b5002c6bee3ebd908cb96b0edc910cce",
+      "gitSha256": "248c133da31cdf320e905607e5cb483ac624ec730c216d84b62ec18e2b3dd05a",
+      "unfilteredWorkingCopySha256": "248c133da31cdf320e905607e5cb483ac624ec730c216d84b62ec18e2b3dd05a"
+    }
+  },
+  "protectedSourceChanges": [],
+  "normativeRecordBlob": "f6a71562845d2cfe0aee5495864a509c5caabe7a"
+}
