@@ -1,0 +1,580 @@
+{
+  "B2/ambiguous-original-session": {
+    "debug": {
+      "original": {
+        "test": "B2/ambiguous-original-session",
+        "expected": "refuse",
+        "actual": "None",
+        "matched": false,
+        "vector": "926548877f4e6e756432cf80b916b757a4a2dd4c638f3d848565776054a202db"
+      },
+      "corrected": {
+        "test": "B2/ambiguous-original-session",
+        "expected": "refuse",
+        "actual": "Expectation",
+        "matched": true,
+        "vector": "926548877f4e6e756432cf80b916b757a4a2dd4c638f3d848565776054a202db"
+      }
+    },
+    "release": {
+      "original": {
+        "test": "B2/ambiguous-original-session",
+        "expected": "refuse",
+        "actual": "None",
+        "matched": false,
+        "vector": "926548877f4e6e756432cf80b916b757a4a2dd4c638f3d848565776054a202db"
+      },
+      "corrected": {
+        "test": "B2/ambiguous-original-session",
+        "expected": "refuse",
+        "actual": "Expectation",
+        "matched": true,
+        "vector": "926548877f4e6e756432cf80b916b757a4a2dd4c638f3d848565776054a202db"
+      }
+    }
+  },
+  "B2/disposed-original": {
+    "debug": {
+      "original": {
+        "test": "B2/disposed-original",
+        "expected": "refuse",
+        "actual": "throw ObjectDisposedException",
+        "matched": false,
+        "vector": "926548877f4e6e756432cf80b916b757a4a2dd4c638f3d848565776054a202db"
+      },
+      "corrected": {
+        "test": "B2/disposed-original",
+        "expected": "refuse",
+        "actual": "Expectation",
+        "matched": true,
+        "vector": "926548877f4e6e756432cf80b916b757a4a2dd4c638f3d848565776054a202db"
+      }
+    },
+    "release": {
+      "original": {
+        "test": "B2/disposed-original",
+        "expected": "refuse",
+        "actual": "throw ObjectDisposedException",
+        "matched": false,
+        "vector": "926548877f4e6e756432cf80b916b757a4a2dd4c638f3d848565776054a202db"
+      },
+      "corrected": {
+        "test": "B2/disposed-original",
+        "expected": "refuse",
+        "actual": "Expectation",
+        "matched": true,
+        "vector": "926548877f4e6e756432cf80b916b757a4a2dd4c638f3d848565776054a202db"
+      }
+    }
+  },
+  "Integrated/Integrated/Profile/ToolSourceName/expectation-missing": {
+    "debug": {
+      "original": {
+        "test": "Integrated/Integrated/Profile/ToolSourceName/expectation-missing",
+        "expected": "refuse",
+        "actual": "None",
+        "matched": false,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      },
+      "corrected": {
+        "test": "Integrated/Integrated/Profile/ToolSourceName/expectation-missing",
+        "expected": "refuse",
+        "actual": "Expectation",
+        "matched": true,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      }
+    },
+    "release": {
+      "original": {
+        "test": "Integrated/Integrated/Profile/ToolSourceName/expectation-missing",
+        "expected": "refuse",
+        "actual": "None",
+        "matched": false,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      },
+      "corrected": {
+        "test": "Integrated/Integrated/Profile/ToolSourceName/expectation-missing",
+        "expected": "refuse",
+        "actual": "Expectation",
+        "matched": true,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      }
+    }
+  },
+  "Integrated/Integrated/Profile/ToolSourceName/expectation-mismatch": {
+    "debug": {
+      "original": {
+        "test": "Integrated/Integrated/Profile/ToolSourceName/expectation-mismatch",
+        "expected": "refuse",
+        "actual": "None",
+        "matched": false,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      },
+      "corrected": {
+        "test": "Integrated/Integrated/Profile/ToolSourceName/expectation-mismatch",
+        "expected": "refuse",
+        "actual": "Comparison",
+        "matched": true,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      }
+    },
+    "release": {
+      "original": {
+        "test": "Integrated/Integrated/Profile/ToolSourceName/expectation-mismatch",
+        "expected": "refuse",
+        "actual": "None",
+        "matched": false,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      },
+      "corrected": {
+        "test": "Integrated/Integrated/Profile/ToolSourceName/expectation-mismatch",
+        "expected": "refuse",
+        "actual": "Comparison",
+        "matched": true,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      }
+    }
+  },
+  "Integrated/Integrated/Profile/InputSourceName/expectation-missing": {
+    "debug": {
+      "original": {
+        "test": "Integrated/Integrated/Profile/InputSourceName/expectation-missing",
+        "expected": "refuse",
+        "actual": "None",
+        "matched": false,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      },
+      "corrected": {
+        "test": "Integrated/Integrated/Profile/InputSourceName/expectation-missing",
+        "expected": "refuse",
+        "actual": "Expectation",
+        "matched": true,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      }
+    },
+    "release": {
+      "original": {
+        "test": "Integrated/Integrated/Profile/InputSourceName/expectation-missing",
+        "expected": "refuse",
+        "actual": "None",
+        "matched": false,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      },
+      "corrected": {
+        "test": "Integrated/Integrated/Profile/InputSourceName/expectation-missing",
+        "expected": "refuse",
+        "actual": "Expectation",
+        "matched": true,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      }
+    }
+  },
+  "Integrated/Integrated/Profile/InputSourceName/expectation-mismatch": {
+    "debug": {
+      "original": {
+        "test": "Integrated/Integrated/Profile/InputSourceName/expectation-mismatch",
+        "expected": "refuse",
+        "actual": "None",
+        "matched": false,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      },
+      "corrected": {
+        "test": "Integrated/Integrated/Profile/InputSourceName/expectation-mismatch",
+        "expected": "refuse",
+        "actual": "Comparison",
+        "matched": true,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      }
+    },
+    "release": {
+      "original": {
+        "test": "Integrated/Integrated/Profile/InputSourceName/expectation-mismatch",
+        "expected": "refuse",
+        "actual": "None",
+        "matched": false,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      },
+      "corrected": {
+        "test": "Integrated/Integrated/Profile/InputSourceName/expectation-mismatch",
+        "expected": "refuse",
+        "actual": "Comparison",
+        "matched": true,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      }
+    }
+  },
+  "Integrated/Integrated/Profile/CoordinatorSourceName/expectation-missing": {
+    "debug": {
+      "original": {
+        "test": "Integrated/Integrated/Profile/CoordinatorSourceName/expectation-missing",
+        "expected": "refuse",
+        "actual": "None",
+        "matched": false,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      },
+      "corrected": {
+        "test": "Integrated/Integrated/Profile/CoordinatorSourceName/expectation-missing",
+        "expected": "refuse",
+        "actual": "Expectation",
+        "matched": true,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      }
+    },
+    "release": {
+      "original": {
+        "test": "Integrated/Integrated/Profile/CoordinatorSourceName/expectation-missing",
+        "expected": "refuse",
+        "actual": "None",
+        "matched": false,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      },
+      "corrected": {
+        "test": "Integrated/Integrated/Profile/CoordinatorSourceName/expectation-missing",
+        "expected": "refuse",
+        "actual": "Expectation",
+        "matched": true,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      }
+    }
+  },
+  "Integrated/Integrated/Profile/CoordinatorSourceName/expectation-mismatch": {
+    "debug": {
+      "original": {
+        "test": "Integrated/Integrated/Profile/CoordinatorSourceName/expectation-mismatch",
+        "expected": "refuse",
+        "actual": "None",
+        "matched": false,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      },
+      "corrected": {
+        "test": "Integrated/Integrated/Profile/CoordinatorSourceName/expectation-mismatch",
+        "expected": "refuse",
+        "actual": "Comparison",
+        "matched": true,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      }
+    },
+    "release": {
+      "original": {
+        "test": "Integrated/Integrated/Profile/CoordinatorSourceName/expectation-mismatch",
+        "expected": "refuse",
+        "actual": "None",
+        "matched": false,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      },
+      "corrected": {
+        "test": "Integrated/Integrated/Profile/CoordinatorSourceName/expectation-mismatch",
+        "expected": "refuse",
+        "actual": "Comparison",
+        "matched": true,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      }
+    }
+  },
+  "Integrated/Integrated/Profile/FilterSourceName/expectation-missing": {
+    "debug": {
+      "original": {
+        "test": "Integrated/Integrated/Profile/FilterSourceName/expectation-missing",
+        "expected": "refuse",
+        "actual": "None",
+        "matched": false,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      },
+      "corrected": {
+        "test": "Integrated/Integrated/Profile/FilterSourceName/expectation-missing",
+        "expected": "refuse",
+        "actual": "Expectation",
+        "matched": true,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      }
+    },
+    "release": {
+      "original": {
+        "test": "Integrated/Integrated/Profile/FilterSourceName/expectation-missing",
+        "expected": "refuse",
+        "actual": "None",
+        "matched": false,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      },
+      "corrected": {
+        "test": "Integrated/Integrated/Profile/FilterSourceName/expectation-missing",
+        "expected": "refuse",
+        "actual": "Expectation",
+        "matched": true,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      }
+    }
+  },
+  "Integrated/Integrated/Profile/FilterSourceName/expectation-mismatch": {
+    "debug": {
+      "original": {
+        "test": "Integrated/Integrated/Profile/FilterSourceName/expectation-mismatch",
+        "expected": "refuse",
+        "actual": "None",
+        "matched": false,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      },
+      "corrected": {
+        "test": "Integrated/Integrated/Profile/FilterSourceName/expectation-mismatch",
+        "expected": "refuse",
+        "actual": "Comparison",
+        "matched": true,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      }
+    },
+    "release": {
+      "original": {
+        "test": "Integrated/Integrated/Profile/FilterSourceName/expectation-mismatch",
+        "expected": "refuse",
+        "actual": "None",
+        "matched": false,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      },
+      "corrected": {
+        "test": "Integrated/Integrated/Profile/FilterSourceName/expectation-mismatch",
+        "expected": "refuse",
+        "actual": "Comparison",
+        "matched": true,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      }
+    }
+  },
+  "Integrated/Integrated/Profile/TotalBudgetBytes/expectation-missing": {
+    "debug": {
+      "original": {
+        "test": "Integrated/Integrated/Profile/TotalBudgetBytes/expectation-missing",
+        "expected": "refuse",
+        "actual": "None",
+        "matched": false,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      },
+      "corrected": {
+        "test": "Integrated/Integrated/Profile/TotalBudgetBytes/expectation-missing",
+        "expected": "refuse",
+        "actual": "Expectation",
+        "matched": true,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      }
+    },
+    "release": {
+      "original": {
+        "test": "Integrated/Integrated/Profile/TotalBudgetBytes/expectation-missing",
+        "expected": "refuse",
+        "actual": "None",
+        "matched": false,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      },
+      "corrected": {
+        "test": "Integrated/Integrated/Profile/TotalBudgetBytes/expectation-missing",
+        "expected": "refuse",
+        "actual": "Expectation",
+        "matched": true,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      }
+    }
+  },
+  "Integrated/Integrated/Profile/TotalBudgetBytes/expectation-mismatch": {
+    "debug": {
+      "original": {
+        "test": "Integrated/Integrated/Profile/TotalBudgetBytes/expectation-mismatch",
+        "expected": "refuse",
+        "actual": "None",
+        "matched": false,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      },
+      "corrected": {
+        "test": "Integrated/Integrated/Profile/TotalBudgetBytes/expectation-mismatch",
+        "expected": "refuse",
+        "actual": "Comparison",
+        "matched": true,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      }
+    },
+    "release": {
+      "original": {
+        "test": "Integrated/Integrated/Profile/TotalBudgetBytes/expectation-mismatch",
+        "expected": "refuse",
+        "actual": "None",
+        "matched": false,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      },
+      "corrected": {
+        "test": "Integrated/Integrated/Profile/TotalBudgetBytes/expectation-mismatch",
+        "expected": "refuse",
+        "actual": "Comparison",
+        "matched": true,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      }
+    }
+  },
+  "Integrated/Integrated/Profile/MaxObjects/expectation-missing": {
+    "debug": {
+      "original": {
+        "test": "Integrated/Integrated/Profile/MaxObjects/expectation-missing",
+        "expected": "refuse",
+        "actual": "None",
+        "matched": false,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      },
+      "corrected": {
+        "test": "Integrated/Integrated/Profile/MaxObjects/expectation-missing",
+        "expected": "refuse",
+        "actual": "Expectation",
+        "matched": true,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      }
+    },
+    "release": {
+      "original": {
+        "test": "Integrated/Integrated/Profile/MaxObjects/expectation-missing",
+        "expected": "refuse",
+        "actual": "None",
+        "matched": false,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      },
+      "corrected": {
+        "test": "Integrated/Integrated/Profile/MaxObjects/expectation-missing",
+        "expected": "refuse",
+        "actual": "Expectation",
+        "matched": true,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      }
+    }
+  },
+  "Integrated/Integrated/Profile/MaxObjects/expectation-mismatch": {
+    "debug": {
+      "original": {
+        "test": "Integrated/Integrated/Profile/MaxObjects/expectation-mismatch",
+        "expected": "refuse",
+        "actual": "None",
+        "matched": false,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      },
+      "corrected": {
+        "test": "Integrated/Integrated/Profile/MaxObjects/expectation-mismatch",
+        "expected": "refuse",
+        "actual": "Comparison",
+        "matched": true,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      }
+    },
+    "release": {
+      "original": {
+        "test": "Integrated/Integrated/Profile/MaxObjects/expectation-mismatch",
+        "expected": "refuse",
+        "actual": "None",
+        "matched": false,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      },
+      "corrected": {
+        "test": "Integrated/Integrated/Profile/MaxObjects/expectation-mismatch",
+        "expected": "refuse",
+        "actual": "Comparison",
+        "matched": true,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      }
+    }
+  },
+  "Integrated/ambiguous-original-session": {
+    "debug": {
+      "original": {
+        "test": "Integrated/ambiguous-original-session",
+        "expected": "refuse",
+        "actual": "None",
+        "matched": false,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      },
+      "corrected": {
+        "test": "Integrated/ambiguous-original-session",
+        "expected": "refuse",
+        "actual": "Expectation",
+        "matched": true,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      }
+    },
+    "release": {
+      "original": {
+        "test": "Integrated/ambiguous-original-session",
+        "expected": "refuse",
+        "actual": "None",
+        "matched": false,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      },
+      "corrected": {
+        "test": "Integrated/ambiguous-original-session",
+        "expected": "refuse",
+        "actual": "Expectation",
+        "matched": true,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      }
+    }
+  },
+  "Integrated/disposed-original": {
+    "debug": {
+      "original": {
+        "test": "Integrated/disposed-original",
+        "expected": "refuse",
+        "actual": "throw ObjectDisposedException",
+        "matched": false,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      },
+      "corrected": {
+        "test": "Integrated/disposed-original",
+        "expected": "refuse",
+        "actual": "Expectation",
+        "matched": true,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      }
+    },
+    "release": {
+      "original": {
+        "test": "Integrated/disposed-original",
+        "expected": "refuse",
+        "actual": "throw ObjectDisposedException",
+        "matched": false,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      },
+      "corrected": {
+        "test": "Integrated/disposed-original",
+        "expected": "refuse",
+        "actual": "Expectation",
+        "matched": true,
+        "vector": "93d77186fc0a05b8f62211178c162a6aa95d73558317f7b3550b8ab944f3002a"
+      }
+    }
+  },
+  "binary-expectation-alias/replaced": {
+    "debug": {
+      "original": {
+        "test": "binary-expectation-alias/replaced",
+        "expected": "Comparison",
+        "actual": "None",
+        "matched": false,
+        "vector": "01000000E27CDBD796968D1367A2610A0CD842B24EBB96C8B317AB25346D39FB70245668"
+      },
+      "corrected": {
+        "test": "binary-expectation-alias/replaced",
+        "expected": "Comparison",
+        "actual": "Comparison",
+        "matched": true,
+        "vector": "01000000E27CDBD796968D1367A2610A0CD842B24EBB96C8B317AB25346D39FB70245668"
+      }
+    },
+    "release": {
+      "original": {
+        "test": "binary-expectation-alias/replaced",
+        "expected": "Comparison",
+        "actual": "None",
+        "matched": false,
+        "vector": "01000000E27CDBD796968D1367A2610A0CD842B24EBB96C8B317AB25346D39FB70245668"
+      },
+      "corrected": {
+        "test": "binary-expectation-alias/replaced",
+        "expected": "Comparison",
+        "actual": "Comparison",
+        "matched": true,
+        "vector": "01000000E27CDBD796968D1367A2610A0CD842B24EBB96C8B317AB25346D39FB70245668"
+      }
+    }
+  }
+}

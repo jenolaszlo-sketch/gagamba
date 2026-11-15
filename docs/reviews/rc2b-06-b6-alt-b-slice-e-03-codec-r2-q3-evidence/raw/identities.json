@@ -1,0 +1,137 @@
+{
+  "commits": {
+    "34eef4c8e7d814e15cb1bfce27df032e75766f19": "5b9bfa884b4cec86aab293b80ada1b7f73b58d11",
+    "7713ec58cc7c292862c8c80d6b57dcacd3420b44": "e7f0854d5365aef6533d6ba731eebadc8638bac0",
+    "4a97b79e0060b001a7c1d30ae93bc66cedc52418": "dfd9519b7799155a0fd6f99a8edad27618c38a6a",
+    "4cb46a6cdbcc52b7129dbd88c4eba2e62ae73469": "0975cc5fbd13c6342c219333029e82e3d02c94aa",
+    "8be61181e804b2dfafb0797eb54c92d2f234ff86": "1c9307845858fb25ca0a9473d53d1fd1496018fc"
+  },
+  "ancestry": [
+    "8be61181e804b2dfafb0797eb54c92d2f234ff86 4cb46a6cdbcc52b7129dbd88c4eba2e62ae73469 fix(gagamba): bound E-3 projection scalar comparison failures",
+    "4cb46a6cdbcc52b7129dbd88c4eba2e62ae73469 4a97b79e0060b001a7c1d30ae93bc66cedc52418 docs: record independent E-3 codec R1 Q2 findings",
+    "4a97b79e0060b001a7c1d30ae93bc66cedc52418 7713ec58cc7c292862c8c80d6b57dcacd3420b44 fix(gagamba): remediate isolated E-3 codec expectations",
+    "7713ec58cc7c292862c8c80d6b57dcacd3420b44 e8099e37c1243e81f173bf0248307cf7d2fe3875 docs: preserve independent E-3 codec Q1 findings",
+    "e8099e37c1243e81f173bf0248307cf7d2fe3875 18c95f6cdf082f87bd6113141c7f967abfc82042 docs: consolidate verified historical branch evidence",
+    "18c95f6cdf082f87bd6113141c7f967abfc82042 34eef4c8e7d814e15cb1bfce27df032e75766f19 fix(ci): ignore fenced code in preparation link checks"
+  ],
+  "branch": "main",
+  "worktrees": 1,
+  "stashes": 0,
+  "clean": true,
+  "historicalFiles": 44,
+  "manifests": {
+    "codec-q1": {
+      "entries": 156,
+      "manifestSha256": "9739a964e1300444e9377bdd08c1f1e952b8aaf9f2feae9129b0c510c623ece1"
+    },
+    "codec-r1-q2": {
+      "entries": 100,
+      "manifestSha256": "17bf65a8ac79e41b85f34723616af4950b7df2e592da55ec59523f9f3129445b"
+    },
+    "codec-r2": {
+      "entries": 64,
+      "manifestSha256": "22c232f8585d99dbf9d9fde298fbe3f6924ad69fd5b4139366f0f50f845620be"
+    }
+  },
+  "normative": {
+    "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-v3-pre-frozen-record-candidate-01.md": {
+      "blob": "f6a71562845d2cfe0aee5495864a509c5caabe7a",
+      "sha256": "1948bab694ed37bf5c7c50524328716f3eef18d98dd1ae9971ca12100c40160e"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-frozen-record-owner-01.md": {
+      "blob": "d2fea61b7db323319ee59033c8b1b12ded1ffe7d",
+      "sha256": "c7351553eb8c82837c618d6b36a3563cafa99899841fc20b07142898b641c7d8"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-normative-owner-01.md": {
+      "blob": "f3639dc619dbfee39859afb7da553e2167d9b83d",
+      "sha256": "a89b9fbc1658f9df660daf89eb27725de7ba68a5ad9edea462e0a559f717c3ee"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-bootstrap-base-owner-01.md": {
+      "blob": "93fe2c9155a21b12fd3486b9da743260897d508e",
+      "sha256": "efa2109c6d2950544759d440c256280d1b92d63dd441ccfa7574584bc0c3a9de"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-bootstrap-base-owner-01-evidence/schema.md": {
+      "blob": "a7248152d09e19d8f3775db397f340949fa9ee57",
+      "sha256": "727b44d487249382fad63c7b2973056acd0e9291aed93e3d51c2e46cdb35c606"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-entry-owner-01.md": {
+      "blob": "028a7c1858b5e7b506deff9d2d8d263afe3344ac",
+      "sha256": "fbb0534447430df8f608c82ae978d10294a19a8b8a5fc0dbca7983811f78311e"
+    }
+  },
+  "delta": [
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/SHA256SUMS.txt",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/Verify-R2.ps1",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/after-debug.jsonl",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/after-release.jsonl",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/baseline-build-debug.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/baseline-build-release.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/broad-debug.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/broad-debug.xml",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/broad-release.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/broad-release.xml",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/build-Debug-Gagamba.Execution.Linux.M1.Owner.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/build-Debug-Gagamba.Execution.Linux.M1.Recovery.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/build-Debug-Gagamba.Execution.Linux.M1.Tests.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/build-Debug-Gagamba.Execution.Linux.M1.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/build-Debug-InstallTool.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/build-Release-Gagamba.Execution.Linux.M1.Owner.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/build-Release-Gagamba.Execution.Linux.M1.Recovery.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/build-Release-Gagamba.Execution.Linux.M1.Tests.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/build-Release-Gagamba.Execution.Linux.M1.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/build-Release-InstallTool.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/build-exits.txt",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/cases.json",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/combined-focused-debug.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/combined-focused-debug.xml",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/combined-focused-release.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/combined-focused-release.xml",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/compiled-scan.jsonl",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/original-focused-debug.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/original-focused-debug.xml",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/original-focused-release.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/original-focused-release.xml",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/p4-callers.txt",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/preparation-final.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/probe-bindings.json",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/production-controls.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/production-results.json",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/q2-exits.txt",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/r1-focused-debug.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/r1-focused-debug.xml",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/r1-focused-release.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/r1-focused-release.xml",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/r2-before-debug.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/r2-before-debug.xml",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/r2-before-release.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/r2-before-release.xml",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/r2-bindings.txt",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/r2-focused-debug.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/r2-focused-debug.xml",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/r2-focused-release.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/r2-focused-release.xml",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/replay-candidate-debug.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/replay-candidate-release.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/replay-original-debug.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/replay-original-release.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/scan-build.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/scanner-exit.txt",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/source-binding.json",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/supplement-debug.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/supplement-release.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/test-bindings.json",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/test-counts.json",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/verifier-debug.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/raw/verifier-release.log",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/results.md",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2.md",
+    "M\tdocs/handoff.md",
+    "M\tdocs/work-queue.md",
+    "M\tsrc/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodec.cs",
+    "A\ttests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecR2Tests.cs"
+  ],
+  "code": {
+    "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodec.cs": "d861210aeb3734b04e6bf9f472c12bd226253b32",
+    "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecR2Tests.cs": "9fe5984e6fc98885b6f2d39b7721918d899d1f3f"
+  }
+}

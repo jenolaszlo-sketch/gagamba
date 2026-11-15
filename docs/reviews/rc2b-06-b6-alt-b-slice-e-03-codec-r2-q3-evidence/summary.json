@@ -1,0 +1,97 @@
+{
+  "tests": {
+    "debug": {
+      "original-focused": {
+        "total": 146,
+        "passed": 146,
+        "failed": 0,
+        "skipped": 0
+      },
+      "r1-focused": {
+        "total": 24,
+        "passed": 24,
+        "failed": 0,
+        "skipped": 0
+      },
+      "r2-focused": {
+        "total": 15,
+        "passed": 15,
+        "failed": 0,
+        "skipped": 0
+      },
+      "combined-focused": {
+        "total": 185,
+        "passed": 185,
+        "failed": 0,
+        "skipped": 0
+      },
+      "broad": {
+        "total": 2009,
+        "passed": 1678,
+        "failed": 0,
+        "skipped": 331
+      },
+      "coreDll": "d532aa91f86a5ed01ce0bb6a2b5197eea87dbd5f7eabff7e2115ebe5cd0064cd"
+    },
+    "release": {
+      "original-focused": {
+        "total": 146,
+        "passed": 146,
+        "failed": 0,
+        "skipped": 0
+      },
+      "r1-focused": {
+        "total": 24,
+        "passed": 24,
+        "failed": 0,
+        "skipped": 0
+      },
+      "r2-focused": {
+        "total": 15,
+        "passed": 15,
+        "failed": 0,
+        "skipped": 0
+      },
+      "combined-focused": {
+        "total": 185,
+        "passed": 185,
+        "failed": 0,
+        "skipped": 0
+      },
+      "broad": {
+        "total": 2009,
+        "passed": 1678,
+        "failed": 0,
+        "skipped": 331
+      },
+      "coreDll": "97d0fffc87abeed1020fe44887d257b15aef660a9875d8a408cbce1dcd924f8b"
+    }
+  },
+  "supplemental": {
+    "debug": {
+      "q2": {
+        "assertions": 876,
+        "pass": 876
+      },
+      "q3": {
+        "assertions": 56,
+        "pass": 56
+      }
+    },
+    "release": {
+      "q2": {
+        "assertions": 876,
+        "pass": 876
+      },
+      "q3": {
+        "assertions": 56,
+        "pass": 56
+      }
+    }
+  },
+  "q1Cases": 17,
+  "q2Cases": 13,
+  "scannedFiles": 36,
+  "productionControls": 51,
+  "preparationRegressions": 9
+}

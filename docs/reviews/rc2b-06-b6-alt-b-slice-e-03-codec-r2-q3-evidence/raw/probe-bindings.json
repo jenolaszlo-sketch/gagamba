@@ -1,0 +1,42 @@
+[
+  {
+    "label": "imported source Program.cs",
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r2-q3\\run\\frozen-q1-probe/Program.cs",
+    "sha256": "5e9b152b208689acc1c206bc6b9de2782b824578c2b6834542a9af627f511dc9"
+  },
+  {
+    "label": "imported source Probe.csproj",
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r2-q3\\run\\frozen-q1-probe/Probe.csproj",
+    "sha256": "5d41c50e9e39efeef7b8731a7ea3857c2bb93bd976209149adb1bee19db582c5"
+  },
+  {
+    "label": "Q1 replay original debug",
+    "path": "C:/Users/Laszlos/source/repos/Solo/gagamba-e03-codec-r2-q3/run/replay-artifacts-original/bin/Probe/debug/Gagamba.Execution.Linux.M1.dll",
+    "sha256": "257eb6a7eb84a24d8b4c8513b8da455b118aa95498483f235c636c052fb45c44"
+  },
+  {
+    "label": "Q1 replay candidate debug",
+    "path": "C:/Users/Laszlos/source/repos/Solo/gagamba-e03-codec-r2-q3/run/replay-artifacts-candidate/bin/Probe/debug/Gagamba.Execution.Linux.M1.dll",
+    "sha256": "d532aa91f86a5ed01ce0bb6a2b5197eea87dbd5f7eabff7e2115ebe5cd0064cd"
+  },
+  {
+    "label": "Q2 supplement debug",
+    "path": "C:/Users/Laszlos/source/repos/Solo/gagamba-e03-codec-r2-q3/run/supplement-artifacts/bin/Probe/debug/Gagamba.Execution.Linux.M1.dll",
+    "sha256": "d532aa91f86a5ed01ce0bb6a2b5197eea87dbd5f7eabff7e2115ebe5cd0064cd"
+  },
+  {
+    "label": "Q1 replay original release",
+    "path": "C:/Users/Laszlos/source/repos/Solo/gagamba-e03-codec-r2-q3/run/replay-artifacts-original/bin/Probe/release/Gagamba.Execution.Linux.M1.dll",
+    "sha256": "ed2dd1bfa0ba456274394a71117628456c7164c3d25303c78b770c8d3dde0463"
+  },
+  {
+    "label": "Q1 replay candidate release",
+    "path": "C:/Users/Laszlos/source/repos/Solo/gagamba-e03-codec-r2-q3/run/replay-artifacts-candidate/bin/Probe/release/Gagamba.Execution.Linux.M1.dll",
+    "sha256": "97d0fffc87abeed1020fe44887d257b15aef660a9875d8a408cbce1dcd924f8b"
+  },
+  {
+    "label": "Q2 supplement release",
+    "path": "C:/Users/Laszlos/source/repos/Solo/gagamba-e03-codec-r2-q3/run/supplement-artifacts/bin/Probe/release/Gagamba.Execution.Linux.M1.dll",
+    "sha256": "97d0fffc87abeed1020fe44887d257b15aef660a9875d8a408cbce1dcd924f8b"
+  }
+]
