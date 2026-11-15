@@ -1,5 +1,15 @@
 # Gagamba handoff
 
+> **ALT-B SLICE E-3 — CODEC IMPLEMENTATION COMPLETE, READY FOR INDEPENDENT Q1 (2026-11-15).**
+>
+> The isolated internal v3-pre decoder and binary validator are implemented under M1 Bootstrap with focused managed tests. All 146 managed cases passed (122 new, 24 existing, zero skips), including Q1-E01. BB-02 Option A excludes legacy dependencies, and BB-02 remains open and unremediated.
+>
+> Debug and Release scans found no production inbound references. The unchanged verifier recorded RELEASE PASS and expected Debug-as-production FAIL. Exact-revision P4 producer evidence is recorded. Independent implementation Q1 and owner acceptance are pending. E3-ENTRY-F01 remains closed.
+>
+> Composite Q-E1 remains open. E-4 retains GAVA1 and the handoff. E-6 retains owner runtime correlation and the atomic set. E-2 remains closed with 39 retained qualifications and 23 obligations. `NATIVE-PENDING` and all 331 inherited native skips remain unqualified. No production activation, operational approval, positive validation or protected execution occurred.
+>
+> Proposed next commission is `GAGAMBA-RC2B-06-B6-ALT-B-SLICE-E-03-CODEC-Q1`. [Implementation report](reviews/rc2b-06-b6-alt-b-slice-e-03-codec-implementation-01.md).
+
 > **ALT-B SLICE E-3 — ENTRY AUTHORIZED WITH QUALIFICATIONS (2026-11-15).**
 >
 > The exact v3-pre record remains adopted with qualifications and E3-ENTRY-F01 remains closed. One separate package is authorized for the internal, production-unreachable v3-pre structural decoder and focused managed tests. BB-02 Option A isolates the strict codec from the legacy path, and BB-02 remains open and unremediated. Q1-E01 decoded-name, duplicate-name and literal digest-value controls are mandatory.
