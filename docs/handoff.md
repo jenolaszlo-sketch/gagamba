@@ -1,5 +1,9 @@
 # Gagamba handoff
 
+> **ALT-B SLICE E-3 — INDEPENDENT Q4 SUPPORTED WITH QUALIFICATIONS (2026-11-16).**
+>
+> Independent Q4 supports the unchanged E-3 codec R2 within the managed scope. Submit the pinned revision and evidence for a separate OWNER-02 decision. [Independent qualification](reviews/rc2b-06-b6-alt-b-slice-e-03-codec-r2-q4.md).
+
 > **ALT-B SLICE E-3 — OWNER ACCEPTANCE BLOCKED (2026-11-16).**
 >
 > The exact R2 candidate has technically reconciled Q3 evidence. Obtain an independent implementation review by a reviewer uninvolved in R2, then return for owner disposition. [Current owner decision](decisions/rc2b-06-b6-alt-b-slice-e-03-owner-01.md).

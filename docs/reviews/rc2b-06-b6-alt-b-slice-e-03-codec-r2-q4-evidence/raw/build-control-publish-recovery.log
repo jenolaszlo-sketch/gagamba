@@ -1,0 +1,47 @@
+dotnet publish C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1.Recovery\Gagamba.Execution.Linux.M1.Recovery.csproj -c Release --artifacts-path C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2-q4\run\production-controls\publish-recovery --nologo
+  Determining projects to restore...
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution\Gagamba.Execution.csproj (in 225 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj (in 225 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1.Recovery\Gagamba.Execution.Linux.M1.Recovery.csproj (in 225 ms).
+  Gagamba.Execution -> C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2-q4\run\production-controls\publish-recovery\bin\Gagamba.Execution\release\Gagamba.Execution.dll
+  Gagamba compilation identity validated: Gagamba.Execution.Linux.M1, Release, Gagamba.Execution.Linux.M1, DefineConstants=;GAGAMBA_PRODUCTION;TRACE;RELEASE;NET;NET10_0;NETCOREAPP;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER
+  Gagamba.Execution.Linux.M1 -> C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2-q4\run\production-controls\publish-recovery\bin\Gagamba.Execution.Linux.M1\release\Gagamba.Execution.Linux.M1.dll
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Release
+  MVID: 3a1d262a-b240-4f5a-8c2a-398d2c441a3e
+  SHA-256: 685048AC0EC87B497E209C9FC1F34F591B5A59387A8106395B04A70ADAFE6BA1
+  Mode: production
+  Type-name entries: 509; methods with bodies decoded: 4604; user strings: 4692
+  Seven surfaces: 0/4 hook types and 0/3 hook properties present
+  Core production types: 14/14 present
+  RESULT: PASS
+  Gagamba compilation identity validated: Gagamba.Execution.Linux.M1.Recovery, Release, Gagamba.Execution.Linux.M1.Recovery, DefineConstants=;GAGAMBA_PRODUCTION;TRACE;RELEASE;NET;NET10_0;NETCOREAPP;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER
+  Gagamba.Execution.Linux.M1.Recovery -> C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2-q4\run\production-controls\publish-recovery\bin\Gagamba.Execution.Linux.M1.Recovery\release\Gagamba.Execution.Linux.M1.Recovery.dll
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Release
+  MVID: 3a1d262a-b240-4f5a-8c2a-398d2c441a3e
+  SHA-256: 685048AC0EC87B497E209C9FC1F34F591B5A59387A8106395B04A70ADAFE6BA1
+  Mode: production
+  Type-name entries: 509; methods with bodies decoded: 4604; user strings: 4692
+  Seven surfaces: 0/4 hook types and 0/3 hook properties present
+  Core production types: 14/14 present
+  RESULT: PASS
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Release
+  MVID: 3a1d262a-b240-4f5a-8c2a-398d2c441a3e
+  SHA-256: 685048AC0EC87B497E209C9FC1F34F591B5A59387A8106395B04A70ADAFE6BA1
+  Mode: production
+  Type-name entries: 509; methods with bodies decoded: 4604; user strings: 4692
+  Seven surfaces: 0/4 hook types and 0/3 hook properties present
+  Core production types: 14/14 present
+  RESULT: PASS
+  Gagamba.Execution.Linux.M1.Recovery -> C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2-q4\run\production-controls\publish-recovery\publish\Gagamba.Execution.Linux.M1.Recovery\release\
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Release
+  MVID: 3a1d262a-b240-4f5a-8c2a-398d2c441a3e
+  SHA-256: 685048AC0EC87B497E209C9FC1F34F591B5A59387A8106395B04A70ADAFE6BA1
+  Mode: production
+  Type-name entries: 509; methods with bodies decoded: 4604; user strings: 4692
+  Seven surfaces: 0/4 hook types and 0/3 hook properties present
+  Core production types: 14/14 present
+  RESULT: PASS

@@ -1,0 +1,20 @@
+{
+  "debug": {
+    "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r2-q4\\run\\candidate\\bin\\Gagamba.Execution.Linux.M1\\debug\\Gagamba.Execution.Linux.M1.dll": "0be049b48bec046ea19b1650b31aa9b37542ed5c9bf59e7a8695c46d44973dd8",
+    "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r2-q4\\run\\candidate\\bin\\Gagamba.Execution.Linux.M1.Tests\\debug\\Gagamba.Execution.Linux.M1.Tests.dll": "60ffe67a2c672efa9e2b126be834ef9f4345fc4f999166d7c0568e7cfe87a7fa",
+    "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r2-q4\\run\\findings-r2\\bin\\Findings\\debug\\Gagamba.Execution.Linux.M1.Tests.dll": "f45eb762465d768420e89f6ab98778598d593d8085537ae807f32cba944ff7fd",
+    "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r2-q4\\run\\supplement-artifacts\\bin\\Probe\\debug\\Gagamba.Execution.Linux.M1.Tests.dll": "90c051811749c51f08ba663b9bbdfaf465e705c227daa1b704f9a76ed5f48356",
+    "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r2-q4\\run\\replay-artifacts-candidate\\bin\\Probe\\debug\\Gagamba.Execution.Linux.M1.Tests.dll": "bc684a4218a1ca38c652879b457aa66b80de8a6c74b1178c88d1d2589f8547d4"
+  },
+  "release": {
+    "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r2-q4\\run\\candidate\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll": "2557e6dbb923f8a0f4f7461d0d99116184418dcdff349b2e3b0a7715de2bd470",
+    "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r2-q4\\run\\candidate\\bin\\Gagamba.Execution.Linux.M1.Tests\\release\\Gagamba.Execution.Linux.M1.Tests.dll": "6777a293c6d1f13d8305c1c8b645b06ea41696ef2a54879869b4735042658713",
+    "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r2-q4\\run\\findings-r2\\bin\\Findings\\release\\Gagamba.Execution.Linux.M1.Tests.dll": "312fffc7d1d92c7962975decc1a59c4153d9ef0705cd0ccbb9fe5c27d8d7302c",
+    "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r2-q4\\run\\supplement-artifacts\\bin\\Probe\\release\\Gagamba.Execution.Linux.M1.Tests.dll": "cbd0eefaa5d343063d38d478dae40e0ecb07d05093a1afefe1cec64765347399",
+    "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r2-q4\\run\\replay-artifacts-candidate\\bin\\Probe\\release\\Gagamba.Execution.Linux.M1.Tests.dll": "9084b1017074fbf948fe448e07e7f2ba2c7f1f3e8f73b70841a18cb3afc24ef7"
+  },
+  "tools": {
+    "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r2-q4\\run\\scan-artifacts\\bin\\Scan\\release\\Scan.dll": "985ee6955b74018ba8ce193f655f944452912ed336e6c9ccd592a0e7a54a9daa",
+    "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r2-q4\\run\\candidate\\bin\\VerifyProductionAssembly\\release\\VerifyProductionAssembly.dll": "05d8a51bb79155db5a4dde698e1d2d2dea8232056b21ab819df6df3fc4c28220"
+  }
+}

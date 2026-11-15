@@ -1,0 +1,9 @@
+dotnet C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2-q4\run/focused-layout/debug/Gagamba.Execution.Linux.M1.Tests.dll -noColor -class *ValidationPreCodecRemediationTests -xml C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2-q4\run\logs/r1-focused-debug.xml
+xUnit.net v3 In-Process Runner v3.2.0+9e422989c1 (64-bit .NET 10.0.12)
+  Discovering: Gagamba.Execution.Linux.M1.Tests
+  Discovered:  Gagamba.Execution.Linux.M1.Tests
+  Starting:    Gagamba.Execution.Linux.M1.Tests
+  Finished:    Gagamba.Execution.Linux.M1.Tests (ID = '88777c349418b4bf0ec5ab199ee65e0c0a85c0a15007845c6e45470ad47f5a86')
+=== TEST EXECUTION SUMMARY ===
+   Gagamba.Execution.Linux.M1.Tests  Total: 24, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.160s
+EXIT 0

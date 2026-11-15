@@ -1,0 +1,74 @@
+[
+  {
+    "argv": [
+      "dotnet",
+      "run",
+      "--project",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r2-q4\\run\\finding-project\\Findings.csproj",
+      "-c",
+      "Debug",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r2-q4\\run\\findings-r1",
+      "-p:UseSharedCompilation=false",
+      "-p:Candidate=C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r2-q4\\run\\r1-bin\\Gagamba.Execution.Linux.M1\\debug",
+      "--",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\docs\\reviews\\rc2b-06-b6-alt-b-slice-e-03-codec-r1-q2-evidence\\findings-inputs"
+    ],
+    "cwd": "C:\\Users\\Laszlos\\source\\repos\\Gagamba",
+    "exit": 0
+  },
+  {
+    "argv": [
+      "dotnet",
+      "run",
+      "--project",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r2-q4\\run\\finding-project\\Findings.csproj",
+      "-c",
+      "Debug",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r2-q4\\run\\findings-r2",
+      "-p:UseSharedCompilation=false",
+      "-p:Candidate=C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r2-q4\\run\\candidate\\bin\\Gagamba.Execution.Linux.M1\\debug",
+      "--",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\docs\\reviews\\rc2b-06-b6-alt-b-slice-e-03-codec-r1-q2-evidence\\findings-inputs"
+    ],
+    "cwd": "C:\\Users\\Laszlos\\source\\repos\\Gagamba",
+    "exit": 0
+  },
+  {
+    "argv": [
+      "dotnet",
+      "run",
+      "--project",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r2-q4\\run\\finding-project\\Findings.csproj",
+      "-c",
+      "Release",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r2-q4\\run\\findings-r1",
+      "-p:UseSharedCompilation=false",
+      "-p:Candidate=C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r2-q4\\run\\r1-bin\\Gagamba.Execution.Linux.M1\\release",
+      "--",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\docs\\reviews\\rc2b-06-b6-alt-b-slice-e-03-codec-r1-q2-evidence\\findings-inputs"
+    ],
+    "cwd": "C:\\Users\\Laszlos\\source\\repos\\Gagamba",
+    "exit": 0
+  },
+  {
+    "argv": [
+      "dotnet",
+      "run",
+      "--project",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r2-q4\\run\\finding-project\\Findings.csproj",
+      "-c",
+      "Release",
+      "--artifacts-path",
+      "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r2-q4\\run\\findings-r2",
+      "-p:UseSharedCompilation=false",
+      "-p:Candidate=C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-r2-q4\\run\\candidate\\bin\\Gagamba.Execution.Linux.M1\\release",
+      "--",
+      "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\docs\\reviews\\rc2b-06-b6-alt-b-slice-e-03-codec-r1-q2-evidence\\findings-inputs"
+    ],
+    "cwd": "C:\\Users\\Laszlos\\source\\repos\\Gagamba",
+    "exit": 0
+  }
+]

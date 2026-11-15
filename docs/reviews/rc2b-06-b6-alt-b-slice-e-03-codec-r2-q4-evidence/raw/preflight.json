@@ -1,0 +1,84 @@
+{
+  "head": "ffdad5d05fefb6d260c884d61c791c6d9be91df5",
+  "tree": "9aef7acf0f865fcc355b7e01c0e9b021eb0ceff0",
+  "commits": {
+    "ffdad5d05fefb6d260c884d61c791c6d9be91df5": "9aef7acf0f865fcc355b7e01c0e9b021eb0ceff0",
+    "29da0ed60c18ed6364bf9366a64ab5aa3393db62": "52364b4c62098fc0fc75fdda26bd2bd8f099c760",
+    "8be61181e804b2dfafb0797eb54c92d2f234ff86": "1c9307845858fb25ca0a9473d53d1fd1496018fc",
+    "4cb46a6cdbcc52b7129dbd88c4eba2e62ae73469": "0975cc5fbd13c6342c219333029e82e3d02c94aa",
+    "4a97b79e0060b001a7c1d30ae93bc66cedc52418": "dfd9519b7799155a0fd6f99a8edad27618c38a6a",
+    "7713ec58cc7c292862c8c80d6b57dcacd3420b44": "e7f0854d5365aef6533d6ba731eebadc8638bac0",
+    "34eef4c8e7d814e15cb1bfce27df032e75766f19": "5b9bfa884b4cec86aab293b80ada1b7f73b58d11"
+  },
+  "branch": "main",
+  "worktrees": 1,
+  "trackedClean": true,
+  "stashes": 0,
+  "historicalUntrackedCount": 44,
+  "historicalEvidenceChecksums": 397,
+  "ownerEvidenceChecksums": 9,
+  "historical": {
+    "codec-q1": {
+      "report": "9340e86634bc845ee2be7fd4ccc9c3452cd7b2dc",
+      "evidenceTree": "43067de61d72e06da640ccb609381fd1d6612285",
+      "entries": 156,
+      "manifestSha256": "9739a964e1300444e9377bdd08c1f1e952b8aaf9f2feae9129b0c510c623ece1"
+    },
+    "codec-r1": {
+      "report": "3f5fdf597a86fa0e32c2c69551f3e06ba1595b04",
+      "evidenceTree": "6475c4ca7b04df16163a60c072bc8464b69db2e4"
+    },
+    "codec-r1-q2": {
+      "report": "135dbe19976df149657bcf05cecf0f1c89f6a7a0",
+      "evidenceTree": "d6cfc0447e537dc0c66bd7489806f5d5b543957c",
+      "entries": 100,
+      "manifestSha256": "17bf65a8ac79e41b85f34723616af4950b7df2e592da55ec59523f9f3129445b"
+    },
+    "codec-r2": {
+      "report": "900e12cb53cdf843516cc0886e6070f141f8bea2",
+      "evidenceTree": "f0432bc5c8988a2cfe5a9d217132fc48f143a35b",
+      "entries": 64,
+      "manifestSha256": "22c232f8585d99dbf9d9fde298fbe3f6924ad69fd5b4139366f0f50f845620be"
+    },
+    "codec-r2-q3": {
+      "report": "d2ebd0a38ea0418a2bc6c80719346af291d4ea6f",
+      "evidenceTree": "ace394b5a5e8176422a142272ae064eeeeb68084",
+      "entries": 77,
+      "manifestSha256": "2ca94c21c993e2923bdafb017775fc20143bd8d0c5174502b61d4bbf6b7af16b"
+    },
+    "owner-01": {
+      "report": "0e35107af185fa6fb4d8173088b6da13a3bcd30d",
+      "evidenceTree": "6d40fdbfa7096f3ec9ebc0d7c1429e31ca465d55",
+      "entries": 9,
+      "manifestSha256": "e965570e5fe97cd617b5b3f245e2b9403c96638c95d7c43b9cd847a85b09a301"
+    }
+  },
+  "normative": {
+    "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-v3-pre-frozen-record-candidate-01.md": {
+      "blob": "f6a71562845d2cfe0aee5495864a509c5caabe7a",
+      "sha256": "1948bab694ed37bf5c7c50524328716f3eef18d98dd1ae9971ca12100c40160e"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-frozen-record-owner-01.md": {
+      "blob": "d2fea61b7db323319ee59033c8b1b12ded1ffe7d",
+      "sha256": "c7351553eb8c82837c618d6b36a3563cafa99899841fc20b07142898b641c7d8"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-normative-owner-01.md": {
+      "blob": "f3639dc619dbfee39859afb7da553e2167d9b83d",
+      "sha256": "a89b9fbc1658f9df660daf89eb27725de7ba68a5ad9edea462e0a559f717c3ee"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-bootstrap-base-owner-01.md": {
+      "blob": "93fe2c9155a21b12fd3486b9da743260897d508e",
+      "sha256": "efa2109c6d2950544759d440c256280d1b92d63dd441ccfa7574584bc0c3a9de"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-bootstrap-base-owner-01-evidence/schema.md": {
+      "blob": "a7248152d09e19d8f3775db397f340949fa9ee57",
+      "sha256": "727b44d487249382fad63c7b2973056acd0e9291aed93e3d51c2e46cdb35c606"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-entry-owner-01.md": {
+      "blob": "028a7c1858b5e7b506deff9d2d8d263afe3344ac",
+      "sha256": "fbb0534447430df8f608c82ae978d10294a19a8b8a5fc0dbca7983811f78311e"
+    }
+  },
+  "r2ToHeadChangesOutsideDocs": [],
+  "remoteTracking": "e8099e37c1243e81f173bf0248307cf7d2fe3875"
+}

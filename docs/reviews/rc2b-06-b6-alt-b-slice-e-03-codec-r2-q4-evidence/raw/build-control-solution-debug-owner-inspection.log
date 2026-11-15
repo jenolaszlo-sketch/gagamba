@@ -1,0 +1,10 @@
+dotnet run --project C:\Users\Laszlos\source\repos\Gagamba\eng\VerifyProductionAssembly\VerifyProductionAssembly.csproj -c Release --no-launch-profile -- --instrumented C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2-q4\run\production-controls\solution\bin\Gagamba.Execution.Linux.M1.Owner\debug\Gagamba.Execution.Linux.M1.dll
+Assembly: Gagamba.Execution.Linux.M1
+Configuration: Debug
+MVID: 3508f487-db8d-4562-b353-85a14af54dec
+SHA-256: 0037098A03C8D863C667ABF7E09501DB62EE6C9AA4B23AD265CD843E0811113B
+Mode: instrumented
+Type-name entries: 532; methods with bodies decoded: 4757; user strings: 4825
+Seven surfaces: 4/4 hook types and 3/3 hook properties present
+Core production types: 14/14 present
+RESULT: PASS

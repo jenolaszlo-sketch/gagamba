@@ -1,5 +1,9 @@
 # Current work queue
 
+> **ALT-B SLICE E-3 — INDEPENDENT Q4 SUPPORTED WITH QUALIFICATIONS (2026-11-16).**
+>
+> Next commission is a separate OWNER-02 decision on the exact R2 revision and Q4 evidence. E-4 entry assessment remains deferred pending E-3 owner acceptance. [Independent qualification](reviews/rc2b-06-b6-alt-b-slice-e-03-codec-r2-q4.md).
+
 > **ALT-B SLICE E-3 — OWNER ACCEPTANCE BLOCKED (2026-11-16).**
 >
 > Next commission is a distinct reviewer qualification of pinned R2. Defer the E-4 entry assessment until E-3 owner acceptance. [Current owner decision](decisions/rc2b-06-b6-alt-b-slice-e-03-owner-01.md).

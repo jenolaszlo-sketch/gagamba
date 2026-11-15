@@ -1,0 +1,4 @@
+4E107CF8C22637D8925F678E4AE102BCEDB908AA4F2EFE60476B63B1A025F4DA C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2-q4\run\findings-r1\bin\Findings\debug\Gagamba.Execution.Linux.M1.dll
+0BE049B48BEC046EA19B1650B31AA9B37542ED5C9BF59E7A8695C46D44973DD8 C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2-q4\run\findings-r2\bin\Findings\debug\Gagamba.Execution.Linux.M1.dll
+BE3862B0124DD0EC09C6FEE2B0042F7A22175CCAAFFB683B9777184C88DE2F79 C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2-q4\run\findings-r1\bin\Findings\release\Gagamba.Execution.Linux.M1.dll
+2557E6DBB923F8A0F4F7461D0D99116184418DCDFF349B2E3B0A7715DE2BD470 C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2-q4\run\findings-r2\bin\Findings\release\Gagamba.Execution.Linux.M1.dll

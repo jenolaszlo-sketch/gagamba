@@ -1,0 +1,21 @@
+dotnet run --project C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2-q4\run\frozen-q1-probe/Probe.csproj -c Release --artifacts-path C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2-q4\run/replay-artifacts-original -p:UseSharedCompilation=false -p:Candidate=C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r1-q2\run\original\bin/Gagamba.Execution.Linux.M1/release -- C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2-q4\run/replay-original-release C:\Users\Laszlos\source\repos\Gagamba\docs\decisions\rc2b-06-b6-alt-b-slice-e-03-qe1-bootstrap-base-owner-01-evidence\schema.md
+B2/ambiguous-original-session: refuse -> None
+B2/disposed-original: refuse -> throw ObjectDisposedException
+Integrated/Integrated/Profile/ToolSourceName/expectation-missing: refuse -> None
+Integrated/Integrated/Profile/ToolSourceName/expectation-mismatch: refuse -> None
+Integrated/Integrated/Profile/InputSourceName/expectation-missing: refuse -> None
+Integrated/Integrated/Profile/InputSourceName/expectation-mismatch: refuse -> None
+Integrated/Integrated/Profile/CoordinatorSourceName/expectation-missing: refuse -> None
+Integrated/Integrated/Profile/CoordinatorSourceName/expectation-mismatch: refuse -> None
+Integrated/Integrated/Profile/FilterSourceName/expectation-missing: refuse -> None
+Integrated/Integrated/Profile/FilterSourceName/expectation-mismatch: refuse -> None
+Integrated/Integrated/Profile/TotalBudgetBytes/expectation-missing: refuse -> None
+Integrated/Integrated/Profile/TotalBudgetBytes/expectation-mismatch: refuse -> None
+Integrated/Integrated/Profile/MaxObjects/expectation-missing: refuse -> None
+Integrated/Integrated/Profile/MaxObjects/expectation-mismatch: refuse -> None
+Integrated/ambiguous-original-session: refuse -> None
+Integrated/disposed-original: refuse -> throw ObjectDisposedException
+Schema rows=99 unique schemas=11 occurrences B2=46 integrated=83
+binary-expectation-alias/replaced: Comparison -> None
+Independent assertions=2383 passed=2366 counterexamples=17
+EXIT 1

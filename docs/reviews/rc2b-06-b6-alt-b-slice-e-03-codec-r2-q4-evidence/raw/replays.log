@@ -1,0 +1,21 @@
+& 'C:\Users\Laszlos\source\repos\Gagamba\docs\reviews\rc2b-06-b6-alt-b-slice-e-03-codec-r2-q3-evidence/Run-Q3.ps1' -Repository 'C:/Users/Laszlos/source/repos/Gagamba' -Run 'C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2-q4\run' -OriginalBin 'C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r1-q2\run\original\bin' -R1Bin 'C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2-q4\run\r1-bin'
+1 replay-original-debug
+0 replay-candidate-debug
+0 supplement-debug
+1 replay-original-release
+0 replay-candidate-release
+0 supplement-release
+0 original-focused-debug
+0 r1-focused-debug
+0 r2-focused-debug
+0 combined-focused-debug
+0 broad-debug
+0 original-focused-release
+0 r1-focused-release
+0 r2-focused-release
+0 combined-focused-release
+0 broad-release
+0 scan-build
+0 verifier-release
+1 verifier-debug
+EXIT 0

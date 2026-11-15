@@ -1,0 +1,40 @@
+{
+  "inventory": [
+    [
+      "git",
+      "grep",
+      "-n",
+      "-E",
+      "StartOwnerPreparation\\(|TrySpawnOwner\\(|new PreparationOwnershipCoordinator\\(|IntegratedRecoveryHost.Run\\(|QualifiedRecoveryConnection.Start\\(|RecoveryConnection.Start\\(|new HeldReleasePhase\\(|new B3PreparationOwner\\(|OwnerPreparationTransaction.Run\\(",
+      "34eef4c8e7d814e15cb1bfce27df032e75766f19",
+      "--",
+      "src",
+      "tests"
+    ],
+    [
+      "git",
+      "grep",
+      "-n",
+      "-E",
+      "StartOwnerPreparation\\(|TrySpawnOwner\\(|new PreparationOwnershipCoordinator\\(|IntegratedRecoveryHost.Run\\(|QualifiedRecoveryConnection.Start\\(|RecoveryConnection.Start\\(|new HeldReleasePhase\\(|new B3PreparationOwner\\(|OwnerPreparationTransaction.Run\\(",
+      "8be61181e804b2dfafb0797eb54c92d2f234ff86",
+      "--",
+      "src",
+      "tests"
+    ],
+    [
+      "git",
+      "grep",
+      "-n",
+      "-E",
+      "StartOwnerPreparation\\(|TrySpawnOwner\\(|new PreparationOwnershipCoordinator\\(|IntegratedRecoveryHost.Run\\(|QualifiedRecoveryConnection.Start\\(|RecoveryConnection.Start\\(|new HeldReleasePhase\\(|new B3PreparationOwner\\(|OwnerPreparationTransaction.Run\\(",
+      "HEAD",
+      "--",
+      "src",
+      "tests"
+    ]
+  ],
+  "exit": 0,
+  "admissionSource": "src/Gagamba.Execution.Linux.M1/Bootstrap/IntegratedRecoveryHost.cs",
+  "sourceBlob": "9a8ec67d3424bf1971bea04b056d78cee7c3501b"
+}
