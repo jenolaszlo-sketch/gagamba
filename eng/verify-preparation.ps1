@@ -24,6 +24,52 @@ function Resolve-PreparationLocalPath([string]$BaseDirectory, [string]$Target) {
     return $prepResolved
 }
 
+function Get-PreparationMarkdownSections([string]$Content) {
+    # Fence markers can be indented up to three spaces and may sit in block quotes.
+    # A closer uses the same character, at least the opening length, and no info string.
+    $prepFence = [regex]'^(?:(?<quote> {0,3}>[ \t]?))* {0,3}(?<marker>\x60{3,}|~{3,})(?<tail>.*)$'
+    $prepQuotePrefix = [regex]'^(?:(?<quote> {0,3}>[ \t]?))*'
+    $prepOpening = $null
+    $prepProseStart = 0
+
+    foreach ($prepLineMatch in [regex]::Matches($Content, '[^\r\n]*(?:\r\n|\n|\r|\z)')) {
+        if ($prepLineMatch.Length -eq 0) { continue }
+        $prepText = $prepLineMatch.Value.TrimEnd([char[]]@(13, 10))
+        $prepFenceMatch = $prepFence.Match($prepText)
+        if ($null -ne $prepOpening) {
+            $prepQuoteDepth = $prepQuotePrefix.Match($prepText).Groups['quote'].Captures.Count
+            if ($prepQuoteDepth -lt $prepOpening.Groups['quote'].Captures.Count) {
+                # Markdown ends an unclosed quoted fence at the end of the quote.
+                $prepOpening = $null
+                $prepProseStart = $prepLineMatch.Index
+            } else {
+                if ($prepFenceMatch.Success -and
+                    $prepFenceMatch.Groups['quote'].Captures.Count -eq $prepOpening.Groups['quote'].Captures.Count -and
+                    $prepFenceMatch.Groups['marker'].Value[0] -eq $prepOpening.Groups['marker'].Value[0] -and
+                    $prepFenceMatch.Groups['marker'].Length -ge $prepOpening.Groups['marker'].Length -and
+                    $prepFenceMatch.Groups['tail'].Value -match '^[ \t]*$') {
+                    $prepOpening = $null
+                    $prepProseStart = $prepLineMatch.Index + $prepLineMatch.Length
+                }
+                continue
+            }
+        }
+
+        if ($prepFenceMatch.Success -and
+            ($prepFenceMatch.Groups['marker'].Value[0] -eq '~' -or
+                $prepFenceMatch.Groups['tail'].Value -notmatch '\x60')) {
+            if ($prepLineMatch.Index -gt $prepProseStart) {
+                $Content.Substring($prepProseStart, $prepLineMatch.Index - $prepProseStart)
+            }
+            $prepOpening = $prepFenceMatch
+        }
+    }
+
+    if ($null -eq $prepOpening -and $prepProseStart -lt $Content.Length) {
+        $Content.Substring($prepProseStart)
+    }
+}
+
 $prepRequired = @(
     'AGENTS.md', 'README.md', 'LICENSE',
     'docs/security-model.md', 'docs/fixture-protocol.md', 'docs/work-queue.md',
@@ -97,7 +143,10 @@ $prepLineReferences = 0
 foreach ($prepDocument in $prepDocuments) {
     $prepContent = [IO.File]::ReadAllText($prepDocument.FullName)
     $prepSourceName = $prepDocument.FullName.Substring($prepRoot.Length).TrimStart([char[]]'\/').Replace('\', '/')
-    foreach ($prepMatch in [regex]::Matches($prepContent, '\]\(([^)]+)\)')) {
+    $prepMatches = foreach ($prepSection in Get-PreparationMarkdownSections $prepContent) {
+        [regex]::Matches($prepSection, '\]\(([^)]+)\)')
+    }
+    foreach ($prepMatch in $prepMatches) {
         $prepTarget = $prepMatch.Groups[1].Value.Trim('<', '>')
         $prepKey = $prepSourceName + "`n" + $prepTarget
         if ($prepMappings.ContainsKey($prepKey)) {
