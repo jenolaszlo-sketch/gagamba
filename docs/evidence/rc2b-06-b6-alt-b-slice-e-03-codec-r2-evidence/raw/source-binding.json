@@ -1,0 +1,9 @@
+{
+  "baseline": "4cb46a6cdbcc52b7129dbd88c4eba2e62ae73469",
+  "baselineTree": "0975cc5fbd13c6342c219333029e82e3d02c94aa",
+  "testedTree": "013cea761b6086a7c66f63646962f8657898ebe9",
+  "blobs": {
+    "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodec.cs": "d861210aeb3734b04e6bf9f472c12bd226253b32",
+    "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecR2Tests.cs": "9fe5984e6fc98885b6f2d39b7721918d899d1f3f"
+  }
+}

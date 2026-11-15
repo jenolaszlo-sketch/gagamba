@@ -1,5 +1,9 @@
 # Current work queue
 
+> **ALT-B SLICE E-3 — CODEC R2 IMPLEMENTED, READY FOR INDEPENDENT Q3 (2026-11-15).**
+>
+> All 13 Q2 cases now produce bounded refusals in Debug and Release. All 17 original Q1 cases remain resolved. The independent Q2 report remains authoritative for its reviewed R1 revision. BB-02, composite Q-E1 and NATIVE-PENDING retain their existing status. [R2 producer evidence](evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2.md).
+
 > **ALT-B SLICE E-3 — CODEC R1 IMPLEMENTED, READY FOR INDEPENDENT Q2 (2026-11-15).**
 >
 > The bounded codec changes corrected all 17 original Q1 counterexamples in Debug and Release. The original Q1 report retains its remediation-required disposition on the predecessor. Producer verification passed 146 original focused cases and 24 R1 regressions per configuration. The full managed M1 runs passed 1,663 cases each and retained all 331 unqualified native skips.

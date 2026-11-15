@@ -1,0 +1,78 @@
+{
+  "debug": {
+    "original-focused": {
+      "total": 146,
+      "passed": 146,
+      "failed": 0,
+      "skipped": 0
+    },
+    "r1-focused": {
+      "total": 24,
+      "passed": 24,
+      "failed": 0,
+      "skipped": 0
+    },
+    "r2-focused": {
+      "total": 15,
+      "passed": 15,
+      "failed": 0,
+      "skipped": 0
+    },
+    "r2-before": {
+      "total": 15,
+      "passed": 2,
+      "failed": 13,
+      "skipped": 0
+    },
+    "combined-focused": {
+      "total": 185,
+      "passed": 185,
+      "failed": 0,
+      "skipped": 0
+    },
+    "broad": {
+      "total": 2009,
+      "passed": 1678,
+      "failed": 0,
+      "skipped": 331
+    }
+  },
+  "release": {
+    "original-focused": {
+      "total": 146,
+      "passed": 146,
+      "failed": 0,
+      "skipped": 0
+    },
+    "r1-focused": {
+      "total": 24,
+      "passed": 24,
+      "failed": 0,
+      "skipped": 0
+    },
+    "r2-focused": {
+      "total": 15,
+      "passed": 15,
+      "failed": 0,
+      "skipped": 0
+    },
+    "r2-before": {
+      "total": 15,
+      "passed": 2,
+      "failed": 13,
+      "skipped": 0
+    },
+    "combined-focused": {
+      "total": 185,
+      "passed": 185,
+      "failed": 0,
+      "skipped": 0
+    },
+    "broad": {
+      "total": 2009,
+      "passed": 1678,
+      "failed": 0,
+      "skipped": 331
+    }
+  }
+}

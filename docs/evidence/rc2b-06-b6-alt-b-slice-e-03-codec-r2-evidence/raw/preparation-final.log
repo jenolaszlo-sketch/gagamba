@@ -1,0 +1,10 @@
+Validation                        : Preparation artifacts only; no backend qualification
+RequiredFiles                     : 12
+MarkdownDocuments                 : 554
+LocalLinks                        : 2622
+HistoricalCompatibilityDocuments  : 8
+HistoricalCompatibilityReferences : 71
+NormalizedLineReferences          : 0
+OriginalProposalSha256            : 89E830B59C8D8E7529D467D3264A2E620EEE3EF747ADF6DC0496B811BA051160
+Result                            : Passed
+EXIT 0

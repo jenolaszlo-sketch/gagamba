@@ -360,13 +360,35 @@ internal static class ValidationPreCodec
                 if (result != ValidationPreRefusal.None)
                     return result;
             }
-            else if (!JsonElement.DeepEquals(claimedMember, expectedMember))
+            else
             {
-                return ValidationPreRefusal.Comparison;
+                var result = CompareProjectionScalar(claimedMember, expectedMember);
+                if (result != ValidationPreRefusal.None)
+                    return result;
             }
         }
 
         return ValidationPreRefusal.None;
+    }
+
+    private static ValidationPreRefusal CompareProjectionScalar(JsonElement claim, JsonElement expected)
+    {
+        var kind = expected.ValueKind;
+        try
+        {
+            return JsonElement.DeepEquals(claim, expected)
+                ? ValidationPreRefusal.None
+                : ValidationPreRefusal.Comparison;
+        }
+        catch (InvalidOperationException) when (kind == JsonValueKind.String)
+        {
+            // JSON string values can defer decoding of malformed surrogate escapes.
+            return ValidationPreRefusal.Expectation;
+        }
+        catch (ArgumentOutOfRangeException ex) when (kind == JsonValueKind.Number && ex.ParamName == "exponent")
+        {
+            return ValidationPreRefusal.Expectation;
+        }
     }
 
     private static bool RequiresProjection(Rule field) => field is not

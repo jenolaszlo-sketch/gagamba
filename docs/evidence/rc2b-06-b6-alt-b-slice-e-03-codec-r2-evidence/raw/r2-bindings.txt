@@ -1,0 +1,12 @@
+0E3633E1042D18B3D704CA31AADC7236148504F38FB2AF61181F71D453B5464E C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2\run\candidate\bin\Gagamba.Execution.Linux.M1\debug\Gagamba.Execution.Linux.M1.dll
+4E107CF8C22637D8925F678E4AE102BCEDB908AA4F2EFE60476B63B1A025F4DA C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2\run\before\build\bin\Gagamba.Execution.Linux.M1\debug\Gagamba.Execution.Linux.M1.dll
+4E107CF8C22637D8925F678E4AE102BCEDB908AA4F2EFE60476B63B1A025F4DA C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2\run\r2-red\debug\Gagamba.Execution.Linux.M1.dll
+02DB8CFBF2CD84DC325A208E6568DE2B21FFDDE24B53633DC288C254342CBB73 C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2\run\r2-red\debug\Gagamba.Execution.Linux.M1.Tests.dll
+0E3633E1042D18B3D704CA31AADC7236148504F38FB2AF61181F71D453B5464E C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2\run\after-probe\bin\Findings\debug\Gagamba.Execution.Linux.M1.dll
+4E107CF8C22637D8925F678E4AE102BCEDB908AA4F2EFE60476B63B1A025F4DA C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2\run\before\probe\bin\Findings\debug\Gagamba.Execution.Linux.M1.dll
+C6456FFB20124E86BAA22E07017A936913B305AD4EE726832B0AB9C4FCD08B3C C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2\run\candidate\bin\Gagamba.Execution.Linux.M1\release\Gagamba.Execution.Linux.M1.dll
+BE3862B0124DD0EC09C6FEE2B0042F7A22175CCAAFFB683B9777184C88DE2F79 C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2\run\before\build\bin\Gagamba.Execution.Linux.M1\release\Gagamba.Execution.Linux.M1.dll
+BE3862B0124DD0EC09C6FEE2B0042F7A22175CCAAFFB683B9777184C88DE2F79 C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2\run\r2-red\release\Gagamba.Execution.Linux.M1.dll
+45538CF07141E15A6D5DAB49E89B79678FADCE333577DE59A5F1467B8A083618 C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2\run\r2-red\release\Gagamba.Execution.Linux.M1.Tests.dll
+C6456FFB20124E86BAA22E07017A936913B305AD4EE726832B0AB9C4FCD08B3C C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2\run\after-probe\bin\Findings\release\Gagamba.Execution.Linux.M1.dll
+BE3862B0124DD0EC09C6FEE2B0042F7A22175CCAAFFB683B9777184C88DE2F79 C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-r2\run\before\probe\bin\Findings\release\Gagamba.Execution.Linux.M1.dll
