@@ -1,0 +1,15 @@
+Test run for /home/gaga/qualification/harness-review/tests/Gagamba.Execution.Linux.M1.Tests/bin/Release/net10.0/Gagamba.Execution.Linux.M1.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.12)
+[xUnit.net 00:00:00.16]   Discovering: Gagamba.Execution.Linux.M1.Tests
+[xUnit.net 00:00:00.53]   Discovered:  Gagamba.Execution.Linux.M1.Tests
+[xUnit.net 00:00:00.70]   Starting:    Gagamba.Execution.Linux.M1.Tests
+  Passed Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests.ForgedIdentityGateRefusalTouchesNoJournalAndNotTheRealTransport [132 ms]
+  Passed Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests.HeldProductionCoordinatorAcceptsSingleArbitratedReleaseAndReachesPreExecBoundary [24 ms]
+[xUnit.net 00:00:07.29]   Finished:    Gagamba.Execution.Linux.M1.Tests
+  Passed Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests.RealCoordinatorOverallExpiryWritesProtocolFailed30AndTheGateRefusesExpiredIntent [6 s]
+
+Test Run Successful.
+Total tests: 3
+     Passed: 3
+ Total time: 7.7376 Seconds

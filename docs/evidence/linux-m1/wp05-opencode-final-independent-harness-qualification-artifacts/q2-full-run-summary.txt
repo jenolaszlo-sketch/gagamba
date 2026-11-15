@@ -1,0 +1,35 @@
+q2-full-run-summary.txt
+captured: 2026-10-19T14:40:28Z
+boot: 69d053fb-0fd9-4209-aa5b-be128424ed34
+
+Both runs: bash eng/linux-m1-qualified-tests.sh (Release), as uid 1000,
+zero capabilities, cgroup 0::/gaga-delegated/host, runner exit 0.
+
+run 1 phases:
+Passed!  - Failed:     0, Passed:   489, Skipped:     0, Total:   489, Duration: 6 s - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+Passed!  - Failed:     0, Passed:    31, Skipped:     0, Total:    31, Duration: 7 s - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+Passed!  - Failed:     0, Passed:     7, Skipped:     0, Total:     7, Duration: 1 s - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+Passed!  - Failed:     0, Passed:     1, Skipped:    14, Total:    15, Duration: 57 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+Passed!  - Failed:     0, Passed:     2, Skipped:    19, Total:    21, Duration: 54 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+Passed!  - Failed:     0, Passed:     3, Skipped:     2, Total:     5, Duration: 51 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+Passed!  - Failed:     0, Passed:     3, Skipped:     0, Total:     3, Duration: 46 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+Passed!  - Failed:     0, Passed:     1, Skipped:     0, Total:     1, Duration: 110 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+
+run 2 phases:
+Passed!  - Failed:     0, Passed:   489, Skipped:     0, Total:   489, Duration: 6 s - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+Passed!  - Failed:     0, Passed:    31, Skipped:     0, Total:    31, Duration: 7 s - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+Passed!  - Failed:     0, Passed:     7, Skipped:     0, Total:     7, Duration: 1 s - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+Passed!  - Failed:     0, Passed:     1, Skipped:    14, Total:    15, Duration: 55 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+Passed!  - Failed:     0, Passed:     2, Skipped:    19, Total:    21, Duration: 56 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+Passed!  - Failed:     0, Passed:     3, Skipped:     2, Total:     5, Duration: 49 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+Passed!  - Failed:     0, Passed:     3, Skipped:     0, Total:     3, Duration: 46 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+Passed!  - Failed:     0, Passed:     1, Skipped:     0, Total:     1, Duration: 94 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+
+phase-2 skip classification (both runs):
+  IntegratedBarrierTests 14, DomainAuthorityTests 19, RecoveryHarness 2 = 35 skips
+  producer R11 supported-profile run: 48 pass / 35 skip, identical classes
+  (docs/evidence/linux-m1/wp05-identity-evidence-integrity-remediation-2026-10-19.md line 98)
+
+phase-1 row arithmetic:
+  producer R11 phase 1 483 rows; reviewer worktree adds 6 untagged reviewer probes
+  (git bf453ea) -> 483 + 6 = 489 passed/0 skipped, matching both runs above.

@@ -30,3 +30,32 @@ tests/Gagamba.Execution.Linux.M1.Tests/Installation/manifest-v1.golden.json -tex
 
 # Preserve the raw Q1 reports, probes, logs, TRX and source tar, including original whitespace.
 docs/reviews/rc2b-06-b6-impl-01-s2-q1-evidence/** -text -whitespace
+
+# Byte-exact historical evidence imported by the repository consolidation.
+docs/assessments/rc2a-02-full-stage-acceptance-gap-assessment.md -text -whitespace
+docs/assessments/rc2a-roadmap-01-restricted-execution-dependency-review.md -text -whitespace
+docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-2026-10-19.md -text -whitespace
+docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/** -text -whitespace
+docs/reviews/gagamba-linux-m1-wp05-d5-independent-native-status-review.md -text -whitespace
+docs/reviews/gagamba-linux-m1-wp05-d5-native-status-evidence-matrix.md -text -whitespace
+docs/reviews/gagamba-linux-m1-wp05-d5-required-corrections-and-d6-handoff.md -text -whitespace
+docs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/** -text -whitespace
+docs/reviews/gagamba-linux-m1-wp05-d6-0-contract-interaction-register.md -text -whitespace
+docs/reviews/gagamba-linux-m1-wp05-d6-0-contract-review-matrix.md -text -whitespace
+docs/reviews/gagamba-linux-m1-wp05-d6-0-independent-contract-design-review.md -text -whitespace
+docs/reviews/gagamba-linux-m1-wp05-d6-0-required-design-changes-and-approval-handoff.md -text -whitespace
+docs/reviews/gagamba-linux-m1-wp05-d6-1-interaction-register.md -text -whitespace
+docs/reviews/gagamba-linux-m1-wp05-d6-2-amendment-verification-matrix.md -text -whitespace
+docs/reviews/gagamba-linux-m1-wp05-d6-2-approval-readiness.md -text -whitespace
+docs/reviews/gagamba-linux-m1-wp05-d6-2-focused-independent-review.md -text -whitespace
+docs/reviews/gagamba-linux-m1-wp05-d6-3-terra-independent-c3-review.md -text -whitespace
+docs/reviews/gagamba-linux-m1-wp05-d6-4-glm-independent-fixture-review.md -text -whitespace
+docs/reviews/gagamba-linux-m1-wp05-d6-5-glm-independent-isolation-equivalence-review.md -text -whitespace
+docs/reviews/gagamba-linux-m1-wp05-d6-6-glm-independent-symbol-delivery-review.md -text -whitespace
+docs/reviews/gagamba-linux-m1-wp05-d6-7-glm-human-decision-integrity-review.md -text -whitespace
+docs/reviews/gagamba-linux-m1-wp05-d6-8-4-glm-f01-f02-closure-review.md -text -whitespace
+docs/reviews/gagamba-linux-m1-wp05-d6-8-5-glm-independent-c2-linux-qualification-review.md -text -whitespace
+docs/reviews/gagamba-linux-m1-wp05-d6-8-glm-independent-c2-implementation-review.md -text -whitespace
+docs/reviews/gagamba-linux-m1-wp05-release-plan-counterexample-register.md -text -whitespace
+docs/reviews/gagamba-linux-m1-wp05-release-plan-independent-adversarial-review.md -text -whitespace
+docs/reviews/gagamba-linux-m1-wp05-release-plan-required-changes.md -text -whitespace

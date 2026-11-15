@@ -1,0 +1,17 @@
+78a0b925c3aada63d2d717384bfee5e0cdbf14ade1b76a7da39b82ffb160a25a  docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q0-environment.txt
+2393880c661007fca5c794018f377deebd70db8deba2305dda36659804d06580  docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q0-launcher-audit.txt
+96e2bd3f18bb74f27b09b1f18ccc0fa17e5f575e480c7c74f539bf2cc7aaa326  docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q0-preflight-reviewer.log
+45f3f291570a1c6445372590b58631d7d4638f0ba98de3908ee3cac2c678b412  docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q0-preflight-reviewer.report
+a3fcd04f16ddb24bd8f51aef98874fbacd8e900e7d713a47db1d438d289d5ab7  docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q0-source-identity.txt
+156d6b6945e815a82a07367d9b69658cccbb7eb1dcf097d2782fd94f4e9888c5  docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q1-reviewer-probe-identity.txt
+cf55ddd75f899e53b044fca9bd6315c5dc0ded2c66b69d98bf26653817dcb6fa  docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q1-reviewer-probe-run.log
+2a73a80317dbadd45087303f18e0406d9c196f4373744a6d10e70502680dd3e4  docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-crlf-cause-reconstruction.txt
+db25a670510fcc342bea9d0971161cd65cc38f077711c541f4455f4d4ce13a54  docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-crlf-exhaustive.txt
+4c8ad5dada1ec78849995ac480d275fc17c405350f2795a6cef8e441cc1949ce  docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-evidence-integrity-reconciliation.txt
+a8aecf6059cf409392e5c8162640404609019d4ddf523b6eb9a5b527626e6e5d  docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-full-run-1.log
+fe06626a45c19bf0aaa70bedfdddf4dd761deed42093e38404af6f128fa379e9  docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-full-run-2.log
+5b527bebdb6a7fe525e62e958ae286bd50bb758862eba6fe200a05ee2af98084  docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-full-run-summary.txt
+6287e23858f248062c14805778841ca12ec6dda5e28ef094e0697a5f6858458d  docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-residue-audit.txt
+74abecf027850b097241e0743ce2f7a94bfd99db6fdf7339480ffe2e0f5cc512  docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-root-only-gate-probe.txt
+9fb6cba85deb9507a253c521add1893529ed21a50024c480067646a81437bd72  docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q3-production-diff.txt
+45e7000f22250ebf988c1967da2818f233736c1561a66c25054966c429e5437c  docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q3-release-path-focused.log

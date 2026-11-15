@@ -1,0 +1,18 @@
+q2-root-only-gate-probe.txt
+captured: 2026-10-19T14:40:28Z
+boot: 69d053fb-0fd9-4209-aa5b-be128424ed34
+uid: 1000 gid: 1000
+Uid:	1000	1000	1000	1000
+Gid:	1000	1000	1000	1000
+CapEff:	0000000000000000
+
+-- cgroup root ownership/mode (as gaga):
+root:root 555 /sys/fs/cgroup
+
+-- IntegratedBarrierTests/DomainAuthorityTests/RecoveryHarness gate probe:
+   they probe child-cgroup creation at the bare /sys/fs/cgroup root;
+   observer expectation: EPERM for uid 1000 with zero capabilities.
+mkdir exit: 1 (expected 1/EPERM)
+creation authority DOES exist at the delegated parent (WP04 lane path):
+gaga:gaga 755 /sys/fs/cgroup/gaga-delegated
+gaga:gaga 755 /sys/fs/cgroup/gaga-delegated/host

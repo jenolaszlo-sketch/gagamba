@@ -1,5 +1,11 @@
 # Gagamba project status
 
+> **GAGAMBA CONSOLIDATION — CI CORRECTION AND HISTORICAL PRESERVATION (2026-11-15).**
+>
+> The preparation verifier excludes Markdown fenced code from link extraction while retaining prose link and historical identity checks. The branch inventory binds all 99 local and 73 remote branch tips at the starting revision. Safe historical copies retain their source bytes. Divergent history remains at its original refs and no branches were deleted.
+>
+> The accepted implementation remains canonical on main. E-3 source, BB-02, P4, composite Q-E1 and `NATIVE-PENDING` stay in force. Independent implementation Q1 and later owner acceptance remain pending. [Consolidation and CI evidence](evidence/gagamba-repository-consolidation-01/README.md).
+
 > **ALT-B SLICE E-3 — CODEC IMPLEMENTATION COMPLETE, READY FOR INDEPENDENT Q1 (2026-11-15).**
 >
 > The isolated internal v3-pre decoder and binary validator are implemented under M1 Bootstrap with focused managed tests. All 146 managed cases passed (122 new, 24 existing, zero skips), including Q1-E01. BB-02 Option A excludes legacy dependencies, and BB-02 remains open and unremediated.

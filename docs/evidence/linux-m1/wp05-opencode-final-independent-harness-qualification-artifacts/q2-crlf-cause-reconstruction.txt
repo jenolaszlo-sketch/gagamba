@@ -1,0 +1,6 @@
+== observer-observation.txt (committed lines=2, target manifest hash=904b3077edaafd9a9aeecaa499c1cf1d351d2a8b748c00022854866f304db26a) ==
+  NO single-line/all-lines/EOF-CRLF reconstruction matches: CAUSE NOT REPRODUCED
+== sigpipe-observation.txt (committed lines=4, target manifest hash=6b58a73aa968a91c0c546aac858e3e52541c12487ab1efaa0114cb44ac2814e8) ==
+  MATCH: CRLF on all lines -> 6b58a73aa968a91c0c546aac858e3e52541c12487ab1efaa0114cb44ac2814e8
+== source-head.txt (committed lines=4, target manifest hash=1de880bab5b6760af8214607025f8b7415a1cbf58df3061ed5d29e2ed1d44696) ==
+  NO single-line/all-lines/EOF-CRLF reconstruction matches: CAUSE NOT REPRODUCED

@@ -1,0 +1,604 @@
+{
+  "files": [
+    {
+      "ref": "refs/remotes/origin/review/wp05-opencode-harness-final-qualification",
+      "source_commit": "36a124d7dff98ecfaf956340767fe1768ad5b17f",
+      "path": "docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-2026-10-19.md",
+      "git_blob": "08ba107a198eecd11839a26460755cb72b15c6ee",
+      "sha256": "e62db694efef5eb5dd418c326e68eaed8779d54525a0d6a6af33f5949303c41e",
+      "bytes": 17871,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-opencode-harness-final-qualification",
+      "source_commit": "36a124d7dff98ecfaf956340767fe1768ad5b17f",
+      "path": "docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/SHA256SUMS",
+      "git_blob": "41a8f5b687edfefb0ae2abef001473a120f138eb",
+      "sha256": "9acbd1008fee5a23bfc2c13ef115b16174d5588befeba4b4f68894ba97d2ac82",
+      "bytes": 3034,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-opencode-harness-final-qualification",
+      "source_commit": "36a124d7dff98ecfaf956340767fe1768ad5b17f",
+      "path": "docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q0-environment.txt",
+      "git_blob": "5f9ff88abcc2db8a6769b8b8c434800b8b4f6f05",
+      "sha256": "78a0b925c3aada63d2d717384bfee5e0cdbf14ade1b76a7da39b82ffb160a25a",
+      "bytes": 831,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-opencode-harness-final-qualification",
+      "source_commit": "36a124d7dff98ecfaf956340767fe1768ad5b17f",
+      "path": "docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q0-launcher-audit.txt",
+      "git_blob": "34976c073e7dcb29ce897fa1a95592ed6545fd4e",
+      "sha256": "2393880c661007fca5c794018f377deebd70db8deba2305dda36659804d06580",
+      "bytes": 2464,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-opencode-harness-final-qualification",
+      "source_commit": "36a124d7dff98ecfaf956340767fe1768ad5b17f",
+      "path": "docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q0-preflight-reviewer.log",
+      "git_blob": "0735c9d634c0389fda9e4319f96be764cd28a106",
+      "sha256": "96e2bd3f18bb74f27b09b1f18ccc0fa17e5f575e480c7c74f539bf2cc7aaa326",
+      "bytes": 4136,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-opencode-harness-final-qualification",
+      "source_commit": "36a124d7dff98ecfaf956340767fe1768ad5b17f",
+      "path": "docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q0-preflight-reviewer.report",
+      "git_blob": "6f05f659bc3dcc126420f7e9a8c4f20cf7099221",
+      "sha256": "45f3f291570a1c6445372590b58631d7d4638f0ba98de3908ee3cac2c678b412",
+      "bytes": 3999,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-opencode-harness-final-qualification",
+      "source_commit": "36a124d7dff98ecfaf956340767fe1768ad5b17f",
+      "path": "docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q0-source-identity.txt",
+      "git_blob": "d6641cd12d057e2374b658a68fee1e487bfc7041",
+      "sha256": "a3fcd04f16ddb24bd8f51aef98874fbacd8e900e7d713a47db1d438d289d5ab7",
+      "bytes": 1350,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-opencode-harness-final-qualification",
+      "source_commit": "36a124d7dff98ecfaf956340767fe1768ad5b17f",
+      "path": "docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q1-reviewer-probe-identity.txt",
+      "git_blob": "298feb43a722c6d9b338acd0e4e628b17721da4b",
+      "sha256": "156d6b6945e815a82a07367d9b69658cccbb7eb1dcf097d2782fd94f4e9888c5",
+      "bytes": 2416,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-opencode-harness-final-qualification",
+      "source_commit": "36a124d7dff98ecfaf956340767fe1768ad5b17f",
+      "path": "docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q1-reviewer-probe-run.log",
+      "git_blob": "028e13cb7d67e6cb8fe10af0c287ae9326933a42",
+      "sha256": "cf55ddd75f899e53b044fca9bd6315c5dc0ded2c66b69d98bf26653817dcb6fa",
+      "bytes": 2055,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-opencode-harness-final-qualification",
+      "source_commit": "36a124d7dff98ecfaf956340767fe1768ad5b17f",
+      "path": "docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-crlf-cause-reconstruction.txt",
+      "git_blob": "f56782373bbf93829205591b213b269e9600a7e5",
+      "sha256": "2a73a80317dbadd45087303f18e0406d9c196f4373744a6d10e70502680dd3e4",
+      "bytes": 661,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-opencode-harness-final-qualification",
+      "source_commit": "36a124d7dff98ecfaf956340767fe1768ad5b17f",
+      "path": "docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-crlf-exhaustive.txt",
+      "git_blob": "9596d079a42dc0c21b8be84ae7e9a53642029043",
+      "sha256": "db25a670510fcc342bea9d0971161cd65cc38f077711c541f4455f4d4ce13a54",
+      "bytes": 485,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-opencode-harness-final-qualification",
+      "source_commit": "36a124d7dff98ecfaf956340767fe1768ad5b17f",
+      "path": "docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-evidence-integrity-reconciliation.txt",
+      "git_blob": "4da5f887682ac785de29f2e3bcec0609fc1e6dd7",
+      "sha256": "4c8ad5dada1ec78849995ac480d275fc17c405350f2795a6cef8e441cc1949ce",
+      "bytes": 15316,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-opencode-harness-final-qualification",
+      "source_commit": "36a124d7dff98ecfaf956340767fe1768ad5b17f",
+      "path": "docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-full-run-1.log",
+      "git_blob": "c76aa49e70d56f653d2f21d2cf7bebfe4c70815e",
+      "sha256": "a8aecf6059cf409392e5c8162640404609019d4ddf523b6eb9a5b527626e6e5d",
+      "bytes": 17891,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-opencode-harness-final-qualification",
+      "source_commit": "36a124d7dff98ecfaf956340767fe1768ad5b17f",
+      "path": "docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-full-run-2.log",
+      "git_blob": "81795d8551e386253017ea1ba931ab1f43d3abb8",
+      "sha256": "fe06626a45c19bf0aaa70bedfdddf4dd761deed42093e38404af6f128fa379e9",
+      "bytes": 17890,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-opencode-harness-final-qualification",
+      "source_commit": "36a124d7dff98ecfaf956340767fe1768ad5b17f",
+      "path": "docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-full-run-summary.txt",
+      "git_blob": "5cd0376362cae8e0d5b4d46655859559271cdc6f",
+      "sha256": "5b527bebdb6a7fe525e62e958ae286bd50bb758862eba6fe200a05ee2af98084",
+      "bytes": 2911,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-opencode-harness-final-qualification",
+      "source_commit": "36a124d7dff98ecfaf956340767fe1768ad5b17f",
+      "path": "docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-residue-audit.txt",
+      "git_blob": "24b16e4a1ef942feff202b881b35d007f937029d",
+      "sha256": "6287e23858f248062c14805778841ca12ec6dda5e28ef094e0697a5f6858458d",
+      "bytes": 330,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-opencode-harness-final-qualification",
+      "source_commit": "36a124d7dff98ecfaf956340767fe1768ad5b17f",
+      "path": "docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-root-only-gate-probe.txt",
+      "git_blob": "46e1d749da103ab743a10383d27d402eef4fa614",
+      "sha256": "74abecf027850b097241e0743ce2f7a94bfd99db6fdf7339480ffe2e0f5cc512",
+      "bytes": 679,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-opencode-harness-final-qualification",
+      "source_commit": "36a124d7dff98ecfaf956340767fe1768ad5b17f",
+      "path": "docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q3-production-diff.txt",
+      "git_blob": "ef2882c2a0d7ae429af0eddd9fb94e2f6ad31e48",
+      "sha256": "9fb6cba85deb9507a253c521add1893529ed21a50024c480067646a81437bd72",
+      "bytes": 1138,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-opencode-harness-final-qualification",
+      "source_commit": "36a124d7dff98ecfaf956340767fe1768ad5b17f",
+      "path": "docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q3-release-path-focused.log",
+      "git_blob": "c25901f6907702c8475351517dfa98621c3a24af",
+      "sha256": "45e7000f22250ebf988c1967da2818f233736c1561a66c25054966c429e5437c",
+      "bytes": 1226,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/assessment/gagamba-rc2a-02-full-stage",
+      "source_commit": "058a150130c5f112c7e9b8189bba8842cf0cec52",
+      "path": "docs/assessments/rc2a-02-full-stage-acceptance-gap-assessment.md",
+      "git_blob": "5b4f559d71e8bb6b871a28f73be694b742887bdd",
+      "sha256": "0a3ffc6740e69c142ef4578abe4904b00e59dbcae8e37a1d75c9037f76a4e6bb",
+      "bytes": 28353,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/assessment/gagamba-rc2a-roadmap-01",
+      "source_commit": "d417367499979d38a3c9a498275d8422bf69f3d0",
+      "path": "docs/assessments/rc2a-roadmap-01-restricted-execution-dependency-review.md",
+      "git_blob": "44def8bad6f8c796732a503de53cf0d133c2de21",
+      "sha256": "112b746a3bdade5cbd3d3421c82b0b0b02958567ab2e2a650f0b06bcf75a2991",
+      "bytes": 27054,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d5-native-status-qualification",
+      "source_commit": "87cced6143fb3337829fab48a3c012b06c06508c",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d5-independent-native-status-review.md",
+      "git_blob": "505a0bd3aa02aa1b3b9ddc7e6d70ed70bd0a45e7",
+      "sha256": "a9b3c78e9c8f07446faec220e4f028cc8f25df6c521de779f783b577dec8e9e6",
+      "bytes": 31298,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d5-native-status-qualification",
+      "source_commit": "87cced6143fb3337829fab48a3c012b06c06508c",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d5-native-status-evidence-matrix.md",
+      "git_blob": "d96e6582e900399d205d8ae83b8f837cd6ba00e7",
+      "sha256": "490820a36a990f07a8e9a72dd712085f6ef4ab6fcc059330323d86a48db462d7",
+      "bytes": 12545,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d5-native-status-qualification",
+      "source_commit": "87cced6143fb3337829fab48a3c012b06c06508c",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d5-required-corrections-and-d6-handoff.md",
+      "git_blob": "8886bd65fe7bafdf40bbf43b3189491122519603",
+      "sha256": "a2c613edd7e4631cbe237aa56707d228483b85011bd6b25505c58122120545c5",
+      "bytes": 6395,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d5-native-status-qualification",
+      "source_commit": "87cced6143fb3337829fab48a3c012b06c06508c",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/SHA256SUMS-reviewer.txt",
+      "git_blob": "5d2a8bd13b194c563d702a2514754a8eb94b7533",
+      "sha256": "9f2578b6470a9fed0e139be618cfc7987b694fa0b0ed6ab3db26604eb1056d78",
+      "bytes": 1915,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d5-native-status-qualification",
+      "source_commit": "87cced6143fb3337829fab48a3c012b06c06508c",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/cr3-fence-refusal.txt",
+      "git_blob": "eba58530499811188a96fd537e901f39cf412f2e",
+      "sha256": "261f3354eab27e0734e052712f84438ed93b5dbc6a16b0eac55506383aa4114d",
+      "bytes": 130,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d5-native-status-qualification",
+      "source_commit": "87cced6143fb3337829fab48a3c012b06c06508c",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/cr3-nowriter.txt",
+      "git_blob": "b07bbe0c8b921744d9fb4b6decb129ae6fd5f1fc",
+      "sha256": "49c5e1eedc1f6b4f2c995605e528b97bb7bfcffe2296644653fcb9b74659139b",
+      "bytes": 209,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d5-native-status-qualification",
+      "source_commit": "87cced6143fb3337829fab48a3c012b06c06508c",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/cr3-owner-result.txt",
+      "git_blob": "16eb14c712f61c5333d5dc40386251f590566bd7",
+      "sha256": "06eab908802edc1513443e714721d289ce41dab4e58602cbf08177b58d9cc7c9",
+      "bytes": 210,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d5-native-status-qualification",
+      "source_commit": "87cced6143fb3337829fab48a3c012b06c06508c",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/cr3-retry.txt",
+      "git_blob": "39671b8a93ebfc248b0b25938432138837a45833",
+      "sha256": "3a401cac7a0130c07150d24eeb2ac37a89085e824e07e2025483f734dc4475a1",
+      "bytes": 482,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d5-native-status-qualification",
+      "source_commit": "87cced6143fb3337829fab48a3c012b06c06508c",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/cr3-witness.txt",
+      "git_blob": "cb0fa419a3290b8c3629e5d6306e031b230bf4fd",
+      "sha256": "66032c0491885acbda80cef6a3073cc6f0befddafa0bb6630755042e58343f1f",
+      "bytes": 2137,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d5-native-status-qualification",
+      "source_commit": "87cced6143fb3337829fab48a3c012b06c06508c",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/cr3b-owner-result.txt",
+      "git_blob": "bde918bbb368f0106bdcbcadca911d1e603ef51d",
+      "sha256": "67f60acfebf4f2a3b82614a4ceb31016932d54d176faca1856b03198d4c4c6c6",
+      "bytes": 252,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d5-native-status-qualification",
+      "source_commit": "87cced6143fb3337829fab48a3c012b06c06508c",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/cr3b-retry.txt",
+      "git_blob": "53fba6643a7664023e5d8bcb4f8ac86b0a91d61f",
+      "sha256": "a37af2489bf34e6c675a8046a07aa7d8264a6681f3b41cb26b24a16bc1fb2c49",
+      "bytes": 484,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d5-native-status-qualification",
+      "source_commit": "87cced6143fb3337829fab48a3c012b06c06508c",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/cr3b-witness.txt",
+      "git_blob": "bc1c540f960dba8f931c911b947295601c60faa1",
+      "sha256": "8fc14218e986abbae54b926edbf133173321d5e24f176b5c6d739ace6e627002",
+      "bytes": 1311,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d5-native-status-qualification",
+      "source_commit": "87cced6143fb3337829fab48a3c012b06c06508c",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/descriptor-topology-ns1.txt",
+      "git_blob": "c3ee2c843f98d49e304e5e81188db241d9bd2fe5",
+      "sha256": "66e5a6597519b7408611943c887f866eee55bccfea7698e51a18fb5649385088",
+      "bytes": 100,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d5-native-status-qualification",
+      "source_commit": "87cced6143fb3337829fab48a3c012b06c06508c",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/descriptor-topology-ns2.txt",
+      "git_blob": "509116350055b75916ef20089fad056dd59ab6f2",
+      "sha256": "4292bf415ec8a09bd4cd97f697889a29e9cfef6f18db1c16a83d6932e0a58e64",
+      "bytes": 100,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d5-native-status-qualification",
+      "source_commit": "87cced6143fb3337829fab48a3c012b06c06508c",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/descriptor_hold.txt",
+      "git_blob": "d9f340a2cf80915e981c220befb2afdac4ff810a",
+      "sha256": "5b6aa6e56eda5923016275e1121819f135ad5187d1f0cd438099bc91fcc6a730",
+      "bytes": 273,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d5-native-status-qualification",
+      "source_commit": "87cced6143fb3337829fab48a3c012b06c06508c",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/drr-run1-cg.log",
+      "git_blob": "d59192452b7e8b1c419288f59cf4a14a4d2e16ef",
+      "sha256": "d03de9a677ed88717e2bdbe3281e21b49265c45a23ce388cf2630a18883f189a",
+      "bytes": 3463,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d5-native-status-qualification",
+      "source_commit": "87cced6143fb3337829fab48a3c012b06c06508c",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/drr-run2-cg.log",
+      "git_blob": "d59192452b7e8b1c419288f59cf4a14a4d2e16ef",
+      "sha256": "d03de9a677ed88717e2bdbe3281e21b49265c45a23ce388cf2630a18883f189a",
+      "bytes": 3463,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d5-native-status-qualification",
+      "source_commit": "87cced6143fb3337829fab48a3c012b06c06508c",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/env-preflight.txt",
+      "git_blob": "ab48060e927a0b1c24e826bfbd738b0dd6af2394",
+      "sha256": "bdb338c8ae2babfd7527b97100804d2339a774c1600a47c9b15fb6a028efd869",
+      "bytes": 451,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d5-native-status-qualification",
+      "source_commit": "87cced6143fb3337829fab48a3c012b06c06508c",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/manifest-verify.txt",
+      "git_blob": "3b0405bcdb4f3241e0b7f18ff053f3f0c6ace62a",
+      "sha256": "614abda6fcc7364311cca5d284e2ffad074fcd395102c420326673c09e86738e",
+      "bytes": 15670,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d5-native-status-qualification",
+      "source_commit": "87cced6143fb3337829fab48a3c012b06c06508c",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/nat-run1-cg.log",
+      "git_blob": "1a0326b6469192db8f34248e7d9c0134daf8cdc3",
+      "sha256": "c09d0a7d83cb427d454a6be6bd0ebfba9754baf0d1d29122e18dc54211b6f4bd",
+      "bytes": 3464,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d5-native-status-qualification",
+      "source_commit": "87cced6143fb3337829fab48a3c012b06c06508c",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/nat-run2-cg.log",
+      "git_blob": "1a0326b6469192db8f34248e7d9c0134daf8cdc3",
+      "sha256": "c09d0a7d83cb427d454a6be6bd0ebfba9754baf0d1d29122e18dc54211b6f4bd",
+      "bytes": 3464,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d5-native-status-qualification",
+      "source_commit": "87cced6143fb3337829fab48a3c012b06c06508c",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/native-status/exec_confirmed.txt",
+      "git_blob": "02b2dd90d69ba2aec5c918798296e789feb34568",
+      "sha256": "3a0e679776b6ebc8454c04b0d46b8f9f15194c3b091c65a166133f1eac22b148",
+      "bytes": 284,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d5-native-status-qualification",
+      "source_commit": "87cced6143fb3337829fab48a3c012b06c06508c",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/regressions-cg.log",
+      "git_blob": "dbe87816b39ded8f6838dc17de19059efab50423",
+      "sha256": "6a7f6145ea926a4dc7a581963620d61a8aaf42eeac8f0a8e418f10a727105500",
+      "bytes": 3463,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d5-native-status-qualification",
+      "source_commit": "87cced6143fb3337829fab48a3c012b06c06508c",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/rp1-review.log",
+      "git_blob": "eb972028538545a1f70bbe173793abd3d59eb4a0",
+      "sha256": "80e086be50eff49484734926966742f8fc50f2eecc8bebcfa2a7d984672e0f12",
+      "bytes": 3466,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d5-native-status-qualification",
+      "source_commit": "87cced6143fb3337829fab48a3c012b06c06508c",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/rp2-review.log",
+      "git_blob": "ca0b13e8e3c806321fd70ee2ed4bb99c40f126af",
+      "sha256": "14653f29103be7cf026ffb434d8271df1d8e1dfc6e97dd0c19bd6d12632a6423",
+      "bytes": 3466,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d5-native-status-qualification",
+      "source_commit": "87cced6143fb3337829fab48a3c012b06c06508c",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/rp3-review.log",
+      "git_blob": "0b3338f022158e2eba7131fbd9c74b11e90262ea",
+      "sha256": "ca3a1818d6a717495df838592f1cb357e766a3a30d8d564cd8e4c1ecd257db80",
+      "bytes": 3463,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d6-0-independent-contract-design",
+      "source_commit": "2a235c391673258023d3b3058ad7bbb31cc20406",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d6-0-contract-interaction-register.md",
+      "git_blob": "e269351813a4e2af06afa7f5a08c44fe293ad336",
+      "sha256": "678908d5474eb531970c40a12b207ee6eab8e8c3af6b33da9a1c15115f7f577b",
+      "bytes": 13755,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d6-0-independent-contract-design",
+      "source_commit": "2a235c391673258023d3b3058ad7bbb31cc20406",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d6-0-contract-review-matrix.md",
+      "git_blob": "5352664618e733acc9286f183ad0cca40ad46227",
+      "sha256": "c1676ebfc6b022a5c890a2f8fd7d596ce8fbc3e245a9c85f99a6ec535577f5fb",
+      "bytes": 15322,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d6-0-independent-contract-design",
+      "source_commit": "2a235c391673258023d3b3058ad7bbb31cc20406",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d6-0-independent-contract-design-review.md",
+      "git_blob": "ef3c1cad62739699e29edfd7d6c5e01ccda14c4a",
+      "sha256": "72f5e4087f143d6dec0afb02bda89bc8682520950bb802299b6df2fdb02ae7b5",
+      "bytes": 47323,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d6-0-independent-contract-design",
+      "source_commit": "2a235c391673258023d3b3058ad7bbb31cc20406",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d6-0-required-design-changes-and-approval-handoff.md",
+      "git_blob": "65392a0fc3221f570ceef884d87307fea854863d",
+      "sha256": "7c7924d4664faa2f1aeab18e234a78f0d72eb49c07f269cebbd7755b5634d646",
+      "bytes": 16491,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d6-1-independent-contract-design-2",
+      "source_commit": "77f559a7dfc1702b33812d5c3d5c42ac925f0343",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d6-1-interaction-register.md",
+      "git_blob": "09a27340573f486db9e36602eb2c22a8de60e8e4",
+      "sha256": "e8768a0e972e53cc55b1e538a83e3dda2ca9520f6dd37f6a67adef9b6b407f20",
+      "bytes": 12559,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d6-2-focused-contract-precision",
+      "source_commit": "3bce34b6b449a863f784949c0d7be5b0b56d4458",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d6-2-amendment-verification-matrix.md",
+      "git_blob": "adf79f7ff8eae65286e610472784c2f6e3c83573",
+      "sha256": "2444917a83eec5c26ab9df5c7127d36ecfbf029705c1a117543cfd049bf65991",
+      "bytes": 10296,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d6-2-focused-contract-precision",
+      "source_commit": "3bce34b6b449a863f784949c0d7be5b0b56d4458",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d6-2-approval-readiness.md",
+      "git_blob": "0ac9560443a3b945e5759b165eb34cf2fd5b144c",
+      "sha256": "97674d23e65e769aba02e231e81275aa218105f987760a62fdc269bae409874a",
+      "bytes": 8177,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d6-2-focused-contract-precision",
+      "source_commit": "3bce34b6b449a863f784949c0d7be5b0b56d4458",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d6-2-focused-independent-review.md",
+      "git_blob": "414a3390e4165862de1c8e37822a2b9f7e336f80",
+      "sha256": "6b0ddad1de90fa6e93c03be9fec07d88fa5d45cb62eaf058367feab9b4dc6b33",
+      "bytes": 38113,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d6-3-terra-independent-c3-outcome",
+      "source_commit": "cda2f22221c4db12ced3a4317362e80167270a63",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d6-3-terra-independent-c3-review.md",
+      "git_blob": "3bb7fd2322670d9f9977004661ab2a72760798d4",
+      "sha256": "6db8e7612fb7fb2a22af90c2e2918af1c4805b537ba99f98422211adadb4da1f",
+      "bytes": 9982,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d6-4-glm-independent-fixture",
+      "source_commit": "8b95c52abdebf8fd9a0235dd5a69082456e1984f",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d6-4-glm-independent-fixture-review.md",
+      "git_blob": "632c311da26e511519c5fbb44cb86efe9b0bb6e1",
+      "sha256": "49d01bb66aea38a4ee588c639e698a043a0cb24899f06e0a99b1dc58e9b9aa5e",
+      "bytes": 27113,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d6-5-glm-independent-isolation-equivalence",
+      "source_commit": "1051018c272a578613309c07cb4d23d627216482",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d6-5-glm-independent-isolation-equivalence-review.md",
+      "git_blob": "722613ebe1d4b0439e15704fcb203e19a07cd813",
+      "sha256": "acf4145f788c1958960ca8ed7484e0207fa2c6eb3efb6bb1e8615b9c7c0662a1",
+      "bytes": 24434,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d6-6-glm-independent-symbol-delivery",
+      "source_commit": "3c3d336c0a47ccb18627a5571298df8d0d1f0683",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d6-6-glm-independent-symbol-delivery-review.md",
+      "git_blob": "0dbe1ab4cab9b5efc09cf15983f36fc61c11c3c2",
+      "sha256": "70d4cdb7cf3978e5848d0067cf3c003be4fe1d6cf6608cfd6c079096a3d7bec0",
+      "bytes": 25157,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d6-7-glm-human-decision-integrity",
+      "source_commit": "546f284fbdbbcaa76f8b5557328fcd2d502a86c0",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d6-7-glm-human-decision-integrity-review.md",
+      "git_blob": "fa78dc9a8a0023961de95fff3358b8dd0add10a6",
+      "sha256": "c973a42bbd772cbf03b08315591e01aa7924faa91794d3c509f72b7bdf28c964",
+      "bytes": 12465,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d6-8-4-glm-f01-f02-closure",
+      "source_commit": "55f3f7a10b4d6860b8e7e02776bb3da73f801db9",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d6-8-4-glm-f01-f02-closure-review.md",
+      "git_blob": "22f6998cca7a3dee5453f2bc932f7ca89116c4cf",
+      "sha256": "67a7608fd29402c4866aa639163d8e849233635379a4e8ca422de6d4774200f9",
+      "bytes": 13946,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d6-8-5-glm-c2-linux-qualification",
+      "source_commit": "89464f5f214615ba94051e438d9b4979483ae5bf",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d6-8-5-glm-independent-c2-linux-qualification-review.md",
+      "git_blob": "f168fce6e1eb83f7d22a24096a3b02530f8eea66",
+      "sha256": "76e2fadcb1f8420f11d282bd87c1ad4505890f108174d83107917da0cd5d9c5f",
+      "bytes": 30979,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-d6-8-glm-independent-c2",
+      "source_commit": "959f2d3162bdfbecac2723f50acae8459b2fa310",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-d6-8-glm-independent-c2-implementation-review.md",
+      "git_blob": "dee4ca9244f5a8c5613152b9a3a9a90a96294ed2",
+      "sha256": "cad41dc7322682e440d1ba9f262b00d0260acfdcea8b65aeeefd24d217914187",
+      "bytes": 29551,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-release-plan-adversarial-review",
+      "source_commit": "e4b0a798e944ddfb144901c63b0c444e7980533b",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-release-plan-counterexample-register.md",
+      "git_blob": "0bbafa6b9725cce8a20858e1d64a8deec6134f15",
+      "sha256": "3a6ff54f487682146d58dd54cceea7d430ed90c480fbd06bdbb761e3187f69b8",
+      "bytes": 9287,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-release-plan-adversarial-review",
+      "source_commit": "e4b0a798e944ddfb144901c63b0c444e7980533b",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-release-plan-independent-adversarial-review.md",
+      "git_blob": "f1a062e1e12895426dcfb8b7b0b13a2e6d933918",
+      "sha256": "c4a661081ee6a0a348aa6be25a8c34af07ea8d750eb1c6a92b8de65ad6bae716",
+      "bytes": 18541,
+      "contains_crlf": false
+    },
+    {
+      "ref": "refs/remotes/origin/review/wp05-release-plan-adversarial-review",
+      "source_commit": "e4b0a798e944ddfb144901c63b0c444e7980533b",
+      "path": "docs/reviews/gagamba-linux-m1-wp05-release-plan-required-changes.md",
+      "git_blob": "73eb09af27c5dbc896739ebf48489862ec13e0a9",
+      "sha256": "7ad03d28af02d9a77808c3903ceae2e3e17a68ceaf6ef3540ec47ca2c1678372",
+      "bytes": 8009,
+      "contains_crlf": false
+    }
+  ],
+  "historical_manifests": [
+    {
+      "path": "docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/SHA256SUMS",
+      "verified_entries": 17
+    }
+  ]
+}

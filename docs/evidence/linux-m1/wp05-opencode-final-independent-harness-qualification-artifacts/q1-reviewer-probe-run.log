@@ -1,0 +1,40 @@
+q1-reviewer-probe-run.log
+captured: 2026-10-19T14:35:47Z
+boot: 69d053fb-0fd9-4209-aa5b-be128424ed34
+identity: uid=1000 gid=1000 user=gaga
+Uid:	1000	1000	1000	1000
+Gid:	1000	1000	1000	1000
+CapPrm:	0000000000000000
+CapEff:	0000000000000000
+cgroup: 0::/gaga-delegated/host
+
+=== instrumented fifth run (console;verbosity=normal) ===
+Test run for /home/gaga/qualification/harness-review/tests/Gagamba.Execution.Linux.M1.Tests/bin/Debug/net10.0/Gagamba.Execution.Linux.M1.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.12)
+[xUnit.net 00:00:00.18]   Discovering: Gagamba.Execution.Linux.M1.Tests
+[xUnit.net 00:00:00.56]   Discovered:  Gagamba.Execution.Linux.M1.Tests
+[xUnit.net 00:00:00.73]   Starting:    Gagamba.Execution.Linux.M1.Tests
+[xUnit.net 00:00:00.86]   Finished:    Gagamba.Execution.Linux.M1.Tests
+  Passed Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05OpencodeReviewerProbeTests.ClosedPidfdObservationFailsClosedWithoutHang [24 ms]
+  Passed Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05OpencodeReviewerProbeTests.UnrelatedChildIsNeverAttributedToTheObservedPidfd [5 ms]
+  Passed Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05OpencodeReviewerProbeTests.OracleAcceptsOnlyStructuredExit133OrSigkill9 [3 ms]
+  Passed Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05OpencodeReviewerProbeTests.PeekedStatusIsNotConsumedAndReapedPidfdObservationFailsClosed [1 ms]
+  Passed Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05OpencodeReviewerProbeTests.BareWrapperExitCodeIsAlwaysRejected [< 1 ms]
+  Passed Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05OpencodeReviewerProbeTests.ObserverStartedAfterZombieStillObservesExitStatus [1 ms]
+
+Test Run Successful.
+Total tests: 6
+     Passed: 6
+ Total time: 1.4049 Seconds
+
+=== residue audit after fifth run ===
+-- defunct processes:
+-- probe children (sleep 30):
+none
+-- coordinator/bwrap/testhost:
+-- host leaf cgroup.procs:
+4127
+4261
+-- child cgroup dirs below delegated parent:
+none

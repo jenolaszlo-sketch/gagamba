@@ -1,0 +1,32 @@
+== source identity verification (reviewer OpenCode, 2026-10-19, boot 69d053fb-0fd9-4209-aa5b-be128424ed34) ==
+REPO=/home/gaga/qualification/gagamba-r12
+WORKTREE=/home/gaga/qualification/harness-review
+HEAD=38f6981b2a60daab2df37c92913a6760c1bef131
+TREE=6854675d6b37a49d5302d6104103bdbfbc268040
+BRANCH=review/wp05-opencode-harness-final-qualification
+STATUS_PORCELAIN(should be empty):
+?? docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/
+R11_ANCESTOR_EXIT=0
+BASELINE_ANCESTOR_EXIT=0
+FSCK:
+FSCK_EXIT=0
+INFRA2_HISTORY:
+d3480b5 docs(wp05): verify OpenCode environment artifacts
+5df2224 docs(wp05): record OpenCode Linux environment preparation
+f8397bb docs(wp05): provision OpenCode Linux qualification session
+d9955dd docs(wp05): prepare Linux-native R12 checkout
+5c04d32 docs(wp05): record readiness bundle integrity
+7909522 docs(wp05): record independent Linux readiness
+P1..P3b verify:
+d9955dd0820938d245241c6b24469b33785fcf46
+f8397bb5e2ab91bdd3449d3f72441307c437e7c6
+5df22242b652b3b82c7a2697aef4a3eb1187f7d8
+d3480b5d7e48e93d4f4de855d8da9b245e236764
+P3c 0f29bb54921d11306f14fad1288851efd349c26a:
+fatal: Needed a single revision
+P3C_UNAVAILABLE_IN_THIS_CLONE
+HOSTILE_PROBE_BLOB_AT_R12:
+d427c19f7e0aaf635a24bc877b4eb511acbb89a2
+HOSTILE_PROBE_SIZE=1810
+READINESS_TOOL_BLOB:
+93c4dec426372c2cd89be05f3e617ed20f3b24eb

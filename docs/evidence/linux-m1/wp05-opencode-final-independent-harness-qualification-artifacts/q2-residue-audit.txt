@@ -1,0 +1,14 @@
+q2-residue-audit.txt
+captured: 2026-10-19T14:40:28Z
+-- defunct processes:
+-- probe children (sleep 30):
+none
+-- coordinator/bwrap/testhost:
+-- host leaf cgroup.procs (this audit shell):
+7316
+7335
+-- child cgroup dirs below delegated parent:
+none
+-- /tmp gagamba residue:
+-- session anchor 576:
+    576     568 Ss   sleep infinity

@@ -1,0 +1,31 @@
+q1-reviewer-probe-identity.txt
+captured: 2026-10-19T14:35:48Z
+boot: 69d053fb-0fd9-4209-aa5b-be128424ed34
+
+-- reviewer probe source identity (uncommitted at observation time)
+HEAD(capture-time): 1e64875ce30f10c5c834188c330b6aae1fbac0ae
+branch: review/wp05-opencode-harness-final-qualification
+probe path: tests/Gagamba.Execution.Linux.M1.Tests/Recovery/Wp05OpencodeReviewerProbeTests.cs
+13939 tests/Gagamba.Execution.Linux.M1.Tests/Recovery/Wp05OpencodeReviewerProbeTests.cs
+df21e395cfd6f0536bc8abd520dc66826c07ab602e136931a95f2e3fadfb73ae  tests/Gagamba.Execution.Linux.M1.Tests/Recovery/Wp05OpencodeReviewerProbeTests.cs
+blob sha1: aaae89c05a7fc07cca103c120d9cf8ddfcd9a13c
+
+-- staged native artifacts produced by eng/linux-m1/build-native.sh in reviewer worktree (R12, unmodified)
+ee25a876bad5312afcece19821668b91db0c09f5a2f1aaac74f00c45806e2305  tests/Fixtures/Gagamba.LinuxM1.Native/out/fixture
+5e55e92b4228013e88a9fb34ac4674c5b9a485e831db7ff6d86f02df7c68c73b  artifacts/linux-m1/wp04/exec-coordinator
+2aa879019138c4d4066557213ce0037de70430aac3a05008eec5c8abd999d108  artifacts/linux-m1/wp04/seccomp-filter.bin
+e20903cce6061ecc2b152f9e7b4ccb389edeee54047d96f1f3b66dd5195be0b9  artifacts/linux-m1/wp05/wp05-qualification-coordinator
+
+-- producer-recorded R11 hashes for comparison
+  fixture                     ee25a876bad5312afcece19821668b91db0c09f5a2f1aaac74f00c45806e2305
+  exec-coordinator            5e55e92b4228013e88a9fb34ac4674c5b9a485e831db7ff6d86f02df7c68c73b
+  seccomp-filter.bin          2aa879019138c4d4066557213ce0037de70430aac3a05008eec5c8abd999d108
+  wp05-qualification-coordinator e20903cce6061ecc2b152f9e7b4ccb389edeee54047d96f1f3b66dd5195be0b9
+
+-- tracked-source status at capture (probe + evidence only)
+?? docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q1-reviewer-probe-identity.txt
+?? docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q1-reviewer-probe-run.log
+?? docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-crlf-cause-reconstruction.txt
+?? docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-crlf-exhaustive.txt
+?? docs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-evidence-integrity-reconciliation.txt
+?? tests/Gagamba.Execution.Linux.M1.Tests/Recovery/Wp05OpencodeReviewerProbeTests.cs

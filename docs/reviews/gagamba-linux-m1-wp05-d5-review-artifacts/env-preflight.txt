@@ -1,0 +1,11 @@
+date_utc=Tue Oct 20 09:15:26 UTC 2026
+kernel=6.6.114.1-microsoft-standard-WSL2
+boot_id=69d053fb-0fd9-4209-aa5b-be128424ed34
+uid_gid=1000:1000
+caps=CapInh:	0000000000000000 CapPrm:	0000000000000000 CapEff:	0000000000000000 CapAmb:	0000000000000000 
+cgroup_self=0::/gaga-delegated/host
+host_procs_head=40955;40968;40969;
+controllers=cpuset cpu io memory hugetlb pids rdma
+dotnet=10.0.112
+gcc=gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+bwrap=bubblewrap 0.11.1
