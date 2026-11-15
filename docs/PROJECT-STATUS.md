@@ -1,5 +1,9 @@
 # Gagamba project status
 
+> **ALT-B SLICE E-3 — OWNER ACCEPTANCE BLOCKED (2026-11-16).**
+>
+> E-3 owner acceptance is blocked on reviewer independence. All 30 historical case outcomes on R2 verified. The exact candidate remains pending independent qualification by a distinct reviewer. [Current owner decision](decisions/rc2b-06-b6-alt-b-slice-e-03-owner-01.md).
+
 > **GAGAMBA CONSOLIDATION — CI CORRECTION AND HISTORICAL PRESERVATION (2026-11-15).**
 >
 > The preparation verifier excludes Markdown fenced code from link extraction while retaining prose link and historical identity checks. The branch inventory binds all 99 local and 73 remote branch tips at the starting revision. Safe historical copies retain their source bytes. Divergent history remains at its original refs and no branches were deleted.

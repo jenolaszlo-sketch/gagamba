@@ -1,5 +1,9 @@
 # Current work queue
 
+> **ALT-B SLICE E-3 — OWNER ACCEPTANCE BLOCKED (2026-11-16).**
+>
+> Next commission is a distinct reviewer qualification of pinned R2. Defer the E-4 entry assessment until E-3 owner acceptance. [Current owner decision](decisions/rc2b-06-b6-alt-b-slice-e-03-owner-01.md).
+
 > **ALT-B SLICE E-3 — CODEC R2 IMPLEMENTED, READY FOR INDEPENDENT Q3 (2026-11-15).**
 >
 > All 13 Q2 cases now produce bounded refusals in Debug and Release. All 17 original Q1 cases remain resolved. The independent Q2 report remains authoritative for its reviewed R1 revision. BB-02, composite Q-E1 and NATIVE-PENDING retain their existing status. [R2 producer evidence](evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2.md).
