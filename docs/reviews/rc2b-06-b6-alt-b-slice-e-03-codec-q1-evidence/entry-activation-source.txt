@@ -1,0 +1,12 @@
+HEAD:src/Gagamba.Execution.Linux.M1.Owner/Program.cs:22:var b2 = args.Length == 6 && args[4] == "--b2-lifeline" && args[5] is "1" or "2";
+HEAD:src/Gagamba.Execution.Linux.M1.Owner/Program.cs:48:var bootstrapFdText = Environment.GetEnvironmentVariable("GAGAMBA_BOOTSTRAP_FD");
+HEAD:src/Gagamba.Execution.Linux.M1/Bootstrap/B2RetainedDomain.cs:9:// AllocationRegistered/copy/Prepared/Mint. No B3 composition or target exists.
+HEAD:src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedB2Recovery.cs:73:                ["--exec",config.Execution.ToString("D"),"--lease",config.Generation.ToString("D"),"--b2-lifeline","2"],pair.Child,plan.Runtime,qualified:true,installedLaunch:plan);
+HEAD:src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedRecoveryEcho.cs:24:            if(config.Recovery.Verify("Gagamba.Execution.Linux.M1.Recovery")!=System.Reflection.Assembly.GetEntryAssembly()!.Location ||
+HEAD:src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryHost.cs:23:            Environment.GetEnvironmentVariable("GAGAMBA_B2_CONTROL_FD"), Environment.GetEnvironmentVariable("GAGAMBA_B2_CREDENTIAL_FD"));
+HEAD:src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryHost.cs:37:            try { config = RecoveryConfiguration.Decode(packet); }
+HEAD:src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryHost.cs:46:                Path.Combine(config.Recovery.Directory,"Gagamba.Execution.Linux.M1.Recovery.dll")) != System.Reflection.Assembly.GetEntryAssembly()!.Location)
+HEAD:src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryHost.cs:86:                ["--exec", config.Execution.ToString("D"), "--lease", config.Generation.ToString("D"), "--b2-lifeline", "1"], ownerEnd);
+HEAD:src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryProtocol.cs:134:    internal static RecoveryConfiguration Decode(byte[] bytes)
+HEAD:src/Gagamba.Execution.Linux.M1/Installed/LoadedInstallation.cs:55:        var contract=Assembly.Load("Gagamba.Execution");
+HEAD:src/Gagamba.Execution.Linux.M1/Installed/LoadedInstallation.cs:56:        var entry=Assembly.GetEntryAssembly() ?? throw new InvalidDataException("entry absent");

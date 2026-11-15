@@ -1,0 +1,13 @@
+0 build-Debug-Gagamba.Execution.Linux.M1
+0 build-Debug-Gagamba.Execution.Linux.M1.Owner
+0 build-Debug-Gagamba.Execution.Linux.M1.Recovery
+0 build-Debug-InstallTool
+0 build-Debug-Gagamba.Execution.Linux.M1.Tests
+0 build-Release-Gagamba.Execution.Linux.M1
+0 build-Release-Gagamba.Execution.Linux.M1.Owner
+0 build-Release-Gagamba.Execution.Linux.M1.Recovery
+0 build-Release-InstallTool
+0 build-Release-Gagamba.Execution.Linux.M1.Tests
+1 focused-Debug
+1 focused-Release
+1 managed-M1-Debug

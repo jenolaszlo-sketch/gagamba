@@ -1,0 +1,428 @@
+{
+  "trees": {
+    "1c7fb672055cc3322eb1633d37e5e84d764cb66d": "cd3b29e8e5ad8790e0795418408b8d871e920f58",
+    "34eef4c8e7d814e15cb1bfce27df032e75766f19": "5b9bfa884b4cec86aab293b80ada1b7f73b58d11",
+    "e8099e37c1243e81f173bf0248307cf7d2fe3875": "a51ed41ee2cba8205a930749f63244c5491898c5"
+  },
+  "chain": [
+    "e8099e37c1243e81f173bf0248307cf7d2fe3875 18c95f6cdf082f87bd6113141c7f967abfc82042 docs: consolidate verified historical branch evidence",
+    "18c95f6cdf082f87bd6113141c7f967abfc82042 34eef4c8e7d814e15cb1bfce27df032e75766f19 fix(ci): ignore fenced code in preparation link checks",
+    "34eef4c8e7d814e15cb1bfce27df032e75766f19 1c7fb672055cc3322eb1633d37e5e84d764cb66d feat(gagamba): implement bounded E-3 v3-pre internal codec"
+  ],
+  "entryDelta": [
+    "M\tdocs/PROJECT-STATUS.md",
+    "M\tdocs/handoff.md",
+    "A\tdocs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-implementation-01-evidence/managed-and-revision-gates.md",
+    "A\tdocs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-implementation-01-evidence/normative-traceability.md",
+    "A\tdocs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-implementation-01.md",
+    "M\tdocs/work-queue.md",
+    "A\tsrc/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodec.cs",
+    "A\tsrc/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodecBinary.cs",
+    "A\tsrc/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodecData.cs",
+    "A\ttests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecBinaryTests.cs",
+    "A\ttests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecBootstrapTests.cs",
+    "A\ttests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecVectors.cs"
+  ],
+  "postDelta": [
+    "M\t.gitattributes",
+    "M\tdocs/PROJECT-STATUS.md",
+    "A\tdocs/assessments/rc2a-02-full-stage-acceptance-gap-assessment.md",
+    "A\tdocs/assessments/rc2a-roadmap-01-restricted-execution-dependency-review.md",
+    "A\tdocs/evidence/gagamba-repository-consolidation-01/README.md",
+    "A\tdocs/evidence/gagamba-repository-consolidation-01/branch-inventory.json",
+    "A\tdocs/evidence/gagamba-repository-consolidation-01/branches.md",
+    "A\tdocs/evidence/gagamba-repository-consolidation-01/import-manifest.json",
+    "A\tdocs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-2026-10-19.md",
+    "A\tdocs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/SHA256SUMS",
+    "A\tdocs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q0-environment.txt",
+    "A\tdocs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q0-launcher-audit.txt",
+    "A\tdocs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q0-preflight-reviewer.log",
+    "A\tdocs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q0-preflight-reviewer.report",
+    "A\tdocs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q0-source-identity.txt",
+    "A\tdocs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q1-reviewer-probe-identity.txt",
+    "A\tdocs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q1-reviewer-probe-run.log",
+    "A\tdocs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-crlf-cause-reconstruction.txt",
+    "A\tdocs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-crlf-exhaustive.txt",
+    "A\tdocs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-evidence-integrity-reconciliation.txt",
+    "A\tdocs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-full-run-1.log",
+    "A\tdocs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-full-run-2.log",
+    "A\tdocs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-full-run-summary.txt",
+    "A\tdocs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-residue-audit.txt",
+    "A\tdocs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q2-root-only-gate-probe.txt",
+    "A\tdocs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q3-production-diff.txt",
+    "A\tdocs/evidence/linux-m1/wp05-opencode-final-independent-harness-qualification-artifacts/q3-release-path-focused.log",
+    "M\tdocs/handoff.md",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d5-independent-native-status-review.md",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d5-native-status-evidence-matrix.md",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d5-required-corrections-and-d6-handoff.md",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/SHA256SUMS-reviewer.txt",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/cr3-fence-refusal.txt",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/cr3-nowriter.txt",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/cr3-owner-result.txt",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/cr3-retry.txt",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/cr3-witness.txt",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/cr3b-owner-result.txt",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/cr3b-retry.txt",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/cr3b-witness.txt",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/descriptor-topology-ns1.txt",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/descriptor-topology-ns2.txt",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/descriptor_hold.txt",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/drr-run1-cg.log",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/drr-run2-cg.log",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/env-preflight.txt",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/manifest-verify.txt",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/nat-run1-cg.log",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/nat-run2-cg.log",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/native-status/exec_confirmed.txt",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/regressions-cg.log",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/rp1-review.log",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/rp2-review.log",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d5-review-artifacts/rp3-review.log",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d6-0-contract-interaction-register.md",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d6-0-contract-review-matrix.md",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d6-0-independent-contract-design-review.md",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d6-0-required-design-changes-and-approval-handoff.md",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d6-1-interaction-register.md",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d6-2-amendment-verification-matrix.md",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d6-2-approval-readiness.md",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d6-2-focused-independent-review.md",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d6-3-terra-independent-c3-review.md",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d6-4-glm-independent-fixture-review.md",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d6-5-glm-independent-isolation-equivalence-review.md",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d6-6-glm-independent-symbol-delivery-review.md",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d6-7-glm-human-decision-integrity-review.md",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d6-8-4-glm-f01-f02-closure-review.md",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d6-8-5-glm-independent-c2-linux-qualification-review.md",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-d6-8-glm-independent-c2-implementation-review.md",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-release-plan-counterexample-register.md",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-release-plan-independent-adversarial-review.md",
+    "A\tdocs/reviews/gagamba-linux-m1-wp05-release-plan-required-changes.md",
+    "M\tdocs/work-queue.md",
+    "M\teng/tests/test_preparation_checkout.py",
+    "M\teng/verify-preparation.ps1"
+  ],
+  "sources": [
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodec.cs",
+      "object": "e9ac5bfefdc59d3fda2e70c82bf902ccd7f6d361",
+      "kind": "blob",
+      "revisions": {
+        "34eef4c8e7d814e15cb1bfce27df032e75766f19": "e9ac5bfefdc59d3fda2e70c82bf902ccd7f6d361",
+        "18c95f6cdf082f87bd6113141c7f967abfc82042": "e9ac5bfefdc59d3fda2e70c82bf902ccd7f6d361",
+        "e8099e37c1243e81f173bf0248307cf7d2fe3875": "e9ac5bfefdc59d3fda2e70c82bf902ccd7f6d361"
+      },
+      "bytes": 20098,
+      "sha256": "c56b5db8b280a3e55dcd46de0edc6caf4ce07f3dfc37f577d35d637a0623c759",
+      "checkoutBytesIdentical": false
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodecBinary.cs",
+      "object": "814c233d6290c111d751c73dbe65e1ec7dc0cc23",
+      "kind": "blob",
+      "revisions": {
+        "34eef4c8e7d814e15cb1bfce27df032e75766f19": "814c233d6290c111d751c73dbe65e1ec7dc0cc23",
+        "18c95f6cdf082f87bd6113141c7f967abfc82042": "814c233d6290c111d751c73dbe65e1ec7dc0cc23",
+        "e8099e37c1243e81f173bf0248307cf7d2fe3875": "814c233d6290c111d751c73dbe65e1ec7dc0cc23"
+      },
+      "bytes": 5737,
+      "sha256": "b259857ed0fb0092744d5b52f7e0982c112f0dc848ad13cea8dbebbb6e5e9d47",
+      "checkoutBytesIdentical": false
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodecData.cs",
+      "object": "dbae1d7ed30ec84f1b6b4a78a803b4b43bc1aace",
+      "kind": "blob",
+      "revisions": {
+        "34eef4c8e7d814e15cb1bfce27df032e75766f19": "dbae1d7ed30ec84f1b6b4a78a803b4b43bc1aace",
+        "18c95f6cdf082f87bd6113141c7f967abfc82042": "dbae1d7ed30ec84f1b6b4a78a803b4b43bc1aace",
+        "e8099e37c1243e81f173bf0248307cf7d2fe3875": "dbae1d7ed30ec84f1b6b4a78a803b4b43bc1aace"
+      },
+      "bytes": 1963,
+      "sha256": "4873e0cf1a537e311d7b7c5bab5e044070d906bbce4eca2931137091b5d9a84a",
+      "checkoutBytesIdentical": false
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecBinaryTests.cs",
+      "object": "558c702fcb26a1ae4349c950dec4b3e1bc1b0d7e",
+      "kind": "blob",
+      "revisions": {
+        "34eef4c8e7d814e15cb1bfce27df032e75766f19": "558c702fcb26a1ae4349c950dec4b3e1bc1b0d7e",
+        "18c95f6cdf082f87bd6113141c7f967abfc82042": "558c702fcb26a1ae4349c950dec4b3e1bc1b0d7e",
+        "e8099e37c1243e81f173bf0248307cf7d2fe3875": "558c702fcb26a1ae4349c950dec4b3e1bc1b0d7e"
+      },
+      "bytes": 8133,
+      "sha256": "31eb33fe125b4ed78619986937b06ab3c96dc732893e8e373d4144b3fb4ce9a8",
+      "checkoutBytesIdentical": false
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecBootstrapTests.cs",
+      "object": "995e67f0b734a982399d011f4c6d0a46d68fc629",
+      "kind": "blob",
+      "revisions": {
+        "34eef4c8e7d814e15cb1bfce27df032e75766f19": "995e67f0b734a982399d011f4c6d0a46d68fc629",
+        "18c95f6cdf082f87bd6113141c7f967abfc82042": "995e67f0b734a982399d011f4c6d0a46d68fc629",
+        "e8099e37c1243e81f173bf0248307cf7d2fe3875": "995e67f0b734a982399d011f4c6d0a46d68fc629"
+      },
+      "bytes": 13246,
+      "sha256": "15f6efe47b76e0d9adae52fabdf645b31ca21425da1b0e77f68740a421ab6575",
+      "checkoutBytesIdentical": false
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecVectors.cs",
+      "object": "4880945d6c6177351e929fde15b41babd1529298",
+      "kind": "blob",
+      "revisions": {
+        "34eef4c8e7d814e15cb1bfce27df032e75766f19": "4880945d6c6177351e929fde15b41babd1529298",
+        "18c95f6cdf082f87bd6113141c7f967abfc82042": "4880945d6c6177351e929fde15b41babd1529298",
+        "e8099e37c1243e81f173bf0248307cf7d2fe3875": "4880945d6c6177351e929fde15b41babd1529298"
+      },
+      "bytes": 13969,
+      "sha256": "56f50867aa3b01fc6f1827d2bec64ce71430cd0ff1312498cfa26bb020dd17dd",
+      "checkoutBytesIdentical": false
+    }
+  ],
+  "inputs": [
+    {
+      "path": "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-v3-pre-frozen-record-candidate-01.md",
+      "object": "f6a71562845d2cfe0aee5495864a509c5caabe7a",
+      "kind": "blob",
+      "revisions": {
+        "1c7fb672055cc3322eb1633d37e5e84d764cb66d": "f6a71562845d2cfe0aee5495864a509c5caabe7a",
+        "34eef4c8e7d814e15cb1bfce27df032e75766f19": "f6a71562845d2cfe0aee5495864a509c5caabe7a",
+        "e8099e37c1243e81f173bf0248307cf7d2fe3875": "f6a71562845d2cfe0aee5495864a509c5caabe7a"
+      },
+      "bytes": 21225,
+      "sha256": "1948bab694ed37bf5c7c50524328716f3eef18d98dd1ae9971ca12100c40160e",
+      "checkoutBytesIdentical": false
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-frozen-record-owner-01.md",
+      "object": "d2fea61b7db323319ee59033c8b1b12ded1ffe7d",
+      "kind": "blob",
+      "revisions": {
+        "1c7fb672055cc3322eb1633d37e5e84d764cb66d": "d2fea61b7db323319ee59033c8b1b12ded1ffe7d",
+        "34eef4c8e7d814e15cb1bfce27df032e75766f19": "d2fea61b7db323319ee59033c8b1b12ded1ffe7d",
+        "e8099e37c1243e81f173bf0248307cf7d2fe3875": "d2fea61b7db323319ee59033c8b1b12ded1ffe7d"
+      },
+      "bytes": 18176,
+      "sha256": "c7351553eb8c82837c618d6b36a3563cafa99899841fc20b07142898b641c7d8",
+      "checkoutBytesIdentical": false
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-frozen-record-owner-01-evidence",
+      "object": "0d5d92fce4afdc5bc008d1de48aac688c4c9e7f4",
+      "kind": "tree",
+      "revisions": {
+        "1c7fb672055cc3322eb1633d37e5e84d764cb66d": "0d5d92fce4afdc5bc008d1de48aac688c4c9e7f4",
+        "34eef4c8e7d814e15cb1bfce27df032e75766f19": "0d5d92fce4afdc5bc008d1de48aac688c4c9e7f4",
+        "e8099e37c1243e81f173bf0248307cf7d2fe3875": "0d5d92fce4afdc5bc008d1de48aac688c4c9e7f4"
+      }
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-normative-owner-01.md",
+      "object": "f3639dc619dbfee39859afb7da553e2167d9b83d",
+      "kind": "blob",
+      "revisions": {
+        "1c7fb672055cc3322eb1633d37e5e84d764cb66d": "f3639dc619dbfee39859afb7da553e2167d9b83d",
+        "34eef4c8e7d814e15cb1bfce27df032e75766f19": "f3639dc619dbfee39859afb7da553e2167d9b83d",
+        "e8099e37c1243e81f173bf0248307cf7d2fe3875": "f3639dc619dbfee39859afb7da553e2167d9b83d"
+      },
+      "bytes": 25358,
+      "sha256": "a89b9fbc1658f9df660daf89eb27725de7ba68a5ad9edea462e0a559f717c3ee",
+      "checkoutBytesIdentical": false
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-bootstrap-base-owner-01.md",
+      "object": "93fe2c9155a21b12fd3486b9da743260897d508e",
+      "kind": "blob",
+      "revisions": {
+        "1c7fb672055cc3322eb1633d37e5e84d764cb66d": "93fe2c9155a21b12fd3486b9da743260897d508e",
+        "34eef4c8e7d814e15cb1bfce27df032e75766f19": "93fe2c9155a21b12fd3486b9da743260897d508e",
+        "e8099e37c1243e81f173bf0248307cf7d2fe3875": "93fe2c9155a21b12fd3486b9da743260897d508e"
+      },
+      "bytes": 18630,
+      "sha256": "efa2109c6d2950544759d440c256280d1b92d63dd441ccfa7574584bc0c3a9de",
+      "checkoutBytesIdentical": false
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-bootstrap-base-owner-01-evidence",
+      "object": "a78ecb5040f0525d2047641b75ad48dd59cd23d6",
+      "kind": "tree",
+      "revisions": {
+        "1c7fb672055cc3322eb1633d37e5e84d764cb66d": "a78ecb5040f0525d2047641b75ad48dd59cd23d6",
+        "34eef4c8e7d814e15cb1bfce27df032e75766f19": "a78ecb5040f0525d2047641b75ad48dd59cd23d6",
+        "e8099e37c1243e81f173bf0248307cf7d2fe3875": "a78ecb5040f0525d2047641b75ad48dd59cd23d6"
+      }
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-bootstrap-base-owner-01-evidence/schema.md",
+      "object": "a7248152d09e19d8f3775db397f340949fa9ee57",
+      "kind": "blob",
+      "revisions": {
+        "1c7fb672055cc3322eb1633d37e5e84d764cb66d": "a7248152d09e19d8f3775db397f340949fa9ee57",
+        "34eef4c8e7d814e15cb1bfce27df032e75766f19": "a7248152d09e19d8f3775db397f340949fa9ee57",
+        "e8099e37c1243e81f173bf0248307cf7d2fe3875": "a7248152d09e19d8f3775db397f340949fa9ee57"
+      },
+      "bytes": 21475,
+      "sha256": "727b44d487249382fad63c7b2973056acd0e9291aed93e3d51c2e46cdb35c606",
+      "checkoutBytesIdentical": false
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-bootstrap-base-owner-01-evidence/witnesses.md",
+      "object": "19886332f3fb1bcf3149f4e173642a8673fbb746",
+      "kind": "blob",
+      "revisions": {
+        "1c7fb672055cc3322eb1633d37e5e84d764cb66d": "19886332f3fb1bcf3149f4e173642a8673fbb746",
+        "34eef4c8e7d814e15cb1bfce27df032e75766f19": "19886332f3fb1bcf3149f4e173642a8673fbb746",
+        "e8099e37c1243e81f173bf0248307cf7d2fe3875": "19886332f3fb1bcf3149f4e173642a8673fbb746"
+      },
+      "bytes": 12631,
+      "sha256": "a007c3628cea61dbe64b00bf4fc0629b925a3c991c07d6c37e691654da60d22a",
+      "checkoutBytesIdentical": false
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-qe1-frozen-record-q1.md",
+      "object": "5f8b92e4874378bb365fcec80d794f964aa6f821",
+      "kind": "blob",
+      "revisions": {
+        "1c7fb672055cc3322eb1633d37e5e84d764cb66d": "5f8b92e4874378bb365fcec80d794f964aa6f821",
+        "34eef4c8e7d814e15cb1bfce27df032e75766f19": "5f8b92e4874378bb365fcec80d794f964aa6f821",
+        "e8099e37c1243e81f173bf0248307cf7d2fe3875": "5f8b92e4874378bb365fcec80d794f964aa6f821"
+      },
+      "bytes": 11219,
+      "sha256": "f31a4250d4ef5f3b390701da76fa80da1ba27d234a9cc9b2e2a979199c30bfaf",
+      "checkoutBytesIdentical": false
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-qe1-frozen-record-q1-evidence",
+      "object": "1cb5ac2c2b467cbfb1c0d4ac85682fb979ffe961",
+      "kind": "tree",
+      "revisions": {
+        "1c7fb672055cc3322eb1633d37e5e84d764cb66d": "1cb5ac2c2b467cbfb1c0d4ac85682fb979ffe961",
+        "34eef4c8e7d814e15cb1bfce27df032e75766f19": "1cb5ac2c2b467cbfb1c0d4ac85682fb979ffe961",
+        "e8099e37c1243e81f173bf0248307cf7d2fe3875": "1cb5ac2c2b467cbfb1c0d4ac85682fb979ffe961"
+      }
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-entry-owner-01.md",
+      "object": "028a7c1858b5e7b506deff9d2d8d263afe3344ac",
+      "kind": "blob",
+      "revisions": {
+        "1c7fb672055cc3322eb1633d37e5e84d764cb66d": "028a7c1858b5e7b506deff9d2d8d263afe3344ac",
+        "34eef4c8e7d814e15cb1bfce27df032e75766f19": "028a7c1858b5e7b506deff9d2d8d263afe3344ac",
+        "e8099e37c1243e81f173bf0248307cf7d2fe3875": "028a7c1858b5e7b506deff9d2d8d263afe3344ac"
+      },
+      "bytes": 17331,
+      "sha256": "fbb0534447430df8f608c82ae978d10294a19a8b8a5fc0dbca7983811f78311e",
+      "checkoutBytesIdentical": false
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-entry-owner-01-evidence",
+      "object": "ebd4a064e4cbad696f60898940cc2c0f8f4ea6e9",
+      "kind": "tree",
+      "revisions": {
+        "1c7fb672055cc3322eb1633d37e5e84d764cb66d": "ebd4a064e4cbad696f60898940cc2c0f8f4ea6e9",
+        "34eef4c8e7d814e15cb1bfce27df032e75766f19": "ebd4a064e4cbad696f60898940cc2c0f8f4ea6e9",
+        "e8099e37c1243e81f173bf0248307cf7d2fe3875": "ebd4a064e4cbad696f60898940cc2c0f8f4ea6e9"
+      }
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-entry-owner-01-evidence/surfaces-and-gates.md",
+      "object": "2ee20803a09e959c150646b188d6055e05cef386",
+      "kind": "blob",
+      "revisions": {
+        "1c7fb672055cc3322eb1633d37e5e84d764cb66d": "2ee20803a09e959c150646b188d6055e05cef386",
+        "34eef4c8e7d814e15cb1bfce27df032e75766f19": "2ee20803a09e959c150646b188d6055e05cef386",
+        "e8099e37c1243e81f173bf0248307cf7d2fe3875": "2ee20803a09e959c150646b188d6055e05cef386"
+      },
+      "bytes": 9355,
+      "sha256": "08c23e3d3937414d5903ebf258ee798cbe6b00d2bb79b4456f4d6c067cc98e6b",
+      "checkoutBytesIdentical": false
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-implementation-01.md",
+      "object": "779cc2e185d88ba352d8272ea0548a057a488887",
+      "kind": "blob",
+      "revisions": {
+        "34eef4c8e7d814e15cb1bfce27df032e75766f19": "779cc2e185d88ba352d8272ea0548a057a488887",
+        "e8099e37c1243e81f173bf0248307cf7d2fe3875": "779cc2e185d88ba352d8272ea0548a057a488887"
+      },
+      "bytes": 6179,
+      "sha256": "a99e3e8551916b2647c725a13c226b3230ec67b05823cccb5eca42096e77f038",
+      "checkoutBytesIdentical": false
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-implementation-01-evidence",
+      "object": "b87dbe859196c2a696d3bd9367a4177719465e0b",
+      "kind": "tree",
+      "revisions": {
+        "34eef4c8e7d814e15cb1bfce27df032e75766f19": "b87dbe859196c2a696d3bd9367a4177719465e0b",
+        "e8099e37c1243e81f173bf0248307cf7d2fe3875": "b87dbe859196c2a696d3bd9367a4177719465e0b"
+      }
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-p4-coverage-owner-acceptance-01.md",
+      "object": "31ae1b08cb4663a6a9d9de657fd972fccb731cf2",
+      "kind": "blob",
+      "revisions": {
+        "1c7fb672055cc3322eb1633d37e5e84d764cb66d": "31ae1b08cb4663a6a9d9de657fd972fccb731cf2",
+        "34eef4c8e7d814e15cb1bfce27df032e75766f19": "31ae1b08cb4663a6a9d9de657fd972fccb731cf2",
+        "e8099e37c1243e81f173bf0248307cf7d2fe3875": "31ae1b08cb4663a6a9d9de657fd972fccb731cf2"
+      },
+      "bytes": 15524,
+      "sha256": "3bdccfdf3e24d4a00fd9f2e600cee13e3eab94014def03a349023eb2bf3e4b6e",
+      "checkoutBytesIdentical": false
+    },
+    {
+      "path": "docs/evidence/rc2b-06-b6-alt-b-p4-coverage-recon-01.md",
+      "object": "6cc68e0eb64388fb7886444360e76d00cb9d0c2f",
+      "kind": "blob",
+      "revisions": {
+        "1c7fb672055cc3322eb1633d37e5e84d764cb66d": "6cc68e0eb64388fb7886444360e76d00cb9d0c2f",
+        "34eef4c8e7d814e15cb1bfce27df032e75766f19": "6cc68e0eb64388fb7886444360e76d00cb9d0c2f",
+        "e8099e37c1243e81f173bf0248307cf7d2fe3875": "6cc68e0eb64388fb7886444360e76d00cb9d0c2f"
+      },
+      "bytes": 29042,
+      "sha256": "b3f851aa878d64315af70902d5148819066b684f7d3d3e35e1c4bc49c2ec4d0e",
+      "checkoutBytesIdentical": false
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-02-closure-owner-01.md",
+      "object": "3388894f821a4a92aca7c2b2d79c832a0f70a450",
+      "kind": "blob",
+      "revisions": {
+        "1c7fb672055cc3322eb1633d37e5e84d764cb66d": "3388894f821a4a92aca7c2b2d79c832a0f70a450",
+        "34eef4c8e7d814e15cb1bfce27df032e75766f19": "3388894f821a4a92aca7c2b2d79c832a0f70a450",
+        "e8099e37c1243e81f173bf0248307cf7d2fe3875": "3388894f821a4a92aca7c2b2d79c832a0f70a450"
+      },
+      "bytes": 21428,
+      "sha256": "7e4228463b83708ffa0ce6f0ab3f98ce11b15aaee586353a3e4d8884a3ece244",
+      "checkoutBytesIdentical": false
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-owner-acceptance-01.md",
+      "object": "6851869180a01056b8a0f59c5be4eb4056da624f",
+      "kind": "blob",
+      "revisions": {
+        "1c7fb672055cc3322eb1633d37e5e84d764cb66d": "6851869180a01056b8a0f59c5be4eb4056da624f",
+        "34eef4c8e7d814e15cb1bfce27df032e75766f19": "6851869180a01056b8a0f59c5be4eb4056da624f",
+        "e8099e37c1243e81f173bf0248307cf7d2fe3875": "6851869180a01056b8a0f59c5be4eb4056da624f"
+      },
+      "bytes": 14460,
+      "sha256": "27de68690cca7027d46b0692e52e5da71641e38e13c4037fd31937d08f823b93",
+      "checkoutBytesIdentical": false
+    }
+  ],
+  "frozenAuthorityChain": [
+    "1c7fb672055cc3322eb1633d37e5e84d764cb66d 38e7c212d31211bb817f042bdd2737398726ce90 docs: authorize bounded Slice E-3 codec entry",
+    "38e7c212d31211bb817f042bdd2737398726ce90 6123b6f4de47cb542db3bdab55c0fc49d5cd095c docs: adopt Slice E-3 v3-pre frozen record",
+    "6123b6f4de47cb542db3bdab55c0fc49d5cd095c acd61fd0af622f9e1d988845658c26a6835ddd62 docs: independently qualify Slice E-3 frozen record",
+    "acd61fd0af622f9e1d988845658c26a6835ddd62 0fcd246812ffe1a8d9fa3813caccaf5863773eaf docs: complete Slice E-3 frozen record candidate",
+    "0fcd246812ffe1a8d9fa3813caccaf5863773eaf fcf61cce5cdf56b1f96d86bee3e79fad522a9e19 docs: resolve Slice E-3 bootstrap base schema",
+    "fcf61cce5cdf56b1f96d86bee3e79fad522a9e19 f12a84943ea30153ccf96dfef21866a78e3fb934 docs: prepare Slice E-3 v3-pre record and identify bootstrap gap",
+    "f12a84943ea30153ccf96dfef21866a78e3fb934 2a3dbcef99fdd9073e0c8c5db0f6371b5f7a5120 docs: resolve Slice E-3 v3-pre normative encoding choices",
+    "2a3dbcef99fdd9073e0c8c5db0f6371b5f7a5120 52b932aaebd52f16bd93170b95bb0f8e89241fd2 docs: reconcile Slice E-3 v3-pre source provenance",
+    "52b932aaebd52f16bd93170b95bb0f8e89241fd2 21179680e7ae5d153c7ddeef5d209e5ac450cdd7 docs: assess Slice E-3 entry as reconciliation required"
+  ],
+  "farBoundary": "21179680e7ae5d153c7ddeef5d209e5ac450cdd7"
+}

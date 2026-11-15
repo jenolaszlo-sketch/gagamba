@@ -1,0 +1,7 @@
+xUnit.net v3 In-Process Runner v3.2.0+9e422989c1 (64-bit .NET 10.0.12)
+  Discovering: Gagamba.Execution.Linux.M1.Tests
+  Discovered:  Gagamba.Execution.Linux.M1.Tests
+  Starting:    Gagamba.Execution.Linux.M1.Tests
+  Finished:    Gagamba.Execution.Linux.M1.Tests (ID = 'fdf8847f12bfa3ce67c26a92a9fef39c7006c983e51acadec00b9bd15cba21cb')
+=== TEST EXECUTION SUMMARY ===
+   Gagamba.Execution.Linux.M1.Tests  Total: 146, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.241s

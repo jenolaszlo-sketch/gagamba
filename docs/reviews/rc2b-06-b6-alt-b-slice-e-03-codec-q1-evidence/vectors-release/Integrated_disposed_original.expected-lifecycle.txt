@@ -1,0 +1,1 @@
+Dispose the JsonDocument parsed from this topology's projection.json before supplying its RootElement.

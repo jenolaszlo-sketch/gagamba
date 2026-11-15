@@ -1,0 +1,47 @@
+dotnet build src/Gagamba.Execution.Linux.M1.Owner/Gagamba.Execution.Linux.M1.Owner.csproj -c Debug --artifacts-path C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-q1\run\qualified --nologo -m:1
+  Determining projects to restore...
+  Restored C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-q1\source\src\Gagamba.Execution.Linux.M1.Owner\Gagamba.Execution.Linux.M1.Owner.csproj (in 169 ms).
+  2 of 3 projects are up-to-date for restore.
+C:\Users\Laszlos\.nuget\packages\microsoft.build.tasks.git\10.0.401\build\Microsoft.Build.Tasks.Git.targets(25,5): warning : The URL of repository remote 'origin' is invalid: 'C:/Users/Laszlos/source/repos/Gagamba'. [C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-q1\source\src\Gagamba.Execution\Gagamba.Execution.csproj]
+C:\Users\Laszlos\.nuget\packages\microsoft.sourcelink.common\10.0.401\build\Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-q1\source\src\Gagamba.Execution\Gagamba.Execution.csproj]
+  Gagamba.Execution -> C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-q1\run\qualified\bin\Gagamba.Execution\debug\Gagamba.Execution.dll
+C:\Users\Laszlos\.nuget\packages\microsoft.build.tasks.git\10.0.401\build\Microsoft.Build.Tasks.Git.targets(25,5): warning : The URL of repository remote 'origin' is invalid: 'C:/Users/Laszlos/source/repos/Gagamba'. [C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-q1\source\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj]
+C:\Users\Laszlos\.nuget\packages\microsoft.sourcelink.common\10.0.401\build\Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-q1\source\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj]
+  Gagamba compilation identity validated: Gagamba.Execution.Linux.M1, Debug, Gagamba.Execution.Linux.M1, DefineConstants=TRACE;DEBUG;NET;NET10_0;NETCOREAPP;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER
+  Gagamba.Execution.Linux.M1 -> C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-q1\run\qualified\bin\Gagamba.Execution.Linux.M1\debug\Gagamba.Execution.Linux.M1.dll
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Debug
+  MVID: 9c571389-07ac-4a62-9b53-3c15bbd4e648
+  SHA-256: E21507D6DD6EB6D6A1F646EFAAABAFA63FD1D81A6045D8A6E75F8C0927962973
+  Mode: instrumented
+  Type-name entries: 532; methods with bodies decoded: 4753; user strings: 4824
+  Seven surfaces: 4/4 hook types and 3/3 hook properties present
+  Core production types: 14/14 present
+  RESULT: PASS
+C:\Users\Laszlos\.nuget\packages\microsoft.build.tasks.git\10.0.401\build\Microsoft.Build.Tasks.Git.targets(25,5): warning : The URL of repository remote 'origin' is invalid: 'C:/Users/Laszlos/source/repos/Gagamba'. [C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-q1\source\src\Gagamba.Execution.Linux.M1.Owner\Gagamba.Execution.Linux.M1.Owner.csproj]
+C:\Users\Laszlos\.nuget\packages\microsoft.sourcelink.common\10.0.401\build\Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-q1\source\src\Gagamba.Execution.Linux.M1.Owner\Gagamba.Execution.Linux.M1.Owner.csproj]
+  Gagamba compilation identity validated: Gagamba.Execution.Linux.M1.Owner, Debug, Gagamba.Execution.Linux.M1.Owner, DefineConstants=TRACE;DEBUG;NET;NET10_0;NETCOREAPP;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER
+  Gagamba.Execution.Linux.M1.Owner -> C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-q1\run\qualified\bin\Gagamba.Execution.Linux.M1.Owner\debug\Gagamba.Execution.Linux.M1.Owner.dll
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Debug
+  MVID: 9c571389-07ac-4a62-9b53-3c15bbd4e648
+  SHA-256: E21507D6DD6EB6D6A1F646EFAAABAFA63FD1D81A6045D8A6E75F8C0927962973
+  Mode: instrumented
+  Type-name entries: 532; methods with bodies decoded: 4753; user strings: 4824
+  Seven surfaces: 4/4 hook types and 3/3 hook properties present
+  Core production types: 14/14 present
+  RESULT: PASS
+
+Build succeeded.
+
+C:\Users\Laszlos\.nuget\packages\microsoft.build.tasks.git\10.0.401\build\Microsoft.Build.Tasks.Git.targets(25,5): warning : The URL of repository remote 'origin' is invalid: 'C:/Users/Laszlos/source/repos/Gagamba'. [C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-q1\source\src\Gagamba.Execution\Gagamba.Execution.csproj]
+C:\Users\Laszlos\.nuget\packages\microsoft.sourcelink.common\10.0.401\build\Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-q1\source\src\Gagamba.Execution\Gagamba.Execution.csproj]
+C:\Users\Laszlos\.nuget\packages\microsoft.build.tasks.git\10.0.401\build\Microsoft.Build.Tasks.Git.targets(25,5): warning : The URL of repository remote 'origin' is invalid: 'C:/Users/Laszlos/source/repos/Gagamba'. [C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-q1\source\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj]
+C:\Users\Laszlos\.nuget\packages\microsoft.sourcelink.common\10.0.401\build\Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-q1\source\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj]
+C:\Users\Laszlos\.nuget\packages\microsoft.build.tasks.git\10.0.401\build\Microsoft.Build.Tasks.Git.targets(25,5): warning : The URL of repository remote 'origin' is invalid: 'C:/Users/Laszlos/source/repos/Gagamba'. [C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-q1\source\src\Gagamba.Execution.Linux.M1.Owner\Gagamba.Execution.Linux.M1.Owner.csproj]
+C:\Users\Laszlos\.nuget\packages\microsoft.sourcelink.common\10.0.401\build\Microsoft.SourceLink.Common.targets(56,5): warning : Source control information is not available - the generated source link is empty. [C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-q1\source\src\Gagamba.Execution.Linux.M1.Owner\Gagamba.Execution.Linux.M1.Owner.csproj]
+    6 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:07.56
+EXIT 0

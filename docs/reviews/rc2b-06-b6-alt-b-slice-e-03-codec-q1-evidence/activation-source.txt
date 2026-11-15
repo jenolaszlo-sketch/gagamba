@@ -1,0 +1,76 @@
+HEAD:docs/reviews/rc2b-06-b6-impl-01-s1-q2-evidence/src-remediated/work-artifacts/supplemental/ProductionRegression.csproj:11:    <ProjectReference Include="C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated/src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj" />
+HEAD:docs/reviews/rc2b-06-b6-impl-01-s1-q2-evidence/work/supplemental-evidence/ProductionRegression.csproj:11:    <ProjectReference Include="C:\Users\Laszlos\source\repos\Solo\b6-impl-01-s1-q2-review\src-remediated/src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj" />
+HEAD:eng/InstallTool/InstallTool.csproj:9:    <ProjectReference Include="../../src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj" />
+HEAD:eng/rc2a04/Inspect.cs:7:var assembly = Assembly.LoadFrom(Path.GetFullPath(args[0]));
+HEAD:eng/test-production-build.ps1:20:$m1 = Join-Path $repo 'src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj'
+HEAD:eng/test-production-regressions.ps1:30:    <ProjectReference Include="$repo/src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj" />
+HEAD:src/Gagamba.Conformance/ConformanceRunner.cs:86:        foreach (var t in provider.GetType().Assembly.GetTypes()
+HEAD:src/Gagamba.Conformance/ConformanceRunner.cs:135:        catch (Exception ex) { lockProbe = ex.GetType().Name + $" (0x{ex.HResult:x8}): " + ex.Message; }
+HEAD:src/Gagamba.Conformance/ConformanceRunner.cs:217:                $"terminate={term.GetType().Name} terminal={terminal} locksReleased={released}");
+HEAD:src/Gagamba.Conformance/ConformanceRunner.cs:251:                    $"terminal={outcome?.GetType().Name ?? "missing"} childLockReleased={released}");
+HEAD:src/Gagamba.Conformance/ConformanceRunner.cs:268:                $"survivorHeld={survivorHeld} pending={pending} terminate={term.GetType().Name} terminal={terminal} childLockReleased={releasedAfterStop}");
+HEAD:src/Gagamba.Conformance/ConformanceRunner.cs:316:                return new("completion", ConformanceOutcome.Failed, $"natural exit not observed: {result.GetType().Name}");
+HEAD:src/Gagamba.Conformance/ConformanceRunner.cs:331:                return new("completion", ConformanceOutcome.Failed, $"terminate completion: {result.GetType().Name}");
+HEAD:src/Gagamba.Conformance/ConformanceRunner.cs:438:        _ => result.GetType().Name,
+HEAD:src/Gagamba.Execution.Linux.M1.Owner/Gagamba.Execution.Linux.M1.Owner.csproj:13:    <ProjectReference Include="..\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj" AdditionalProperties="Configuration=$(Configuration)" />
+HEAD:src/Gagamba.Execution.Linux.M1.Recovery/Gagamba.Execution.Linux.M1.Recovery.csproj:3:  <ItemGroup><ProjectReference Include="../Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj" AdditionalProperties="Configuration=$(Configuration)" /></ItemGroup>
+HEAD:src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodec.cs:7:internal static class ValidationPreCodec
+HEAD:src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodecBinary.cs:3:internal static class ValidationPreCodecBinary
+HEAD:src/Gagamba.Execution.Linux.M1/Installed/LoadedInstallation.cs:55:        var contract=Assembly.Load("Gagamba.Execution");
+HEAD:src/Gagamba.Execution.Linux.M1/Lifecycle/M1RecoveryScope.cs:284:            return new OwnerSpawnResult(null, -1, $"owner start failed: {ex.GetType().Name}");
+HEAD:src/Gagamba.Execution.Linux.M1/Lifecycle/M1RecoveryScope.cs:662:                return FailOwnerPreparation(owner, channel, $"manifest authorization failed: {ex.GetType().Name}");
+HEAD:src/Gagamba.Execution.Linux.M1/Lifecycle/M1RecoveryScope.cs:753:            return FailOwnerPreparation(owner, channel, $"owner protocol failed: {ex.GetType().Name}");
+HEAD:src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerHeldWire.cs:334:            error = $"invalid B3 held-phase payload: {ex.GetType().Name}";
+HEAD:src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerManifestWire.cs:129:            error = $"invalid manifest authorization: {ex.GetType().Name}";
+HEAD:src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerPreparationSpecification.cs:115:            error = $"invalid owner preparation request: {ex.GetType().Name}";
+HEAD:src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerPreparationSpecification.cs:352:            error = $"invalid owner protocol description: {ex.GetType().Name}";
+HEAD:src/Gagamba.Execution.Linux.M1/Native/AtomicCgroupSpawn.cs:203:            error = $"Unsupported pidfd wait primitive: {ex.GetType().Name}";
+HEAD:src/Gagamba.Execution.Linux.M1/Native/AtomicCgroupSpawn.cs:526:            error = $"Unsupported atomic spawn primitive: {ex.GetType().Name}";
+HEAD:src/Gagamba.Execution.Linux.M1/Native/CgroupInterop.cs:402:            error = $"mountinfo read failed: {ex.GetType().Name}";
+HEAD:src/Gagamba.Execution.Linux.M1/Native/CgroupInterop.cs:430:            error = $"boot id read failed: {ex.GetType().Name}";
+HEAD:src/Gagamba.Execution.Linux.M1/Native/FdPassing.cs:334:            error = $"owner protocol record receive failed: {ex.GetType().Name}";
+HEAD:src/Gagamba.Execution.Linux.M1/Native/JournalFileStorage.cs:52:            return JournalIoResult.Failure($"create {name}: {ex.GetType().Name}");
+HEAD:src/Gagamba.Execution.Linux.M1/Native/JournalFileStorage.cs:67:            return JournalIoResult.Failure($"write {name}: {ex.GetType().Name}");
+HEAD:src/Gagamba.Execution.Linux.M1/Native/JournalFileStorage.cs:82:            return JournalIoResult.Failure($"fsync file {name}: {ex.GetType().Name}");
+HEAD:src/Gagamba.Execution.Linux.M1/Native/JournalFileStorage.cs:101:            return JournalIoResult.Failure($"rename {sourceName}->{targetName}: {ex.GetType().Name}");
+HEAD:src/Gagamba.Execution.Linux.M1/Native/JournalFileStorage.cs:139:            return JournalIoResult.Failure($"unlink {name}: {ex.GetType().Name}");
+HEAD:src/Gagamba.Execution.Linux.M1/Native/JournalFileStorage.cs:193:            return JournalIoResult.Failure($"lock {name}: {ex.GetType().Name}");
+HEAD:src/Gagamba.Execution.Linux.M1/Preparation/PreparedClosure.cs:329:            return new PublicationResult(false, CopyFailureKind.PublicationFailure, $"Durable acknowledgement failed: {ex.GetType().Name}.", null, closure);
+HEAD:src/Gagamba.Execution.Linux.M1/Preparation/PreparedClosure.cs:356:            return new PublicationResult(false, CopyFailureKind.PublicationFailure, $"Mint failed: {ex.GetType().Name}; staged objects remain accounted.", null, closure);
+HEAD:src/Gagamba.Execution.Linux.M1/Preparation/SafeCopyIn.cs:230:                CopyFailureKind.InvariantFailure, $"Internal preparation failure: {ex.GetType().Name}.");
+HEAD:src/Gagamba.Execution.Linux.M1/Preparation/SafeCopyIn.cs:572:                    return new ObjectStage(false, CopyFailureKind.PublicationFailure, $"Object accounting failed: {ex.GetType().Name}.", null);
+HEAD:src/Gagamba.Execution.Linux.M1/Recovery/OwnershipRecord.cs:567:            error = $"malformed snapshot: {ex.GetType().Name}";
+HEAD:src/Gagamba.Execution.Linux/LinuxCapturePipes.cs:37:            error = $"capture pipe prerequisite: {ex.GetType().Name}";
+HEAD:src/Gagamba.Execution.Linux/LinuxExecutionProvider.cs:134:            return new CaptureLaunchResult.Failed(new[] { $"capture setup fault: {ex.GetType().Name}" });
+HEAD:src/Gagamba.Execution.Linux/LinuxExecutionProvider.cs:176:            result = new LaunchResult.Failed(new[] { $"launch fault: {ex.GetType().Name}: {ex.Message}" });
+HEAD:src/Gagamba.Execution.Linux/LinuxExecutionProvider.cs:441:        catch (Exception ex) { why = $"probe fault: {ex.GetType().Name}: {ex.Message}"; return false; }
+HEAD:src/Gagamba.Execution.Linux/LinuxExecutionProvider.cs:481:        { why = $"glibc load fault: {ex.GetType().Name}: {ex.Message}"; return false; }
+HEAD:src/Gagamba.Execution.Linux/LinuxExecutionProvider.cs:522:        { why = $"cgroup delegation unavailable at '{_cgroupParent}': {ex.GetType().Name}: {ex.Message}"; }
+HEAD:src/Gagamba.Execution.Linux/LinuxExecutionProvider.cs:529:                why = $"delegation probe cleanup fault: {ex.GetType().Name}: {ex.Message}";
+HEAD:src/Gagamba.Execution.Linux/LinuxExecutionState.cs:84:            result = new CompletionResult.Failed(new[] { $"Linux observation/cleanup fault: {ex.GetType().Name}: {ex.Message}" });
+HEAD:src/Gagamba.Execution.Linux/OwnedCgroup.cs:30:            return (null, $"cgroup delegation unavailable at '{parent}': {ex.GetType().Name}: {ex.Message}");
+HEAD:src/Gagamba.Execution.Linux/OwnedCgroup.cs:43:        catch (Exception ex) { return (false, $"cgroup.kill fault: {ex.GetType().Name}: {ex.Message}"); }
+HEAD:src/Gagamba.Execution.Linux/OwnedCgroup.cs:62:        catch (Exception ex) { return (false, $"cgroup.events read fault at '{Path}': {ex.GetType().Name}: {ex.Message}"); }
+HEAD:src/Gagamba.Execution.Linux/OwnedCgroup.cs:95:            catch (Exception ex) { return $"cgroup remove fault at '{Path}': {ex.GetType().Name}: {ex.Message}"; }
+HEAD:src/Gagamba.Execution.MacOS/Launchd.cs:90:                    return new HelperResult(127, $"helper fault and reap unconfirmed: {ex.GetType().Name}",
+HEAD:src/Gagamba.Execution.MacOS/Launchd.cs:93:            return new HelperResult(127, $"helper start/io fault: {ex.GetType().Name}: {ex.Message}",
+HEAD:src/Gagamba.Execution.MacOS/MacExecutionState.cs:63:        { result = new CompletionResult.Failed(new[] { $"launchd observation fault: {ex.GetType().Name}: {ex.Message}" }); }
+HEAD:src/Gagamba.Execution.MacOS/MacOsExecutionProvider.cs:62:            { return new PrepareResult.Rejected(new[] { $"job directory unavailable: {ex.GetType().Name}: {ex.Message}" }); }
+HEAD:src/Gagamba.Execution.MacOS/MacOsExecutionProvider.cs:124:        { result = new LaunchResult.Failed(new[] { $"launch fault: {ex.GetType().Name}: {ex.Message}" }); }
+HEAD:src/Gagamba.Execution.MacOS/OwnedJob.cs:114:            { return (false, $"job directory cleanup fault: {ex.GetType().Name}: {ex.Message}"); }
+HEAD:src/Gagamba.Execution.Windows/WindowsExecutionProvider.cs:128:        catch (Exception ex) { return new CaptureLaunchResult.Failed(new[] { $"pipe creation fault: {ex.GetType().Name}" }); }
+HEAD:src/Gagamba.Execution.Windows/WindowsExecutionProvider.cs:145:                return new CaptureLaunchResult.Failed(new[] { $"capture stream fault: {ex.GetType().Name}" });
+HEAD:src/Gagamba.Execution.Windows/WindowsExecutionProvider.cs:184:            result = new LaunchResult.Failed(new[] { $"launch fault: {ex.GetType().Name}: {ex.Message}" });
+HEAD:src/Gagamba.Execution.Windows/WindowsExecutionProvider.cs:193:            catch (Exception ex) { cleanupFailure = $"launch cleanup fault: {ex.GetType().Name}: {ex.Message}"; }
+HEAD:src/Gagamba.Execution.Windows/WindowsExecutionProvider.cs:453:            error = $"environment encode fault: {ex.GetType().Name}";
+HEAD:src/Gagamba.Execution.Windows/WindowsExecutionState.cs:43:            Finish(new CompletionResult.Failed(new[] { $"observer fault: {ex.GetType().Name}: {ex.Message}" }));
+HEAD:src/Gagamba.Execution.Windows/WindowsExecutionState.cs:60:            catch (Exception ex) { request = (false, $"TerminateJobObject fault: {ex.GetType().Name}"); }
+HEAD:src/Gagamba.Execution.Windows/WindowsExecutionState.cs:142:            catch (Exception ex) { result = new CompletionResult.Failed(new[] { $"job cleanup: {ex.GetType().Name}" }); }
+HEAD:src/Gagamba.Execution.Windows/WindowsExecutionState.cs:144:            catch (Exception ex) { result = new CompletionResult.Failed(new[] { $"process cleanup: {ex.GetType().Name}" }); }
+HEAD:src/Gagamba.Execution/Provider.cs:28:        catch (Exception ex) { error = $"capability snapshot failed: {ex.GetType().Name}"; return false; }
+HEAD:src/Gagamba.Execution/Provider.cs:89:        catch (Exception ex) { error = $"process snapshot failed: {ex.GetType().Name}"; return false; }
+HEAD:src/Gagamba.Runtime/ExecutionOrchestrator.cs:201:                $"termination fault: {ex.GetType().Name}");
+HEAD:tests/Fixtures/B2Controller/B2Controller.csproj:3:  <ItemGroup><ProjectReference Include="../../../src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj" /></ItemGroup>
+HEAD:tests/Gagamba.Execution.Linux.M1.D6_4.Tests/Gagamba.Execution.Linux.M1.D6_4.Tests.csproj:23:    <ProjectReference Include="..\..\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj"
+HEAD:tests/Gagamba.Execution.Linux.M1.D6_4.Tests/Gagamba.Execution.Linux.M1.D6_4.Tests.csproj:32:    <MSBuild Projects="$(MSBuildThisFileDirectory)..\..\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj"
+HEAD:tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj:24:    <ProjectReference Include="..\..\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj" AdditionalProperties="Configuration=Debug" />

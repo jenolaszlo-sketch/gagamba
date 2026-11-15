@@ -1,0 +1,8 @@
+dotnet test tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Release --no-build --no-restore --artifacts-path C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-q1\run\qualified --nologo --filter FullyQualifiedName~ValidationPreCodec|FullyQualifiedName~InstallationWireTests --logger trx;LogFileName=focused-Release.trx --results-directory C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-q1\docs\reviews\rc2b-06-b6-alt-b-slice-e-03-codec-q1-evidence
+Test run for C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-q1\run\qualified\bin\Gagamba.Execution.Linux.M1.Tests\release\Gagamba.Execution.Linux.M1.Tests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+vstest.console process failed to connect to testhost process after 90 seconds. This may occur due to machine slowness, please set environment variable VSTEST_CONNECTION_TIMEOUT to increase timeout. The process with id 22204 was still running when this message was reported.
+Results File: C:\Users\Laszlos\source\repos\Solo\gagamba-e03-codec-q1\docs\reviews\rc2b-06-b6-alt-b-slice-e-03-codec-q1-evidence\focused-Release.trx
+
+Test Run Aborted.
+EXIT 1

@@ -1,0 +1,70 @@
+{
+  "debug": {
+    "core": [
+      {
+        "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-q1\\run\\qualified\\bin\\Gagamba.Execution.Linux.M1\\debug\\Gagamba.Execution.Linux.M1.dll",
+        "sha256": "e21507d6dd6eb6d6a1f646efaaabafa63fd1d81a6045d8a6e75f8c0927962973"
+      },
+      {
+        "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-q1\\run\\probe\\bin\\Probe\\debug\\Gagamba.Execution.Linux.M1.dll",
+        "sha256": "e21507d6dd6eb6d6a1f646efaaabafa63fd1d81a6045d8a6e75f8c0927962973"
+      }
+    ],
+    "tests": [
+      {
+        "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-q1\\run\\qualified\\bin\\Gagamba.Execution.Linux.M1.Tests\\debug\\Gagamba.Execution.Linux.M1.Tests.dll",
+        "sha256": "2703dcaa567071b453b4ab75d6ecb190bc9352a1eaa1313ffbc5c3fa19b55a87"
+      },
+      {
+        "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-q1\\run\\layout\\test\\debug\\Gagamba.Execution.Linux.M1.Tests.dll",
+        "sha256": "2703dcaa567071b453b4ab75d6ecb190bc9352a1eaa1313ffbc5c3fa19b55a87"
+      }
+    ],
+    "testM1Dependency": [
+      {
+        "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-q1\\run\\qualified\\bin\\Gagamba.Execution.Linux.M1.Tests\\debug\\Gagamba.Execution.Linux.M1.dll",
+        "sha256": "e21507d6dd6eb6d6a1f646efaaabafa63fd1d81a6045d8a6e75f8c0927962973"
+      },
+      {
+        "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-q1\\run\\layout\\test\\debug\\Gagamba.Execution.Linux.M1.dll",
+        "sha256": "e21507d6dd6eb6d6a1f646efaaabafa63fd1d81a6045d8a6e75f8c0927962973"
+      }
+    ]
+  },
+  "release": {
+    "core": [
+      {
+        "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-q1\\run\\qualified\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll",
+        "sha256": "a09319b9e74abe576b1df2c2fd3c8f75ae42c6485302eee78007874037207fd1"
+      },
+      {
+        "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-q1\\run\\probe\\bin\\Probe\\release\\Gagamba.Execution.Linux.M1.dll",
+        "sha256": "a09319b9e74abe576b1df2c2fd3c8f75ae42c6485302eee78007874037207fd1"
+      },
+      {
+        "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-q1\\run\\layout\\src\\Gagamba.Execution.Linux.M1\\bin\\Release\\net10.0\\Gagamba.Execution.Linux.M1.dll",
+        "sha256": "a09319b9e74abe576b1df2c2fd3c8f75ae42c6485302eee78007874037207fd1"
+      }
+    ],
+    "tests": [
+      {
+        "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-q1\\run\\qualified\\bin\\Gagamba.Execution.Linux.M1.Tests\\release\\Gagamba.Execution.Linux.M1.Tests.dll",
+        "sha256": "5ea550e017ec983183e8ce5f019108ecdf202e713e075f3bb49bc3e64a2ac2ed"
+      },
+      {
+        "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-q1\\run\\layout\\test\\release\\Gagamba.Execution.Linux.M1.Tests.dll",
+        "sha256": "5ea550e017ec983183e8ce5f019108ecdf202e713e075f3bb49bc3e64a2ac2ed"
+      }
+    ],
+    "testM1Dependency": [
+      {
+        "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-q1\\run\\qualified\\bin\\Gagamba.Execution.Linux.M1.Tests\\release\\Gagamba.Execution.Linux.M1.dll",
+        "sha256": "e21507d6dd6eb6d6a1f646efaaabafa63fd1d81a6045d8a6e75f8c0927962973"
+      },
+      {
+        "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e03-codec-q1\\run\\layout\\test\\release\\Gagamba.Execution.Linux.M1.dll",
+        "sha256": "e21507d6dd6eb6d6a1f646efaaabafa63fd1d81a6045d8a6e75f8c0927962973"
+      }
+    ]
+  }
+}

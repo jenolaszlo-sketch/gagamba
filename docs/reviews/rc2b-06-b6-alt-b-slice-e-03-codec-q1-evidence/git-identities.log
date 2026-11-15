@@ -1,0 +1,9 @@
+PASS: 6 authorized code/test blobs, 19 input objects, pinned record SHA-256, ancestry, and delta
+EXIT 0
+e8099e37c1243e81f173bf0248307cf7d2fe3875
+worktree C:/Users/Laszlos/source/repos/Solo/gagamba-e03-codec-q1/source
+HEAD 34eef4c8e7d814e15cb1bfce27df032e75766f19
+detached
+
+## HEAD (no branch)
+No alternates file

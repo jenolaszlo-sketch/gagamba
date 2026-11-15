@@ -59,3 +59,7 @@ docs/reviews/gagamba-linux-m1-wp05-d6-8-glm-independent-c2-implementation-review
 docs/reviews/gagamba-linux-m1-wp05-release-plan-counterexample-register.md -text -whitespace
 docs/reviews/gagamba-linux-m1-wp05-release-plan-independent-adversarial-review.md -text -whitespace
 docs/reviews/gagamba-linux-m1-wp05-release-plan-required-changes.md -text -whitespace
+
+# Preserve the independent E-3 codec Q1 package at its verified raw checksums.
+docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-q1.md -text -whitespace
+docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-q1-evidence/** -text -whitespace
