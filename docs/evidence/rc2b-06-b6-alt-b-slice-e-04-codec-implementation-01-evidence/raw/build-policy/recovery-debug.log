@@ -1,0 +1,32 @@
+dotnet build C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1.Recovery\Gagamba.Execution.Linux.M1.Recovery.csproj -c Debug --artifacts-path C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\recovery --nologo
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Gagamba.Execution -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\recovery\bin\Gagamba.Execution\debug\Gagamba.Execution.dll
+  Gagamba compilation identity validated: Gagamba.Execution.Linux.M1, Debug, Gagamba.Execution.Linux.M1, DefineConstants=TRACE;DEBUG;NET;NET10_0;NETCOREAPP;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER
+  Gagamba.Execution.Linux.M1 -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\recovery\bin\Gagamba.Execution.Linux.M1\debug\Gagamba.Execution.Linux.M1.dll
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Debug
+  MVID: 8dbf30c6-3d80-4179-87bd-b0bb3db3c6ef
+  SHA-256: DC0A9F1E7C96C78658075B51A1BE325A256A40414D993C8541260B0D5E8B5216
+  Mode: instrumented
+  Type-name entries: 544; methods with bodies decoded: 4850; user strings: 4855
+  Seven surfaces: 4/4 hook types and 3/3 hook properties present
+  Core production types: 14/14 present
+  RESULT: PASS
+  Gagamba compilation identity validated: Gagamba.Execution.Linux.M1.Recovery, Debug, Gagamba.Execution.Linux.M1.Recovery, DefineConstants=TRACE;DEBUG;NET;NET10_0;NETCOREAPP;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER
+  Gagamba.Execution.Linux.M1.Recovery -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\recovery\bin\Gagamba.Execution.Linux.M1.Recovery\debug\Gagamba.Execution.Linux.M1.Recovery.dll
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Debug
+  MVID: 8dbf30c6-3d80-4179-87bd-b0bb3db3c6ef
+  SHA-256: DC0A9F1E7C96C78658075B51A1BE325A256A40414D993C8541260B0D5E8B5216
+  Mode: instrumented
+  Type-name entries: 544; methods with bodies decoded: 4850; user strings: 4855
+  Seven surfaces: 4/4 hook types and 3/3 hook properties present
+  Core production types: 14/14 present
+  RESULT: PASS
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:06.25

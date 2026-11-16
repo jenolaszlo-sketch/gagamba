@@ -1,0 +1,113 @@
+dotnet build C:\Users\Laszlos\source\repos\Gagamba\Gagamba.sln -c Release -m --artifacts-path C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution --nologo
+  Determining projects to restore...
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution\Gagamba.Execution.csproj (in 222 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\spikes\PidProbe\PidProbe.csproj (in 222 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Tests\Gagamba.Execution.Tests.csproj (in 234 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Windows\Gagamba.Execution.Windows.csproj (in 222 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\tests\Fixtures\Gagamba.Fixture.SelfTest\Gagamba.Fixture.SelfTest.csproj (in 234 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1.Recovery\Gagamba.Execution.Linux.M1.Recovery.csproj (in 222 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Conformance\Gagamba.Conformance.csproj (in 222 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\tests\Fixtures\B2Controller\B2Controller.csproj (in 222 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\tests\Fixtures\Gagamba.Fixture.Harness\Gagamba.Fixture.Harness.csproj (in 222 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Runtime.Tests\Gagamba.Runtime.Tests.csproj (in 234 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\spikes\Gw1aProbe\Gw1aProbe.csproj (in 222 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.MacOS.Tests\Gagamba.Execution.MacOS.Tests.csproj (in 234 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\tests\Fixtures\Gagamba.Fixture.Host\Gagamba.Fixture.Host.csproj (in 222 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.MacOS\Gagamba.Execution.MacOS.csproj (in 222 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Runtime\Gagamba.Runtime.csproj (in 222 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\spikes\SandboxRunner\SandboxRunner.csproj (in 222 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1.Owner\Gagamba.Execution.Linux.M1.Owner.csproj (in 222 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Windows.Tests\Gagamba.Execution.Windows.Tests.csproj (in 234 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux\Gagamba.Execution.Linux.csproj (in 2 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\spikes\Gw1bLaunch\Gw1bLaunch.csproj (in 2 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj (in 2 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Gagamba.Execution.Linux.M1.Tests.csproj (in 3 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Conformance.Tests\Gagamba.Conformance.Tests.csproj (in 6 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\tests\Fixtures\Gagamba.Fixture.Worker\Gagamba.Fixture.Worker.csproj (in 3 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\spikes\Gw1bLaunch.Tests\Gw1bLaunch.Tests.csproj (in 4 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.Tests\Gagamba.Execution.Linux.Tests.csproj (in 7 ms).
+  SandboxRunner -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\SandboxRunner\release\SandboxRunner.dll
+  Gagamba.Execution -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\Gagamba.Execution\release\Gagamba.Execution.dll
+  PidProbe -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\PidProbe\release\PidProbe.dll
+  Gagamba.Execution -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\Gagamba.Execution\debug\Gagamba.Execution.dll
+  Gagamba.Fixture.Host -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\Gagamba.Fixture.Host\release\Gagamba.Fixture.Host.dll
+  Gagamba.Fixture.Worker -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\Gagamba.Fixture.Worker\release\Gagamba.Fixture.Worker.dll
+  Gagamba.Execution.Windows -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\Gagamba.Execution.Windows\release\Gagamba.Execution.Windows.dll
+  Gagamba.Execution.MacOS -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\Gagamba.Execution.MacOS\release\Gagamba.Execution.MacOS.dll
+  Gagamba compilation identity validated: Gagamba.Execution.Linux.M1, Release, Gagamba.Execution.Linux.M1, DefineConstants=;GAGAMBA_PRODUCTION;TRACE;RELEASE;NET;NET10_0;NETCOREAPP;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER
+  Gw1aProbe -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\Gw1aProbe\release\Gw1aProbe.dll
+  Gagamba.Execution.Linux -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\Gagamba.Execution.Linux\release\Gagamba.Execution.Linux.dll
+  Gagamba.Fixture.SelfTest -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\Gagamba.Fixture.SelfTest\release\Gagamba.Fixture.SelfTest.dll
+  Gagamba.Fixture.Harness -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\Gagamba.Fixture.Harness\release\Gagamba.Fixture.Harness.dll
+  Gagamba compilation identity validated: Gagamba.Execution.Linux.M1, Debug, Gagamba.Execution.Linux.M1, DefineConstants=TRACE;DEBUG;NET;NET10_0;NETCOREAPP;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER
+  Gagamba.Execution.Linux.M1 -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\Gagamba.Execution.Linux.M1\release\Gagamba.Execution.Linux.M1.dll
+  Gagamba.Execution.Tests -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\Gagamba.Execution.Tests\release\Gagamba.Execution.Tests.dll
+  Gagamba.Execution.Linux.M1 -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\Gagamba.Execution.Linux.M1\debug\Gagamba.Execution.Linux.M1.dll
+  Gw1bLaunch -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\Gw1bLaunch\release\Gw1bLaunch.dll
+  Gagamba.Conformance -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\Gagamba.Conformance\release\Gagamba.Conformance.dll
+  Gw1bLaunch.Tests -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\Gw1bLaunch.Tests\release\Gw1bLaunch.Tests.dll
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Release
+  MVID: 3205e0e7-f2cc-46f8-bf6a-4220a6f3d5f9
+  SHA-256: 45CB1BE300F173B22B60237644744CBBA3D9A524EBF55E1BE8552060FF511A88
+  Mode: production
+  Type-name entries: 521; methods with bodies decoded: 4697; user strings: 4722
+  Seven surfaces: 0/4 hook types and 0/3 hook properties present
+  Core production types: 14/14 present
+  RESULT: PASS
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Debug
+  MVID: d63c93b8-3d49-4b56-80b8-8c4bd12c1fa4
+  SHA-256: 66B64B4C7204A6E72F25CCAE4E8B8E394E21B2739E288B6A370D659E64657A96
+  Mode: instrumented
+  Type-name entries: 544; methods with bodies decoded: 4850; user strings: 4855
+  Seven surfaces: 4/4 hook types and 3/3 hook properties present
+  Core production types: 14/14 present
+  RESULT: PASS
+  Gagamba compilation identity validated: Gagamba.Execution.Linux.M1.Owner, Release, Gagamba.Execution.Linux.M1.Owner, DefineConstants=;GAGAMBA_PRODUCTION;TRACE;RELEASE;NET;NET10_0;NETCOREAPP;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER
+  Gagamba compilation identity validated: Gagamba.Execution.Linux.M1.Owner, Debug, Gagamba.Execution.Linux.M1.Owner, DefineConstants=TRACE;DEBUG;NET;NET10_0;NETCOREAPP;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER
+  Gagamba.Execution.Linux.M1.Owner -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\Gagamba.Execution.Linux.M1.Owner\release\Gagamba.Execution.Linux.M1.Owner.dll
+  Gagamba.Execution.Linux.M1.Owner -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\Gagamba.Execution.Linux.M1.Owner\debug\Gagamba.Execution.Linux.M1.Owner.dll
+  Gagamba compilation identity validated: Gagamba.Execution.Linux.M1.Recovery, Release, Gagamba.Execution.Linux.M1.Recovery, DefineConstants=;GAGAMBA_PRODUCTION;TRACE;RELEASE;NET;NET10_0;NETCOREAPP;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER
+  Gagamba.Execution.Linux.M1.Recovery -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\Gagamba.Execution.Linux.M1.Recovery\release\Gagamba.Execution.Linux.M1.Recovery.dll
+  B2Controller -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\B2Controller\release\Gagamba.Execution.Linux.M1.B2Controller.dll
+  Gagamba.Execution.MacOS.Tests -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\Gagamba.Execution.MacOS.Tests\release\Gagamba.Execution.MacOS.Tests.dll
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Debug
+  MVID: d63c93b8-3d49-4b56-80b8-8c4bd12c1fa4
+  SHA-256: 66B64B4C7204A6E72F25CCAE4E8B8E394E21B2739E288B6A370D659E64657A96
+  Mode: instrumented
+  Type-name entries: 544; methods with bodies decoded: 4850; user strings: 4855
+  Seven surfaces: 4/4 hook types and 3/3 hook properties present
+  Core production types: 14/14 present
+  RESULT: PASS
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Release
+  MVID: 3205e0e7-f2cc-46f8-bf6a-4220a6f3d5f9
+  SHA-256: 45CB1BE300F173B22B60237644744CBBA3D9A524EBF55E1BE8552060FF511A88
+  Mode: production
+  Type-name entries: 521; methods with bodies decoded: 4697; user strings: 4722
+  Seven surfaces: 0/4 hook types and 0/3 hook properties present
+  Core production types: 14/14 present
+  RESULT: PASS
+  Gagamba.Conformance.Tests -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\Gagamba.Conformance.Tests\release\Gagamba.Conformance.Tests.dll
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Release
+  MVID: 3205e0e7-f2cc-46f8-bf6a-4220a6f3d5f9
+  SHA-256: 45CB1BE300F173B22B60237644744CBBA3D9A524EBF55E1BE8552060FF511A88
+  Mode: production
+  Type-name entries: 521; methods with bodies decoded: 4697; user strings: 4722
+  Seven surfaces: 0/4 hook types and 0/3 hook properties present
+  Core production types: 14/14 present
+  RESULT: PASS
+  Gagamba.Runtime -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\Gagamba.Runtime\release\Gagamba.Runtime.dll
+  Gagamba.Runtime.Tests -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\Gagamba.Runtime.Tests\release\Gagamba.Runtime.Tests.dll
+  Gagamba.Execution.Windows.Tests -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\Gagamba.Execution.Windows.Tests\release\Gagamba.Execution.Windows.Tests.dll
+  Gagamba.Execution.Linux.Tests -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\Gagamba.Execution.Linux.Tests\release\Gagamba.Execution.Linux.Tests.dll
+  Gagamba.Execution.Linux.M1.Tests -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution\bin\Gagamba.Execution.Linux.M1.Tests\release\Gagamba.Execution.Linux.M1.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:12.74

@@ -1,0 +1,14 @@
+dotnet build C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj -c Debug -p:DefineConstants=GAGAMBA_WP05_D6_4_TEST_FIXTURE --artifacts-path C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\fixture-symbol --nologo
+  Determining projects to restore...
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj (in 150 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution\Gagamba.Execution.csproj (in 150 ms).
+  Gagamba.Execution -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\fixture-symbol\bin\Gagamba.Execution\debug\Gagamba.Execution.dll
+C:\Users\Laszlos\source\repos\Gagamba\Directory.Build.targets(31,5): error GAGAMBA006: The D6.4 compiler symbol requires its isolated fixture carrier. [C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj]
+
+Build FAILED.
+
+C:\Users\Laszlos\source\repos\Gagamba\Directory.Build.targets(31,5): error GAGAMBA006: The D6.4 compiler symbol requires its isolated fixture carrier. [C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj]
+    0 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:01.54

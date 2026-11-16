@@ -1,5 +1,9 @@
 # Gagamba handoff
 
+> **ALT-B SLICE E-4 — CODEC IMPLEMENTED, READY FOR INDEPENDENT QUALIFICATION (2026-11-16).**
+>
+> The isolated managed GAVA1 types 4–7 codec and structural E-3 handoff passed the producer gates. Next is independent qualification in a fresh task. [Producer evidence](evidence/rc2b-06-b6-alt-b-slice-e-04-codec-implementation-01.md).
+
 > **ALT-B SLICE E-4 — ENTRY AUTHORIZED WITH QUALIFICATIONS (2026-11-16).**
 >
 > The authorization freezes four code and test files, exact governing bytes and the producer and independent gates. Live transport, production callers and release enforcement remain separately gated. [E-4 entry authorization](decisions/rc2b-06-b6-alt-b-slice-e-04-entry-auth-01.md).

@@ -1,0 +1,21 @@
+dotnet build C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj -c Test --artifacts-path C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\order --nologo
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Gagamba.Execution -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\order\bin\Gagamba.Execution\test\Gagamba.Execution.dll
+  Gagamba compilation identity validated: Gagamba.Execution.Linux.M1, Test, Gagamba.Execution.Linux.M1, DefineConstants=TRACE;TEST;NET;NET10_0;NETCOREAPP;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER
+  Gagamba.Execution.Linux.M1 -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\order\bin\Gagamba.Execution.Linux.M1\test\Gagamba.Execution.Linux.M1.dll
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Test
+  MVID: 91d5dc73-83bf-4cad-8f0a-aae57d8739e0
+  SHA-256: 30E76D811867C907685B765FF8904E6A48B004A8B7F708F92B0103BA785BF1B7
+  Mode: instrumented
+  Type-name entries: 544; methods with bodies decoded: 4850; user strings: 4855
+  Seven surfaces: 4/4 hook types and 3/3 hook properties present
+  Core production types: 14/14 present
+  RESULT: PASS
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:04.26

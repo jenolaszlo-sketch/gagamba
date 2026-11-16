@@ -1,0 +1,9 @@
+dotnet vstest C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final/focused-layout/release/Gagamba.Execution.Linux.M1.Tests.dll /TestCaseFilter:FullyQualifiedName~Gava1ContextCodecTests /Logger:trx
+VSTest version 18.7.0 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+Results File: C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final/vstest\e4-release.trx
+
+Passed!  - Failed:     0, Passed:    11, Skipped:     0, Total:    11, Duration: 221 ms - Gagamba.Execution.Linux.M1.Tests.dll (net10.0)
+EXIT 0

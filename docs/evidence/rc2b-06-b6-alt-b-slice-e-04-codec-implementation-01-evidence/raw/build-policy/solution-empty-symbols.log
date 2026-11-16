@@ -1,0 +1,87 @@
+dotnet build C:\Users\Laszlos\source\repos\Gagamba\Gagamba.sln -c Release -p:DefineConstants= --artifacts-path C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution-empty --nologo
+  Determining projects to restore...
+  Restored C:\Users\Laszlos\source\repos\Gagamba\tests\Fixtures\Gagamba.Fixture.Host\Gagamba.Fixture.Host.csproj (in 221 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\tests\Fixtures\B2Controller\B2Controller.csproj (in 221 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj (in 221 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\spikes\PidProbe\PidProbe.csproj (in 221 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.MacOS\Gagamba.Execution.MacOS.csproj (in 220 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\spikes\SandboxRunner\SandboxRunner.csproj (in 221 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Runtime.Tests\Gagamba.Runtime.Tests.csproj (in 224 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\spikes\Gw1bLaunch.Tests\Gw1bLaunch.Tests.csproj (in 226 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\spikes\Gw1aProbe\Gw1aProbe.csproj (in 221 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1.Owner\Gagamba.Execution.Linux.M1.Owner.csproj (in 221 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux\Gagamba.Execution.Linux.csproj (in 221 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.MacOS.Tests\Gagamba.Execution.MacOS.Tests.csproj (in 224 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Tests\Gagamba.Execution.Tests.csproj (in 224 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Windows\Gagamba.Execution.Windows.csproj (in 220 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Windows.Tests\Gagamba.Execution.Windows.Tests.csproj (in 225 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1.Recovery\Gagamba.Execution.Linux.M1.Recovery.csproj (in 220 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\spikes\Gw1bLaunch\Gw1bLaunch.csproj (in 221 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\tests\Fixtures\Gagamba.Fixture.SelfTest\Gagamba.Fixture.SelfTest.csproj (in 225 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Conformance\Gagamba.Conformance.csproj (in 2 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution\Gagamba.Execution.csproj (in 2 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\tests\Fixtures\Gagamba.Fixture.Worker\Gagamba.Fixture.Worker.csproj (in 2 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\tests\Fixtures\Gagamba.Fixture.Harness\Gagamba.Fixture.Harness.csproj (in 2 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Runtime\Gagamba.Runtime.csproj (in 3 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Gagamba.Execution.Linux.M1.Tests.csproj (in 3 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Conformance.Tests\Gagamba.Conformance.Tests.csproj (in 6 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.Tests\Gagamba.Execution.Linux.Tests.csproj (in 5 ms).
+C:\Users\Laszlos\source\repos\Gagamba\Directory.Build.targets(11,5): error GAGAMBA002: Release requires the effective compiler symbol GAGAMBA_PRODUCTION before resolving references. Refusing production candidate. [C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj]
+C:\Users\Laszlos\source\repos\Gagamba\Directory.Build.targets(11,5): error GAGAMBA002: Release requires the effective compiler symbol GAGAMBA_PRODUCTION before resolving references. Refusing production candidate. [C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1.Recovery\Gagamba.Execution.Linux.M1.Recovery.csproj]
+C:\Users\Laszlos\source\repos\Gagamba\Directory.Build.targets(11,5): error GAGAMBA002: Release requires the effective compiler symbol GAGAMBA_PRODUCTION before resolving references. Refusing production candidate. [C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1.Owner\Gagamba.Execution.Linux.M1.Owner.csproj]
+  Gagamba.Execution -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution-empty\bin\Gagamba.Execution\release\Gagamba.Execution.dll
+  Gagamba.Fixture.Worker -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution-empty\bin\Gagamba.Fixture.Worker\release\Gagamba.Fixture.Worker.dll
+  SandboxRunner -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution-empty\bin\SandboxRunner\release\SandboxRunner.dll
+  PidProbe -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution-empty\bin\PidProbe\release\PidProbe.dll
+  Gagamba.Execution -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution-empty\bin\Gagamba.Execution\debug\Gagamba.Execution.dll
+  Gagamba.Execution.Linux -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution-empty\bin\Gagamba.Execution.Linux\release\Gagamba.Execution.Linux.dll
+  Gagamba.Fixture.Host -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution-empty\bin\Gagamba.Fixture.Host\release\Gagamba.Fixture.Host.dll
+  Gagamba.Execution -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution-empty\bin\Gagamba.Execution\debug\Gagamba.Execution.dll
+  Gagamba.Execution.MacOS -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution-empty\bin\Gagamba.Execution.MacOS\release\Gagamba.Execution.MacOS.dll
+  Gagamba.Execution.Windows -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution-empty\bin\Gagamba.Execution.Windows\release\Gagamba.Execution.Windows.dll
+  Gagamba.Conformance -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution-empty\bin\Gagamba.Conformance\release\Gagamba.Conformance.dll
+  Gw1aProbe -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution-empty\bin\Gw1aProbe\release\Gw1aProbe.dll
+  Gagamba.Runtime -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution-empty\bin\Gagamba.Runtime\release\Gagamba.Runtime.dll
+  Gagamba.Fixture.SelfTest -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution-empty\bin\Gagamba.Fixture.SelfTest\release\Gagamba.Fixture.SelfTest.dll
+  Gagamba.Fixture.Harness -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution-empty\bin\Gagamba.Fixture.Harness\release\Gagamba.Fixture.Harness.dll
+  Gagamba.Execution.Tests -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution-empty\bin\Gagamba.Execution.Tests\release\Gagamba.Execution.Tests.dll
+  Gagamba compilation identity validated: Gagamba.Execution.Linux.M1, Debug, Gagamba.Execution.Linux.M1, DefineConstants=;NET;NET10_0;NETCOREAPP;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER
+  Gagamba.Execution.MacOS.Tests -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution-empty\bin\Gagamba.Execution.MacOS.Tests\release\Gagamba.Execution.MacOS.Tests.dll
+  Gw1bLaunch -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution-empty\bin\Gw1bLaunch\release\Gw1bLaunch.dll
+  Gagamba.Execution.Windows.Tests -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution-empty\bin\Gagamba.Execution.Windows.Tests\release\Gagamba.Execution.Windows.Tests.dll
+  Gagamba.Execution.Linux.Tests -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution-empty\bin\Gagamba.Execution.Linux.Tests\release\Gagamba.Execution.Linux.Tests.dll
+  Gagamba.Execution.Linux.M1 -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution-empty\bin\Gagamba.Execution.Linux.M1\debug\Gagamba.Execution.Linux.M1.dll
+  Gagamba.Runtime.Tests -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution-empty\bin\Gagamba.Runtime.Tests\release\Gagamba.Runtime.Tests.dll
+  Gagamba.Conformance.Tests -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution-empty\bin\Gagamba.Conformance.Tests\release\Gagamba.Conformance.Tests.dll
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Debug
+  MVID: d4a46955-0c40-4189-8a9f-27e7fdcbca45
+  SHA-256: B8FB62AB3D5271838A9C639A2CF4DE513BB80F71A6F28C2C7D9C8BD1BDAB63DC
+  Mode: instrumented
+  Type-name entries: 544; methods with bodies decoded: 4850; user strings: 4855
+  Seven surfaces: 4/4 hook types and 3/3 hook properties present
+  Core production types: 14/14 present
+  RESULT: PASS
+  Gagamba compilation identity validated: Gagamba.Execution.Linux.M1.Owner, Debug, Gagamba.Execution.Linux.M1.Owner, DefineConstants=;NET;NET10_0;NETCOREAPP;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER
+  Gw1bLaunch.Tests -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution-empty\bin\Gw1bLaunch.Tests\release\Gw1bLaunch.Tests.dll
+  Gagamba.Execution.Linux.M1.Owner -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution-empty\bin\Gagamba.Execution.Linux.M1.Owner\debug\Gagamba.Execution.Linux.M1.Owner.dll
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Debug
+  MVID: d4a46955-0c40-4189-8a9f-27e7fdcbca45
+  SHA-256: B8FB62AB3D5271838A9C639A2CF4DE513BB80F71A6F28C2C7D9C8BD1BDAB63DC
+  Mode: instrumented
+  Type-name entries: 544; methods with bodies decoded: 4850; user strings: 4855
+  Seven surfaces: 4/4 hook types and 3/3 hook properties present
+  Core production types: 14/14 present
+  RESULT: PASS
+  Gagamba.Execution.Linux.M1.Tests -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\solution-empty\bin\Gagamba.Execution.Linux.M1.Tests\release\Gagamba.Execution.Linux.M1.Tests.dll
+
+Build FAILED.
+
+C:\Users\Laszlos\source\repos\Gagamba\Directory.Build.targets(11,5): error GAGAMBA002: Release requires the effective compiler symbol GAGAMBA_PRODUCTION before resolving references. Refusing production candidate. [C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj]
+C:\Users\Laszlos\source\repos\Gagamba\Directory.Build.targets(11,5): error GAGAMBA002: Release requires the effective compiler symbol GAGAMBA_PRODUCTION before resolving references. Refusing production candidate. [C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1.Recovery\Gagamba.Execution.Linux.M1.Recovery.csproj]
+C:\Users\Laszlos\source\repos\Gagamba\Directory.Build.targets(11,5): error GAGAMBA002: Release requires the effective compiler symbol GAGAMBA_PRODUCTION before resolving references. Refusing production candidate. [C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1.Owner\Gagamba.Execution.Linux.M1.Owner.csproj]
+    0 Warning(s)
+    3 Error(s)
+
+Time Elapsed 00:00:11.30

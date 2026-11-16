@@ -1,0 +1,47 @@
+dotnet publish C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1.Owner\Gagamba.Execution.Linux.M1.Owner.csproj -c Release --artifacts-path C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\publish-owner --nologo
+  Determining projects to restore...
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1.Owner\Gagamba.Execution.Linux.M1.Owner.csproj (in 171 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj (in 171 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution\Gagamba.Execution.csproj (in 171 ms).
+  Gagamba.Execution -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\publish-owner\bin\Gagamba.Execution\release\Gagamba.Execution.dll
+  Gagamba compilation identity validated: Gagamba.Execution.Linux.M1, Release, Gagamba.Execution.Linux.M1, DefineConstants=;GAGAMBA_PRODUCTION;TRACE;RELEASE;NET;NET10_0;NETCOREAPP;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER
+  Gagamba.Execution.Linux.M1 -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\publish-owner\bin\Gagamba.Execution.Linux.M1\release\Gagamba.Execution.Linux.M1.dll
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Release
+  MVID: 34f24362-3481-46be-a2a4-3247596c178e
+  SHA-256: 99374748089712AA57DD51FB4D41DB7631189C5997396DFD913784D1D88EBD79
+  Mode: production
+  Type-name entries: 521; methods with bodies decoded: 4697; user strings: 4722
+  Seven surfaces: 0/4 hook types and 0/3 hook properties present
+  Core production types: 14/14 present
+  RESULT: PASS
+  Gagamba compilation identity validated: Gagamba.Execution.Linux.M1.Owner, Release, Gagamba.Execution.Linux.M1.Owner, DefineConstants=;GAGAMBA_PRODUCTION;TRACE;RELEASE;NET;NET10_0;NETCOREAPP;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER
+  Gagamba.Execution.Linux.M1.Owner -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\publish-owner\bin\Gagamba.Execution.Linux.M1.Owner\release\Gagamba.Execution.Linux.M1.Owner.dll
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Release
+  MVID: 34f24362-3481-46be-a2a4-3247596c178e
+  SHA-256: 99374748089712AA57DD51FB4D41DB7631189C5997396DFD913784D1D88EBD79
+  Mode: production
+  Type-name entries: 521; methods with bodies decoded: 4697; user strings: 4722
+  Seven surfaces: 0/4 hook types and 0/3 hook properties present
+  Core production types: 14/14 present
+  RESULT: PASS
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Release
+  MVID: 34f24362-3481-46be-a2a4-3247596c178e
+  SHA-256: 99374748089712AA57DD51FB4D41DB7631189C5997396DFD913784D1D88EBD79
+  Mode: production
+  Type-name entries: 521; methods with bodies decoded: 4697; user strings: 4722
+  Seven surfaces: 0/4 hook types and 0/3 hook properties present
+  Core production types: 14/14 present
+  RESULT: PASS
+  Gagamba.Execution.Linux.M1.Owner -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\publish-owner\publish\Gagamba.Execution.Linux.M1.Owner\release\
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Release
+  MVID: 34f24362-3481-46be-a2a4-3247596c178e
+  SHA-256: 99374748089712AA57DD51FB4D41DB7631189C5997396DFD913784D1D88EBD79
+  Mode: production
+  Type-name entries: 521; methods with bodies decoded: 4697; user strings: 4722
+  Seven surfaces: 0/4 hook types and 0/3 hook properties present
+  Core production types: 14/14 present
+  RESULT: PASS

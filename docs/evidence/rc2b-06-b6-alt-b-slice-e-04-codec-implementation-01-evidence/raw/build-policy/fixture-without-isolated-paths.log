@@ -1,0 +1,14 @@
+dotnet build C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj -c Debug -p:GagambaWp05D64FixtureEnabled=true -p:AssemblyName=Gagamba.Execution.Linux.M1.TestFixture --artifacts-path C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\unisolated-fixture --nologo
+  Determining projects to restore...
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution\Gagamba.Execution.csproj (in 151 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj (in 151 ms).
+  Gagamba.Execution -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\production-controls\unisolated-fixture\bin\Gagamba.Execution\debug\Gagamba.Execution.dll
+C:\Users\Laszlos\source\repos\Gagamba\Directory.Build.targets(35,5): error GAGAMBA008: D6.4 requires isolated d6-4-variant intermediate, restore and binary roots. ArtifactsPath output remapping is unsupported for this specialized fixture. [C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj]
+
+Build FAILED.
+
+C:\Users\Laszlos\source\repos\Gagamba\Directory.Build.targets(35,5): error GAGAMBA008: D6.4 requires isolated d6-4-variant intermediate, restore and binary roots. ArtifactsPath output remapping is unsupported for this specialized fixture. [C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj]
+    0 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:01.48

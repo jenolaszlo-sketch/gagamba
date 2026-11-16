@@ -1,0 +1,81 @@
+{
+  "startingCommit": "db44b7e50c6ce449fdb6b596ad52744cf10443c0",
+  "startingTree": "f6e37e07f99b9b29ab7ba23d3e5004ce4ba20b8b",
+  "r2": "8be61181e804b2dfafb0797eb54c92d2f234ff86",
+  "published": "6892ab0e235b2eaab943f218545cbe35ca95fd1b",
+  "testedSourceSha256": {
+    "src/Gagamba.Execution.Linux.M1/Bootstrap/Gava1ContextCodec.cs": "353280f0ad020591ed39b2475ed26bb3046acb159ef80e21398af46652e5bf69",
+    "src/Gagamba.Execution.Linux.M1/Bootstrap/Gava1ContextData.cs": "cdb1b5613f1f731e4f93d6c62640c67f94718dd7caeaeb41024e7f0f1bb4abe9",
+    "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/Gava1ContextCodecTests.cs": "0a32a6e3b05ad8dd5a37d20d74d8b17870c15d3b9d6f031db0bdb59696c9ed82",
+    "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/Gava1ContextVectors.cs": "a16f818981f72c075e8d1aa74a73845cb9792e81a6dc80cc42d0329ee53db345"
+  },
+  "tests": {
+    "debug": {
+      "e4Focused": {
+        "total": 11,
+        "passed": 11,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0
+      },
+      "e3Focused": {
+        "total": 185,
+        "passed": 185,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0
+      },
+      "broad": {
+        "total": 2020,
+        "passed": 1689,
+        "failed": 0,
+        "skipped": 331,
+        "errors": 0,
+        "not-run": 0
+      },
+      "q1Assertions": 2383,
+      "q2Exact": 13
+    },
+    "release": {
+      "e4Focused": {
+        "total": 11,
+        "passed": 11,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0
+      },
+      "e3Focused": {
+        "total": 185,
+        "passed": 185,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0
+      },
+      "broad": {
+        "total": 2020,
+        "passed": 1689,
+        "failed": 0,
+        "skipped": 331,
+        "errors": 0,
+        "not-run": 0
+      },
+      "q1Assertions": 2383,
+      "q2Exact": 13
+    }
+  },
+  "compiledScans": {
+    "-e3": 36,
+    "-e4": 36
+  },
+  "buildPolicyControls": 51,
+  "p4": "Neutral",
+  "historicalUntracked": 44,
+  "priorAuthorizationManifest": {
+    "entries": 6,
+    "manifestSha256": "d03d78f64ec04f4fbc98c5055a3b60529b30ac9671fdeab8701d93b339e3d271"
+  }
+}

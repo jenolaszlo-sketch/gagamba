@@ -1,0 +1,671 @@
+dotnet C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\broad-layout/tests/release/Gagamba.Execution.Linux.M1.Tests.dll -noColor -xml C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-implementation-01\final\logs/broad-release.xml
+xUnit.net v3 In-Process Runner v3.2.0+9e422989c1 (64-bit .NET 10.0.12)
+  Discovering: Gagamba.Execution.Linux.M1.Tests
+  Discovered:  Gagamba.Execution.Linux.M1.Tests
+  Starting:    Gagamba.Execution.Linux.M1.Tests
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.RecoveryB2NativeTests.MissingPidfdOrExitBeforeRetentionNeverCreatesRecoveryAuthority(dieBeforeRetention: False) [SKIP]
+      requires unprivileged Linux pidfd; Windows is not qualification
+    Gagamba.Execution.Linux.M1.Tests.Native.ReleaseProtocolTests.MalformedAndExtraReleaseFramesAreRefusedWithoutTarget [SKIP]
+      requires Linux
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.PeerExitDuringHandshakeRefuses [SKIP]
+      Linux direct socket primitive qualification required
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.EscapeAboveRootRefused [SKIP]
+      requires Linux with openat2 support
+    Gagamba.Execution.Linux.M1.Tests.Recovery.RetainedDirectoryCleanupTests.DirectoryRemovalRequiresTheNameToStillIdentifyTheRetainedObject(replacement: "original") [SKIP]
+      Linux retained directory handles required
+    Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsScratchMountWithTheWrongParentOrAliasedDevice [SKIP]
+      requires Linux mount namespace semantics
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeStagingCleanupTests.ReplacementRegularFileSurvives [SKIP]
+      requires Linux openat2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.RetainedDirectoryCleanupTests.DirectoryRemovalRequiresTheNameToStillIdentifyTheRetainedObject(replacement: "directory") [SKIP]
+      Linux retained directory handles required
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.RecoveryB2NativeTests.MissingPidfdOrExitBeforeRetentionNeverCreatesRecoveryAuthority(dieBeforeRetention: True) [SKIP]
+      requires unprivileged Linux pidfd; Windows is not qualification
+    Gagamba.Execution.Linux.M1.Tests.Recovery.RetainedDirectoryCleanupTests.DirectoryRemovalRequiresTheNameToStillIdentifyTheRetainedObject(replacement: "symlink") [SKIP]
+      Linux retained directory handles required
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.ExclusiveCreateEnforcedNatively [SKIP]
+      requires Linux with openat2 support
+    Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsDuplicateMountIds [SKIP]
+      requires Linux mount namespace semantics
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeStagingCleanupTests.UnlinkFailureIsNotConfirmedAndRetainsDebt [SKIP]
+      requires Linux openat2
+    Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.AcceptsTheSection11CeilingsInKernelNormalizedKibibytes [SKIP]
+      requires Linux mount namespace semantics
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.UnexpectedAncillaryRightsAreClosedAndRefused [SKIP]
+      Linux direct socket primitive qualification required
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.GrowthDuringCopyRefused [SKIP]
+      requires Linux with openat2 support
+    Gagamba.Execution.Linux.M1.Tests.Native.ReleaseProtocolTests.NonblockingPipeTransportMapsDeliveredBrokenPipeAndWouldBlock [SKIP]
+      requires Linux
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeStagingCleanupTests.InspectionFailureIsNotConfirmed [SKIP]
+      requires Linux openat2
+    Gagamba.Execution.Linux.M1.Tests.Native.ReleaseProtocolTests.ExpiredReleaseDeadlineIsRefused [SKIP]
+      requires Linux
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.SourceSymlinkRejected [SKIP]
+      requires Linux with openat2 support
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeStagingCleanupTests.AlreadyAbsentIsIdempotent [SKIP]
+      requires Linux openat2
+    Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RequiresCoordinatorNamespaceIdentityToDifferFromTheHost [SKIP]
+      requires Linux mount namespace semantics
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.SparseFileRejected [SKIP]
+      requires Linux with openat2 support
+    Gagamba.Execution.Linux.M1.Tests.Native.ReleaseProtocolTests.ValidReleaseIsConsumedOnceAndTrustedStatusIsReadable [SKIP]
+      requires Linux
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeStagingCleanupTests.SameContentDifferentInodeSurvives [SKIP]
+      requires Linux openat2
+    Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsDuplicateConflictingMountPoints [SKIP]
+      requires Linux mount namespace semantics
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.InvalidResolveBitsAreRefused [SKIP]
+      requires Linux with openat2 support
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.IntermediateSymlinkRejected [SKIP]
+      requires Linux with openat2 support
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeStagingCleanupTests.RepeatedCleanupIdempotentAndNeverRemovesMismatch [SKIP]
+      requires Linux openat2
+    Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsAShmCeilingThatIsNotExactlySection11(size: "size=1023k") [SKIP]
+      requires Linux mount namespace semantics
+    Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsAShmCeilingThatIsNotExactlySection11(size: "size=1025k") [SKIP]
+      requires Linux mount namespace semantics
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.FragmentedAndCoalescedStreamFramesAreReadExactly [SKIP]
+      Linux direct socket primitive qualification required
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeStagingCleanupTests.ReplacementSymlinkSurvives [SKIP]
+      requires Linux openat2
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.RegularFileCopyEndToEnd [SKIP]
+      requires Linux with openat2 support
+    Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsAScratchMountWithTheWrongFilesystemType [SKIP]
+      requires Linux mount namespace semantics
+    Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsBindSubstitutionWithANonRootBackingPath [SKIP]
+      requires Linux mount namespace semantics
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.DirectorySourceRefused [SKIP]
+      requires Linux with openat2 support
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeStagingCleanupTests.OriginalEntryRemoved [SKIP]
+      requires Linux openat2
+    Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsATmpCeilingThatIsNotExactlySection11(size: "size=7167k") [SKIP]
+      requires Linux mount namespace semantics
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.NoWritableFdRemainsAtPublication [SKIP]
+      requires Linux with openat2 support
+    Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsATmpCeilingThatIsNotExactlySection11(size: "size=7169k") [SKIP]
+      requires Linux mount namespace semantics
+    Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsATmpCeilingThatIsNotExactlySection11(size: "size=bad") [SKIP]
+      requires Linux mount namespace semantics
+    Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsATmpCeilingThatIsNotExactlySection11(size: "size=") [SKIP]
+      requires Linux mount namespace semantics
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.CancellationCleansPartialNatively [SKIP]
+      requires Linux with openat2 support
+    Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsProhibitedPropagationMetadata(propagation: "shared:1") [SKIP]
+      requires Linux mount namespace semantics
+    Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsProhibitedPropagationMetadata(propagation: "master:1") [SKIP]
+      requires Linux mount namespace semantics
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.ReplacementRaceDeterministicallyRefused [SKIP]
+      requires Linux with openat2 support
+    Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsScratchMountBackedByAHostFilesystemDevice [SKIP]
+      requires Linux mount namespace semantics
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.SparseBelowBudgetStillRejected [SKIP]
+      requires Linux with openat2 support
+    Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.AcceptsEquivalentByteFormOfTheExactCeilings [SKIP]
+      requires Linux mount namespace semantics
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.NativeDigestMismatchRefused [SKIP]
+      requires Linux with openat2 support
+    Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsMissingScratchSecurityMountOption(requiredOption: "nodev") [SKIP]
+      requires Linux mount namespace semantics
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.AtomicRenamePositiveControlReplacesMode0500Entry [SKIP]
+      requires Linux with openat2 support
+    Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsMissingScratchSecurityMountOption(requiredOption: "nosuid") [SKIP]
+      requires Linux mount namespace semantics
+    Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsAMissingScratchMount [SKIP]
+      requires Linux mount namespace semantics
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.WrongExactIdentityOrTranscriptNeverAssociates(change: "owner") [SKIP]
+      Linux direct socket primitive qualification required
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.RetainedFdRefersToVerifiedObject [SKIP]
+      requires Linux with openat2 support
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.WrongExactIdentityOrTranscriptNeverAssociates(change: "controller") [SKIP]
+      Linux direct socket primitive qualification required
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.WrongExactIdentityOrTranscriptNeverAssociates(change: "execution") [SKIP]
+      Linux direct socket primitive qualification required
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.MagicLinkRejected [SKIP]
+      requires Linux with openat2 support
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.WrongExactIdentityOrTranscriptNeverAssociates(change: "generation") [SKIP]
+      Linux direct socket primitive qualification required
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.WrongExactIdentityOrTranscriptNeverAssociates(change: "session") [SKIP]
+      Linux direct socket primitive qualification required
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.HardlinkedSourceProducesIndependentCopy [SKIP]
+      requires Linux with openat2 support
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.PeerPidfdFeatureAndExactLiveReference [SKIP]
+      Linux direct socket primitive qualification required
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.FixtureBuildArtifactBindsWithoutExecution [SKIP]
+      requires Linux with openat2 support
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.RealDistinctProcessesConfirmOneDirectSessionAndRemoveListener [SKIP]
+      Linux direct socket primitive qualification required
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.DenseRegularFileAccepted [SKIP]
+      requires Linux with openat2 support
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.StaleRetainedPeerReferenceRefusesWithoutReopeningPid [SKIP]
+      Linux direct socket primitive qualification required
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.Openat2ProbeReportsSupportMethod [SKIP]
+      requires Linux with openat2 support
+    Gagamba.Execution.Linux.M1.Tests.Recovery.JournalFencingTests.OverlappingLeaseReproductionRefused [SKIP]
+      requires Linux
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.TruncationAndPartialFrameTimeoutAreTerminal [SKIP]
+      Linux direct socket primitive qualification required
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.RawSyscallPathOpensSourceDirectly [SKIP]
+      requires Linux with openat2 support
+    Gagamba.Execution.Linux.M1.Tests.Recovery.JournalFencingTests.CrossObjectAcquireRefusedWhileLive [SKIP]
+      requires Linux
+    Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.StagingDirectoryCollisionRefused [SKIP]
+      requires Linux with openat2 support
+    Gagamba.Execution.Linux.M1.Tests.Recovery.JournalFencingTests.SameStorageSecondJournalRefusedWhileLive [SKIP]
+      requires Linux
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.SameUidDifferentProcessCannotImpersonateExpectedPeer [SKIP]
+      Linux direct socket primitive qualification required
+    Gagamba.Execution.Linux.M1.Tests.Recovery.JournalFencingTests.DisposedStorageKillsLeaseAuthority [SKIP]
+      requires Linux
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.ListenerModesAndSymlinkSubstitutionRefuse [SKIP]
+      Linux listener required
+    Gagamba.Execution.Linux.M1.Tests.Recovery.JournalFencingTests.LockIdentityIncludesDirectory [SKIP]
+      requires Linux
+    Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.AfterIntentBarrierIsDispatchedAtTheOwnerIntentBoundary [SKIP]
+      requires delegated Linux cgroup v2 with openat2
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.LengthIsRefusedBeforeAllocation(length: -1) [SKIP]
+      Linux direct socket primitive qualification required
+    Gagamba.Execution.Linux.M1.Tests.Recovery.JournalFencingTests.RealStorageRoundTrip [SKIP]
+      requires Linux
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.LengthIsRefusedBeforeAllocation(length: 0) [SKIP]
+      Linux direct socket primitive qualification required
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.LengthIsRefusedBeforeAllocation(length: 65537) [SKIP]
+      Linux direct socket primitive qualification required
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.LengthIsRefusedBeforeAllocation(length: 2147483647) [SKIP]
+      Linux direct socket primitive qualification required
+    Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.AfterRegisteredBarrierIsDispatchedBeforeStagingAuthorityTransfer [SKIP]
+      requires delegated Linux cgroup v2 with openat2
+    Gagamba.Execution.Linux.M1.Tests.Launch.SeccompFilterPinTests.AcceptsTheGeneratedPinnedFilterArtifact [SKIP]
+      requires Linux pread for the pinned native filter verifier
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.LostAuthenticationAckOrReflectedConfirmationCannotRestoreSession(reflection: False) [SKIP]
+      Linux direct socket primitive qualification required
+    Gagamba.Execution.Linux.M1.Tests.Launch.SeccompFilterPinTests.RejectsAnArtifactWithTheWrongPinnedLength [SKIP]
+      requires Linux pread for the pinned native filter verifier
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.LostAuthenticationAckOrReflectedConfirmationCannotRestoreSession(reflection: True) [SKIP]
+      Linux direct socket primitive qualification required
+    Gagamba.Execution.Linux.M1.Tests.Launch.SeccompFilterPinTests.RejectsAStagedHashThatDoesNotMatchTheFilterBytes [SKIP]
+      requires Linux pread for the pinned native filter verifier
+    Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-intent", expectedStage: "AllocationIntent", expectedDomains: 0, expectedStagingDirectories: 0) [SKIP]
+      requires delegated Linux cgroup v2 with openat2
+    Gagamba.Execution.Linux.M1.Tests.Launch.SeccompFilterPinTests.RejectsCorruptedFilterEvenWhenItsStagedDigestMatchesTheCorruptBytes [SKIP]
+      requires Linux pread for the pinned native filter verifier
+    Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-domain-retained", expectedStage: "AllocationIntent", expectedDomains: 1, expectedStagingDirectories: 0) [SKIP]
+      requires delegated Linux cgroup v2 with openat2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-registered", expectedStage: "AllocationRegistered", expectedDomains: 1, expectedStagingDirectories: 0) [SKIP]
+      requires delegated Linux cgroup v2 with openat2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-staging-accounted", expectedStage: "AllocationRegistered", expectedDomains: 1, expectedStagingDirectories: 1) [SKIP]
+      requires delegated Linux cgroup v2 with openat2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "mid-staging", expectedStage: "AllocationRegistered", expectedDomains: 1, expectedStagingDirectories: 1) [SKIP]
+      requires delegated Linux cgroup v2 with openat2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-copy", expectedStage: "AllocationRegistered", expectedDomains: 1, expectedStagingDirectories: 1) [SKIP]
+      requires delegated Linux cgroup v2 with openat2
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_EvidenceDumpNativeStatusFrames [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: "after-prepared-before-mint", expectedStage: "Prepared", expectedDomains: 1, expectedStagingDirectories: 1) [SKIP]
+      requires delegated Linux cgroup v2 with openat2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.OwnerDoesNotCopyUntilScopeAcknowledgesStagingRetention [SKIP]
+      requires delegated Linux cgroup v2 with openat2
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_DescriptorTopologyUsesRealFd5Pipe [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_S04_UnconfirmedRootRemainsUnknown [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RecoveryScopeWaitsForOwnerDomainRecoveryAuthorityBeforePreparationCompletes [SKIP]
+      requires delegated Linux cgroup v2 with openat2
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_O02_NoDurableCommittedMeansNoDurableObservation [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.ScopeDisposalDoesNotCloseReusedOwnerPidfd [SKIP]
+      requires delegated Linux cgroup v2 with openat2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.UnconfirmedDirectoryRemainsUntouchedAndDebtIsIdempotent [SKIP]
+      requires delegated Linux cgroup v2 with openat2
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_O04_ContradictoryNativeStatusDoesNotOverwrite [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_S01_ExecConfirmedIsNativeFd5Observation [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_S02_ExecFailedIsNativeFd5Observation [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_S03_ExecConfirmedThenRootIsOrdered [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Installation.LoadedMappingTests.NativeRuntimeHasMappedManagedFilesAndSeparateGeneratedMappings [SKIP]
+      actual Linux CLR mapping observations
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: "d5_wrong_exec") [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: "d5_invalid_kind") [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: "d5_length_above_max") [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: "d5_length_below_header") [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: "d5_truncated_payload") [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: "d5_short_header") [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: "d5_wrong_version") [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: "d5_invalid_payload_length") [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.FullOwnerTransactionCompletesWithoutOwnerDeath [SKIP]
+      requires delegated Linux cgroup v2 with openat2
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: "d5_wrong_magic") [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: "d5_root_after_terminal") [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: "d5_duplicate_exec") [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: "d5_replayed_sequence") [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: "d5_wrong_sequence") [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: "d5_wrong_digest") [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: "d5_wrong_prep") [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: "d5_contradictory") [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: "d5_premature_eof") [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_N18_StatusDeadlineExpiresWithoutObservation [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_S05_ExecFailedThenRootNotStarted [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_N19_ExtraTrailingBytesDoNotBecomeASecondObservation [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_O01_NativeStatusIsGatedByDurableCommitted [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_S06_ProtocolFailedIsTerminal [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_ReleaseValidationExits20And21And22 [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_O03_JournalFailureIsNotReportedAsDurableObservation [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.RejectionClosesReceivedDescriptors [SKIP]
+      requires delegated Linux cgroup v2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.SwappedControlsRefused [SKIP]
+      requires delegated Linux cgroup v2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.RepeatedScopeDisposalIsSafe [SKIP]
+      requires delegated Linux cgroup v2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ValidTransferReceivesCloexecDescriptors [SKIP]
+      requires delegated Linux cgroup v2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ExecProbeProvesReceivedDescriptorsDoNotSurvive [SKIP]
+      requires delegated Linux cgroup v2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.PeerCloseWithoutDescriptorsRefusedHarmlessly [SKIP]
+      requires Linux
+    Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.OverlongPayloadRefused(extraBytes: 1) [SKIP]
+      requires delegated Linux cgroup v2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.OverlongPayloadRefused(extraBytes: 9) [SKIP]
+      requires delegated Linux cgroup v2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.TooManyDescriptorsRefused [SKIP]
+      requires delegated Linux cgroup v2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.QueuedSecondTransferIsRejectedByProtocolStateWithoutFdLeak [SKIP]
+      requires delegated Linux cgroup v2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ZeroLengthRecordWithDescriptorsRefusedWithoutLeak [SKIP]
+      requires delegated Linux cgroup v2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.SiblingControlRefused [SKIP]
+      requires delegated Linux cgroup v2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.NullDescriptorsRefused [SKIP]
+      requires delegated Linux cgroup v2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.AncillaryDataTruncationRefusedWithoutLeak [SKIP]
+      requires delegated Linux cgroup v2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ParentAsChildRefused [SKIP]
+      requires delegated Linux cgroup v2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.MissingCloexecRefused [SKIP]
+      requires delegated Linux cgroup v2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.TooFewDescriptorsRefused [SKIP]
+      requires delegated Linux cgroup v2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ReviewerTrailingByteReproductionRefused [SKIP]
+      requires delegated Linux cgroup v2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.TruncatedPayloadRefused [SKIP]
+      requires delegated Linux cgroup v2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ValidHandlesValidate [SKIP]
+      requires delegated Linux cgroup v2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.BootstrapSocketPairIsMessagePreserving [SKIP]
+      requires Linux
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootDelegatedPreflightSucceeds [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04RealOwnerLossAfterHeldAcceptanceReconciles [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04HeldSetupReportsHeldWithoutTargetInitializationThenAbortsAndReconciles [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.MissingDelegationRefusesWithoutProvisioning [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootCompleteCleanupIsConfirmed [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootMidStagingDeathResolvesUnconfirmedAbsentInputAsGenuineAbsence [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04RealOwnerLossAfterCoordinatorHeldFrameBeforeManagedAcceptanceReconciles [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootAfterIntentBarrierIsDispatchedAtTheOwnerIntentBoundary [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04InvalidMountReportRefusesAndReconciles [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04CoordinatorExitBeforeHeldRefusesAndReconciles [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootRecoveryScopeWaitsForOwnerDomainAuthorityBeforePreparationCompletes [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04CorruptPinnedFilterRefusesAndReconciles [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04RealOwnerLossDuringAbortDrainReconciles [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootPreparedBeforeMintDoesNotResurrectCapability [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04OwnerDeathAfterDomainRegistrationBeforeCoordinatorStartReconciles [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04CoordinatorProtocolNegativesRefuseAndReconcile(mode: 1, caseName: "incomplete frame") [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04CoordinatorProtocolNegativesRefuseAndReconcile(mode: 2, caseName: "malformed frame") [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04CoordinatorProtocolNegativesRefuseAndReconcile(mode: 3, caseName: "wrong message type") [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04CoordinatorProtocolNegativesRefuseAndReconcile(mode: 4, caseName: "wrong execution identity") [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04CoordinatorProtocolNegativesRefuseAndReconcile(mode: 5, caseName: "wrong generation digest") [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04CoordinatorProtocolNegativesRefuseAndReconcile(mode: 6, caseName: "wrong sequence") [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04CoordinatorProtocolNegativesRefuseAndReconcile(mode: 7, caseName: "wrong preparation identity") [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootSameBootRecoveryKeepsTheOriginalDeadlineBeforeExpiry [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootOwnerDeathBeforeRegistrationRecoversIntegrated [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootUnrelatedSiblingUntouched [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04SyntheticHeldReportPositiveControlAbortsAndReconciles [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootMissingPidfdRefusesBeforeOwnerTransaction [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04HostNamespaceClaimRefusesAndReconciles [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootReplacementStagingObjectSurvives [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04RealOwnerLossDuringCoordinatorStartupBeforeHeldReconciles [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_7_DurableStopRecoversWithoutRelease [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootExpiredDurableStopDeadlineAppliesPolicyAWithoutRenewedWait [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_12_ReplacementCannotAcquireWhileOwnerIsAlive [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04MissingFilterRefusesBeforeBubblewrapOrTargetInitialization [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootAfterRegisteredBarrierIsDispatchedBeforeStagingAuthority [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D5_CR3b_DurableStopRefusesReleaseAcrossFreshLease [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.PidFdChildReaperTests.ReapsExitedDirectChildWithZeroStatus [SKIP]
+      requires Linux pidfd and waitid(P_PIDFD)
+    Gagamba.Execution.Linux.M1.Tests.Recovery.PidFdChildReaperTests.ReapsExitedDirectChildWithNonzeroStatus [SKIP]
+      requires Linux pidfd and waitid(P_PIDFD)
+    Gagamba.Execution.Linux.M1.Tests.Recovery.PidFdChildReaperTests.RepeatedCleanupConsumesChildStatusExactlyOnce [SKIP]
+      requires Linux pidfd and waitid(P_PIDFD)
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_10_PreIntentStorageGateLeavesNoIntentOrFd4 [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests.B3ControllerChannelLossWhileHeldAbortsWithoutRelease [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_14_TwoRecoveryContendersHaveOneEffectiveWriterAndNoRelease [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests.B3ScopeReleaseExecutesTheFixedFixtureExactlyOnceWithTrustedNativeOutcome [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_3_CrashAfterFd4BeforeCommittedKeepsIntentAndObservedWriteOnly [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests.B3BarrierStopWinsTheReleaseArbitrationWithoutPhysicalWrite [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_13_StopPersistenceGateDoesNotFabricateStopOrRelease [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_6_AmbiguousSealFailureRecoversIntentAndDoesNotResend [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests.B3B1OperationEstablishesHeldThroughTheRealOwnerAndCleansUp [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests.B3OwnerDeathWhileHeldLeavesPreparedStateWithoutRelease [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_5_CrashAfterConsumeBeforeWriteHasNoFd4Witness [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests.B3StopBeforeReleaseConsumesCapabilityWithoutAnyReleaseWrite [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests.B3TopologySeparationDemonstrationUnrelatedRecoveryDeathDoesNotSuperviseThisOwner [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_1_RealHeldReleaseHasOneFd4ObservationAndCleanup [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests.B3ReleaseWinsThenStopPreservesTheOriginalReleaseDecision [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests.B3HeldOverallDeadlineStopsWithoutControllerRequest [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests.B3RecoveryTopologyRetainsItsDomainWithoutReleaseAuthority [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_2b_ReplacementRetryOverDurableIntentIsRefusedWithoutTransport [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_9_OwnerConcurrentDuplicateHasOneFd4Attempt [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_4_CrashAfterCommittedPreservesCommitWithoutSecondWrite [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_11_DuringIntentStorageGatePreservesActualJournalState [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_8_FailedDurableStopAllowsOnlyDiagnosticReplacementRelease [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D5_CR3_TwoIndependentOwnersHaveOneReleaseAndOneRefusal [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_2_CrashAfterDurableIntentRecoversAndDoesNotResend [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05LeaseProcessProbes.FreshProcessLeaseIsNotInheritedAndReplacementReacquires [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness.CgroupMountAndBootIdentityAreReadable [SKIP]
+      requires delegated Linux cgroup v2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness.NativeWriterLockIsExclusiveAcrossProcesses [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness.MissingDelegationRefused [SKIP]
+      requires delegated Linux cgroup v2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness.NativeJournalDurableThenTornDetected [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness.SubreaperEnabledAndVerified [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.OwnerSafetyMonitorTests.IndependentLossLatchConsumesCapabilityPublishedAfterLoss(loss: "recovery") [SKIP]
+      Linux independent lifetime monitor required
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.OwnerSafetyMonitorTests.IndependentLossLatchConsumesCapabilityPublishedAfterLoss(loss: "controller") [SKIP]
+      Linux independent lifetime monitor required
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.OwnerSafetyMonitorTests.IndependentLossLatchConsumesCapabilityPublishedAfterLoss(loss: "lifeline") [SKIP]
+      Linux independent lifetime monitor required
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.OwnerSafetyMonitorTests.IndependentLossLatchConsumesCapabilityPublishedAfterLoss(loss: "stop") [SKIP]
+      Linux independent lifetime monitor required
+    Gagamba.Execution.Linux.M1.Tests.Launch.Wp05SigpipeDispositionTests.WriteOnceMutatesSigpipeOnlyIfTheHostDidNotAlreadyIgnoreIt [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Installed.InstalledFileSystemNativeTests.VerifyPayload_accepts_candidate_and_refuses_unlisted_symlink_fifo_hardlink_and_sparse_files [SKIP]
+      Linux fd verification test.
+    Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests.ForgedIdentityGateRefusalTouchesNoJournalAndNotTheRealTransport [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests.HeldProductionCoordinatorAcceptsSingleArbitratedReleaseAndReachesPreExecBoundary [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests.RealCoordinatorOverallExpiryWritesProtocolFailed30AndTheGateRefusesExpiredIntent [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.OwnerSafetyDisposalTests.DisposalAcceptsDurableStopBeforeClosingMonitor [SKIP]
+      Linux pidfds required
+    Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05TerminationObserverTests.SigkillIsObservedAsKilledBySignal9 [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05TerminationObserverTests.ExpectedIdentityComesFromOwnedPidFdBeforeObservation [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05TerminationObserverTests.NormalExit137IsObservedAsExitedWithStatus137 [SKIP]
+      linux only
+    Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests.EveryOwnerBarrierIsAcceptedOnlyInItsExplicitNextState(barrier: "after-intent", nextStateName: "DomainRecoveryAuthority", transferState: True, transferDescriptors: 7, transferPayloadBytes: 1) [SKIP]
+      requires Linux SOCK_SEQPACKET
+    Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests.EveryOwnerBarrierIsAcceptedOnlyInItsExplicitNextState(barrier: "after-domain-retained", nextStateName: "DomainRegistered", transferState: False, transferDescriptors: 0, transferPayloadBytes: 0) [SKIP]
+      requires Linux SOCK_SEQPACKET
+    Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests.EveryOwnerBarrierIsAcceptedOnlyInItsExplicitNextState(barrier: "after-registered", nextStateName: "StagingAuthority", transferState: True, transferDescriptors: 1, transferPayloadBytes: 16) [SKIP]
+      requires Linux SOCK_SEQPACKET
+    Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests.EveryOwnerBarrierIsAcceptedOnlyInItsExplicitNextState(barrier: "after-staging-accounted", nextStateName: "StagedObjects", transferState: False, transferDescriptors: 0, transferPayloadBytes: 0) [SKIP]
+      requires Linux SOCK_SEQPACKET
+    Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests.EveryOwnerBarrierIsAcceptedOnlyInItsExplicitNextState(barrier: "mid-staging", nextStateName: "StagedObjects", transferState: False, transferDescriptors: 0, transferPayloadBytes: 0) [SKIP]
+      requires Linux SOCK_SEQPACKET
+    Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests.EveryOwnerBarrierIsAcceptedOnlyInItsExplicitNextState(barrier: "after-copy", nextStateName: "StagedObjects", transferState: False, transferDescriptors: 0, transferPayloadBytes: 0) [SKIP]
+      requires Linux SOCK_SEQPACKET
+    Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests.EveryOwnerBarrierIsAcceptedOnlyInItsExplicitNextState(barrier: "after-prepared-before-mint", nextStateName: "Completed", transferState: False, transferDescriptors: 0, transferPayloadBytes: 0) [SKIP]
+      requires Linux SOCK_SEQPACKET
+    Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerDeathQualificationTests.D5OwnerDeathMidStagingCleansAccountedObjectThroughRetainedAuthority [SKIP]
+      requires delegated Linux cgroup v2 with openat2
+    Gagamba.Execution.Linux.M1.Tests.Launch.ProtectedCaptureTests.ExactBudgetsRetainBothStreamsBeforeAnyObserverAndReturnCopies [SKIP]
+      Linux capture pipes required
+    Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests.WrongTypeAtStagingTransferStateClosesDescriptorsWithoutAdvancingSequence [SKIP]
+      requires Linux SOCK_SEQPACKET and SCM_RIGHTS
+    Gagamba.Execution.Linux.M1.Tests.Launch.ProtectedCaptureTests.UnclosedDescendantWriterExpiresWithoutInventingEofOrExtendingDeadline [SKIP]
+      Linux capture pipes required
+    Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerDeathQualificationTests.D5MidStagingReplacementSurvivesAsUnknownDebt [SKIP]
+      requires delegated Linux cgroup v2 with openat2
+    Gagamba.Execution.Linux.M1.Tests.Launch.ProtectedCaptureTests.FirstExcessByteStopsWithWritersStillOpenAndNoReader(stdout: True) [SKIP]
+      Linux capture pipes required
+    Gagamba.Execution.Linux.M1.Tests.Launch.ProtectedCaptureTests.FirstExcessByteStopsWithWritersStillOpenAndNoReader(stdout: False) [SKIP]
+      Linux capture pipes required
+    Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerDeathQualificationTests.D2OwnerDeathAfterDomainRetentionRefusesUncorroboratedIntentThenCleansByRetainedHandle [SKIP]
+      requires delegated Linux cgroup v2 with openat2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests.AfterIntentBarrierFollowsValidatedStartAuthorityAndCanBeReleased [SKIP]
+      requires Linux SOCK_SEQPACKET and SCM_RIGHTS
+    Gagamba.Execution.Linux.M1.Tests.Launch.ProtectedCaptureTests.NativeReadFailureStopsWithoutAStatusObserver [SKIP]
+      Linux capture pipes required
+    Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerDeathQualificationTests.D1OwnerDeathAfterDurableIntentLeavesNoHiddenAllocation [SKIP]
+      requires delegated Linux cgroup v2 with openat2
+    Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerDeathQualificationTests.D6OwnerDeathAfterPreparedBeforeMintCreatesNoCapability [SKIP]
+      requires delegated Linux cgroup v2 with openat2
+    Gagamba.Execution.Linux.M1.Tests.Launch.ProtectedCaptureTests.SharedAggregateReservationCannotOverallocate [SKIP]
+      Linux capture pipes required
+    Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerDeathQualificationTests.D4OwnerDeathAfterStagingAccountedKeepsExactDirectoryDebt [SKIP]
+      requires delegated Linux cgroup v2 with openat2
+    Gagamba.Execution.Linux.M1.Tests.Launch.ProtectedCaptureTests.CaptureStoreFailureStopsWithoutWaitingForOtherPipe [SKIP]
+      Linux capture pipes required
+    Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests.AfterRegisteredBarrierDispatchThenAcceptsTheFollowingStagingTransfer [SKIP]
+      requires Linux SOCK_SEQPACKET and SCM_RIGHTS
+    Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerDeathQualificationTests.D3OwnerDeathAfterRegistrationPreservesExactIdentity [SKIP]
+      requires delegated Linux cgroup v2 with openat2
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.RecoveryConnectionDisposalTests.RepeatedConcurrentInspectSendAndDisposeNeverThrowsOrDeadlocks [SKIP]
+      M-01 real-connection tests require an unprivileged Linux socketpair
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.RecoveryConnectionDisposalTests.DisposalDuringAnInFlightInspectIsSafeAndInspectReportsLoss [SKIP]
+      M-01 real-connection tests require an unprivileged Linux socketpair
+    Gagamba.Execution.Linux.M1.Tests.Bootstrap.RecoveryConnectionDisposalTests.DisposedConnectionRefusesSendInspectAndObserveWithoutTouchingTheDescriptor [SKIP]
+      M-01 real-connection tests require an unprivileged Linux socketpair
+    Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests.QueuedWriterReadyAndAfterIntentBarrierAreReceivedAsTwoSequencedRecords [SKIP]
+      requires Linux SOCK_SEQPACKET
+    Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests.DescriptorBearingControlOrBarrierIsRefusedWithoutAdvancingSequence(typeName: "WriterReady", transferState: False) [SKIP]
+      requires Linux SOCK_SEQPACKET and SCM_RIGHTS
+    Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests.DescriptorBearingControlOrBarrierIsRefusedWithoutAdvancingSequence(typeName: "BarrierReached", transferState: True) [SKIP]
+      requires Linux SOCK_SEQPACKET and SCM_RIGHTS
+    Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests.StagingTransferWithoutDescriptorsDoesNotAdvanceSequence [SKIP]
+      requires Linux SOCK_SEQPACKET and SCM_RIGHTS
+    Gagamba.Execution.Linux.M1.Tests.Installation.QualifiedLauncherNativeTests.SpawnMappingsOriginalPinOneShotExportAndReapingAreActualKernelOperations [SKIP]
+      non-root Linux spawn/descriptor qualification
+    Gagamba.Execution.Linux.M1.Tests.Installation.QualifiedLauncherNativeTests.ConcurrentSpawnsInheritOnlyTheirOwnMappedEndpoint [SKIP]
+      non-root Linux concurrent spawn qualification
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: "27") [SKIP]
+      non-root Linux native ancillary/frame tests required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: "surplus-empty") [SKIP]
+      non-root Linux native ancillary/frame tests required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: "overflow-rights") [SKIP]
+      non-root Linux native ancillary/frame tests required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: "empty-sentinel") [SKIP]
+      non-root Linux native ancillary/frame tests required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: "sentinel") [SKIP]
+      non-root Linux native ancillary/frame tests required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: "magic") [SKIP]
+      non-root Linux native ancillary/frame tests required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: "tail-profile") [SKIP]
+      non-root Linux native ancillary/frame tests required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: "tail77") [SKIP]
+      non-root Linux native ancillary/frame tests required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: "missing-credentials") [SKIP]
+      non-root Linux native ancillary/frame tests required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: "qualified") [SKIP]
+      non-root Linux native ancillary/frame tests required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: "declared-length") [SKIP]
+      non-root Linux native ancillary/frame tests required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: "truncated-echo") [SKIP]
+      non-root Linux native ancillary/frame tests required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: "truncated-header") [SKIP]
+      non-root Linux native ancillary/frame tests required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: "wrong37") [SKIP]
+      non-root Linux native ancillary/frame tests required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: "unknown") [SKIP]
+      non-root Linux native ancillary/frame tests required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: "38") [SKIP]
+      non-root Linux native ancillary/frame tests required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: "32") [SKIP]
+      non-root Linux native ancillary/frame tests required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: "reserved") [SKIP]
+      non-root Linux native ancillary/frame tests required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: "unknown-timestamp-cmsg") [SKIP]
+      non-root Linux native ancillary/frame tests required
+    Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: "premature", accepted: False) [SKIP]
+      non-root Linux socket/process component qualification
+    Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: "valid", accepted: True) [SKIP]
+      non-root Linux socket/process component qualification
+    Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: "wrong-digest", accepted: False) [SKIP]
+      non-root Linux socket/process component qualification
+    Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: "wrong-closure", accepted: False) [SKIP]
+      non-root Linux socket/process component qualification
+    Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: "wrong-role", accepted: False) [SKIP]
+      non-root Linux socket/process component qualification
+    Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: "wrong-execution", accepted: False) [SKIP]
+      non-root Linux socket/process component qualification
+    Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: "wrong-lease", accepted: False) [SKIP]
+      non-root Linux socket/process component qualification
+    Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: "duplicate", accepted: False) [SKIP]
+      non-root Linux socket/process component qualification
+    Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: "release", accepted: False) [SKIP]
+      non-root Linux socket/process component qualification
+    Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: "oversize", accepted: False) [SKIP]
+      non-root Linux socket/process component qualification
+    Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: "rights", accepted: False) [SKIP]
+      non-root Linux socket/process component qualification
+    Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: "empty", accepted: False) [SKIP]
+      non-root Linux socket/process component qualification
+    Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: "empty-rights", accepted: False) [SKIP]
+      non-root Linux socket/process component qualification
+    Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: "missing", accepted: False) [SKIP]
+      non-root Linux socket/process component qualification
+    Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: "wrong-original-pin", accepted: False) [SKIP]
+      non-root Linux socket/process component qualification
+    Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: "impostor-writer", accepted: False) [SKIP]
+      non-root Linux socket/process component qualification
+    Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.TypedPinReceiverRejectsOrdinaryDescriptorAndClosesItsCopy [SKIP]
+      non-root Linux socket/process component qualification
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.KernelPeerFactsCannotBeReplacedByClaimedCredentialsOrNamespaces(field: "uid") [SKIP]
+      Linux kernel peer facts required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.KernelPeerFactsCannotBeReplacedByClaimedCredentialsOrNamespaces(field: "gid") [SKIP]
+      Linux kernel peer facts required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.KernelPeerFactsCannotBeReplacedByClaimedCredentialsOrNamespaces(field: "pidns") [SKIP]
+      Linux kernel peer facts required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.KernelPeerFactsCannotBeReplacedByClaimedCredentialsOrNamespaces(field: "userns") [SKIP]
+      Linux kernel peer facts required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 11, mutation: "original") [SKIP]
+      non-root Linux descriptor qualification required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 38, mutation: "unrelated") [SKIP]
+      non-root Linux descriptor qualification required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 11, mutation: "unrelated") [SKIP]
+      non-root Linux descriptor qualification required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 38, mutation: "two") [SKIP]
+      non-root Linux descriptor qualification required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 11, mutation: "two") [SKIP]
+      non-root Linux descriptor qualification required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 38, mutation: "zero") [SKIP]
+      non-root Linux descriptor qualification required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 11, mutation: "zero") [SKIP]
+      non-root Linux descriptor qualification required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 38, mutation: "dead") [SKIP]
+      non-root Linux descriptor qualification required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 11, mutation: "dead") [SKIP]
+      non-root Linux descriptor qualification required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 38, mutation: "socket") [SKIP]
+      non-root Linux descriptor qualification required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 11, mutation: "socket") [SKIP]
+      non-root Linux descriptor qualification required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 38, mutation: "pipe") [SKIP]
+      non-root Linux descriptor qualification required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 11, mutation: "pipe") [SKIP]
+      non-root Linux descriptor qualification required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 38, mutation: "file") [SKIP]
+      non-root Linux descriptor qualification required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 11, mutation: "file") [SKIP]
+      non-root Linux descriptor qualification required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 38, mutation: "original") [SKIP]
+      non-root Linux descriptor qualification required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 11, mutation: "overflow") [SKIP]
+      non-root Linux descriptor qualification required
+    Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 38, mutation: "overflow") [SKIP]
+      non-root Linux descriptor qualification required
+  Finished:    Gagamba.Execution.Linux.M1.Tests (ID = 'abd29cb3dde0749f7003bfe8a7c84d77c38b307aa5da22bf244c9d2306e64f00')
+=== TEST EXECUTION SUMMARY ===
+   Gagamba.Execution.Linux.M1.Tests  Total: 2020, Errors: 0, Failed: 0, Skipped: 331, Not Run: 0, Time: 5.794s
+EXIT 0

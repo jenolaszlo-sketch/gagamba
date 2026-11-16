@@ -1,5 +1,9 @@
 # Current work queue
 
+> **ALT-B SLICE E-4 — CODEC IMPLEMENTED, READY FOR INDEPENDENT QUALIFICATION (2026-11-16).**
+>
+> The isolated managed GAVA1 types 4–7 codec and structural E-3 handoff passed the producer gates. Next is independent qualification in a fresh task. [Producer evidence](evidence/rc2b-06-b6-alt-b-slice-e-04-codec-implementation-01.md).
+
 > **ALT-B SLICE E-4 — ENTRY AUTHORIZED WITH QUALIFICATIONS (2026-11-16).**
 >
 > Next commission is GAGAMBA-RC2B-06-B6-ALT-B-SLICE-E-04-CODEC-IMPLEMENTATION-01. Use the authorized allowlist and producer matrix. A fresh independent reviewer and separate owner acceptance follow. [E-4 entry authorization](decisions/rc2b-06-b6-alt-b-slice-e-04-entry-auth-01.md).

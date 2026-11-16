@@ -1,0 +1,42 @@
+[
+  {
+    "label": "imported source Program.cs",
+    "sha256": "5e9b152b208689acc1c206bc6b9de2782b824578c2b6834542a9af627f511dc9",
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e04-codec-implementation-01\\final\\frozen-q1-probe/Program.cs"
+  },
+  {
+    "label": "imported source Probe.csproj",
+    "sha256": "5d41c50e9e39efeef7b8731a7ea3857c2bb93bd976209149adb1bee19db582c5",
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e04-codec-implementation-01\\final\\frozen-q1-probe/Probe.csproj"
+  },
+  {
+    "label": "Q1 replay original debug",
+    "sha256": "257eb6a7eb84a24d8b4c8513b8da455b118aa95498483f235c636c052fb45c44",
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e04-codec-implementation-01/final/replay-artifacts-original/bin/Probe/debug/Gagamba.Execution.Linux.M1.dll"
+  },
+  {
+    "label": "Q1 replay candidate debug",
+    "sha256": "45596c04f4b2ce5f55f672fd65ce30cd75aa88a48f79d6dda55248c21902c6f8",
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e04-codec-implementation-01/final/replay-artifacts-candidate/bin/Probe/debug/Gagamba.Execution.Linux.M1.dll"
+  },
+  {
+    "label": "Q2 supplement debug",
+    "sha256": "45596c04f4b2ce5f55f672fd65ce30cd75aa88a48f79d6dda55248c21902c6f8",
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e04-codec-implementation-01/final/supplement-artifacts/bin/Probe/debug/Gagamba.Execution.Linux.M1.dll"
+  },
+  {
+    "label": "Q1 replay original release",
+    "sha256": "ed2dd1bfa0ba456274394a71117628456c7164c3d25303c78b770c8d3dde0463",
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e04-codec-implementation-01/final/replay-artifacts-original/bin/Probe/release/Gagamba.Execution.Linux.M1.dll"
+  },
+  {
+    "label": "Q1 replay candidate release",
+    "sha256": "85b8c1b91e09c56bc0f730951e6b85958f8809d6881f88b7a40aba616b6ef2ea",
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e04-codec-implementation-01/final/replay-artifacts-candidate/bin/Probe/release/Gagamba.Execution.Linux.M1.dll"
+  },
+  {
+    "label": "Q2 supplement release",
+    "sha256": "85b8c1b91e09c56bc0f730951e6b85958f8809d6881f88b7a40aba616b6ef2ea",
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e04-codec-implementation-01/final/supplement-artifacts/bin/Probe/release/Gagamba.Execution.Linux.M1.dll"
+  }
+]
