@@ -1,0 +1,870 @@
+{
+  "run": {
+    "id": 43802107558,
+    "name": "ci",
+    "workflow_id": 375138552,
+    "path": ".github/workflows/ci.yml",
+    "html_url": "https://github.com/jenolaszlo-sketch/gagamba/actions/runs/43802107558",
+    "run_attempt": 1,
+    "head_sha": "6892ab0e235b2eaab943f218545cbe35ca95fd1b",
+    "head_branch": "main",
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-16T04:07:07Z",
+    "updated_at": "2026-11-16T04:14:14Z"
+  },
+  "probeVerdict": "MODULE-ABSENT",
+  "jobs": [
+    {
+      "id": 133084535059,
+      "html_url": "https://github.com/jenolaszlo-sketch/gagamba/actions/runs/43802107558/job/133084535059",
+      "name": "pack (packaging metadata)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-16T04:07:11Z",
+          "completed_at": "2026-11-16T04:07:14Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-16T04:07:14Z",
+          "completed_at": "2026-11-16T04:07:20Z"
+        },
+        {
+          "name": "Run actions/setup-dotnet@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-16T04:07:20Z",
+          "completed_at": "2026-11-16T04:07:21Z"
+        },
+        {
+          "name": "Pack packages",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-16T04:07:21Z",
+          "completed_at": "2026-11-16T04:07:42Z"
+        },
+        {
+          "name": "Post Run actions/setup-dotnet@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-16T04:07:42Z",
+          "completed_at": "2026-11-16T04:07:42Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-16T04:07:42Z",
+          "completed_at": "2026-11-16T04:07:42Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-16T04:07:42Z",
+          "completed_at": "2026-11-16T04:07:42Z"
+        }
+      ]
+    },
+    {
+      "id": 133084535260,
+      "html_url": "https://github.com/jenolaszlo-sketch/gagamba/actions/runs/43802107558/job/133084535260",
+      "name": "build (ubuntu-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-16T04:07:10Z",
+          "completed_at": "2026-11-16T04:07:11Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-16T04:07:11Z",
+          "completed_at": "2026-11-16T04:07:13Z"
+        },
+        {
+          "name": "Run actions/setup-dotnet@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-16T04:07:13Z",
+          "completed_at": "2026-11-16T04:07:14Z"
+        },
+        {
+          "name": "Build solution",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-16T04:07:14Z",
+          "completed_at": "2026-11-16T04:08:09Z"
+        },
+        {
+          "name": "Post Run actions/setup-dotnet@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-16T04:08:09Z",
+          "completed_at": "2026-11-16T04:08:10Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-16T04:08:10Z",
+          "completed_at": "2026-11-16T04:08:10Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-16T04:08:10Z",
+          "completed_at": "2026-11-16T04:08:10Z"
+        }
+      ]
+    },
+    {
+      "id": 133084535341,
+      "html_url": "https://github.com/jenolaszlo-sketch/gagamba/actions/runs/43802107558/job/133084535341",
+      "name": "GM-2 macOS provider tests",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-16T04:07:11Z",
+          "completed_at": "2026-11-16T04:07:12Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-16T04:07:12Z",
+          "completed_at": "2026-11-16T04:07:18Z"
+        },
+        {
+          "name": "Run actions/setup-dotnet@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-16T04:07:18Z",
+          "completed_at": "2026-11-16T04:07:37Z"
+        },
+        {
+          "name": "xUnit provider tests (GM-2 macOS)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-16T04:07:37Z",
+          "completed_at": "2026-11-16T04:08:27Z"
+        },
+        {
+          "name": "Cross-platform conformance (macOS row, real launchd)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-16T04:08:27Z",
+          "completed_at": "2026-11-16T04:08:38Z"
+        },
+        {
+          "name": "Post Run actions/setup-dotnet@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-16T04:08:38Z",
+          "completed_at": "2026-11-16T04:08:40Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-16T04:08:40Z",
+          "completed_at": "2026-11-16T04:08:41Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-16T04:08:41Z",
+          "completed_at": "2026-11-16T04:08:43Z"
+        }
+      ]
+    },
+    {
+      "id": 133084535356,
+      "html_url": "https://github.com/jenolaszlo-sketch/gagamba/actions/runs/43802107558/job/133084535356",
+      "name": "macOS lifecycle probe (GM-1A)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-16T04:07:11Z",
+          "completed_at": "2026-11-16T04:07:12Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-16T04:07:12Z",
+          "completed_at": "2026-11-16T04:07:16Z"
+        },
+        {
+          "name": "Run GM-1A lifecycle probe",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-16T04:07:16Z",
+          "completed_at": "2026-11-16T04:08:23Z"
+        },
+        {
+          "name": "Upload evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-16T04:08:23Z",
+          "completed_at": "2026-11-16T04:08:24Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-16T04:08:24Z",
+          "completed_at": "2026-11-16T04:08:25Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-16T04:08:25Z",
+          "completed_at": "2026-11-16T04:08:26Z"
+        }
+      ]
+    },
+    {
+      "id": 133084535359,
+      "html_url": "https://github.com/jenolaszlo-sketch/gagamba/actions/runs/43802107558/job/133084535359",
+      "name": "preparation",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-16T04:07:11Z",
+          "completed_at": "2026-11-16T04:07:12Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-16T04:07:12Z",
+          "completed_at": "2026-11-16T04:07:19Z"
+        },
+        {
+          "name": "Verify preparation baseline",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-16T04:07:19Z",
+          "completed_at": "2026-11-16T04:07:25Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-16T04:07:25Z",
+          "completed_at": "2026-11-16T04:07:28Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-16T04:07:28Z",
+          "completed_at": "2026-11-16T04:07:28Z"
+        }
+      ]
+    },
+    {
+      "id": 133084535399,
+      "html_url": "https://github.com/jenolaszlo-sketch/gagamba/actions/runs/43802107558/job/133084535399",
+      "name": "build (windows-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-16T04:07:10Z",
+          "completed_at": "2026-11-16T04:07:11Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-16T04:07:11Z",
+          "completed_at": "2026-11-16T04:07:18Z"
+        },
+        {
+          "name": "Run actions/setup-dotnet@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-16T04:07:18Z",
+          "completed_at": "2026-11-16T04:07:44Z"
+        },
+        {
+          "name": "Build solution",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-16T04:07:44Z",
+          "completed_at": "2026-11-16T04:08:28Z"
+        },
+        {
+          "name": "Post Run actions/setup-dotnet@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-16T04:08:28Z",
+          "completed_at": "2026-11-16T04:08:28Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-16T04:08:28Z",
+          "completed_at": "2026-11-16T04:08:30Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-16T04:08:30Z",
+          "completed_at": "2026-11-16T04:08:30Z"
+        }
+      ]
+    },
+    {
+      "id": 133084994138,
+      "html_url": "https://github.com/jenolaszlo-sketch/gagamba/actions/runs/43802107558/job/133084994138",
+      "name": "unit tests (ubuntu-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-16T04:08:40Z",
+          "completed_at": "2026-11-16T04:08:42Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-16T04:08:42Z",
+          "completed_at": "2026-11-16T04:08:49Z"
+        },
+        {
+          "name": "Run actions/setup-dotnet@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-16T04:08:49Z",
+          "completed_at": "2026-11-16T04:08:49Z"
+        },
+        {
+          "name": "xUnit unit tests (fixture SelfTest, no sandbox API)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-16T04:08:49Z",
+          "completed_at": "2026-11-16T04:09:17Z"
+        },
+        {
+          "name": "xUnit contract tests (GP-2 execution domain, pure logic)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-16T04:09:17Z",
+          "completed_at": "2026-11-16T04:09:21Z"
+        },
+        {
+          "name": "Restricted B1 deterministic facade contracts (no native workloads)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-16T04:09:21Z",
+          "completed_at": "2026-11-16T04:09:38Z"
+        },
+        {
+          "name": "B2 deterministic recovery bootstrap contracts",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-16T04:09:38Z",
+          "completed_at": "2026-11-16T04:09:46Z"
+        },
+        {
+          "name": "B2 unprivileged Linux process lifelines (no native-domain qualification)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8,
+          "started_at": "2026-11-16T04:09:46Z",
+          "completed_at": "2026-11-16T04:10:10Z"
+        },
+        {
+          "name": "xUnit provider tests (GW-2 Windows, skips off-Windows)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-16T04:10:10Z",
+          "completed_at": "2026-11-16T04:10:15Z"
+        },
+        {
+          "name": "xUnit provider tests (GL-2 Linux, OS legs need cgroup delegation)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-16T04:10:15Z",
+          "completed_at": "2026-11-16T04:10:20Z"
+        },
+        {
+          "name": "xUnit runtime tests (provider selection + requirement-driven launch)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-16T04:10:20Z",
+          "completed_at": "2026-11-16T04:10:25Z"
+        },
+        {
+          "name": "Cross-platform conformance (shared matrix; OS legs skip without delegation)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-16T04:10:25Z",
+          "completed_at": "2026-11-16T04:10:31Z"
+        },
+        {
+          "name": "GQ-1 job-ownership unit tests (Windows-only, skip elsewhere)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-16T04:10:31Z",
+          "completed_at": "2026-11-16T04:10:34Z"
+        },
+        {
+          "name": "Post Run actions/setup-dotnet@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25,
+          "started_at": "2026-11-16T04:10:34Z",
+          "completed_at": "2026-11-16T04:10:34Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 26,
+          "started_at": "2026-11-16T04:10:34Z",
+          "completed_at": "2026-11-16T04:10:34Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 27,
+          "started_at": "2026-11-16T04:10:34Z",
+          "completed_at": "2026-11-16T04:10:35Z"
+        }
+      ]
+    },
+    {
+      "id": 133084994209,
+      "html_url": "https://github.com/jenolaszlo-sketch/gagamba/actions/runs/43802107558/job/133084994209",
+      "name": "unit tests (windows-latest)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-16T04:08:36Z",
+          "completed_at": "2026-11-16T04:08:37Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-16T04:08:38Z",
+          "completed_at": "2026-11-16T04:08:47Z"
+        },
+        {
+          "name": "Run actions/setup-dotnet@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-16T04:08:47Z",
+          "completed_at": "2026-11-16T04:09:30Z"
+        },
+        {
+          "name": "xUnit unit tests (fixture SelfTest, no sandbox API)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-16T04:09:30Z",
+          "completed_at": "2026-11-16T04:09:50Z"
+        },
+        {
+          "name": "xUnit contract tests (GP-2 execution domain, pure logic)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-16T04:09:50Z",
+          "completed_at": "2026-11-16T04:09:55Z"
+        },
+        {
+          "name": "Restricted B1 deterministic facade contracts (no native workloads)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-16T04:09:55Z",
+          "completed_at": "2026-11-16T04:10:15Z"
+        },
+        {
+          "name": "B2 deterministic recovery bootstrap contracts",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7,
+          "started_at": "2026-11-16T04:10:15Z",
+          "completed_at": "2026-11-16T04:10:27Z"
+        },
+        {
+          "name": "B2 unprivileged Linux process lifelines (no native-domain qualification)",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 8,
+          "started_at": "2026-11-16T04:10:27Z",
+          "completed_at": "2026-11-16T04:10:27Z"
+        },
+        {
+          "name": "xUnit provider tests (GW-2 Windows, skips off-Windows)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-16T04:10:27Z",
+          "completed_at": "2026-11-16T04:10:42Z"
+        },
+        {
+          "name": "xUnit provider tests (GL-2 Linux, OS legs need cgroup delegation)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-16T04:10:42Z",
+          "completed_at": "2026-11-16T04:10:49Z"
+        },
+        {
+          "name": "xUnit runtime tests (provider selection + requirement-driven launch)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-16T04:10:49Z",
+          "completed_at": "2026-11-16T04:10:55Z"
+        },
+        {
+          "name": "Cross-platform conformance (shared matrix; OS legs skip without delegation)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-16T04:10:55Z",
+          "completed_at": "2026-11-16T04:11:07Z"
+        },
+        {
+          "name": "GQ-1 job-ownership unit tests (Windows-only, skip elsewhere)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-16T04:11:07Z",
+          "completed_at": "2026-11-16T04:11:12Z"
+        },
+        {
+          "name": "Post Run actions/setup-dotnet@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 25,
+          "started_at": "2026-11-16T04:11:12Z",
+          "completed_at": "2026-11-16T04:11:13Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 26,
+          "started_at": "2026-11-16T04:11:13Z",
+          "completed_at": "2026-11-16T04:11:14Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 27,
+          "started_at": "2026-11-16T04:11:14Z",
+          "completed_at": "2026-11-16T04:11:14Z"
+        }
+      ]
+    },
+    {
+      "id": 133085894905,
+      "html_url": "https://github.com/jenolaszlo-sketch/gagamba/actions/runs/43802107558/job/133085894905",
+      "name": "fixture self-test (windows)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-16T04:11:20Z",
+          "completed_at": "2026-11-16T04:11:21Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-16T04:11:21Z",
+          "completed_at": "2026-11-16T04:11:31Z"
+        },
+        {
+          "name": "Run actions/setup-dotnet@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-16T04:11:31Z",
+          "completed_at": "2026-11-16T04:12:05Z"
+        },
+        {
+          "name": "Fixture self-test entrypoint",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-16T04:12:05Z",
+          "completed_at": "2026-11-16T04:12:48Z"
+        },
+        {
+          "name": "Upload evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-16T04:12:48Z",
+          "completed_at": "2026-11-16T04:12:49Z"
+        },
+        {
+          "name": "Post Run actions/setup-dotnet@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9,
+          "started_at": "2026-11-16T04:12:49Z",
+          "completed_at": "2026-11-16T04:12:50Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-16T04:12:50Z",
+          "completed_at": "2026-11-16T04:12:52Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-16T04:12:52Z",
+          "completed_at": "2026-11-16T04:12:52Z"
+        }
+      ]
+    },
+    {
+      "id": 133086430865,
+      "html_url": "https://github.com/jenolaszlo-sketch/gagamba/actions/runs/43802107558/job/133086430865",
+      "name": "availability probe (windows)",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-16T04:12:56Z",
+          "completed_at": "2026-11-16T04:12:57Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-16T04:12:57Z",
+          "completed_at": "2026-11-16T04:13:05Z"
+        },
+        {
+          "name": "Run actions/setup-dotnet@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-16T04:13:05Z",
+          "completed_at": "2026-11-16T04:13:51Z"
+        },
+        {
+          "name": "Availability probe smoke entrypoint",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-16T04:13:51Z",
+          "completed_at": "2026-11-16T04:14:09Z"
+        },
+        {
+          "name": "Classify host capability",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5,
+          "started_at": "2026-11-16T04:14:09Z",
+          "completed_at": "2026-11-16T04:14:09Z"
+        },
+        {
+          "name": "Upload evidence",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6,
+          "started_at": "2026-11-16T04:14:09Z",
+          "completed_at": "2026-11-16T04:14:10Z"
+        },
+        {
+          "name": "Post Run actions/setup-dotnet@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11,
+          "started_at": "2026-11-16T04:14:10Z",
+          "completed_at": "2026-11-16T04:14:10Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12,
+          "started_at": "2026-11-16T04:14:10Z",
+          "completed_at": "2026-11-16T04:14:12Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13,
+          "started_at": "2026-11-16T04:14:12Z",
+          "completed_at": "2026-11-16T04:14:12Z"
+        }
+      ]
+    },
+    {
+      "id": 133086863696,
+      "html_url": "https://github.com/jenolaszlo-sketch/gagamba/actions/runs/43802107558/job/133086863696",
+      "name": "launch spike (windows)",
+      "status": "completed",
+      "conclusion": "skipped",
+      "steps": []
+    }
+  ],
+  "push": {
+    "origin": "https://github.com/jenolaszlo-sketch/gagamba.git",
+    "previousRemoteMain": "e8099e37c1243e81f173bf0248307cf7d2fe3875",
+    "verifiedRemoteMain": "6892ab0e235b2eaab943f218545cbe35ca95fd1b",
+    "mode": "Fast-forward only"
+  },
+  "outgoingReview": {
+    "commits": [
+      "7713ec58cc7c292862c8c80d6b57dcacd3420b44",
+      "4a97b79e0060b001a7c1d30ae93bc66cedc52418",
+      "4cb46a6cdbcc52b7129dbd88c4eba2e62ae73469",
+      "8be61181e804b2dfafb0797eb54c92d2f234ff86",
+      "29da0ed60c18ed6364bf9366a64ab5aa3393db62",
+      "ffdad5d05fefb6d260c884d61c791c6d9be91df5",
+      "0d64fcd199997bf3bede3b328f44aaf211048daa",
+      "6892ab0e235b2eaab943f218545cbe35ca95fd1b"
+    ],
+    "outgoingBlobVersions": 521,
+    "bytesScanned": 36952387,
+    "extensions": {
+      "(none)": 1,
+      ".bin": 18,
+      ".cs": 10,
+      ".csproj": 3,
+      ".input": 32,
+      ".json": 88,
+      ".jsonl": 38,
+      ".log": 246,
+      ".md": 48,
+      ".projection": 13,
+      ".ps1": 8,
+      ".py": 9,
+      ".trx": 3,
+      ".txt": 45,
+      ".wire": 13,
+      ".xml": 53
+    },
+    "retainedUntracked": 44,
+    "matchedPaths": {}
+  }
+}

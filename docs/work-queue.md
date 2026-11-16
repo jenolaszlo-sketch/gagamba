@@ -1,5 +1,9 @@
 # Current work queue
 
+> **ALT-B SLICE E-4 — ENTRY ASSESSMENT COMPLETE (2026-11-16).**
+>
+> Next commission is separate E-4 entry authorization. Bind the accepted GAVA1 source, exact managed implementation and test scope, and independent qualification and P4 gates. Implementation awaits that decision. [E-4 entry assessment](decisions/rc2b-06-b6-alt-b-slice-e-04-entry-owner-01.md).
+
 > **ALT-B SLICE E-3 — ACCEPTED WITH QUALIFICATIONS (2026-11-16).**
 >
 > Next commission is a separate refusal-only E-4 entry owner assessment. Verify the authoritative GAVA1 header and wire, authenticated context, cross-format handoff and the applicable P4 and entry gates. E-4 entry and implementation require their own decisions. [OWNER-02 decision](decisions/rc2b-06-b6-alt-b-slice-e-03-owner-02.md).

@@ -1,5 +1,9 @@
 # Gagamba handoff
 
+> **ALT-B SLICE E-4 — ENTRY ASSESSMENT COMPLETE (2026-11-16).**
+>
+> E-4 assessment reconciled the verified GAVA1 wire and cross-format requirements with the existing refusal-only gates. E-3 R2 stays isolated and E-6 retains live atomic activation and release enforcement. [E-4 entry assessment](decisions/rc2b-06-b6-alt-b-slice-e-04-entry-owner-01.md).
+
 > **ALT-B SLICE E-3 — ACCEPTED WITH QUALIFICATIONS (2026-11-16).**
 >
 > OWNER-02 closed E-3 for the exact R2 managed codec after independent Q4. Production integration requires separate authorization. The 331 native skips per configuration remain unqualified. The E-2 qualifications and downstream obligations carry forward. [OWNER-02 decision](decisions/rc2b-06-b6-alt-b-slice-e-03-owner-02.md).

@@ -1,5 +1,9 @@
 # Gagamba project status
 
+> **ALT-B SLICE E-4 — ENTRY ASSESSMENT COMPLETE (2026-11-16).**
+>
+> GitHub main contains the accepted E-3 milestone and its CI passed. E-4 can proceed to a separate entry authorization decision for the isolated managed GAVA1 context scope. [E-4 entry assessment](decisions/rc2b-06-b6-alt-b-slice-e-04-entry-owner-01.md).
+
 > **ALT-B SLICE E-3 — ACCEPTED WITH QUALIFICATIONS (2026-11-16).**
 >
 > E-3 is formally closed for the isolated managed R2 codec (`8be61181e804b2dfafb0797eb54c92d2f234ff86`). Independent Q4 satisfied the OWNER-01 reviewer-independence gate. BB-02, composite Q-E1, P0 external evidence durability and `NATIVE-PENDING` remain open. P4 remains refusal-only and neutral for exact R2. [OWNER-02 decision](decisions/rc2b-06-b6-alt-b-slice-e-03-owner-02.md).
