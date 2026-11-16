@@ -1,5 +1,9 @@
 # Current work queue
 
+> **ALT-B SLICE E-3 — ACCEPTED WITH QUALIFICATIONS (2026-11-16).**
+>
+> Next commission is a separate refusal-only E-4 entry owner assessment. Verify the authoritative GAVA1 header and wire, authenticated context, cross-format handoff and the applicable P4 and entry gates. E-4 entry and implementation require their own decisions. [OWNER-02 decision](decisions/rc2b-06-b6-alt-b-slice-e-03-owner-02.md).
+
 > **ALT-B SLICE E-3 — INDEPENDENT Q4 SUPPORTED WITH QUALIFICATIONS (2026-11-16).**
 >
 > Next commission is a separate OWNER-02 decision on the exact R2 revision and Q4 evidence. E-4 entry assessment remains deferred pending E-3 owner acceptance. [Independent qualification](reviews/rc2b-06-b6-alt-b-slice-e-03-codec-r2-q4.md).

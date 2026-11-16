@@ -1,5 +1,9 @@
 # Gagamba handoff
 
+> **ALT-B SLICE E-3 — ACCEPTED WITH QUALIFICATIONS (2026-11-16).**
+>
+> OWNER-02 closed E-3 for the exact R2 managed codec after independent Q4. Production integration requires separate authorization. The 331 native skips per configuration remain unqualified. The E-2 qualifications and downstream obligations carry forward. [OWNER-02 decision](decisions/rc2b-06-b6-alt-b-slice-e-03-owner-02.md).
+
 > **ALT-B SLICE E-3 — INDEPENDENT Q4 SUPPORTED WITH QUALIFICATIONS (2026-11-16).**
 >
 > Independent Q4 supports the unchanged E-3 codec R2 within the managed scope. Submit the pinned revision and evidence for a separate OWNER-02 decision. [Independent qualification](reviews/rc2b-06-b6-alt-b-slice-e-03-codec-r2-q4.md).

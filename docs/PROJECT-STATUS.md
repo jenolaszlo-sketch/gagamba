@@ -1,5 +1,9 @@
 # Gagamba project status
 
+> **ALT-B SLICE E-3 — ACCEPTED WITH QUALIFICATIONS (2026-11-16).**
+>
+> E-3 is formally closed for the isolated managed R2 codec (`8be61181e804b2dfafb0797eb54c92d2f234ff86`). Independent Q4 satisfied the OWNER-01 reviewer-independence gate. BB-02, composite Q-E1, P0 external evidence durability and `NATIVE-PENDING` remain open. P4 remains refusal-only and neutral for exact R2. [OWNER-02 decision](decisions/rc2b-06-b6-alt-b-slice-e-03-owner-02.md).
+
 > **ALT-B SLICE E-3 — OWNER ACCEPTANCE BLOCKED (2026-11-16).**
 >
 > E-3 owner acceptance is blocked on reviewer independence. All 30 historical case outcomes on R2 verified. The exact candidate remains pending independent qualification by a distinct reviewer. [Current owner decision](decisions/rc2b-06-b6-alt-b-slice-e-03-owner-01.md).

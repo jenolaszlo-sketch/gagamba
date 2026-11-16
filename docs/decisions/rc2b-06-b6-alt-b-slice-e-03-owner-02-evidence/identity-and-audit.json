@@ -1,0 +1,270 @@
+{
+  "checkout": {
+    "commitsAndTrees": {
+      "0d64fcd199997bf3bede3b328f44aaf211048daa": "7929ed9dc23583787b62301b306eaee9833b1f11",
+      "ffdad5d05fefb6d260c884d61c791c6d9be91df5": "9aef7acf0f865fcc355b7e01c0e9b021eb0ceff0",
+      "29da0ed60c18ed6364bf9366a64ab5aa3393db62": "52364b4c62098fc0fc75fdda26bd2bd8f099c760",
+      "8be61181e804b2dfafb0797eb54c92d2f234ff86": "1c9307845858fb25ca0a9473d53d1fd1496018fc",
+      "4cb46a6cdbcc52b7129dbd88c4eba2e62ae73469": "0975cc5fbd13c6342c219333029e82e3d02c94aa",
+      "4a97b79e0060b001a7c1d30ae93bc66cedc52418": "dfd9519b7799155a0fd6f99a8edad27618c38a6a",
+      "7713ec58cc7c292862c8c80d6b57dcacd3420b44": "e7f0854d5365aef6533d6ba731eebadc8638bac0",
+      "34eef4c8e7d814e15cb1bfce27df032e75766f19": "5b9bfa884b4cec86aab293b80ada1b7f73b58d11",
+      "1c7fb672055cc3322eb1633d37e5e84d764cb66d": "cd3b29e8e5ad8790e0795418408b8d871e920f58",
+      "38e7c212d31211bb817f042bdd2737398726ce90": "40cfa343093cfad11647a4db62eb3ae0cb38265d"
+    },
+    "canonicalBranch": "main",
+    "worktrees": 1,
+    "trackedAndIndexClean": true,
+    "historicalUntracked": 44,
+    "untrackedInventorySha256": "9c8a0fa7f6260d56566362e59fdd3f9c884d5aa016490941279251050ea5af98",
+    "nonMainRefsSha256": "5fa14a0e13d343e14a1158a6514e1359b09cc5ad16625979c28103bc4def5a49",
+    "originMainTracking": "e8099e37c1243e81f173bf0248307cf7d2fe3875",
+    "pathsChangedOutsideDocsFromR2": []
+  },
+  "evidence": {
+    "reports": {
+      "codec-implementation-01": {
+        "reportBlob": "779cc2e185d88ba352d8272ea0548a057a488887",
+        "evidenceTree": "b87dbe859196c2a696d3bd9367a4177719465e0b"
+      },
+      "codec-q1": {
+        "reportBlob": "9340e86634bc845ee2be7fd4ccc9c3452cd7b2dc",
+        "evidenceTree": "43067de61d72e06da640ccb609381fd1d6612285",
+        "entries": 156,
+        "manifestSha256": "9739a964e1300444e9377bdd08c1f1e952b8aaf9f2feae9129b0c510c623ece1"
+      },
+      "codec-r1": {
+        "reportBlob": "3f5fdf597a86fa0e32c2c69551f3e06ba1595b04",
+        "evidenceTree": "6475c4ca7b04df16163a60c072bc8464b69db2e4"
+      },
+      "codec-r1-q2": {
+        "reportBlob": "135dbe19976df149657bcf05cecf0f1c89f6a7a0",
+        "evidenceTree": "d6cfc0447e537dc0c66bd7489806f5d5b543957c",
+        "entries": 100,
+        "manifestSha256": "17bf65a8ac79e41b85f34723616af4950b7df2e592da55ec59523f9f3129445b"
+      },
+      "codec-r2": {
+        "reportBlob": "900e12cb53cdf843516cc0886e6070f141f8bea2",
+        "evidenceTree": "f0432bc5c8988a2cfe5a9d217132fc48f143a35b",
+        "entries": 64,
+        "manifestSha256": "22c232f8585d99dbf9d9fde298fbe3f6924ad69fd5b4139366f0f50f845620be"
+      },
+      "codec-r2-q3": {
+        "reportBlob": "d2ebd0a38ea0418a2bc6c80719346af291d4ea6f",
+        "evidenceTree": "ace394b5a5e8176422a142272ae064eeeeb68084",
+        "entries": 77,
+        "manifestSha256": "2ca94c21c993e2923bdafb017775fc20143bd8d0c5174502b61d4bbf6b7af16b"
+      },
+      "owner-01": {
+        "reportBlob": "0e35107af185fa6fb4d8173088b6da13a3bcd30d",
+        "evidenceTree": "6d40fdbfa7096f3ec9ebc0d7c1429e31ca465d55",
+        "entries": 9,
+        "manifestSha256": "e965570e5fe97cd617b5b3f245e2b9403c96638c95d7c43b9cd847a85b09a301"
+      },
+      "codec-r2-q4": {
+        "reportBlob": "6f608d928a18a18bc48c1d1d3afff864973607d0",
+        "evidenceTree": "1fe9c8e8a0dc8b977cc236ee39c0f3f870431157",
+        "entries": 132,
+        "manifestSha256": "38d7d5eb33160e3f756639a10d3d1e1da5fe0706f673b457e28777d826bc8cc8"
+      }
+    },
+    "normative": {
+      "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-v3-pre-frozen-record-candidate-01.md": {
+        "blob": "f6a71562845d2cfe0aee5495864a509c5caabe7a",
+        "sha256": "1948bab694ed37bf5c7c50524328716f3eef18d98dd1ae9971ca12100c40160e"
+      },
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-frozen-record-owner-01.md": {
+        "blob": "d2fea61b7db323319ee59033c8b1b12ded1ffe7d",
+        "sha256": "c7351553eb8c82837c618d6b36a3563cafa99899841fc20b07142898b641c7d8"
+      },
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-normative-owner-01.md": {
+        "blob": "f3639dc619dbfee39859afb7da553e2167d9b83d",
+        "sha256": "a89b9fbc1658f9df660daf89eb27725de7ba68a5ad9edea462e0a559f717c3ee"
+      },
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-bootstrap-base-owner-01.md": {
+        "blob": "93fe2c9155a21b12fd3486b9da743260897d508e",
+        "sha256": "efa2109c6d2950544759d440c256280d1b92d63dd441ccfa7574584bc0c3a9de"
+      },
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-bootstrap-base-owner-01-evidence/schema.md": {
+        "blob": "a7248152d09e19d8f3775db397f340949fa9ee57",
+        "sha256": "727b44d487249382fad63c7b2973056acd0e9291aed93e3d51c2e46cdb35c606"
+      },
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-entry-owner-01.md": {
+        "blob": "028a7c1858b5e7b506deff9d2d8d263afe3344ac",
+        "sha256": "fbb0534447430df8f608c82ae978d10294a19a8b8a5fc0dbca7983811f78311e"
+      }
+    },
+    "adoptionSection1Objects": {
+      "0fcd246812ffe1a8d9fa3813caccaf5863773eaf": "commit",
+      "19886332f3fb1bcf3149f4e173642a8673fbb746": "blob",
+      "1c217485c8e8406bbfffad61fd39d7ec5b6dd549": "blob",
+      "1cb5ac2c2b467cbfb1c0d4ac85682fb979ffe961": "tree",
+      "2a3dbcef99fdd9073e0c8c5db0f6371b5f7a5120": "commit",
+      "501487227208d935c3ab1337c9f87055c9e14b8d": "blob",
+      "5f8b92e4874378bb365fcec80d794f964aa6f821": "blob",
+      "6123b6f4de47cb542db3bdab55c0fc49d5cd095c": "commit",
+      "76b70f6832733c7cf58ffaa56afbd3df1a9f014a": "blob",
+      "7f9f615f75527221e81b7aaa498f4b564acb62b9": "blob",
+      "889f173151c0c6be97033e9e03dcd84c1697a677": "blob",
+      "8b0d8c8c5103b850209b6e1b2d76808b7a8c8007": "blob",
+      "8bb7daa7b2b0e635ba2445c78a7ac1fbf395c1ab": "blob",
+      "90e97bf480e336f7d17717f4484507161942aca7": "blob",
+      "93fe2c9155a21b12fd3486b9da743260897d508e": "blob",
+      "95dc3221ae2a5579f966526516073cdd0f392aa9": "blob",
+      "a30d1807686ee15d39ef7e9103e8b992062bd971": "commit",
+      "a61febbd417ad6628a47bec0cffa48e6bc1c8e0a": "blob",
+      "a7248152d09e19d8f3775db397f340949fa9ee57": "blob",
+      "a78ecb5040f0525d2047641b75ad48dd59cd23d6": "tree",
+      "acd61fd0af622f9e1d988845658c26a6835ddd62": "commit",
+      "c0935d0be9c7619b386f7c5be0edd0f49e778cc9": "blob",
+      "c2205a46c5b5480de36f8dac61c208097dba16b5": "tree",
+      "d52d9ba53dac7e3aca13a7a01f32914f3685f0d1": "tree",
+      "de506adea195bc198680fdfd8d6c70c71a88c7a1": "blob",
+      "ee97488ed06ae3836e7aeb81f12bf1fede096c9d": "tree",
+      "f12a84943ea30153ccf96dfef21866a78e3fb934": "commit",
+      "f3639dc619dbfee39859afb7da553e2167d9b83d": "blob",
+      "f6a71562845d2cfe0aee5495864a509c5caabe7a": "blob"
+    },
+    "r2SourceBlobs": {
+      "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodec.cs": "d861210aeb3734b04e6bf9f472c12bd226253b32",
+      "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecR2Tests.cs": "9fe5984e6fc98885b6f2d39b7721918d899d1f3f"
+    }
+  },
+  "q4Results": {
+    "managed": {
+      "debug": {
+        "q1Resolved": [
+          "B2/ambiguous-original-session",
+          "B2/disposed-original",
+          "Integrated/Integrated/Profile/CoordinatorSourceName/expectation-mismatch",
+          "Integrated/Integrated/Profile/CoordinatorSourceName/expectation-missing",
+          "Integrated/Integrated/Profile/FilterSourceName/expectation-mismatch",
+          "Integrated/Integrated/Profile/FilterSourceName/expectation-missing",
+          "Integrated/Integrated/Profile/InputSourceName/expectation-mismatch",
+          "Integrated/Integrated/Profile/InputSourceName/expectation-missing",
+          "Integrated/Integrated/Profile/MaxObjects/expectation-mismatch",
+          "Integrated/Integrated/Profile/MaxObjects/expectation-missing",
+          "Integrated/Integrated/Profile/ToolSourceName/expectation-mismatch",
+          "Integrated/Integrated/Profile/ToolSourceName/expectation-missing",
+          "Integrated/Integrated/Profile/TotalBudgetBytes/expectation-mismatch",
+          "Integrated/Integrated/Profile/TotalBudgetBytes/expectation-missing",
+          "Integrated/ambiguous-original-session",
+          "Integrated/disposed-original",
+          "binary-expectation-alias/replaced"
+        ],
+        "q2BoundedExpectation": [
+          "B2_malformed_expected_value__q1__uD800_u0058",
+          "B2_uid_number_72e2147483648",
+          "B2_uid_number_72e9999999999999999999999999",
+          "B2_uid_number_72e_2147483649",
+          "Integrated_malformed_expected_value__q1__uD800_u0058",
+          "Integrated_policy_malformed_FilterSourceName",
+          "Integrated_policy_malformed_InputSourceName",
+          "Integrated_policy_malformed_MaxObjects",
+          "Integrated_policy_malformed_ToolSourceName",
+          "Integrated_policy_malformed_TotalBudgetBytes",
+          "Integrated_uid_number_72e2147483648",
+          "Integrated_uid_number_72e9999999999999999999999999",
+          "Integrated_uid_number_72e_2147483649"
+        ],
+        "q1FullCorpus": 2383,
+        "q2Supplemental": 876,
+        "q3Supplemental": 56,
+        "suites": {
+          "original-focused": {
+            "passed": 146,
+            "skipped": 0
+          },
+          "r1-focused": {
+            "passed": 24,
+            "skipped": 0
+          },
+          "r2-focused": {
+            "passed": 15,
+            "skipped": 0
+          },
+          "combined-focused": {
+            "passed": 185,
+            "skipped": 0
+          },
+          "broad": {
+            "passed": 1678,
+            "skipped": 331
+          }
+        },
+        "verifierCoreSha256": "0be049b48bec046ea19b1650b31aa9b37542ed5c9bf59e7a8695c46d44973dd8"
+      },
+      "release": {
+        "q1Resolved": [
+          "B2/ambiguous-original-session",
+          "B2/disposed-original",
+          "Integrated/Integrated/Profile/CoordinatorSourceName/expectation-mismatch",
+          "Integrated/Integrated/Profile/CoordinatorSourceName/expectation-missing",
+          "Integrated/Integrated/Profile/FilterSourceName/expectation-mismatch",
+          "Integrated/Integrated/Profile/FilterSourceName/expectation-missing",
+          "Integrated/Integrated/Profile/InputSourceName/expectation-mismatch",
+          "Integrated/Integrated/Profile/InputSourceName/expectation-missing",
+          "Integrated/Integrated/Profile/MaxObjects/expectation-mismatch",
+          "Integrated/Integrated/Profile/MaxObjects/expectation-missing",
+          "Integrated/Integrated/Profile/ToolSourceName/expectation-mismatch",
+          "Integrated/Integrated/Profile/ToolSourceName/expectation-missing",
+          "Integrated/Integrated/Profile/TotalBudgetBytes/expectation-mismatch",
+          "Integrated/Integrated/Profile/TotalBudgetBytes/expectation-missing",
+          "Integrated/ambiguous-original-session",
+          "Integrated/disposed-original",
+          "binary-expectation-alias/replaced"
+        ],
+        "q2BoundedExpectation": [
+          "B2_malformed_expected_value__q1__uD800_u0058",
+          "B2_uid_number_72e2147483648",
+          "B2_uid_number_72e9999999999999999999999999",
+          "B2_uid_number_72e_2147483649",
+          "Integrated_malformed_expected_value__q1__uD800_u0058",
+          "Integrated_policy_malformed_FilterSourceName",
+          "Integrated_policy_malformed_InputSourceName",
+          "Integrated_policy_malformed_MaxObjects",
+          "Integrated_policy_malformed_ToolSourceName",
+          "Integrated_policy_malformed_TotalBudgetBytes",
+          "Integrated_uid_number_72e2147483648",
+          "Integrated_uid_number_72e9999999999999999999999999",
+          "Integrated_uid_number_72e_2147483649"
+        ],
+        "q1FullCorpus": 2383,
+        "q2Supplemental": 876,
+        "q3Supplemental": 56,
+        "suites": {
+          "original-focused": {
+            "passed": 146,
+            "skipped": 0
+          },
+          "r1-focused": {
+            "passed": 24,
+            "skipped": 0
+          },
+          "r2-focused": {
+            "passed": 15,
+            "skipped": 0
+          },
+          "combined-focused": {
+            "passed": 185,
+            "skipped": 0
+          },
+          "broad": {
+            "passed": 1678,
+            "skipped": 331
+          }
+        },
+        "verifierCoreSha256": "2557e6dbb923f8a0f4f7461d0d99116184418dcdff349b2e3b0a7715de2bd470"
+      }
+    },
+    "buildControlsPassed": 51,
+    "preparationRegressionsPassed": 9,
+    "preparationPassed": true,
+    "releasePassed": true,
+    "debugExpectedRefusal": true,
+    "compiledAssemblies": 36,
+    "testCallerControls": 2,
+    "productionCodecCallers": 0,
+    "p4": "Neutral"
+  }
+}
