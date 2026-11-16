@@ -1,0 +1,103 @@
+{
+  "path": "C:/Users/Laszlos/source/repos/Gagamba",
+  "branch": "main",
+  "worktrees": 1,
+  "trackedAndIndexClean": true,
+  "head": "3c16b53b288b39de3fb36964eecc8d5cccbc62b6",
+  "tree": "2f30e0dc72d1565ac312c0c052ef820a03a3dea0",
+  "authorization": "db44b7e50c6ce449fdb6b596ad52744cf10443c0",
+  "acceptedE3": "8be61181e804b2dfafb0797eb54c92d2f234ff86",
+  "historicalUntrackedCount": 44,
+  "untrackedInventoryReferenceSha256": "7d6abbd93c9703626d07455e1e68c18b2538d45847549cb3d39a4318637fc7e1",
+  "untrackedPathAndHashFingerprint": "9c8a0fa7f6260d56566362e59fdd3f9c884d5aa016490941279251050ea5af98",
+  "remoteTracking": "6892ab0e235b2eaab943f218545cbe35ca95fd1b",
+  "normative": {
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-entry-owner-01-evidence/gava1-frozen-excerpt.txt": {
+      "blob": "23d6ed7d95e4dd532de7e7f3a0f3a6de665b50a1",
+      "sha256": "e6e0730c735c5984c97a46ed1c205131c5ffff6427de87bcb731f00110d568c4"
+    },
+    "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-v3-pre-frozen-record-candidate-01.md": {
+      "blob": "f6a71562845d2cfe0aee5495864a509c5caabe7a",
+      "sha256": "1948bab694ed37bf5c7c50524328716f3eef18d98dd1ae9971ca12100c40160e"
+    }
+  },
+  "manifests": {
+    "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-q1": {
+      "count": 156,
+      "manifestSha256": "9739a964e1300444e9377bdd08c1f1e952b8aaf9f2feae9129b0c510c623ece1",
+      "revision": "7713ec58cc7c292862c8c80d6b57dcacd3420b44"
+    },
+    "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-r1-q2": {
+      "count": 100,
+      "manifestSha256": "17bf65a8ac79e41b85f34723616af4950b7df2e592da55ec59523f9f3129445b",
+      "revision": "4cb46a6cdbcc52b7129dbd88c4eba2e62ae73469"
+    },
+    "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2": {
+      "count": 64,
+      "manifestSha256": "22c232f8585d99dbf9d9fde298fbe3f6924ad69fd5b4139366f0f50f845620be",
+      "revision": "8be61181e804b2dfafb0797eb54c92d2f234ff86"
+    },
+    "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-r2-q3": {
+      "count": 77,
+      "manifestSha256": "2ca94c21c993e2923bdafb017775fc20143bd8d0c5174502b61d4bbf6b7af16b",
+      "revision": "29da0ed60c18ed6364bf9366a64ab5aa3393db62"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-owner-01": {
+      "count": 9,
+      "manifestSha256": "e965570e5fe97cd617b5b3f245e2b9403c96638c95d7c43b9cd847a85b09a301",
+      "revision": "ffdad5d05fefb6d260c884d61c791c6d9be91df5"
+    },
+    "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-r2-q4": {
+      "count": 132,
+      "manifestSha256": "38d7d5eb33160e3f756639a10d3d1e1da5fe0706f673b457e28777d826bc8cc8",
+      "revision": "0d64fcd199997bf3bede3b328f44aaf211048daa"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-owner-02": {
+      "count": 6,
+      "manifestSha256": "bde46f07a184c6e50b203e898e90905c82809c6f67fc57ed81449d30b40d5b76",
+      "revision": "6892ab0e235b2eaab943f218545cbe35ca95fd1b"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-entry-owner-01": {
+      "count": 9,
+      "manifestSha256": "61a50084358b13be0ac36a8c2d93e12d111a159812a416683a0acec86a653aef",
+      "revision": "dc43b4360dbe17c644118239d0fd691c639aa0cc"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-entry-auth-01": {
+      "count": 6,
+      "manifestSha256": "d03d78f64ec04f4fbc98c5055a3b60529b30ac9671fdeab8701d93b339e3d271",
+      "revision": "db44b7e50c6ce449fdb6b596ad52744cf10443c0"
+    },
+    "docs/evidence/rc2b-06-b6-alt-b-slice-e-04-codec-implementation-01": {
+      "count": 129,
+      "manifestSha256": "5c25fa0cdadbc7f28481cb0bee2359ed8126aec1ca7417f68f6c4fd641485ac4",
+      "revision": "3c16b53b288b39de3fb36964eecc8d5cccbc62b6"
+    }
+  },
+  "historicalTrees": {
+    "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-implementation-01.md": "779cc2e185d88ba352d8272ea0548a057a488887",
+    "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-implementation-01-evidence": "b87dbe859196c2a696d3bd9367a4177719465e0b",
+    "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1.md": "3f5fdf597a86fa0e32c2c69551f3e06ba1595b04",
+    "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence": "6475c4ca7b04df16163a60c072bc8464b69db2e4"
+  },
+  "source": {
+    "src/Gagamba.Execution.Linux.M1/Bootstrap/Gava1ContextCodec.cs": {
+      "blob": "2ea80a0828e51ba86b8ee216ffe4d20f4c42914b",
+      "sha256": "353280f0ad020591ed39b2475ed26bb3046acb159ef80e21398af46652e5bf69"
+    },
+    "src/Gagamba.Execution.Linux.M1/Bootstrap/Gava1ContextData.cs": {
+      "blob": "95f4bb23eaffd4a36fd83cc4995f7cd8ba22a3d7",
+      "sha256": "cdb1b5613f1f731e4f93d6c62640c67f94718dd7caeaeb41024e7f0f1bb4abe9"
+    },
+    "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/Gava1ContextCodecTests.cs": {
+      "blob": "c58def60a40abeb7a767c9f5408b08becf94cc2e",
+      "sha256": "0a32a6e3b05ad8dd5a37d20d74d8b17870c15d3b9d6f031db0bdb59696c9ed82"
+    },
+    "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/Gava1ContextVectors.cs": {
+      "blob": "19244bcb4cf2a7ff629083abea79a01444a14bce",
+      "sha256": "a16f818981f72c075e8d1aa74a73845cb9792e81a6dc80cc42d0329ee53db345"
+    }
+  },
+  "governingRecordCount": 24,
+  "f02VerifiedEntriesPerCopy": 15,
+  "f02ManifestSha256": "5940b98bc4158eb3887b096a047ff6451f6059a3ec45e7bc254f4ed5cc583f82"
+}

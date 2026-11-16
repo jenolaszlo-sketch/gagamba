@@ -1,0 +1,10 @@
+["dotnet","vstest","C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e04-codec-q1\\run/focused-release/Gagamba.Execution.Linux.M1.Tests.dll","/Logger:trx;LogFileName=e4-release.trx","/ResultsDirectory:C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e04-codec-q1\\run\\logs","/TestCaseFilter:FullyQualifiedName~Gava1ContextCodecTests"]
+VSTest version 18.7.0 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+vstest.console process failed to connect to testhost process after 15 seconds. This may occur due to machine slowness, please set environment variable VSTEST_CONNECTION_TIMEOUT to increase timeout. The process with id 31700 was still running when this message was reported.
+Results File: C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-q1\run\logs\e4-release.trx
+
+Test Run Aborted.
+EXIT 1

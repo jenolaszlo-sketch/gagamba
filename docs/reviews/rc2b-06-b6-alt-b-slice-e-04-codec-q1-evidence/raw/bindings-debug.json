@@ -1,0 +1,32 @@
+[
+  {
+    "sha256": "19F22AF621882E706E81DB7689C76AEC4604116FDDD424109D5099BB0F1F3A70",
+    "reference": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e04-codec-q1\\run\\candidate\\bin/Gagamba.Execution.Linux.M1/debug/Gagamba.Execution.Linux.M1.dll",
+    "actual": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e04-codec-q1\\run/focused-debug/Gagamba.Execution.Linux.M1.dll"
+  },
+  {
+    "sha256": "0BC30B86BA7B5103F822C0FE7276F2DA7BC9C0C563AB5256AE6EA19C39CD7557",
+    "reference": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e04-codec-q1\\run\\candidate\\bin/Gagamba.Execution.Linux.M1/debug/Gagamba.Execution.dll",
+    "actual": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e04-codec-q1\\run/focused-debug/Gagamba.Execution.dll"
+  },
+  {
+    "sha256": "68C28B2481CE3B7B58939A4AC267F200421C3FBF987EFCBCBE6C2AF641A3389C",
+    "reference": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e04-codec-q1\\run\\candidate\\bin/Gagamba.Execution.Linux.M1.Tests/debug/Gagamba.Execution.Linux.M1.Tests.dll",
+    "actual": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e04-codec-q1\\run/focused-debug/Gagamba.Execution.Linux.M1.Tests.dll"
+  },
+  {
+    "sha256": "68C28B2481CE3B7B58939A4AC267F200421C3FBF987EFCBCBE6C2AF641A3389C",
+    "reference": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e04-codec-q1\\run\\candidate\\bin/Gagamba.Execution.Linux.M1.Tests/debug/Gagamba.Execution.Linux.M1.Tests.dll",
+    "actual": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e04-codec-q1\\run/broad-debug/tests/debug/Gagamba.Execution.Linux.M1.Tests.dll"
+  },
+  {
+    "sha256": "19F22AF621882E706E81DB7689C76AEC4604116FDDD424109D5099BB0F1F3A70",
+    "reference": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e04-codec-q1\\run\\candidate\\bin/Gagamba.Execution.Linux.M1/debug/Gagamba.Execution.Linux.M1.dll",
+    "actual": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e04-codec-q1\\run/broad-debug/tests/debug/Gagamba.Execution.Linux.M1.dll"
+  },
+  {
+    "sha256": "2068D2423187274B918FF9668B3A272B93AD1E76120124E32DDECB6111EB7641",
+    "reference": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e04-codec-q1\\run\\candidate\\bin/Gagamba.Execution.Linux.M1/release/Gagamba.Execution.Linux.M1.dll",
+    "actual": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e04-codec-q1\\run/broad-debug/src/Gagamba.Execution.Linux.M1/bin/Release/net10.0/Gagamba.Execution.Linux.M1.dll"
+  }
+]

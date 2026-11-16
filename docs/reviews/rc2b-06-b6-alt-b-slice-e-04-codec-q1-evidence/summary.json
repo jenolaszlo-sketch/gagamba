@@ -1,0 +1,125 @@
+{
+  "debug": {
+    "e4": {
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "not-run": 0,
+      "total": 11,
+      "runner": "xUnit.net v3 3.2.0+9e422989c1",
+      "vstestExecuted": 0
+    },
+    "e3": {
+      "passed": 185,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "not-run": 0,
+      "total": 185,
+      "runner": "xUnit.net v3 3.2.0+9e422989c1",
+      "vstestExecuted": 0,
+      "membershipMatchesQ4": true,
+      "classCounts": {
+        "InstallationWireTests": 24,
+        "ValidationPreCodecRemediationTests": 24,
+        "ValidationPreCodecBinaryTests": 58,
+        "ValidationPreCodecR2Tests": 15,
+        "ValidationPreCodecBootstrapTests": 64
+      }
+    },
+    "broad": {
+      "passed": 1689,
+      "failed": 0,
+      "skipped": 331,
+      "errors": 0,
+      "not-run": 0,
+      "total": 2020,
+      "runner": "xUnit.net v3 3.2.0+9e422989c1",
+      "vstestExecuted": 0,
+      "passMembershipIsQ4PlusE4": true,
+      "nativeSkipMembershipAndReasonsMatchQ4": true
+    },
+    "supplemental": {
+      "rows": 1945,
+      "exactCandidateRows": 1944,
+      "candidatePasses": 1944,
+      "sensitivityControls": 1
+    },
+    "historicalReplays": {
+      "predecessorCounterexamples": 17,
+      "candidateAssertions": 2383,
+      "exactQ2BoundedRefusals": 13,
+      "Q2Supplement": 876,
+      "Q3Supplement": 56
+    }
+  },
+  "release": {
+    "e4": {
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "not-run": 0,
+      "total": 11,
+      "runner": "xUnit.net v3 3.2.0+9e422989c1",
+      "vstestExecuted": 0
+    },
+    "e3": {
+      "passed": 185,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "not-run": 0,
+      "total": 185,
+      "runner": "xUnit.net v3 3.2.0+9e422989c1",
+      "vstestExecuted": 0,
+      "membershipMatchesQ4": true,
+      "classCounts": {
+        "ValidationPreCodecBinaryTests": 58,
+        "InstallationWireTests": 24,
+        "ValidationPreCodecR2Tests": 15,
+        "ValidationPreCodecRemediationTests": 24,
+        "ValidationPreCodecBootstrapTests": 64
+      }
+    },
+    "broad": {
+      "passed": 1689,
+      "failed": 0,
+      "skipped": 331,
+      "errors": 0,
+      "not-run": 0,
+      "total": 2020,
+      "runner": "xUnit.net v3 3.2.0+9e422989c1",
+      "vstestExecuted": 0,
+      "passMembershipIsQ4PlusE4": true,
+      "nativeSkipMembershipAndReasonsMatchQ4": true
+    },
+    "supplemental": {
+      "rows": 1945,
+      "exactCandidateRows": 1944,
+      "candidatePasses": 1944,
+      "sensitivityControls": 1
+    },
+    "historicalReplays": {
+      "predecessorCounterexamples": 17,
+      "candidateAssertions": 2383,
+      "exactQ2BoundedRefusals": 13,
+      "Q2Supplement": 876,
+      "Q3Supplement": 56
+    }
+  },
+  "buildPolicyControls": 51,
+  "e3Metadata": {
+    "inspectedPaths": 36,
+    "testAssembliesWithPositives": 2,
+    "productionPaths": 34,
+    "productionInboundOrOutboundHits": 0
+  },
+  "e4Metadata": {
+    "inspectedPaths": 36,
+    "testAssembliesWithPositives": 2,
+    "productionPaths": 34,
+    "productionInboundOrOutboundHits": 0
+  }
+}

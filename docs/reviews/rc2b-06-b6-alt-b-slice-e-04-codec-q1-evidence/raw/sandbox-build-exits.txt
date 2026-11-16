@@ -1,0 +1,1 @@
+1 build Debug Gagamba.Execution.Linux.M1.Tests

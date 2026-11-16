@@ -1,0 +1,16 @@
+python -m unittest discover -s eng/tests -p test_preparation_checkout.py -v
+test_crlf_checkout_preserves_historical_source_identities (test_preparation_checkout.PreparationCheckoutTests.test_crlf_checkout_preserves_historical_source_identities) ... ok
+test_lf_checkout_preserves_historical_source_identities (test_preparation_checkout.PreparationCheckoutTests.test_lf_checkout_preserves_historical_source_identities) ... ok
+test_closers_must_match_character_width_and_have_no_info_string (test_preparation_checkout.PreparationFenceTests.test_closers_must_match_character_width_and_have_no_info_string) ... ok
+test_invalid_backtick_info_does_not_hide_a_genuine_link (test_preparation_checkout.PreparationFenceTests.test_invalid_backtick_info_does_not_hide_a_genuine_link) ... ok
+test_legacy_identity_and_occurrences_apply_only_to_prose (test_preparation_checkout.PreparationFenceTests.test_legacy_identity_and_occurrences_apply_only_to_prose) ... ok
+test_path_and_line_reference_checks_outside_fences (test_preparation_checkout.PreparationFenceTests.test_path_and_line_reference_checks_outside_fences) ... ok
+test_real_broken_link_after_fence_is_still_an_error (test_preparation_checkout.PreparationFenceTests.test_real_broken_link_after_fence_is_still_an_error) ... ok
+test_reported_python_expression_and_valid_prose_across_line_endings (test_preparation_checkout.PreparationFenceTests.test_reported_python_expression_and_valid_prose_across_line_endings) ... ok
+test_unclosed_root_fence_and_quoted_fence_end_at_their_container (test_preparation_checkout.PreparationFenceTests.test_unclosed_root_fence_and_quoted_fence_end_at_their_container) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 7.310s
+
+OK
+EXIT 0

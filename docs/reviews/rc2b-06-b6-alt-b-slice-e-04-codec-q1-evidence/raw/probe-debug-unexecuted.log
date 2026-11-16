@@ -1,0 +1,17 @@
+["dotnet","build","C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e04-codec-q1/Probe.csproj","-c","Debug","--artifacts-path","C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e04-codec-q1\\run/probe-debug","-p:WitnessSource=C:\\Users\\Laszlos\\source\\repos\\Gagamba/tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecVectors.cs","-p:Core=C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e04-codec-q1\\run/candidate/bin/Gagamba.Execution.Linux.M1/debug","-p:SensitivitySource=C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e04-codec-q1\\run/sensitivity-debug.cs"]
+  Determining projects to restore...
+  Restored C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-q1\Probe.csproj (in 80 ms).
+  Probe -> C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-q1\run\probe-debug\bin\Probe\debug\Gagamba.Execution.Linux.M1.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:04.14
+BUILD EXIT 0
+56F50867AA3B01FC6F1827D2BEC64CE71430CD0FF1312498CFA26BB020DD17DD  C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecVectors.cs
+353280F0AD020591ED39B2475ED26BB3046ACB159EF80E21398AF46652E5BF69  C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Bootstrap\Gava1ContextCodec.cs
+15E2C1772E4CC0C26762851B940AEDBA45263FBF0C2178304C66AEABE9F111C4  C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-q1\run\sensitivity-debug.cs
+3000F873432DE0EFDD73310E74CF14403734D44F1E1AAFE6066BC89314405AB1  C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-q1\run\probe-debug\bin\Probe\debug\Gagamba.Execution.Linux.M1.Tests.dll
+2068D2423187274B918FF9668B3A272B93AD1E76120124E32DDECB6111EB7641  C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-q1\run\probe-debug\bin\Probe\debug\Gagamba.Execution.Linux.M1.dll
+AEF2F64BC5FB95AC36B9EBDE5546828EE8052075E017CB9CD216B114374C9BA6  C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-q1\run\probe-debug\bin\Probe\debug\Gagamba.Execution.dll

@@ -1,0 +1,9 @@
+pwsh -NoProfile -File eng/test-production-build.ps1 -EvidenceDirectory run/production-controls
+order-1-Release exit=1 passed=False
+Exception: C:\Users\Laszlos\source\repos\Gagamba\eng\test-production-build.ps1:47
+Line |
+  47 |      if (-not $ok) { throw "Probe failed: $Name. Inspect $log" }
+     |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Probe failed: order-1-Release. Inspect
+     | C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-q1\run\production-controls\order-1-Release.log
+EXIT 1

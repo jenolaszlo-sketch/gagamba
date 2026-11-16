@@ -1,0 +1,9 @@
+["dotnet","C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e04-codec-q1\\run/focused-release/Gagamba.Execution.Linux.M1.Tests.dll","-noColor","-class","*Gava1ContextCodecTests","-xml","C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e04-codec-q1\\run\\logs/e4-release.xml"]
+xUnit.net v3 In-Process Runner v3.2.0+9e422989c1 (64-bit .NET 10.0.12)
+  Discovering: Gagamba.Execution.Linux.M1.Tests
+  Discovered:  Gagamba.Execution.Linux.M1.Tests
+  Starting:    Gagamba.Execution.Linux.M1.Tests
+  Finished:    Gagamba.Execution.Linux.M1.Tests (ID = 'ef63447638fbaf4bc80332ebe07723ba69f9f1faeacc95eef93557e6e601e2a2')
+=== TEST EXECUTION SUMMARY ===
+   Gagamba.Execution.Linux.M1.Tests  Total: 11, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.189s
+EXIT 0

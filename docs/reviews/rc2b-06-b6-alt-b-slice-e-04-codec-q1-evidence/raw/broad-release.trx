@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="d3ce7e63-ac0f-4c7e-8d43-2a5d330303eb" name="Laszlos@LAPTOP-KBD8D8JG 2026-11-16 16:36:04" runUser="LAPTOP-KBD8D8JG\Laszlos" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-11-16T16:36:04.9231441+08:00" queuing="2026-11-16T16:36:04.9231448+08:00" start="2026-11-16T16:35:49.6915494+08:00" finish="2026-11-16T16:36:04.9235892+08:00" />
+  <TestSettings name="default" id="7ec75ad1-7243-4d73-8e67-b4a720b6114f">
+    <Deployment runDeploymentRoot="Laszlos_LAPTOP-KBD8D8JG_2026-11-16_16_36_04" />
+  </TestSettings>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="0" executed="0" passed="0" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <RunInfos>
+      <RunInfo computerName="LAPTOP-KBD8D8JG" outcome="Error" timestamp="2026-11-16T16:36:04.7941149+08:00">
+        <Text>vstest.console process failed to connect to testhost process after 15 seconds. This may occur due to machine slowness, please set environment variable VSTEST_CONNECTION_TIMEOUT to increase timeout. The process with id 17224 was still running when this message was reported.</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

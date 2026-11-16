@@ -1,0 +1,6 @@
+dotnet run --project C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-q1\run\q2-probe/Probe.csproj -c Debug --artifacts-path C:/Users/Laszlos/source/repos/Solo/gagamba-e04-codec-q1/run/supplement-artifacts -p:UseSharedCompilation=false -p:Candidate=C:\Users\Laszlos\source\repos\Solo\gagamba-e04-codec-q1\run\candidate\bin/Gagamba.Execution.Linux.M1/debug -- C:/Users/Laszlos/source/repos/Solo/gagamba-e04-codec-q1/run/supplement-debug C:\Users\Laszlos\source\repos\Gagamba\docs\decisions\rc2b-06-b6-alt-b-slice-e-03-qe1-bootstrap-base-owner-01-evidence\schema.md
+Schema rows=99 unique schemas=11 occurrences B2=46 integrated=83
+Independent assertions=2383 passed=2383 counterexamples=0
+Q2 supplemental assertions=876 matched=876 unexpected=0
+Q3 supplemental assertions=56 matched=56 unexpected=0
+EXIT 0

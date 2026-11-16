@@ -1,0 +1,10 @@
+pwsh -NoProfile -File C:\Users\Laszlos\source\repos\Gagamba\docs\evidence\rc2b-06-b6-alt-b-slice-e-04-codec-implementation-01-evidence\procedure/Run-E4.ps1 -Repository C:/Users/Laszlos/source/repos/Gagamba -Run C:/Users/Laszlos/source/repos/Solo/gagamba-e04-codec-q1/run -ProbesOnly
+1 replay-original-debug
+0 replay-candidate-debug
+0 supplement-debug
+1 replay-original-release
+0 replay-candidate-release
+0 supplement-release
+0 q2-exact-debug
+0 q2-exact-release
+EXIT 0
