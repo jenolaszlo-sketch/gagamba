@@ -1,0 +1,11 @@
+# Reviewer-independence verification
+
+| Task | Codex Desktop chat | Verified history |
+|---|---|---|
+| Producer | “G”, `01a1e00f-ea34-7a92-b748-826e2df817ff` | Implementation turn `01a1e29d-3ff6-7e61-b25d-eb017f35e24d` and producer verification/commit handoff turn `01a1e371-2202-7390-91d4-526b5a9a844c`. The latter completed at Unix time `1794817394`. |
+| Q1 reviewer | “Qualify E-4 GAVA1 decoder”, `01a1e376-f1b4-7850-a405-42ef1d2c66f1` | Created at `1794817585`, after both producer turns. Its first and only turn is the Q1 commission, `01a1e376-f56c-76e3-a234-20ed9ab178e8`, completed at `1794818982`. `read_thread` returned no older page. The local session header matches the chat ID and records no fork parent. |
+| Owner | “Accept E-4 GAVA1 decoder”, `01a1e38e-b3c0-7082-8064-f67564367718` | Created at `1794819142`, after Q1 completion. The initial turn `01a1e38e-b96f-79b0-b636-e64870c51342` is this owner-acceptance commission. |
+
+The Q1 history records the independence check before qualification began. The producer history places both implementation and producer verification outside the reviewer's fresh chat. This corroborates the recorded nonparticipation statement and establishes I00. The reviewer examined the producer material for history, comparison baseline and reusable tooling.
+
+The committed supplemental fixture supplies its own literal wire GUID bytes and separate GUID values, frozen route expectations and separate original digests. It drives the exact managed candidate through data, context, ownership, refusal and handoff checks. The raw build exits, preflight and configuration-specific binders show fresh execution against the pinned implementation. The disposable comparison-omission control uses the same input as the exact-core refusal and establishes detection of that regression. [Q1 report](../../reviews/rc2b-06-b6-alt-b-slice-e-04-codec-q1.md) · [Fixture](../../reviews/rc2b-06-b6-alt-b-slice-e-04-codec-q1-evidence/procedure/Program.cs) · [Preflight](../../reviews/rc2b-06-b6-alt-b-slice-e-04-codec-q1-evidence/preflight.json) · [Procedure](../../reviews/rc2b-06-b6-alt-b-slice-e-04-codec-q1-evidence/reproduction.md) · [Raw build exits](../../reviews/rc2b-06-b6-alt-b-slice-e-04-codec-q1-evidence/raw/build-exits.txt)

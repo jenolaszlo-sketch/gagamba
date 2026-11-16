@@ -1,0 +1,234 @@
+{
+  "path": "C:/Users/Laszlos/source/repos/Gagamba",
+  "branch": "main",
+  "worktrees": 1,
+  "trackedAndIndexClean": true,
+  "head": "34eae383d6f19b0a2f5f6ac957218c7f27eb6fa3",
+  "tree": "6bbbda828488765132573230b443230168c251ed",
+  "authorization": "db44b7e50c6ce449fdb6b596ad52744cf10443c0",
+  "acceptedE3": "8be61181e804b2dfafb0797eb54c92d2f234ff86",
+  "historicalUntrackedCount": 44,
+  "untrackedInventoryReferenceSha256": "7d6abbd93c9703626d07455e1e68c18b2538d45847549cb3d39a4318637fc7e1",
+  "untrackedPathAndHashFingerprint": "9c8a0fa7f6260d56566362e59fdd3f9c884d5aa016490941279251050ea5af98",
+  "remoteTracking": "6892ab0e235b2eaab943f218545cbe35ca95fd1b",
+  "normative": {
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-entry-owner-01-evidence/gava1-frozen-excerpt.txt": {
+      "blob": "23d6ed7d95e4dd532de7e7f3a0f3a6de665b50a1",
+      "sha256": "e6e0730c735c5984c97a46ed1c205131c5ffff6427de87bcb731f00110d568c4"
+    },
+    "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-v3-pre-frozen-record-candidate-01.md": {
+      "blob": "f6a71562845d2cfe0aee5495864a509c5caabe7a",
+      "sha256": "1948bab694ed37bf5c7c50524328716f3eef18d98dd1ae9971ca12100c40160e"
+    }
+  },
+  "manifests": {
+    "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-q1": {
+      "count": 156,
+      "manifestSha256": "9739a964e1300444e9377bdd08c1f1e952b8aaf9f2feae9129b0c510c623ece1",
+      "revision": "7713ec58cc7c292862c8c80d6b57dcacd3420b44"
+    },
+    "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-r1-q2": {
+      "count": 100,
+      "manifestSha256": "17bf65a8ac79e41b85f34723616af4950b7df2e592da55ec59523f9f3129445b",
+      "revision": "4cb46a6cdbcc52b7129dbd88c4eba2e62ae73469"
+    },
+    "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2": {
+      "count": 64,
+      "manifestSha256": "22c232f8585d99dbf9d9fde298fbe3f6924ad69fd5b4139366f0f50f845620be",
+      "revision": "8be61181e804b2dfafb0797eb54c92d2f234ff86"
+    },
+    "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-r2-q3": {
+      "count": 77,
+      "manifestSha256": "2ca94c21c993e2923bdafb017775fc20143bd8d0c5174502b61d4bbf6b7af16b",
+      "revision": "29da0ed60c18ed6364bf9366a64ab5aa3393db62"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-owner-01": {
+      "count": 9,
+      "manifestSha256": "e965570e5fe97cd617b5b3f245e2b9403c96638c95d7c43b9cd847a85b09a301",
+      "revision": "ffdad5d05fefb6d260c884d61c791c6d9be91df5"
+    },
+    "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-r2-q4": {
+      "count": 132,
+      "manifestSha256": "38d7d5eb33160e3f756639a10d3d1e1da5fe0706f673b457e28777d826bc8cc8",
+      "revision": "0d64fcd199997bf3bede3b328f44aaf211048daa"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-owner-02": {
+      "count": 6,
+      "manifestSha256": "bde46f07a184c6e50b203e898e90905c82809c6f67fc57ed81449d30b40d5b76",
+      "revision": "6892ab0e235b2eaab943f218545cbe35ca95fd1b"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-entry-owner-01": {
+      "count": 9,
+      "manifestSha256": "61a50084358b13be0ac36a8c2d93e12d111a159812a416683a0acec86a653aef",
+      "revision": "dc43b4360dbe17c644118239d0fd691c639aa0cc"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-entry-auth-01": {
+      "count": 6,
+      "manifestSha256": "d03d78f64ec04f4fbc98c5055a3b60529b30ac9671fdeab8701d93b339e3d271",
+      "revision": "db44b7e50c6ce449fdb6b596ad52744cf10443c0"
+    },
+    "docs/evidence/rc2b-06-b6-alt-b-slice-e-04-codec-implementation-01": {
+      "count": 129,
+      "manifestSha256": "5c25fa0cdadbc7f28481cb0bee2359ed8126aec1ca7417f68f6c4fd641485ac4",
+      "revision": "3c16b53b288b39de3fb36964eecc8d5cccbc62b6"
+    },
+    "docs/reviews/rc2b-06-b6-alt-b-slice-e-04-codec-q1": {
+      "count": 87,
+      "manifestSha256": "037564575980b1bf7247e8bd858c7fe6264afa7b843d53f696063655a3c2da8a",
+      "revision": "34eae383d6f19b0a2f5f6ac957218c7f27eb6fa3"
+    }
+  },
+  "historicalTrees": {
+    "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-implementation-01.md": "779cc2e185d88ba352d8272ea0548a057a488887",
+    "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-implementation-01-evidence": "b87dbe859196c2a696d3bd9367a4177719465e0b",
+    "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1.md": "3f5fdf597a86fa0e32c2c69551f3e06ba1595b04",
+    "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r1-evidence": "6475c4ca7b04df16163a60c072bc8464b69db2e4"
+  },
+  "source": {
+    "src/Gagamba.Execution.Linux.M1/Bootstrap/Gava1ContextCodec.cs": {
+      "blob": "2ea80a0828e51ba86b8ee216ffe4d20f4c42914b",
+      "sha256": "353280f0ad020591ed39b2475ed26bb3046acb159ef80e21398af46652e5bf69"
+    },
+    "src/Gagamba.Execution.Linux.M1/Bootstrap/Gava1ContextData.cs": {
+      "blob": "95f4bb23eaffd4a36fd83cc4995f7cd8ba22a3d7",
+      "sha256": "cdb1b5613f1f731e4f93d6c62640c67f94718dd7caeaeb41024e7f0f1bb4abe9"
+    },
+    "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/Gava1ContextCodecTests.cs": {
+      "blob": "c58def60a40abeb7a767c9f5408b08becf94cc2e",
+      "sha256": "0a32a6e3b05ad8dd5a37d20d74d8b17870c15d3b9d6f031db0bdb59696c9ed82"
+    },
+    "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/Gava1ContextVectors.cs": {
+      "blob": "19244bcb4cf2a7ff629083abea79a01444a14bce",
+      "sha256": "a16f818981f72c075e8d1aa74a73845cb9792e81a6dc80cc42d0329ee53db345"
+    }
+  },
+  "governingRecordCount": 24,
+  "f02VerifiedEntriesPerCopy": 15,
+  "f02ManifestSha256": "5940b98bc4158eb3887b096a047ff6451f6059a3ec45e7bc254f4ed5cc583f82",
+  "qualifiedImplementation": "3c16b53b288b39de3fb36964eecc8d5cccbc62b6",
+  "qualifiedImplementationTree": "2f30e0dc72d1565ac312c0c052ef820a03a3dea0",
+  "qualificationCommit": "34eae383d6f19b0a2f5f6ac957218c7f27eb6fa3",
+  "qualificationTree": "6bbbda828488765132573230b443230168c251ed",
+  "governingRecords": {
+    "docs/decisions/rc2b-06-b6-f02-mechanism-b-owner-acceptance.md": {
+      "blob": "5a707d37abba7b10f8dee9bc61ff7507fb3a3613",
+      "sha256": "5f72da6f7ef7ede6379f587521226038137e7de602e53b2b94669f366cd75b3e",
+      "lastChange": "4aab87761078a92d05cd08aa1998cbe2c4f6aaf1"
+    },
+    "docs/decisions/rc2b-06-b6-s3-b2-wire-owner-acceptance.md": {
+      "blob": "76b70f6832733c7cf58ffaa56afbd3df1a9f014a",
+      "sha256": "7d74d2043b813ab7f17a75b99af2af2512812b76083e3f5b6df81c8fd0e976ea",
+      "lastChange": "1fa53da68704210a9ecd7fbd2c65aa5c1ed270ae"
+    },
+    "docs/design/rc2b-06-b6-s3-b2-wire-delta-01.md": {
+      "blob": "95dc3221ae2a5579f966526516073cdd0f392aa9",
+      "sha256": "88beb1a2e40658c19f14acc96b3fd9215c7bc5b94e59f3a961c3ee27f63e3ad6",
+      "lastChange": "92d9ef70ca22b49db1c1e393349d6c7210ba6a8e"
+    },
+    "docs/decisions/rc2b-06-b6-integrated-start-authority-owner-decision-01.md": {
+      "blob": "844cb149ffee442e0111210f7befae1cfe2caef0",
+      "sha256": "3465b3503ad75daa40fead701fad36d165d642568bc60c98f67c3870462b6361",
+      "lastChange": "d804d9062bab5d9d540df5c2d64f1b2c31bdd667"
+    },
+    "docs/plans/rc2b-06-b6-integrated-start-authority-impl-01.md": {
+      "blob": "485ad1ac76e836d2bd6eb826131a01294c9bda8c",
+      "sha256": "9b3d9774e6a1c244ccfa89e8f16a54c8678d22bdef0e0272ce1c528b8dd4f42c",
+      "lastChange": "d804d9062bab5d9d540df5c2d64f1b2c31bdd667"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-p4-coverage-owner-acceptance-01.md": {
+      "blob": "31ae1b08cb4663a6a9d9de657fd972fccb731cf2",
+      "sha256": "3bdccfdf3e24d4a00fd9f2e600cee13e3eab94014def03a349023eb2bf3e4b6e",
+      "lastChange": "2d39380d0c0b61753097c197ce7c1df03cdddcb7"
+    },
+    "docs/reviews/rc2b-06-b6-alt-b-slice-e-entry-01.md": {
+      "blob": "0c311fc84bde05d3c9e897ff51c8e44832aea987",
+      "sha256": "497dcb6924d692d4f3601c33baa3320de7036e057293d4bc4836c29e52fe99de",
+      "lastChange": "2c6b3c9ab0022c4c44065422c45c2449570d3ccb"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-entry-owner-decision-01.md": {
+      "blob": "7002dcb3f04e4d69ca5d9c6cb8e9ef57f0f7c578",
+      "sha256": "573f248a41b6d0215d294b74152ab17c64478fc6ac484884dff0f001b46b84fb",
+      "lastChange": "c7b76210928e1c6e14ea9bd64b2b5016d1b21f2e"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-owner-acceptance-01.md": {
+      "blob": "6851869180a01056b8a0f59c5be4eb4056da624f",
+      "sha256": "27de68690cca7027d46b0692e52e5da71641e38e13c4037fd31937d08f823b93",
+      "lastChange": "8bd71425eb31b69290affa2b86c78afce1bd0882"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-f01-owner-acceptance-01.md": {
+      "blob": "c40d57a5d080309aaea6fa881474668c20cd7fbb",
+      "sha256": "30205d32409c097624da25cfd9ed6608f1588d79f3af96231125da06e6ad194b",
+      "lastChange": "1ed1fc706ea76954e4f1d7d43673048ef82072ec"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-f02-parity-owner-acceptance-01.md": {
+      "blob": "c274409330287c10a2b4e9fe92ad12349feeb3f2",
+      "sha256": "00f39ae2a1fc1675fa195c3af0ba040fdd05eed956e497f5e0c6fa5285a56107",
+      "lastChange": "e86254e60fb3ded770156519e1d3e15e73bf36fc"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-f03-owner-acceptance-01.md": {
+      "blob": "3637f22dc395e95137495c6e89db7d00b96b4f9f",
+      "sha256": "44c85e0062c42ddec6e98a74268d71f358a9435f506089aa416e6045d47fb944",
+      "lastChange": "6d08ae569c03e96872fcc5d330435991952207d6"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-02-p0-owner-acceptance-01.md": {
+      "blob": "8dd20d11202bb4ed7fb0dd3cdf447eaa3c5e54b7",
+      "sha256": "049d9195bd2cc9b2b02515b771c4d15263a49042dc56d467d4d33a81c5ba50f5",
+      "lastChange": "5b2ef145088818c9b9b145d706816a075951c861"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-02-d1.md": {
+      "blob": "83fe8d2649675e00b76457885fd0169b4ae77498",
+      "sha256": "438194de12d063f2212038879b71f6f4f5c2f68526f32a19649ea49f8f47916b",
+      "lastChange": "bdc7fa2cc84f4a43269270405e5ff9fae7273c28"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-02-p1-owner-acceptance-01.md": {
+      "blob": "f360932adc4909b4f26e32b6005a592618dd0912",
+      "sha256": "20a0e258dcb5b2b9f11e2710c63d81115a51e7bd437f762fa18c16a26d758994",
+      "lastChange": "28275ba516ba9326bd7a850357fa3143749ecd03"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-02-p2-owner-acceptance-01.md": {
+      "blob": "fb00cc37f1b8294d18e459154a24c3cc1d1f8dd8",
+      "sha256": "afac8adf280629ddb543bf9bc66d5418d4acdb46a259b2aba13bb49c1d9c815c",
+      "lastChange": "24c4cf4247930d7675a2ceb77e0f8d68ac120642"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-02-closure-owner-01.md": {
+      "blob": "3388894f821a4a92aca7c2b2d79c832a0f70a450",
+      "sha256": "7e4228463b83708ffa0ce6f0ab3f98ce11b15aaee586353a3e4d8884a3ece244",
+      "lastChange": "21179680e7ae5d153c7ddeef5d209e5ac450cdd7"
+    },
+    "docs/reviews/rc2b-06-b6-alt-b-slice-e-02-closure-assessment-01.md": {
+      "blob": "b75e1a5e2a7b52c393b919ff54ef1dd68ca49779",
+      "sha256": "f82211d1ee2c53f76279ed3e57bb56ec3ea11a79204d683a068559ea171124de",
+      "lastChange": "f81369549b3957b030202697eae20735354cdafe"
+    },
+    "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-v3-pre-frozen-record-candidate-01.md": {
+      "blob": "f6a71562845d2cfe0aee5495864a509c5caabe7a",
+      "sha256": "1948bab694ed37bf5c7c50524328716f3eef18d98dd1ae9971ca12100c40160e",
+      "lastChange": "acd61fd0af622f9e1d988845658c26a6835ddd62"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-frozen-record-owner-01.md": {
+      "blob": "d2fea61b7db323319ee59033c8b1b12ded1ffe7d",
+      "sha256": "c7351553eb8c82837c618d6b36a3563cafa99899841fc20b07142898b641c7d8",
+      "lastChange": "38e7c212d31211bb817f042bdd2737398726ce90"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-entry-owner-01.md": {
+      "blob": "028a7c1858b5e7b506deff9d2d8d263afe3344ac",
+      "sha256": "fbb0534447430df8f608c82ae978d10294a19a8b8a5fc0dbca7983811f78311e",
+      "lastChange": "1c7fb672055cc3322eb1633d37e5e84d764cb66d"
+    },
+    "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2.md": {
+      "blob": "900e12cb53cdf843516cc0886e6070f141f8bea2",
+      "sha256": "3d20597f8e99530f999204022b3a4fdbfdeda6e9e9ba5d65b2859e12cf992fe1",
+      "lastChange": "8be61181e804b2dfafb0797eb54c92d2f234ff86"
+    },
+    "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-r2-q4.md": {
+      "blob": "6f608d928a18a18bc48c1d1d3afff864973607d0",
+      "sha256": "75f9269dd680e40a71dc3ac0fa0c72380e8afd0b7adeb1b0e66e2f2a54bb3dea",
+      "lastChange": "0d64fcd199997bf3bede3b328f44aaf211048daa"
+    },
+    "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-owner-02.md": {
+      "blob": "fb95a42fb08a901cd07f07ca3d7cf4732cf6ccc0",
+      "sha256": "987d4b16bc88200bdf27fb15d3e8f720745c456c92442c99d5dcfd60bef893c0",
+      "lastChange": "6892ab0e235b2eaab943f218545cbe35ca95fd1b"
+    }
+  }
+}
