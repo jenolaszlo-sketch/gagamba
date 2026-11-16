@@ -1,5 +1,9 @@
 # Current work queue
 
+> **ALT-B SLICE E-4 — ENTRY AUTHORIZED WITH QUALIFICATIONS (2026-11-16).**
+>
+> Next commission is GAGAMBA-RC2B-06-B6-ALT-B-SLICE-E-04-CODEC-IMPLEMENTATION-01. Use the authorized allowlist and producer matrix. A fresh independent reviewer and separate owner acceptance follow. [E-4 entry authorization](decisions/rc2b-06-b6-alt-b-slice-e-04-entry-auth-01.md).
+
 > **ALT-B SLICE E-4 — ENTRY ASSESSMENT COMPLETE (2026-11-16).**
 >
 > Next commission is separate E-4 entry authorization. Bind the accepted GAVA1 source, exact managed implementation and test scope, and independent qualification and P4 gates. Implementation awaits that decision. [E-4 entry assessment](decisions/rc2b-06-b6-alt-b-slice-e-04-entry-owner-01.md).

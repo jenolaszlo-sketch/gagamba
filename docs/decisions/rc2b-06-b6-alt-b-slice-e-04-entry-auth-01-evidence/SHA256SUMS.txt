@@ -1,0 +1,6 @@
+e9199e28ceac94f27413a86fa5933101abed7996d6ace1f8a514b31f7e7a2d46  ../rc2b-06-b6-alt-b-slice-e-04-entry-auth-01.md
+373ba45bcf75725e87e107194c864ef6e704bd6ecffb3d0e1a5d34a72582708a  implementation-specification.md
+733a00f2ea69f3fc7e92fbd31103a7ff7ff4a175677b399514d82f2ef3f87159  prerequisites-and-obligations.md
+4fecd5fb29aa73058889cc855e8c8e79ec8db1de084aedd7e4e646840f66e21f  verification-matrices.md
+c4eddda67c170fc2458a5f07b31565db6397489772a4a6afe709114396bc0674  identity-and-audit.json
+f999c240aed787cd6ab659cbb92ea5699881fbfdbb187292e966faa71181c197  preparation.log

@@ -1,5 +1,9 @@
 # Gagamba project status
 
+> **ALT-B SLICE E-4 — ENTRY AUTHORIZED WITH QUALIFICATIONS (2026-11-16).**
+>
+> Entry is authorized with qualifications for the isolated internal managed GAVA1 types 4–7 and structural E-3 handoff. Implementation and independent qualification remain pending. [E-4 entry authorization](decisions/rc2b-06-b6-alt-b-slice-e-04-entry-auth-01.md).
+
 > **ALT-B SLICE E-4 — ENTRY ASSESSMENT COMPLETE (2026-11-16).**
 >
 > GitHub main contains the accepted E-3 milestone and its CI passed. E-4 can proceed to a separate entry authorization decision for the isolated managed GAVA1 context scope. [E-4 entry assessment](decisions/rc2b-06-b6-alt-b-slice-e-04-entry-owner-01.md).

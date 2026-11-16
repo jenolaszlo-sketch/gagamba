@@ -1,5 +1,9 @@
 # Gagamba handoff
 
+> **ALT-B SLICE E-4 — ENTRY AUTHORIZED WITH QUALIFICATIONS (2026-11-16).**
+>
+> The authorization freezes four code and test files, exact governing bytes and the producer and independent gates. Live transport, production callers and release enforcement remain separately gated. [E-4 entry authorization](decisions/rc2b-06-b6-alt-b-slice-e-04-entry-auth-01.md).
+
 > **ALT-B SLICE E-4 — ENTRY ASSESSMENT COMPLETE (2026-11-16).**
 >
 > E-4 assessment reconciled the verified GAVA1 wire and cross-format requirements with the existing refusal-only gates. E-3 R2 stays isolated and E-6 retains live atomic activation and release enforcement. [E-4 entry assessment](decisions/rc2b-06-b6-alt-b-slice-e-04-entry-owner-01.md).
