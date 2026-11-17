@@ -1,0 +1,55 @@
+[build-exact/build-Debug-B2Controller.log]
+dotnet build tests/Fixtures/B2Controller/B2Controller.csproj -c Debug --artifacts-path C:/Users/Laszlos/source/repos/Solo/gagamba-e05-custody-producer-01/candidate-exact --nologo -m:1
+EXIT 0
+
+[build-exact/build-Debug-Gagamba.Execution.Linux.M1.log]
+dotnet build src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj -c Debug --artifacts-path C:/Users/Laszlos/source/repos/Solo/gagamba-e05-custody-producer-01/candidate-exact --nologo -m:1
+EXIT 0
+
+[build-exact/build-Debug-Gagamba.Execution.Linux.M1.Owner.log]
+dotnet build src/Gagamba.Execution.Linux.M1.Owner/Gagamba.Execution.Linux.M1.Owner.csproj -c Debug --artifacts-path C:/Users/Laszlos/source/repos/Solo/gagamba-e05-custody-producer-01/candidate-exact --nologo -m:1
+EXIT 0
+
+[build-exact/build-Debug-Gagamba.Execution.Linux.M1.Recovery.log]
+dotnet build src/Gagamba.Execution.Linux.M1.Recovery/Gagamba.Execution.Linux.M1.Recovery.csproj -c Debug --artifacts-path C:/Users/Laszlos/source/repos/Solo/gagamba-e05-custody-producer-01/candidate-exact --nologo -m:1
+EXIT 0
+
+[build-exact/build-Debug-Gagamba.Execution.Linux.M1.Tests.log]
+dotnet build tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Debug --artifacts-path C:/Users/Laszlos/source/repos/Solo/gagamba-e05-custody-producer-01/candidate-exact --nologo -m:1
+EXIT 0
+
+[build-exact/build-Debug-Gagamba.Runtime.log]
+dotnet build src/Gagamba.Runtime/Gagamba.Runtime.csproj -c Debug --artifacts-path C:/Users/Laszlos/source/repos/Solo/gagamba-e05-custody-producer-01/candidate-exact --nologo -m:1
+EXIT 0
+
+[build-exact/build-Debug-InstallTool.log]
+dotnet build eng/InstallTool/InstallTool.csproj -c Debug --artifacts-path C:/Users/Laszlos/source/repos/Solo/gagamba-e05-custody-producer-01/candidate-exact --nologo -m:1
+EXIT 0
+
+[build-exact/build-Release-B2Controller.log]
+dotnet build tests/Fixtures/B2Controller/B2Controller.csproj -c Release --artifacts-path C:/Users/Laszlos/source/repos/Solo/gagamba-e05-custody-producer-01/candidate-exact --nologo -m:1
+EXIT 0
+
+[build-exact/build-Release-Gagamba.Execution.Linux.M1.log]
+dotnet build src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj -c Release --artifacts-path C:/Users/Laszlos/source/repos/Solo/gagamba-e05-custody-producer-01/candidate-exact --nologo -m:1
+EXIT 0
+
+[build-exact/build-Release-Gagamba.Execution.Linux.M1.Owner.log]
+dotnet build src/Gagamba.Execution.Linux.M1.Owner/Gagamba.Execution.Linux.M1.Owner.csproj -c Release --artifacts-path C:/Users/Laszlos/source/repos/Solo/gagamba-e05-custody-producer-01/candidate-exact --nologo -m:1
+EXIT 0
+
+[build-exact/build-Release-Gagamba.Execution.Linux.M1.Recovery.log]
+dotnet build src/Gagamba.Execution.Linux.M1.Recovery/Gagamba.Execution.Linux.M1.Recovery.csproj -c Release --artifacts-path C:/Users/Laszlos/source/repos/Solo/gagamba-e05-custody-producer-01/candidate-exact --nologo -m:1
+EXIT 0
+
+[build-exact/build-Release-Gagamba.Execution.Linux.M1.Tests.log]
+dotnet build tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj -c Release --artifacts-path C:/Users/Laszlos/source/repos/Solo/gagamba-e05-custody-producer-01/candidate-exact --nologo -m:1
+EXIT 0
+
+[build-exact/build-Release-Gagamba.Runtime.log]
+dotnet build src/Gagamba.Runtime/Gagamba.Runtime.csproj -c Release --artifacts-path C:/Users/Laszlos/source/repos/Solo/gagamba-e05-custody-producer-01/candidate-exact --nologo -m:1
+EXIT 0
+
+[build-exact/build-Release-InstallTool.log]
+dotnet build eng/InstallTool/InstallTool.csproj -c Release --artifacts-path C:/Users/Laszlos/source/repos/Solo/gagamba-e05-custody-producer-01/candidate-exact --nologo -m:1
+EXIT 0

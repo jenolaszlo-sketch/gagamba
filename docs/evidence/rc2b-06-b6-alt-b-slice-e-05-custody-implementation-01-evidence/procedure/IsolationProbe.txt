@@ -1,0 +1,5 @@
+<Project>
+  <ItemGroup Condition="'$(MSBuildProjectName)' == 'Gagamba.Execution.Linux.M1'">
+    <Compile Include="$(MSBuildThisFileDirectory)IsolationReference.cs" />
+  </ItemGroup>
+</Project>

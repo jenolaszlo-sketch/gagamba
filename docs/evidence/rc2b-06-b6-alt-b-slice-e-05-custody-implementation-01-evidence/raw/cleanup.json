@@ -1,0 +1,26 @@
+{
+  "scratch": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01",
+  "disposable_paths_removed": [
+    "sensitivity-source",
+    "sensitivity-build",
+    "isolation-derivative",
+    "probe-exact-debug",
+    "probe-exact-release",
+    "probe-references-debug",
+    "probe-references-release",
+    "sensitivity-debug.cs",
+    "sensitivity-release.cs"
+  ],
+  "reported_vstest_testhost_pids": [
+    13724,
+    37576,
+    10848,
+    36016,
+    36200,
+    28880,
+    15792,
+    37444
+  ],
+  "reported_testhosts_remaining": [],
+  "scope": "Managed verification and scratch artifacts. Canonical source, measured candidate assemblies and raw results preserved."
+}

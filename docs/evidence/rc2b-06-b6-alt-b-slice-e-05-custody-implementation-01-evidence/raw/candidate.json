@@ -1,0 +1,37 @@
+{
+  "commit": "28895d55de98eea4bc402373b653f7216e092843",
+  "tree": "e314f2e8a1259e2263c8494bb0c8ca9f7eb27016",
+  "parent": "7a30d0a05a7c898c4e90cc2ca01280db166ed6f2",
+  "files": [
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs",
+      "sha256": "0fa622cd8de73bfc66b8b9dba6c7ea253c21677f942f24a9c34e6574cad12367",
+      "blob": "0884372a339d84e70d0a6c7ebfd72726996f17fa"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs",
+      "sha256": "82fec8f17b91c206e339f65d18b462539951f4c33c39074ba9deec5f82354cec",
+      "blob": "60a4f546b77ff5a11a43a51117722c129b753646"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs",
+      "sha256": "01f0804572b6961070b0992a0ba2a75438c8984e6e9e274d2aa7d2bbd7394d82",
+      "blob": "ea55eef683d2428bb9a2193e8817ed52fe9f5a00"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs",
+      "sha256": "40025fef5f0655edae9a525811d2de30c9b64d7506fedc2524dbf690ddbbdfd8",
+      "blob": "6efa17c8d8bc8d71c935e2e8247dcfa18424b3b4"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs",
+      "sha256": "e5f10d8636557b3295b6b106f64e20ef37d5bbf3e6c4debd70454f2792f4bc04",
+      "blob": "47b5f7f8eead276ec731a0e644abd766588f2ce3"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelCompositionTests.cs",
+      "sha256": "004df41c3518b43440d5ff62d222dc6e6d886594390fcdbe73a9121c35821c8d",
+      "blob": "2fb103e39ab4dc562026d8a9dffba196e2574fc0"
+    }
+  ]
+}

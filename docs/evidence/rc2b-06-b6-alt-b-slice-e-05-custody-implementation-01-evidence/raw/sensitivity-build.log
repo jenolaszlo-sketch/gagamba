@@ -1,0 +1,29 @@
+[sensitivity-build-Debug.log]
+Determining projects to restore...
+  Restored C:\Users\Laszlos\source\repos\Solo\gagamba-e05-custody-producer-01\sensitivity-source\Sensitivity.csproj (in 76 ms).
+  Sensitivity -> C:\Users\Laszlos\source\repos\Solo\gagamba-e05-custody-producer-01\sensitivity-build\debug\bin\Sensitivity\debug\Gagamba.Execution.Linux.M1.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.26
+["dotnet", "build", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\sensitivity-source\\Sensitivity.csproj", "-c", "Debug", "--artifacts-path", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\sensitivity-build\\debug", "--nologo", "-p:UseSharedCompilation=false", "-p:Core=C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1\\debug"]
+
+BUILD EXIT 0
+{"command": ["dotnet", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\sensitivity-build\\debug\\bin\\Sensitivity\\debug\\Gagamba.Execution.Linux.M1.Tests.dll"], "exit": 0, "probe_sha256": "4753a36f8bf89a8d7c225c5869a8fff3dc1ce434e2a127d631c8d27a905c6eb1", "actual_core_sha256": "84a76edbac91d29c2871cefdae7efc8f10dbeabfe77207952d892191272558fb"}
+
+[sensitivity-build-Release.log]
+Determining projects to restore...
+  Restored C:\Users\Laszlos\source\repos\Solo\gagamba-e05-custody-producer-01\sensitivity-source\Sensitivity.csproj (in 89 ms).
+  Sensitivity -> C:\Users\Laszlos\source\repos\Solo\gagamba-e05-custody-producer-01\sensitivity-build\release\bin\Sensitivity\release\Gagamba.Execution.Linux.M1.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.33
+["dotnet", "build", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\sensitivity-source\\Sensitivity.csproj", "-c", "Release", "--artifacts-path", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\sensitivity-build\\release", "--nologo", "-p:UseSharedCompilation=false", "-p:Core=C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1\\release"]
+
+BUILD EXIT 0
+{"command": ["dotnet", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\sensitivity-build\\release\\bin\\Sensitivity\\release\\Gagamba.Execution.Linux.M1.Tests.dll"], "exit": 0, "probe_sha256": "e1ba424689ddd43b3ffcee92deca897c061753faee41befc9fcb297b2a65dab1", "actual_core_sha256": "dd52febfb3126444f382f53ceb17319f8a0161d97c9a43d197f179cd757774fd"}

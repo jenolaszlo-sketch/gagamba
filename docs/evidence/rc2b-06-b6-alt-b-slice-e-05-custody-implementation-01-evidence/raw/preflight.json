@@ -1,0 +1,67 @@
+{
+  "repository": "C:/Users/Laszlos/source/repos/Gagamba",
+  "branch": "refs/heads/main",
+  "worktrees": 1,
+  "stashes": 0,
+  "starting_tracked_checkout_and_index": "clean",
+  "start_commit": "7a30d0a05a7c898c4e90cc2ca01280db166ed6f2",
+  "start_tree": "35eff6247f52d85e565adae6c226ba918ef8dcbc",
+  "ancestry": [
+    "7a30d0a05a7c898c4e90cc2ca01280db166ed6f2",
+    "02ba7ad3c81e72de885349c2bd54b0b7ab16bc12",
+    "1ff4d6e6d1f756646072790478921d9a64f15654",
+    "b309a9ec1a9a0f160ea0c2dd513001c3561a36d9",
+    "1116c66d7858e6000f0001a0abe39319e4e694be"
+  ],
+  "published": {
+    "origin": "https://github.com/jenolaszlo-sketch/gagamba.git",
+    "ref": "refs/heads/main",
+    "commit": "1116c66d7858e6000f0001a0abe39319e4e694be",
+    "tree": "86768fbd5da028fc271fda295a7da5c389aab8bc",
+    "commands": [
+      "git ls-remote --exit-code origin refs/heads/main",
+      "gh api repos/jenolaszlo-sketch/gagamba/git/commits/1116c66d7858e6000f0001a0abe39319e4e694be --jq .tree.sha"
+    ]
+  },
+  "historical_manifest_members": 814,
+  "exact_historical_untracked_matches": 44,
+  "inventory": "docs/evidence/rc2b-06-b6-native-input-freeze-01/untracked-before.json",
+  "authorized_paths_absent_at_start": [
+    "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs",
+    "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs",
+    "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs",
+    "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs",
+    "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs",
+    "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelCompositionTests.cs"
+  ],
+  "compile_rules": {
+    "Debug": {
+      "net10.0": true,
+      "M1 Bootstrap items before additions": 37,
+      "M1.Tests Bootstrap items before additions": 14,
+      "default Compile": true
+    },
+    "Release": {
+      "net10.0": true,
+      "M1 Bootstrap items before additions": 37,
+      "M1.Tests Bootstrap items before additions": 14,
+      "default Compile": true
+    }
+  },
+  "contract": {
+    "blob": "121443efb9e145e2413c5a2c40f59e45a55eaa55",
+    "sha256": "8d782d55544a1fcc65a7adbe035e21ce7d7cd10d31658274b1620527b8b02a54"
+  },
+  "requirements": {
+    "blob": "63ebfb7afed2dfb2883fae237ed64472c2adad66",
+    "sha256": "ca9c64bbf85238859fbce8d07e260ab0cbd7940738d7a928d0f2da32ab3587f0"
+  },
+  "launcher_project_packaging_and_controller_driver_reservations": "absent at exact candidate",
+  "host": {
+    "os": "Windows NT 10.0.26200.0 x64",
+    "dotnet_sdk": "10.0.401",
+    "runtime": "10.0.12",
+    "windows_powershell": "5.1.26100.9818",
+    "python": "3.14.8"
+  }
+}

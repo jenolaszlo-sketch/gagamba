@@ -1,0 +1,151 @@
+[results/debug/vstest-broad.log]
+VSTest version 18.7.0 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+vstest.console process failed to connect to testhost process after 15 seconds. This may occur due to machine slowness, please set environment variable VSTEST_CONNECTION_TIMEOUT to increase timeout. The process with id 13724 was still running when this message was reported.
+Results File: C:\Users\Laszlos\source\repos\Solo\gagamba-e05-custody-producer-01\results\debug\broad.trx
+
+Test Run Aborted.
+{"command": ["dotnet", "vstest", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\debug\\tests\\debug\\Gagamba.Execution.Linux.M1.Tests.dll", "/Logger:trx;LogFileName=broad.trx", "/ResultsDirectory:C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\results\\debug"], "cwd": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\debug"}
+
+EXIT 1
+
+[results/debug/vstest-e3.log]
+VSTest version 18.7.0 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+vstest.console process failed to connect to testhost process after 15 seconds. This may occur due to machine slowness, please set environment variable VSTEST_CONNECTION_TIMEOUT to increase timeout. The process with id 37576 was still running when this message was reported.
+Results File: C:\Users\Laszlos\source\repos\Solo\gagamba-e05-custody-producer-01\results\debug\e3.trx
+
+Test Run Aborted.
+{"command": ["dotnet", "vstest", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\debug\\focused\\Gagamba.Execution.Linux.M1.Tests.dll", "/Logger:trx;LogFileName=e3.trx", "/ResultsDirectory:C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\results\\debug", "/TestCaseFilter:FullyQualifiedName~ValidationPreCodecBootstrapTests|FullyQualifiedName~ValidationPreCodecBinaryTests|FullyQualifiedName~InstallationWireTests|FullyQualifiedName~ValidationPreCodecRemediationTests|FullyQualifiedName~ValidationPreCodecR2Tests"], "cwd": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\debug"}
+
+EXIT 1
+
+[results/debug/vstest-e4.log]
+VSTest version 18.7.0 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+vstest.console process failed to connect to testhost process after 15 seconds. This may occur due to machine slowness, please set environment variable VSTEST_CONNECTION_TIMEOUT to increase timeout. The process with id 10848 was still running when this message was reported.
+Results File: C:\Users\Laszlos\source\repos\Solo\gagamba-e05-custody-producer-01\results\debug\e4.trx
+
+Test Run Aborted.
+{"command": ["dotnet", "vstest", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\debug\\focused\\Gagamba.Execution.Linux.M1.Tests.dll", "/Logger:trx;LogFileName=e4.trx", "/ResultsDirectory:C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\results\\debug", "/TestCaseFilter:FullyQualifiedName~Gava1ContextCodecTests"], "cwd": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\debug"}
+
+EXIT 1
+
+[results/debug/vstest-e5.log]
+VSTest version 18.7.0 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+vstest.console process failed to connect to testhost process after 15 seconds. This may occur due to machine slowness, please set environment variable VSTEST_CONNECTION_TIMEOUT to increase timeout. The process with id 36016 was still running when this message was reported.
+Results File: C:\Users\Laszlos\source\repos\Solo\gagamba-e05-custody-producer-01\results\debug\e5.trx
+
+Test Run Aborted.
+{"command": ["dotnet", "vstest", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\debug\\focused\\Gagamba.Execution.Linux.M1.Tests.dll", "/Logger:trx;LogFileName=e5.trx", "/ResultsDirectory:C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\results\\debug", "/TestCaseFilter:FullyQualifiedName~ValidationCustodyModelTests|FullyQualifiedName~ValidationCustodyModelLifecycleTests|FullyQualifiedName~ValidationCustodyModelCompositionTests"], "cwd": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\debug"}
+
+EXIT 1
+
+[results/debug/xunit-broad.log]
+xUnit.net v3 In-Process Runner v3.2.0+9e422989c1 (64-bit .NET 10.0.12)
+   Gagamba.Execution.Linux.M1.Tests  Total: 2062, Errors: 0, Failed: 0, Skipped: 331, Not Run: 0, Time: 8.612s
+{"command": ["dotnet", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\debug\\tests\\debug\\Gagamba.Execution.Linux.M1.Tests.dll", "-noColor", "-xml", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\results\\debug\\broad.xml"], "cwd": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\debug"}
+EXIT 0
+
+[results/debug/xunit-e3.log]
+xUnit.net v3 In-Process Runner v3.2.0+9e422989c1 (64-bit .NET 10.0.12)
+   Gagamba.Execution.Linux.M1.Tests  Total: 185, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.255s
+{"command": ["dotnet", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\debug\\focused\\Gagamba.Execution.Linux.M1.Tests.dll", "-noColor", "-class", "*ValidationPreCodecBootstrapTests", "-class", "*ValidationPreCodecBinaryTests", "-class", "*InstallationWireTests", "-class", "*ValidationPreCodecRemediationTests", "-class", "*ValidationPreCodecR2Tests", "-xml", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\results\\debug\\e3.xml"], "cwd": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\debug"}
+EXIT 0
+
+[results/debug/xunit-e4.log]
+xUnit.net v3 In-Process Runner v3.2.0+9e422989c1 (64-bit .NET 10.0.12)
+   Gagamba.Execution.Linux.M1.Tests  Total: 11, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.155s
+{"command": ["dotnet", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\debug\\focused\\Gagamba.Execution.Linux.M1.Tests.dll", "-noColor", "-class", "*Gava1ContextCodecTests", "-xml", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\results\\debug\\e4.xml"], "cwd": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\debug"}
+EXIT 0
+
+[results/debug/xunit-e5.log]
+xUnit.net v3 In-Process Runner v3.2.0+9e422989c1 (64-bit .NET 10.0.12)
+   Gagamba.Execution.Linux.M1.Tests  Total: 42, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.197s
+{"command": ["dotnet", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\debug\\focused\\Gagamba.Execution.Linux.M1.Tests.dll", "-noColor", "-class", "*ValidationCustodyModelTests", "-class", "*ValidationCustodyModelLifecycleTests", "-class", "*ValidationCustodyModelCompositionTests", "-xml", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\results\\debug\\e5.xml"], "cwd": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\debug"}
+EXIT 0
+
+[results/release/vstest-broad.log]
+VSTest version 18.7.0 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+vstest.console process failed to connect to testhost process after 15 seconds. This may occur due to machine slowness, please set environment variable VSTEST_CONNECTION_TIMEOUT to increase timeout. The process with id 36200 was still running when this message was reported.
+Results File: C:\Users\Laszlos\source\repos\Solo\gagamba-e05-custody-producer-01\results\release\broad.trx
+
+Test Run Aborted.
+{"command": ["dotnet", "vstest", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\release\\tests\\release\\Gagamba.Execution.Linux.M1.Tests.dll", "/Logger:trx;LogFileName=broad.trx", "/ResultsDirectory:C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\results\\release"], "cwd": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\release"}
+
+EXIT 1
+
+[results/release/vstest-e3.log]
+VSTest version 18.7.0 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+vstest.console process failed to connect to testhost process after 15 seconds. This may occur due to machine slowness, please set environment variable VSTEST_CONNECTION_TIMEOUT to increase timeout. The process with id 28880 was still running when this message was reported.
+Results File: C:\Users\Laszlos\source\repos\Solo\gagamba-e05-custody-producer-01\results\release\e3.trx
+
+Test Run Aborted.
+{"command": ["dotnet", "vstest", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\release\\focused\\Gagamba.Execution.Linux.M1.Tests.dll", "/Logger:trx;LogFileName=e3.trx", "/ResultsDirectory:C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\results\\release", "/TestCaseFilter:FullyQualifiedName~ValidationPreCodecBootstrapTests|FullyQualifiedName~ValidationPreCodecBinaryTests|FullyQualifiedName~InstallationWireTests|FullyQualifiedName~ValidationPreCodecRemediationTests|FullyQualifiedName~ValidationPreCodecR2Tests"], "cwd": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\release"}
+
+EXIT 1
+
+[results/release/vstest-e4.log]
+VSTest version 18.7.0 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+vstest.console process failed to connect to testhost process after 15 seconds. This may occur due to machine slowness, please set environment variable VSTEST_CONNECTION_TIMEOUT to increase timeout. The process with id 15792 was still running when this message was reported.
+Results File: C:\Users\Laszlos\source\repos\Solo\gagamba-e05-custody-producer-01\results\release\e4.trx
+
+Test Run Aborted.
+{"command": ["dotnet", "vstest", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\release\\focused\\Gagamba.Execution.Linux.M1.Tests.dll", "/Logger:trx;LogFileName=e4.trx", "/ResultsDirectory:C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\results\\release", "/TestCaseFilter:FullyQualifiedName~Gava1ContextCodecTests"], "cwd": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\release"}
+
+EXIT 1
+
+[results/release/vstest-e5.log]
+VSTest version 18.7.0 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+vstest.console process failed to connect to testhost process after 15 seconds. This may occur due to machine slowness, please set environment variable VSTEST_CONNECTION_TIMEOUT to increase timeout. The process with id 37444 was still running when this message was reported.
+Results File: C:\Users\Laszlos\source\repos\Solo\gagamba-e05-custody-producer-01\results\release\e5.trx
+
+Test Run Aborted.
+{"command": ["dotnet", "vstest", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\release\\focused\\Gagamba.Execution.Linux.M1.Tests.dll", "/Logger:trx;LogFileName=e5.trx", "/ResultsDirectory:C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\results\\release", "/TestCaseFilter:FullyQualifiedName~ValidationCustodyModelTests|FullyQualifiedName~ValidationCustodyModelLifecycleTests|FullyQualifiedName~ValidationCustodyModelCompositionTests"], "cwd": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\release"}
+
+EXIT 1
+
+[results/release/xunit-broad.log]
+xUnit.net v3 In-Process Runner v3.2.0+9e422989c1 (64-bit .NET 10.0.12)
+   Gagamba.Execution.Linux.M1.Tests  Total: 2062, Errors: 0, Failed: 0, Skipped: 331, Not Run: 0, Time: 8.393s
+{"command": ["dotnet", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\release\\tests\\release\\Gagamba.Execution.Linux.M1.Tests.dll", "-noColor", "-xml", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\results\\release\\broad.xml"], "cwd": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\release"}
+EXIT 0
+
+[results/release/xunit-e3.log]
+xUnit.net v3 In-Process Runner v3.2.0+9e422989c1 (64-bit .NET 10.0.12)
+   Gagamba.Execution.Linux.M1.Tests  Total: 185, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.316s
+{"command": ["dotnet", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\release\\focused\\Gagamba.Execution.Linux.M1.Tests.dll", "-noColor", "-class", "*ValidationPreCodecBootstrapTests", "-class", "*ValidationPreCodecBinaryTests", "-class", "*InstallationWireTests", "-class", "*ValidationPreCodecRemediationTests", "-class", "*ValidationPreCodecR2Tests", "-xml", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\results\\release\\e3.xml"], "cwd": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\release"}
+EXIT 0
+
+[results/release/xunit-e4.log]
+xUnit.net v3 In-Process Runner v3.2.0+9e422989c1 (64-bit .NET 10.0.12)
+   Gagamba.Execution.Linux.M1.Tests  Total: 11, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.159s
+{"command": ["dotnet", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\release\\focused\\Gagamba.Execution.Linux.M1.Tests.dll", "-noColor", "-class", "*Gava1ContextCodecTests", "-xml", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\results\\release\\e4.xml"], "cwd": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\release"}
+EXIT 0
+
+[results/release/xunit-e5.log]
+xUnit.net v3 In-Process Runner v3.2.0+9e422989c1 (64-bit .NET 10.0.12)
+   Gagamba.Execution.Linux.M1.Tests  Total: 42, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.189s
+{"command": ["dotnet", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\release\\focused\\Gagamba.Execution.Linux.M1.Tests.dll", "-noColor", "-class", "*ValidationCustodyModelTests", "-class", "*ValidationCustodyModelLifecycleTests", "-class", "*ValidationCustodyModelCompositionTests", "-xml", "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\results\\release\\e5.xml"], "cwd": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\release"}
+EXIT 0

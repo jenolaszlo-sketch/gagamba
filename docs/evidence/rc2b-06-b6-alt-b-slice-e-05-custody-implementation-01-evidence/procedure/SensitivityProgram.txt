@@ -1,0 +1,186 @@
+using System.Globalization;
+using System.Reflection;
+using Gagamba.Execution.Linux.M1.Bootstrap;
+
+var exact = new Surface(typeof(ValidationCustodyModel).Assembly, "Gagamba.Execution.Linux.M1.Bootstrap");
+string[] variants = [
+    "LauncherClosure", "ControllerClosure", "DriverClosure", "Catalog", "Approval", "OriginalC",
+    "Provenance", "Drop", "BypassDrop", "OneUse", "Terminal", "Expiry", "Stop", "Intake", "Output", "Precedence",
+    "Exception"
+];
+Console.WriteLine("variant\tpositive_exact\tpositive_derivative\texact\tderivative\texpected_exact\texpected_derivative\tdecision");
+int failures = 0;
+foreach (var variant in variants)
+{
+    var derivative = new Surface(typeof(Surface).Assembly, "ProducerSensitivity." + variant);
+    string positiveExact = Positive(exact);
+    string positiveDerivative = variant == "Exception" ? Create(derivative).Code : Positive(derivative);
+    string actualExact = Witness(exact, variant);
+    string actualDerivative = variant == "Exception" ? Fault(derivative) : Witness(derivative, variant);
+    string expectedExact = variant switch
+    {
+        "Provenance" or "Drop" => "Evidence",
+        "BypassDrop" or "OneUse" or "Terminal" => "Transition",
+        "Expiry" => "Expired",
+        "Stop" => "Stopped",
+        "Intake" => "None",
+        "Output" => "Retained",
+        "Exception" => "None",
+        _ => "Comparison"
+    };
+    string expectedDerivative = variant switch
+    {
+        "Intake" => "Comparison",
+        "Output" => "Aliased",
+        "Precedence" => "Evidence",
+        "Exception" => "Threw/Null/Transition",
+        _ => "None"
+    };
+    bool passed = positiveExact == "None" && positiveDerivative == "None" &&
+        actualExact == expectedExact && actualDerivative == expectedDerivative;
+    if (!passed) failures++;
+    Console.WriteLine(string.Join('\t', variant, positiveExact, positiveDerivative, actualExact, actualDerivative,
+        expectedExact, expectedDerivative, passed ? "PASS" : "FAIL"));
+}
+return failures == 0 ? 0 : 1;
+
+static object Binding(Surface surface, int changedDigest = -1, bool wrongC = false, byte[][]? buffers = null)
+{
+    buffers ??= Buffers();
+    if (changedDigest >= 0) buffers[changedDigest][31] ^= 0x80;
+    var args = new List<object?>
+    {
+        new ValidationPreContext(3, ValidationPreTopology.B2),
+        new Gava1Ids(Label(1), Label(2), Label(3)),
+        Label(4), Label(5), Label(6), Label(7), Label(wrongC ? 90 : 8)
+    };
+    args.AddRange(buffers);
+    args.AddRange(["case-1", 40L, 100L, null, null]);
+    return surface.Construct("Binding", args.ToArray());
+}
+
+static object Evidence(Surface surface, int step, object? binding = null, int badFact = -1)
+{
+    var flags = step switch
+    {
+        0 => new[] { 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0 },
+        1 => new[] { 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0 },
+        2 => new[] { 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0 },
+        3 => new[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0 },
+        4 => new[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 },
+        5 => new[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+        _ => throw new ArgumentOutOfRangeException(nameof(step))
+    };
+    if (badFact >= 0) flags[badFact] = 2;
+    return surface.Construct("Evidence",
+        [binding ?? Binding(surface), .. flags.Select(n => Enum.ToObject(surface.Type("Fact"), n))]);
+}
+
+static (string Code, object? Result) Create(Surface surface, object? input = null, object? expected = null,
+    long time = 0, bool stop = false) =>
+    surface.Call("TryCreate", null,
+        [surface.Construct("Expectations", [expected ?? Binding(surface)]), input ?? Evidence(surface, 0), time, stop, null]);
+
+static (string Code, object? Result) Advance(Surface surface, object model, int step, object? evidence = null) =>
+    surface.Call("Advance", model,
+        [Enum.ToObject(surface.Type("Event"), step), evidence ?? Evidence(surface, step), (long)step, false, null]);
+
+static string Positive(Surface surface)
+{
+    var result = Create(surface);
+    using var model = (IDisposable)result.Result!;
+    if (result.Code != "None") return result.Code;
+    for (int step = 1; step <= 5; step++)
+    {
+        result = Advance(surface, model, step);
+        if (result.Code != "None") return result.Code;
+    }
+    return result.Code;
+}
+
+static string Witness(Surface surface, string variant)
+{
+    int digest = variant switch
+    {
+        "LauncherClosure" => 1, "ControllerClosure" => 3, "DriverClosure" => 5, "Catalog" => 7, "Approval" => 13, _ => -1
+    };
+    if (digest >= 0) return Create(surface, Evidence(surface, 0, Binding(surface, digest))).Code;
+    if (variant == "OriginalC") return Create(surface, Evidence(surface, 0, Binding(surface, wrongC: true))).Code;
+    if (variant == "Provenance") return Create(surface, Evidence(surface, 0, badFact: 1)).Code;
+    if (variant == "Expiry") return Create(surface, time: 40).Code;
+    if (variant == "Stop") return Create(surface, stop: true).Code;
+    if (variant == "Precedence")
+        return Create(surface, Evidence(surface, 0, Binding(surface, changedDigest: 7), badFact: 1)).Code;
+    if (variant == "Intake")
+    {
+        var input = Buffers();
+        object expected = Binding(surface, buffers: input);
+        input[0][0] = 99;
+        return Create(surface, expected: expected).Code;
+    }
+
+    using var model = (IDisposable)Create(surface).Result!;
+    if (variant == "Terminal")
+    {
+        if (Advance(surface, model, 2).Code != "Transition") throw new InvalidOperationException("loaned retry witness");
+        return Advance(surface, model, 1).Code;
+    }
+
+    var first = Advance(surface, model, 1);
+    if (variant == "Exception") return first.Code;
+    if (first.Code != "None") throw new InvalidOperationException(first.Code);
+    if (variant == "OneUse") return Advance(surface, model, 1).Code;
+    if (variant == "Output")
+    {
+        var binding = Surface.Get(first.Result!, "Binding");
+        ((byte[])Surface.Get(binding, "LauncherExecutable"))[0] = 99;
+        return ((byte[])Surface.Get(binding, "LauncherExecutable"))[0] == 1 ? "Retained" : "Aliased";
+    }
+
+    if (Advance(surface, model, 2).Code != "None") throw new InvalidOperationException("issue/offer setup");
+    return variant switch
+    {
+        "Drop" => Advance(surface, model, 3, Evidence(surface, 3, badFact: 8)).Code,
+        "BypassDrop" => Advance(surface, model, 4).Code,
+        _ => throw new InvalidOperationException(variant)
+    };
+}
+
+static string Fault(Surface surface)
+{
+    using var model = (ProducerSensitivity.Exception.ValidationCustodyModel)Create(surface).Result!;
+    var binding = (ProducerSensitivity.Exception.ValidationCustodyBinding)Binding(surface);
+    ProducerSensitivity.Exception.ValidationCustodyModelSnapshot? result =
+        new(ProducerSensitivity.Exception.ValidationCustodyState.IssuedModel, binding);
+    var evidence = (ProducerSensitivity.Exception.ValidationCustodyEvidence)Evidence(surface, 1);
+    try
+    {
+        model.Advance(ProducerSensitivity.Exception.ValidationCustodyEvent.ObserveIssue, evidence, 1, false, out result);
+        return "Returned";
+    }
+    catch (InvalidOperationException ex) when (ex.Message == "synthetic snapshot fault")
+    {
+        var state = result is null ? "Null" : "Published";
+        var retry = model.Advance(ProducerSensitivity.Exception.ValidationCustodyEvent.ObserveIssue, evidence, 1, false, out var later);
+        return $"Threw/{state}/{(later is null ? retry.ToString() : "Published")}";
+    }
+}
+
+static Guid Label(int n) => new(n, 12, 23, 1, 2, 3, 4, 5, 6, 7, 8);
+static byte[][] Buffers() => Enumerable.Range(1, 15).Select(n => Enumerable.Repeat((byte)n, 32).ToArray()).ToArray();
+
+sealed class Surface(Assembly source, string name)
+{
+    private const BindingFlags Access = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
+    internal Type Type(string suffix) => source.GetType(name + ".ValidationCustody" + suffix, throwOnError: true)!;
+    internal object Construct(string suffix, object?[] values) =>
+        Activator.CreateInstance(Type(suffix), Access, null, values, CultureInfo.InvariantCulture)!;
+    internal (string Code, object? Result) Call(string method, object? instance, object?[] args)
+    {
+        string code = Type("Model").GetMethod(method, Access)!.Invoke(instance, args)!.ToString()!;
+        if ((code == "None") != (args[^1] is not null)) throw new InvalidOperationException("result publication mismatch");
+        return (code, args[^1]);
+    }
+    internal static object Get(object instance, string property) =>
+        instance.GetType().GetProperty(property, Access)!.GetValue(instance)!;
+}

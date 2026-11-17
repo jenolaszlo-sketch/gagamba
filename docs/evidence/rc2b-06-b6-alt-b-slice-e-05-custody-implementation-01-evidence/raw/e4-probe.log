@@ -1,0 +1,57 @@
+[logs/probe-debug.log]
+["dotnet","build","C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\e4-supplement/Probe.csproj","-c","Debug","--artifacts-path","C:/Users/Laszlos/source/repos/Solo/gagamba-e05-custody-producer-01/probe-exact-debug","-p:UseSharedCompilation=false","-p:WitnessSource=C:\\Users\\Laszlos\\source\\repos\\Gagamba/tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecVectors.cs","-p:Core=C:/Users/Laszlos/source/repos/Solo/gagamba-e05-custody-producer-01/probe-references-debug","-p:SensitivitySource=C:/Users/Laszlos/source/repos/Solo/gagamba-e05-custody-producer-01/sensitivity-debug.cs"]
+  Determining projects to restore...
+  Restored C:\Users\Laszlos\source\repos\Solo\gagamba-e05-custody-producer-01\e4-supplement\Probe.csproj (in 72 ms).
+  Probe -> C:\Users\Laszlos\source\repos\Solo\gagamba-e05-custody-producer-01\probe-exact-debug\bin\Probe\debug\Gagamba.Execution.Linux.M1.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:02.91
+BUILD EXIT 0
+56F50867AA3B01FC6F1827D2BEC64CE71430CD0FF1312498CFA26BB020DD17DD  C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecVectors.cs
+353280F0AD020591ED39B2475ED26BB3046ACB159EF80E21398AF46652E5BF69  C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Bootstrap\Gava1ContextCodec.cs
+15E2C1772E4CC0C26762851B940AEDBA45263FBF0C2178304C66AEABE9F111C4  C:\Users\Laszlos\source\repos\Solo\gagamba-e05-custody-producer-01\sensitivity-debug.cs
+5832BE8880C6291440889E59FE36CBD485FA51DA48D330434B92514C549F657C  C:\Users\Laszlos\source\repos\Solo\gagamba-e05-custody-producer-01\probe-exact-debug\bin\Probe\debug\Gagamba.Execution.Linux.M1.Tests.dll
+84A76EDBAC91D29C2871CEFDAE7EFC8F10DBEABFE77207952D892191272558FB  C:\Users\Laszlos\source\repos\Solo\gagamba-e05-custody-producer-01\probe-exact-debug\bin\Probe\debug\Gagamba.Execution.Linux.M1.dll
+036634D1ADD9484203DE85BA106E15250BF145A7B8A1E280B8D9FA990076E24D  C:\Users\Laszlos\source\repos\Solo\gagamba-e05-custody-producer-01\probe-exact-debug\bin\Probe\debug\Gagamba.Execution.dll
+dotnet C:/Users/Laszlos/source/repos/Solo/gagamba-e05-custody-producer-01/probe-exact-debug/bin/Probe/debug/Gagamba.Execution.Linux.M1.Tests.dll
+supplemental rows passed=1945 failed=0
+PROBE EXIT 0
+
+[logs/probe-release.log]
+["dotnet","build","C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\e4-supplement/Probe.csproj","-c","Release","--artifacts-path","C:/Users/Laszlos/source/repos/Solo/gagamba-e05-custody-producer-01/probe-exact-release","-p:UseSharedCompilation=false","-p:WitnessSource=C:\\Users\\Laszlos\\source\\repos\\Gagamba/tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecVectors.cs","-p:Core=C:/Users/Laszlos/source/repos/Solo/gagamba-e05-custody-producer-01/probe-references-release","-p:SensitivitySource=C:/Users/Laszlos/source/repos/Solo/gagamba-e05-custody-producer-01/sensitivity-release.cs"]
+  Determining projects to restore...
+  Restored C:\Users\Laszlos\source\repos\Solo\gagamba-e05-custody-producer-01\e4-supplement\Probe.csproj (in 74 ms).
+  Probe -> C:\Users\Laszlos\source\repos\Solo\gagamba-e05-custody-producer-01\probe-exact-release\bin\Probe\release\Gagamba.Execution.Linux.M1.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.47
+BUILD EXIT 0
+56F50867AA3B01FC6F1827D2BEC64CE71430CD0FF1312498CFA26BB020DD17DD  C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecVectors.cs
+353280F0AD020591ED39B2475ED26BB3046ACB159EF80E21398AF46652E5BF69  C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Bootstrap\Gava1ContextCodec.cs
+15E2C1772E4CC0C26762851B940AEDBA45263FBF0C2178304C66AEABE9F111C4  C:\Users\Laszlos\source\repos\Solo\gagamba-e05-custody-producer-01\sensitivity-release.cs
+144F22291DB0D274A57AB00A962B44085EE8248A8DC08DDDAA1EB42FA07683F1  C:\Users\Laszlos\source\repos\Solo\gagamba-e05-custody-producer-01\probe-exact-release\bin\Probe\release\Gagamba.Execution.Linux.M1.Tests.dll
+DD52FEBFB3126444F382F53CEB17319F8A0161D97C9A43D197F179CD757774FD  C:\Users\Laszlos\source\repos\Solo\gagamba-e05-custody-producer-01\probe-exact-release\bin\Probe\release\Gagamba.Execution.Linux.M1.dll
+B556C4A230414EA509CBE63A37358063AA40E77E38BD47BBE9FACF36EC304D1F  C:\Users\Laszlos\source\repos\Solo\gagamba-e05-custody-producer-01\probe-exact-release\bin\Probe\release\Gagamba.Execution.dll
+dotnet C:/Users/Laszlos/source/repos/Solo/gagamba-e05-custody-producer-01/probe-exact-release/bin/Probe/release/Gagamba.Execution.Linux.M1.Tests.dll
+supplemental rows passed=1945 failed=0
+PROBE EXIT 0
+
+[logs/release-witness-debug.json]
+{
+  "witness": "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\docs\\reviews\\rc2b-06-b6-alt-b-slice-e-03-qe1-frozen-record-prep-01-evidence\\binary-vectors.md",
+  "size": 258,
+  "digest": "3737572b7b3d2ad8313d109d6d8a9d0df4b5bc7b20e43c71a0a6061e1988ce3e"
+}
+
+[logs/release-witness-release.json]
+{
+  "witness": "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\docs\\reviews\\rc2b-06-b6-alt-b-slice-e-03-qe1-frozen-record-prep-01-evidence\\binary-vectors.md",
+  "size": 258,
+  "digest": "3737572b7b3d2ad8313d109d6d8a9d0df4b5bc7b20e43c71a0a6061e1988ce3e"
+}

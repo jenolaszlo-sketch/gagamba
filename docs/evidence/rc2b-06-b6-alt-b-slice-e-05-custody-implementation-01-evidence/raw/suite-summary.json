@@ -1,0 +1,125 @@
+{
+  "debug": {
+    "e5": {
+      "total": 42,
+      "passed": 42,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "xml_sha256": "b60012e4d162b7e3b621875ac62e454e1e3aac867daaabc026a082e684a78a15",
+      "vstest_executed": 0,
+      "vstest_exit": 1,
+      "vstest_trx_sha256": "105d9e40920469cae608c4dfda3f575888a2b53bee948fecdd565370e38c5ecd"
+    },
+    "e4": {
+      "total": 11,
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "xml_sha256": "6c80b42aff4b31dcc154cd47358a3358f5b23959294c057ef1f2e5f23e885dc6",
+      "vstest_executed": 0,
+      "vstest_exit": 1,
+      "vstest_trx_sha256": "b7cc1e39ca28fc372c8de89ddcc7052a58f9942cf28bb8f5c9fcfce250cb0a1a"
+    },
+    "e3": {
+      "total": 185,
+      "passed": 185,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "xml_sha256": "42fe33c1c7ffd7546974e9491e1b9d4e6ab227113f5845872290b8b2b6b116c1",
+      "vstest_executed": 0,
+      "vstest_exit": 1,
+      "vstest_trx_sha256": "e8025ff33136dd462a1732808204928b43abc31cf428a254a85e1e04ffd705af"
+    },
+    "broad": {
+      "total": 2062,
+      "passed": 1731,
+      "failed": 0,
+      "skipped": 331,
+      "errors": 0,
+      "xml_sha256": "50e993214acc04ed18b4db18e8565abd29833b44940a8ba16c7c0f3f28b0d7e1",
+      "vstest_executed": 0,
+      "vstest_exit": 1,
+      "vstest_trx_sha256": "ac25ab011d5f8235ea3cfe659e4d059b282f97853f5d4608e2516175029b55b0"
+    },
+    "historical_xml": {
+      "e4": "294668d9c8519a86e6c172d70498404201cb933a18f36f89f676abd3e96006af",
+      "e3": "5f7d08681db62c94c6f547b5cb29977fe0f57cd0a9f81f1b5599e847a7a693d4",
+      "broad": "730326b1733299d74ad1022b7e187218219b496ae8fcd033e76076126c659791"
+    },
+    "supplement": {
+      "exact": 1944,
+      "disposable": 1,
+      "sha256": "c87b3cddec95c0429df82c17db94bc619725da9b781210547e3914771c0a923a"
+    },
+    "sensitivity": {
+      "behavioral": 16,
+      "exception": 1,
+      "sha256": "feed9f3dcad851fd93fea75c6f8a730bb50031a8319989c9adb3867c1a4f08bf"
+    }
+  },
+  "release": {
+    "e5": {
+      "total": 42,
+      "passed": 42,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "xml_sha256": "cd53ea8d3015471235023028d2de9a7ba30c5ff40dfe9ec9aaba3b59a03a6d52",
+      "vstest_executed": 0,
+      "vstest_exit": 1,
+      "vstest_trx_sha256": "6861b639af42e55eab5e0170d4b0628793fe8ee1b4a900432df9a8b92ef4934d"
+    },
+    "e4": {
+      "total": 11,
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "xml_sha256": "a71a0d9c5ebe551d1e7003da6732cfd86d31f55e9e2cb860050ecbea00d2d4ba",
+      "vstest_executed": 0,
+      "vstest_exit": 1,
+      "vstest_trx_sha256": "e166e79924108497ac05ad5096c84a715d63145d391ca2595be905f8e8e75c28"
+    },
+    "e3": {
+      "total": 185,
+      "passed": 185,
+      "failed": 0,
+      "skipped": 0,
+      "errors": 0,
+      "xml_sha256": "5b61ca7f42c3b01314ece46f9e248585407c121957da234897c0eec2cf6689fa",
+      "vstest_executed": 0,
+      "vstest_exit": 1,
+      "vstest_trx_sha256": "975f4cd428531549ea4e2105555ca7e44662a37fb4c152a1294936d7ace57b12"
+    },
+    "broad": {
+      "total": 2062,
+      "passed": 1731,
+      "failed": 0,
+      "skipped": 331,
+      "errors": 0,
+      "xml_sha256": "531638cf5e217ec059181bb432d35c63f7906c14895052769f9234f108112448",
+      "vstest_executed": 0,
+      "vstest_exit": 1,
+      "vstest_trx_sha256": "e7e7a62b8bee094e19375b85a6be63a946a233a02585b5116d99bd9666757b76"
+    },
+    "historical_xml": {
+      "e4": "d10385d7c823f944984e1046fcd6422dca54a3094b367d86dfea1c863c5276e5",
+      "e3": "fa2b5c8e14ecb7bb2954a76f5f062d9258a222abe650e651266f947736d6fe92",
+      "broad": "74f1babf4e745e9c5ec54327b3fed7924241ed0d4b6f4948dbffc0fa8bb8ea68"
+    },
+    "supplement": {
+      "exact": 1944,
+      "disposable": 1,
+      "sha256": "c87b3cddec95c0429df82c17db94bc619725da9b781210547e3914771c0a923a"
+    },
+    "sensitivity": {
+      "behavioral": 16,
+      "exception": 1,
+      "sha256": "feed9f3dcad851fd93fea75c6f8a730bb50031a8319989c9adb3867c1a4f08bf"
+    }
+  },
+  "policy_probes": 51
+}

@@ -1,0 +1,66 @@
+{
+  "debug": [
+    {
+      "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\debug\\focused\\Gagamba.Execution.Linux.M1.dll",
+      "reference": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1\\debug\\Gagamba.Execution.Linux.M1.dll",
+      "sha256": "84a76edbac91d29c2871cefdae7efc8f10dbeabfe77207952d892191272558fb"
+    },
+    {
+      "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\debug\\focused\\Gagamba.Execution.dll",
+      "reference": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1\\debug\\Gagamba.Execution.dll",
+      "sha256": "036634d1add9484203de85ba106e15250bf145a7b8a1e280b8d9fa990076e24d"
+    },
+    {
+      "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\debug\\focused\\Gagamba.Execution.Linux.M1.Tests.dll",
+      "reference": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1.Tests\\debug\\Gagamba.Execution.Linux.M1.Tests.dll",
+      "sha256": "9a13b9f2a86e1f6b1960c59057a7ed8bb36b5331431224b90c9f00298710fc00"
+    },
+    {
+      "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\debug\\tests\\debug\\Gagamba.Execution.Linux.M1.Tests.dll",
+      "reference": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1.Tests\\debug\\Gagamba.Execution.Linux.M1.Tests.dll",
+      "sha256": "9a13b9f2a86e1f6b1960c59057a7ed8bb36b5331431224b90c9f00298710fc00"
+    },
+    {
+      "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\debug\\tests\\debug\\Gagamba.Execution.Linux.M1.dll",
+      "reference": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1\\debug\\Gagamba.Execution.Linux.M1.dll",
+      "sha256": "84a76edbac91d29c2871cefdae7efc8f10dbeabfe77207952d892191272558fb"
+    },
+    {
+      "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\debug\\src\\Gagamba.Execution.Linux.M1\\bin\\Release\\net10.0\\Gagamba.Execution.Linux.M1.dll",
+      "reference": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll",
+      "sha256": "dd52febfb3126444f382f53ceb17319f8a0161d97c9a43d197f179cd757774fd"
+    }
+  ],
+  "release": [
+    {
+      "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\release\\focused\\Gagamba.Execution.Linux.M1.dll",
+      "reference": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll",
+      "sha256": "dd52febfb3126444f382f53ceb17319f8a0161d97c9a43d197f179cd757774fd"
+    },
+    {
+      "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\release\\focused\\Gagamba.Execution.dll",
+      "reference": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.dll",
+      "sha256": "b556c4a230414ea509cbe63a37358063aa40e77e38bd47bbe9facf36ec304d1f"
+    },
+    {
+      "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\release\\focused\\Gagamba.Execution.Linux.M1.Tests.dll",
+      "reference": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1.Tests\\release\\Gagamba.Execution.Linux.M1.Tests.dll",
+      "sha256": "689129abc70d448a2395172d12995905ed4d8eb26b52eea0e7be2e62da28e6e9"
+    },
+    {
+      "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\release\\tests\\release\\Gagamba.Execution.Linux.M1.Tests.dll",
+      "reference": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1.Tests\\release\\Gagamba.Execution.Linux.M1.Tests.dll",
+      "sha256": "689129abc70d448a2395172d12995905ed4d8eb26b52eea0e7be2e62da28e6e9"
+    },
+    {
+      "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\release\\tests\\release\\Gagamba.Execution.Linux.M1.dll",
+      "reference": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1\\debug\\Gagamba.Execution.Linux.M1.dll",
+      "sha256": "84a76edbac91d29c2871cefdae7efc8f10dbeabfe77207952d892191272558fb"
+    },
+    {
+      "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\layouts\\release\\src\\Gagamba.Execution.Linux.M1\\bin\\Release\\net10.0\\Gagamba.Execution.Linux.M1.dll",
+      "reference": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-e05-custody-producer-01\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll",
+      "sha256": "dd52febfb3126444f382f53ceb17319f8a0161d97c9a43d197f179cd757774fd"
+    }
+  ]
+}

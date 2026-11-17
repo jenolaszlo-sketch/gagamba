@@ -1,0 +1,8 @@
+using Gagamba.Execution.Linux.M1.Bootstrap;
+
+namespace ProducerIsolationControl;
+
+internal static class ForbiddenCaller
+{
+    internal static void Probe() => ValidationCustodyModel.TryCreate(null, null, 0, false, out _);
+}
