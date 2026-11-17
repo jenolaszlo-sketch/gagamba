@@ -1,0 +1,15 @@
+# Carry-forward ledger
+
+This ledger carries the [E-4 responsibility ledger](../rc2b-06-b6-alt-b-slice-e-04-owner-01-evidence/carry-forward.md) forward without changing row identities, triggers or allocations. [Entry gate classifications](prerequisites-and-gates.md#entry-gate-reconciliation)
+
+| Obligation | Disposition and destination |
+|---|---|
+| BB-02 | Open under E-3 Option A for legacy-v2 boundary separation. A separate affected-path review and evidence are required for legacy reuse/remediation. |
+| Composite Q-E1 | Open. The adopted E-3 and E-4 exact managed components and handoffs carry forward. Live context, owner recomputation, protected checks and composite closure retain their corresponding future gates. |
+| P0 external evidence durability and independent historical Git ancestry | Open and unassigned to a numbered milestone. Verified local and current GitHub identities and local external bytes carry forward. Durable independently rooted custody and historical ancestry remain due. |
+| First E-1 production consumer and F-01/F-02/F-03 | Open and unassigned. Preserve semantic checks, fail-closed consumption, parity triggers, mandatory shared-core Option A reassessment at its trigger, actual loaded verification-to-use, and the original tooling qualification limits including unexecuted PowerShell 7 coverage. |
+| All 39 E-2 qualifications and 23 downstream obligations | Adopted by reference under original status, owner/trigger and evidence conditions. The E-2 closure's later allocations govern. [39 qualifications](../rc2b-06-b6-alt-b-slice-e-03-owner-01-evidence/inherited-qualifications.md) · [23 obligations](../rc2b-06-b6-alt-b-slice-e-03-owner-01-evidence/downstream-obligations.md) · [Owner closure](../rc2b-06-b6-alt-b-slice-e-02-closure-owner-01.md) |
+| P4 refusal-only | F-R1/O-R1, O-R2, O-R3, current inherited Q04/S09 scope and observation-to-effect residual preserved. Keep exact-revision re-audit for the applicable caller change and mandatory E-6 gate. |
+| `NATIVE-PENDING` and 331 native skips per configuration | Unqualified. Retain exact skip identities/reasons, protected native capability/role/cleanup evidence and separate Slice N authorization. Hosted CI skips and module absence carry their own scope. |
+| Historical VSTest and substitutes | Six E-4 independent VSTest 18.7.0 invocations timed out before tests executed. Preserve Q4/Q1 xUnit v3 in-process substitutions with artifact and case bindings, the actual Release discovery copy and Debug fixture dependency qualification, cached restore with NuGetAudit=false and the limits of static metadata inspection. Producer E-4 focused VSTest passed separately. [Q1 reproduction](../../reviews/rc2b-06-b6-alt-b-slice-e-04-codec-q1-evidence/reproduction.md) |
+| Separate gates | Preserve production codec integration, live transport and approval, protected execution and release enforcement. E-6 owns atomic enablement and R/O/C correction, E-7 owns exact driver dispatch and closure, Slice N owns protected native qualification. The public activation gate remains separately controlled. |
