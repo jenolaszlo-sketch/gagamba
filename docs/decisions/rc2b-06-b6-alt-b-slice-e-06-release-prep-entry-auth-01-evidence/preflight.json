@@ -1,0 +1,487 @@
+{
+  "mode": "initial",
+  "scope": "Documentation integrity audit",
+  "canonical_checkout": "C:/Users/Laszlos/source/repos/Gagamba",
+  "branch": "main",
+  "head": "22a0b7b00364cc7be333ba7dfd9c0359a7fe9f99",
+  "tree": "ee0aa6242cdcc4928518c26486b634a5df8850d4",
+  "starting_head": "22a0b7b00364cc7be333ba7dfd9c0359a7fe9f99",
+  "starting_tree": "ee0aa6242cdcc4928518c26486b634a5df8850d4",
+  "accepted_e5": "28895d55de98eea4bc402373b653f7216e092843",
+  "origin": "https://github.com/jenolaszlo-sketch/gagamba.git",
+  "live_remote": "4dc0ee0998f0def6cb1cba304a76b3a9f59ac904\trefs/heads/main",
+  "remote_tracking_main": "4dc0ee0998f0def6cb1cba304a76b3a9f59ac904",
+  "local_heads_and_tags": {
+    "refs/heads/assessment/gagamba-rc2a-02-full-stage": "058a150130c5f112c7e9b8189bba8842cf0cec52",
+    "refs/heads/assessment/gagamba-rc2a-roadmap-01": "d417367499979d38a3c9a498275d8422bf69f3d0",
+    "refs/heads/design/wp05-d6-3-c3-outcome-reconciliation": "8572e1a042fd12d4bcd0c06729066babf04a94ed",
+    "refs/heads/fix/nem-q2-validated-findings": "54a91b66a9841932792770843a7cd93743e9f4b1",
+    "refs/heads/implementation/wp05-release-qualification-fixtures": "338a98af269e6b5839f3ccc2e0881f016153b01e",
+    "refs/heads/infrastructure/wp05-independent-linux-readiness": "5c04d324894a84b17a5d40f7546eab9a65d0eb4c",
+    "refs/heads/infrastructure/wp05-independent-linux-readiness-2": "0f29bb54921d11306f14fad1288851efd349c26a",
+    "refs/heads/main": "22a0b7b00364cc7be333ba7dfd9c0359a7fe9f99",
+    "refs/heads/planning/gagamba-rc2b-scope-01": "cda4691156a7477b29f641e4ba958ab718da6086",
+    "refs/heads/preservation/nem-q3-independent-verification": "8909950de598c7866859f46e4c356f0aef941bf2",
+    "refs/heads/preservation/wp05-d6-2-focused-independent-review-previous-local": "f8486c3e73d211f38d1b8491c3fb0ef4b17bc8a2",
+    "refs/heads/qualification/ar6-native": "06c8ac7eff6b968804a5cdd6c651f1a0c6845d56",
+    "refs/heads/qualification/ar7-feasibility": "b134cb33a2d1ca1fa25a284b5ae9de18f1de4a6d",
+    "refs/heads/qualification/conformance-foundation": "62d79e7f8765452289da229cf429029390535635",
+    "refs/heads/qualification/gagamba-rc2a-02a-windows": "c1a01761f8d58136a381ad87269635c6c14ad093",
+    "refs/heads/qualification/gagamba-rc2a-02b": "dd16baec48663d40cd29504d98e57e30dd0855df",
+    "refs/heads/qualification/gagamba-rc2a-02c-q2as-rcd04": "62b75f5866d0c339816712baeb04baa386b06f85",
+    "refs/heads/qualification/gagamba-rc2a-03-cq1": "1ce5c37f25c3bf49f55fc6a31a930f8430358d24",
+    "refs/heads/qualification/wp05-d6-8-5-c2-linux": "d4e8bf88ce1661717537aaa3fb392bfe24c04466",
+    "refs/heads/remediation/conformance-foundation-review-1": "b5827110167861f2dd12c69c54cdddd9ff1db326",
+    "refs/heads/remediation/wp05-identity-evidence-integrity": "38f6981b2a60daab2df37c92913a6760c1bef131",
+    "refs/heads/review/ar7-architecture": "8e156774fec28d807b557acae487791289369609",
+    "refs/heads/review/conformance-foundation-independent": "3feb7c572d95b28c09dfb6795f1c92ba693fa22e",
+    "refs/heads/review/gagamba-independent-assessment-design": "97a3eaa914627bb4ccb9e20855403c37ac97e545",
+    "refs/heads/review/gagamba-rc1-glm-independent-contract": "feb9d7584c41712195d4b90754ed7a342ba74bb7",
+    "refs/heads/review/gagamba-rc2a-01-glm-independent": "8e41babfc96afa2e617a53b63e50903d54001194",
+    "refs/heads/review/gagamba-rc2a-02a-glm-q1": "7b6344551c2d4b42832df39822eaf4b8a1c01495",
+    "refs/heads/review/gagamba-rc2a-02b-q1": "5bc396c2e5619906ae202afe0a4244dfd6024d9e",
+    "refs/heads/review/gagamba-rc2a-02b-q2": "60de1f2d34a7df337a426501cb3954fdd3216a6b",
+    "refs/heads/review/gagamba-rc2a-02c-q2": "f8b692e04941462ea592d9653960191cafb937cc",
+    "refs/heads/review/gagamba-rc2a-03-cq1-q1": "e060c91225274f13d53421b613a5736225ef6de4",
+    "refs/heads/review/gagamba-rc2b-scope-q1": "b1ea5d3a84fcc11deac0e14f94c3f67b90c91e0b",
+    "refs/heads/review/wp05-abort-oracle-final-requalification": "d809ac969a84073d117d30b5a80437159741774c",
+    "refs/heads/review/wp05-d1-d3-fixture-evidence-review": "d0f2220d5e10abb97343d069a5ff43c22c72bfd7",
+    "refs/heads/review/wp05-d4-crash-witness-qualification": "310484a5e82d4a81b0909e07281511cb7bc4c315",
+    "refs/heads/review/wp05-d5-native-status-qualification": "87cced6143fb3337829fab48a3c012b06c06508c",
+    "refs/heads/review/wp05-d6-0-independent-contract-design": "2a235c391673258023d3b3058ad7bbb31cc20406",
+    "refs/heads/review/wp05-d6-1-independent-contract-design": "8aded096f0ed55375c35915378232e95cb8ba33d",
+    "refs/heads/review/wp05-d6-1-independent-contract-design-2": "77f559a7dfc1702b33812d5c3d5c42ac925f0343",
+    "refs/heads/review/wp05-d6-2-focused-contract-precision": "3bce34b6b449a863f784949c0d7be5b0b56d4458",
+    "refs/heads/review/wp05-d6-2-focused-contract-review": "e63a6d4a18aad87b88f64939194b18dd102ad9bd",
+    "refs/heads/review/wp05-d6-3-terra-independent-c3-outcome": "cda2f22221c4db12ced3a4317362e80167270a63",
+    "refs/heads/review/wp05-d6-4-glm-independent-fixture": "8b95c52abdebf8fd9a0235dd5a69082456e1984f",
+    "refs/heads/review/wp05-d6-5-glm-independent-isolation-equivalence": "1051018c272a578613309c07cb4d23d627216482",
+    "refs/heads/review/wp05-d6-6-glm-independent-symbol-delivery": "3c3d336c0a47ccb18627a5571298df8d0d1f0683",
+    "refs/heads/review/wp05-d6-7-glm-human-decision-integrity": "546f284fbdbbcaa76f8b5557328fcd2d502a86c0",
+    "refs/heads/review/wp05-d6-8-4-glm-f01-f02-closure": "55f3f7a10b4d6860b8e7e02776bb3da73f801db9",
+    "refs/heads/review/wp05-d6-8-5-glm-c2-linux-qualification": "89464f5f214615ba94051e438d9b4979483ae5bf",
+    "refs/heads/review/wp05-d6-8-glm-independent-c2": "959f2d3162bdfbecac2723f50acae8459b2fa310",
+    "refs/heads/review/wp05-harness-linux-final-acceptance": "71d5a7e0af5141d74110eacc06ba478ab75a81ac",
+    "refs/heads/review/wp05-opencode-harness-final-qualification": "36a124d7dff98ecfaf956340767fe1768ad5b17f",
+    "refs/heads/review/wp05-opencode-linux-readiness": "e6f8604cf6d2a0e532e651bece987fb9613e6b94",
+    "refs/heads/review/wp05-qualification-harness-requalification": "67e2d5b95ff2ff1a7d92fb2af27cb37bc0995bce",
+    "refs/heads/review/wp05-release-plan-adversarial-review": "e4b0a798e944ddfb144901c63b0c444e7980533b",
+    "refs/heads/review/wp05-release-seccomp-counterexample": "712e0fc2dc56c0b14f12ca75c7d48137dae8a500",
+    "refs/heads/review/wp05-seccomp-kernel-requalification": "5b6ab064ec0e329735aae969a3478577203d6616",
+    "refs/tags/ar6-review-baseline-06c8ac7": "6e1725802b2b4c846b4a7486c43fe4c719e45daf",
+    "refs/tags/arch-execution-domain-amendment-1": "90c5e4e2d8f37094e0cc4c82c3207f6f275ea6db",
+    "refs/tags/arch-execution-domain-v1": "65d0b377347d1b81aaefbc3b2cfeabbe754dd838",
+    "refs/tags/v0.1.0-preview.2": "2b5364f75c96022ac5040b60d524d8603312d242",
+    "refs/tags/v0.1.0-preview.3": "9e9ab539346b78f717c94921ea7e652c1d6647e3",
+    "refs/tags/v0.1.0-preview.4": "5e6a30f4afc36568044fda2161ee84149823e2a3"
+  },
+  "worktrees": "worktree C:/Users/Laszlos/source/repos/Gagamba\nHEAD 22a0b7b00364cc7be333ba7dfd9c0359a7fe9f99\nbranch refs/heads/main",
+  "stashes": [],
+  "historical_entries": 1054,
+  "assessment_entries": 19,
+  "accepted_revision_manifests": [
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-q1-evidence/SHA256SUMS.txt",
+      "revision": "7713ec58cc7c292862c8c80d6b57dcacd3420b44",
+      "manifest_sha256": "9739a964e1300444e9377bdd08c1f1e952b8aaf9f2feae9129b0c510c623ece1",
+      "entries": 156
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-r1-q2-evidence/SHA256SUMS.txt",
+      "revision": "4cb46a6cdbcc52b7129dbd88c4eba2e62ae73469",
+      "manifest_sha256": "17bf65a8ac79e41b85f34723616af4950b7df2e592da55ec59523f9f3129445b",
+      "entries": 100
+    },
+    {
+      "path": "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/SHA256SUMS.txt",
+      "revision": "8be61181e804b2dfafb0797eb54c92d2f234ff86",
+      "manifest_sha256": "22c232f8585d99dbf9d9fde298fbe3f6924ad69fd5b4139366f0f50f845620be",
+      "entries": 64
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-r2-q3-evidence/SHA256SUMS.txt",
+      "revision": "29da0ed60c18ed6364bf9366a64ab5aa3393db62",
+      "manifest_sha256": "2ca94c21c993e2923bdafb017775fc20143bd8d0c5174502b61d4bbf6b7af16b",
+      "entries": 77
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-owner-01-evidence/SHA256SUMS.txt",
+      "revision": "ffdad5d05fefb6d260c884d61c791c6d9be91df5",
+      "manifest_sha256": "e965570e5fe97cd617b5b3f245e2b9403c96638c95d7c43b9cd847a85b09a301",
+      "entries": 9
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-r2-q4-evidence/SHA256SUMS.txt",
+      "revision": "0d64fcd199997bf3bede3b328f44aaf211048daa",
+      "manifest_sha256": "38d7d5eb33160e3f756639a10d3d1e1da5fe0706f673b457e28777d826bc8cc8",
+      "entries": 132
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-owner-02-evidence/SHA256SUMS.txt",
+      "revision": "6892ab0e235b2eaab943f218545cbe35ca95fd1b",
+      "manifest_sha256": "bde46f07a184c6e50b203e898e90905c82809c6f67fc57ed81449d30b40d5b76",
+      "entries": 6
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-entry-owner-01-evidence/SHA256SUMS.txt",
+      "revision": "dc43b4360dbe17c644118239d0fd691c639aa0cc",
+      "manifest_sha256": "61a50084358b13be0ac36a8c2d93e12d111a159812a416683a0acec86a653aef",
+      "entries": 9
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-entry-auth-01-evidence/SHA256SUMS.txt",
+      "revision": "db44b7e50c6ce449fdb6b596ad52744cf10443c0",
+      "manifest_sha256": "d03d78f64ec04f4fbc98c5055a3b60529b30ac9671fdeab8701d93b339e3d271",
+      "entries": 6
+    },
+    {
+      "path": "docs/evidence/rc2b-06-b6-alt-b-slice-e-04-codec-implementation-01-evidence/SHA256SUMS.txt",
+      "revision": "3c16b53b288b39de3fb36964eecc8d5cccbc62b6",
+      "manifest_sha256": "5c25fa0cdadbc7f28481cb0bee2359ed8126aec1ca7417f68f6c4fd641485ac4",
+      "entries": 129
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-04-codec-q1-evidence/SHA256SUMS.txt",
+      "revision": "34eae383d6f19b0a2f5f6ac957218c7f27eb6fa3",
+      "manifest_sha256": "037564575980b1bf7247e8bd858c7fe6264afa7b843d53f696063655a3c2da8a",
+      "entries": 87
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-owner-01-evidence/SHA256SUMS.txt",
+      "revision": "1116c66d7858e6000f0001a0abe39319e4e694be",
+      "manifest_sha256": "a913052189e00cb697592530bb1b87a2b222badb9d8f2f91425396ba25da238c",
+      "entries": 10
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-entry-owner-01-evidence/SHA256SUMS.txt",
+      "revision": "b309a9ec1a9a0f160ea0c2dd513001c3561a36d9",
+      "manifest_sha256": "8a37b4c4623ca2820c5731760da013c66c170c9d92fba0f7e08e6a16b694ed30",
+      "entries": 7
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-design-owner-01-evidence/SHA256SUMS.txt",
+      "revision": "1ff4d6e6d1f756646072790478921d9a64f15654",
+      "manifest_sha256": "e48f0097802d130d6b96038795aa5cc2f91e1e88c6f19e4061f2fc279275f8a1",
+      "entries": 12
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-entry-owner-02-evidence/SHA256SUMS.txt",
+      "revision": "02ba7ad3c81e72de885349c2bd54b0b7ab16bc12",
+      "manifest_sha256": "a0109ec7c34f7df8a6a528fe75314f94a49226d7a3011c5a009830180dfc6bdc",
+      "entries": 5
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-entry-auth-01-evidence/SHA256SUMS.txt",
+      "revision": "7a30d0a05a7c898c4e90cc2ca01280db166ed6f2",
+      "manifest_sha256": "1553b3ab98e32b3b73096b3ca318a88b82b9d57085759ebfc653092586a8ccdf",
+      "entries": 5
+    },
+    {
+      "path": "docs/evidence/rc2b-06-b6-alt-b-slice-e-05-custody-implementation-01-evidence/SHA256SUMS.txt",
+      "revision": "0a77422c1349b99e518292d46314606b383527e4",
+      "manifest_sha256": "bd371b96f6cc6d0b39f36279700361a8f6e265f208f7318d4368c5ec540207fc",
+      "entries": 41
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-05-custody-q1-evidence/SHA256SUMS.txt",
+      "revision": "b6631367d39531b2c5af8a1917760d7c807f8e73",
+      "manifest_sha256": "3e57695efbf302bf15bf50dd32f502f3b3832a7d37d93fde28e06e91a756731b",
+      "entries": 189
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01-evidence/SHA256SUMS.txt",
+      "revision": "4dc0ee0998f0def6cb1cba304a76b3a9f59ac904",
+      "manifest_sha256": "cd689e7eee4efe89774c3c54dcb07fbf03c55dc2489274e95df89bf1edb4edc0",
+      "entries": 10
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/SHA256SUMS.txt",
+      "revision": "22a0b7b00364cc7be333ba7dfd9c0359a7fe9f99",
+      "manifest_sha256": "0a5c7ccdc473649f6ba51131db2d5ed0b45084c587bbdaf964567c7afbab998f",
+      "entries": 19
+    }
+  ],
+  "historical_pointer_versions": {},
+  "historical_untracked_count": 44,
+  "historical_untracked_inventory": "docs/evidence/rc2b-06-b6-native-input-freeze-01/untracked-before.json",
+  "historical_untracked_inventory_sha256": "7d6abbd93c9703626d07455e1e68c18b2538d45847549cb3d39a4318637fc7e1",
+  "external_copies": [
+    {
+      "directory": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-f02-authority-mechanism-decision-01",
+      "manifestSha256": "5940b98bc4158eb3887b096a047ff6451f6059a3ec45e7bc254f4ed5cc583f82",
+      "entries": [
+        {
+          "path": "actor-and-descriptor-binding.md",
+          "sha256": "ea8c50d92a7bf7fe4bd2dca0f91155fc4533bef314fc4980036535c891822b93"
+        },
+        {
+          "path": "acyclic-authority-sequence.md",
+          "sha256": "ed8dca1edb26b0ccde009b60f3f16148a67fed323fd47e9989b605397364d200"
+        },
+        {
+          "path": "authority-mechanism-comparison.md",
+          "sha256": "14dc6bd42432dc6c434c5ac10473dd1e568114ba85e11c6e95356b4534526179"
+        },
+        {
+          "path": "case-policy-and-action-contract.md",
+          "sha256": "667e6118e02b081475ce1a2c851d3bfe9b0a96fdb474a2fb0598f308e9c694f7"
+        },
+        {
+          "path": "final-acceptance-hash-contract.md",
+          "sha256": "49d566e1bcae585d4d9566319cdbe5d6f06696dfbbd9bff6c3fda9ce7514b652"
+        },
+        {
+          "path": "mechanism-a-consume-before-launch.md",
+          "sha256": "8cbcdd5493fe4b86b680912d1fdf7ece5fb9bd662117798402d4c90f667d73d6"
+        },
+        {
+          "path": "mechanism-b-session-capability.md",
+          "sha256": "f5d28dbe2473dd8a47337e4ae80a40c815bce051818e326ace1b647bf0d0b010"
+        },
+        {
+          "path": "minimum-implementation-contract.md",
+          "sha256": "c4e73095cd1f05ee7410cc97bd26d8a8c94c09a0e9e14a47eb1c1840426234b5"
+        },
+        {
+          "path": "negative-test-specifications.md",
+          "sha256": "0900b7fe4049c941695b9dd9c421105b25f3b879bcdf2cad30239ea3aea76791"
+        },
+        {
+          "path": "owner-decision-proposal.md",
+          "sha256": "f3b175f755e4319a428a452103f2d20e30f2f37c764685cc971b1c5f30545bc3"
+        },
+        {
+          "path": "prior-input-provenance.json",
+          "sha256": "f22a9b3025a24b529b97adc47465c16b6b3c27b9852dd45497322d17f10c42e7"
+        },
+        {
+          "path": "publication-withdrawal-race-matrix.md",
+          "sha256": "1f5d9d651ccd2e88d5b406e0d1fe3a1e26d64c666ee8dded27099c4da98bc963"
+        },
+        {
+          "path": "remediation-notes.md",
+          "sha256": "8618e4980ab641ae815a3f05ffc781208607ea70470784901641703ab6788ff4"
+        },
+        {
+          "path": "source-provenance.json",
+          "sha256": "6b9312dc3baab780fad51a3bb4baaf22bfaec52156ef2b8d1b47356d6414b99c"
+        },
+        {
+          "path": "trusted-actors-and-boundaries.md",
+          "sha256": "dfc2188b811de50d96f8e1db117c10c15c9efc1603f486607bb2fd38538b201c"
+        }
+      ]
+    },
+    {
+      "directory": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-f02-authority-mechanism-decision-01\\recheck-input",
+      "manifestSha256": "5940b98bc4158eb3887b096a047ff6451f6059a3ec45e7bc254f4ed5cc583f82",
+      "entries": [
+        {
+          "path": "actor-and-descriptor-binding.md",
+          "sha256": "ea8c50d92a7bf7fe4bd2dca0f91155fc4533bef314fc4980036535c891822b93"
+        },
+        {
+          "path": "acyclic-authority-sequence.md",
+          "sha256": "ed8dca1edb26b0ccde009b60f3f16148a67fed323fd47e9989b605397364d200"
+        },
+        {
+          "path": "authority-mechanism-comparison.md",
+          "sha256": "14dc6bd42432dc6c434c5ac10473dd1e568114ba85e11c6e95356b4534526179"
+        },
+        {
+          "path": "case-policy-and-action-contract.md",
+          "sha256": "667e6118e02b081475ce1a2c851d3bfe9b0a96fdb474a2fb0598f308e9c694f7"
+        },
+        {
+          "path": "final-acceptance-hash-contract.md",
+          "sha256": "49d566e1bcae585d4d9566319cdbe5d6f06696dfbbd9bff6c3fda9ce7514b652"
+        },
+        {
+          "path": "mechanism-a-consume-before-launch.md",
+          "sha256": "8cbcdd5493fe4b86b680912d1fdf7ece5fb9bd662117798402d4c90f667d73d6"
+        },
+        {
+          "path": "mechanism-b-session-capability.md",
+          "sha256": "f5d28dbe2473dd8a47337e4ae80a40c815bce051818e326ace1b647bf0d0b010"
+        },
+        {
+          "path": "minimum-implementation-contract.md",
+          "sha256": "c4e73095cd1f05ee7410cc97bd26d8a8c94c09a0e9e14a47eb1c1840426234b5"
+        },
+        {
+          "path": "negative-test-specifications.md",
+          "sha256": "0900b7fe4049c941695b9dd9c421105b25f3b879bcdf2cad30239ea3aea76791"
+        },
+        {
+          "path": "owner-decision-proposal.md",
+          "sha256": "f3b175f755e4319a428a452103f2d20e30f2f37c764685cc971b1c5f30545bc3"
+        },
+        {
+          "path": "prior-input-provenance.json",
+          "sha256": "f22a9b3025a24b529b97adc47465c16b6b3c27b9852dd45497322d17f10c42e7"
+        },
+        {
+          "path": "publication-withdrawal-race-matrix.md",
+          "sha256": "1f5d9d651ccd2e88d5b406e0d1fe3a1e26d64c666ee8dded27099c4da98bc963"
+        },
+        {
+          "path": "remediation-notes.md",
+          "sha256": "8618e4980ab641ae815a3f05ffc781208607ea70470784901641703ab6788ff4"
+        },
+        {
+          "path": "source-provenance.json",
+          "sha256": "6b9312dc3baab780fad51a3bb4baaf22bfaec52156ef2b8d1b47356d6414b99c"
+        },
+        {
+          "path": "trusted-actors-and-boundaries.md",
+          "sha256": "dfc2188b811de50d96f8e1db117c10c15c9efc1603f486607bb2fd38538b201c"
+        }
+      ]
+    }
+  ],
+  "alternative_b_compatibility": {
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-integrated-start-authority-owner-decision-01\\validation-bootstrap-compatibility.md",
+    "sha256": "896532d72b39e95a5e6201f74a9c37478baebdab7c7061d0c79522eaf87732bb"
+  },
+  "source_inventory_files": 93,
+  "allowlist_absent": [
+    "src/Gagamba.Execution.Linux.M1/Validation/ValidationReleasePreparation.cs",
+    "tests/Gagamba.Execution.Linux.M1.Tests/Validation/ValidationReleasePreparationTests.cs"
+  ],
+  "frozen_executables": [
+    {
+      "stage": "E-3 R2",
+      "revision": "8be61181e804b2dfafb0797eb54c92d2f234ff86",
+      "tree": "1c9307845858fb25ca0a9473d53d1fd1496018fc",
+      "files": [
+        {
+          "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodec.cs",
+          "blob": "d861210aeb3734b04e6bf9f472c12bd226253b32",
+          "git_sha256": "ce4c7b26ed0bfcde9f5d3dd07aaf0ca4cf78e6845737afbc3c8f2c28d5ffd359",
+          "checkout_sha256": "ce4c7b26ed0bfcde9f5d3dd07aaf0ca4cf78e6845737afbc3c8f2c28d5ffd359"
+        },
+        {
+          "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodecBinary.cs",
+          "blob": "814c233d6290c111d751c73dbe65e1ec7dc0cc23",
+          "git_sha256": "b259857ed0fb0092744d5b52f7e0982c112f0dc848ad13cea8dbebbb6e5e9d47",
+          "checkout_sha256": "b259857ed0fb0092744d5b52f7e0982c112f0dc848ad13cea8dbebbb6e5e9d47"
+        },
+        {
+          "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodecData.cs",
+          "blob": "ee8a7f00b160043dbd6bdad9b2bec945a21377a5",
+          "git_sha256": "4cbea3e2c7773ea0113e6578b024b7cb37825bca9b127fe37068ecf6c646b7b9",
+          "checkout_sha256": "4cbea3e2c7773ea0113e6578b024b7cb37825bca9b127fe37068ecf6c646b7b9"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecBinaryTests.cs",
+          "blob": "558c702fcb26a1ae4349c950dec4b3e1bc1b0d7e",
+          "git_sha256": "31eb33fe125b4ed78619986937b06ab3c96dc732893e8e373d4144b3fb4ce9a8",
+          "checkout_sha256": "31eb33fe125b4ed78619986937b06ab3c96dc732893e8e373d4144b3fb4ce9a8"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecBootstrapTests.cs",
+          "blob": "995e67f0b734a982399d011f4c6d0a46d68fc629",
+          "git_sha256": "15f6efe47b76e0d9adae52fabdf645b31ca21425da1b0e77f68740a421ab6575",
+          "checkout_sha256": "15f6efe47b76e0d9adae52fabdf645b31ca21425da1b0e77f68740a421ab6575"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecR2Tests.cs",
+          "blob": "9fe5984e6fc98885b6f2d39b7721918d899d1f3f",
+          "git_sha256": "8cdae4d60eee6e2a7835a235aade4421e0173f4b2f89ab83a6544a9ad7e1157f",
+          "checkout_sha256": "8cdae4d60eee6e2a7835a235aade4421e0173f4b2f89ab83a6544a9ad7e1157f"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecRemediationTests.cs",
+          "blob": "c5f8c763b5002c6bee3ebd908cb96b0edc910cce",
+          "git_sha256": "248c133da31cdf320e905607e5cb483ac624ec730c216d84b62ec18e2b3dd05a",
+          "checkout_sha256": "248c133da31cdf320e905607e5cb483ac624ec730c216d84b62ec18e2b3dd05a"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecVectors.cs",
+          "blob": "4880945d6c6177351e929fde15b41babd1529298",
+          "git_sha256": "56f50867aa3b01fc6f1827d2bec64ce71430cd0ff1312498cfa26bb020dd17dd",
+          "checkout_sha256": "56f50867aa3b01fc6f1827d2bec64ce71430cd0ff1312498cfa26bb020dd17dd"
+        }
+      ]
+    },
+    {
+      "stage": "E-4",
+      "revision": "3c16b53b288b39de3fb36964eecc8d5cccbc62b6",
+      "tree": "2f30e0dc72d1565ac312c0c052ef820a03a3dea0",
+      "files": [
+        {
+          "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/Gava1ContextCodec.cs",
+          "blob": "2ea80a0828e51ba86b8ee216ffe4d20f4c42914b",
+          "git_sha256": "353280f0ad020591ed39b2475ed26bb3046acb159ef80e21398af46652e5bf69",
+          "checkout_sha256": "353280f0ad020591ed39b2475ed26bb3046acb159ef80e21398af46652e5bf69"
+        },
+        {
+          "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/Gava1ContextData.cs",
+          "blob": "95f4bb23eaffd4a36fd83cc4995f7cd8ba22a3d7",
+          "git_sha256": "cdb1b5613f1f731e4f93d6c62640c67f94718dd7caeaeb41024e7f0f1bb4abe9",
+          "checkout_sha256": "cdb1b5613f1f731e4f93d6c62640c67f94718dd7caeaeb41024e7f0f1bb4abe9"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/Gava1ContextCodecTests.cs",
+          "blob": "c58def60a40abeb7a767c9f5408b08becf94cc2e",
+          "git_sha256": "0a32a6e3b05ad8dd5a37d20d74d8b17870c15d3b9d6f031db0bdb59696c9ed82",
+          "checkout_sha256": "0a32a6e3b05ad8dd5a37d20d74d8b17870c15d3b9d6f031db0bdb59696c9ed82"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/Gava1ContextVectors.cs",
+          "blob": "19244bcb4cf2a7ff629083abea79a01444a14bce",
+          "git_sha256": "a16f818981f72c075e8d1aa74a73845cb9792e81a6dc80cc42d0329ee53db345",
+          "checkout_sha256": "a16f818981f72c075e8d1aa74a73845cb9792e81a6dc80cc42d0329ee53db345"
+        }
+      ]
+    },
+    {
+      "stage": "E-5",
+      "revision": "28895d55de98eea4bc402373b653f7216e092843",
+      "tree": "e314f2e8a1259e2263c8494bb0c8ca9f7eb27016",
+      "files": [
+        {
+          "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs",
+          "blob": "60a4f546b77ff5a11a43a51117722c129b753646",
+          "git_sha256": "82fec8f17b91c206e339f65d18b462539951f4c33c39074ba9deec5f82354cec",
+          "checkout_sha256": "82fec8f17b91c206e339f65d18b462539951f4c33c39074ba9deec5f82354cec"
+        },
+        {
+          "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs",
+          "blob": "0884372a339d84e70d0a6c7ebfd72726996f17fa",
+          "git_sha256": "0fa622cd8de73bfc66b8b9dba6c7ea253c21677f942f24a9c34e6574cad12367",
+          "checkout_sha256": "0fa622cd8de73bfc66b8b9dba6c7ea253c21677f942f24a9c34e6574cad12367"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelCompositionTests.cs",
+          "blob": "2fb103e39ab4dc562026d8a9dffba196e2574fc0",
+          "git_sha256": "004df41c3518b43440d5ff62d222dc6e6d886594390fcdbe73a9121c35821c8d",
+          "checkout_sha256": "004df41c3518b43440d5ff62d222dc6e6d886594390fcdbe73a9121c35821c8d"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs",
+          "blob": "47b5f7f8eead276ec731a0e644abd766588f2ce3",
+          "git_sha256": "e5f10d8636557b3295b6b106f64e20ef37d5bbf3e6c4debd70454f2792f4bc04",
+          "checkout_sha256": "e5f10d8636557b3295b6b106f64e20ef37d5bbf3e6c4debd70454f2792f4bc04"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs",
+          "blob": "6efa17c8d8bc8d71c935e2e8247dcfa18424b3b4",
+          "git_sha256": "40025fef5f0655edae9a525811d2de30c9b64d7506fedc2524dbf690ddbbdfd8",
+          "checkout_sha256": "40025fef5f0655edae9a525811d2de30c9b64d7506fedc2524dbf690ddbbdfd8"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs",
+          "blob": "ea55eef683d2428bb9a2193e8817ed52fe9f5a00",
+          "git_sha256": "01f0804572b6961070b0992a0ba2a75438c8984e6e9e274d2aa7d2bbd7394d82",
+          "checkout_sha256": "01f0804572b6961070b0992a0ba2a75438c8984e6e9e274d2aa7d2bbd7394d82"
+        }
+      ]
+    }
+  ],
+  "worktree_diff": "clean",
+  "index": "clean",
+  "new_manifest": null,
+  "changed_files": [],
+  "verification_limits": "Documentation only. Historical test outputs are evidence at their original revisions."
+}

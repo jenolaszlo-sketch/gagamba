@@ -1,5 +1,9 @@
 # Gagamba project status
 
+> **ALT-B SLICE E-6 RELEASE PREPARATION — ENTRY AUTHORIZED WITH QUALIFICATIONS (2026-11-18).**
+>
+> Release-preparation entry is authorized for the production-unreachable managed correlation helper and focused tests. Complete E-6 atomic integration remains gated by live custody, first E-1 consumption, runtime enforcement, E-7, Slice N and exact-revision acceptance. [Entry authorization](decisions/rc2b-06-b6-alt-b-slice-e-06-release-prep-entry-auth-01.md)
+
 > **ALT-B SLICE E-4 — ACCEPTED WITH QUALIFICATIONS (2026-11-16).**
 >
 > E-4 is closed for the isolated managed GAVA1 types 4–7 decoder and both test-only E-3 structural handoffs. Independent Q1 qualified the exact implementation. P4 remains refusal-only. The next eligible commission is a separate E-5 fixed launcher/custody entry assessment. [E-4 owner decision](decisions/rc2b-06-b6-alt-b-slice-e-04-owner-01.md).
