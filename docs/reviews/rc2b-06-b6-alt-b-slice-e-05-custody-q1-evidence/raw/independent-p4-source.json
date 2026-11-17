@@ -1,0 +1,768 @@
+{
+  "candidate": "28895d55de98eea4bc402373b653f7216e092843",
+  "compared_to_published": "1116c66d7858e6000f0001a0abe39319e4e694be",
+  "protected_surface_diff": [
+    "A\tsrc/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs",
+    "A\tsrc/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs",
+    "A\ttests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelCompositionTests.cs",
+    "A\ttests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs",
+    "A\ttests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs",
+    "A\ttests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs"
+  ],
+  "caller_review": {
+    "allowlisted model and regression source": {
+      "expression": "\\bValidationCustody\\w*",
+      "source_scope": [
+        "src",
+        "tests",
+        "eng",
+        "native",
+        ".github"
+      ],
+      "published_same": false,
+      "lines": [
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:3:internal sealed class ValidationCustodyModel : IDisposable",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:6:    private ValidationCustodyBinding? expected;",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:7:    private ValidationCustodyState state;",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:10:    private ValidationCustodyModel(ValidationCustodyBinding expected, long nowNs)",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:13:        state = ValidationCustodyState.PendingModel;",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:17:    internal static ValidationCustodyRefusal TryCreate(",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:18:        ValidationCustodyExpectations? expectations,",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:19:        ValidationCustodyEvidence? evidence,",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:22:        out ValidationCustodyModel? model)",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:27:            return ValidationCustodyRefusal.Context;",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:31:            ValidationCustodyState.PendingModel);",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:32:        if (refusal == ValidationCustodyRefusal.None)",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:34:            model = new ValidationCustodyModel(expected, nowNs);",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:40:    internal ValidationCustodyRefusal Advance(",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:41:        ValidationCustodyEvent next,",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:42:        ValidationCustodyEvidence? evidence,",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:45:        out ValidationCustodyModelSnapshot? snapshot)",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:55:                    return ValidationCustodyRefusal.Transition;",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:60:                if (refusal != ValidationCustodyRefusal.None)",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:67:                var result = new ValidationCustodyModelSnapshot(state, original);",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:68:                if (state == ValidationCustodyState.Closed)",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:74:                return ValidationCustodyRefusal.None;",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:97:        state = ValidationCustodyState.Closed;",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:101:    private static ValidationCustodyState? GetNextState(ValidationCustodyState state, ValidationCustodyEvent next) =>",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:104:            (ValidationCustodyState.PendingModel, ValidationCustodyEvent.ObserveIssue) =>",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:105:                ValidationCustodyState.IssuedModel,",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:106:            (ValidationCustodyState.IssuedModel, ValidationCustodyEvent.ObserveOffer) =>",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:107:                ValidationCustodyState.OfferedModel,",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:108:            (ValidationCustodyState.OfferedModel, ValidationCustodyEvent.ObserveDrop) =>",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:109:                ValidationCustodyState.DroppedModel,",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:110:            (ValidationCustodyState.DroppedModel, ValidationCustodyEvent.ObserveConsume) =>",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:111:                ValidationCustodyState.ConsumedModel,",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:112:            (ValidationCustodyState.ConsumedModel, ValidationCustodyEvent.Complete) =>",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:113:                ValidationCustodyState.Closed,",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:117:    private static ValidationCustodyRefusal CheckObservation(",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:118:        ValidationCustodyBinding expected,",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:119:        ValidationCustodyEvidence? evidence,",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:123:        ValidationCustodyState destination)",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:128:            return ValidationCustodyRefusal.Context;",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:133:            return ValidationCustodyRefusal.Stopped;",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:137:        long deadline = destination == ValidationCustodyState.Closed",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:142:            return ValidationCustodyRefusal.Expired;",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:147:            return ValidationCustodyRefusal.Comparison;",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs:150:        return evidence.MatchesStage(destination) ? ValidationCustodyRefusal.None : ValidationCustodyRefusal.Evidence;",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:3:internal enum ValidationCustodyFact : byte",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:10:internal enum ValidationCustodyEvent : byte",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:19:internal enum ValidationCustodyState : byte",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:29:internal enum ValidationCustodyRefusal : byte",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:40:internal sealed class ValidationCustodyBinding",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:58:    internal ValidationCustodyBinding(",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:145:    internal ValidationCustodyBinding Copy() => new(",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:175:    internal bool Matches(ValidationCustodyBinding observed) =>",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:225:internal sealed class ValidationCustodyExpectations",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:228:    internal ValidationCustodyExpectations(ValidationCustodyBinding binding) => Binding = binding?.Copy()!;",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:230:    internal ValidationCustodyBinding Binding { get; }",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:233:internal sealed class ValidationCustodyEvidence",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:235:    internal ValidationCustodyEvidence(",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:236:        ValidationCustodyBinding binding,",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:237:        ValidationCustodyFact protectedInputs,",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:238:        ValidationCustodyFact provenance,",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:239:        ValidationCustodyFact approvalCurrent,",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:240:        ValidationCustodyFact originalAssociation,",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:241:        ValidationCustodyFact liveOriginals,",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:242:        ValidationCustodyFact freshAuthorization,",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:243:        ValidationCustodyFact issuanceCommitted,",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:244:        ValidationCustodyFact offerValidated,",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:245:        ValidationCustodyFact permanentDrop,",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:246:        ValidationCustodyFact consumptionCommitted,",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:247:        ValidationCustodyFact cleanupConfirmed)",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:263:    internal ValidationCustodyBinding Binding { get; }",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:264:    internal ValidationCustodyFact ProtectedInputs { get; }",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:265:    internal ValidationCustodyFact Provenance { get; }",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:266:    internal ValidationCustodyFact ApprovalCurrent { get; }",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:267:    internal ValidationCustodyFact OriginalAssociation { get; }",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:268:    internal ValidationCustodyFact LiveOriginals { get; }",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:269:    internal ValidationCustodyFact FreshAuthorization { get; }",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:270:    internal ValidationCustodyFact IssuanceCommitted { get; }",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:271:    internal ValidationCustodyFact OfferValidated { get; }",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:272:    internal ValidationCustodyFact PermanentDrop { get; }",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:273:    internal ValidationCustodyFact ConsumptionCommitted { get; }",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:274:    internal ValidationCustodyFact CleanupConfirmed { get; }",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:277:        ProtectedInputs <= ValidationCustodyFact.Contradictory &&",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:278:        Provenance <= ValidationCustodyFact.Contradictory &&",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:279:        ApprovalCurrent <= ValidationCustodyFact.Contradictory &&",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:280:        OriginalAssociation <= ValidationCustodyFact.Contradictory &&",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:281:        LiveOriginals <= ValidationCustodyFact.Contradictory &&",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:282:        FreshAuthorization <= ValidationCustodyFact.Contradictory &&",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:283:        IssuanceCommitted <= ValidationCustodyFact.Contradictory &&",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:284:        OfferValidated <= ValidationCustodyFact.Contradictory &&",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:285:        PermanentDrop <= ValidationCustodyFact.Contradictory &&",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:286:        ConsumptionCommitted <= ValidationCustodyFact.Contradictory &&",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:287:        CleanupConfirmed <= ValidationCustodyFact.Contradictory;",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:289:    internal bool MatchesStage(ValidationCustodyState stage) =>",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:290:        ProtectedInputs == ValidationCustodyFact.Consistent &&",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:291:        Provenance == ValidationCustodyFact.Consistent &&",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:292:        ApprovalCurrent == ValidationCustodyFact.Consistent &&",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:293:        OriginalAssociation == ValidationCustodyFact.Consistent &&",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:294:        LiveOriginals == ValidationCustodyFact.Consistent &&",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:295:        FreshAuthorization == FactDue(stage, ValidationCustodyState.IssuedModel) &&",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:296:        IssuanceCommitted == FactDue(stage, ValidationCustodyState.IssuedModel) &&",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:297:        OfferValidated == FactDue(stage, ValidationCustodyState.OfferedModel) &&",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:298:        PermanentDrop == FactDue(stage, ValidationCustodyState.DroppedModel) &&",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:299:        ConsumptionCommitted == FactDue(stage, ValidationCustodyState.ConsumedModel) &&",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:300:        CleanupConfirmed == FactDue(stage, ValidationCustodyState.Closed);",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:302:    private static ValidationCustodyFact FactDue(ValidationCustodyState stage, ValidationCustodyState requiredFrom) =>",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:303:        stage >= requiredFrom ? ValidationCustodyFact.Consistent : ValidationCustodyFact.Unknown;",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:306:internal sealed class ValidationCustodyModelSnapshot",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:310:    internal ValidationCustodyModelSnapshot(ValidationCustodyState state, ValidationCustodyBinding binding)",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:316:    internal ValidationCustodyState State { get; }",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs:317:    internal ValidationCustodyBinding Binding { get; }",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelCompositionTests.cs:10:using static Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationCustodyModelVectors;",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelCompositionTests.cs:14:public sealed class ValidationCustodyModelCompositionTests",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelCompositionTests.cs:74:        Assert.Equal(ValidationCustodyRefusal.None, ValidationCustodyModel.TryCreate(Expected(expected),",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelCompositionTests.cs:98:            CreateRefuses($\"R16 agreeing suspect {field}\", ValidationCustodyRefusal.Comparison, Expected(expected),",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelCompositionTests.cs:139:        Assert.Equal(ValidationCustodyRefusal.None, ValidationCustodyModel.TryCreate(Expected(expected),",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelCompositionTests.cs:159:        CreateRefuses(\"R04/R17 hash-consistent rebound chain\", ValidationCustodyRefusal.Comparison,",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelCompositionTests.cs:165:        CreateRefuses(\"R04/R17 wrong external Hp\", ValidationCustodyRefusal.Comparison, Expected(wrongApproval), accepted);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelCompositionTests.cs:194:        using var coreFile = File.OpenRead(typeof(ValidationCustodyModel).Assembly.Location);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelCompositionTests.cs:198:            .Where(type => metadata.GetString(type.Name).StartsWith(\"ValidationCustody\", StringComparison.Ordinal))",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelCompositionTests.cs:205:        using var testFile = File.OpenRead(typeof(ValidationCustodyModelCompositionTests).Assembly.Location);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelCompositionTests.cs:211:                \"ValidationCustodyModel\").Select(member => testMetadata.GetString(member.Name)).ToArray();",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelCompositionTests.cs:224:    private static ValidationCustodyEvidence? ObserveChain(byte[]? m, byte[]? f, byte[]? s, byte[]? k,",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:4:using static Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationCustodyModelVectors;",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:8:public sealed class ValidationCustodyModelLifecycleTests",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:25:                    model, (ValidationCustodyEvent)eventNumber, Observed(intended), intended,",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:26:                    ValidationCustodyRefusal.Transition, retryStep: intended, retryAt: intended);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:41:        CreateRefuses(\"R09 negative time\", ValidationCustodyRefusal.Context, Expected(), Observed(), long.MinValue);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:42:        CreateRefuses(\"R09 creation admit equality\", ValidationCustodyRefusal.Expired, Expected(input),",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:44:        CreateRefuses(\"R09 creation past both deadlines\", ValidationCustodyRefusal.Expired, Expected(),",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:47:            AdvanceRefuses(\"R09 backward\", model, ValidationCustodyEvent.ObserveIssue, Observed(1), 1,",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:48:                ValidationCustodyRefusal.Context, retryAt: 2);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:50:            AdvanceRefuses(\"R09 issue admit equality\", model, ValidationCustodyEvent.ObserveIssue,",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:51:                Observed(1, input), long.MaxValue - 1, ValidationCustodyRefusal.Expired, original: input);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:59:                Observed(stage, input), boundary, ValidationCustodyRefusal.Expired, retryStep: stage,",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:71:        premature[5] = ValidationCustodyFact.Consistent;",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:73:        CreateRefuses(\"R11 Context before Stopped\", ValidationCustodyRefusal.Context, Expected(),",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:75:        CreateRefuses(\"R11 Stopped before Expired\", ValidationCustodyRefusal.Stopped, Expected(),",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:77:        CreateRefuses(\"R11 Expired before Comparison\", ValidationCustodyRefusal.Expired, Expected(),",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:79:        CreateRefuses(\"R11 Comparison before Evidence\", ValidationCustodyRefusal.Comparison, Expected(),",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:82:        (ValidationCustodyEvent Next, ValidationCustodyEvidence? Evidence, long Time, bool Stop,",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:83:            ValidationCustodyRefusal Refusal)[] adjacent =",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:85:            (ValidationCustodyEvent.Complete, null, -1, true, ValidationCustodyRefusal.Transition),",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:86:            ((ValidationCustodyEvent)255, Observed(1), -1, true, ValidationCustodyRefusal.Transition),",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:87:            (ValidationCustodyEvent.ObserveIssue, null, 100, true, ValidationCustodyRefusal.Context),",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:88:            (ValidationCustodyEvent.ObserveIssue, Observed(1, malformed), 100, true, ValidationCustodyRefusal.Context),",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:89:            (ValidationCustodyEvent.ObserveIssue, Observed(1, original), 100, true, ValidationCustodyRefusal.Stopped),",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:90:            (ValidationCustodyEvent.ObserveIssue, Observed(0, wrong), 100, false, ValidationCustodyRefusal.Expired),",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:91:            (ValidationCustodyEvent.ObserveIssue, Observed(0, wrong), 1, false, ValidationCustodyRefusal.Comparison),",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:92:            (ValidationCustodyEvent.ObserveIssue, Observed(0, original), 1, false, ValidationCustodyRefusal.Evidence)",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:103:        AdvanceRefuses(\"R10 stopped before completion\", complete, ValidationCustodyEvent.Complete,",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:104:            Observed(5), 5, ValidationCustodyRefusal.Stopped, true, retryStep: 5, retryAt: 5);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:112:        var modelType = typeof(ValidationCustodyModel);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:117:        Assert.Equal(new[] { \"Binding\", \"State\" }, typeof(ValidationCustodyModelSnapshot)",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:119:        Assert.DoesNotContain(typeof(ValidationCustodyModelSnapshot).GetMethods(declaration),",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:126:        AdvanceRefuses(\"R12 disposed\", model, ValidationCustodyEvent.ObserveOffer, Observed(2), 2,",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:127:            ValidationCustodyRefusal.Transition, retryStep: 2, retryAt: 2);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:128:        Assert.Equal(ValidationCustodyState.IssuedModel, prior.State);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:141:        var expectation = new ValidationCustodyExpectations(expectationBinding);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:147:        Assert.Equal(ValidationCustodyRefusal.None,",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:148:            ValidationCustodyModel.TryCreate(expectation, evidence, 0, false, out var model));",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:171:        Task<(ValidationCustodyRefusal Refusal, ValidationCustodyModelSnapshot? Snapshot)> Contender() =>",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:175:                var refusal = model.Advance(ValidationCustodyEvent.ObserveIssue, Observed(1), 1, false, out var snapshot);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:182:        Assert.Equal(ValidationCustodyState.IssuedModel,",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:183:            Assert.Single(results, result => result.Refusal == ValidationCustodyRefusal.None).Snapshot!.State);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:184:        Assert.Null(Assert.Single(results, result => result.Refusal == ValidationCustodyRefusal.Transition).Snapshot);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:185:        AdvanceRefuses(\"R14 duplicate closed the model\", model, ValidationCustodyEvent.ObserveOffer,",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:186:            Observed(2), 2, ValidationCustodyRefusal.Transition, retryStep: 2, retryAt: 2);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:198:            AdvanceRefuses(\"R14 dispose-first\", model, ValidationCustodyEvent.ObserveIssue, Observed(1), 1,",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:199:                ValidationCustodyRefusal.Transition);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:212:            premises[2] = ValidationCustodyFact.Contradictory;",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:213:            AdvanceRefuses(\"R15 withdrawn before issue\", withdrawn, ValidationCustodyEvent.ObserveIssue,",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:214:                Evidence(new Inputs().Binding(), premises), 1, ValidationCustodyRefusal.Evidence);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:223:        AdvanceRefuses(\"R15 substituted approval\", issued, ValidationCustodyEvent.ObserveDrop,",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs:224:            Observed(3, replacement), 3, ValidationCustodyRefusal.Comparison, retryStep: 3, retryAt: 3);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs:3:using static Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationCustodyModelVectors;",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs:7:public sealed class ValidationCustodyModelTests",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs:16:        Assert.Equal(ValidationCustodyRefusal.None,",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs:17:            ValidationCustodyModel.TryCreate(Expected(original), Observed(inputs: suspect), 0, false, out var model));",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs:24:                Assert.Equal(\"supplied-structural-model\", ValidationCustodyModelSnapshot.EvidenceKind);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs:48:        CreateRefuses(\"R02 expected\", ValidationCustodyRefusal.Context, null, Observed());",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs:49:        CreateRefuses(\"R02 observed\", ValidationCustodyRefusal.Context, Expected(), null);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs:50:        CreateRefuses(\"R02 expected binding\", ValidationCustodyRefusal.Context, new(null!), Observed());",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs:51:        CreateRefuses(\"R02 observed binding\", ValidationCustodyRefusal.Context,",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs:79:            CreateRefuses($\"R02 expected shape {i}\", ValidationCustodyRefusal.Context, Expected(invalid[i]), Observed());",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs:80:            CreateRefuses($\"R02 observed shape {i}\", ValidationCustodyRefusal.Context, Expected(), Observed(inputs: invalid[i]));",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs:119:            CreateRefuses($\"R02 expected digest {digest}, length {length}\", ValidationCustodyRefusal.Context,",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs:121:            CreateRefuses($\"R02 observed digest {digest}, length {length}\", ValidationCustodyRefusal.Context,",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs:127:        CreateRefuses($\"R03/R04 changed digest {digest}\", ValidationCustodyRefusal.Comparison,",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs:130:        AdvanceRefuses($\"R03/R04 retained digest {digest}\", model, ValidationCustodyEvent.ObserveIssue,",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs:131:            Observed(1, changed), 1, ValidationCustodyRefusal.Comparison);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs:142:        CreateRefuses(\"R03/R04 independent expectation\", ValidationCustodyRefusal.Comparison, Expected(),",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs:166:            CreateRefuses($\"R05/R09 scalar {i}\", ValidationCustodyRefusal.Comparison, Expected(),",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs:169:            AdvanceRefuses($\"R05/R09 original scalar {i}\", model, ValidationCustodyEvent.ObserveIssue,",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs:170:                Observed(1, mismatches[i]), 1, ValidationCustodyRefusal.Comparison);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs:187:                    if (premise[fact] == (ValidationCustodyFact)replacement)",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs:190:                    premise[fact] = (ValidationCustodyFact)replacement;",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs:191:                    var refusal = replacement == 255 ? ValidationCustodyRefusal.Context : ValidationCustodyRefusal.Evidence;",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs:6:internal static class ValidationCustodyModelVectors",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs:8:    internal static readonly (ValidationCustodyEvent Event, ValidationCustodyState State)[] Sequence =",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs:10:        (ValidationCustodyEvent.ObserveIssue, ValidationCustodyState.IssuedModel),",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs:11:        (ValidationCustodyEvent.ObserveOffer, ValidationCustodyState.OfferedModel),",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs:12:        (ValidationCustodyEvent.ObserveDrop, ValidationCustodyState.DroppedModel),",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs:13:        (ValidationCustodyEvent.ObserveConsume, ValidationCustodyState.ConsumedModel),",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs:14:        (ValidationCustodyEvent.Complete, ValidationCustodyState.Closed)",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs:36:        internal ValidationCustodyBinding Binding() => new(new(Version, (ValidationPreTopology)Topology),",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs:43:    internal static byte[][] Buffers(ValidationCustodyBinding value) =>",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs:62:    internal static ValidationCustodyExpectations Expected(Inputs? inputs = null) =>",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs:65:    internal static ValidationCustodyEvidence Observed(int step = 0, Inputs? inputs = null) =>",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs:68:    internal static ValidationCustodyFact[] StageFacts(int step)",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs:70:        var yes = ValidationCustodyFact.Consistent;",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs:71:        var unknown = ValidationCustodyFact.Unknown;",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs:85:    internal static ValidationCustodyEvidence Evidence(ValidationCustodyBinding binding, ValidationCustodyFact[] facts) =>",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs:89:    internal static ValidationCustodyModel Create(Inputs? inputs = null, long now = 0)",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs:91:        var result = ValidationCustodyModel.TryCreate(Expected(inputs), Observed(inputs: inputs), now, false, out var model);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs:92:        Assert.Equal(ValidationCustodyRefusal.None, result);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs:93:        return Assert.IsType<ValidationCustodyModel>(model);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs:96:    internal static ValidationCustodyModelSnapshot Accept(ValidationCustodyModel model, int step,",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs:97:        long now, ValidationCustodyEvidence? evidence = null)",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs:101:        Assert.Equal(ValidationCustodyRefusal.None, result);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs:107:    internal static void CreateRefuses(string control, ValidationCustodyRefusal expected,",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs:108:        ValidationCustodyExpectations? expectations, ValidationCustodyEvidence? evidence, long now = 0, bool stop = false)",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs:110:        var actual = ValidationCustodyModel.TryCreate(expectations, evidence, now, stop, out var model);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs:115:    internal static void AdvanceRefuses(string control, ValidationCustodyModel model, ValidationCustodyEvent next,",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs:116:        ValidationCustodyEvidence? evidence, long now, ValidationCustodyRefusal expected, bool stop = false,",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs:123:        Assert.True(later == ValidationCustodyRefusal.Transition, $\"{control}: retained state allowed retry ({later})\");"
+      ]
+    },
+    "recovery ingress": {
+      "expression": "(QualifiedRecoveryConnection|RecoveryConnection)\\.Start\\(|IntegratedRecoveryHost\\.Run\\(",
+      "source_scope": [
+        "src",
+        "tests"
+      ],
+      "published_same": true,
+      "lines": [
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/IntegratedB3Client.cs:67:        var recovery=RecoveryConnection.Start(config);",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryConnection.cs:33:        if(requested.Version==2) return QualifiedRecoveryConnection.Start(requested);",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryHost.cs:72:            return IntegratedRecoveryHost.Run(config,scope,wire,control,controllerFd,ownerPath,installation);",
+        "tests/Fixtures/B2Controller/Program.cs:28:    using var connection = RecoveryConnection.Start(config);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/RecoveryInitializationAdmissionTests.cs:191:            refusal = Record.Exception(() => IntegratedRecoveryHost.Run(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/RecoveryInitializationAdmissionTests.cs:217:            refusal = Record.Exception(() => IntegratedRecoveryHost.Run(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/RecoveryInitializationAdmissionTests.cs:274:            Assert.Throws<IOException>(() => IntegratedRecoveryHost.Run(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Installation/InstallationWireTests.cs:165:        Assert.Throws<InvalidDataException>(()=>RecoveryConnection.Start(c with{DelegatedParent=\"/must-not-open\"}));",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Restricted/B3RestrictedLifecycleTests.cs:712:        using var connection = RecoveryConnection.Start(RecoveryConfig(evidence.Path, DelegatedParent!));",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Restricted/B3RestrictedLifecycleTests.cs:750:        using var connection = RecoveryConnection.Start(RecoveryConfig(evidence.Path, delegatedParent: null));"
+      ]
+    },
+    "spawn and owner preparation": {
+      "expression": "\\.StartOwnerPreparation\\(|\\.TrySpawnOwner\\(|\\bRunTransaction\\(",
+      "source_scope": [
+        "src",
+        "tests"
+      ],
+      "published_same": true,
+      "lines": [
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/B2RetainedDomain.cs:27:            var outcome = scope.StartOwnerPreparation(request, CancellationToken.None);",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/IntegratedRecoveryHost.cs:89:                return scope.StartOwnerPreparation(request,CancellationToken.None);",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedB2Recovery.cs:72:            var spawn=scope.TrySpawnOwner(plan.Assembly,",
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryHost.cs:85:            var spawned = scope.TrySpawnOwner(ownerPath,",
+        "src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerPreparationTransaction.cs:53:        return RunTransaction(request, channel, authority);",
+        "src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerPreparationTransaction.cs:56:    private static int RunTransaction(OwnerPreparationSpecification request, OwnerProtocolChannel channel,",
+        "src/Gagamba.Execution.Linux.M1/Restricted/B3Qualification.cs:426:                outcome = _scope.StartOwnerPreparation(request, CancellationToken.None);",
+        "tests/Fixtures/B2Controller/B6IntegratedProbe.cs:92:            var spawn=scope.TrySpawnOwner(Entry,Args(\"owner\"),pair.Child,runtime,qualified:true);Check(spawn.Ok,spawn.Error);owner=spawn.Process!;opin=spawn.PidFd;",
+        "tests/Fixtures/B2Controller/B6TopologyProbe.cs:236:            var spawn=scope.TrySpawnOwner(ownerEntry,ownerArgs,pair.Child,runtime,qualified:true);Check(spawn.Ok,spawn.Error);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/RecoveryB2NativeTests.cs:35:        var spawn = scope.TrySpawnOwner(owner!, [\"--exec\", Guid.NewGuid().ToString(\"D\"), \"--lease\", Guid.NewGuid().ToString(\"D\")], childFd);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Installation/QualifiedLauncherNativeTests.cs:37:        var spawn=scope.TrySpawnOwner(fixture!,[\"--b6-launch\"],pair.Child,runtime,qualified:true);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/IntegratedBarrierTests.cs:184:        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest(null), CancellationToken.None);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/IntegratedBarrierTests.cs:230:        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest(null), CancellationToken.None);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/IntegratedBarrierTests.cs:249:        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest(\"after-intent\"), CancellationToken.None);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/IntegratedBarrierTests.cs:274:        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest(\"after-registered\"), CancellationToken.None);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/IntegratedBarrierTests.cs:291:        var outcome = fx.Scope.StartOwnerPreparation(request, CancellationToken.None);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/IntegratedBarrierTests.cs:325:        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest(\"after-copy\"), CancellationToken.None);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/IntegratedBarrierTests.cs:363:        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest(barrier), CancellationToken.None);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:499:        var outcome = fx.Scope.StartOwnerPreparation(fx.Request(null, enableHeldCoordinator: true), CancellationToken.None);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:785:        var preparation = Task.Run(() => fx.Scope.StartOwnerPreparation(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:821:            var accepted = ordinary.Scope.StartOwnerPreparation(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:842:            preparation = Task.Run(() => fx.Scope.StartOwnerPreparation(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:911:            var accepted = ordinary.Scope.StartOwnerPreparation(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:927:        var held = fx.Scope.StartOwnerPreparation(fx.Request(null, enableHeldCoordinator: true), CancellationToken.None);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1008:        var outcome = fx.Scope.StartOwnerPreparation(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1033:        var outcome = fx.Scope.StartOwnerPreparation(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1049:        var outcome = fx.Scope.StartOwnerPreparation(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1066:        var outcome = fx.Scope.StartOwnerPreparation(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1084:        var outcome = fx.Scope.StartOwnerPreparation(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1100:        var outcome = fx.Scope.StartOwnerPreparation(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1148:        var outcome = fx.Scope.StartOwnerPreparation(fx.Request(null, enableHeldCoordinator: true), CancellationToken.None);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1193:        var outcome = fx.Scope.StartOwnerPreparation(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1227:        var preparation = Task.Run(() => fx.Scope.StartOwnerPreparation(fx.Request(null), TestContext.Current.CancellationToken));",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1268:        var outcome = fx.Scope.StartOwnerPreparation(fx.Request(null), TestContext.Current.CancellationToken);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1307:        var outcome = fx.Scope.StartOwnerPreparation(fx.Request(\"after-intent\"), TestContext.Current.CancellationToken);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1322:        var outcome = fx.Scope.StartOwnerPreparation(fx.Request(\"after-registered\"), TestContext.Current.CancellationToken);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1337:        var outcome = fx.Scope.StartOwnerPreparation(fx.Request(\"after-registered\"), CancellationToken.None);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1404:            var outcome = fx.Scope.StartOwnerPreparation(fx.Request(\"after-domain-retained\"), CancellationToken.None);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1429:        var outcome = fx.Scope.StartOwnerPreparation(fx.Request(\"mid-staging\"), CancellationToken.None);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1466:        var outcome = fx.Scope.StartOwnerPreparation(fx.Request(\"after-prepared-before-mint\"), CancellationToken.None);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1502:        var outcome = fx.Scope.StartOwnerPreparation(fx.Request(\"after-copy\"), CancellationToken.None);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1529:        var outcome = fx.Scope.StartOwnerPreparation(fx.Request(\"after-copy\"), CancellationToken.None);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1564:            var outcome = fx.Scope.StartOwnerPreparation(fx.Request(\"after-copy\"), CancellationToken.None);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1597:        var outcome = fx.Scope.StartOwnerPreparation(fx.Request(\"after-copy\"), CancellationToken.None);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1642:        var outcome = fx.Scope.StartOwnerPreparation(fx.Request(\"after-copy\"), CancellationToken.None);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/OwnerDeathQualificationTests.cs:406:        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest(\"after-intent\"), CancellationToken.None);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/OwnerDeathQualificationTests.cs:452:            var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest(\"after-domain-retained\"), CancellationToken.None);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/OwnerDeathQualificationTests.cs:503:        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest(\"after-registered\"), CancellationToken.None);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/OwnerDeathQualificationTests.cs:539:        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest(\"after-staging-accounted\"), CancellationToken.None);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/OwnerDeathQualificationTests.cs:576:        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest(\"mid-staging\"), CancellationToken.None);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/OwnerDeathQualificationTests.cs:613:        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest(\"mid-staging\"), CancellationToken.None);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/OwnerDeathQualificationTests.cs:650:        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest(\"after-prepared-before-mint\"), CancellationToken.None);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Restricted/B3RestrictedLifecycleTests.cs:291:            var outcome = Scope.StartOwnerPreparation(Request(barrier, expiresLead), CancellationToken.None);"
+      ]
+    },
+    "protected preparation callers": {
+      "expression": "new (HeldReleasePhase|B3PreparationOwner|PreparationOwnershipCoordinator)\\(",
+      "source_scope": [
+        "src",
+        "tests"
+      ],
+      "published_same": true,
+      "lines": [
+        "src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerPreparationTransaction.cs:531:                var exitCode = new HeldReleasePhase(",
+        "src/Gagamba.Execution.Linux.M1/Restricted/B3Qualification.cs:199:            var owner = new B3PreparationOwner(profile, provider, providerInstallation);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Lifecycle/HeldReleasePhaseConstructorTests.cs:108:            return new HeldReleasePhase(Request(identity), null!, null!, Execution, null!,",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Recovery/PreparationOwnershipTests.cs:61:        return (new PreparationOwnershipCoordinator(journal, template), journal, storage);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Restricted/B3PreparationOwnerTopologyTests.cs:40:            Assert.Throws<InvalidOperationException>(() => new B3PreparationOwner(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Restricted/B3PreparationOwnerTopologyTests.cs:56:            var owner = new B3PreparationOwner(Profile(journalDirectory), new RestrictedProviderDescriptor());",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Restricted/B3PreparationOwnerTopologyTests.cs:80:            var owner = new B3PreparationOwner(Profile(journalDirectory, qualified: false, integrated: integrated),",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Restricted/B3ProviderAdmissionTests.cs:78:            var error = Assert.Throws<InvalidDataException>(() => new B3PreparationOwner(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Restricted/B3ProviderAdmissionTests.cs:95:            var error = Assert.Throws<InvalidDataException>(() => new B3PreparationOwner(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Restricted/B3ProviderAdmissionTests.cs:120:                var error = Assert.Throws<InvalidDataException>(() => new B3PreparationOwner(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Restricted/B3ProviderAdmissionTests.cs:140:            var error = Assert.Throws<InvalidDataException>(() => new B3PreparationOwner(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Restricted/B3ProviderAdmissionTests.cs:231:            using var owner = new B3PreparationOwner(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Restricted/B3ProviderAdmissionTests.cs:261:            Assert.Throws<InvalidDataException>(() => escaped = new B3PreparationOwner(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Restricted/B3ProviderAdmissionTests.cs:282:            var error = Assert.Throws<InvalidDataException>(() => new B3PreparationOwner(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Restricted/B3ProviderAdmissionTests.cs:299:            Assert.Throws<InvalidOperationException>(() => new B3PreparationOwner("
+      ]
+    },
+    "owner decision and writer": {
+      "expression": "ReleaseGenerationGate\\.RequireBoundGenerationActive|commitTransport\\.|\\.TryCommitRelease\\(|\\.WriteRelease\\(",
+      "source_scope": [
+        "src",
+        "tests"
+      ],
+      "published_same": true,
+      "lines": [
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/IntegratedB3Client.cs:144:                var (q10Verified,q10Reason,q10Error)=Installed.ReleaseGenerationGate.RequireBoundGenerationActive(bound);",
+        "src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerReleaseGenerationGate.cs:32:                    ReleaseGenerationGate.RequireBoundGenerationActive(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Installed/ReleaseGenerationGateTests.cs:127:        var (verified, reason, error) = ReleaseGenerationGate.RequireBoundGenerationActive(null);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:100:            var committed = Model.TryCommitRelease(Capability.Identity, Capability.Identity.ManifestDigest.ToArray());",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:123:        Assert.False(h.Model.TryCommitRelease(h.Capability.Identity, new byte[32]).Applied);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:135:        Assert.False(h.Model.TryCommitRelease(h.Capability.Identity, new byte[32]).Applied);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:148:        var committed = h.Model.TryCommitRelease(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:172:        var attempt = h.Model.TryCommitRelease(h.Capability.Identity, (byte[])digest.Clone());",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:184:        Assert.True(h.Model.TryCommitRelease(h.Capability.Identity, digest).Applied);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:197:        var attempt = h.Model.TryCommitRelease(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:214:        var attempt = h.Model.TryCommitRelease(foreign, h.Capability.Identity.ManifestDigest.ToArray());",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:226:        var attempt = h.Model.TryCommitRelease(h.Capability.Identity, new byte[32]);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:238:        var attempt = h.Model.TryCommitRelease(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:246:        var aborted = h2.Model.TryCommitRelease(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:259:        var attempt = h.Model.TryCommitRelease(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:277:            var attempt = h.Model.TryCommitRelease(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:304:        var attempt = h.Model.TryCommitRelease(",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:563:        var duplicate = h.Model.TryCommitRelease(h.Capability.Identity, digest);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:571:        var conflicting = h.Model.TryCommitRelease(foreign, digest);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:591:        var duplicate = h.Model.TryCommitRelease(h.Capability.Identity, (byte[])digest.Clone());",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:597:        var conflicting = h.Model.TryCommitRelease(ForeignIdentity(h, digest), digest);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:612:        var duplicate = h.Model.TryCommitRelease(h.Capability.Identity, (byte[])digest.Clone());",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:618:        var conflicting = h.Model.TryCommitRelease(ForeignIdentity(h, digest), digest);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:637:        var duplicate = h.Model.TryCommitRelease(h.Capability.Identity, (byte[])digest.Clone());",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:643:        var conflicting = h.Model.TryCommitRelease(ForeignIdentity(h, digest), digest);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:656:        var attempt = h.Model.TryCommitRelease(h.Capability.Identity, (byte[])digest.Clone());",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:660:        var retry = h.Model.TryCommitRelease(h.Capability.Identity, (byte[])digest.Clone());",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:688:        var duplicate = h.Model.TryCommitRelease(identity, frame);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:703:        var duplicate = h.Model.TryCommitRelease(identity, frame);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:717:        var duplicate = h.Model.TryCommitRelease(identity, frame);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:736:        var duplicate = h.Model.TryCommitRelease(identity, frame);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:751:        var attempt = h.Model.TryCommitRelease(identity, frame);",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:767:        var attempt = h.Model.TryCommitRelease(altered, source.ManifestDigest.ToArray());",
+        "tests/Gagamba.Execution.Linux.M1.Tests/StateModelTests.cs:880:        Assert.True(h.Model.TryCommitRelease("
+      ]
+    },
+    "retained stop and reconciliation": {
+      "expression": "\\b(TerminateAndReap|StopCore|RequireBoundGenerationActive|StoppingReconcile)\\(",
+      "source_scope": [
+        "src",
+        "tests"
+      ],
+      "published_same": true,
+      "lines": [
+        "src/Gagamba.Execution.Linux.M1/Bootstrap/IntegratedB3Client.cs:144:                var (q10Verified,q10Reason,q10Error)=Installed.ReleaseGenerationGate.RequireBoundGenerationActive(bound);",
+        "src/Gagamba.Execution.Linux.M1/Installed/ReleaseGenerationGate.cs:43:    internal static (bool Verified, RestrictedRefusalReason Reason, string Error) RequireBoundGenerationActive(",
+        "src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerReleaseGenerationGate.cs:32:                    ReleaseGenerationGate.RequireBoundGenerationActive(",
+        "src/Gagamba.Execution.Linux.M1/Restricted/B3Qualification.cs:355:        var task = Task.Run(() => StopCore(reason));",
+        "src/Gagamba.Execution.Linux.M1/Restricted/B3Qualification.cs:689:            _ = StopCore(RestrictedStopReason.Invalidation);",
+        "src/Gagamba.Execution.Linux.M1/Restricted/B3Qualification.cs:730:    private RestrictedStopReply StopCore(RestrictedStopReason reason)",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Installed/ReleaseGenerationGateTests.cs:127:        var (verified, reason, error) = ReleaseGenerationGate.RequireBoundGenerationActive(null);"
+      ]
+    },
+    "existing P2 to P1 verifier edge": {
+      "expression": "FrozenContractVerifier\\.TryVerifyCatalog\\(",
+      "source_scope": [
+        "src",
+        "tests"
+      ],
+      "published_same": true,
+      "lines": [
+        "src/Gagamba.Execution.Linux.M1/Validation/DetachedEvidenceVerifier.cs:252:        if (!FrozenContractVerifier.TryVerifyCatalog(catalogBytes, out var catalog, out var failure))",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Validation/FrozenContractNegativeTests.cs:76:        Assert.False(FrozenContractVerifier.TryVerifyCatalog(bytes, out var contract, out var failure));",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Validation/FrozenContractTests.cs:82:        Assert.True(FrozenContractVerifier.TryVerifyCatalog(Bytes(ValidationFixtures.K2), out var k2, out _));",
+        "tests/Gagamba.Execution.Linux.M1.Tests/Validation/FrozenContractTests.cs:84:        Assert.True(FrozenContractVerifier.TryVerifyCatalog(Bytes(ValidationFixtures.K3), out var k3, out _));"
+      ]
+    }
+  },
+  "first_effect_bindings": {
+    "src/Gagamba.Execution.Linux.M1/Bootstrap/IntegratedRecoveryHost.cs": {
+      "blob": "9a8ec67d3424bf1971bea04b056d78cee7c3501b",
+      "line_evidence": {
+        "23": "RecoveryInitializationAdmission.RequireIntegrated(config,installed,control,controllerFd);",
+        "30": "ExperimentalRuntimePin.VerifyPrivateDirectory(directory);",
+        "49": "using var journalStorage=new JournalFileStorage();",
+        "89": "return scope.StartOwnerPreparation(request,CancellationToken.None);"
+      }
+    },
+    "src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryHost.cs": {
+      "blob": "b05fc43a378457b47828a3a799aadc42acf4cd53",
+      "line_evidence": {
+        "59": "if (config.Version==1 && config.DelegatedParent is not null && !scope.TryOpenDelegatedParent(config.DelegatedParent).Ok) return 3;",
+        "66": "var installation=config.Version==2?QualifiedRecoveryEcho.Run(config,wire,control,controllerFd):null;",
+        "68": "&& !scope.TryOpenDelegatedParent(config.DelegatedParent).Ok) return 3;",
+        "72": "return IntegratedRecoveryHost.Run(config,scope,wire,control,controllerFd,ownerPath,installation);"
+      }
+    },
+    "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedRecoveryEcho.cs": {
+      "blob": "5147d54e9ccdcbd9e488ac25ee1c5d254ce33650",
+      "line_evidence": {
+        "32": "RecoveryInitializationAdmission.Require(selection,expected);"
+      }
+    },
+    "src/Gagamba.Execution.Linux.M1/Bootstrap/IntegratedB3Client.cs": {
+      "blob": "94d3427cd5956bfbb00fd9d2c05a8ffdf3908cfb",
+      "line_evidence": {
+        "43": "internal void RequestNativeStop()",
+        "47": "_=recovery?.Send(RecoveryMessage.Stop);",
+        "58": "// RecoveryConnection.Start can spawn any recovery or owner process.",
+        "67": "var recovery=RecoveryConnection.Start(config);",
+        "70": "if(_disposed) {_=recovery.Send(RecoveryMessage.Stop);recovery.Dispose();throw new IOException(\"Disposed original controller\");}",
+        "71": "_recovery=recovery;if(_stopRequested) _=recovery.Send(RecoveryMessage.Stop);",
+        "87": "{RequestNativeStop();throw new IOException(\"qualified integrated owner identity refused\");}",
+        "119": "|| snapshot.RetainedDomains!=1 || snapshot.ControllerLost || snapshot.OwnerExited || snapshot.StopCount!=0)",
+        "134": "// in the same critical section as the ReleaseRequest send, with no",
+        "144": "var (q10Verified,q10Reason,q10Error)=Installed.ReleaseGenerationGate.RequireBoundGenerationActive(bound);",
+        "149": "if(!_channel.TrySend(OwnerProtocolMessageType.ReleaseRequest,OwnerHeldWireCodec.EncodeReleaseRequest(request),out var error)",
+        "159": "internal HeldOwnerStopOutcome Stop(StopCauseKind cause)",
+        "161": "RequestNativeStop();",
+        "164": "if(_disposed || _channel is null || !_channel.TrySend(OwnerProtocolMessageType.StopRequest,[(byte)cause],out _)",
+        "165": "|| !_channel.TryReceive(OwnerProtocolMessageType.StopDecision,out var response,out _)",
+        "166": "|| !OwnerHeldWireCodec.TryDecodeStopDecision(response!.Payload,out var decision,out _))",
+        "190": "RequestNativeStop();"
+      }
+    },
+    "src/Gagamba.Execution.Linux.M1/Lifecycle/M1RecoveryScope.cs": {
+      "blob": "a46e9efe2ad4ccde1a1a93ac10c1569415c62d2c",
+      "line_evidence": {
+        "220": "internal OwnerSpawnResult TrySpawnOwner(string ownerDll, string[] arguments, int ownerSocketFd, ExperimentalRuntimePin? runtime = null, bool qualified = false, QualifiedLauncher.InstalledPlan? installedLaunch = null)",
+        "302": "internal OwnerPreparationOutcome StartOwnerPreparation(",
+        "374": "return new OwnerPreparationOutcome(false, null, null, null, $\"AllocationIntent not durable: {intentWrite.Error}\");",
+        "389": "var spawned = TrySpawnOwner("
+      }
+    },
+    "src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerPreparationTransaction.cs": {
+      "blob": "b76123fc5e9626233536625a2c52580848628ec3",
+      "line_evidence": {
+        "53": "return RunTransaction(request, channel, authority);",
+        "56": "private static int RunTransaction(OwnerPreparationSpecification request, OwnerProtocolChannel channel,",
+        "84": "// refuses here - before new JournalFileStorage, OwnershipJournal,",
+        "92": "if(!OwnerManifestAdmissionGate.TryRequire(retained, out var initialAdmissionError))",
+        "104": "using var storage = new JournalFileStorage();",
+        "431": "if(!OwnerManifestAdmissionGate.TryRequire(admitted, out var admissionError))",
+        "531": "var exitCode = new HeldReleasePhase("
+      }
+    },
+    "src/Gagamba.Execution.Linux.M1/Lifecycle/HeldReleasePhase.cs": {
+      "blob": "57a22c29198884a4a5b17f0dda5f340426439412",
+      "line_evidence": {
+        "4": "// identity-bound channel. Stop/abort arbitration stays inside the existing",
+        "5": "// ReleaseArbiter: at most one physical RELEASE write exists, and every",
+        "46": "private readonly ReleaseArbiter _arbiter;",
+        "101": "_arbiter = new ReleaseArbiter(capability, journal, writer, new OwnerClock(),",
+        "117": "private OwnerGenerationGateRefusal? VerifyOwnerReleaseGeneration() =>",
+        "118": "OwnerReleaseGenerationGate.Verify(_authority);",
+        "127": "if (_safety?.StopLatched == true) return Abort();",
+        "142": "if (_pendingAbortHeld || _safety?.StopLatched == true)",
+        "149": "OwnerProtocolMessageType.StopRequest,",
+        "150": "OwnerProtocolMessageType.ReleaseRequest, OwnerProtocolMessageType.CaptureRead))",
+        "174": "case OwnerProtocolMessageType.StopRequest:",
+        "176": "if (!Enum.IsDefined(typeof(StopCauseKind), message.Payload[0]))",
+        "181": "SendStopDecision(_arbiter.RequestStop((StopCauseKind)message.Payload[0]));",
+        "199": "case OwnerProtocolMessageType.ReleaseRequest:",
+        "200": "HandleReleaseRequest(message);",
+        "206": "private void HandleReleaseRequest(OwnerProtocolMessage message)",
+        "208": "if (!OwnerHeldWireCodec.TryDecodeReleaseRequest(message.Payload, out var request, out var decodeError)",
+        "230": "var decision = _arbiter.RequestRelease(new ReleaseRequest(",
+        "238": "LatchOwnerGateStopTail(decision);",
+        "253": "LatchOwnerGateStopTail(decision);",
+        "270": "private void LatchOwnerGateStopTail(ReleaseDecision decision)",
+        "278": "_safety?.AcceptStop(StopCauseKind.SetupFault);",
+        "291": "private void SendStopDecision(StopDecision decision) =>",
+        "292": "_channel.TrySend(OwnerProtocolMessageType.StopDecision,",
+        "293": "OwnerHeldWireCodec.EncodeStopDecision(decision), out _);",
+        "335": "Int01Qualification.Point(fault,\"release-after-intent\",_setupDeadline,()=>_safety?.StopLatched==true);",
+        "360": "OwnerProtocolMessageType.StopRequest, OwnerProtocolMessageType.AbortHeld))",
+        "371": "if (message.Type == OwnerProtocolMessageType.StopRequest)",
+        "373": "if (Enum.IsDefined(typeof(StopCauseKind), message.Payload[0]))",
+        "375": "SendStopDecision(_arbiter.RequestStop((StopCauseKind)message.Payload[0]));",
+        "384": "SendStopDecision(_arbiter.RequestStop(StopCauseKind.CallerStop));",
+        "395": "abort.Stopped ? (byte)1 : (byte)0,",
+        "400": "? abort.Stopped ? 0 : 51",
+        "401": ": abort.Stopped ? 48 : 49;",
+        "467": "if (!captured.Complete || !population.Known || !population.Empty || _safety?.StopLatched == true)",
+        "554": "var timestamp = Stopwatch.GetTimestamp();",
+        "555": "return (timestamp / Stopwatch.Frequency * 1_000_000_000L)",
+        "556": "+ (timestamp % Stopwatch.Frequency * 1_000_000_000L / Stopwatch.Frequency);"
+      }
+    },
+    "src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerReleaseGenerationGate.cs": {
+      "blob": "6664afa2a1dd34a32e6a71dcc992ec6e29db0197",
+      "line_evidence": {
+        "18": "internal static class OwnerReleaseGenerationGate",
+        "20": "internal static OwnerGenerationGateRefusal? Verify(OwnerAuthorityContext authority)",
+        "32": "ReleaseGenerationGate.RequireBoundGenerationActive(",
+        "33": "qualified.RequireLoadedInstallation());",
+        "34": "return verified ? null : new OwnerGenerationGateRefusal(reason, error);",
+        "38": "return new OwnerGenerationGateRefusal(",
+        "39": "ReleaseGenerationGate.MapFailure(exception), exception.Message);",
+        "43": "return new OwnerGenerationGateRefusal(",
+        "44": "RestrictedRefusalReason.InstallationUnavailable,",
+        "50": "// same shared RequireStillQualified decision the production verification",
+        "55": "internal static OwnerGenerationGateRefusal? VerifyObserved(",
+        "60": "retained.RequireEcho(observed);",
+        "65": "return new OwnerGenerationGateRefusal(",
+        "66": "ReleaseGenerationGate.MapFailure(exception), exception.Message);"
+      }
+    },
+    "src/Gagamba.Execution.Linux.M1/Execution/ReleaseArbiter.cs": {
+      "blob": "2eaf47daad1cb38f888e450674ad2f20675a6e1f",
+      "line_evidence": {
+        "1": "// WP05 release/stop arbitration. ReleaseIntent is durably acknowledged",
+        "9": "// keeps the conservative post-intent shape and submits the existing stop",
+        "37": "private bool _stopAccepted;",
+        "83": "if (_stopAccepted)",
+        "88": "\"release request refused: stop already won before durable intent\",",
+        "214": "// approved stop-versus-retention ordering to deterministic tests.",
+        "228": "else if (_stopAccepted)",
+        "234": "\"release gate refused: stop won during durable intent\",",
+        "253": "// Both barriers and the C2 tail stop run after releasing _gate.",
+        "297": "// or supplied by the controller, and any retained stop/deadline/",
+        "312": "if (_stopAccepted)",
+        "318": "\"release gate refused: stop won during durable intent\",",
+        "363": "// stop tail is submitted after this lock is released through the",
+        "364": "// existing stop path under the original context and C3 authority.",
+        "485": "_stopAccepted = true;",
+        "491": "\"stop accepted live; monotonic clock unavailable so no durable stop evidence was written\");",
+        "507": "\"stop accepted live; deadline overflow prevented durable stop evidence\");",
+        "513": "\"stop accepted; durable stop evidence pending\");",
+        "534": "reason += $\"; durable stop evidence not persisted: {write.Error}\";",
+        "538": "Barrier(\"after-stop\");",
+        "556": "Reason = $\"{retained.Reason}; tail stop limitation: {limitation}\",",
+        "584": "// P3 stop tail for a generation-gate refusal: the stop is submitted",
+        "585": "// outside every gate (OwnerSafetyMonitor keeps its native stop ahead of",
+        "586": "// this best-effort durable settlement) under the original C3 authority.",
+        "622": "Reason = $\"{retained.Reason}; tail stop limitation: {limitation}\",",
+        "672": "$\"stop capability invalidation failed: capability remains live after consumption refusal ({violation})\");"
+      }
+    },
+    "src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerAuthorityContext.cs": {
+      "blob": "52aac8ee5909bbebc3f5db91633ca752a858fba4",
+      "line_evidence": {
+        "86": "internal sealed class Validation : OwnerAuthorityContext",
+        "88": "private Validation()"
+      }
+    },
+    "src/Gagamba.Execution.Linux.M1/Lifecycle/PreparationOwnershipCoordinator.cs": {
+      "blob": "a1ee79b6f5505eb8105e64068f4f9ff2c199099e",
+      "line_evidence": {
+        "34": "internal PreparationOwnershipCoordinator(OwnershipJournal journal, OwnershipSnapshot intentTemplate)"
+      }
+    },
+    "src/Gagamba.Runtime/RestrictedExecutionRuntime.cs": {
+      "blob": "4183cb8c5e6f7b6c778d7c9ca485a10cbb42a7c4",
+      "line_evidence": {
+        "9": "public static IRestrictedExecutionProvider Create() => new UnavailableRestrictedExecutionProvider();"
+      }
+    }
+  },
+  "fixed_launcher_path_candidates": [
+    "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedLauncher.cs",
+    "tests/Gagamba.Execution.Linux.M1.Tests/Installation/QualifiedLauncherNativeTests.cs"
+  ],
+  "accepted_p4_sha256": "b3f851aa878d64315af70902d5148819066b684f7d3d3e35e1c4bc49c2ec4d0e",
+  "p4_dispositions": [
+    {
+      "row": "S01",
+      "candidate": "COVERED",
+      "original": "| **S01** `Restricted/B3Qualification.cs:77,188\u2013201` `TryCreate` | none in `src/` (tests + `tests/Fixtures/B2Controller/IntegratedControllerProbe.cs` only); `RestrictedExecutionRuntime.Create()` unavailable | actual retained provider `LoadedInstallation` + fresh protected final admission | `LoadedInstallation.Verify(\"provider\")` + `VerifyFinalAdmission()` + `IsFinalAdmissionEligible` (`:191\u2013194`), typed refusal | `new B3PreparationOwner(...)` \u2192 journal directory | yes | factory failure returns typed refusal, no operation | **COVERED** |"
+    },
+    {
+      "row": "S02",
+      "candidate": "COVERED",
+      "original": "| **S02** `Restricted/B3Qualification.cs:274\u2013297` ctor + `Restricted/B3ProviderAdmission.cs:10\u201342` | sole production caller `TryCreate:199`; two-arg overload used only by tests | retained provider selection; role re-entry with original identity; exact tuple; fresh protected final grant | `B3ProviderAdmission.Require` at `:287`, first statement after the F02 check; `LoadedInstallation`/`Grant` have private ctors | `_scope`/`_integrated`/`_journal` objects, then `Directory.CreateDirectory(JournalDirectory)` `:295` | yes (source order + IL-offset test + Q1 reflection probe) | refusal throws before setup; no cleanup needed | **COVERED** |"
+    },
+    {
+      "row": "S03",
+      "candidate": "COVERED",
+      "original": "| **S03** `Bootstrap/IntegratedB3Client.cs:49\u201367` `Prepare` | `B3PreparationOwner.PrepareIntegrated:514` (qualified profiles only) | provider S2 + fresh final admission | `:54\u201361` provider verify + `IsFinalAdmissionEligible`; `IOException` before spawn | `RecoveryConnection.Start` (recovery spawn) | yes | failure throws before Start; stop/disposal independent | **COVERED** |"
+    },
+    {
+      "row": "S04",
+      "candidate": "LEGACY / TEST-ONLY",
+      "original": "| **S04** `Bootstrap/RecoveryConnection.cs:31\u2013122` Start v1 | `IntegratedB3Client.Prepare:67` for `Version==1` | none (accepted legacy bootstrap) | `RecoveryProtocol.Validate:160\u2013163` rejects any installed identity/deadline claim; pins + peer checks | socketpairs + recovery spawn | n/a (legacy) | `finally` kills the child only if bootstrap was not delivered; detached R keeps stop/reap | **LEGACY / TEST-ONLY** |"
+    },
+    {
+      "row": "S05",
+      "candidate": "COVERED",
+      "original": "| **S05** `Bootstrap/QualifiedRecoveryConnection.cs:13\u2013156` Start v2 | `RecoveryConnection.Start:33` | provider S2 + supplied identity equality + original deadline | `:15` `Validate()` first; `:18\u201322` `Verify(\"provider\")`, identity compare, deadline validate | B2 listener / socket pairs / recovery spawn | yes | `catch {barrier?.Stop}`; Stop sent if bootstrap delivered; kill+reap only if not | **COVERED** (native-pending) |"
+    },
+    {
+      "row": "S06",
+      "candidate": "AUTHORIZED CONTINUATION",
+      "original": "| **S06** `Bootstrap/RecoveryHost.cs:19\u201372` `RunCore` | Recovery executable entry | original parent/pidfd, private peers, strict config | `:21\u201354` peer/parent/config/detach/subreaper checks; exit 3 on refusal | detach/subreaper/socket setup, association | n/a \u2014 necessary safety machinery, not mint authority | establishes original stopping/reaping used by S26 | **AUTHORIZED CONTINUATION** |"
+    },
+    {
+      "row": "S07",
+      "candidate": "COVERED",
+      "original": "| **S07** `RecoveryHost.cs:59,67\u201368` + `Lifecycle/M1RecoveryScope.cs:182\u2013211` `TryOpenDelegatedParent` | `RecoveryHost` (v1 legacy `:59`; v2 integrated `:67\u201368`) | installed delegated-parent acquisition must follow recovery-local authorization | v1 parent opened pre-association (legacy preserved); v2 parent opened **after** `QualifiedRecoveryEcho.Run` returns the admitted selection | retained verified cgroup2 parent fd | yes (v2) | failure exits 3; v1 ordering unchanged | **COVERED** |"
+    },
+    {
+      "row": "S08",
+      "candidate": "COVERED",
+      "original": "| **S08** `Bootstrap/QualifiedRecoveryEcho.cs:8\u201350` `Run` | `RecoveryHost:66` (v2) | recovery-role S2 with expected identity, launch binding, and (integrated) final admission | `:21\u201335` `Verify(\"recovery\", expected)`, role/closure binding, `RecoveryInitializationAdmission.Require` `:31\u201332` before the positive plan | echo send / owner launch plan `:33` | yes | bounded deadline + `Service()` stop/controller-loss polling | **COVERED** (native-pending) |"
+    },
+    {
+      "row": "S09",
+      "candidate": "COVERED",
+      "original": "| **S09** `Bootstrap/IntegratedRecoveryHost.cs:19\u201330,49\u201350,75\u201391` `Run` | `RecoveryHost:72` (integrated) | retained installed authority + final admission before journal/safety/worker init | `RecoveryInitializationAdmission.RequireIntegrated` is the **first statement** `:23`, before `VerifyPrivateDirectory`/`JournalFileStorage`/worker | `ExperimentalRuntimePin.VerifyPrivateDirectory` reads `:29\u201330`, then initial writer `:77` | yes | failure throws before writer/intent/owner | **COVERED** (native-pending) |"
+    },
+    {
+      "row": "S10",
+      "candidate": "COVERED",
+      "original": "| **S10** `Lifecycle/M1RecoveryScope.cs:302\u2013399` `StartOwnerPreparation` | exactly three: `B3PreparationOwner.PrepareCore:426` (legacy non-integrated), `IntegratedRecoveryHost:89` (F01-gated), `B2RetainedDomain:27` (legacy v1) | on the installed route, the F01 recovery-entry admission | domination: the only installed caller is gated at `IntegratedRecoveryHost:23` before this method is reachable | staging-parent retention `:319\u2013331`, durable `AllocationIntent` `:371`, writer release `:379`, owner spawn `:389` | yes on the installed route (dominated, not local) | `FailOwnerPreparation` + retained recovery resources on failure | **COVERED** (dominated; see F-R1) |"
+    },
+    {
+      "row": "S11",
+      "candidate": "COVERED",
+      "original": "| **S11** `M1RecoveryScope.cs:220\u2013294` `TrySpawnOwner` + `Bootstrap/QualifiedLauncher.cs` | `M1RecoveryScope:389` (inside S10), `RecoveryHost:85` (legacy v1), `QualifiedB2Recovery:72` (B2 evidence) | installed launch plan/pins on the integrated route | `installedLaunch` plan, runtime/hash pin, CLOEXEC, explicit fd roles, owner pidfd; missing plan fails closed | owner process + retained lifetime pin | yes (integrated route dominated by S09/S10) | original child terminated/reaped on failure | **COVERED** (launch integrity; native-pending) |"
+    },
+    {
+      "row": "S12",
+      "candidate": "AUTHORIZED CONTINUATION",
+      "original": "| **S12** `Bootstrap/QualifiedB2Recovery.cs:12\u2013135` `Run` | `RecoveryHost:70` (v2 non-integrated) | none beyond S08 evidence/stop topology | verified owner launch plan required `:71`; no writer/cgroup/staging/capability/manifest path exists | one B2 owner + lifeline + reference handoff | n/a | original 30 s lifetime, `obligation` stop, pidfd kill `:128\u2013131` | **AUTHORIZED CONTINUATION** |"
+    },
+    {
+      "row": "S13",
+      "candidate": "AUTHORIZED CONTINUATION",
+      "original": "| **S13** `Bootstrap/QualifiedB2Owner.cs:11\u2013105` `Run` | Owner Program `:73` (`--b2-lifeline 2`) | none beyond evidence/stop | recovery peer/pin/lifeline; first owner S2 at `:89` on the authenticated C expectation; no manifest dispatch | lifeline Ready, echo, stop/loss wait only | n/a | `Stop()` acks `B2StopObserved`; diagnostic `ReleaseAuthority=false` | **AUTHORIZED CONTINUATION** |"
+    },
+    {
+      "row": "S14",
+      "candidate": "LEGACY / TEST-ONLY",
+      "original": "| **S14** `Bootstrap/B2RetainedDomain.cs:12\u201347` `Start` | `RecoveryHost:78` (v1 delegated) | none (accepted legacy barrier fixture) | manifest callback **throws** `:24` \u201cB2 cannot reach manifest authorization\u201d; `TestBarrier: after-domain-retained` stops before copy/mint | legacy directories/writer/intent/domain | n/a | `Stop`/`RemoveAfterExit` are identity-checked | **LEGACY / TEST-ONLY** |"
+    },
+    {
+      "row": "S15",
+      "candidate": "COVERED",
+      "original": "| **S15** `Bootstrap/QualifiedOwnerPreflight.cs:16\u201337` `Verify` | `OwnerPreparationTransaction` owner preflight | actual owner-role S2 bound to the expected identity/original recovery | `LoadedInstallation.Verify(\"owner\", identity.InstallationIdentity)` `:35`; returns `OwnerAuthorityContext.Qualified.FromVerified` | journal/writer effects later in `RunTransaction` | yes (P1) | deadline + `Service()` stop polling | **COVERED** |"
+    },
+    {
+      "row": "S16",
+      "candidate": "COVERED",
+      "original": "| **S16** `Lifecycle/OwnerPreparationTransaction.cs:56\u2013104` `RunTransaction` entry | Owner Program `:75` | retained qualified context **and** early protected final admission | `:63\u2013102`: installed wire without `Qualified` \u2192 20; `RequireLoadedInstallation` failure \u2192 20; `OwnerManifestAdmissionGate.TryRequire` failure \u2192 48, all before storage | `new JournalFileStorage()` `:104`, journal `:121`, writer `:122` | yes | abort 20/48 before any effect; no cleanup debt | **COVERED** |"
+    },
+    {
+      "row": "S17",
+      "candidate": "COVERED",
+      "original": "| **S17** `Bootstrap/OwnerDirectConnection.cs:15\u2013117` `Accept` | `RunTransaction:151` (after writer/`WriterReady`) | retention classification must agree with wire shape | `:24\u201327` installed wire requires `Qualified`; unqualified wire requires `Legacy`; original recovery/controller pins | direct session/echo only | yes (refusal); echo itself is **after** writer by accepted P1 ordering | mismatch disposes the session; original stopping retained | **COVERED** |"
+    },
+    {
+      "row": "S18",
+      "candidate": "COVERED",
+      "original": "| **S18** `RunTransaction:130\u2013224` + `Native/ScopedAllocationContext.cs:65\u2013136`, `CgroupInterop.TryCreateDomain` | same | P2 early admission + matching live writer/acknowledged intent/retained parent | early gate at `:92` precedes `StartAuthority` receipt `:165`, `after-intent` barrier `:201`, allocation `:207`, domain `:216` | domain directory/control allocation | yes | failure aborts; exact retained resources remain cleanup debt | **COVERED** |"
+    },
+    {
+      "row": "S19",
+      "candidate": "COVERED",
+      "original": "| **S19** `RunTransaction:226\u2013300` descriptor retention + `Native/DomainHandleTransfer.cs` | same | admitted transaction/owner spawn; role/fd exactness | duplicate-fd roles `:230\u2013247`, `DomainAuthorityRetained` `:259`, double-transfer refused; durable `AllocationRegistered` `:275\u2013287` | durable registration + WP04 limits `:289` | yes | retained recovery lease is lifecycle continuation | **COVERED** |"
+    },
+    {
+      "row": "S20",
+      "candidate": "COVERED",
+      "original": "| **S20** `RunTransaction:301\u2013397` + `Preparation/SafeCopyIn.cs` | same | P2 early admission + accounted intent + staging authority | staging authority transferred once `:329\u2013377`; `SafeCopyIn.Prepare` `:380` after allocation/registration, before the late gate | staging directory/files, protected closure | yes | failure leaves accounted cleanup, never completion | **COVERED** |"
+    },
+    {
+      "row": "S21",
+      "candidate": "COVERED",
+      "original": "| **S21** `RunTransaction:398\u2013441` late admission | same | fresh, operation-bound protected final admission | `OwnerManifestAdmissionGate.TryRequire` `:431` after the manifest is known; context/wire mismatch refuses `:437\u2013441` | `Prepared` write `:453`, store/publisher `:483\u2013495`, HELD `:501\u2013535` | yes | refusal 47 before Prepared/mint/HELD; earlier authorized effects remain | **COVERED** (native-pending) |"
+    },
+    {
+      "row": "S22",
+      "candidate": "COVERED",
+      "original": "| **S22** `RunTransaction:443\u2013495` + `Preparation/PreparedClosure.cs`, `PreparationStore.cs` | same | S21 dominates durable Prepared, ack and local publication | capability minted only after `Prepared` + retention evidence; `safety?.PublishCapability` `:494` | durable Prepared, capability, store | yes | stop-before-publish prevents a usable capability | **COVERED** (native-pending) |"
+    },
+    {
+      "row": "S23",
+      "candidate": "COVERED",
+      "original": "| **S23** `RunTransaction:501\u2013535` + `Launch/BubblewrapAdapter.cs:34\u2013166` | same | owner early+late P2, bound domain/closure/manifest, pinned helper | HELD setup only after admitted transaction; `launch.Held` + report validation `:518\u2013524` | sealed memfds/pipes/capture/helper spawn \u2192 HELD | yes | setup failure requests stop/aborts; no target dispatch | **COVERED** (native-pending) |"
+    },
+    {
+      "row": "S24",
+      "candidate": "COVERED",
+      "original": "| **S24** `Lifecycle/HeldReleasePhase.cs:54\u2013118,264` + `Execution/ReleaseArbiter.cs` | `RunTransaction:531` | P3 owner after-intent generation verification + final runtime gate | `VerifyOwnerReleaseGeneration` wired only for `OwnerAuthorityContext.Qualified` `:103\u2013118` \u2192 `OwnerReleaseGenerationGate.Verify` \u2192 `ReleaseGenerationGate.RequireBoundGenerationActive`; tail latch `:264` | sole physical `TryWriteOnce` | yes | refusal \u2192 zero new attempts + existing stop; post-observation residual accepted | **COVERED** (native-pending) |"
+    },
+    {
+      "row": "S25",
+      "candidate": "COVERED",
+      "original": "| **S25** `Bootstrap/IntegratedB3Client.cs:127\u2013150` `Release` + `Installed/ReleaseGenerationGate.cs:43\u201363` | `B3PreparationOwner.ReleaseCore:680` | controller Q10 fresh active-generation read in the same critical section as the send | `ReleaseGenerationGate.RequireBoundGenerationActive(bound)` before the request exists; null retained refused | `ReleaseRequest` send | yes | refusal \u2192 `StopCore(Invalidation)` + Refused/NotCommitted | **COVERED** (native-pending) |"
+    },
+    {
+      "row": "S26",
+      "candidate": "AUTHORIZED CONTINUATION",
+      "original": "| **S26** `IntegratedRecoveryHost.cs:100\u2013156`; `QualifiedB2Recovery.cs:24\u201366,117\u2013134`; `QualifiedB2Owner.cs`; `Bootstrap/OwnerSafetyMonitor.cs` | same routes | original pins/leases/safety channel; **no** fresh final grant | `obligation` first-cause, pidfd signal, owner ack/reap, safety stop; deadlines not renewed | stop/signal/reap | n/a | must run after admission withdrawal/loss; Unknown preserved | **AUTHORIZED CONTINUATION** |"
+    },
+    {
+      "row": "S27",
+      "candidate": "AUTHORIZED CONTINUATION",
+      "original": "| **S27** `IntegratedRecoveryHost.cs:157\u2013212`; `Restricted/B3Qualification.cs:841\u2013868` `Reconcile`; `Recovery/Reconciler.cs` | same | original journal/boot identity, actual exit+reap, writer fence, retained handles, sealed C3 | cleanup writer reacquired `:164` **not** conditioned on renewed admission; identity-checked removal `:185\u2013204` | writer fence, domain/staging/journal finalization | n/a | failed retention ACK leaves debt, never promoted | **AUTHORIZED CONTINUATION** |"
+    },
+    {
+      "row": "S28",
+      "candidate": "LEGACY / TEST-ONLY",
+      "original": "| **S28** `Lifecycle/PreparationOwnershipCoordinator.cs:29\u2013147` + low-level copy/publisher/launcher test calls | **none in production** \u2014 only `tests/.../PreparationOwnershipTests.cs:61` | n/a (no production route) | `internal` visibility only | journal/copy/publication in tests | n/a | test fixtures own their cleanup | **LEGACY / TEST-ONLY** |"
+    },
+    {
+      "row": "S29",
+      "candidate": "COVERED",
+      "original": "| **S29** `src/Gagamba.Runtime/RestrictedExecutionRuntime.cs:9`; `Directory.Build.targets` D6.4 fixture exclusion | public API surface | public production activation must refuse | `Create()` returns `UnavailableRestrictedExecutionProvider`; production/instrumented closure checks exclude fixture hooks | none (refusal) | yes | n/a | **COVERED** (test-only fixture routes) |"
+    }
+  ]
+}

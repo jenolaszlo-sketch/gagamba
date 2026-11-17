@@ -1,0 +1,15 @@
+dotnet build src/Gagamba.Runtime/Gagamba.Runtime.csproj -c Release --artifacts-path C:\Users\Laszlos\source\repos\Solo\q1-e5\run\candidate-exact --nologo -m:1
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Gagamba.Execution -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\candidate-exact\bin\Gagamba.Execution\release\Gagamba.Execution.dll
+  Gagamba.Execution.Windows -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\candidate-exact\bin\Gagamba.Execution.Windows\release\Gagamba.Execution.Windows.dll
+  Gagamba.Execution.Linux -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\candidate-exact\bin\Gagamba.Execution.Linux\release\Gagamba.Execution.Linux.dll
+  Gagamba.Execution.MacOS -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\candidate-exact\bin\Gagamba.Execution.MacOS\release\Gagamba.Execution.MacOS.dll
+  Gagamba.Runtime -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\candidate-exact\bin\Gagamba.Runtime\release\Gagamba.Runtime.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:02.84
+EXIT 0

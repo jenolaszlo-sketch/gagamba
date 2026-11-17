@@ -1,0 +1,24 @@
+dotnet build tests/Fixtures/B2Controller/B2Controller.csproj -c Debug --artifacts-path C:\Users\Laszlos\source\repos\Solo\q1-e5\run\candidate-exact --nologo -m:1
+  Determining projects to restore...
+  Restored C:\Users\Laszlos\source\repos\Gagamba\tests\Fixtures\B2Controller\B2Controller.csproj (in 167 ms).
+  2 of 3 projects are up-to-date for restore.
+  Gagamba.Execution -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\candidate-exact\bin\Gagamba.Execution\debug\Gagamba.Execution.dll
+  Gagamba compilation identity validated: Gagamba.Execution.Linux.M1, Debug, Gagamba.Execution.Linux.M1, DefineConstants=TRACE;DEBUG;NET;NET10_0;NETCOREAPP;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER
+  Gagamba.Execution.Linux.M1 -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\candidate-exact\bin\Gagamba.Execution.Linux.M1\debug\Gagamba.Execution.Linux.M1.dll
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Debug
+  MVID: 97b0303c-4404-4853-9cb6-0e7c15b752dd
+  SHA-256: 16A317C4F130A66C957D2D2A03195E2A14F18BCBE5F7D3EF8B31119DBD24245E
+  Mode: instrumented
+  Type-name entries: 553; methods with bodies decoded: 4911; user strings: 4855
+  Seven surfaces: 4/4 hook types and 3/3 hook properties present
+  Core production types: 14/14 present
+  RESULT: PASS
+  B2Controller -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\candidate-exact\bin\B2Controller\debug\Gagamba.Execution.Linux.M1.B2Controller.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:04.33
+EXIT 0

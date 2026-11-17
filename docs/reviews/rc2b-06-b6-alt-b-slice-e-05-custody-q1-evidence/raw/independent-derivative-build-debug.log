@@ -1,0 +1,13 @@
+["dotnet", "build", "C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\independent-mutations\\Mutations.csproj", "-c", "Debug", "--artifacts-path", "C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\independent-derivative-build", "--nologo", "-p:DefineConstants=DERIVATIVE", "-p:Core=C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1\\debug"]
+  Determining projects to restore...
+  Restored C:\Users\Laszlos\source\repos\Solo\q1-e5\run\independent-mutations\Mutations.csproj (in 74 ms).
+  Mutations -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\independent-derivative-build\bin\Mutations\debug\Gagamba.Execution.Linux.M1.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.81
+
+BUILD EXIT 0
+{"command": ["dotnet", "C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\independent-derivative-build\\bin\\Mutations\\debug\\Gagamba.Execution.Linux.M1.Tests.dll"], "exit": 0, "probe_sha256": "b1f044fe32ec9b749cec8aaf1fe9535a743193a233ba61b5149cb9406ef53df2", "actual_core_sha256": "16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e"}

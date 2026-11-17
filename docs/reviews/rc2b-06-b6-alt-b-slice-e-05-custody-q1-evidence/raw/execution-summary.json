@@ -1,0 +1,201 @@
+{
+  "debug": {
+    "e3": {
+      "xunit_exit": 0,
+      "passed": 185,
+      "failed": 0,
+      "skipped": 0,
+      "vstest_exit": 1,
+      "vstest_executed": 0,
+      "runner": "xUnit.net v3 3.2.0+9e422989c1",
+      "xml_sha256": "af57b72e75493e65c4a2338439722c801c7cbdb8d753bd72290f5e0eb3b8b826",
+      "assembly": "C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\layouts\\debug\\focused\\Gagamba.Execution.Linux.M1.Tests.dll"
+    },
+    "e4": {
+      "xunit_exit": 0,
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0,
+      "vstest_exit": 1,
+      "vstest_executed": 0,
+      "runner": "xUnit.net v3 3.2.0+9e422989c1",
+      "xml_sha256": "cf50589aab474e2be3975cc5bb2b0043d008dcf1848e5d553ac1e121ebeaf16c",
+      "assembly": "C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\layouts\\debug\\focused\\Gagamba.Execution.Linux.M1.Tests.dll"
+    },
+    "e5": {
+      "xunit_exit": 0,
+      "passed": 42,
+      "failed": 0,
+      "skipped": 0,
+      "vstest_exit": 1,
+      "vstest_executed": 0,
+      "runner": "xUnit.net v3 3.2.0+9e422989c1",
+      "xml_sha256": "7b0b3206971775d5e848061a882a7c71261158040dd15b2d10129902d6b15046",
+      "assembly": "C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\layouts\\debug\\focused\\Gagamba.Execution.Linux.M1.Tests.dll"
+    },
+    "broad": {
+      "xunit_exit": 0,
+      "passed": 1731,
+      "failed": 0,
+      "skipped": 331,
+      "vstest_exit": 1,
+      "vstest_executed": 0,
+      "runner": "xUnit.net v3 3.2.0+9e422989c1",
+      "xml_sha256": "5fa96f7abcd4ddd9a6f48c4d21d3598f86c2ed629f7d3a8f0a8adfb292cb9b2e",
+      "assembly": "C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\layouts\\debug\\tests\\debug\\Gagamba.Execution.Linux.M1.Tests.dll"
+    },
+    "E4_supplement": {
+      "exact": 1944,
+      "historical_omission_control": 1,
+      "exit": 0
+    },
+    "E5_sensitivity": {
+      "reproduced": 17,
+      "exit": 0
+    },
+    "independent": {
+      "passed": 696,
+      "failed": 0,
+      "exit": 0
+    },
+    "independent_sensitivity": {
+      "nominal_positive": 20,
+      "detected_omissions": 20,
+      "exit": 0
+    },
+    "P4_reproduction_witnesses": 15,
+    "P4_additional_broad_witnesses": 32
+  },
+  "release": {
+    "e3": {
+      "xunit_exit": 0,
+      "passed": 185,
+      "failed": 0,
+      "skipped": 0,
+      "vstest_exit": 1,
+      "vstest_executed": 0,
+      "runner": "xUnit.net v3 3.2.0+9e422989c1",
+      "xml_sha256": "acdc43de9ac79c0f2b227c6cb953e0e2afc812a8dd58f54878f4229df7ec8cce",
+      "assembly": "C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\layouts\\release\\focused\\Gagamba.Execution.Linux.M1.Tests.dll"
+    },
+    "e4": {
+      "xunit_exit": 0,
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0,
+      "vstest_exit": 1,
+      "vstest_executed": 0,
+      "runner": "xUnit.net v3 3.2.0+9e422989c1",
+      "xml_sha256": "71e732ef37a1a1b282b534ff699a2f600bbcfeec6d4975deb640a599289fbef9",
+      "assembly": "C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\layouts\\release\\focused\\Gagamba.Execution.Linux.M1.Tests.dll"
+    },
+    "e5": {
+      "xunit_exit": 0,
+      "passed": 42,
+      "failed": 0,
+      "skipped": 0,
+      "vstest_exit": 1,
+      "vstest_executed": 0,
+      "runner": "xUnit.net v3 3.2.0+9e422989c1",
+      "xml_sha256": "f66bfc76dfe8d27d08f2d191ae21d9be87e12a2c25c9b40aa35fdc69e4d8442a",
+      "assembly": "C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\layouts\\release\\focused\\Gagamba.Execution.Linux.M1.Tests.dll"
+    },
+    "broad": {
+      "xunit_exit": 0,
+      "passed": 1731,
+      "failed": 0,
+      "skipped": 331,
+      "vstest_exit": 1,
+      "vstest_executed": 0,
+      "runner": "xUnit.net v3 3.2.0+9e422989c1",
+      "xml_sha256": "f5250938e22a70bae17eab117ce0cc05ccb3f65952b896aeaeab4f8b845c7326",
+      "assembly": "C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\layouts\\release\\tests\\release\\Gagamba.Execution.Linux.M1.Tests.dll"
+    },
+    "E4_supplement": {
+      "exact": 1944,
+      "historical_omission_control": 1,
+      "exit": 0
+    },
+    "E5_sensitivity": {
+      "reproduced": 17,
+      "exit": 0
+    },
+    "independent": {
+      "passed": 696,
+      "failed": 0,
+      "exit": 0
+    },
+    "independent_sensitivity": {
+      "nominal_positive": 20,
+      "detected_omissions": 20,
+      "exit": 0
+    },
+    "P4_reproduction_witnesses": 15,
+    "P4_additional_broad_witnesses": 32
+  },
+  "build_policy": {
+    "probes": 51,
+    "passed": 51,
+    "exit": 0,
+    "preparation_regressions": 9,
+    "preparation_exit": 0
+  },
+  "runner_receipts": [
+    {
+      "config": "debug",
+      "suite": "e3",
+      "pid": 17156,
+      "exit": 1,
+      "executed": 0
+    },
+    {
+      "config": "debug",
+      "suite": "e4",
+      "pid": 37676,
+      "exit": 1,
+      "executed": 0
+    },
+    {
+      "config": "debug",
+      "suite": "e5",
+      "pid": 34324,
+      "exit": 1,
+      "executed": 0
+    },
+    {
+      "config": "debug",
+      "suite": "broad",
+      "pid": 30396,
+      "exit": 1,
+      "executed": 0
+    },
+    {
+      "config": "release",
+      "suite": "e3",
+      "pid": 26316,
+      "exit": 1,
+      "executed": 0
+    },
+    {
+      "config": "release",
+      "suite": "e4",
+      "pid": 35056,
+      "exit": 1,
+      "executed": 0
+    },
+    {
+      "config": "release",
+      "suite": "e5",
+      "pid": 11576,
+      "exit": 1,
+      "executed": 0
+    },
+    {
+      "config": "release",
+      "suite": "broad",
+      "pid": 25968,
+      "exit": 1,
+      "executed": 0
+    }
+  ]
+}

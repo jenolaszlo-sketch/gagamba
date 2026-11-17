@@ -1,0 +1,13 @@
+["dotnet", "build", "C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\independent-mutations\\Mutations.csproj", "-c", "Release", "--artifacts-path", "C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\independent-derivative-build", "--nologo", "-p:DefineConstants=DERIVATIVE", "-p:Core=C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1\\release"]
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Mutations -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\independent-derivative-build\bin\Mutations\release\Gagamba.Execution.Linux.M1.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.54
+
+BUILD EXIT 0
+{"command": ["dotnet", "C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\independent-derivative-build\\bin\\Mutations\\release\\Gagamba.Execution.Linux.M1.Tests.dll"], "exit": 0, "probe_sha256": "353d6f419a7336f0f06c5816da2c7e9d1cd0389b8fefa262aba2ad468d61a2eb", "actual_core_sha256": "a121b258b1168e36b63f1caf571a8a0b2e8795be9feb2f24086a8648af6ebd51"}

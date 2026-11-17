@@ -1,0 +1,2 @@
+﻿dotnet publish C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj -c Release --no-build -p:DefineConstants= --artifacts-path C:\Users\Laszlos\source\repos\Solo\q1-e5\run\policy-exact\publish-m1 --nologo
+C:\Users\Laszlos\source\repos\Gagamba\Directory.Build.targets(11,5): error GAGAMBA002: Release requires the effective compiler symbol GAGAMBA_PRODUCTION before resolving references. Refusing production candidate. [C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj]

@@ -1,0 +1,160 @@
+VARIANT	launcherExecutable	nominal
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R02/R07/1/nominal	PASS
+TOTAL	1	0
+VARIANT	launcherExecutable	negative
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R03-R04/1/launcher-image	FAIL	InvalidOperationException: create expected Comparison/null, got None, model=True
+TOTAL	0	1
+VARIANT	launcherClosure	nominal
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R02/R07/1/nominal	PASS
+TOTAL	1	0
+VARIANT	launcherClosure	negative
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R03-R04/1/launcher-closure	FAIL	InvalidOperationException: create expected Comparison/null, got None, model=True
+TOTAL	0	1
+VARIANT	controllerExecutable	nominal
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R02/R07/1/nominal	PASS
+TOTAL	1	0
+VARIANT	controllerExecutable	negative
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R03-R04/1/controller-image	FAIL	InvalidOperationException: create expected Comparison/null, got None, model=True
+TOTAL	0	1
+VARIANT	controllerClosure	nominal
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R02/R07/1/nominal	PASS
+TOTAL	1	0
+VARIANT	controllerClosure	negative
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R03-R04/1/controller-closure	FAIL	InvalidOperationException: create expected Comparison/null, got None, model=True
+TOTAL	0	1
+VARIANT	driverExecutable	nominal
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R02/R07/1/nominal	PASS
+TOTAL	1	0
+VARIANT	driverExecutable	negative
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R03-R04/1/driver-image	FAIL	InvalidOperationException: create expected Comparison/null, got None, model=True
+TOTAL	0	1
+VARIANT	driverClosure	nominal
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R02/R07/1/nominal	PASS
+TOTAL	1	0
+VARIANT	driverClosure	negative
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R03-R04/1/driver-closure	FAIL	InvalidOperationException: create expected Comparison/null, got None, model=True
+TOTAL	0	1
+VARIANT	catalog	nominal
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R02/R07/1/nominal	PASS
+TOTAL	1	0
+VARIANT	catalog	negative
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R03-R04/1/catalog	FAIL	InvalidOperationException: create expected Comparison/null, got None, model=True
+TOTAL	0	1
+VARIANT	approval	nominal
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R02/R07/1/nominal	PASS
+TOTAL	1	0
+VARIANT	approval	negative
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R03-R04/1/approval	FAIL	InvalidOperationException: create expected Comparison/null, got None, model=True
+TOTAL	0	1
+VARIANT	originalController	nominal
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R02/R07/1/nominal	PASS
+TOTAL	1	0
+VARIANT	originalController	negative
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R05/1/controller	FAIL	InvalidOperationException: create expected Comparison/null, got None, model=True
+TOTAL	0	1
+VARIANT	provenance	nominal
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R02/R07/1/nominal	PASS
+TOTAL	1	0
+VARIANT	provenance	negative
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R06/0/provenance/0	FAIL	InvalidOperationException: create expected Evidence/null, got None, model=True
+TOTAL	0	1
+VARIANT	dropPremise	nominal
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R02/R07/1/nominal	PASS
+TOTAL	1	0
+VARIANT	dropPremise	negative
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R06/3/drop/0	FAIL	InvalidOperationException: ObserveDrop expected Evidence/null, got None, snapshot=DroppedModel
+TOTAL	0	1
+VARIANT	oneUse	nominal
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R02/R07/1/nominal	PASS
+TOTAL	1	0
+VARIANT	oneUse	negative
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R07/repeated-issue-with-issue-facts	FAIL	InvalidOperationException: ObserveIssue expected Transition/null, got None, snapshot=IssuedModel
+TOTAL	0	1
+VARIANT	skipDrop	nominal
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R02/R07/1/nominal	PASS
+TOTAL	1	0
+VARIANT	skipDrop	negative
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R08/consume-before-drop-with-all-premises	FAIL	InvalidOperationException: ObserveConsume expected Transition/null, got None, snapshot=ConsumedModel
+TOTAL	0	1
+VARIANT	deadline	nominal
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R02/R07/1/nominal	PASS
+TOTAL	1	0
+VARIANT	deadline	negative
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R09/advance/0/exact-bound	FAIL	InvalidOperationException: ObserveIssue expected Expired/null, got None, snapshot=IssuedModel
+TOTAL	0	1
+VARIANT	stop	nominal
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R02/R07/1/nominal	PASS
+TOTAL	1	0
+VARIANT	stop	negative
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R09-R11/advance/stop-beats-expiry	FAIL	InvalidOperationException: ObserveIssue expected Stopped/null, got Expired, snapshot=
+TOTAL	0	1
+VARIANT	order	nominal
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R02/R07/1/nominal	PASS
+TOTAL	1	0
+VARIANT	order	negative
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R09-R11/advance/comparison-beats-evidence	FAIL	InvalidOperationException: ObserveIssue expected Comparison/null, got Evidence, snapshot=
+TOTAL	0	1
+VARIANT	retainAfterFailure	nominal
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R02/R07/1/nominal	PASS
+TOTAL	1	0
+VARIANT	retainAfterFailure	negative
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R12/R24/null-observation-clears	FAIL	InvalidOperationException: terminal retry got None/DroppedModel
+TOTAL	0	1
+VARIANT	inputAlias	nominal
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R02/R07/1/nominal	PASS
+TOTAL	1	0
+VARIANT	inputAlias	negative
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R13/all-owned-buffers	FAIL	InvalidOperationException: ObserveIssue expected IssuedModel, got Comparison/
+TOTAL	0	1
+VARIANT	outputAlias	nominal
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R02/R07/1/nominal	PASS
+TOTAL	1	0
+VARIANT	outputAlias	negative
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R13/all-owned-buffers	FAIL	InvalidOperationException: ObserveIssue expected IssuedModel, got Comparison/
+TOTAL	0	1
+VARIANT	noGate	nominal
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R02/R07/1/nominal	PASS
+TOTAL	1	0
+VARIANT	noGate	negative
+core	16a317c4f130a66c957d2d2a03195e2a14f18bcbe5f7d3ef8b31119dbd24245e
+R14/duplicate-issue-race	FAIL	InvalidOperationException: duplicate outcomes None/IssuedModel, None/IssuedModel
+TOTAL	0	1

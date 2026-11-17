@@ -1,0 +1,49 @@
+{
+  "scanner_sha256": "eef4c5583b4d66d30291d62dbe5cabcfb14178302fc987ee39fe1a219a17dcff",
+  "configurations": {
+    "debug": {
+      "exact_exit": 0,
+      "paths": 31,
+      "production": 28,
+      "test": 3,
+      "assembly_hash_identity_types": 13,
+      "matched_reproduction_inventory": true,
+      "authorized_test_references": [
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationCustodyModelCompositionTests",
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationCustodyModelLifecycleTests",
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationCustodyModelTests",
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationCustodyModelVectors"
+      ],
+      "control_exit": 1,
+      "control_errors": [
+        "Unexpected incoming model reference CustodyQualification.Control.IncomingReference::MissingInputs IL call Gagamba.Execution.Linux.M1.Bootstrap.ValidationCustodyModel::TryCreate(Gagamba.Execution.Linux.M1.Bootstrap.ValidationCustodyExpectations,Gagamba.Execution.Linux.M1.Bootstrap.ValidationCustodyEvidence,Int64,Boolean,Gagamba.Execution.Linux.M1.Bootstrap.ValidationCustodyModel&)->Gagamba.Execution.Linux.M1.Bootstrap.ValidationCustodyRefusal",
+        "Unexpected incoming model reference CustodyQualification.Control.IncomingReference::MissingInputs local Gagamba.Execution.Linux.M1.Bootstrap.ValidationCustodyModel",
+        "Unexpected incoming model reference CustodyQualification.Control.IncomingReference::MissingInputs method ()->Gagamba.Execution.Linux.M1.Bootstrap.ValidationCustodyRefusal"
+      ],
+      "control_sha256": "02ce6b6777c986e3686fbcc6e8b0ea78dd3a771c7f0f87698f2669e887495072",
+      "exact_errors": []
+    },
+    "release": {
+      "exact_exit": 0,
+      "paths": 39,
+      "production": 36,
+      "test": 3,
+      "assembly_hash_identity_types": 21,
+      "matched_reproduction_inventory": true,
+      "authorized_test_references": [
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationCustodyModelCompositionTests",
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationCustodyModelLifecycleTests",
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationCustodyModelTests",
+        "Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationCustodyModelVectors"
+      ],
+      "control_exit": 1,
+      "control_errors": [
+        "Unexpected incoming model reference CustodyQualification.Control.IncomingReference::MissingInputs IL call Gagamba.Execution.Linux.M1.Bootstrap.ValidationCustodyModel::TryCreate(Gagamba.Execution.Linux.M1.Bootstrap.ValidationCustodyExpectations,Gagamba.Execution.Linux.M1.Bootstrap.ValidationCustodyEvidence,Int64,Boolean,Gagamba.Execution.Linux.M1.Bootstrap.ValidationCustodyModel&)->Gagamba.Execution.Linux.M1.Bootstrap.ValidationCustodyRefusal",
+        "Unexpected incoming model reference CustodyQualification.Control.IncomingReference::MissingInputs local Gagamba.Execution.Linux.M1.Bootstrap.ValidationCustodyModel",
+        "Unexpected incoming model reference CustodyQualification.Control.IncomingReference::MissingInputs method ()->Gagamba.Execution.Linux.M1.Bootstrap.ValidationCustodyRefusal"
+      ],
+      "control_sha256": "ce6a358cd8129957fb2dadc57b2a935c65ce5f7d9da0506a17f6a1278f24d49d",
+      "exact_errors": []
+    }
+  }
+}

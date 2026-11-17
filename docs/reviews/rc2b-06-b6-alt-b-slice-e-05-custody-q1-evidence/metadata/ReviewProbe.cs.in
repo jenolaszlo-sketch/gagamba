@@ -1,0 +1,9 @@
+using Gagamba.Execution.Linux.M1.Bootstrap;
+
+namespace CustodyQualification.Control;
+
+internal static class IncomingReference
+{
+    internal static ValidationCustodyRefusal MissingInputs() =>
+        ValidationCustodyModel.TryCreate(null, null, 0, false, out _);
+}

@@ -1,0 +1,24 @@
+  Determining projects to restore...
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution\Gagamba.Execution.csproj (in 140 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj (in 140 ms).
+  Gagamba.Execution -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\isolation-derivative\release\bin\Gagamba.Execution\release\Gagamba.Execution.dll
+  Gagamba compilation identity validated: Gagamba.Execution.Linux.M1, Release, Gagamba.Execution.Linux.M1, DefineConstants=;GAGAMBA_PRODUCTION;TRACE;RELEASE;NET;NET10_0;NETCOREAPP;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER
+  Gagamba.Execution.Linux.M1 -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\isolation-derivative\release\bin\Gagamba.Execution.Linux.M1\release\Gagamba.Execution.Linux.M1.dll
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Release
+  MVID: 9bfe0a5f-32ed-4834-a453-45f20d2ededd
+  SHA-256: B46289A38AA0C8B148D317AD5DDA7870B87393A24A19B9EF83E310D47ECB7EB6
+  Mode: production
+  Type-name entries: 531; methods with bodies decoded: 4759; user strings: 4722
+  Seven surfaces: 0/4 hook types and 0/3 hook properties present
+  Core production types: 14/14 present
+  RESULT: PASS
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.94
+["dotnet", "build", "C:\\Users\\Laszlos\\source\\repos\\Gagamba\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj", "-c", "Release", "--artifacts-path", "C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\isolation-derivative\\release", "-p:CustomAfterMicrosoftCommonTargets=C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\IsolationProbe.targets", "--nologo", "-m:1"]
+
+EXIT 0

@@ -1,0 +1,20 @@
+["dotnet","build","C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\e4-supplement/Probe.csproj","-c","Debug","--artifacts-path","C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run/probe-exact-debug","-p:UseSharedCompilation=false","-p:WitnessSource=C:\\Users\\Laszlos\\source\\repos\\Gagamba/tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecVectors.cs","-p:Core=C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run/probe-references-debug","-p:SensitivitySource=C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run/sensitivity-debug.cs"]
+  Determining projects to restore...
+  Restored C:\Users\Laszlos\source\repos\Solo\q1-e5\run\e4-supplement\Probe.csproj (in 89 ms).
+  Probe -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\probe-exact-debug\bin\Probe\debug\Gagamba.Execution.Linux.M1.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:04.29
+BUILD EXIT 0
+56F50867AA3B01FC6F1827D2BEC64CE71430CD0FF1312498CFA26BB020DD17DD  C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecVectors.cs
+353280F0AD020591ED39B2475ED26BB3046ACB159EF80E21398AF46652E5BF69  C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Bootstrap\Gava1ContextCodec.cs
+15E2C1772E4CC0C26762851B940AEDBA45263FBF0C2178304C66AEABE9F111C4  C:\Users\Laszlos\source\repos\Solo\q1-e5\run\sensitivity-debug.cs
+095497415190C67CFF75FEE8F5C5DBCCE4B770497C32FF4BDEA9743B5E915D7F  C:\Users\Laszlos\source\repos\Solo\q1-e5\run\probe-exact-debug\bin\Probe\debug\Gagamba.Execution.Linux.M1.Tests.dll
+16A317C4F130A66C957D2D2A03195E2A14F18BCBE5F7D3EF8B31119DBD24245E  C:\Users\Laszlos\source\repos\Solo\q1-e5\run\probe-exact-debug\bin\Probe\debug\Gagamba.Execution.Linux.M1.dll
+ADDCC1A31D2A3EA801A5B6D008DCFD77C450BCD5B15EE849CBE8EED65EF72789  C:\Users\Laszlos\source\repos\Solo\q1-e5\run\probe-exact-debug\bin\Probe\debug\Gagamba.Execution.dll
+dotnet C:\Users\Laszlos\source\repos\Solo\q1-e5\run/probe-exact-debug/bin/Probe/debug/Gagamba.Execution.Linux.M1.Tests.dll
+supplemental rows passed=1945 failed=0
+PROBE EXIT 0

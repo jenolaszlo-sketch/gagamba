@@ -1,0 +1,13 @@
+  Determining projects to restore...
+  Restored C:\Users\Laszlos\source\repos\Solo\q1-e5\run\sensitivity-source\Sensitivity.csproj (in 95 ms).
+  Sensitivity -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\sensitivity-build\release\bin\Sensitivity\release\Gagamba.Execution.Linux.M1.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.89
+["dotnet", "build", "C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\sensitivity-source\\Sensitivity.csproj", "-c", "Release", "--artifacts-path", "C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\sensitivity-build\\release", "--nologo", "-p:UseSharedCompilation=false", "-p:Core=C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1\\release"]
+
+BUILD EXIT 0
+{"command": ["dotnet", "C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\sensitivity-build\\release\\bin\\Sensitivity\\release\\Gagamba.Execution.Linux.M1.Tests.dll"], "exit": 0, "probe_sha256": "3c8a42b662fc2f15b99c1d06e821175fb27079f5bfab3ecac361accab74ef60f", "actual_core_sha256": "a121b258b1168e36b63f1caf571a8a0b2e8795be9feb2f24086a8648af6ebd51"}

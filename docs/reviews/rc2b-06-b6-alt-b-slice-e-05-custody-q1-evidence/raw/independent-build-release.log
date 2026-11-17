@@ -1,0 +1,13 @@
+["build","C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\evidence/probe/Probe.csproj","-c","Release","--artifacts-path","C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run/independent-exact","--nologo","-p:Core=C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run/candidate-exact/bin/Gagamba.Execution.Linux.M1/release"]
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Probe -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\independent-exact\bin\Probe\release\Gagamba.Execution.Linux.M1.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:02.78
+BUILD EXIT 0
+["C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run/independent-exact/bin/Probe/release/Gagamba.Execution.Linux.M1.Tests.dll","C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run/B2.json","C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run/Integrated.json"]
+RUN EXIT 0; probe D16B15F66A043644C766A391A6BB6D600E1436B29C642463DC1D1668000CC24B; core A121B258B1168E36B63F1CAF571A8A0B2E8795BE9FEB2F24086A8648AF6EBD51

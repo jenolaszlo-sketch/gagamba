@@ -1,0 +1,12 @@
+  Determining projects to restore...
+  Restored C:\Users\Laszlos\source\repos\Solo\q1-e5\run\metadata-tool\Audit.csproj (in 65 ms).
+  Audit -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\metadata-build\bin\Audit\release\Audit.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:01.26
+["dotnet", "build", "C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\metadata-tool\\Audit.csproj", "-c", "Release", "--artifacts-path", "C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\metadata-build", "--nologo"]
+
+EXIT 0

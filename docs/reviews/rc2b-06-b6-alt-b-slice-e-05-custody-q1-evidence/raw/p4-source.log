@@ -1,0 +1,142 @@
+Candidate 28895d55de98eea4bc402373b653f7216e092843
+Authorization baseline 7a30d0a05a7c898c4e90cc2ca01280db166ed6f2
+
+git diff --name-status <baseline> <candidate>
+A	src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs
+A	src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs
+A	tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelCompositionTests.cs
+A	tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs
+A	tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs
+A	tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs
+
+git grep -nE 'StartOwnerPreparation\\(|TrySpawnOwner\\(|new PreparationOwnershipCoordinator\\(|IntegratedRecoveryHost.Run\\(|QualifiedRecoveryConnection.Start\\(|RecoveryConnection.Start\\(|new HeldReleasePhase\\(|new B3PreparationOwner\\(|OwnerPreparationTransaction.Run\\(' <each revision> -- src tests
+Accepted reverse-caller inventory equals the candidate, with revision prefix removed.
+src/Gagamba.Execution.Linux.M1.Owner/Program.cs:75:    : OwnerPreparationTransaction.Run(bootstrapFd, executionId, leaseGeneration);
+src/Gagamba.Execution.Linux.M1/Bootstrap/B2RetainedDomain.cs:27:            var outcome = scope.StartOwnerPreparation(request, CancellationToken.None);
+src/Gagamba.Execution.Linux.M1/Bootstrap/IntegratedB3Client.cs:67:        var recovery=RecoveryConnection.Start(config);
+src/Gagamba.Execution.Linux.M1/Bootstrap/IntegratedRecoveryHost.cs:89:                return scope.StartOwnerPreparation(request,CancellationToken.None);
+src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedB2Recovery.cs:72:            var spawn=scope.TrySpawnOwner(plan.Assembly,
+src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedRecoveryConnection.cs:13:    internal static RecoveryConnection Start(RecoveryConfiguration requested)
+src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryConnection.cs:31:    internal static RecoveryConnection Start(RecoveryConfiguration requested)
+src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryConnection.cs:33:        if(requested.Version==2) return QualifiedRecoveryConnection.Start(requested);
+src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryHost.cs:72:            return IntegratedRecoveryHost.Run(config,scope,wire,control,controllerFd,ownerPath,installation);
+src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryHost.cs:85:            var spawned = scope.TrySpawnOwner(ownerPath,
+src/Gagamba.Execution.Linux.M1/Lifecycle/M1RecoveryScope.cs:220:    internal OwnerSpawnResult TrySpawnOwner(string ownerDll, string[] arguments, int ownerSocketFd, ExperimentalRuntimePin? runtime = null, bool qualified = false, QualifiedLauncher.InstalledPlan? installedLaunch = null)
+src/Gagamba.Execution.Linux.M1/Lifecycle/M1RecoveryScope.cs:302:    internal OwnerPreparationOutcome StartOwnerPreparation(
+src/Gagamba.Execution.Linux.M1/Lifecycle/M1RecoveryScope.cs:389:        var spawned = TrySpawnOwner(
+src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerPreparationTransaction.cs:531:                var exitCode = new HeldReleasePhase(
+src/Gagamba.Execution.Linux.M1/Restricted/B3Qualification.cs:199:            var owner = new B3PreparationOwner(profile, provider, providerInstallation);
+src/Gagamba.Execution.Linux.M1/Restricted/B3Qualification.cs:426:                outcome = _scope.StartOwnerPreparation(request, CancellationToken.None);
+tests/Fixtures/B2Controller/B6IntegratedProbe.cs:92:            var spawn=scope.TrySpawnOwner(Entry,Args("owner"),pair.Child,runtime,qualified:true);Check(spawn.Ok,spawn.Error);owner=spawn.Process!;opin=spawn.PidFd;
+tests/Fixtures/B2Controller/B6TopologyProbe.cs:236:            var spawn=scope.TrySpawnOwner(ownerEntry,ownerArgs,pair.Child,runtime,qualified:true);Check(spawn.Ok,spawn.Error);
+tests/Fixtures/B2Controller/Program.cs:28:    using var connection = RecoveryConnection.Start(config);
+tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/RecoveryB2NativeTests.cs:35:        var spawn = scope.TrySpawnOwner(owner!, ["--exec", Guid.NewGuid().ToString("D"), "--lease", Guid.NewGuid().ToString("D")], childFd);
+tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/RecoveryInitializationAdmissionTests.cs:191:            refusal = Record.Exception(() => IntegratedRecoveryHost.Run(
+tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/RecoveryInitializationAdmissionTests.cs:217:            refusal = Record.Exception(() => IntegratedRecoveryHost.Run(
+tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/RecoveryInitializationAdmissionTests.cs:274:            Assert.Throws<IOException>(() => IntegratedRecoveryHost.Run(
+tests/Gagamba.Execution.Linux.M1.Tests/Installation/InstallationWireTests.cs:165:        Assert.Throws<InvalidDataException>(()=>RecoveryConnection.Start(c with{DelegatedParent="/must-not-open"}));
+tests/Gagamba.Execution.Linux.M1.Tests/Installation/QualifiedLauncherNativeTests.cs:37:        var spawn=scope.TrySpawnOwner(fixture!,["--b6-launch"],pair.Child,runtime,qualified:true);
+tests/Gagamba.Execution.Linux.M1.Tests/Lifecycle/HeldReleasePhaseConstructorTests.cs:108:            return new HeldReleasePhase(Request(identity), null!, null!, Execution, null!,
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/IntegratedBarrierTests.cs:184:        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest(null), CancellationToken.None);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/IntegratedBarrierTests.cs:230:        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest(null), CancellationToken.None);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/IntegratedBarrierTests.cs:249:        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest("after-intent"), CancellationToken.None);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/IntegratedBarrierTests.cs:274:        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest("after-registered"), CancellationToken.None);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/IntegratedBarrierTests.cs:291:        var outcome = fx.Scope.StartOwnerPreparation(request, CancellationToken.None);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/IntegratedBarrierTests.cs:325:        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest("after-copy"), CancellationToken.None);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/IntegratedBarrierTests.cs:363:        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest(barrier), CancellationToken.None);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:499:        var outcome = fx.Scope.StartOwnerPreparation(fx.Request(null, enableHeldCoordinator: true), CancellationToken.None);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:785:        var preparation = Task.Run(() => fx.Scope.StartOwnerPreparation(
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:821:            var accepted = ordinary.Scope.StartOwnerPreparation(
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:842:            preparation = Task.Run(() => fx.Scope.StartOwnerPreparation(
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:911:            var accepted = ordinary.Scope.StartOwnerPreparation(
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:927:        var held = fx.Scope.StartOwnerPreparation(fx.Request(null, enableHeldCoordinator: true), CancellationToken.None);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1008:        var outcome = fx.Scope.StartOwnerPreparation(
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1033:        var outcome = fx.Scope.StartOwnerPreparation(
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1049:        var outcome = fx.Scope.StartOwnerPreparation(
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1066:        var outcome = fx.Scope.StartOwnerPreparation(
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1084:        var outcome = fx.Scope.StartOwnerPreparation(
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1100:        var outcome = fx.Scope.StartOwnerPreparation(
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1148:        var outcome = fx.Scope.StartOwnerPreparation(fx.Request(null, enableHeldCoordinator: true), CancellationToken.None);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1193:        var outcome = fx.Scope.StartOwnerPreparation(
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1227:        var preparation = Task.Run(() => fx.Scope.StartOwnerPreparation(fx.Request(null), TestContext.Current.CancellationToken));
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1268:        var outcome = fx.Scope.StartOwnerPreparation(fx.Request(null), TestContext.Current.CancellationToken);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1307:        var outcome = fx.Scope.StartOwnerPreparation(fx.Request("after-intent"), TestContext.Current.CancellationToken);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1322:        var outcome = fx.Scope.StartOwnerPreparation(fx.Request("after-registered"), TestContext.Current.CancellationToken);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1337:        var outcome = fx.Scope.StartOwnerPreparation(fx.Request("after-registered"), CancellationToken.None);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1404:            var outcome = fx.Scope.StartOwnerPreparation(fx.Request("after-domain-retained"), CancellationToken.None);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1429:        var outcome = fx.Scope.StartOwnerPreparation(fx.Request("mid-staging"), CancellationToken.None);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1466:        var outcome = fx.Scope.StartOwnerPreparation(fx.Request("after-prepared-before-mint"), CancellationToken.None);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1502:        var outcome = fx.Scope.StartOwnerPreparation(fx.Request("after-copy"), CancellationToken.None);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1529:        var outcome = fx.Scope.StartOwnerPreparation(fx.Request("after-copy"), CancellationToken.None);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1564:            var outcome = fx.Scope.StartOwnerPreparation(fx.Request("after-copy"), CancellationToken.None);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1597:        var outcome = fx.Scope.StartOwnerPreparation(fx.Request("after-copy"), CancellationToken.None);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/NonRootQualificationTests.cs:1642:        var outcome = fx.Scope.StartOwnerPreparation(fx.Request("after-copy"), CancellationToken.None);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/OwnerDeathQualificationTests.cs:406:        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest("after-intent"), CancellationToken.None);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/OwnerDeathQualificationTests.cs:452:            var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest("after-domain-retained"), CancellationToken.None);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/OwnerDeathQualificationTests.cs:503:        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest("after-registered"), CancellationToken.None);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/OwnerDeathQualificationTests.cs:539:        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest("after-staging-accounted"), CancellationToken.None);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/OwnerDeathQualificationTests.cs:576:        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest("mid-staging"), CancellationToken.None);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/OwnerDeathQualificationTests.cs:613:        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest("mid-staging"), CancellationToken.None);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/OwnerDeathQualificationTests.cs:650:        var outcome = fx.Scope.StartOwnerPreparation(fx.OwnerRequest("after-prepared-before-mint"), CancellationToken.None);
+tests/Gagamba.Execution.Linux.M1.Tests/Recovery/PreparationOwnershipTests.cs:61:        return (new PreparationOwnershipCoordinator(journal, template), journal, storage);
+tests/Gagamba.Execution.Linux.M1.Tests/Restricted/B3PreparationOwnerTopologyTests.cs:40:            Assert.Throws<InvalidOperationException>(() => new B3PreparationOwner(
+tests/Gagamba.Execution.Linux.M1.Tests/Restricted/B3PreparationOwnerTopologyTests.cs:56:            var owner = new B3PreparationOwner(Profile(journalDirectory), new RestrictedProviderDescriptor());
+tests/Gagamba.Execution.Linux.M1.Tests/Restricted/B3PreparationOwnerTopologyTests.cs:80:            var owner = new B3PreparationOwner(Profile(journalDirectory, qualified: false, integrated: integrated),
+tests/Gagamba.Execution.Linux.M1.Tests/Restricted/B3ProviderAdmissionTests.cs:78:            var error = Assert.Throws<InvalidDataException>(() => new B3PreparationOwner(
+tests/Gagamba.Execution.Linux.M1.Tests/Restricted/B3ProviderAdmissionTests.cs:95:            var error = Assert.Throws<InvalidDataException>(() => new B3PreparationOwner(
+tests/Gagamba.Execution.Linux.M1.Tests/Restricted/B3ProviderAdmissionTests.cs:120:                var error = Assert.Throws<InvalidDataException>(() => new B3PreparationOwner(
+tests/Gagamba.Execution.Linux.M1.Tests/Restricted/B3ProviderAdmissionTests.cs:140:            var error = Assert.Throws<InvalidDataException>(() => new B3PreparationOwner(
+tests/Gagamba.Execution.Linux.M1.Tests/Restricted/B3ProviderAdmissionTests.cs:231:            using var owner = new B3PreparationOwner(
+tests/Gagamba.Execution.Linux.M1.Tests/Restricted/B3ProviderAdmissionTests.cs:261:            Assert.Throws<InvalidDataException>(() => escaped = new B3PreparationOwner(
+tests/Gagamba.Execution.Linux.M1.Tests/Restricted/B3ProviderAdmissionTests.cs:282:            var error = Assert.Throws<InvalidDataException>(() => new B3PreparationOwner(
+tests/Gagamba.Execution.Linux.M1.Tests/Restricted/B3ProviderAdmissionTests.cs:299:            Assert.Throws<InvalidOperationException>(() => new B3PreparationOwner(
+tests/Gagamba.Execution.Linux.M1.Tests/Restricted/B3RestrictedLifecycleTests.cs:291:            var outcome = Scope.StartOwnerPreparation(Request(barrier, expiresLead), CancellationToken.None);
+tests/Gagamba.Execution.Linux.M1.Tests/Restricted/B3RestrictedLifecycleTests.cs:712:        using var connection = RecoveryConnection.Start(RecoveryConfig(evidence.Path, DelegatedParent!));
+tests/Gagamba.Execution.Linux.M1.Tests/Restricted/B3RestrictedLifecycleTests.cs:750:        using var connection = RecoveryConnection.Start(RecoveryConfig(evidence.Path, delegatedParent: null));
+
+First-effect and refusal source checks follow.
+9a8ec67d3424bf1971bea04b056d78cee7c3501b src/Gagamba.Execution.Linux.M1/Bootstrap/IntegratedRecoveryHost.cs
+23: RecoveryInitializationAdmission.RequireIntegrated(config,installed,control,controllerFd);
+30: ExperimentalRuntimePin.VerifyPrivateDirectory(directory);
+49: using var journalStorage=new JournalFileStorage();
+89: return scope.StartOwnerPreparation(request,CancellationToken.None);
+b05fc43a378457b47828a3a799aadc42acf4cd53 src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryHost.cs
+59: if (config.Version==1 && config.DelegatedParent is not null && !scope.TryOpenDelegatedParent(config.DelegatedParent).Ok) return 3;
+66: var installation=config.Version==2?QualifiedRecoveryEcho.Run(config,wire,control,controllerFd):null;
+68: && !scope.TryOpenDelegatedParent(config.DelegatedParent).Ok) return 3;
+72: return IntegratedRecoveryHost.Run(config,scope,wire,control,controllerFd,ownerPath,installation);
+5147d54e9ccdcbd9e488ac25ee1c5d254ce33650 src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedRecoveryEcho.cs
+32: RecoveryInitializationAdmission.Require(selection,expected);
+c9209966a172242c4a7a74aab56137f1c015d1dd src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryConnection.cs
+33: if(requested.Version==2) return QualifiedRecoveryConnection.Start(requested);
+94d3427cd5956bfbb00fd9d2c05a8ffdf3908cfb src/Gagamba.Execution.Linux.M1/Bootstrap/IntegratedB3Client.cs
+58: // RecoveryConnection.Start can spawn any recovery or owner process.
+67: var recovery=RecoveryConnection.Start(config);
+134: // in the same critical section as the ReleaseRequest send, with no
+144: var (q10Verified,q10Reason,q10Error)=Installed.ReleaseGenerationGate.RequireBoundGenerationActive(bound);
+149: if(!_channel.TrySend(OwnerProtocolMessageType.ReleaseRequest,OwnerHeldWireCodec.EncodeReleaseRequest(request),out var error)
+a46e9efe2ad4ccde1a1a93ac10c1569415c62d2c src/Gagamba.Execution.Linux.M1/Lifecycle/M1RecoveryScope.cs
+220: internal OwnerSpawnResult TrySpawnOwner(string ownerDll, string[] arguments, int ownerSocketFd, ExperimentalRuntimePin? runtime = null, bool qualified = false, QualifiedLauncher.InstalledPlan? installedLaunch = null)
+302: internal OwnerPreparationOutcome StartOwnerPreparation(
+374: return new OwnerPreparationOutcome(false, null, null, null, $"AllocationIntent not durable: {intentWrite.Error}");
+389: var spawned = TrySpawnOwner(
+b76123fc5e9626233536625a2c52580848628ec3 src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerPreparationTransaction.cs
+53: return RunTransaction(request, channel, authority);
+56: private static int RunTransaction(OwnerPreparationSpecification request, OwnerProtocolChannel channel,
+84: // refuses here - before new JournalFileStorage, OwnershipJournal,
+92: if(!OwnerManifestAdmissionGate.TryRequire(retained, out var initialAdmissionError))
+104: using var storage = new JournalFileStorage();
+431: if(!OwnerManifestAdmissionGate.TryRequire(admitted, out var admissionError))
+531: var exitCode = new HeldReleasePhase(
+96e7baf6c9afaf0727b595bee7892888c2ea5309 src/Gagamba.Execution.Linux.M1/Restricted/B3Qualification.cs
+287: B3ProviderAdmission.Require(profile, providerInstallation);
+295: Directory.CreateDirectory(profile.JournalDirectory);
+426: outcome = _scope.StartOwnerPreparation(request, CancellationToken.None);
+a1ee79b6f5505eb8105e64068f4f9ff2c199099e src/Gagamba.Execution.Linux.M1/Lifecycle/PreparationOwnershipCoordinator.cs
+34: internal PreparationOwnershipCoordinator(OwnershipJournal journal, OwnershipSnapshot intentTemplate)
+52aac8ee5909bbebc3f5db91633ca752a858fba4 src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerAuthorityContext.cs
+86: internal sealed class Validation : OwnerAuthorityContext
+88: private Validation()
+4183cb8c5e6f7b6c778d7c9ca485a10cbb42a7c4 src/Gagamba.Runtime/RestrictedExecutionRuntime.cs
+9: public static IRestrictedExecutionProvider Create() => new UnavailableRestrictedExecutionProvider();
+New model references are confined to the six additions by source inspection.

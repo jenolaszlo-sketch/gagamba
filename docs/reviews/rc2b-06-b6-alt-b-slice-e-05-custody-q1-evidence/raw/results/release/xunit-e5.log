@@ -1,0 +1,10 @@
+xUnit.net v3 In-Process Runner v3.2.0+9e422989c1 (64-bit .NET 10.0.12)
+  Discovering: Gagamba.Execution.Linux.M1.Tests
+  Discovered:  Gagamba.Execution.Linux.M1.Tests
+  Starting:    Gagamba.Execution.Linux.M1.Tests
+  Finished:    Gagamba.Execution.Linux.M1.Tests (ID = 'c4399c244c0fd8f78bc6798bb45dc6d918b4c08f71d1ce770e805af5e34a758a')
+=== TEST EXECUTION SUMMARY ===
+   Gagamba.Execution.Linux.M1.Tests  Total: 42, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0.231s
+{"command": ["dotnet", "C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\layouts\\release\\focused\\Gagamba.Execution.Linux.M1.Tests.dll", "-noColor", "-class", "*ValidationCustodyModelTests", "-class", "*ValidationCustodyModelLifecycleTests", "-class", "*ValidationCustodyModelCompositionTests", "-xml", "C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\results\\release\\e5.xml"], "cwd": "C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\layouts\\release"}
+
+EXIT 0

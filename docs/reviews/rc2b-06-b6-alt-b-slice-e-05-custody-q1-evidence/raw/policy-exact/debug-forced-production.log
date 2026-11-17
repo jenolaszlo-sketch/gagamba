@@ -1,0 +1,14 @@
+﻿dotnet build C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj -c Debug -p:DefineConstants=GAGAMBA_PRODUCTION --artifacts-path C:\Users\Laszlos\source\repos\Solo\q1-e5\run\policy-exact\forced-debug --nologo
+  Determining projects to restore...
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution\Gagamba.Execution.csproj (in 150 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj (in 150 ms).
+  Gagamba.Execution -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\policy-exact\forced-debug\bin\Gagamba.Execution\debug\Gagamba.Execution.dll
+C:\Users\Laszlos\source\repos\Gagamba\Directory.Build.targets(25,5): error GAGAMBA003: Instrumented Debug/Test compilation must not define GAGAMBA_PRODUCTION. [C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj]
+
+Build FAILED.
+
+C:\Users\Laszlos\source\repos\Gagamba\Directory.Build.targets(25,5): error GAGAMBA003: Instrumented Debug/Test compilation must not define GAGAMBA_PRODUCTION. [C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj]
+    0 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:01.85

@@ -1,0 +1,19 @@
+dotnet build src/Gagamba.Runtime/Gagamba.Runtime.csproj -c Debug --artifacts-path C:\Users\Laszlos\source\repos\Solo\q1-e5\run\candidate-exact --nologo -m:1
+  Determining projects to restore...
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.MacOS\Gagamba.Execution.MacOS.csproj (in 143 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux\Gagamba.Execution.Linux.csproj (in 143 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Windows\Gagamba.Execution.Windows.csproj (in 143 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Runtime\Gagamba.Runtime.csproj (in 143 ms).
+  1 of 5 projects are up-to-date for restore.
+  Gagamba.Execution -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\candidate-exact\bin\Gagamba.Execution\debug\Gagamba.Execution.dll
+  Gagamba.Execution.Windows -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\candidate-exact\bin\Gagamba.Execution.Windows\debug\Gagamba.Execution.Windows.dll
+  Gagamba.Execution.Linux -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\candidate-exact\bin\Gagamba.Execution.Linux\debug\Gagamba.Execution.Linux.dll
+  Gagamba.Execution.MacOS -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\candidate-exact\bin\Gagamba.Execution.MacOS\debug\Gagamba.Execution.MacOS.dll
+  Gagamba.Runtime -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\candidate-exact\bin\Gagamba.Runtime\debug\Gagamba.Runtime.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:02.51
+EXIT 0

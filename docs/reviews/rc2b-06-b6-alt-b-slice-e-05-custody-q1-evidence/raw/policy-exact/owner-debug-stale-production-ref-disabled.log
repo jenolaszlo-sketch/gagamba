@@ -1,0 +1,26 @@
+﻿dotnet build C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1.Owner\Gagamba.Execution.Linux.M1.Owner.csproj -c Debug -p:BuildProjectReferences=false --artifacts-path C:\Users\Laszlos\source\repos\Solo\q1-e5\run\policy-exact\owner --nologo
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Gagamba compilation identity validated: Gagamba.Execution.Linux.M1.Owner, Debug, Gagamba.Execution.Linux.M1.Owner, DefineConstants=TRACE;DEBUG;NET;NET10_0;NETCOREAPP;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER
+  Gagamba.Execution.Linux.M1.Owner -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\policy-exact\owner\bin\Gagamba.Execution.Linux.M1.Owner\debug\Gagamba.Execution.Linux.M1.Owner.dll
+  RESULT: FAIL
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Release
+  MVID: e360bdb9-b954-499e-99a3-e12ed3a361ed
+  SHA-256: F180B64F2510944BCCB66B386A6BB7119C906CEDE17D92EC79FB138CC0340F84
+  Mode: instrumented
+  Type-name entries: 530; methods with bodies decoded: 4758; user strings: 4722
+  Seven surfaces: 0/4 hook types and 0/3 hook properties present
+  Core production types: 14/14 present
+    - instrumented hook types missing: Gagamba.Execution.Linux.M1.Bootstrap.Int01Qualification, Gagamba.Execution.Linux.M1.Bootstrap.Int01QualificationFault, Gagamba.Execution.Linux.M1.Preparation.BarrierDeathException, Gagamba.Execution.Linux.M1.Preparation.CopyTestHooks
+    - instrumented hook properties missing: Gagamba.Execution.Linux.M1.Bootstrap.OwnerSafetyMonitor::QualificationNativeStop, Gagamba.Execution.Linux.M1.Launch.BubblewrapAdapter::QualificationBeforeCaptureStore, Gagamba.Execution.Linux.M1.Native.JournalFileStorage::QualificationBeforeRename
+    - assembly configuration is 'Release', expected Debug or Test
+C:\Users\Laszlos\source\repos\Gagamba\Directory.Build.targets(52,5): error MSB3073: The command ""C:\Program Files\dotnet\dotnet.exe" run --project "C:\Users\Laszlos\source\repos\Gagamba\eng/VerifyProductionAssembly/VerifyProductionAssembly.csproj" -c Release --no-launch-profile -- --instrumented "C:\Users\Laszlos\source\repos\Solo\q1-e5\run\policy-exact\owner\bin\Gagamba.Execution.Linux.M1.Owner\debug\Gagamba.Execution.Linux.M1.dll"" exited with code 1. [C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1.Owner\Gagamba.Execution.Linux.M1.Owner.csproj]
+
+Build FAILED.
+
+C:\Users\Laszlos\source\repos\Gagamba\Directory.Build.targets(52,5): error MSB3073: The command ""C:\Program Files\dotnet\dotnet.exe" run --project "C:\Users\Laszlos\source\repos\Gagamba\eng/VerifyProductionAssembly/VerifyProductionAssembly.csproj" -c Release --no-launch-profile -- --instrumented "C:\Users\Laszlos\source\repos\Solo\q1-e5\run\policy-exact\owner\bin\Gagamba.Execution.Linux.M1.Owner\debug\Gagamba.Execution.Linux.M1.dll"" exited with code 1. [C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1.Owner\Gagamba.Execution.Linux.M1.Owner.csproj]
+    0 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:03.71

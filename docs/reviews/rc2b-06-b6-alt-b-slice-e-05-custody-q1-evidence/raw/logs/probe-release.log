@@ -1,0 +1,20 @@
+["dotnet","build","C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\e4-supplement/Probe.csproj","-c","Release","--artifacts-path","C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run/probe-exact-release","-p:UseSharedCompilation=false","-p:WitnessSource=C:\\Users\\Laszlos\\source\\repos\\Gagamba/tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecVectors.cs","-p:Core=C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run/probe-references-release","-p:SensitivitySource=C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run/sensitivity-release.cs"]
+  Determining projects to restore...
+  Restored C:\Users\Laszlos\source\repos\Solo\q1-e5\run\e4-supplement\Probe.csproj (in 100 ms).
+  Probe -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\probe-exact-release\bin\Probe\release\Gagamba.Execution.Linux.M1.Tests.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:04.39
+BUILD EXIT 0
+56F50867AA3B01FC6F1827D2BEC64CE71430CD0FF1312498CFA26BB020DD17DD  C:\Users\Laszlos\source\repos\Gagamba\tests\Gagamba.Execution.Linux.M1.Tests\Bootstrap\ValidationPreCodecVectors.cs
+353280F0AD020591ED39B2475ED26BB3046ACB159EF80E21398AF46652E5BF69  C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Bootstrap\Gava1ContextCodec.cs
+15E2C1772E4CC0C26762851B940AEDBA45263FBF0C2178304C66AEABE9F111C4  C:\Users\Laszlos\source\repos\Solo\q1-e5\run\sensitivity-release.cs
+53624AF75B56E06DF4BAA3D680FF8763547AF633BDBF3B9E1BCF837BDDE537E8  C:\Users\Laszlos\source\repos\Solo\q1-e5\run\probe-exact-release\bin\Probe\release\Gagamba.Execution.Linux.M1.Tests.dll
+A121B258B1168E36B63F1CAF571A8A0B2E8795BE9FEB2F24086A8648AF6EBD51  C:\Users\Laszlos\source\repos\Solo\q1-e5\run\probe-exact-release\bin\Probe\release\Gagamba.Execution.Linux.M1.dll
+0741205AD1D12F486E084C6768C86C01E5E83A1973DCE6FDA8DD4EC7DEA1BAFF  C:\Users\Laszlos\source\repos\Solo\q1-e5\run\probe-exact-release\bin\Probe\release\Gagamba.Execution.dll
+dotnet C:\Users\Laszlos\source\repos\Solo\q1-e5\run/probe-exact-release/bin/Probe/release/Gagamba.Execution.Linux.M1.Tests.dll
+supplemental rows passed=1945 failed=0
+PROBE EXIT 0

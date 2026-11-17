@@ -1,0 +1,14 @@
+﻿dotnet build C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj -c Unclassified --artifacts-path C:\Users\Laszlos\source\repos\Solo\q1-e5\run\policy-exact\unknown --nologo
+  Determining projects to restore...
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution\Gagamba.Execution.csproj (in 140 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj (in 140 ms).
+  Gagamba.Execution -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\policy-exact\unknown\bin\Gagamba.Execution\unclassified\Gagamba.Execution.dll
+C:\Users\Laszlos\source\repos\Gagamba\Directory.Build.targets(21,5): error GAGAMBA001: Trusted M1 components support only Release (production), Debug or Test (instrumented). [C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj]
+
+Build FAILED.
+
+C:\Users\Laszlos\source\repos\Gagamba\Directory.Build.targets(21,5): error GAGAMBA001: Trusted M1 components support only Release (production), Debug or Test (instrumented). [C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj]
+    0 Warning(s)
+    1 Error(s)
+
+Time Elapsed 00:00:01.46

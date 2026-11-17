@@ -1,0 +1,47 @@
+﻿dotnet publish C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1.Recovery\Gagamba.Execution.Linux.M1.Recovery.csproj -c Release --artifacts-path C:\Users\Laszlos\source\repos\Solo\q1-e5\run\policy-exact\publish-recovery --nologo
+  Determining projects to restore...
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution\Gagamba.Execution.csproj (in 184 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1\Gagamba.Execution.Linux.M1.csproj (in 184 ms).
+  Restored C:\Users\Laszlos\source\repos\Gagamba\src\Gagamba.Execution.Linux.M1.Recovery\Gagamba.Execution.Linux.M1.Recovery.csproj (in 184 ms).
+  Gagamba.Execution -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\policy-exact\publish-recovery\bin\Gagamba.Execution\release\Gagamba.Execution.dll
+  Gagamba compilation identity validated: Gagamba.Execution.Linux.M1, Release, Gagamba.Execution.Linux.M1, DefineConstants=;GAGAMBA_PRODUCTION;TRACE;RELEASE;NET;NET10_0;NETCOREAPP;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER
+  Gagamba.Execution.Linux.M1 -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\policy-exact\publish-recovery\bin\Gagamba.Execution.Linux.M1\release\Gagamba.Execution.Linux.M1.dll
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Release
+  MVID: 4b58a54c-178a-4de5-82c8-ded583fc52d5
+  SHA-256: 60D580B20E301B088BDC15AEA0A1A82BA1274F128A6018091B92EF855027FD05
+  Mode: production
+  Type-name entries: 530; methods with bodies decoded: 4758; user strings: 4722
+  Seven surfaces: 0/4 hook types and 0/3 hook properties present
+  Core production types: 14/14 present
+  RESULT: PASS
+  Gagamba compilation identity validated: Gagamba.Execution.Linux.M1.Recovery, Release, Gagamba.Execution.Linux.M1.Recovery, DefineConstants=;GAGAMBA_PRODUCTION;TRACE;RELEASE;NET;NET10_0;NETCOREAPP;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NET9_0_OR_GREATER;NET10_0_OR_GREATER;NETCOREAPP1_0_OR_GREATER;NETCOREAPP1_1_OR_GREATER;NETCOREAPP2_0_OR_GREATER;NETCOREAPP2_1_OR_GREATER;NETCOREAPP2_2_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER
+  Gagamba.Execution.Linux.M1.Recovery -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\policy-exact\publish-recovery\bin\Gagamba.Execution.Linux.M1.Recovery\release\Gagamba.Execution.Linux.M1.Recovery.dll
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Release
+  MVID: 4b58a54c-178a-4de5-82c8-ded583fc52d5
+  SHA-256: 60D580B20E301B088BDC15AEA0A1A82BA1274F128A6018091B92EF855027FD05
+  Mode: production
+  Type-name entries: 530; methods with bodies decoded: 4758; user strings: 4722
+  Seven surfaces: 0/4 hook types and 0/3 hook properties present
+  Core production types: 14/14 present
+  RESULT: PASS
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Release
+  MVID: 4b58a54c-178a-4de5-82c8-ded583fc52d5
+  SHA-256: 60D580B20E301B088BDC15AEA0A1A82BA1274F128A6018091B92EF855027FD05
+  Mode: production
+  Type-name entries: 530; methods with bodies decoded: 4758; user strings: 4722
+  Seven surfaces: 0/4 hook types and 0/3 hook properties present
+  Core production types: 14/14 present
+  RESULT: PASS
+  Gagamba.Execution.Linux.M1.Recovery -> C:\Users\Laszlos\source\repos\Solo\q1-e5\run\policy-exact\publish-recovery\publish\Gagamba.Execution.Linux.M1.Recovery\release\
+  Assembly: Gagamba.Execution.Linux.M1
+  Configuration: Release
+  MVID: 4b58a54c-178a-4de5-82c8-ded583fc52d5
+  SHA-256: 60D580B20E301B088BDC15AEA0A1A82BA1274F128A6018091B92EF855027FD05
+  Mode: production
+  Type-name entries: 530; methods with bodies decoded: 4758; user strings: 4722
+  Seven surfaces: 0/4 hook types and 0/3 hook properties present
+  Core production types: 14/14 present
+  RESULT: PASS

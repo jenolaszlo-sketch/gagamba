@@ -1,0 +1,58 @@
+{
+  "directory": "C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run",
+  "removed": true,
+  "files_removed": 7297,
+  "recorded_at": "2026-11-18T00:59:25.2360773+08:00",
+  "runner_processes": [
+    {
+      "configuration": "debug",
+      "suite": "e3",
+      "pid": 17156,
+      "present": false
+    },
+    {
+      "configuration": "debug",
+      "suite": "e4",
+      "pid": 37676,
+      "present": false
+    },
+    {
+      "configuration": "debug",
+      "suite": "e5",
+      "pid": 34324,
+      "present": false
+    },
+    {
+      "configuration": "debug",
+      "suite": "broad",
+      "pid": 30396,
+      "present": false
+    },
+    {
+      "configuration": "release",
+      "suite": "e3",
+      "pid": 26316,
+      "present": false
+    },
+    {
+      "configuration": "release",
+      "suite": "e4",
+      "pid": 35056,
+      "present": false
+    },
+    {
+      "configuration": "release",
+      "suite": "e5",
+      "pid": 11576,
+      "present": false
+    },
+    {
+      "configuration": "release",
+      "suite": "broad",
+      "pid": 25968,
+      "present": false
+    }
+  ],
+  "scope": "Candidate builds, layouts, policy/publish outputs, test and mutation harness builds, and both disposable isolation controls",
+  "source": "Canonical source was read only during qualification"
+}

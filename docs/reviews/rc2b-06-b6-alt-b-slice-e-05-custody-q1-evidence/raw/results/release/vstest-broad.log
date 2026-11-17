@@ -1,0 +1,11 @@
+VSTest version 18.7.0 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+vstest.console process failed to connect to testhost process after 15 seconds. This may occur due to machine slowness, please set environment variable VSTEST_CONNECTION_TIMEOUT to increase timeout. The process with id 25968 was still running when this message was reported.
+Results File: C:\Users\Laszlos\source\repos\Solo\q1-e5\run\results\release\broad.trx
+
+Test Run Aborted.
+{"command": ["dotnet", "vstest", "C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\layouts\\release\\tests\\release\\Gagamba.Execution.Linux.M1.Tests.dll", "/Logger:trx;LogFileName=broad.trx", "/ResultsDirectory:C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\results\\release"], "cwd": "C:\\Users\\Laszlos\\source\\repos\\Solo\\q1-e5\\run\\layouts\\release"}
+
+EXIT 1
