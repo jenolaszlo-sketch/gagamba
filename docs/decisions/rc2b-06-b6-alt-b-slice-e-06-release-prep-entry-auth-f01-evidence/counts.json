@@ -1,0 +1,1372 @@
+{
+  "starting_head": "405f2d2d45b802f48e08dab64e53e305e29efb6b",
+  "starting_tree": "3a7d80c71a5453fe31e3bd4f4256b1cdbe90c314",
+  "records": {
+    "predecessor": {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/source-identities.json",
+      "blob": "019894f1bae99d251235154a8916c77d36c62981",
+      "sha256": "1b2ea2ffdcec8e435679780d4e09323c13616dff2ebc1e5bd7af4cf6e7d93800"
+    },
+    "receipt": {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-release-prep-entry-auth-01-evidence/preflight.json",
+      "blob": "e895617eaacfc5d79b3906caca549ec850a7a8b4",
+      "sha256": "975051e2d9cb4afd6ae6289ef0c3067b99e839475ca85760a40c9e8ee4a708aa"
+    },
+    "inventory": {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-release-prep-entry-auth-01-evidence/source-identities.json",
+      "blob": "6bf6aa84e528807a3b5522112b1e0869285efc6f",
+      "sha256": "de5e2451ec9edd644f8aec6ac557eef3e0aa671bd27a2c4f3ebe197cbf6207a4"
+    },
+    "manifest": {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-release-prep-entry-auth-01-evidence/SHA256SUMS.txt",
+      "blob": "481f62bc14c0bdcbc0bdf549c3794d6f3e1cc02f",
+      "sha256": "2ce501eda0d5cb4a59e7150e11b265c7309eae8bcbfe0a9cfa2e7034fc905b5f"
+    }
+  },
+  "origin_artifacts": {
+    "release-prep-audit.py": "8f3453a2033bd66a6c782f235df02ba2795afd0bf75340fefd3dc96aa4425bab",
+    "release-prep-package.py": "dbc345b699fafcecb6010b07dc129804f6c8964a11a47c0a0a4e96daa8d3367f",
+    "release-prep-initial.json": "3b1cde8645c4e01c79a27bfb7273a963c583abe421d004677e24575d999246d2"
+  },
+  "predecessor_revision": "4dc0ee0998f0def6cb1cba304a76b3a9f59ac904",
+  "record_count": 128,
+  "distinct_paths": 128,
+  "duplicate_paths": 0,
+  "distinct_pinned_git_blobs": 128,
+  "distinct_pinned_sha256": 128,
+  "distinct_recorded_checkout_sha256": 128,
+  "path_classification": {
+    "repository instructions": 1,
+    "project or build configuration": 4,
+    "governing record or evidence": 64,
+    "evidence verifier": 2,
+    "versioned status record": 2,
+    "engineering tooling": 3,
+    "production managed source": 52
+  },
+  "membership_counts": {
+    "predecessor": {
+      "members": 93,
+      "new_paths": 93
+    },
+    "assessment_package": {
+      "members": 20,
+      "new_paths": 20
+    },
+    "explicit_sources": {
+      "members": 22,
+      "new_paths": 13
+    },
+    "local_document_links": {
+      "members": 17,
+      "new_paths": 2
+    }
+  },
+  "exact_membership": [
+    {
+      "path": "AGENTS.md",
+      "classification": "repository instructions",
+      "membership": [
+        "predecessor",
+        "explicit_sources"
+      ],
+      "pinned_blob": "fef491d881c71aa81fbb6f0bb975edf993f3b11f",
+      "pinned_sha256": "1967f67870496a4ab55803ba28c021a8d1efdf916ac0ac07ef46678321e342b7",
+      "checkout_sha256": "1967f67870496a4ab55803ba28c021a8d1efdf916ac0ac07ef46678321e342b7"
+    },
+    {
+      "path": "Directory.Build.props",
+      "classification": "project or build configuration",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "78c01a4335143c58abbafaec15308ab86e25832a",
+      "pinned_sha256": "c1d24752ea45b694febc3c898c6fc3735aeaea1e8e3405ba0b94fa5492b477e8",
+      "checkout_sha256": "b46e253889796bf09051af46faa41e48f499f262e43916d776c33af44a334c3e"
+    },
+    {
+      "path": "Directory.Build.targets",
+      "classification": "project or build configuration",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "eb1755b3530ce30d64a28ab24d6b1c12e47e7f9c",
+      "pinned_sha256": "6c1b763f561bde4f37e2fced95770bab28c3cfea0fc1b0267b31717031686fad",
+      "checkout_sha256": "16fb2860b00a35d55c7b54f44571192b1f6e6cfcb4572c2f651ddee59cb414f6"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-p4-coverage-owner-acceptance-01.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor",
+        "explicit_sources",
+        "local_document_links"
+      ],
+      "pinned_blob": "31ae1b08cb4663a6a9d9de657fd972fccb731cf2",
+      "pinned_sha256": "3bdccfdf3e24d4a00fd9f2e600cee13e3eab94014def03a349023eb2bf3e4b6e",
+      "checkout_sha256": "3bdccfdf3e24d4a00fd9f2e600cee13e3eab94014def03a349023eb2bf3e4b6e"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-entry-owner-decision-01.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "7002dcb3f04e4d69ca5d9c6cb8e9ef57f0f7c578",
+      "pinned_sha256": "573f248a41b6d0215d294b74152ab17c64478fc6ac484884dff0f001b46b84fb",
+      "checkout_sha256": "573f248a41b6d0215d294b74152ab17c64478fc6ac484884dff0f001b46b84fb"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-f01-owner-acceptance-01.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "c40d57a5d080309aaea6fa881474668c20cd7fbb",
+      "pinned_sha256": "30205d32409c097624da25cfd9ed6608f1588d79f3af96231125da06e6ad194b",
+      "checkout_sha256": "30205d32409c097624da25cfd9ed6608f1588d79f3af96231125da06e6ad194b"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-f02-arch-decision-01.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "explicit_sources"
+      ],
+      "pinned_blob": "dbe6a1ee10a0665fc94501ece39e36b7ec4951de",
+      "pinned_sha256": "18991396ca7f5cb4b33a31d512631e05e7f661d1e29f80292275abe1f1ed6859",
+      "checkout_sha256": "18991396ca7f5cb4b33a31d512631e05e7f661d1e29f80292275abe1f1ed6859"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-f02-parity-owner-acceptance-01.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "c274409330287c10a2b4e9fe92ad12349feeb3f2",
+      "pinned_sha256": "00f39ae2a1fc1675fa195c3af0ba040fdd05eed956e497f5e0c6fa5285a56107",
+      "checkout_sha256": "00f39ae2a1fc1675fa195c3af0ba040fdd05eed956e497f5e0c6fa5285a56107"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-f03-owner-acceptance-01.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "explicit_sources"
+      ],
+      "pinned_blob": "3637f22dc395e95137495c6e89db7d00b96b4f9f",
+      "pinned_sha256": "44c85e0062c42ddec6e98a74268d71f358a9435f506089aa416e6045d47fb944",
+      "checkout_sha256": "44c85e0062c42ddec6e98a74268d71f358a9435f506089aa416e6045d47fb944"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-owner-acceptance-01.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "6851869180a01056b8a0f59c5be4eb4056da624f",
+      "pinned_sha256": "27de68690cca7027d46b0692e52e5da71641e38e13c4037fd31937d08f823b93",
+      "checkout_sha256": "27de68690cca7027d46b0692e52e5da71641e38e13c4037fd31937d08f823b93"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-02-closure-owner-01.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "3388894f821a4a92aca7c2b2d79c832a0f70a450",
+      "pinned_sha256": "7e4228463b83708ffa0ce6f0ab3f98ce11b15aaee586353a3e4d8884a3ece244",
+      "checkout_sha256": "7e4228463b83708ffa0ce6f0ab3f98ce11b15aaee586353a3e4d8884a3ece244"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-02-d1.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "83fe8d2649675e00b76457885fd0169b4ae77498",
+      "pinned_sha256": "438194de12d063f2212038879b71f6f4f5c2f68526f32a19649ea49f8f47916b",
+      "checkout_sha256": "438194de12d063f2212038879b71f6f4f5c2f68526f32a19649ea49f8f47916b"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-02-p0-owner-acceptance-01.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor",
+        "local_document_links"
+      ],
+      "pinned_blob": "8dd20d11202bb4ed7fb0dd3cdf447eaa3c5e54b7",
+      "pinned_sha256": "049d9195bd2cc9b2b02515b771c4d15263a49042dc56d467d4d33a81c5ba50f5",
+      "checkout_sha256": "049d9195bd2cc9b2b02515b771c4d15263a49042dc56d467d4d33a81c5ba50f5"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-02-p1-owner-acceptance-01.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "f360932adc4909b4f26e32b6005a592618dd0912",
+      "pinned_sha256": "20a0e258dcb5b2b9f11e2710c63d81115a51e7bd437f762fa18c16a26d758994",
+      "checkout_sha256": "20a0e258dcb5b2b9f11e2710c63d81115a51e7bd437f762fa18c16a26d758994"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-02-p2-owner-acceptance-01.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "fb00cc37f1b8294d18e459154a24c3cc1d1f8dd8",
+      "pinned_sha256": "afac8adf280629ddb543bf9bc66d5418d4acdb46a259b2aba13bb49c1d9c815c",
+      "checkout_sha256": "afac8adf280629ddb543bf9bc66d5418d4acdb46a259b2aba13bb49c1d9c815c"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-owner-01-evidence/downstream-obligations.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "ec82b7c82bda628ec93efa4406e9044cf8b25127",
+      "pinned_sha256": "bba2b456e65f88a302c61c0957197a3dd4189741f49802f4830474d2e6b6cad8",
+      "checkout_sha256": "bba2b456e65f88a302c61c0957197a3dd4189741f49802f4830474d2e6b6cad8"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-owner-01-evidence/inherited-qualifications.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "5aee003b02a48e3ce095b972f8825fe2100b7da9",
+      "pinned_sha256": "74ba3ce57c4b2aae8d4b8ed0a12c75c14e645309b2cf4782153fce042fb36c50",
+      "checkout_sha256": "74ba3ce57c4b2aae8d4b8ed0a12c75c14e645309b2cf4782153fce042fb36c50"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-owner-02.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor",
+        "explicit_sources"
+      ],
+      "pinned_blob": "fb95a42fb08a901cd07f07ca3d7cf4732cf6ccc0",
+      "pinned_sha256": "987d4b16bc88200bdf27fb15d3e8f720745c456c92442c99d5dcfd60bef893c0",
+      "checkout_sha256": "987d4b16bc88200bdf27fb15d3e8f720745c456c92442c99d5dcfd60bef893c0"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-frozen-record-owner-01.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor",
+        "explicit_sources",
+        "local_document_links"
+      ],
+      "pinned_blob": "d2fea61b7db323319ee59033c8b1b12ded1ffe7d",
+      "pinned_sha256": "c7351553eb8c82837c618d6b36a3563cafa99899841fc20b07142898b641c7d8",
+      "checkout_sha256": "c7351553eb8c82837c618d6b36a3563cafa99899841fc20b07142898b641c7d8"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-entry-auth-01-evidence/implementation-specification.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "explicit_sources"
+      ],
+      "pinned_blob": "6c501fcf358da40fd297e44e6790c5e74079220d",
+      "pinned_sha256": "373ba45bcf75725e87e107194c864ef6e704bd6ecffb3d0e1a5d34a72582708a",
+      "checkout_sha256": "373ba45bcf75725e87e107194c864ef6e704bd6ecffb3d0e1a5d34a72582708a"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-entry-auth-01.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "explicit_sources"
+      ],
+      "pinned_blob": "5d93bd18eb25f67bf81a467ec3f0ddff43710c76",
+      "pinned_sha256": "e9199e28ceac94f27413a86fa5933101abed7996d6ace1f8a514b31f7e7a2d46",
+      "checkout_sha256": "e9199e28ceac94f27413a86fa5933101abed7996d6ace1f8a514b31f7e7a2d46"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-entry-owner-01-evidence/gava1-contract.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "explicit_sources"
+      ],
+      "pinned_blob": "c82f035b844738c27df55eb9fc9ef5325c9c08c6",
+      "pinned_sha256": "73c932418c4340a4f74c2b933f415258aaf22f00cf9cb99dee3cb674df290e6c",
+      "checkout_sha256": "73c932418c4340a4f74c2b933f415258aaf22f00cf9cb99dee3cb674df290e6c"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-entry-owner-01-evidence/gava1-frozen-excerpt.txt",
+      "classification": "governing record or evidence",
+      "membership": [
+        "explicit_sources"
+      ],
+      "pinned_blob": "23d6ed7d95e4dd532de7e7f3a0f3a6de665b50a1",
+      "pinned_sha256": "e6e0730c735c5984c97a46ed1c205131c5ffff6427de87bcb731f00110d568c4",
+      "checkout_sha256": "e6e0730c735c5984c97a46ed1c205131c5ffff6427de87bcb731f00110d568c4"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-owner-01.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor",
+        "explicit_sources",
+        "local_document_links"
+      ],
+      "pinned_blob": "d9c148b466db1e84a7a15526f161b2927cdd4751",
+      "pinned_sha256": "4bee068a79dbf871a9d87df288cc887b2ec781d2c294bd0057c5f208376fe242",
+      "checkout_sha256": "4bee068a79dbf871a9d87df288cc887b2ec781d2c294bd0057c5f208376fe242"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-design-owner-01-evidence/carry-forward.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "f9c0cb3c2ac4bee1cab357cdd0afbbd7ac646fa3",
+      "pinned_sha256": "0e92cdd17848201ea2894731881a8486f506ba33c87f370d242a03375b8850a2",
+      "checkout_sha256": "0e92cdd17848201ea2894731881a8486f506ba33c87f370d242a03375b8850a2"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-design-owner-01-evidence/contract.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor",
+        "explicit_sources"
+      ],
+      "pinned_blob": "121443efb9e145e2413c5a2c40f59e45a55eaa55",
+      "pinned_sha256": "8d782d55544a1fcc65a7adbe035e21ce7d7cd10d31658274b1620527b8b02a54",
+      "checkout_sha256": "8d782d55544a1fcc65a7adbe035e21ce7d7cd10d31658274b1620527b8b02a54"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-design-owner-01-evidence/launcher.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "98df570d8e3760deb4ccaf609049ec4db47a9863",
+      "pinned_sha256": "d117966a3f0c7dcf8614817ff6977a5f737dea9471448574988a02ef1c80091f",
+      "checkout_sha256": "d117966a3f0c7dcf8614817ff6977a5f737dea9471448574988a02ef1c80091f"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-design-owner-01-evidence/qualification.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "5718f975d1ba42082834acff59e7aaeb6a527d5c",
+      "pinned_sha256": "4b2aea1e56792961e5e342372ea761d937dae94615259ff50bfc9a9a154d1ad5",
+      "checkout_sha256": "4b2aea1e56792961e5e342372ea761d937dae94615259ff50bfc9a9a154d1ad5"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-design-owner-01-evidence/responsibilities.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "dc7c0d5930371a386eaeb71aff442e5a21fbdc6b",
+      "pinned_sha256": "75a7db51380168b5c724eeae15d2c003e603616d41690f5bb87c8a1eee06337a",
+      "checkout_sha256": "75a7db51380168b5c724eeae15d2c003e603616d41690f5bb87c8a1eee06337a"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01-evidence/carry-forward.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "d5aa75c866e483ad4b35b08cd604e588786c7820",
+      "pinned_sha256": "606c9927a1f9b8d5af92adac101badb9afe2e046f032acaed099054724b59a01",
+      "checkout_sha256": "606c9927a1f9b8d5af92adac101badb9afe2e046f032acaed099054724b59a01"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01-evidence/roadmap.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "8558b6d03fc0993bbc39a0e35892b95db608905b",
+      "pinned_sha256": "3a0f179e33fc48ae47880346893ab50fd9160d62dd55001b152985fde4b46369",
+      "checkout_sha256": "3a0f179e33fc48ae47880346893ab50fd9160d62dd55001b152985fde4b46369"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01-evidence/verification-and-p4.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor",
+        "local_document_links"
+      ],
+      "pinned_blob": "d1799338df840751538500137644020790a0ef2e",
+      "pinned_sha256": "8c91d7281ef24f3f05922f8469895b454d6fa6e631f21840bc1af71757191b55",
+      "checkout_sha256": "8c91d7281ef24f3f05922f8469895b454d6fa6e631f21840bc1af71757191b55"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01-evidence/verify-acceptance.py",
+      "classification": "evidence verifier",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "c62a617d4b775efe3182612e79c8243d98dd447d",
+      "pinned_sha256": "fc0deef3688d7e0cb835c1fef6577b5b8b78d7fb66f63ec4f452860a056fab89",
+      "checkout_sha256": "fc0deef3688d7e0cb835c1fef6577b5b8b78d7fb66f63ec4f452860a056fab89"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor",
+        "explicit_sources"
+      ],
+      "pinned_blob": "4d258289604b1e14b1fa7bcc9a04efa36efb6e22",
+      "pinned_sha256": "e76060e70d95e8c90161d87124afe5edbe9911c8cef372ecd997ebea4629d77c",
+      "checkout_sha256": "e76060e70d95e8c90161d87124afe5edbe9911c8cef372ecd997ebea4629d77c"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/SHA256SUMS.txt",
+      "classification": "governing record or evidence",
+      "membership": [
+        "assessment_package"
+      ],
+      "pinned_blob": "8b2f9fd62ea8bd8e6d479d4c531f1ed29bdb04ba",
+      "pinned_sha256": "0a5c7ccdc473649f6ba51131db2d5ed0b45084c587bbdaf964567c7afbab998f",
+      "checkout_sha256": "0a5c7ccdc473649f6ba51131db2d5ed0b45084c587bbdaf964567c7afbab998f"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/atomic-set.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "assessment_package",
+        "local_document_links"
+      ],
+      "pinned_blob": "2c0e79f034f02693fb770dcad0664624a5d035ef",
+      "pinned_sha256": "45d9d4c8f7aa20371cac9e42f01e726819a6b1d49f7bedd6e1011a2cae6bc717",
+      "checkout_sha256": "45d9d4c8f7aa20371cac9e42f01e726819a6b1d49f7bedd6e1011a2cae6bc717"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/carry-forward.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "assessment_package",
+        "local_document_links"
+      ],
+      "pinned_blob": "1e0d1b549b306b6a2734d9562cb42667731defd4",
+      "pinned_sha256": "3841afe76baec05a488c8a3b9005a1113e57e5ef9db7686e99b187e790459180",
+      "checkout_sha256": "3841afe76baec05a488c8a3b9005a1113e57e5ef9db7686e99b187e790459180"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/ci-commit-binding.json",
+      "classification": "governing record or evidence",
+      "membership": [
+        "assessment_package"
+      ],
+      "pinned_blob": "12115d5e0457fed646fd9ecff3543b4eeee64ef8",
+      "pinned_sha256": "06df91b0e91089596bf6629194b43e78eed5651316c754cba44b01f6c585a365",
+      "checkout_sha256": "06df91b0e91089596bf6629194b43e78eed5651316c754cba44b01f6c585a365"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/document-verification.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "assessment_package"
+      ],
+      "pinned_blob": "c874d7a3f257ac28e0e918295942a1948067c619",
+      "pinned_sha256": "1a20a0a45958220875faf1f471bd6e00bedc4794389e67e3fdaba7ad98e2d0b3",
+      "checkout_sha256": "1a20a0a45958220875faf1f471bd6e00bedc4794389e67e3fdaba7ad98e2d0b3"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/first-consumer.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "assessment_package"
+      ],
+      "pinned_blob": "642461f3c424064635a39ad3dc4e7b16a2dde46d",
+      "pinned_sha256": "2897500675cc4adb9836feb8d2bcbd7aded9dfab5874c99edab5656b9676f36f",
+      "checkout_sha256": "2897500675cc4adb9836feb8d2bcbd7aded9dfab5874c99edab5656b9676f36f"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/historical-e5-audit.json",
+      "classification": "governing record or evidence",
+      "membership": [
+        "assessment_package"
+      ],
+      "pinned_blob": "4ce55dc79573dc87158c28fe49bbd5e3de1bc656",
+      "pinned_sha256": "9d89eed9bf551e010d2a81e741fce10dc0b8ccd636c5826d56ad8cf8a8e20ba3",
+      "checkout_sha256": "9d89eed9bf551e010d2a81e741fce10dc0b8ccd636c5826d56ad8cf8a8e20ba3"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/invariants.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "assessment_package"
+      ],
+      "pinned_blob": "03d77b5098a35eee77cf64c9f377e92867d4701c",
+      "pinned_sha256": "66ad071b64b72c3ea08348dd2bc55b3ca3cfef3d2b77c192dac72f6b27beea91",
+      "checkout_sha256": "66ad071b64b72c3ea08348dd2bc55b3ca3cfef3d2b77c192dac72f6b27beea91"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/live-custody.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "assessment_package"
+      ],
+      "pinned_blob": "29a316dc8190e07a86fea5bda9a36d31b4dee93b",
+      "pinned_sha256": "9568117475a603172d1b1a8e54f2c4846af11d6ab660fe6ec1597f7c140378d4",
+      "checkout_sha256": "9568117475a603172d1b1a8e54f2c4846af11d6ab660fe6ec1597f7c140378d4"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/ordering.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "assessment_package",
+        "local_document_links"
+      ],
+      "pinned_blob": "b7044b649ea6addd76282cc94476499c0e06a693",
+      "pinned_sha256": "af3ea17bc3f1d22440319fe3409ee755672f6369ef4221ba2718de85ff32fde7",
+      "checkout_sha256": "af3ea17bc3f1d22440319fe3409ee755672f6369ef4221ba2718de85ff32fde7"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/p4.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "assessment_package",
+        "local_document_links"
+      ],
+      "pinned_blob": "6f2b6001dbd8b607cee719869a99f9df3ed68965",
+      "pinned_sha256": "f24ea7e10929f086e6498f029d2dd3537f1139f1f7ec1149b2f6147b360f93d6",
+      "checkout_sha256": "f24ea7e10929f086e6498f029d2dd3537f1139f1f7ec1149b2f6147b360f93d6"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/preflight.json",
+      "classification": "governing record or evidence",
+      "membership": [
+        "assessment_package"
+      ],
+      "pinned_blob": "c7e419a8d333f049149037ad3c992b6f3a82f6f1",
+      "pinned_sha256": "625cc6f49d66a1f709132ae29f57cb8cea382e1b3d84fa4a2b374e7a525cca48",
+      "checkout_sha256": "625cc6f49d66a1f709132ae29f57cb8cea382e1b3d84fa4a2b374e7a525cca48"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/provenance.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "assessment_package"
+      ],
+      "pinned_blob": "8071b4f16c08b2c05e7671f54eae9a33a7c0d906",
+      "pinned_sha256": "be093a5d84c58a29c76cc9cbbe10f41f35cb6b0055f04dc0d297b2ccaeafa305",
+      "checkout_sha256": "be093a5d84c58a29c76cc9cbbe10f41f35cb6b0055f04dc0d297b2ccaeafa305"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/published-ci.json",
+      "classification": "governing record or evidence",
+      "membership": [
+        "assessment_package"
+      ],
+      "pinned_blob": "68ce2e9d1822af5406e19618eee8a14936237806",
+      "pinned_sha256": "7ab447401796fb30be31b820b621dae1c5d4717194d3d67de3a413129fe48fdc",
+      "checkout_sha256": "7ab447401796fb30be31b820b621dae1c5d4717194d3d67de3a413129fe48fdc"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/release-enforcement.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "assessment_package",
+        "local_document_links"
+      ],
+      "pinned_blob": "499f0c46323f8232076c95fd94752a129b17fff9",
+      "pinned_sha256": "8876d4b8703938a2527e1be1f08f36555f9fa2b95ce5e8e843b857f2ebbb61a4",
+      "checkout_sha256": "8876d4b8703938a2527e1be1f08f36555f9fa2b95ce5e8e843b857f2ebbb61a4"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/roadmap.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "assessment_package",
+        "local_document_links"
+      ],
+      "pinned_blob": "3338cc7d7ec6b7b261d75046e85f1a4774ccef55",
+      "pinned_sha256": "fba76b16fa9d95e59c3ad3e8df659baade8a47f648f6a31d004d5d2f490df18e",
+      "checkout_sha256": "fba76b16fa9d95e59c3ad3e8df659baade8a47f648f6a31d004d5d2f490df18e"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/source-identities.json",
+      "classification": "governing record or evidence",
+      "membership": [
+        "assessment_package"
+      ],
+      "pinned_blob": "019894f1bae99d251235154a8916c77d36c62981",
+      "pinned_sha256": "1b2ea2ffdcec8e435679780d4e09323c13616dff2ebc1e5bd7af4cf6e7d93800",
+      "checkout_sha256": "1b2ea2ffdcec8e435679780d4e09323c13616dff2ebc1e5bd7af4cf6e7d93800"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/verification.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "assessment_package"
+      ],
+      "pinned_blob": "72d725ef5dc0c21fbb0d5a03963cffefa428651d",
+      "pinned_sha256": "3f4d3af1739f65d6c34487b121eb43f3230f4598d7175de02b9f8aef9a10f4df",
+      "checkout_sha256": "3f4d3af1739f65d6c34487b121eb43f3230f4598d7175de02b9f8aef9a10f4df"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/verify-assessment.py",
+      "classification": "evidence verifier",
+      "membership": [
+        "assessment_package"
+      ],
+      "pinned_blob": "6822143b73f01d797d1e395de4482a97436db1e0",
+      "pinned_sha256": "a4883cad644902fdc84c667131288b5f9c8e838f31ebaad331b2d050dc70de99",
+      "checkout_sha256": "a4883cad644902fdc84c667131288b5f9c8e838f31ebaad331b2d050dc70de99"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "assessment_package",
+        "local_document_links"
+      ],
+      "pinned_blob": "3e6961136efa0168ece18f5a6d0dbea8f5cc2f44",
+      "pinned_sha256": "b8782a20f2241ad0939ce8d0c45a74559f7f505b565961794a97a2bec0bcfa08",
+      "checkout_sha256": "b8782a20f2241ad0939ce8d0c45a74559f7f505b565961794a97a2bec0bcfa08"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-integrated-start-authority-owner-decision-01.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor",
+        "explicit_sources"
+      ],
+      "pinned_blob": "844cb149ffee442e0111210f7befae1cfe2caef0",
+      "pinned_sha256": "3465b3503ad75daa40fead701fad36d165d642568bc60c98f67c3870462b6361",
+      "checkout_sha256": "3465b3503ad75daa40fead701fad36d165d642568bc60c98f67c3870462b6361"
+    },
+    {
+      "path": "docs/evidence/rc2b-06-b6-alt-b-p4-coverage-recon-01.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "6cc68e0eb64388fb7886444360e76d00cb9d0c2f",
+      "pinned_sha256": "b3f851aa878d64315af70902d5148819066b684f7d3d3e35e1c4bc49c2ec4d0e",
+      "checkout_sha256": "b3f851aa878d64315af70902d5148819066b684f7d3d3e35e1c4bc49c2ec4d0e"
+    },
+    {
+      "path": "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "explicit_sources"
+      ],
+      "pinned_blob": "900e12cb53cdf843516cc0886e6070f141f8bea2",
+      "pinned_sha256": "3d20597f8e99530f999204022b3a4fdbfdeda6e9e9ba5d65b2859e12cf992fe1",
+      "checkout_sha256": "3d20597f8e99530f999204022b3a4fdbfdeda6e9e9ba5d65b2859e12cf992fe1"
+    },
+    {
+      "path": "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-v3-pre-frozen-record-candidate-01.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor",
+        "explicit_sources",
+        "local_document_links"
+      ],
+      "pinned_blob": "f6a71562845d2cfe0aee5495864a509c5caabe7a",
+      "pinned_sha256": "1948bab694ed37bf5c7c50524328716f3eef18d98dd1ae9971ca12100c40160e",
+      "checkout_sha256": "1948bab694ed37bf5c7c50524328716f3eef18d98dd1ae9971ca12100c40160e"
+    },
+    {
+      "path": "docs/evidence/rc2b-06-b6-alt-b-slice-e-05-custody-implementation-01-evidence/reproduction.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "local_document_links"
+      ],
+      "pinned_blob": "c3016063c1b3b55be6cb860cc6e076b5e0767836",
+      "pinned_sha256": "cda42f0265a4c2d7a0e0f4aaa1fab581d7187969daa3f92a8a00091b6368fa97",
+      "checkout_sha256": "cda42f0265a4c2d7a0e0f4aaa1fab581d7187969daa3f92a8a00091b6368fa97"
+    },
+    {
+      "path": "docs/fixture-protocol.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "b71da527225e8c3aea1663c20b55246142b6b635",
+      "pinned_sha256": "cf6c112f6e19a886dbb0085aec0ac25d8afa9acd93b5c14f2dbd80039770264e",
+      "checkout_sha256": "cf6c112f6e19a886dbb0085aec0ac25d8afa9acd93b5c14f2dbd80039770264e"
+    },
+    {
+      "path": "docs/handoff.md",
+      "classification": "versioned status record",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "10b0b740855956e6825f3f82b59ba4a446b7d34f",
+      "pinned_sha256": "f71acd8a66e5eba20cc54696bf11ef6457ab235dcc97afb08dc1c36c9eeda3ef",
+      "checkout_sha256": "8e13ca1a171ab618763134740e771f2d778c18fbeb429aa7a17abefdf2cd3c92"
+    },
+    {
+      "path": "docs/implementation-plan.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "d85d0722e4f1c9fd0417e0b9524527b30e60abf8",
+      "pinned_sha256": "c30a4b8ed35935c6796ada47894ab4d5883eae307021f22a79e111adc6f19b80",
+      "checkout_sha256": "c30a4b8ed35935c6796ada47894ab4d5883eae307021f22a79e111adc6f19b80"
+    },
+    {
+      "path": "docs/plans/rc2b-06-b6-integrated-start-authority-impl-01.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor",
+        "local_document_links"
+      ],
+      "pinned_blob": "485ad1ac76e836d2bd6eb826131a01294c9bda8c",
+      "pinned_sha256": "9b3d9774e6a1c244ccfa89e8f16a54c8678d22bdef0e0272ce1c528b8dd4f42c",
+      "checkout_sha256": "9b3d9774e6a1c244ccfa89e8f16a54c8678d22bdef0e0272ce1c528b8dd4f42c"
+    },
+    {
+      "path": "docs/remediation-evidence-standard.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "ab98eec3498089292ddd868c00506f0bb83a028f",
+      "pinned_sha256": "7947b91e3e9bd92c74e50fe02751ba23161e1ab83fb1c661067238c2689d2e03",
+      "checkout_sha256": "0478e4878b7c95d6441dcc24f6fde17f2f86baf74aab41a3298df892913b9854"
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-qe1-frozen-record-prep-01-evidence/binary-vectors.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "explicit_sources",
+        "local_document_links"
+      ],
+      "pinned_blob": "c0935d0be9c7619b386f7c5be0edd0f49e778cc9",
+      "pinned_sha256": "95b869d125c972cf1366237cb1732706665c28b29e763e4fbaa4bcc5793fb473",
+      "checkout_sha256": "95b869d125c972cf1366237cb1732706665c28b29e763e4fbaa4bcc5793fb473"
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-05-custody-q1-evidence/raw/independent-p4-source.json",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "283d31d8df2cc7b848a99c030ef0831d4aea650c",
+      "pinned_sha256": "14f65c80cf96ba72e2c58ed1835af1a1ad3776718ffb33023dbe78048d0860c0",
+      "checkout_sha256": "14f65c80cf96ba72e2c58ed1835af1a1ad3776718ffb33023dbe78048d0860c0"
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-05-custody-q1-evidence/reproduction.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "local_document_links"
+      ],
+      "pinned_blob": "c52db3d7976b01305479de9ffb6280dcc8c4c5f8",
+      "pinned_sha256": "5cc5c56ed2f38b54bb5ff9fd308fc13c9db561308d536805f1de83cedcbd451e",
+      "checkout_sha256": "5cc5c56ed2f38b54bb5ff9fd308fc13c9db561308d536805f1de83cedcbd451e"
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-entry-01.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "explicit_sources"
+      ],
+      "pinned_blob": "0c311fc84bde05d3c9e897ff51c8e44832aea987",
+      "pinned_sha256": "497dcb6924d692d4f3601c33baa3320de7036e057293d4bc4836c29e52fe99de",
+      "checkout_sha256": "497dcb6924d692d4f3601c33baa3320de7036e057293d4bc4836c29e52fe99de"
+    },
+    {
+      "path": "docs/security-model.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "79f9da7bfc2b945868ec8176d9602187d1340545",
+      "pinned_sha256": "869f173f6c489160d804e582bd9494f90542ac687cf2013beb5e2bc7d6638c38",
+      "checkout_sha256": "869f173f6c489160d804e582bd9494f90542ac687cf2013beb5e2bc7d6638c38"
+    },
+    {
+      "path": "docs/testing-and-ci.md",
+      "classification": "governing record or evidence",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "e485ba7264c49242495dbb28c28dc32ec2e9de65",
+      "pinned_sha256": "63e2f82f05cc7989b80efca9012f134cbcfe40a943694a41313d3996f530a8b6",
+      "checkout_sha256": "63e2f82f05cc7989b80efca9012f134cbcfe40a943694a41313d3996f530a8b6"
+    },
+    {
+      "path": "docs/work-queue.md",
+      "classification": "versioned status record",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "5a1fff8f2211d038df11bf591b56018ec244c667",
+      "pinned_sha256": "015c28d73a3c6bdca0d665c4426ee5662f44ab92f9ad9cf0afeac79042f741bd",
+      "checkout_sha256": "f491c4fadaf992991a4c7a5641b8191a9a4cc7ff4d5b44a9652eced5c67235a3"
+    },
+    {
+      "path": "eng/linux-m1/build-install-candidate.sh",
+      "classification": "engineering tooling",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "31a642af3d065f57a9047101183ff62736a07495",
+      "pinned_sha256": "867ee36c2559c8cf3a6b4a2d9273c5e5d8876a2dd835d6c7a1055d73fb3f68ed",
+      "checkout_sha256": "867ee36c2559c8cf3a6b4a2d9273c5e5d8876a2dd835d6c7a1055d73fb3f68ed"
+    },
+    {
+      "path": "eng/linux-m1/install_common.py",
+      "classification": "engineering tooling",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "e5c500b97faf238162d4d6141ada5c007741abad",
+      "pinned_sha256": "f28f30bbca7f74b4fdb188cee5a5fac7c87e245785c47432ee2c86e5827dc649",
+      "checkout_sha256": "f28f30bbca7f74b4fdb188cee5a5fac7c87e245785c47432ee2c86e5827dc649"
+    },
+    {
+      "path": "eng/verify-preparation.ps1",
+      "classification": "engineering tooling",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "95bcba26fa59b02c579f01435a2aaa1d83d6d760",
+      "pinned_sha256": "643ce6755caa3f510222a57e1e3180ce0c37355bfb9c2c1a126aa20ec2cbf04a",
+      "checkout_sha256": "643ce6755caa3f510222a57e1e3180ce0c37355bfb9c2c1a126aa20ec2cbf04a"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1.Owner/Program.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "c5a60e91479e191e9a29e6197f873594d91c1013",
+      "pinned_sha256": "2622e7f21c31f8ef0e6058c4ba8ddf8895f252cd4b6cec135d8b7ab2a125749b",
+      "checkout_sha256": "2622e7f21c31f8ef0e6058c4ba8ddf8895f252cd4b6cec135d8b7ab2a125749b"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1.Recovery/Program.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "113d161d77f804fdba4591f9c4d47f87223e972a",
+      "pinned_sha256": "53f7566836bb1db17e5120413c1150d5f218ad91ef1f10d33f8251014d24a8ef",
+      "checkout_sha256": "53f7566836bb1db17e5120413c1150d5f218ad91ef1f10d33f8251014d24a8ef"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/DirectPeerIdentity.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "f094b9ed7a814717b4df2ad1da84e1a68a489fc4",
+      "pinned_sha256": "9efc990d81d01641f2b89bcc913a667e8df5bdb2a2c7108e178467b3488a3e5c",
+      "checkout_sha256": "9efc990d81d01641f2b89bcc913a667e8df5bdb2a2c7108e178467b3488a3e5c"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/DirectSession.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "350f686b2c726bf3d2ebbfc4cb59d9562f54f80c",
+      "pinned_sha256": "4d55cdd389bfe1b9905e60672bcee0f1552b6a43207cce48567d195e83bb3df0",
+      "checkout_sha256": "4d55cdd389bfe1b9905e60672bcee0f1552b6a43207cce48567d195e83bb3df0"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/Gava1ContextCodec.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "2ea80a0828e51ba86b8ee216ffe4d20f4c42914b",
+      "pinned_sha256": "353280f0ad020591ed39b2475ed26bb3046acb159ef80e21398af46652e5bf69",
+      "checkout_sha256": "353280f0ad020591ed39b2475ed26bb3046acb159ef80e21398af46652e5bf69"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/Gava1ContextData.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "95f4bb23eaffd4a36fd83cc4995f7cd8ba22a3d7",
+      "pinned_sha256": "cdb1b5613f1f731e4f93d6c62640c67f94718dd7caeaeb41024e7f0f1bb4abe9",
+      "checkout_sha256": "cdb1b5613f1f731e4f93d6c62640c67f94718dd7caeaeb41024e7f0f1bb4abe9"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/IntegratedB3Client.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "94d3427cd5956bfbb00fd9d2c05a8ffdf3908cfb",
+      "pinned_sha256": "e5e4c4a2f1952e581e900391e62ffa86888b344071763c9724a4d7632acef92a",
+      "checkout_sha256": "e5e4c4a2f1952e581e900391e62ffa86888b344071763c9724a4d7632acef92a"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/IntegratedRecoveryHost.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "9a8ec67d3424bf1971bea04b056d78cee7c3501b",
+      "pinned_sha256": "fd9d37ff4c3dd128bb709979f7041e4c5182af6d08d38e7ecce4935e43815a93",
+      "checkout_sha256": "bb6bfdeb080e587caa576ae406d343d47494291a908ce63a1e0afbf40c55a7fb"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/OwnerDirectConnection.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "243608c1e3b4374a78d31d65c850ae7996d82754",
+      "pinned_sha256": "b61c85be33062726fa5defeba4fb67ac8ee2e0623c95553e6eb5daa5446ec8d2",
+      "checkout_sha256": "b61c85be33062726fa5defeba4fb67ac8ee2e0623c95553e6eb5daa5446ec8d2"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/OwnerSafetyMonitor.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "e621fe44885bfe9807ca8913cfc6605e5ded4caf",
+      "pinned_sha256": "6b1897befd9e9137d7233a685820160acb7976ac3fe259d1c821d07de7410bc0",
+      "checkout_sha256": "6b1897befd9e9137d7233a685820160acb7976ac3fe259d1c821d07de7410bc0"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedB2Owner.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "20c0a415abf99ca5cbc1a5f46f0e74957756bd61",
+      "pinned_sha256": "748e8400d44fb43e3e5f16eed55ac1dc5c52c9dbddc94e160db502b9c18d55f7",
+      "checkout_sha256": "748e8400d44fb43e3e5f16eed55ac1dc5c52c9dbddc94e160db502b9c18d55f7"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedB2Recovery.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "7ec31a9baa87806f011bc279ff37cc208b89b772",
+      "pinned_sha256": "cd190427003f33c89de722a9cc69d8aa9666e46c2aaa9c9a726e7876f7eb9f01",
+      "checkout_sha256": "cd190427003f33c89de722a9cc69d8aa9666e46c2aaa9c9a726e7876f7eb9f01"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedLauncher.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "b1b8a291da75bc913c77c2377fb41f0b53d19eae",
+      "pinned_sha256": "8cfe4a60c66ede8c6e30eaa0da7646513bf1b489d6fd461fdd1a46c6e21f9f83",
+      "checkout_sha256": "8cfe4a60c66ede8c6e30eaa0da7646513bf1b489d6fd461fdd1a46c6e21f9f83"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedOwnerPreflight.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "559ee694ce3e223f6dc86b951698ecc583286b1c",
+      "pinned_sha256": "96a179afe9a6e0e14a134c1c57ea3ec1014b41219a9c1b7d5bcd0bd7e241bda5",
+      "checkout_sha256": "96a179afe9a6e0e14a134c1c57ea3ec1014b41219a9c1b7d5bcd0bd7e241bda5"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedRecoveryConnection.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "2f6f779d6b5414c22790a7fb8a892b253e044963",
+      "pinned_sha256": "3094233b4fe9a5b53d86079bd4ae283672eafa2ce3fbc5b810ce2605f5f42ac0",
+      "checkout_sha256": "3094233b4fe9a5b53d86079bd4ae283672eafa2ce3fbc5b810ce2605f5f42ac0"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedRecoveryEcho.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "5147d54e9ccdcbd9e488ac25ee1c5d254ce33650",
+      "pinned_sha256": "be564aa4da2177a80af2f03068e245b18f73949cdb58438efa07b14ad7608163",
+      "checkout_sha256": "eb1322c3d28efb23961a0a683aec8a16a6f3b3afad09eb4968ca8f2c68136352"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryConnection.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "c9209966a172242c4a7a74aab56137f1c015d1dd",
+      "pinned_sha256": "67b34defb22abc9c29d1e270c0f267087610d34996e538877f9d6aceaa7dc0d6",
+      "checkout_sha256": "67b34defb22abc9c29d1e270c0f267087610d34996e538877f9d6aceaa7dc0d6"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryHost.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "b05fc43a378457b47828a3a799aadc42acf4cd53",
+      "pinned_sha256": "d3844a8e5917dda39a28bb03a411967c9fde7bee8d17b7cd70e7defb0bfce36e",
+      "checkout_sha256": "8dd358c6d52a70c6ffa7cc0e1f21fa0b4828639f80a022fb965ee31b2a57202b"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryInitializationAdmission.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "fbd0020e54ce98ad863d2dc51cd2df96b4084ce9",
+      "pinned_sha256": "01ebfc491a53a199848059cf8fb364ad65e421b1aad7ac71f44eae72c3d40fc1",
+      "checkout_sha256": "f0ac89e58bcccb0593842dda97d6447cf517d1de5860a586ccb05289737dd525"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryProtocol.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "f19017dccce5b83d42bb9276c6e8839d13564061",
+      "pinned_sha256": "78ba4ccd7f190e846ecfb52512d249795edf01d009f1f4034442207ea38b2c2a",
+      "checkout_sha256": "78ba4ccd7f190e846ecfb52512d249795edf01d009f1f4034442207ea38b2c2a"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "60a4f546b77ff5a11a43a51117722c129b753646",
+      "pinned_sha256": "82fec8f17b91c206e339f65d18b462539951f4c33c39074ba9deec5f82354cec",
+      "checkout_sha256": "82fec8f17b91c206e339f65d18b462539951f4c33c39074ba9deec5f82354cec"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "0884372a339d84e70d0a6c7ebfd72726996f17fa",
+      "pinned_sha256": "0fa622cd8de73bfc66b8b9dba6c7ea253c21677f942f24a9c34e6574cad12367",
+      "checkout_sha256": "0fa622cd8de73bfc66b8b9dba6c7ea253c21677f942f24a9c34e6574cad12367"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodec.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "d861210aeb3734b04e6bf9f472c12bd226253b32",
+      "pinned_sha256": "ce4c7b26ed0bfcde9f5d3dd07aaf0ca4cf78e6845737afbc3c8f2c28d5ffd359",
+      "checkout_sha256": "ce4c7b26ed0bfcde9f5d3dd07aaf0ca4cf78e6845737afbc3c8f2c28d5ffd359"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodecBinary.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "814c233d6290c111d751c73dbe65e1ec7dc0cc23",
+      "pinned_sha256": "b259857ed0fb0092744d5b52f7e0982c112f0dc848ad13cea8dbebbb6e5e9d47",
+      "checkout_sha256": "b259857ed0fb0092744d5b52f7e0982c112f0dc848ad13cea8dbebbb6e5e9d47"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodecData.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "ee8a7f00b160043dbd6bdad9b2bec945a21377a5",
+      "pinned_sha256": "4cbea3e2c7773ea0113e6578b024b7cb37825bca9b127fe37068ecf6c646b7b9",
+      "checkout_sha256": "4cbea3e2c7773ea0113e6578b024b7cb37825bca9b127fe37068ecf6c646b7b9"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/Visibility.cs",
+      "classification": "production managed source",
+      "membership": [
+        "explicit_sources"
+      ],
+      "pinned_blob": "bfd8308daa0674faeac3f06cfeb3282ea423132e",
+      "pinned_sha256": "cbfbc39bfd69c81027396b5c21d1e329ae8021af5feea8fda26036a0a87e7353",
+      "checkout_sha256": "cbfbc39bfd69c81027396b5c21d1e329ae8021af5feea8fda26036a0a87e7353"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Execution/ReleaseArbiter.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "2eaf47daad1cb38f888e450674ad2f20675a6e1f",
+      "pinned_sha256": "9272ca451b10c1a56ed488745cd7717b9379b3f07ee859ad6ecdba6c015f417a",
+      "checkout_sha256": "9272ca451b10c1a56ed488745cd7717b9379b3f07ee859ad6ecdba6c015f417a"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Execution/TransactionStateModel.cs",
+      "classification": "production managed source",
+      "membership": [
+        "explicit_sources"
+      ],
+      "pinned_blob": "8d4fb89b9a41f87b24432df74bcb0cff1513ad84",
+      "pinned_sha256": "3d2b19ff4f474f9d48466f548003f553af30dc68457d3792cb6889979af4d67a",
+      "checkout_sha256": "3d2b19ff4f474f9d48466f548003f553af30dc68457d3792cb6889979af4d67a"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj",
+      "classification": "project or build configuration",
+      "membership": [
+        "explicit_sources"
+      ],
+      "pinned_blob": "519e905cb949008064cd767987ad078f59015d61",
+      "pinned_sha256": "20b14813a57b462b77aa0ba45c68b78de279fbad10aae14cd27ff18f7b875c80",
+      "checkout_sha256": "3ec9a153ef96a666d0ad615403a0a233788525c27bf4051266adadac4ed5b8b2"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Installed/FinalAdmissionVerifier.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "fbc79e15cd75e8aefe4e0c6ee5513a857224b865",
+      "pinned_sha256": "e07455f3363318247c09cbd1b34b4e7f680f8d9ebf53dc5f2293d2ebd7f5a98b",
+      "checkout_sha256": "e07455f3363318247c09cbd1b34b4e7f680f8d9ebf53dc5f2293d2ebd7f5a98b"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Installed/InstallationIdentity.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "cb961388efe0d4ec1842f067caa3b9d01ce4a562",
+      "pinned_sha256": "460ee651b1e8b8d24943c7630c5f651f35d305db9830bbaa8b618fe2a07ad190",
+      "checkout_sha256": "460ee651b1e8b8d24943c7630c5f651f35d305db9830bbaa8b618fe2a07ad190"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Installed/InstalledFileSystem.Prepublication.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "ec30fccc90d4b87eb155b8720067388d1703e251",
+      "pinned_sha256": "c9c53f44d6ac87be2635bba88b73eefbce269bd06015962a2ef3cc214d4a5136",
+      "checkout_sha256": "c9c53f44d6ac87be2635bba88b73eefbce269bd06015962a2ef3cc214d4a5136"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Installed/InstalledFileSystem.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "7f1eed85a0861bd8da5253f550fdb265a70b96de",
+      "pinned_sha256": "65cd3648448872cadbf8832cfaef06a1c74e6c5b3f96c8a9e6a1681d0aca40b3",
+      "checkout_sha256": "65cd3648448872cadbf8832cfaef06a1c74e6c5b3f96c8a9e6a1681d0aca40b3"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Installed/InstalledPayload.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "ca3f4ef77803f5a7e2ac9888b92eb63af84568db",
+      "pinned_sha256": "8ee4f7169967e00ce19f056c422becb456d8a5d12f75d35c9743eb154e5d829b",
+      "checkout_sha256": "8ee4f7169967e00ce19f056c422becb456d8a5d12f75d35c9743eb154e5d829b"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Installed/LoadedInstallation.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "739af8d908618883db478b8c359204d60db863db",
+      "pinned_sha256": "15532bee3fb384df1b3cce8bb01a2d49144aa7fbd7e53db072c2fc29c4c65cde",
+      "checkout_sha256": "15532bee3fb384df1b3cce8bb01a2d49144aa7fbd7e53db072c2fc29c4c65cde"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Installed/PrepublicationIntegrityProjection.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "74629703f902f269c7c9c33af97594d0dca11207",
+      "pinned_sha256": "201fceb048bc5813dedc4141c91b563a8a2bb8039d26c0ebdbd31c141bd40976",
+      "checkout_sha256": "201fceb048bc5813dedc4141c91b563a8a2bb8039d26c0ebdbd31c141bd40976"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Installed/ReleaseGenerationGate.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "3bdd0bad23c5bdb4a1c052fe5355d53d1966a6cf",
+      "pinned_sha256": "1505fee70732ad0022c144248c9fcb5c6f82f76e3d98929004949c053baf95cd",
+      "checkout_sha256": "1505fee70732ad0022c144248c9fcb5c6f82f76e3d98929004949c053baf95cd"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Lifecycle/HeldReleasePhase.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "57a22c29198884a4a5b17f0dda5f340426439412",
+      "pinned_sha256": "78bbe4f758f89a8f7d5d6c50098acceeedcafa6b770e5c5c5fcb3283dd5a6cde",
+      "checkout_sha256": "78bbe4f758f89a8f7d5d6c50098acceeedcafa6b770e5c5c5fcb3283dd5a6cde"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Lifecycle/M1RecoveryScope.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "a46e9efe2ad4ccde1a1a93ac10c1569415c62d2c",
+      "pinned_sha256": "8f8ebc116217c5b57098a5bfd48a8de0b0529fbb6d0bd47e5eb3f0259bff1370",
+      "checkout_sha256": "8f8ebc116217c5b57098a5bfd48a8de0b0529fbb6d0bd47e5eb3f0259bff1370"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerAuthorityContext.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "52aac8ee5909bbebc3f5db91633ca752a858fba4",
+      "pinned_sha256": "669eb111be68e22d93246b758e3d50f0c4ab3dfeac0f8f4154745d2caf03266a",
+      "checkout_sha256": "669eb111be68e22d93246b758e3d50f0c4ab3dfeac0f8f4154745d2caf03266a"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerHeldWire.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "3b2a4653e5b616e030c8bb237030fb6b30317387",
+      "pinned_sha256": "fd01401aee03ca4e0a197212ab74736058602cf740982ec2ad36d50d94647a57",
+      "checkout_sha256": "fd01401aee03ca4e0a197212ab74736058602cf740982ec2ad36d50d94647a57"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerManifestAdmissionGate.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "77ea2c9198226a9b64f17bb4fc2ffa5271c1a27a",
+      "pinned_sha256": "4199c535c863ded323f0527698ff142578c925cfda0097b90d1158841a29464d",
+      "checkout_sha256": "4199c535c863ded323f0527698ff142578c925cfda0097b90d1158841a29464d"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerPreparationTransaction.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "b76123fc5e9626233536625a2c52580848628ec3",
+      "pinned_sha256": "779975cea145f2fd31eb11a66e7e3abdb0811de401e69751ac35d4675b63d27d",
+      "checkout_sha256": "779975cea145f2fd31eb11a66e7e3abdb0811de401e69751ac35d4675b63d27d"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerReleaseGenerationGate.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "6664afa2a1dd34a32e6a71dcc992ec6e29db0197",
+      "pinned_sha256": "b17ce18156f4233a99e2351e9fb5166fdafe06232bac0d66f4ab1ac71a73c827",
+      "checkout_sha256": "b17ce18156f4233a99e2351e9fb5166fdafe06232bac0d66f4ab1ac71a73c827"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Lifecycle/PreparationOwnershipCoordinator.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "a1ee79b6f5505eb8105e64068f4f9ff2c199099e",
+      "pinned_sha256": "386f246d651f9cdde675da4c4320f828765a54175ea67b96cf5c3e982df7f9c3",
+      "checkout_sha256": "386f246d651f9cdde675da4c4320f828765a54175ea67b96cf5c3e982df7f9c3"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Recovery/Reconciler.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "fb2e6d9180bd0eff57b33f9cf7e2c6f0cc1d88bf",
+      "pinned_sha256": "3521a4433447a3616a1f6c4b36d84863c8adfb94eed9b1dd1be5486b62d38e31",
+      "checkout_sha256": "3521a4433447a3616a1f6c4b36d84863c8adfb94eed9b1dd1be5486b62d38e31"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Restricted/B3ProviderAdmission.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "70fd05740fc971c044f4f593111cf9230719703e",
+      "pinned_sha256": "072b4d191517d2ab6a167d58834a01b7ddf9cb92cb2a69a1028e62dd8b6ef4d9",
+      "checkout_sha256": "072b4d191517d2ab6a167d58834a01b7ddf9cb92cb2a69a1028e62dd8b6ef4d9"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Restricted/B3Qualification.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "96e7baf6c9afaf0727b595bee7892888c2ea5309",
+      "pinned_sha256": "545d939eb376a28acfe276b54ff9cef7e895c50c0cfa8a8d828010588ac9ab43",
+      "checkout_sha256": "545d939eb376a28acfe276b54ff9cef7e895c50c0cfa8a8d828010588ac9ab43"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Validation/CanonicalJson.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "276581c492e155d7b24090db8967eb4179730df0",
+      "pinned_sha256": "fa1ec8452ed42edcda0a47398a56b67debb8ea44cfe61d58a910c3e8f4108147",
+      "checkout_sha256": "fa1ec8452ed42edcda0a47398a56b67debb8ea44cfe61d58a910c3e8f4108147"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Validation/DetachedEvidenceVerifier.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "2b482a7068b3eae4603a93d79454e9c69ce7b6d3",
+      "pinned_sha256": "93d16414ed4e9cc75c0e7598877bcc66536ae442106f4af3adb56553f903e930",
+      "checkout_sha256": "93d16414ed4e9cc75c0e7598877bcc66536ae442106f4af3adb56553f903e930"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Validation/FrozenContractVerifier.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "fdff96b93176058f025bb814603c0678d78b6fe6",
+      "pinned_sha256": "3f357b8df37f7d1f8009e9642aa82675f02e8797a87f94e921c7ab4b48430344",
+      "checkout_sha256": "3f357b8df37f7d1f8009e9642aa82675f02e8797a87f94e921c7ab4b48430344"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Validation/FrozenSchemaRules.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "868ddbeeaafdcb070a53c2c6f6c083a1fd4e50f6",
+      "pinned_sha256": "435fff7e8bfe1f9492f3caa72c77c986e92547707ad07b157acd1d06c0d886ba",
+      "checkout_sha256": "435fff7e8bfe1f9492f3caa72c77c986e92547707ad07b157acd1d06c0d886ba"
+    },
+    {
+      "path": "src/Gagamba.Runtime/RestrictedExecutionRuntime.cs",
+      "classification": "production managed source",
+      "membership": [
+        "predecessor"
+      ],
+      "pinned_blob": "4183cb8c5e6f7b6c778d7c9ca485a10cbb42a7c4",
+      "pinned_sha256": "1ca9139217180735aca0021350fa181af6bded3002697c0de573647010ea4cd4",
+      "checkout_sha256": "1ca9139217180735aca0021350fa181af6bded3002697c0de573647010ea4cd4"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj",
+      "classification": "project or build configuration",
+      "membership": [
+        "explicit_sources"
+      ],
+      "pinned_blob": "64f835f5b45663455f8c51fac18ce480a36fda59",
+      "pinned_sha256": "4ebe192fcabbd1fd9152e2cfcc6674800936fcdad63028d735b13418d29f2137",
+      "checkout_sha256": "c71886ee8a8442bd6896aeaa23711f6a064a89c39ed5226154994fe7beed3b37"
+    }
+  ],
+  "earlier_preflight_receipt_sha256": "04bef8c6f4ed766350f1a9326af427316018902ee75efdca5cb83f327172c27f"
+}

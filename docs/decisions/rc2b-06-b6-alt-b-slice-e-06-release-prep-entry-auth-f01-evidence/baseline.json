@@ -1,0 +1,541 @@
+{
+  "head": "405f2d2d45b802f48e08dab64e53e305e29efb6b",
+  "tree": "3a7d80c71a5453fe31e3bd4f4256b1cdbe90c314",
+  "origin": "https://github.com/jenolaszlo-sketch/gagamba.git",
+  "live_remote": "4dc0ee0998f0def6cb1cba304a76b3a9f59ac904\trefs/heads/main",
+  "worktrees": "worktree C:/Users/Laszlos/source/repos/Gagamba\nHEAD 405f2d2d45b802f48e08dab64e53e305e29efb6b\nbranch refs/heads/main",
+  "index_and_checkout": "clean tracked",
+  "stashes": [],
+  "pinned_manifests": [
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-q1-evidence/SHA256SUMS.txt",
+      "revision": "7713ec58cc7c292862c8c80d6b57dcacd3420b44",
+      "entries": 156,
+      "sha256": "9739a964e1300444e9377bdd08c1f1e952b8aaf9f2feae9129b0c510c623ece1"
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-r1-q2-evidence/SHA256SUMS.txt",
+      "revision": "4cb46a6cdbcc52b7129dbd88c4eba2e62ae73469",
+      "entries": 100,
+      "sha256": "17bf65a8ac79e41b85f34723616af4950b7df2e592da55ec59523f9f3129445b"
+    },
+    {
+      "path": "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/SHA256SUMS.txt",
+      "revision": "8be61181e804b2dfafb0797eb54c92d2f234ff86",
+      "entries": 64,
+      "sha256": "22c232f8585d99dbf9d9fde298fbe3f6924ad69fd5b4139366f0f50f845620be"
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-r2-q3-evidence/SHA256SUMS.txt",
+      "revision": "29da0ed60c18ed6364bf9366a64ab5aa3393db62",
+      "entries": 77,
+      "sha256": "2ca94c21c993e2923bdafb017775fc20143bd8d0c5174502b61d4bbf6b7af16b"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-owner-01-evidence/SHA256SUMS.txt",
+      "revision": "ffdad5d05fefb6d260c884d61c791c6d9be91df5",
+      "entries": 9,
+      "sha256": "e965570e5fe97cd617b5b3f245e2b9403c96638c95d7c43b9cd847a85b09a301"
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-r2-q4-evidence/SHA256SUMS.txt",
+      "revision": "0d64fcd199997bf3bede3b328f44aaf211048daa",
+      "entries": 132,
+      "sha256": "38d7d5eb33160e3f756639a10d3d1e1da5fe0706f673b457e28777d826bc8cc8"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-owner-02-evidence/SHA256SUMS.txt",
+      "revision": "6892ab0e235b2eaab943f218545cbe35ca95fd1b",
+      "entries": 6,
+      "sha256": "bde46f07a184c6e50b203e898e90905c82809c6f67fc57ed81449d30b40d5b76"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-entry-owner-01-evidence/SHA256SUMS.txt",
+      "revision": "dc43b4360dbe17c644118239d0fd691c639aa0cc",
+      "entries": 9,
+      "sha256": "61a50084358b13be0ac36a8c2d93e12d111a159812a416683a0acec86a653aef"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-entry-auth-01-evidence/SHA256SUMS.txt",
+      "revision": "db44b7e50c6ce449fdb6b596ad52744cf10443c0",
+      "entries": 6,
+      "sha256": "d03d78f64ec04f4fbc98c5055a3b60529b30ac9671fdeab8701d93b339e3d271"
+    },
+    {
+      "path": "docs/evidence/rc2b-06-b6-alt-b-slice-e-04-codec-implementation-01-evidence/SHA256SUMS.txt",
+      "revision": "3c16b53b288b39de3fb36964eecc8d5cccbc62b6",
+      "entries": 129,
+      "sha256": "5c25fa0cdadbc7f28481cb0bee2359ed8126aec1ca7417f68f6c4fd641485ac4"
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-04-codec-q1-evidence/SHA256SUMS.txt",
+      "revision": "34eae383d6f19b0a2f5f6ac957218c7f27eb6fa3",
+      "entries": 87,
+      "sha256": "037564575980b1bf7247e8bd858c7fe6264afa7b843d53f696063655a3c2da8a"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-owner-01-evidence/SHA256SUMS.txt",
+      "revision": "1116c66d7858e6000f0001a0abe39319e4e694be",
+      "entries": 10,
+      "sha256": "a913052189e00cb697592530bb1b87a2b222badb9d8f2f91425396ba25da238c"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-entry-owner-01-evidence/SHA256SUMS.txt",
+      "revision": "b309a9ec1a9a0f160ea0c2dd513001c3561a36d9",
+      "entries": 7,
+      "sha256": "8a37b4c4623ca2820c5731760da013c66c170c9d92fba0f7e08e6a16b694ed30"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-design-owner-01-evidence/SHA256SUMS.txt",
+      "revision": "1ff4d6e6d1f756646072790478921d9a64f15654",
+      "entries": 12,
+      "sha256": "e48f0097802d130d6b96038795aa5cc2f91e1e88c6f19e4061f2fc279275f8a1"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-entry-owner-02-evidence/SHA256SUMS.txt",
+      "revision": "02ba7ad3c81e72de885349c2bd54b0b7ab16bc12",
+      "entries": 5,
+      "sha256": "a0109ec7c34f7df8a6a528fe75314f94a49226d7a3011c5a009830180dfc6bdc"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-entry-auth-01-evidence/SHA256SUMS.txt",
+      "revision": "7a30d0a05a7c898c4e90cc2ca01280db166ed6f2",
+      "entries": 5,
+      "sha256": "1553b3ab98e32b3b73096b3ca318a88b82b9d57085759ebfc653092586a8ccdf"
+    },
+    {
+      "path": "docs/evidence/rc2b-06-b6-alt-b-slice-e-05-custody-implementation-01-evidence/SHA256SUMS.txt",
+      "revision": "0a77422c1349b99e518292d46314606b383527e4",
+      "entries": 41,
+      "sha256": "bd371b96f6cc6d0b39f36279700361a8f6e265f208f7318d4368c5ec540207fc"
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-05-custody-q1-evidence/SHA256SUMS.txt",
+      "revision": "b6631367d39531b2c5af8a1917760d7c807f8e73",
+      "entries": 189,
+      "sha256": "3e57695efbf302bf15bf50dd32f502f3b3832a7d37d93fde28e06e91a756731b"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01-evidence/SHA256SUMS.txt",
+      "revision": "4dc0ee0998f0def6cb1cba304a76b3a9f59ac904",
+      "entries": 10,
+      "sha256": "cd689e7eee4efe89774c3c54dcb07fbf03c55dc2489274e95df89bf1edb4edc0"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/SHA256SUMS.txt",
+      "revision": "22a0b7b00364cc7be333ba7dfd9c0359a7fe9f99",
+      "entries": 19,
+      "sha256": "0a5c7ccdc473649f6ba51131db2d5ed0b45084c587bbdaf964567c7afbab998f"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-release-prep-entry-auth-01-evidence/SHA256SUMS.txt",
+      "revision": "405f2d2d45b802f48e08dab64e53e305e29efb6b",
+      "entries": 8,
+      "sha256": "2ce501eda0d5cb4a59e7150e11b265c7309eae8bcbfe0a9cfa2e7034fc905b5f"
+    }
+  ],
+  "historical_untracked": [
+    {
+      "path": "-",
+      "length": 3000,
+      "sha256": "f9518e249eda3d3ea589d58b19d9f1b92eee4c0ed0bc1c69f78e1d119d46dc0b"
+    },
+    {
+      "path": "; done; grep -c M1.Tests.ReleaseArbiterTests _LAPTOP-KBD8D8JG_2026-10-18_10_10_39.trx",
+      "length": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "NEM-INDEPENDENT-REVIEW.md",
+      "length": 84062,
+      "sha256": "186d7c2c7e133ca60c4623577f2e1a57fdd5a09ae1a6d56bfb53195db318df9a"
+    },
+    {
+      "path": "VerifyProductionBuild.cs",
+      "length": 6913,
+      "sha256": "3832edac847d5e4a0171b403e6bae207d3a728ff116070f4a40a3866eafbeac7"
+    },
+    {
+      "path": "docs/reviews/rc2b-04-b4-q1f01-q1-independent-review.md",
+      "length": 16103,
+      "sha256": "8f06bcb860f3535ca9868176c217a253c707fc0cdc8a627f48d96d9934b90389"
+    },
+    {
+      "path": "docs/reviews/restricted-consumer-rc2a-01-glm-independent.md",
+      "length": 16888,
+      "sha256": "77d2404c61dbf1af76e8448b966f03482186d95fff5bf6a676a32fe6c7d8e4d0"
+    },
+    {
+      "path": "eng/__pycache__/b4-native-matrix.cpython-314.pyc",
+      "length": 23617,
+      "sha256": "f77c55106a543c07dc8e3bdb8cd204c85a672aa07b07660d98e91dbcee728517"
+    },
+    {
+      "path": "eng/__pycache__/int01-fault-matrix.cpython-314.pyc",
+      "length": 29037,
+      "sha256": "47204dc88137e52018818adc1e49bb5af252c30f6d224b8f37c248a63e4f39b7"
+    },
+    {
+      "path": "eng/__pycache__/int01-native-matrix.cpython-314.pyc",
+      "length": 30069,
+      "sha256": "8b7d950601131bf4f45acb5b1bffdb77bb8b8bcd29fb4f37e5eadd1e04aecb1f"
+    },
+    {
+      "path": "eng/__pycache__/int01_cleanup.cpython-314.pyc",
+      "length": 5642,
+      "sha256": "9c6608fdf0977e3f25d8f210f4fcf854c9497c0906fb8f299107b2a4ebd8b4e9"
+    },
+    {
+      "path": "eng/__pycache__/qualification_gate.cpython-314.pyc",
+      "length": 22329,
+      "sha256": "df51701e804be983cca837e2766d589dfc4ea0196732f3b9032261ab600bf64d"
+    },
+    {
+      "path": "eng/__pycache__/test-b3-exec-oracle.cpython-314.pyc",
+      "length": 3402,
+      "sha256": "ac9ef1d24678ae82a60fb74b8860fb55d9dc9137e2f0fb1636a4086815c2536d"
+    },
+    {
+      "path": "eng/tests/__pycache__/test_int01_cleanup.cpython-314.pyc",
+      "length": 15980,
+      "sha256": "78c6889775235facb270342117613c4e1b3873b288d4f776376d9616c60d4641"
+    },
+    {
+      "path": "eng/tests/__pycache__/test_preparation_checkout.cpython-314.pyc",
+      "length": 3706,
+      "sha256": "1f608fa7f369cf88455da9a4d6a466b69051438c135689b7c1c726736caea590"
+    },
+    {
+      "path": "eng/tests/__pycache__/test_qualification_gate.cpython-314.pyc",
+      "length": 16075,
+      "sha256": "3365f2bf7f2dbe3d1902c0074c267988c4a6cf865d5a2a4d8e83e1d9087a5189"
+    },
+    {
+      "path": "inspect-assembly.cs",
+      "length": 4325,
+      "sha256": "e578804d8f00487eff584f70476a855a175eaaf55e6dedac7377f999cceae799"
+    },
+    {
+      "path": "spikes/Gw1bLaunch.Tests/TestResults/qual-windows-full.trx",
+      "length": 4275,
+      "sha256": "3b2756460901622ecb342057dd3abcece094493fab4f4b9b02e0ae4167ec3ef9"
+    },
+    {
+      "path": "spikes/cgexec/cgexec.c",
+      "length": 1848,
+      "sha256": "102bab1305508ab162d3d333a7eb4aab25f413cdc8d5c02eb60d1081c5445337"
+    },
+    {
+      "path": "spikes/cgspawn/cgspawn.c",
+      "length": 1967,
+      "sha256": "11a8eab1d9f69f0ea82209bd99e5b0fee1c8e05cca893ee563d33d48af688312"
+    },
+    {
+      "path": "spikes/cgspawn/run-c.sh",
+      "length": 809,
+      "sha256": "67e013794c99dd4fcce1fef2db25a8617bc6a2082c7668ea3fdbf9e8128aa3f7"
+    },
+    {
+      "path": "spikes/cgspawn/run-d.sh",
+      "length": 882,
+      "sha256": "669197db42014efee8172b83fd46d38bb02125b19a4b6c487d23eb2e18ed438c"
+    },
+    {
+      "path": "spikes/cgspawn/run-f.sh",
+      "length": 1050,
+      "sha256": "3a7a347ce2e686d1082cc24be7f351feb41661c71caba321a03b8843d5eb035e"
+    },
+    {
+      "path": "spikes/cgspawn/run.sh",
+      "length": 599,
+      "sha256": "2f8878029d51f94a82b7b2040cbade183585d5ff6b84ae4bd161a42b85d0a985"
+    },
+    {
+      "path": "spikes/pspawn/pspawn.c",
+      "length": 1765,
+      "sha256": "26c6803c9e32ceaaf9b335bcea3a3590255b5052cec0b983bbd2b28058426c6e"
+    },
+    {
+      "path": "spikes/pspawn/run-k.sh",
+      "length": 1376,
+      "sha256": "2361d333a5a577653446b5c3a0a9341d842f4daaf50f6aa3b3c7b4a405b93a0e"
+    },
+    {
+      "path": "spikes/pspawn/run.sh",
+      "length": 735,
+      "sha256": "2c6287293434b916d37ae8ee2075a7b36f5252ffc23997f00e372d873a317767"
+    },
+    {
+      "path": "spikes/strace-clone.sh",
+      "length": 289,
+      "sha256": "c1968f072bfa21f2d9d5ad7265d29fd854dfb600ff2a54084f48f98615faeceb"
+    },
+    {
+      "path": "spikes/strace-grep.sh",
+      "length": 289,
+      "sha256": "8e161214200992c89332c3c73cf4b75080632341c199363baed314a19a8e9479"
+    },
+    {
+      "path": "spikes/strace-owner.sh",
+      "length": 305,
+      "sha256": "17a8452c17ed5135939c4df82d9e7c59dc74248035f945ae84d4ea106c18b75d"
+    },
+    {
+      "path": "spikes/strace-tail.sh",
+      "length": 158,
+      "sha256": "5a12cec52d8f656ba6cc0a54afbfdd5dc614aaf229884b4b3f493b94d17aa040"
+    },
+    {
+      "path": "spikes/strace-window.sh",
+      "length": 307,
+      "sha256": "dbc5ae1455e38aefc1e87162689a94a26b24b94526b1441577b569cc9f36dd77"
+    },
+    {
+      "path": "spikes/wp05-qual-probe/Program.cs",
+      "length": 4668,
+      "sha256": "1174ea63ee5c2d43fb786b2a397fd267c7aad1fa6808cf8faf2f2bdb517a24f2"
+    },
+    {
+      "path": "spikes/wp05-qual-probe/wp05-qual-probe.csproj",
+      "length": 238,
+      "sha256": "c299ec65c19b75d1f4fd4ce516c09ee667a141b87a68a37ec76169cc3f86df2c"
+    },
+    {
+      "path": "tests/Fixtures/Gagamba.Fixture.SelfTest/TestResults/qual-windows-full.trx",
+      "length": 21154,
+      "sha256": "0d7f23fdb4efe63fc111c1416ac07b4cc6832f7ef1be7740a4b28e70b20f6dca"
+    },
+    {
+      "path": "tests/Gagamba.Conformance.Tests/TestResults/qual-windows-full.trx",
+      "length": 9821,
+      "sha256": "26d090a85c43abfdc2022dcd84941f197aa8711245f39b471748ec97bc2e3e10"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/TestResults/qual-windows-full.trx",
+      "length": 901682,
+      "sha256": "cd624363cb3705163202ed66a760443cacbedfa220a7ece46c6d94670acacb3e"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/TestResults/win-m1-remediation.trx",
+      "length": 908845,
+      "sha256": "504ae5f4c94e2335619d8c7eb6e5370c935aaef68a008760a68dcd5b2e1ef6c9"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.Tests/TestResults/qual-windows-full.trx",
+      "length": 71301,
+      "sha256": "e5b59bb0d7e73f59ee984b5acf12ac0cd53bf552a504912432b173afa148f605"
+    },
+    {
+      "path": "tests/Gagamba.Execution.MacOS.Tests/TestResults/qual-windows-full.trx",
+      "length": 76878,
+      "sha256": "8768613c37dbb0c393a16c8db539442bf55e79755bef810b6c7e92f1ed105cbe"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Tests/TestResults/qual-windows-full.trx",
+      "length": 28952,
+      "sha256": "020c20fa47fe0586a63cebff60c202721b548aa81299b828b4d4e791993e6d30"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Windows.Tests/TestResults/qual-windows-full.trx",
+      "length": 44545,
+      "sha256": "a4d13d1dc1262d337921032e4a3ce2e6f1982a407275678dd028510eea41f03b"
+    },
+    {
+      "path": "tests/Gagamba.Runtime.Tests/TestResults/qual-windows-full.trx",
+      "length": 21019,
+      "sha256": "95aca0fbe3f6263209b16ca352f0a13d0b3d605188ad9f1b8330012b1d7b86d7"
+    },
+    {
+      "path": "tools/VerifyProductionBuild/Program.cs",
+      "length": 6939,
+      "sha256": "dc11a44a9e11023c9bae2fe9d0b48238ee0b625c563a5af293be125d88d42959"
+    },
+    {
+      "path": "tools/VerifyProductionBuild/VerifyProductionBuild.csproj",
+      "length": 402,
+      "sha256": "1525c416189f0cfb574ae1cb7081cd8829924187a5af4d07cc0479ac79ce170a"
+    }
+  ],
+  "verified_source_identities": 128,
+  "recorded_source_count": 93,
+  "frozen_executables": [
+    {
+      "stage": "E-3 R2",
+      "revision": "8be61181e804b2dfafb0797eb54c92d2f234ff86",
+      "tree": "1c9307845858fb25ca0a9473d53d1fd1496018fc",
+      "files": [
+        {
+          "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodec.cs",
+          "blob": "d861210aeb3734b04e6bf9f472c12bd226253b32",
+          "git_sha256": "ce4c7b26ed0bfcde9f5d3dd07aaf0ca4cf78e6845737afbc3c8f2c28d5ffd359",
+          "checkout_sha256": "ce4c7b26ed0bfcde9f5d3dd07aaf0ca4cf78e6845737afbc3c8f2c28d5ffd359"
+        },
+        {
+          "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodecBinary.cs",
+          "blob": "814c233d6290c111d751c73dbe65e1ec7dc0cc23",
+          "git_sha256": "b259857ed0fb0092744d5b52f7e0982c112f0dc848ad13cea8dbebbb6e5e9d47",
+          "checkout_sha256": "b259857ed0fb0092744d5b52f7e0982c112f0dc848ad13cea8dbebbb6e5e9d47"
+        },
+        {
+          "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodecData.cs",
+          "blob": "ee8a7f00b160043dbd6bdad9b2bec945a21377a5",
+          "git_sha256": "4cbea3e2c7773ea0113e6578b024b7cb37825bca9b127fe37068ecf6c646b7b9",
+          "checkout_sha256": "4cbea3e2c7773ea0113e6578b024b7cb37825bca9b127fe37068ecf6c646b7b9"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecBinaryTests.cs",
+          "blob": "558c702fcb26a1ae4349c950dec4b3e1bc1b0d7e",
+          "git_sha256": "31eb33fe125b4ed78619986937b06ab3c96dc732893e8e373d4144b3fb4ce9a8",
+          "checkout_sha256": "31eb33fe125b4ed78619986937b06ab3c96dc732893e8e373d4144b3fb4ce9a8"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecBootstrapTests.cs",
+          "blob": "995e67f0b734a982399d011f4c6d0a46d68fc629",
+          "git_sha256": "15f6efe47b76e0d9adae52fabdf645b31ca21425da1b0e77f68740a421ab6575",
+          "checkout_sha256": "15f6efe47b76e0d9adae52fabdf645b31ca21425da1b0e77f68740a421ab6575"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecR2Tests.cs",
+          "blob": "9fe5984e6fc98885b6f2d39b7721918d899d1f3f",
+          "git_sha256": "8cdae4d60eee6e2a7835a235aade4421e0173f4b2f89ab83a6544a9ad7e1157f",
+          "checkout_sha256": "8cdae4d60eee6e2a7835a235aade4421e0173f4b2f89ab83a6544a9ad7e1157f"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecRemediationTests.cs",
+          "blob": "c5f8c763b5002c6bee3ebd908cb96b0edc910cce",
+          "git_sha256": "248c133da31cdf320e905607e5cb483ac624ec730c216d84b62ec18e2b3dd05a",
+          "checkout_sha256": "248c133da31cdf320e905607e5cb483ac624ec730c216d84b62ec18e2b3dd05a"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecVectors.cs",
+          "blob": "4880945d6c6177351e929fde15b41babd1529298",
+          "git_sha256": "56f50867aa3b01fc6f1827d2bec64ce71430cd0ff1312498cfa26bb020dd17dd",
+          "checkout_sha256": "56f50867aa3b01fc6f1827d2bec64ce71430cd0ff1312498cfa26bb020dd17dd"
+        }
+      ]
+    },
+    {
+      "stage": "E-4",
+      "revision": "3c16b53b288b39de3fb36964eecc8d5cccbc62b6",
+      "tree": "2f30e0dc72d1565ac312c0c052ef820a03a3dea0",
+      "files": [
+        {
+          "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/Gava1ContextCodec.cs",
+          "blob": "2ea80a0828e51ba86b8ee216ffe4d20f4c42914b",
+          "git_sha256": "353280f0ad020591ed39b2475ed26bb3046acb159ef80e21398af46652e5bf69",
+          "checkout_sha256": "353280f0ad020591ed39b2475ed26bb3046acb159ef80e21398af46652e5bf69"
+        },
+        {
+          "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/Gava1ContextData.cs",
+          "blob": "95f4bb23eaffd4a36fd83cc4995f7cd8ba22a3d7",
+          "git_sha256": "cdb1b5613f1f731e4f93d6c62640c67f94718dd7caeaeb41024e7f0f1bb4abe9",
+          "checkout_sha256": "cdb1b5613f1f731e4f93d6c62640c67f94718dd7caeaeb41024e7f0f1bb4abe9"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/Gava1ContextCodecTests.cs",
+          "blob": "c58def60a40abeb7a767c9f5408b08becf94cc2e",
+          "git_sha256": "0a32a6e3b05ad8dd5a37d20d74d8b17870c15d3b9d6f031db0bdb59696c9ed82",
+          "checkout_sha256": "0a32a6e3b05ad8dd5a37d20d74d8b17870c15d3b9d6f031db0bdb59696c9ed82"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/Gava1ContextVectors.cs",
+          "blob": "19244bcb4cf2a7ff629083abea79a01444a14bce",
+          "git_sha256": "a16f818981f72c075e8d1aa74a73845cb9792e81a6dc80cc42d0329ee53db345",
+          "checkout_sha256": "a16f818981f72c075e8d1aa74a73845cb9792e81a6dc80cc42d0329ee53db345"
+        }
+      ]
+    },
+    {
+      "stage": "E-5",
+      "revision": "28895d55de98eea4bc402373b653f7216e092843",
+      "tree": "e314f2e8a1259e2263c8494bb0c8ca9f7eb27016",
+      "files": [
+        {
+          "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs",
+          "blob": "60a4f546b77ff5a11a43a51117722c129b753646",
+          "git_sha256": "82fec8f17b91c206e339f65d18b462539951f4c33c39074ba9deec5f82354cec",
+          "checkout_sha256": "82fec8f17b91c206e339f65d18b462539951f4c33c39074ba9deec5f82354cec"
+        },
+        {
+          "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs",
+          "blob": "0884372a339d84e70d0a6c7ebfd72726996f17fa",
+          "git_sha256": "0fa622cd8de73bfc66b8b9dba6c7ea253c21677f942f24a9c34e6574cad12367",
+          "checkout_sha256": "0fa622cd8de73bfc66b8b9dba6c7ea253c21677f942f24a9c34e6574cad12367"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelCompositionTests.cs",
+          "blob": "2fb103e39ab4dc562026d8a9dffba196e2574fc0",
+          "git_sha256": "004df41c3518b43440d5ff62d222dc6e6d886594390fcdbe73a9121c35821c8d",
+          "checkout_sha256": "004df41c3518b43440d5ff62d222dc6e6d886594390fcdbe73a9121c35821c8d"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs",
+          "blob": "47b5f7f8eead276ec731a0e644abd766588f2ce3",
+          "git_sha256": "e5f10d8636557b3295b6b106f64e20ef37d5bbf3e6c4debd70454f2792f4bc04",
+          "checkout_sha256": "e5f10d8636557b3295b6b106f64e20ef37d5bbf3e6c4debd70454f2792f4bc04"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs",
+          "blob": "6efa17c8d8bc8d71c935e2e8247dcfa18424b3b4",
+          "git_sha256": "40025fef5f0655edae9a525811d2de30c9b64d7506fedc2524dbf690ddbbdfd8",
+          "checkout_sha256": "40025fef5f0655edae9a525811d2de30c9b64d7506fedc2524dbf690ddbbdfd8"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs",
+          "blob": "ea55eef683d2428bb9a2193e8817ed52fe9f5a00",
+          "git_sha256": "01f0804572b6961070b0992a0ba2a75438c8984e6e9e274d2aa7d2bbd7394d82",
+          "checkout_sha256": "01f0804572b6961070b0992a0ba2a75438c8984e6e9e274d2aa7d2bbd7394d82"
+        }
+      ]
+    }
+  ],
+  "external_formula_sources": [
+    {
+      "path": "C:/Users/Laszlos/source/repos/Solo/gagamba-f02-authority-mechanism-decision-01/case-policy-and-action-contract.md",
+      "sha256": "667e6118e02b081475ce1a2c851d3bfe9b0a96fdb474a2fb0598f308e9c694f7"
+    },
+    {
+      "path": "C:/Users/Laszlos/source/repos/Solo/gagamba-f02-authority-mechanism-decision-01/recheck-input/case-policy-and-action-contract.md",
+      "sha256": "667e6118e02b081475ce1a2c851d3bfe9b0a96fdb474a2fb0598f308e9c694f7"
+    },
+    {
+      "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-integrated-start-authority-owner-decision-01\\validation-bootstrap-compatibility.md",
+      "sha256": "896532d72b39e95a5e6201f74a9c37478baebdab7c7061d0c79522eaf87732bb"
+    }
+  ],
+  "reconstructed_status_paths": [
+    "docs/PROJECT-STATUS.md",
+    "docs/handoff.md",
+    "docs/work-queue.md"
+  ],
+  "absent_authorized_paths": [
+    "src/Gagamba.Execution.Linux.M1/Validation/ValidationReleasePreparation.cs",
+    "tests/Gagamba.Execution.Linux.M1.Tests/Validation/ValidationReleasePreparationTests.cs"
+  ],
+  "authorization_delta": [
+    "M\tdocs/PROJECT-STATUS.md",
+    "A\tdocs/decisions/rc2b-06-b6-alt-b-slice-e-06-release-prep-entry-auth-01-evidence/SHA256SUMS.txt",
+    "A\tdocs/decisions/rc2b-06-b6-alt-b-slice-e-06-release-prep-entry-auth-01-evidence/carry-forward.md",
+    "A\tdocs/decisions/rc2b-06-b6-alt-b-slice-e-06-release-prep-entry-auth-01-evidence/contract.md",
+    "A\tdocs/decisions/rc2b-06-b6-alt-b-slice-e-06-release-prep-entry-auth-01-evidence/preflight.json",
+    "A\tdocs/decisions/rc2b-06-b6-alt-b-slice-e-06-release-prep-entry-auth-01-evidence/preservation.md",
+    "A\tdocs/decisions/rc2b-06-b6-alt-b-slice-e-06-release-prep-entry-auth-01-evidence/source-identities.json",
+    "A\tdocs/decisions/rc2b-06-b6-alt-b-slice-e-06-release-prep-entry-auth-01-evidence/vectors.md",
+    "A\tdocs/decisions/rc2b-06-b6-alt-b-slice-e-06-release-prep-entry-auth-01-evidence/verification.md",
+    "A\tdocs/decisions/rc2b-06-b6-alt-b-slice-e-06-release-prep-entry-auth-01.md",
+    "M\tdocs/handoff.md",
+    "M\tdocs/work-queue.md"
+  ],
+  "vectors": {
+    "R01": {
+      "length": 258,
+      "preimage": "676167616d62612d76616c69646174696f6e2d72656c656173652d763100111111111111111111111111111111111111111111111111111111111111111122222222222222222222222222222222222222222222222222222222222222223333333333333333333333333333333333333333333333333333333333333333444444444444444444444444444444444444444444444444444444444444444402000000555555555555555555555555555555556666666666666666666666666666666677777777777777777777777777777777888888888888888888888888888888889999999999999999999999999999999999999999999999999999999999999999",
+      "digest": "3737572b7b3d2ad8313d109d6d8a9d0df4b5bc7b20e43c71a0a6061e1988ce3e"
+    },
+    "mixed_guid": {
+      "length": 258,
+      "preimage": "676167616d62612d76616c69646174696f6e2d72656c656173652d763100000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f0200000033221100554477668899aabbccddeeff78563412ab90efcd0123456789abcdefefcdab892301674589abcdef0123456798badcfe54761032fedcba9876543210808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9f",
+      "digest": "d4573bb166ab7a4f73743297a4b3b2b9f2e19c73ef4fb6c36c94cf2a20fd7d90"
+    }
+  }
+}
