@@ -1,0 +1,134 @@
+from pathlib import Path
+import sys
+
+repo, run = map(Path, sys.argv[1:3])
+prior = repo / "docs/evidence/rc2b-06-b6-alt-b-slice-e-05-custody-implementation-01-evidence/procedure"
+where = run / "release-prep-scanner"
+where.mkdir(exist_ok=True)
+source = (prior / "MetadataProgram.txt").read_text(encoding="utf-8")
+
+def replace(old, new):
+    global source
+    assert source.count(old) == 1, old
+    source = source.replace(old, new)
+
+replace('string[] model = ["ValidationCustodyBinding", "ValidationCustodyExpectations", "ValidationCustodyEvidence",\n'
+        '    "ValidationCustodyFact", "ValidationCustodyEvent", "ValidationCustodyState", "ValidationCustodyRefusal",\n'
+        '    "ValidationCustodyModelSnapshot", "ValidationCustodyModel"];',
+        'string[] model = ["ValidationReleasePreparation", "ValidationReleaseProjection", "ValidationReleaseMaterial",\n'
+        '    "ValidationReleasePreparationStatus", "ValidationReleasePhase", "ValidationReleaseTopology",\n'
+        '    "ValidationReleaseOpcode", "ValidationReleaseStep"];')
+replace('const string ns = "Gagamba.Execution.Linux.M1.Bootstrap.";',
+        'const string ns = "Gagamba.Execution.Linux.M1.Validation.";\n'
+        'const string bootstrap = "Gagamba.Execution.Linux.M1.Bootstrap.";')
+replace('bool test = assembly.EndsWith(".Tests", StringComparison.Ordinal);',
+        'bool test = assembly.EndsWith(".Tests", StringComparison.Ordinal);\n'
+        '    bool fixture = assembly == "Gagamba.Execution.Linux.M1.TestFixture";\n'
+        '    bool helperTests = assembly == "Gagamba.Execution.Linux.M1.Tests";')
+replace('string[] approvedValues = [ns + "ValidationPreContext", ns + "ValidationPreTopology", ns + "Gava1Ids"];',
+        'string[] approvedValues = [];')
+replace('"Gava1ContextCodec::Decode", "Gava1ContextCodec::MatchPreBootstrap"];',
+        '"Gava1ContextCodec::Decode", "Gava1ContextCodec::MatchPreBootstrap",\n'
+        '        "ValidationCustodyModel::TryCreate", "ValidationCustodyModel::Advance"];')
+replace('string[] modelBcl = ["System.Object", "System.Guid", "System.String", "System.MemoryExtensions",\n'
+        '        "System.ReadOnlySpan", "System.Span", "System.Linq.Enumerable", "System.Array",\n'
+        '        "System.Nullable", "System.Threading.Monitor"];',
+        'string[] modelBcl = ["System.Object", "System.Guid", "System.String", "System.MemoryExtensions",\n'
+        '        "System.ReadOnlySpan", "System.Span", "System.Array", "System.Nullable", "System.UInt32",\n'
+        '        "System.Byte", "System.Int32", "System.Buffers.Binary.BinaryPrimitives",\n'
+        '        "System.Security.Cryptography.SHA256", "System.Security.Cryptography.CryptographicOperations",\n'
+        '        "System.Collections.Immutable.ImmutableArray", "System.Runtime.CompilerServices.RuntimeHelpers",\n'
+        '        "System.Collections.Generic.EqualityComparer", "System.Text.StringBuilder",\n'
+        '        "System.ValueType", "System.Type", "<PrivateImplementationDetails>"];')
+replace('if (target.StartsWith(ns + "ValidationCustodyModel::TryCreate ", StringComparison.Ordinal)) bootCalls.Add(label);',
+        'if (target.StartsWith(ns + "ValidationReleasePreparation::Prepare ", StringComparison.Ordinal)) bootCalls.Add(label);')
+replace('if (target.StartsWith(ns + "ValidationCustodyModel::Advance ", StringComparison.Ordinal)) binaryCalls.Add(label);',
+        'if (target.StartsWith(ns + "ValidationReleasePreparation::Compare ", StringComparison.Ordinal)) binaryCalls.Add(label);')
+replace('} else if (inside && !IsModel(target.Split("::", 2)[0]) &&',
+        '} else if (inside && !IsModel(target.Split("::", 2)[0]) &&\n'
+        '                            target != "Byte[]" && !model.Any(n => target == ns + n + "[]") &&')
+replace('if (inside && target.Contains("ValidationCustodyModelSnapshot::.ctor", StringComparison.Ordinal))',
+        'if (target.Contains("ValidationReleaseMaterial::.ctor", StringComparison.Ordinal))')
+replace('if (!test && (old.StartsWith("Gava1ContextCodec::", StringComparison.Ordinal) ||\n'
+        '                                    old.StartsWith("ValidationPreCodec", StringComparison.Ordinal)) &&\n'
+        '                                    !name.StartsWith(ns + "ValidationPreCodec", StringComparison.Ordinal) &&\n'
+        '                                    name != ns + "Gava1ContextCodec")',
+        'if (!test && (old.StartsWith("Gava1ContextCodec::", StringComparison.Ordinal) ||\n'
+        '                                    old.StartsWith("ValidationPreCodec", StringComparison.Ordinal) ||\n'
+        '                                    old.StartsWith("ValidationCustodyModel::", StringComparison.Ordinal)) &&\n'
+        '                                    !name.StartsWith(bootstrap + "ValidationPreCodec", StringComparison.Ordinal) &&\n'
+        '                                    name != bootstrap + "Gava1ContextCodec" &&\n'
+        '                                    name != bootstrap + "ValidationCustodyModel")')
+replace('    var typeRefs = md.TypeReferences.Select(h => Name(h)).Where(IsModel).ToArray();',
+        '''    var typeRefs = md.TypeReferences.Select(h => Name(h)).Where(IsModel).ToArray();
+    var memberRefs = md.MemberReferences.Select(h => Name(h)).Where(ContainsModel).ToArray();
+    var typedTokens = Enumerable.Range(1, md.GetTableRowCount(TableIndex.TypeSpec))
+        .Select(i => Name(MetadataTokens.TypeSpecificationHandle(i))).Where(ContainsModel).ToArray();
+    var methodTokens = Enumerable.Range(1, md.GetTableRowCount(TableIndex.MethodSpec))
+        .Select(i => Name(MetadataTokens.MethodSpecificationHandle(i))).Where(ContainsModel).ToArray();
+    // Closed signatures from inside the helper are emitted in the core's shared metadata tables.
+    // The use-site scan above rejects them in non-helper methods, fields and signatures.
+    bool OwnedGeneric(string t) => (core || fixture) && (t == ns + "ValidationReleaseStep[]" ||
+        t.StartsWith("System.Nullable"+(char)96+"1<", StringComparison.Ordinal) ||
+        t.StartsWith("System.IEquatable"+(char)96+"1<", StringComparison.Ordinal) ||
+        t.StartsWith("System.Collections.Generic.EqualityComparer"+(char)96+"1<", StringComparison.Ordinal));
+    var attribute = definition.GetCustomAttributes().Select(h => md.GetCustomAttribute(h))
+        .FirstOrDefault(a => Name(a.Constructor).StartsWith("System.Reflection.AssemblyConfigurationAttribute::",
+            StringComparison.Ordinal));
+    string? configuration = null;
+    if (!attribute.Value.IsNil)
+    {
+        var reader = md.GetBlobReader(attribute.Value);
+        if (reader.ReadUInt16() == 1)
+            configuration = reader.ReadSerializedString();
+    }''')
+replace('&& namedResources.Length == 0 && (!core || modelTypes.Count >= model.Length);',
+        '&& memberRefs.All(t => OwnedGeneric(t)) && typedTokens.All(t => OwnedGeneric(t)) && methodTokens.Length == 0\n'
+        '          && namedResources.Length == 0 && (!(core || fixture) || modelTypes.Count >= model.Length);')
+replace('"Gagamba.Execution.Linux.M1.Tests.Bootstrap.ValidationCustodyModel",',
+        '"Gagamba.Execution.Linux.M1.Tests.Validation.ValidationReleasePreparationTests",')
+replace('modelInitializers.Count == 0 && snapshotConstructors.All(label =>\n'
+        '            label == ns + "ValidationCustodyModel::Advance");',
+        'modelInitializers.Count == 0 && snapshotConstructors.All(label =>\n'
+        '            label == ns + "ValidationReleasePreparation::Publish");')
+replace('file, assembly, moduleId, sha256', 'file, assembly, moduleId, configuration, fixture, sha256')
+replace('moduleInitializers, scope, typeRefs, modelTypes, visibility,',
+        'moduleInitializers, scope, typeRefs, memberRefs, typedTokens, methodTokens, modelTypes, visibility,')
+replace('outbound = outbound.Distinct(),', 'outbound = outbound.Distinct(),')
+replace('bool pass = test ? bootCalls.Count > 0 && binaryCalls.Count > 0',
+        'bool pass = helperTests ? bootCalls.Count > 0 && binaryCalls.Count > 0')
+replace('bool unexpectedTestCaller = test && hits.Any(hit =>',
+        'bool unexpectedTestCaller = helperTests && hits.Any(hit =>')
+replace('    var moduleId = md.GetGuid(module.Mvid);',
+        '    var moduleId = md.GetGuid(module.Mvid);\n'
+        '    var entry = pe.PEHeaders.CorHeader!.EntryPointTokenOrRelativeVirtualAddress;\n'
+        '    var entryPoint = entry > 0 && (pe.PEHeaders.CorHeader!.Flags & CorFlags.NativeEntryPoint) == 0\n'
+        '        ? Name(MetadataTokens.EntityHandle(entry)) : null;')
+replace('file, assembly, moduleId, configuration, fixture, sha256',
+        'file, assembly, moduleId, configuration, fixture, entryPoint, sha256')
+# Eliminate time spent repeatedly compiling a regular expression for every metadata token.
+replace('bool ContainsModel(string types) => model.Any(n => System.Text.RegularExpressions.Regex.IsMatch(types,\n'
+        '    System.Text.RegularExpressions.Regex.Escape(ns + n) + @"(?![A-Za-z0-9_])"));',
+        'var typePattern = new System.Text.RegularExpressions.Regex("(?:" + string.Join("|", model.Select(n =>\n'
+        '    System.Text.RegularExpressions.Regex.Escape(ns + n))) + @")(?![A-Za-z0-9_])",\n'
+        '    System.Text.RegularExpressions.RegexOptions.Compiled);\n'
+        'bool ContainsModel(string types) => typePattern.IsMatch(types);')
+
+(where / "Program.cs").write_text(source, encoding="utf-8", newline="\n")
+(where / "Audit.csproj").write_bytes((prior / "MetadataProject.txt").read_bytes())
+target=(run / "IsolationReference.cs").as_posix()
+(run / "IsolationProbe.targets").write_text(
+    f"""<Project>
+  <ItemGroup Condition="'$(MSBuildProjectName)' == 'Gagamba.Execution.Linux.M1'">
+    <Compile Include="{target}" />
+  </ItemGroup>
+</Project>
+""", encoding="utf-8")
+(run / "IsolationReference.cs").write_text("""using Gagamba.Execution.Linux.M1.Validation;
+namespace ProducerIsolationControl;
+internal static class ForbiddenCaller
+{
+    internal static ValidationReleasePreparationStatus Probe() =>
+        ValidationReleasePreparation.Prepare(null, null, out _);
+}
+""", encoding="utf-8")

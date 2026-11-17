@@ -1,0 +1,19 @@
+{
+  "commit": "53ffe7a21408a7e9674cf50b7098a26887c070b5",
+  "tree": "c5e58a742408783545ae667c0a3506c1dfd3af34",
+  "parent": "7d298ddd9d83e555a5c16b6c0cab8f36e46b8822",
+  "files": [
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Validation/ValidationReleasePreparation.cs",
+      "blob": "d9ba07beab31d6b1581bbd0c0222531c0226f2cf",
+      "checkout_sha256": "bb69acb2c00cbae7467e9ac9893bb240584fdfef1c9df6f5d87b7a79f5a3ad54",
+      "git_sha256": "bb69acb2c00cbae7467e9ac9893bb240584fdfef1c9df6f5d87b7a79f5a3ad54"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/Validation/ValidationReleasePreparationTests.cs",
+      "blob": "36d01a8a8711b9e8483e2b21d3c1643af5c63fc2",
+      "checkout_sha256": "63c69606409cf12fc338b3414fd768dbbba17ac68e16032d660a319f57bce6e5",
+      "git_sha256": "63c69606409cf12fc338b3414fd768dbbba17ac68e16032d660a319f57bce6e5"
+    }
+  ]
+}

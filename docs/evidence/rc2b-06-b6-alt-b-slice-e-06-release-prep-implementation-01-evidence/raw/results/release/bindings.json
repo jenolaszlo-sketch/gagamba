@@ -1,0 +1,32 @@
+[
+  {
+    "path": "C:\\Users\\Laszlos\\.codex\\visualizations\\2026\\11\\17\\01a1eb60-60ea-7a32-98ab-2e9e0b4708db\\layouts\\release\\focused\\Gagamba.Execution.Linux.M1.dll",
+    "reference": "C:\\Users\\Laszlos\\.codex\\visualizations\\2026\\11\\17\\01a1eb60-60ea-7a32-98ab-2e9e0b4708db\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll",
+    "sha256": "de361cec811e78ba6287267ceced89ccb77b3a2ee8c125e81e99ba8ae3bcae77"
+  },
+  {
+    "path": "C:\\Users\\Laszlos\\.codex\\visualizations\\2026\\11\\17\\01a1eb60-60ea-7a32-98ab-2e9e0b4708db\\layouts\\release\\focused\\Gagamba.Execution.dll",
+    "reference": "C:\\Users\\Laszlos\\.codex\\visualizations\\2026\\11\\17\\01a1eb60-60ea-7a32-98ab-2e9e0b4708db\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.dll",
+    "sha256": "6fd240fcdd686f7f194f04e2febe7f67fada46d23db09daec6b3b62e85d31873"
+  },
+  {
+    "path": "C:\\Users\\Laszlos\\.codex\\visualizations\\2026\\11\\17\\01a1eb60-60ea-7a32-98ab-2e9e0b4708db\\layouts\\release\\focused\\Gagamba.Execution.Linux.M1.Tests.dll",
+    "reference": "C:\\Users\\Laszlos\\.codex\\visualizations\\2026\\11\\17\\01a1eb60-60ea-7a32-98ab-2e9e0b4708db\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1.Tests\\release\\Gagamba.Execution.Linux.M1.Tests.dll",
+    "sha256": "55fb74a51d4fb4ec46741f9ae906595bec9c6d1400621128198c6f87922ff26d"
+  },
+  {
+    "path": "C:\\Users\\Laszlos\\.codex\\visualizations\\2026\\11\\17\\01a1eb60-60ea-7a32-98ab-2e9e0b4708db\\layouts\\release\\tests\\release\\Gagamba.Execution.Linux.M1.Tests.dll",
+    "reference": "C:\\Users\\Laszlos\\.codex\\visualizations\\2026\\11\\17\\01a1eb60-60ea-7a32-98ab-2e9e0b4708db\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1.Tests\\release\\Gagamba.Execution.Linux.M1.Tests.dll",
+    "sha256": "55fb74a51d4fb4ec46741f9ae906595bec9c6d1400621128198c6f87922ff26d"
+  },
+  {
+    "path": "C:\\Users\\Laszlos\\.codex\\visualizations\\2026\\11\\17\\01a1eb60-60ea-7a32-98ab-2e9e0b4708db\\layouts\\release\\tests\\release\\Gagamba.Execution.Linux.M1.dll",
+    "reference": "C:\\Users\\Laszlos\\.codex\\visualizations\\2026\\11\\17\\01a1eb60-60ea-7a32-98ab-2e9e0b4708db\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1\\debug\\Gagamba.Execution.Linux.M1.dll",
+    "sha256": "39c95f9ec1ae71e5bf8b1041bfe462d6dd26391221544ac3e9dc4e2a173ad165"
+  },
+  {
+    "path": "C:\\Users\\Laszlos\\.codex\\visualizations\\2026\\11\\17\\01a1eb60-60ea-7a32-98ab-2e9e0b4708db\\layouts\\release\\src\\Gagamba.Execution.Linux.M1\\bin\\Release\\net10.0\\Gagamba.Execution.Linux.M1.dll",
+    "reference": "C:\\Users\\Laszlos\\.codex\\visualizations\\2026\\11\\17\\01a1eb60-60ea-7a32-98ab-2e9e0b4708db\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll",
+    "sha256": "de361cec811e78ba6287267ceced89ccb77b3a2ee8c125e81e99ba8ae3bcae77"
+  }
+]

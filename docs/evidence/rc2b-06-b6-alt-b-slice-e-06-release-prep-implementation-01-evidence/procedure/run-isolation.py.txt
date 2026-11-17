@@ -1,0 +1,194 @@
+from collections import Counter
+import csv
+import hashlib
+import json
+from pathlib import Path
+import re
+import subprocess
+import sys
+import xml.etree.ElementTree as ET
+
+repo, run = map(Path, sys.argv[1:3])
+received = json.loads((run / "verified-source-receipt.json").read_bytes())
+commit, parent, tree = (received[k] for k in ("commit", "parent", "tree"))
+audit = run / "isolation"
+audit.mkdir(exist_ok=True)
+tool = run / "release-prep-scanner-artifacts/bin/Audit/release/Audit.dll"
+core = "Gagamba.Execution.Linux.M1"
+test = core + ".Tests"
+decision = "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence"
+e5 = "docs/reviews/rc2b-06-b6-alt-b-slice-e-05-custody-q1-evidence"
+prior = "docs/evidence/rc2b-06-b6-alt-b-slice-e-05-custody-implementation-01-evidence"
+
+def git(*args, exits=(0,)):
+    proc = subprocess.run(["git", "--no-optional-locks", *args], cwd=repo, capture_output=True)
+    assert proc.returncode in exits, (args, proc.returncode, proc.stderr)
+    return proc.stdout
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+def json_file(name, data):
+    (audit / name).write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8", newline="\n")
+
+def first_party(path):
+    return path.name.startswith("Gagamba.") or path.name in ("B2Controller.dll", "InstallTool.dll")
+
+def scan(label, paths, expected):
+    args = ["dotnet", str(tool), *map(str, paths)]
+    result = subprocess.run(args, cwd=run, capture_output=True)
+    (audit / (label + ".jsonl")).write_bytes(result.stdout)
+    json_file(label + "-command.json", dict(arguments=args, exit=result.returncode,
+        scanner_sha256=sha(tool.read_bytes()), stderr=result.stderr.decode()))
+    rows = [json.loads(line) for line in result.stdout.splitlines()]
+    if result.returncode != expected:
+        print(label, result.returncode, result.stderr.decode(), flush=True)
+        for row in rows:
+            if not row["pass"]:
+                print({key: row[key] for key in ("file", "assembly", "hits", "outbound",
+                       "forbiddenHistory", "modelTypes", "typeRefs")}, flush=True)
+        raise AssertionError(label)
+    assert [Path(x["file"]) for x in rows] == paths
+    for row, p in zip(rows, paths):
+        assert row["sha256"] == sha(p.read_bytes()), p
+    return rows
+
+assert git("rev-parse", "HEAD").decode().strip() == commit
+assert git("rev-parse", "HEAD^{tree}").decode().strip() == tree
+changes = git("diff", "--name-status", parent, commit).decode().splitlines()
+assert set(changes) == {"A\t" + row["path"] for row in received["files"]}
+for row in received["files"]:
+    p = row["path"]
+    assert git("rev-parse", f"{commit}:{p}").decode().strip() == row["blob"]
+    assert sha((repo / p).read_bytes()) == row["checkout_sha256"]
+    row["git_sha256"] = sha(git("show", f"{commit}:{p}"))
+    assert (repo / p).read_bytes().replace(b"\r\n", b"\n") == git("show", f"{commit}:{p}")
+json_file("candidate.json", received)
+
+def match(revision, pattern, roots):
+    prefix = revision + ":"
+    return [line.removeprefix(prefix) for line in git(
+        "grep", "-nE", pattern, revision, "--", *roots, exits=(0,1)).decode().splitlines()]
+
+new = match(commit, "ValidationReleasePreparation|ValidationReleaseProjection|ValidationReleaseMaterial|"
+    "ValidationReleasePhase|ValidationReleaseTopology|ValidationReleaseOpcode|ValidationReleaseStep",
+    ["src", "tests", "eng", "Directory.Build.targets", ".github"])
+assert {line.split(":")[0] for line in new} == {row["path"] for row in received["files"]}
+dynamic = r"AssemblyLoadContext|Assembly[.]Load|Type[.]GetType[(]|GetTypes[(]|GetExportedTypes[(]|Activator[.]CreateInstance|ServiceCollection|AddSingleton|AddTransient|ModuleInitializer|BindingFlags|DependencyContext|GetManifestResource"
+effects = r"StartOwnerPreparation[(]|TrySpawnOwner[(]|new PreparationOwnershipCoordinator[(]|IntegratedRecoveryHost[.]Run[(]|QualifiedRecoveryConnection[.]Start[(]|RecoveryConnection[.]Start[(]|new HeldReleasePhase[(]|new B3PreparationOwner[(]|OwnerPreparationTransaction[.]Run|ReleaseArbiter|StartAuthority|RequireBoundGenerationActive|TryWriteOnce|WriterReady|ApprovalCorrelationSha256"
+existing = {}
+for label, pattern in (("dynamic", dynamic), ("effects", effects), ("predecessor", "ValidationCustodyModel|Gava1ContextCodec|ValidationPreCodec")):
+    roots = ["src", "tests/Fixtures", "eng"]
+    before = match(parent, pattern, roots)
+    after = match(commit, pattern, roots)
+    assert before == after, label
+    existing[label] = after
+json_file("source-edges.json", dict(commit=commit, tree=tree, changed_files=changes, helper_mentions=new,
+                                   inherited_unchanged_edges=existing))
+
+summary = {}
+for cfg in ("debug", "release"):
+    paths = {}
+
+    def add(base, role, deep=False):
+        selected = sorted((base.rglob if deep else base.glob)("*.dll"))
+        matching = [p for p in selected if first_party(p)]
+        assert matching, (base, role)
+        for p in matching:
+            if p not in paths:
+                paths[p] = role
+
+    artifact = run / "candidate-exact/bin"
+    for project in sorted(artifact.iterdir()):
+        directory = project / cfg
+        if directory.is_dir():
+            role = ("build/test" if project.name.endswith(".Tests") else "build/fixture" if project.name == "B2Controller"
+                    else "build/verifier" if project.name == "VerifyProductionAssembly" else "build/production")
+            if any(first_party(p) for p in directory.glob("*.dll")):
+                add(directory, role)
+    layout = run / "layouts" / cfg
+    add(layout / "focused", "selected/focused")
+    add(layout / "tests" / cfg, "selected/broad")
+    add(layout / "src" / core / "bin/Release/net10.0", "selected/release-discovery")
+    through_policy = run / "policy-exact"
+    for project in sorted((through_policy / "solution/bin").iterdir()):
+        directory = project / cfg
+        if directory.is_dir() and any(first_party(p) for p in directory.glob("*.dll")):
+            build_kind = ("test" if project.name.endswith(".Tests") else
+                          "fixture" if project.name.startswith("Gagamba.Fixture") or project.name == "B2Controller"
+                          else "production")
+            add(directory, "solution/" + build_kind)
+    if cfg == "release":
+        for p in ("publish-m1", "publish-owner", "publish-recovery"):
+            add(through_policy / p / "publish", "publish/production", deep=True)
+
+    d64 = run / "d64-candidate-source"
+    add(d64 / "src" / core / "bin/d6-4-variant/Debug/net10.0", "d6.4/fixture-debug")
+    add(d64 / "tests" / (core + ".D6_4.Tests") / "bin" / cfg.title() / "net10.0", "d6.4/test")
+    # Bind external test runner DLL files as well. They are not first-party activation roots.
+    runner = [dict(path=str(p), sha256=sha(p.read_bytes()))
+        for home in (layout / "focused", layout / "tests" / cfg)
+        for p in sorted(home.rglob("*.dll")) if not first_party(p)]
+    json_file(cfg + "-runner-dependencies.json", runner)
+
+    rows = scan(cfg, list(paths), expected=0)
+    for row, p in zip(rows, paths):
+        row.update(role=paths[p], commit=commit, tree=tree, selected_configuration=cfg)
+        assert row["pass"], p
+        if row["fixture"]:
+            assert row["configuration"] == "Debug" and row["role"].startswith("d6.4/"), row
+    test_copies = [r for r in rows if r["assembly"] == test]
+    assert test_copies and all(r["knownBootstrapCallers"] and r["knownBinaryCallers"] for r in test_copies)
+    assert any(r["callableHistory"] for r in test_copies)
+    assert any(r["projectEffectRefs"] for r in rows if r["role"] == "build/production")
+
+    kit = {p.name: sha(p.read_bytes()) for p in (artifact / core / cfg).glob("*.dll")}
+    for product in (core + ".Owner", core + ".Recovery", "InstallTool"):
+        for name, digest in kit.items():
+            p = artifact / product / cfg / name
+            assert sha(p.read_bytes()) == digest, p
+    selected = artifact / core / cfg / (core + ".dll")
+    control_file = run / "e6-inbound-exact" / cfg / "bin" / core / cfg / (core + ".dll")
+    control, = scan("control-" + cfg, [control_file], expected=1)
+    assert control["sha256"] != sha(selected.read_bytes())
+    assert any("ProducerIsolationControl.ForbiddenCaller::Probe" in hit
+               and "ValidationReleasePreparation::Prepare" in hit for hit in control["hits"]), control
+    assert not control["outbound"] and not control["forbiddenHistory"]
+    release_verifier=(run / f"verifier-{cfg}.log").read_text()
+    assert ("RESULT: PASS" in release_verifier if cfg == "release"
+            else "RESULT: FAIL" in release_verifier and "expected Release" in release_verifier)
+    json_file(cfg + "-inventory.json", rows)
+    production = [r for r in rows if r["role"] in ("build/production", "solution/production", "publish/production")]
+    summary[cfg] = dict(first_party_assembly_paths=len(rows), production_assembly_paths=len(production),
+                        unique_first_party_sha256=len({r["sha256"] for r in rows}),
+                        production_incoming=0, helper_effect_edges=0, new_production_E3_E4_E5_edges=0,
+                        scan_control="detected", runner_dependency_paths=len(runner),
+                        verifier_exit=0 if cfg == "release" else 1,
+                        roles=dict(Counter(paths.values())))
+    print(cfg, summary[cfg], flush=True)
+
+historical = (repo / decision / "p4.md").read_text(encoding="utf-8")
+dispositions = []
+for line in historical.splitlines():
+    if re.match(r'^\| \*\*S\d\d\*\*', line):
+        _, location, caller, authorization, enforcing_gate, first_effect, dominance, lifecycle, classification, _, _ = [
+            col.strip() for col in line.split("|")]
+        sink = re.match(r"\*\*(S\d\d)\*\*", location)[1]
+        dispositions.append(dict(sink=sink, location=location, caller=caller, authority=authorization,
+            gate=enforcing_gate, first_effect=first_effect, domination=dominance, lifecycle=lifecycle,
+            disposition=re.search(r'\*\*([^*]+)\*\*', classification)[1],
+            exact_candidate="Existing source and activation edges preserved. No compiled production edge to E-6."))
+assert len(dispositions) == 29
+assert Counter(row["disposition"] for row in dispositions) == {
+    "COVERED": 21, "AUTHORIZED CONTINUATION": 5, "LEGACY / TEST-ONLY": 3}
+json_file("p4-dispositions.json", dispositions)
+controls = list(csv.DictReader((repo / e5 / "raw/p4-executed.tsv").open(encoding="utf-8"), delimiter="\t"))
+core_controls = list(csv.DictReader((repo / e5 / "raw/p4-controls.tsv").open(encoding="utf-8"), delimiter="\t"))
+for cfg in ("debug", "release"):
+    listed = {c["case"]: c["result"] for c in controls if c["configuration"] == cfg}
+    key = {c["executed_case"] for c in core_controls if c["configuration"] == cfg}
+    assert len(key) == 15 and len(listed) - len(key) == 32 and key <= listed.keys()
+    tests = {t.get("name"): t.get("result") for t in ET.parse(run / "results" / cfg / "broad.xml").iter("test")}
+    assert all(tests[case] == expected == "Pass" for case, expected in listed.items())
+    summary[cfg]["p4_executed_controls"] = 47
+json_file("summary.json", summary)

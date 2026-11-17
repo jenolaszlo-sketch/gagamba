@@ -1,0 +1,33 @@
+{
+  "removed_scratch_paths": [
+    "release-prep-derivatives",
+    "e6-inbound-control",
+    "e6-inbound-exact",
+    "sensitivity-source",
+    "sensitivity-build",
+    "independent-mutations",
+    "independent-derivative-build",
+    "f01-naming-control",
+    "f01-naming-control.tar",
+    "f01-naming-build",
+    "d64-candidate-source",
+    "d64-candidate-source.tar",
+    "initial-compile"
+  ],
+  "vstest_timeout_process_ids": [
+    29492,
+    17700,
+    4520,
+    31700,
+    32180,
+    812,
+    37820,
+    11516,
+    10104,
+    31832
+  ],
+  "matching_live_process_ids": [],
+  "canonical_native_cases_executed": 0,
+  "injected_reference_executed": false,
+  "retained": "Exact candidate artifacts, selected copies, policy outputs and execution receipts in scratch."
+}
