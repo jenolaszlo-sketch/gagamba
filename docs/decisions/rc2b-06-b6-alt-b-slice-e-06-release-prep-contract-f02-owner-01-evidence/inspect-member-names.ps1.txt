@@ -1,0 +1,67 @@
+param([string]$Repository, [string]$ProducerScratch, [string]$Output, [string]$Configuration)
+$ErrorActionPreference = 'Stop'
+$annex = Join-Path $Repository 'docs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence'
+$namespace = 'Gagamba.Execution.Linux.M1.Validation'
+$oldName = 'CapabilityHash'
+$newName = 'SealedLaunchRecordHash'
+$forbidden = 'Approved','Authorized','Permit','Authority','Trusted','Capability'
+$flags = [Reflection.BindingFlags]'Public, NonPublic, Instance, Static, DeclaredOnly'
+$bindings = Get-Content -Raw "$annex/raw/results/$Configuration/bindings.json" | ConvertFrom-Json
+$dll = [IO.Path]::GetFullPath("$ProducerScratch/layouts/$Configuration/focused/Gagamba.Execution.Linux.M1.dll")
+$bind = @($bindings | Where-Object { $_.path -eq $dll })
+if ($bind.Count -ne 1) { throw 'Producer binding absent or ambiguous' }
+$hash = (Get-FileHash -LiteralPath $dll -Algorithm SHA256).Hash.ToLowerInvariant()
+if ($hash -cne $bind[0].sha256) { throw 'Stored DLL differs from producer binding' }
+$assembly = [Reflection.Assembly]::LoadFrom($dll)
+$types = @($assembly.GetTypes() | Where-Object Namespace -CEQ $namespace | Sort-Object FullName)
+$hits = @()
+$projectedHits = @()
+foreach ($type in $types) {
+    $members = @([pscustomobject]@{Name=$type.Name; MemberType='Type'}) + @($type.GetMembers($flags))
+    foreach ($member in $members) {
+        $name = $member.Name
+        $projectedName = $name.Replace($oldName,$newName)
+        if ($name -cne $projectedName -and $members.Name -ccontains $projectedName) {
+            throw "Name collision in $($type.FullName) for $projectedName"
+        }
+        foreach ($token in $forbidden) {
+            if ($name.Contains($token,[StringComparison]::Ordinal)) {
+                $hits += [ordered]@{type=$type.FullName; kind=$member.MemberType.ToString(); name=$name;
+                    token=$token; projected_name=$projectedName}
+            }
+            if ($projectedName.Contains($token,[StringComparison]::Ordinal)) {
+                $projectedHits += $type.FullName + '::' + $projectedName
+            }
+        }
+    }
+}
+$projection = $assembly.GetType("$namespace.ValidationReleaseProjection",$true)
+$binding = $assembly.GetType("$namespace.ValidationReleasePreparation+Binding",$true)
+$oldProps = foreach ($type in $projection,$binding) {
+    $property = $type.GetProperty($oldName,$flags)
+    $propertyNullability = [Reflection.NullabilityInfoContext]::new().Create($property)
+    [ordered]@{type=$type.FullName; property_type=$property.PropertyType.FullName;
+        read_nullability=$propertyNullability.ReadState.ToString(); getter=$property.GetMethod.Attributes.ToString();
+        has_setter=[bool]$property.SetMethod}
+}
+$parameterNames = foreach ($type in $projection,$binding) {
+    foreach ($method in @($type.GetConstructors($flags)) + @($type.GetMethods($flags) | Where-Object Name -CEQ 'Deconstruct')) {
+        foreach ($parameter in $method.GetParameters() | Where-Object Name -In 'capabilityHash','CapabilityHash') {
+            [ordered]@{type=$type.FullName; method=$method.Name; position_zero_based=$parameter.Position;
+                name=$parameter.Name; parameter_type=$parameter.ParameterType.FullName;
+                projected_name=if ($parameter.Name -ceq $oldName) {$newName} else {'sealedLaunchRecordHash'}}
+        }
+    }
+}
+if ($hits.Count -ne 7 -or $projectedHits.Count -ne 0 -or @($parameterNames).Count -ne 3) {
+    throw "Unexpected metadata counts $($hits.Count)/$($projectedHits.Count)/$(@($parameterNames).Count)"
+}
+[ordered]@{ configuration=$Configuration; producer_artifact=$dll; sha256=$hash;
+            mvid=$assembly.ManifestModule.ModuleVersionId.ToString();
+            exact_namespace=$namespace; namespace_type_count=$types.Count; forbidden_tokens=$forbidden; flags=$flags.ToString();
+            scanned_declared_members=($types | ForEach-Object { $_.GetMembers($flags).Length } | Measure-Object -Sum).Sum;
+            observed_forbidden_names=$hits; projected_forbidden_names=$projectedHits;
+            property_types=@($oldProps); reflected_parameters=@($parameterNames);
+            scope='Read-only metadata inspection of the blocked DLL. The proposed names were projected as strings only.' } |
+    ConvertTo-Json -Depth 7 | Set-Content -LiteralPath "$Output/member-names-$Configuration.json" -Encoding utf8NoBOM
+"PASS $Configuration bound artifact, $($hits.Count) exact naming hits, no projected naming hits or collisions"

@@ -1,0 +1,103 @@
+import gzip
+import hashlib
+import json
+import re
+import subprocess
+import sys
+import xml.etree.ElementTree as ET
+from pathlib import Path
+
+repo, work = map(Path, sys.argv[1:])
+receipt = json.loads((work / "preflight.json").read_bytes())
+package = repo / "docs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence"
+producer = json.loads((package / "execution-summary.json").read_bytes())
+files = [x["path"] for x in receipt["protected_files"]]
+helper, naming, tests = files
+assert helper.endswith("/ValidationReleasePreparation.cs")
+assert naming.endswith("/ValidationReachabilityTests.cs")
+assert tests.endswith("/ValidationReleasePreparationTests.cs")
+
+def grep(pattern):
+    result = subprocess.run(
+        ["git", "--no-optional-locks", "grep", "-nE", pattern, receipt["head"],
+         "--", "src", "tests", "eng", ".github"], cwd=repo, capture_output=True)
+    assert result.returncode in (0, 1), result.stderr
+    return [line.split(":", 1)[1] for line in result.stdout.decode().splitlines()]
+
+consumers = grep(r"ValidationReleaseProjection|ValidationReleasePreparation|ValidationReleaseMaterial")
+assert {line.split(":", 1)[0] for line in consumers} == {helper, tests}
+assert not grep(r"SealedLaunchRecordHash|sealedLaunchRecordHash")
+assert "CapabilityHash" not in (repo / naming).read_text(encoding="utf-8")
+test_rule = (repo / naming).read_text(encoding="utf-8")
+tokens = re.findall(r'"([A-Za-z]+)"', re.search(
+    r'ForbiddenNameTokens\s*=\s*\[(.*?)\];', test_rule, re.S)[1])
+assert tokens == ["Approved", "Authorized", "Permit", "Authority", "Trusted", "Capability"]
+assert "type.Namespace == ValidationNamespace" in test_rule
+assert "type.GetMembers(AllMembers)" in test_rule
+assert test_rule.count("Contains(token, StringComparison.Ordinal)") == 2
+assert all(t not in "SealedLaunchRecordHash" for t in tokens)
+src = (repo / helper).read_text(encoding="utf-8")
+assert src.count("CapabilityHash") == 7
+assert src.count("capabilityHash") == 5
+assert "binding.CapabilityHash.CopyTo(bytes[30..62]);" in src
+assert (repo / tests).read_text(encoding="utf-8").count("CapabilityHash") == 3
+for i, key in enumerate(("R01", "Mixed")):
+    data = (repo / tests).read_text(encoding="utf-8")
+    literal = re.search(rf'private const string {key}Preimage =(.+?);', data, re.S)[1]
+    assert "".join(re.findall(r'"([0-9a-f]+)"', literal)) == receipt["vectors"][i]["preimage"]
+    digest = re.search(rf'{key}Digest = "([0-9a-f]+)"', data)[1]
+    assert digest == receipt["vectors"][i]["digest"]
+
+def read_raw(name):
+    file = package / "raw" / (name + ".gz")
+    data = gzip.decompress(file.read_bytes())
+    assert hashlib.sha256(data).hexdigest() == producer["raw_original_sha256"][name], name
+    return data
+
+raw_sources = json.loads((package / "raw/e6-mutation-source.json").read_bytes())
+mutation_ids = [row["variant"] for row in raw_sources["variants"]]
+assert len(set(mutation_ids)) == len(mutation_ids) == 34
+slot_control = next(row for row in raw_sources["variants"] if row["variant"] == "CapabilityHash")
+assert slot_control["witness"] == "ExactHashAssociation(0, false)"
+assert slot_control["original"] == "!actual.CapabilityHash.AsSpan().SequenceEqual(original.CapabilityHash)"
+assert slot_control["expected_failure"] == "ProjectionMismatch"
+records = []
+for cfg in ("debug","release"):
+    names = json.loads((work / f"member-names-{cfg}.json").read_bytes())
+    assert names["forbidden_tokens"] == tokens
+    assert len(names["observed_forbidden_names"]) == 7 and not names["projected_forbidden_names"]
+    old_property, snapshot = names["property_types"]
+    assert old_property["property_type"] == snapshot["property_type"] == "System.Byte[]"
+    assert old_property["read_nullability"] == "Nullable" and snapshot["read_nullability"] == "NotNull"
+    assert not old_property["has_setter"] and snapshot["has_setter"]
+    outcomes = []
+    for label, expected in (("baseline", "Pass"), ("candidate", "Fail")):
+        data = read_raw(f"{label}-naming-{cfg}.xml")
+        case, = list(ET.fromstring(data).iter("test"))
+        assert case.attrib["name"].endswith(".ValidationMemberNamesDoNotImplyAuthority")
+        assert case.attrib["result"] == expected
+        log = read_raw(f"{label}-naming-{cfg}.log").decode()
+        core_sha = re.search(r"^core ([a-fA-F0-9]{64})", log, re.M)[1].lower()
+        if expected == "Fail":
+            assert "Capability" in log and core_sha == names["sha256"] and log.rstrip().endswith("EXIT 1")
+        else:
+            assert log.rstrip().endswith("EXIT 0")
+        outcomes.append(dict(revision=label, case=case.attrib["name"], result=expected, core_sha256=core_sha))
+    mutations = [json.loads(line) for line in read_raw(f"e6-mutation-results-{cfg.title()}.jsonl").splitlines()]
+    assert [row["id"] for row in mutations] == mutation_ids
+    assert all(row["nominal"] == "PASS" and row["witness"] == "EXPECTED FAIL" for row in mutations)
+    inventory = json.loads(read_raw(f"isolation/{cfg}-inventory.json"))
+    shipping = [x for x in inventory if x["role"] in {"build/production", "solution/production", "publish/production"}]
+    assert shipping and all(x["pass"] and not x["hits"] and not x["forbiddenHistory"] and not x["outbound"]
+                            for x in shipping)
+    records.append(dict(configuration=cfg, historical_naming_runs=outcomes, exact_slot_mutation_label=slot_control["variant"],
+        mutation_pairs=len(mutations), blocked_inventory_paths=len(inventory), zero_production_callers=True))
+
+summary = dict(replacement="SealedLaunchRecordHash", ordinal_forbidden_tokens=tokens,
+    reference_search_scope=["src", "tests", "eng", ".github"], reference_hits_by_path=sorted({
+        line.split(":",1)[0] for line in consumers}), replacement_collision_hits=0,
+    exact_source_slot=dict(begin_inclusive=30, end_exclusive=62, width=32),
+    reference_vectors=receipt["vectors"], results=records,
+    analytical_limit="Current source and blocked artifacts only, with projected names in memory. No new build or test execution.")
+(work / "conflict-receipt.json").write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8", newline="\n")
+print("PASS baseline/candidate failure logs, 34 mutation pairs per configuration, artifact identities and source semantics")

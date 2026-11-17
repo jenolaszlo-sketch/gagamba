@@ -1,0 +1,270 @@
+import json
+import re
+import runpy
+import subprocess
+import sys
+from collections import Counter
+from pathlib import Path
+from posixpath import normpath
+from uuid import UUID
+
+here = Path(__file__).resolve().parent
+scratch = Path("C:/Users/Laszlos/.codex/visualizations/2026/11/17/01a1eb3e-8f2f-7e01-ad41-ce2e996f0a05")
+import hashlib
+assert hashlib.sha256((scratch / "release-prep-audit.py").read_bytes()).hexdigest() == "8f3453a2033bd66a6c782f235df02ba2795afd0bf75340fefd3dc96aa4425bab"
+audit = runpy.run_path(str(scratch / "release-prep-audit.py"))
+root, git, txt, get, blobs, sha, rows, disk = [
+    audit[k] for k in ("ROOT", "git", "txt", "get", "blobs", "sha", "rows", "disk")]
+base, auth, assessment, remote, e5, pointers, allowlist = [
+    audit[k] for k in ("BASE", "AUTH", "PARENT", "REMOTE", "E5", "POINTERS", "ALLOWLIST")]
+authorization = "405f2d2d45b802f48e08dab64e53e305e29efb6b"
+f01 = "7d298ddd9d83e555a5c16b6c0cab8f36e46b8822"
+f01_prefix = auth.removesuffix("01") + "f01"
+annex = auth + "-evidence/"
+f01_annex = f01_prefix + "-evidence/"
+report = "docs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01"
+decision = "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-release-prep-contract-f02-owner-01"
+candidate = "53ffe7a21408a7e9674cf50b7098a26887c070b5"
+producer = "ce6a6fae1cdf7ec36b977e59050c8ac89db0aea6"
+naming_test = "tests/Gagamba.Execution.Linux.M1.Tests/Validation/ValidationReachabilityTests.cs"
+expected_trees = {
+    remote: "3136117ecdcbd7df91693db2fbc14a148d47607a",
+    candidate: "c5e58a742408783545ae667c0a3506c1dfd3af34",
+    producer: "3d5c7f073a20f6f3fbcbcef06d5b739b4269c759",
+    e5: "e314f2e8a1259e2263c8494bb0c8ca9f7eb27016",
+    base: "ee0aa6242cdcc4928518c26486b634a5df8850d4",
+    authorization: "3a7d80c71a5453fe31e3bd4f4256b1cdbe90c314",
+    f01: "27bcf4764d4b0f71b76c4f4741b1f5c54c876d41",
+}
+head = txt("rev-parse", "HEAD")
+tree = txt("rev-parse", "HEAD^{tree}")
+assert txt("rev-parse", "--show-toplevel") == root.as_posix()
+assert txt("rev-parse", "--absolute-git-dir") == (root / ".git").as_posix()
+assert txt("symbolic-ref", "HEAD") == "refs/heads/main"
+assert txt("remote", "get-url", "origin") == txt("remote", "get-url", "--push", "origin") == audit["ORIGIN"]
+assert txt("rev-parse", "refs/remotes/origin/main") == remote
+live = txt("ls-remote", "--exit-code", "origin", "refs/heads/main")
+assert live == remote + "\trefs/heads/main"
+for revision, expected_tree in expected_trees.items():
+    assert txt("rev-parse", revision + "^{tree}") == expected_tree
+git("merge-base", "--is-ancestor", e5, remote)
+for child, parent in zip((f01, authorization, base), (authorization, base, remote)):
+    assert txt("show", "-s", "--format=%P", child) == parent
+worktrees = txt("worktree", "list", "--porcelain")
+assert worktrees.splitlines() == ["worktree " + root.as_posix(), "HEAD " + head, "branch refs/heads/main"]
+assert not txt("stash", "list")
+assert not txt("diff", "--name-only") and not txt("diff", "--cached", "--name-only")
+inventory_path = audit["INVENTORY"]
+inventory_raw = get(remote, inventory_path)
+assert inventory_raw == get(head, inventory_path) == disk(inventory_path)
+untracked = json.loads(inventory_raw)
+status = git("status", "--porcelain=v1", "-z", "--untracked-files=all").decode().split("\0")[:-1]
+assert len(status) == len(untracked) == 44
+assert set(status) == {"?? " + item["path"] for item in untracked}
+for item in untracked:
+    data = disk(item["path"])
+    assert (len(data), sha(data)) == (item["length"], item["sha256"]), item["path"]
+
+final = "--final" in sys.argv
+refs = txt("for-each-ref", "--format=%(objectname) %(refname)", "refs/heads", "refs/tags")
+assert txt("show", "-s", "--format=%P", candidate) == f01
+assert txt("show", "-s", "--format=%P", producer) == candidate
+candidate_delta = set(txt("diff", "--name-status", f01, candidate).splitlines())
+assert candidate_delta == {"A\t" + p for p in allowlist}
+decision_delta = []
+if final:
+    assert txt("show", "-s", "--format=%P", head) == producer
+    decision_delta = txt("diff", "--name-status", producer, head).splitlines()
+    assert decision_delta and all(
+        row == "A\t" + decision + ".md" or row.startswith("A\t" + decision + "-evidence/")
+        for row in decision_delta)
+    previous = json.loads((here / "preflight.json").read_bytes())
+    assert refs == previous["heads_and_tags"].replace(producer + " refs/heads/main", head + " refs/heads/main")
+else:
+    assert head == producer and tree == expected_trees[producer]
+    assert not (root / (decision + ".md")).exists()
+    assert not (root / (decision + "-evidence")).exists()
+
+print("PASS canonical main, exact ancestry, live and tracking refs, checkout/index and 44 historical untracked hashes", flush=True)
+old = json.loads(get(base, assessment + "-evidence/preflight.json"))
+owner = json.loads(get(remote, audit["OWNER"] + "/acceptance-audit.json"))["repository"]
+historical_specs = [(m["path"], m["revision"], m["count"]) for m in old["manifests"]]
+assert historical_specs == [(m["path"], m["revision"], m["count"]) for m in owner["manifest_sets"]] + [
+    (audit["OWNER"] + "/SHA256SUMS.txt", remote, 10)]
+assert len(historical_specs) == 19 and sum(count for _, _, count in historical_specs) == 1054
+specs = historical_specs + [
+    (assessment + "-evidence/SHA256SUMS.txt", base, 19),
+    (annex + "SHA256SUMS.txt", authorization, 8),
+    (f01_annex + "SHA256SUMS.txt", f01, 4)]
+producer_manifest = report + "-evidence/SHA256SUMS.txt"
+assert sha(get(producer, producer_manifest)) == "6070ee9bda58b622d05aa657c3922626cc366b660a1410bb7ba8207b55bbfaf0"
+specs.append((producer_manifest, producer, 188))
+if final:
+    decision_manifest = decision + "-evidence/SHA256SUMS.txt"
+    decision_members = rows(decision_manifest, disk(decision_manifest))
+    specs.append((decision_manifest, head, len(decision_members)))
+receipts, notes, package_sets = [], {}, {}
+for path, revision, count in specs:
+    git("merge-base", "--is-ancestor", revision, head)
+    manifest = get(revision, path)
+    assert manifest == get(head, path) == disk(path), path
+    members = rows(path, manifest)
+    assert len(members) == count, path
+    package_sets[revision] = set(members) | {path}
+    original = {p: (oid, raw) for p, oid, raw in blobs(revision, members)}
+    current = {p: (oid, raw) for p, oid, raw in blobs(head, members)}
+    for p, digest in members.items():
+        oid, raw = original[p]
+        assert sha(raw) == digest, (revision, p)
+        if p in pointers:
+            assert get(base, p) == raw
+            assert disk(p) == current[p][1] == get(authorization, p)
+            notes[p] = dict(original_sha256=digest, current_sha256=sha(disk(p)),
+                            addition_sha256=audit["changed_pointer"](raw, disk(p)))
+        else:
+            assert current[p] == (oid, raw) and disk(p) == raw, (revision, p)
+    receipts.append(dict(path=path, revision=revision, sha256=sha(manifest), count=count))
+assert set(notes) == pointers
+for child, parent in ((base, remote), (authorization, base), (f01, authorization)):
+    expected = {"A\t" + p for p in package_sets[child]}
+    if child == authorization:
+        expected |= {"M\t" + p for p in pointers}
+    assert set(txt("diff", "--name-status", parent, child).splitlines()) == expected
+assert all(p == f01_prefix + ".md" or p.startswith(f01_annex) for p in package_sets[f01])
+evidence_delta = set(txt("diff", "--name-status", candidate, producer).splitlines())
+assert evidence_delta == {"A\t" + p for p in package_sets[producer]}
+assert all(p == report + ".md" or p.startswith(report + "-evidence/") for p in package_sets[producer])
+if final:
+    assert set(decision_delta) == {"A\t" + path for path in package_sets[head]}
+protected = []
+candidate_receipt = json.loads(get(producer, report + "-evidence/raw/isolation/candidate.json"))
+assert (candidate_receipt["commit"], candidate_receipt["tree"], candidate_receipt["parent"]) == (
+    candidate, expected_trees[candidate], f01)
+by_path = {row["path"]: row for row in candidate_receipt["files"]}
+assert by_path.keys() == allowlist
+for p, oid, raw in blobs(candidate, sorted(allowlist | {naming_test})):
+    assert raw == get(producer, p) == get(head, p)
+    work = disk(p)
+    assert raw == work or raw == work.replace(b"\r\n", b"\n"), p
+    if p == naming_test:
+        assert oid == "cf31e4953b92414e05b82a13bfafc313fbc0db86"
+        assert raw == get(f01, p) == get("06006a7035ca3a7615189b867584b1b3955eeb7a", p)
+    else:
+        expected = by_path[p]
+        assert (oid, sha(raw), sha(work)) == (expected["blob"], expected["git_sha256"], expected["checkout_sha256"])
+    protected.append(dict(path=p, blob=oid, git_sha256=sha(raw), checkout_sha256=sha(work)))
+if final:
+    assert protected == previous["protected_files"]
+print("PASS 188 producer entries and the exact implementation files and inherited E-2 naming test", flush=True)
+
+frozen = audit["frozen_executable_bindings"](head)
+assert sum(len(group["files"]) for group in frozen) == 18
+print("PASS all 1,054 historical, 19 assessment, 8 authorization and 4 F01 entries at pinned revisions and checkout", flush=True)
+
+reconciliation = json.loads(get(f01, f01_annex + "counts.json"))
+for record in reconciliation["records"].values():
+    p = record["path"]
+    _, oid, raw = next(blobs(authorization, [p]))
+    assert oid == record["blob"] and sha(raw) == record["sha256"]
+    assert get(head, p) == raw == disk(p)
+for name, digest in reconciliation["origin_artifacts"].items():
+    assert sha((scratch / name).read_bytes()) == digest, name
+package = runpy.run_path(str(scratch / "release-prep-package.py"))
+pred_inventory = json.loads(get(base, assessment + "-evidence/source-identities.json"))
+auth_inventory = json.loads(get(authorization, annex + "source-identities.json"))
+assert pred_inventory["revision"] == remote and auth_inventory["revision"] == base
+assert auth_inventory["tree"] == expected_trees[base]
+pred = {x["path"]: x for x in pred_inventory["files"]}
+entries = {x["path"]: x for x in auth_inventory["files"]}
+f01_entries = {x["path"]: x for x in reconciliation["exact_membership"]}
+assert len(pred) == len(pred_inventory["files"]) == 93
+assert len(entries) == len(auth_inventory["files"]) == len(f01_entries) == 128
+assert len(entries.keys() - pred.keys()) == 35 and pred.keys() <= entries.keys()
+docs = {auth + ".md", *(annex + name for name in package["DOCS"])}
+links = set()
+for path in docs:
+    for target in re.findall(r'\]\(([^)]+)\)', get(authorization, path).decode()):
+        target = target.split("#")[0]
+        if target and "://" not in target:
+            p = normpath(str(Path(path).parent.as_posix()) + "/" + target)
+            if p not in docs and not p.startswith(annex):
+                links.add(p)
+groups = {
+    "predecessor": set(pred),
+    "assessment_package": package_sets[base],
+    "explicit_sources": package["SOURCES"],
+    "local_document_links": links,
+}
+seen = set()
+for key, group in groups.items():
+    assert reconciliation["membership_counts"][key] == dict(members=len(group), new_paths=len(group-seen))
+    seen |= group
+assert seen == entries.keys() == f01_entries.keys()
+for rev, items in ((remote, pred), (base, entries)):
+    for p, oid, raw in blobs(rev, items):
+        row = items[p]
+        assert (oid, sha(raw)) == (row["blob"], row["git_sha256"]), p
+        work = get(base, p) if p in pointers else disk(p)
+        assert sha(work) == row["checkout_sha256"], p
+        assert (raw == work) == row["checkout_equals_blob"], p
+        assert get(head, p) == (get(authorization, p) if p in pointers else raw), p
+        if rev == base:
+            f = f01_entries[p]
+            assert (oid, sha(raw), sha(disk(p))) == (f["pinned_blob"], f["pinned_sha256"], f["checkout_sha256"]), p
+            assert set(f["membership"]) == {key for key, group in groups.items() if p in group}, p
+assert len({row["blob"] for row in entries.values()}) == len({row["git_sha256"] for row in entries.values()}) == 128
+
+for obj in old["externalCopies"]:
+    for item in obj["entries"]:
+        assert sha((Path(obj["directory"]) / item["path"]).read_bytes()) == item["sha256"]
+for item in auth_inventory["external_formula_sources"]:
+    assert sha(Path(item["path"]).read_bytes()) == item["sha256"]
+assert len(auth_inventory["external_formula_sources"]) == 3
+witness = get(base, package["WITNESS"]).decode()
+vector = get(authorization, annex + "vectors.md").decode()
+domain = b"gagamba-validation-release-v1\0"
+index = (2).to_bytes(4, "little")
+r01 = domain + b"".join(bytes([slot]) * 32 for slot in (0x11, 0x22, 0x33, 0x44))
+r01 += index + b"".join(bytes([slot]) * 16 for slot in (0x55, 0x66, 0x77, 0x88)) + b"\x99" * 32
+mixed = domain + bytes(range(128)) + index + b"".join(UUID(text).bytes_le for text in (
+    "00112233-4455-6677-8899-aabbccddeeff", "12345678-90ab-cdef-0123-456789abcdef",
+    "89abcdef-0123-4567-89ab-cdef01234567", "fedcba98-7654-3210-fedc-ba9876543210",
+)) + bytes(range(128, 160))
+assert len(r01) == len(mixed) == 258
+assert f"Preimage {r01.hex()}\nR01 {sha(r01)}\n" in witness
+assert f"\n{mixed.hex()}\n{sha(mixed)}\n" in vector
+print("PASS independent 93 + 35 = 128 pinned source reconciliation, external formula bytes and both complete normative vectors", flush=True)
+
+globs = []
+for p in sorted(allowlist):
+    project = next((root / p).parent.parent.glob("*.csproj"))
+    for cfg in ("Debug", "Release"):
+        cmd = ["dotnet", "msbuild", str(project), f"-p:Configuration={cfg}", "-nologo",
+               "-getProperty:EnableDefaultItems,EnableDefaultCompileItems,DefaultItemExcludes", "-getItem:Compile"]
+        evaluated = json.loads(subprocess.check_output(cmd, cwd=root))
+        props = evaluated["Properties"]
+        assert props["EnableDefaultItems"].lower() == props["EnableDefaultCompileItems"].lower() == "true"
+        included = {item["Identity"].replace("\\", "/"): item["DefiningProjectFullPath"]
+                    for item in evaluated["Items"]["Compile"]}
+        relative = (root / p).relative_to(project.parent).as_posix()
+        assert relative in included
+        sibling = {name: defining for name, defining in included.items()
+                   if name.startswith("Validation/") and name.count("/") == 1
+                   and defining.endswith("Microsoft.NET.Sdk.DefaultItems.props")}
+        assert sibling, (project, cfg, included)
+        globs.append(dict(project=project.relative_to(root).as_posix(), configuration=cfg,
+                          relative=relative, included=True, default_sibling_items=sibling,
+                          default_item_excludes=props["DefaultItemExcludes"]))
+print("PASS Debug and Release SDK compile evaluation for both authorized directories", flush=True)
+result = dict(head=head, tree=tree, branch="main", live_remote=live, origin=audit["ORIGIN"],
+              parent_chain=[producer,candidate,f01,authorization,base,remote], worktrees=worktrees, stashes=[],
+              tracked_and_index="clean", heads_and_tags=refs, manifests=receipts, status_notes=notes,
+              untracked=untracked, frozen_executables=frozen, authorized_paths=sorted(allowlist), globs=globs,
+              source_identities=list(entries.values()), membership={key: sorted(value) for key,value in groups.items()},
+              external_formula_sources=auth_inventory["external_formula_sources"],
+              vectors=[dict(preimage=b.hex(),digest=sha(b)) for b in (r01,mixed)])
+result.update(candidate=candidate, candidate_tree=expected_trees[candidate],
+              producer=producer, producer_tree=expected_trees[producer], expected_trees=expected_trees,
+              protected_files=protected, implementation_delta=sorted(candidate_delta),
+              producer_changes=sorted(evidence_delta), decision_changes=decision_delta)
+(here / ("final-verification.json" if final else "preflight.json")).write_bytes((json.dumps(result, indent=2) + "\n").encode())

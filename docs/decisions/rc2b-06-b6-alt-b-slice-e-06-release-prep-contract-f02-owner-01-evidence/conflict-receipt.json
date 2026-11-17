@@ -1,0 +1,82 @@
+{
+  "replacement": "SealedLaunchRecordHash",
+  "ordinal_forbidden_tokens": [
+    "Approved",
+    "Authorized",
+    "Permit",
+    "Authority",
+    "Trusted",
+    "Capability"
+  ],
+  "reference_search_scope": [
+    "src",
+    "tests",
+    "eng",
+    ".github"
+  ],
+  "reference_hits_by_path": [
+    "src/Gagamba.Execution.Linux.M1/Validation/ValidationReleasePreparation.cs",
+    "tests/Gagamba.Execution.Linux.M1.Tests/Validation/ValidationReleasePreparationTests.cs"
+  ],
+  "replacement_collision_hits": 0,
+  "exact_source_slot": {
+    "begin_inclusive": 30,
+    "end_exclusive": 62,
+    "width": 32
+  },
+  "reference_vectors": [
+    {
+      "preimage": "676167616d62612d76616c69646174696f6e2d72656c656173652d763100111111111111111111111111111111111111111111111111111111111111111122222222222222222222222222222222222222222222222222222222222222223333333333333333333333333333333333333333333333333333333333333333444444444444444444444444444444444444444444444444444444444444444402000000555555555555555555555555555555556666666666666666666666666666666677777777777777777777777777777777888888888888888888888888888888889999999999999999999999999999999999999999999999999999999999999999",
+      "digest": "3737572b7b3d2ad8313d109d6d8a9d0df4b5bc7b20e43c71a0a6061e1988ce3e"
+    },
+    {
+      "preimage": "676167616d62612d76616c69646174696f6e2d72656c656173652d763100000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f0200000033221100554477668899aabbccddeeff78563412ab90efcd0123456789abcdefefcdab892301674589abcdef0123456798badcfe54761032fedcba9876543210808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9f",
+      "digest": "d4573bb166ab7a4f73743297a4b3b2b9f2e19c73ef4fb6c36c94cf2a20fd7d90"
+    }
+  ],
+  "results": [
+    {
+      "configuration": "debug",
+      "historical_naming_runs": [
+        {
+          "revision": "baseline",
+          "case": "Gagamba.Execution.Linux.M1.Tests.Validation.ValidationReachabilityTests.ValidationMemberNamesDoNotImplyAuthority",
+          "result": "Pass",
+          "core_sha256": "75dc0d423dfb7f7f1b74f487c75253a394a2d62db6c43d82650a917a0310de9c"
+        },
+        {
+          "revision": "candidate",
+          "case": "Gagamba.Execution.Linux.M1.Tests.Validation.ValidationReachabilityTests.ValidationMemberNamesDoNotImplyAuthority",
+          "result": "Fail",
+          "core_sha256": "39c95f9ec1ae71e5bf8b1041bfe462d6dd26391221544ac3e9dc4e2a173ad165"
+        }
+      ],
+      "exact_slot_mutation_label": "CapabilityHash",
+      "mutation_pairs": 34,
+      "blocked_inventory_paths": 48,
+      "zero_production_callers": true
+    },
+    {
+      "configuration": "release",
+      "historical_naming_runs": [
+        {
+          "revision": "baseline",
+          "case": "Gagamba.Execution.Linux.M1.Tests.Validation.ValidationReachabilityTests.ValidationMemberNamesDoNotImplyAuthority",
+          "result": "Pass",
+          "core_sha256": "787e5be0b51408a790d04431ef65aeda5029b1d0568f211472ea09c550bbb7e2"
+        },
+        {
+          "revision": "candidate",
+          "case": "Gagamba.Execution.Linux.M1.Tests.Validation.ValidationReachabilityTests.ValidationMemberNamesDoNotImplyAuthority",
+          "result": "Fail",
+          "core_sha256": "de361cec811e78ba6287267ceced89ccb77b3a2ee8c125e81e99ba8ae3bcae77"
+        }
+      ],
+      "exact_slot_mutation_label": "CapabilityHash",
+      "mutation_pairs": 34,
+      "blocked_inventory_paths": 116,
+      "zero_production_callers": true
+    }
+  ],
+  "analytical_limit": "Current source and blocked artifacts only, with projected names in memory. No new build or test execution."
+}

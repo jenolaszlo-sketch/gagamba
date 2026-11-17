@@ -1,0 +1,1920 @@
+{
+  "head": "ce6a6fae1cdf7ec36b977e59050c8ac89db0aea6",
+  "tree": "3d5c7f073a20f6f3fbcbcef06d5b739b4269c759",
+  "branch": "main",
+  "live_remote": "4dc0ee0998f0def6cb1cba304a76b3a9f59ac904\trefs/heads/main",
+  "origin": "https://github.com/jenolaszlo-sketch/gagamba.git",
+  "parent_chain": [
+    "ce6a6fae1cdf7ec36b977e59050c8ac89db0aea6",
+    "53ffe7a21408a7e9674cf50b7098a26887c070b5",
+    "7d298ddd9d83e555a5c16b6c0cab8f36e46b8822",
+    "405f2d2d45b802f48e08dab64e53e305e29efb6b",
+    "22a0b7b00364cc7be333ba7dfd9c0359a7fe9f99",
+    "4dc0ee0998f0def6cb1cba304a76b3a9f59ac904"
+  ],
+  "worktrees": "worktree C:/Users/Laszlos/source/repos/Gagamba\nHEAD ce6a6fae1cdf7ec36b977e59050c8ac89db0aea6\nbranch refs/heads/main",
+  "stashes": [],
+  "tracked_and_index": "clean",
+  "heads_and_tags": "058a150130c5f112c7e9b8189bba8842cf0cec52 refs/heads/assessment/gagamba-rc2a-02-full-stage\nd417367499979d38a3c9a498275d8422bf69f3d0 refs/heads/assessment/gagamba-rc2a-roadmap-01\n8572e1a042fd12d4bcd0c06729066babf04a94ed refs/heads/design/wp05-d6-3-c3-outcome-reconciliation\n54a91b66a9841932792770843a7cd93743e9f4b1 refs/heads/fix/nem-q2-validated-findings\n338a98af269e6b5839f3ccc2e0881f016153b01e refs/heads/implementation/wp05-release-qualification-fixtures\n5c04d324894a84b17a5d40f7546eab9a65d0eb4c refs/heads/infrastructure/wp05-independent-linux-readiness\n0f29bb54921d11306f14fad1288851efd349c26a refs/heads/infrastructure/wp05-independent-linux-readiness-2\nce6a6fae1cdf7ec36b977e59050c8ac89db0aea6 refs/heads/main\ncda4691156a7477b29f641e4ba958ab718da6086 refs/heads/planning/gagamba-rc2b-scope-01\n8909950de598c7866859f46e4c356f0aef941bf2 refs/heads/preservation/nem-q3-independent-verification\nf8486c3e73d211f38d1b8491c3fb0ef4b17bc8a2 refs/heads/preservation/wp05-d6-2-focused-independent-review-previous-local\n06c8ac7eff6b968804a5cdd6c651f1a0c6845d56 refs/heads/qualification/ar6-native\nb134cb33a2d1ca1fa25a284b5ae9de18f1de4a6d refs/heads/qualification/ar7-feasibility\n62d79e7f8765452289da229cf429029390535635 refs/heads/qualification/conformance-foundation\nc1a01761f8d58136a381ad87269635c6c14ad093 refs/heads/qualification/gagamba-rc2a-02a-windows\ndd16baec48663d40cd29504d98e57e30dd0855df refs/heads/qualification/gagamba-rc2a-02b\n62b75f5866d0c339816712baeb04baa386b06f85 refs/heads/qualification/gagamba-rc2a-02c-q2as-rcd04\n1ce5c37f25c3bf49f55fc6a31a930f8430358d24 refs/heads/qualification/gagamba-rc2a-03-cq1\nd4e8bf88ce1661717537aaa3fb392bfe24c04466 refs/heads/qualification/wp05-d6-8-5-c2-linux\nb5827110167861f2dd12c69c54cdddd9ff1db326 refs/heads/remediation/conformance-foundation-review-1\n38f6981b2a60daab2df37c92913a6760c1bef131 refs/heads/remediation/wp05-identity-evidence-integrity\n8e156774fec28d807b557acae487791289369609 refs/heads/review/ar7-architecture\n3feb7c572d95b28c09dfb6795f1c92ba693fa22e refs/heads/review/conformance-foundation-independent\n97a3eaa914627bb4ccb9e20855403c37ac97e545 refs/heads/review/gagamba-independent-assessment-design\nfeb9d7584c41712195d4b90754ed7a342ba74bb7 refs/heads/review/gagamba-rc1-glm-independent-contract\n8e41babfc96afa2e617a53b63e50903d54001194 refs/heads/review/gagamba-rc2a-01-glm-independent\n7b6344551c2d4b42832df39822eaf4b8a1c01495 refs/heads/review/gagamba-rc2a-02a-glm-q1\n5bc396c2e5619906ae202afe0a4244dfd6024d9e refs/heads/review/gagamba-rc2a-02b-q1\n60de1f2d34a7df337a426501cb3954fdd3216a6b refs/heads/review/gagamba-rc2a-02b-q2\nf8b692e04941462ea592d9653960191cafb937cc refs/heads/review/gagamba-rc2a-02c-q2\ne060c91225274f13d53421b613a5736225ef6de4 refs/heads/review/gagamba-rc2a-03-cq1-q1\nb1ea5d3a84fcc11deac0e14f94c3f67b90c91e0b refs/heads/review/gagamba-rc2b-scope-q1\nd809ac969a84073d117d30b5a80437159741774c refs/heads/review/wp05-abort-oracle-final-requalification\nd0f2220d5e10abb97343d069a5ff43c22c72bfd7 refs/heads/review/wp05-d1-d3-fixture-evidence-review\n310484a5e82d4a81b0909e07281511cb7bc4c315 refs/heads/review/wp05-d4-crash-witness-qualification\n87cced6143fb3337829fab48a3c012b06c06508c refs/heads/review/wp05-d5-native-status-qualification\n2a235c391673258023d3b3058ad7bbb31cc20406 refs/heads/review/wp05-d6-0-independent-contract-design\n8aded096f0ed55375c35915378232e95cb8ba33d refs/heads/review/wp05-d6-1-independent-contract-design\n77f559a7dfc1702b33812d5c3d5c42ac925f0343 refs/heads/review/wp05-d6-1-independent-contract-design-2\n3bce34b6b449a863f784949c0d7be5b0b56d4458 refs/heads/review/wp05-d6-2-focused-contract-precision\ne63a6d4a18aad87b88f64939194b18dd102ad9bd refs/heads/review/wp05-d6-2-focused-contract-review\ncda2f22221c4db12ced3a4317362e80167270a63 refs/heads/review/wp05-d6-3-terra-independent-c3-outcome\n8b95c52abdebf8fd9a0235dd5a69082456e1984f refs/heads/review/wp05-d6-4-glm-independent-fixture\n1051018c272a578613309c07cb4d23d627216482 refs/heads/review/wp05-d6-5-glm-independent-isolation-equivalence\n3c3d336c0a47ccb18627a5571298df8d0d1f0683 refs/heads/review/wp05-d6-6-glm-independent-symbol-delivery\n546f284fbdbbcaa76f8b5557328fcd2d502a86c0 refs/heads/review/wp05-d6-7-glm-human-decision-integrity\n55f3f7a10b4d6860b8e7e02776bb3da73f801db9 refs/heads/review/wp05-d6-8-4-glm-f01-f02-closure\n89464f5f214615ba94051e438d9b4979483ae5bf refs/heads/review/wp05-d6-8-5-glm-c2-linux-qualification\n959f2d3162bdfbecac2723f50acae8459b2fa310 refs/heads/review/wp05-d6-8-glm-independent-c2\n71d5a7e0af5141d74110eacc06ba478ab75a81ac refs/heads/review/wp05-harness-linux-final-acceptance\n36a124d7dff98ecfaf956340767fe1768ad5b17f refs/heads/review/wp05-opencode-harness-final-qualification\ne6f8604cf6d2a0e532e651bece987fb9613e6b94 refs/heads/review/wp05-opencode-linux-readiness\n67e2d5b95ff2ff1a7d92fb2af27cb37bc0995bce refs/heads/review/wp05-qualification-harness-requalification\ne4b0a798e944ddfb144901c63b0c444e7980533b refs/heads/review/wp05-release-plan-adversarial-review\n712e0fc2dc56c0b14f12ca75c7d48137dae8a500 refs/heads/review/wp05-release-seccomp-counterexample\n5b6ab064ec0e329735aae969a3478577203d6616 refs/heads/review/wp05-seccomp-kernel-requalification\n6e1725802b2b4c846b4a7486c43fe4c719e45daf refs/tags/ar6-review-baseline-06c8ac7\n90c5e4e2d8f37094e0cc4c82c3207f6f275ea6db refs/tags/arch-execution-domain-amendment-1\n65d0b377347d1b81aaefbc3b2cfeabbe754dd838 refs/tags/arch-execution-domain-v1\n2b5364f75c96022ac5040b60d524d8603312d242 refs/tags/v0.1.0-preview.2\n9e9ab539346b78f717c94921ea7e652c1d6647e3 refs/tags/v0.1.0-preview.3\n5e6a30f4afc36568044fda2161ee84149823e2a3 refs/tags/v0.1.0-preview.4",
+  "manifests": [
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-q1-evidence/SHA256SUMS.txt",
+      "revision": "7713ec58cc7c292862c8c80d6b57dcacd3420b44",
+      "sha256": "9739a964e1300444e9377bdd08c1f1e952b8aaf9f2feae9129b0c510c623ece1",
+      "count": 156
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-r1-q2-evidence/SHA256SUMS.txt",
+      "revision": "4cb46a6cdbcc52b7129dbd88c4eba2e62ae73469",
+      "sha256": "17bf65a8ac79e41b85f34723616af4950b7df2e592da55ec59523f9f3129445b",
+      "count": 100
+    },
+    {
+      "path": "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/SHA256SUMS.txt",
+      "revision": "8be61181e804b2dfafb0797eb54c92d2f234ff86",
+      "sha256": "22c232f8585d99dbf9d9fde298fbe3f6924ad69fd5b4139366f0f50f845620be",
+      "count": 64
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-r2-q3-evidence/SHA256SUMS.txt",
+      "revision": "29da0ed60c18ed6364bf9366a64ab5aa3393db62",
+      "sha256": "2ca94c21c993e2923bdafb017775fc20143bd8d0c5174502b61d4bbf6b7af16b",
+      "count": 77
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-owner-01-evidence/SHA256SUMS.txt",
+      "revision": "ffdad5d05fefb6d260c884d61c791c6d9be91df5",
+      "sha256": "e965570e5fe97cd617b5b3f245e2b9403c96638c95d7c43b9cd847a85b09a301",
+      "count": 9
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-r2-q4-evidence/SHA256SUMS.txt",
+      "revision": "0d64fcd199997bf3bede3b328f44aaf211048daa",
+      "sha256": "38d7d5eb33160e3f756639a10d3d1e1da5fe0706f673b457e28777d826bc8cc8",
+      "count": 132
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-owner-02-evidence/SHA256SUMS.txt",
+      "revision": "6892ab0e235b2eaab943f218545cbe35ca95fd1b",
+      "sha256": "bde46f07a184c6e50b203e898e90905c82809c6f67fc57ed81449d30b40d5b76",
+      "count": 6
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-entry-owner-01-evidence/SHA256SUMS.txt",
+      "revision": "dc43b4360dbe17c644118239d0fd691c639aa0cc",
+      "sha256": "61a50084358b13be0ac36a8c2d93e12d111a159812a416683a0acec86a653aef",
+      "count": 9
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-entry-auth-01-evidence/SHA256SUMS.txt",
+      "revision": "db44b7e50c6ce449fdb6b596ad52744cf10443c0",
+      "sha256": "d03d78f64ec04f4fbc98c5055a3b60529b30ac9671fdeab8701d93b339e3d271",
+      "count": 6
+    },
+    {
+      "path": "docs/evidence/rc2b-06-b6-alt-b-slice-e-04-codec-implementation-01-evidence/SHA256SUMS.txt",
+      "revision": "3c16b53b288b39de3fb36964eecc8d5cccbc62b6",
+      "sha256": "5c25fa0cdadbc7f28481cb0bee2359ed8126aec1ca7417f68f6c4fd641485ac4",
+      "count": 129
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-04-codec-q1-evidence/SHA256SUMS.txt",
+      "revision": "34eae383d6f19b0a2f5f6ac957218c7f27eb6fa3",
+      "sha256": "037564575980b1bf7247e8bd858c7fe6264afa7b843d53f696063655a3c2da8a",
+      "count": 87
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-owner-01-evidence/SHA256SUMS.txt",
+      "revision": "1116c66d7858e6000f0001a0abe39319e4e694be",
+      "sha256": "a913052189e00cb697592530bb1b87a2b222badb9d8f2f91425396ba25da238c",
+      "count": 10
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-entry-owner-01-evidence/SHA256SUMS.txt",
+      "revision": "b309a9ec1a9a0f160ea0c2dd513001c3561a36d9",
+      "sha256": "8a37b4c4623ca2820c5731760da013c66c170c9d92fba0f7e08e6a16b694ed30",
+      "count": 7
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-design-owner-01-evidence/SHA256SUMS.txt",
+      "revision": "1ff4d6e6d1f756646072790478921d9a64f15654",
+      "sha256": "e48f0097802d130d6b96038795aa5cc2f91e1e88c6f19e4061f2fc279275f8a1",
+      "count": 12
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-entry-owner-02-evidence/SHA256SUMS.txt",
+      "revision": "02ba7ad3c81e72de885349c2bd54b0b7ab16bc12",
+      "sha256": "a0109ec7c34f7df8a6a528fe75314f94a49226d7a3011c5a009830180dfc6bdc",
+      "count": 5
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-entry-auth-01-evidence/SHA256SUMS.txt",
+      "revision": "7a30d0a05a7c898c4e90cc2ca01280db166ed6f2",
+      "sha256": "1553b3ab98e32b3b73096b3ca318a88b82b9d57085759ebfc653092586a8ccdf",
+      "count": 5
+    },
+    {
+      "path": "docs/evidence/rc2b-06-b6-alt-b-slice-e-05-custody-implementation-01-evidence/SHA256SUMS.txt",
+      "revision": "0a77422c1349b99e518292d46314606b383527e4",
+      "sha256": "bd371b96f6cc6d0b39f36279700361a8f6e265f208f7318d4368c5ec540207fc",
+      "count": 41
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-05-custody-q1-evidence/SHA256SUMS.txt",
+      "revision": "b6631367d39531b2c5af8a1917760d7c807f8e73",
+      "sha256": "3e57695efbf302bf15bf50dd32f502f3b3832a7d37d93fde28e06e91a756731b",
+      "count": 189
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01-evidence/SHA256SUMS.txt",
+      "revision": "4dc0ee0998f0def6cb1cba304a76b3a9f59ac904",
+      "sha256": "cd689e7eee4efe89774c3c54dcb07fbf03c55dc2489274e95df89bf1edb4edc0",
+      "count": 10
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/SHA256SUMS.txt",
+      "revision": "22a0b7b00364cc7be333ba7dfd9c0359a7fe9f99",
+      "sha256": "0a5c7ccdc473649f6ba51131db2d5ed0b45084c587bbdaf964567c7afbab998f",
+      "count": 19
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-release-prep-entry-auth-01-evidence/SHA256SUMS.txt",
+      "revision": "405f2d2d45b802f48e08dab64e53e305e29efb6b",
+      "sha256": "2ce501eda0d5cb4a59e7150e11b265c7309eae8bcbfe0a9cfa2e7034fc905b5f",
+      "count": 8
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-release-prep-entry-auth-f01-evidence/SHA256SUMS.txt",
+      "revision": "7d298ddd9d83e555a5c16b6c0cab8f36e46b8822",
+      "sha256": "fd02c308eef188a6cca1355046113222ac5773aa60bfa0354ea3018b5d62c224",
+      "count": 4
+    },
+    {
+      "path": "docs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/SHA256SUMS.txt",
+      "revision": "ce6a6fae1cdf7ec36b977e59050c8ac89db0aea6",
+      "sha256": "6070ee9bda58b622d05aa657c3922626cc366b660a1410bb7ba8207b55bbfaf0",
+      "count": 188
+    }
+  ],
+  "status_notes": {
+    "docs/handoff.md": {
+      "original_sha256": "f71acd8a66e5eba20cc54696bf11ef6457ab235dcc97afb08dc1c36c9eeda3ef",
+      "current_sha256": "8e13ca1a171ab618763134740e771f2d778c18fbeb429aa7a17abefdf2cd3c92",
+      "addition_sha256": "58747e4f7a72b5c2334f3f5bf8b1d51a53e38077a0865f12dc46f7241cf134c6"
+    },
+    "docs/PROJECT-STATUS.md": {
+      "original_sha256": "185d63e1d73835b24ce58094960dd53799a2934a36102a6080dd6a2657fd9383",
+      "current_sha256": "b4275c626e1cbaf2c722dbefc987a909041eb3314f2e254885ce3a74fc316f91",
+      "addition_sha256": "964e59412ac2b16e66ce2c209f7ba29eb8840994730f88ff86f9a19127756d70"
+    },
+    "docs/work-queue.md": {
+      "original_sha256": "015c28d73a3c6bdca0d665c4426ee5662f44ab92f9ad9cf0afeac79042f741bd",
+      "current_sha256": "f491c4fadaf992991a4c7a5641b8191a9a4cc7ff4d5b44a9652eced5c67235a3",
+      "addition_sha256": "49e08fea19784f4df9da294598b543a929604e5ba9583f0b814e30107db3413f"
+    }
+  },
+  "untracked": [
+    {
+      "path": "-",
+      "length": 3000,
+      "sha256": "f9518e249eda3d3ea589d58b19d9f1b92eee4c0ed0bc1c69f78e1d119d46dc0b"
+    },
+    {
+      "path": "; done; grep -c M1.Tests.ReleaseArbiterTests _LAPTOP-KBD8D8JG_2026-10-18_10_10_39.trx",
+      "length": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "NEM-INDEPENDENT-REVIEW.md",
+      "length": 84062,
+      "sha256": "186d7c2c7e133ca60c4623577f2e1a57fdd5a09ae1a6d56bfb53195db318df9a"
+    },
+    {
+      "path": "VerifyProductionBuild.cs",
+      "length": 6913,
+      "sha256": "3832edac847d5e4a0171b403e6bae207d3a728ff116070f4a40a3866eafbeac7"
+    },
+    {
+      "path": "docs/reviews/rc2b-04-b4-q1f01-q1-independent-review.md",
+      "length": 16103,
+      "sha256": "8f06bcb860f3535ca9868176c217a253c707fc0cdc8a627f48d96d9934b90389"
+    },
+    {
+      "path": "docs/reviews/restricted-consumer-rc2a-01-glm-independent.md",
+      "length": 16888,
+      "sha256": "77d2404c61dbf1af76e8448b966f03482186d95fff5bf6a676a32fe6c7d8e4d0"
+    },
+    {
+      "path": "eng/__pycache__/b4-native-matrix.cpython-314.pyc",
+      "length": 23617,
+      "sha256": "f77c55106a543c07dc8e3bdb8cd204c85a672aa07b07660d98e91dbcee728517"
+    },
+    {
+      "path": "eng/__pycache__/int01-fault-matrix.cpython-314.pyc",
+      "length": 29037,
+      "sha256": "47204dc88137e52018818adc1e49bb5af252c30f6d224b8f37c248a63e4f39b7"
+    },
+    {
+      "path": "eng/__pycache__/int01-native-matrix.cpython-314.pyc",
+      "length": 30069,
+      "sha256": "8b7d950601131bf4f45acb5b1bffdb77bb8b8bcd29fb4f37e5eadd1e04aecb1f"
+    },
+    {
+      "path": "eng/__pycache__/int01_cleanup.cpython-314.pyc",
+      "length": 5642,
+      "sha256": "9c6608fdf0977e3f25d8f210f4fcf854c9497c0906fb8f299107b2a4ebd8b4e9"
+    },
+    {
+      "path": "eng/__pycache__/qualification_gate.cpython-314.pyc",
+      "length": 22329,
+      "sha256": "df51701e804be983cca837e2766d589dfc4ea0196732f3b9032261ab600bf64d"
+    },
+    {
+      "path": "eng/__pycache__/test-b3-exec-oracle.cpython-314.pyc",
+      "length": 3402,
+      "sha256": "ac9ef1d24678ae82a60fb74b8860fb55d9dc9137e2f0fb1636a4086815c2536d"
+    },
+    {
+      "path": "eng/tests/__pycache__/test_int01_cleanup.cpython-314.pyc",
+      "length": 15980,
+      "sha256": "78c6889775235facb270342117613c4e1b3873b288d4f776376d9616c60d4641"
+    },
+    {
+      "path": "eng/tests/__pycache__/test_preparation_checkout.cpython-314.pyc",
+      "length": 3706,
+      "sha256": "1f608fa7f369cf88455da9a4d6a466b69051438c135689b7c1c726736caea590"
+    },
+    {
+      "path": "eng/tests/__pycache__/test_qualification_gate.cpython-314.pyc",
+      "length": 16075,
+      "sha256": "3365f2bf7f2dbe3d1902c0074c267988c4a6cf865d5a2a4d8e83e1d9087a5189"
+    },
+    {
+      "path": "inspect-assembly.cs",
+      "length": 4325,
+      "sha256": "e578804d8f00487eff584f70476a855a175eaaf55e6dedac7377f999cceae799"
+    },
+    {
+      "path": "spikes/Gw1bLaunch.Tests/TestResults/qual-windows-full.trx",
+      "length": 4275,
+      "sha256": "3b2756460901622ecb342057dd3abcece094493fab4f4b9b02e0ae4167ec3ef9"
+    },
+    {
+      "path": "spikes/cgexec/cgexec.c",
+      "length": 1848,
+      "sha256": "102bab1305508ab162d3d333a7eb4aab25f413cdc8d5c02eb60d1081c5445337"
+    },
+    {
+      "path": "spikes/cgspawn/cgspawn.c",
+      "length": 1967,
+      "sha256": "11a8eab1d9f69f0ea82209bd99e5b0fee1c8e05cca893ee563d33d48af688312"
+    },
+    {
+      "path": "spikes/cgspawn/run-c.sh",
+      "length": 809,
+      "sha256": "67e013794c99dd4fcce1fef2db25a8617bc6a2082c7668ea3fdbf9e8128aa3f7"
+    },
+    {
+      "path": "spikes/cgspawn/run-d.sh",
+      "length": 882,
+      "sha256": "669197db42014efee8172b83fd46d38bb02125b19a4b6c487d23eb2e18ed438c"
+    },
+    {
+      "path": "spikes/cgspawn/run-f.sh",
+      "length": 1050,
+      "sha256": "3a7a347ce2e686d1082cc24be7f351feb41661c71caba321a03b8843d5eb035e"
+    },
+    {
+      "path": "spikes/cgspawn/run.sh",
+      "length": 599,
+      "sha256": "2f8878029d51f94a82b7b2040cbade183585d5ff6b84ae4bd161a42b85d0a985"
+    },
+    {
+      "path": "spikes/pspawn/pspawn.c",
+      "length": 1765,
+      "sha256": "26c6803c9e32ceaaf9b335bcea3a3590255b5052cec0b983bbd2b28058426c6e"
+    },
+    {
+      "path": "spikes/pspawn/run-k.sh",
+      "length": 1376,
+      "sha256": "2361d333a5a577653446b5c3a0a9341d842f4daaf50f6aa3b3c7b4a405b93a0e"
+    },
+    {
+      "path": "spikes/pspawn/run.sh",
+      "length": 735,
+      "sha256": "2c6287293434b916d37ae8ee2075a7b36f5252ffc23997f00e372d873a317767"
+    },
+    {
+      "path": "spikes/strace-clone.sh",
+      "length": 289,
+      "sha256": "c1968f072bfa21f2d9d5ad7265d29fd854dfb600ff2a54084f48f98615faeceb"
+    },
+    {
+      "path": "spikes/strace-grep.sh",
+      "length": 289,
+      "sha256": "8e161214200992c89332c3c73cf4b75080632341c199363baed314a19a8e9479"
+    },
+    {
+      "path": "spikes/strace-owner.sh",
+      "length": 305,
+      "sha256": "17a8452c17ed5135939c4df82d9e7c59dc74248035f945ae84d4ea106c18b75d"
+    },
+    {
+      "path": "spikes/strace-tail.sh",
+      "length": 158,
+      "sha256": "5a12cec52d8f656ba6cc0a54afbfdd5dc614aaf229884b4b3f493b94d17aa040"
+    },
+    {
+      "path": "spikes/strace-window.sh",
+      "length": 307,
+      "sha256": "dbc5ae1455e38aefc1e87162689a94a26b24b94526b1441577b569cc9f36dd77"
+    },
+    {
+      "path": "spikes/wp05-qual-probe/Program.cs",
+      "length": 4668,
+      "sha256": "1174ea63ee5c2d43fb786b2a397fd267c7aad1fa6808cf8faf2f2bdb517a24f2"
+    },
+    {
+      "path": "spikes/wp05-qual-probe/wp05-qual-probe.csproj",
+      "length": 238,
+      "sha256": "c299ec65c19b75d1f4fd4ce516c09ee667a141b87a68a37ec76169cc3f86df2c"
+    },
+    {
+      "path": "tests/Fixtures/Gagamba.Fixture.SelfTest/TestResults/qual-windows-full.trx",
+      "length": 21154,
+      "sha256": "0d7f23fdb4efe63fc111c1416ac07b4cc6832f7ef1be7740a4b28e70b20f6dca"
+    },
+    {
+      "path": "tests/Gagamba.Conformance.Tests/TestResults/qual-windows-full.trx",
+      "length": 9821,
+      "sha256": "26d090a85c43abfdc2022dcd84941f197aa8711245f39b471748ec97bc2e3e10"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/TestResults/qual-windows-full.trx",
+      "length": 901682,
+      "sha256": "cd624363cb3705163202ed66a760443cacbedfa220a7ece46c6d94670acacb3e"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/TestResults/win-m1-remediation.trx",
+      "length": 908845,
+      "sha256": "504ae5f4c94e2335619d8c7eb6e5370c935aaef68a008760a68dcd5b2e1ef6c9"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.Tests/TestResults/qual-windows-full.trx",
+      "length": 71301,
+      "sha256": "e5b59bb0d7e73f59ee984b5acf12ac0cd53bf552a504912432b173afa148f605"
+    },
+    {
+      "path": "tests/Gagamba.Execution.MacOS.Tests/TestResults/qual-windows-full.trx",
+      "length": 76878,
+      "sha256": "8768613c37dbb0c393a16c8db539442bf55e79755bef810b6c7e92f1ed105cbe"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Tests/TestResults/qual-windows-full.trx",
+      "length": 28952,
+      "sha256": "020c20fa47fe0586a63cebff60c202721b548aa81299b828b4d4e791993e6d30"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Windows.Tests/TestResults/qual-windows-full.trx",
+      "length": 44545,
+      "sha256": "a4d13d1dc1262d337921032e4a3ce2e6f1982a407275678dd028510eea41f03b"
+    },
+    {
+      "path": "tests/Gagamba.Runtime.Tests/TestResults/qual-windows-full.trx",
+      "length": 21019,
+      "sha256": "95aca0fbe3f6263209b16ca352f0a13d0b3d605188ad9f1b8330012b1d7b86d7"
+    },
+    {
+      "path": "tools/VerifyProductionBuild/Program.cs",
+      "length": 6939,
+      "sha256": "dc11a44a9e11023c9bae2fe9d0b48238ee0b625c563a5af293be125d88d42959"
+    },
+    {
+      "path": "tools/VerifyProductionBuild/VerifyProductionBuild.csproj",
+      "length": 402,
+      "sha256": "1525c416189f0cfb574ae1cb7081cd8829924187a5af4d07cc0479ac79ce170a"
+    }
+  ],
+  "frozen_executables": [
+    {
+      "stage": "E-3 R2",
+      "revision": "8be61181e804b2dfafb0797eb54c92d2f234ff86",
+      "tree": "1c9307845858fb25ca0a9473d53d1fd1496018fc",
+      "files": [
+        {
+          "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodec.cs",
+          "blob": "d861210aeb3734b04e6bf9f472c12bd226253b32",
+          "git_sha256": "ce4c7b26ed0bfcde9f5d3dd07aaf0ca4cf78e6845737afbc3c8f2c28d5ffd359",
+          "checkout_sha256": "ce4c7b26ed0bfcde9f5d3dd07aaf0ca4cf78e6845737afbc3c8f2c28d5ffd359"
+        },
+        {
+          "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodecBinary.cs",
+          "blob": "814c233d6290c111d751c73dbe65e1ec7dc0cc23",
+          "git_sha256": "b259857ed0fb0092744d5b52f7e0982c112f0dc848ad13cea8dbebbb6e5e9d47",
+          "checkout_sha256": "b259857ed0fb0092744d5b52f7e0982c112f0dc848ad13cea8dbebbb6e5e9d47"
+        },
+        {
+          "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodecData.cs",
+          "blob": "ee8a7f00b160043dbd6bdad9b2bec945a21377a5",
+          "git_sha256": "4cbea3e2c7773ea0113e6578b024b7cb37825bca9b127fe37068ecf6c646b7b9",
+          "checkout_sha256": "4cbea3e2c7773ea0113e6578b024b7cb37825bca9b127fe37068ecf6c646b7b9"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecBinaryTests.cs",
+          "blob": "558c702fcb26a1ae4349c950dec4b3e1bc1b0d7e",
+          "git_sha256": "31eb33fe125b4ed78619986937b06ab3c96dc732893e8e373d4144b3fb4ce9a8",
+          "checkout_sha256": "31eb33fe125b4ed78619986937b06ab3c96dc732893e8e373d4144b3fb4ce9a8"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecBootstrapTests.cs",
+          "blob": "995e67f0b734a982399d011f4c6d0a46d68fc629",
+          "git_sha256": "15f6efe47b76e0d9adae52fabdf645b31ca21425da1b0e77f68740a421ab6575",
+          "checkout_sha256": "15f6efe47b76e0d9adae52fabdf645b31ca21425da1b0e77f68740a421ab6575"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecR2Tests.cs",
+          "blob": "9fe5984e6fc98885b6f2d39b7721918d899d1f3f",
+          "git_sha256": "8cdae4d60eee6e2a7835a235aade4421e0173f4b2f89ab83a6544a9ad7e1157f",
+          "checkout_sha256": "8cdae4d60eee6e2a7835a235aade4421e0173f4b2f89ab83a6544a9ad7e1157f"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecRemediationTests.cs",
+          "blob": "c5f8c763b5002c6bee3ebd908cb96b0edc910cce",
+          "git_sha256": "248c133da31cdf320e905607e5cb483ac624ec730c216d84b62ec18e2b3dd05a",
+          "checkout_sha256": "248c133da31cdf320e905607e5cb483ac624ec730c216d84b62ec18e2b3dd05a"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationPreCodecVectors.cs",
+          "blob": "4880945d6c6177351e929fde15b41babd1529298",
+          "git_sha256": "56f50867aa3b01fc6f1827d2bec64ce71430cd0ff1312498cfa26bb020dd17dd",
+          "checkout_sha256": "56f50867aa3b01fc6f1827d2bec64ce71430cd0ff1312498cfa26bb020dd17dd"
+        }
+      ]
+    },
+    {
+      "stage": "E-4",
+      "revision": "3c16b53b288b39de3fb36964eecc8d5cccbc62b6",
+      "tree": "2f30e0dc72d1565ac312c0c052ef820a03a3dea0",
+      "files": [
+        {
+          "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/Gava1ContextCodec.cs",
+          "blob": "2ea80a0828e51ba86b8ee216ffe4d20f4c42914b",
+          "git_sha256": "353280f0ad020591ed39b2475ed26bb3046acb159ef80e21398af46652e5bf69",
+          "checkout_sha256": "353280f0ad020591ed39b2475ed26bb3046acb159ef80e21398af46652e5bf69"
+        },
+        {
+          "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/Gava1ContextData.cs",
+          "blob": "95f4bb23eaffd4a36fd83cc4995f7cd8ba22a3d7",
+          "git_sha256": "cdb1b5613f1f731e4f93d6c62640c67f94718dd7caeaeb41024e7f0f1bb4abe9",
+          "checkout_sha256": "cdb1b5613f1f731e4f93d6c62640c67f94718dd7caeaeb41024e7f0f1bb4abe9"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/Gava1ContextCodecTests.cs",
+          "blob": "c58def60a40abeb7a767c9f5408b08becf94cc2e",
+          "git_sha256": "0a32a6e3b05ad8dd5a37d20d74d8b17870c15d3b9d6f031db0bdb59696c9ed82",
+          "checkout_sha256": "0a32a6e3b05ad8dd5a37d20d74d8b17870c15d3b9d6f031db0bdb59696c9ed82"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/Gava1ContextVectors.cs",
+          "blob": "19244bcb4cf2a7ff629083abea79a01444a14bce",
+          "git_sha256": "a16f818981f72c075e8d1aa74a73845cb9792e81a6dc80cc42d0329ee53db345",
+          "checkout_sha256": "a16f818981f72c075e8d1aa74a73845cb9792e81a6dc80cc42d0329ee53db345"
+        }
+      ]
+    },
+    {
+      "stage": "E-5",
+      "revision": "28895d55de98eea4bc402373b653f7216e092843",
+      "tree": "e314f2e8a1259e2263c8494bb0c8ca9f7eb27016",
+      "files": [
+        {
+          "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs",
+          "blob": "60a4f546b77ff5a11a43a51117722c129b753646",
+          "git_sha256": "82fec8f17b91c206e339f65d18b462539951f4c33c39074ba9deec5f82354cec",
+          "checkout_sha256": "82fec8f17b91c206e339f65d18b462539951f4c33c39074ba9deec5f82354cec"
+        },
+        {
+          "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs",
+          "blob": "0884372a339d84e70d0a6c7ebfd72726996f17fa",
+          "git_sha256": "0fa622cd8de73bfc66b8b9dba6c7ea253c21677f942f24a9c34e6574cad12367",
+          "checkout_sha256": "0fa622cd8de73bfc66b8b9dba6c7ea253c21677f942f24a9c34e6574cad12367"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelCompositionTests.cs",
+          "blob": "2fb103e39ab4dc562026d8a9dffba196e2574fc0",
+          "git_sha256": "004df41c3518b43440d5ff62d222dc6e6d886594390fcdbe73a9121c35821c8d",
+          "checkout_sha256": "004df41c3518b43440d5ff62d222dc6e6d886594390fcdbe73a9121c35821c8d"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs",
+          "blob": "47b5f7f8eead276ec731a0e644abd766588f2ce3",
+          "git_sha256": "e5f10d8636557b3295b6b106f64e20ef37d5bbf3e6c4debd70454f2792f4bc04",
+          "checkout_sha256": "e5f10d8636557b3295b6b106f64e20ef37d5bbf3e6c4debd70454f2792f4bc04"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs",
+          "blob": "6efa17c8d8bc8d71c935e2e8247dcfa18424b3b4",
+          "git_sha256": "40025fef5f0655edae9a525811d2de30c9b64d7506fedc2524dbf690ddbbdfd8",
+          "checkout_sha256": "40025fef5f0655edae9a525811d2de30c9b64d7506fedc2524dbf690ddbbdfd8"
+        },
+        {
+          "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs",
+          "blob": "ea55eef683d2428bb9a2193e8817ed52fe9f5a00",
+          "git_sha256": "01f0804572b6961070b0992a0ba2a75438c8984e6e9e274d2aa7d2bbd7394d82",
+          "checkout_sha256": "01f0804572b6961070b0992a0ba2a75438c8984e6e9e274d2aa7d2bbd7394d82"
+        }
+      ]
+    }
+  ],
+  "authorized_paths": [
+    "src/Gagamba.Execution.Linux.M1/Validation/ValidationReleasePreparation.cs",
+    "tests/Gagamba.Execution.Linux.M1.Tests/Validation/ValidationReleasePreparationTests.cs"
+  ],
+  "globs": [
+    {
+      "project": "src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj",
+      "configuration": "Debug",
+      "relative": "Validation/ValidationReleasePreparation.cs",
+      "included": true,
+      "default_sibling_items": {
+        "Validation/CanonicalJson.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/DetachedEvidenceContracts.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/DetachedEvidenceVerifier.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/FrozenContracts.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/FrozenContractVerifier.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/FrozenSchemaRules.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/ValidationReleasePreparation.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props"
+      },
+      "default_item_excludes": ";bin\\Debug\\/**;obj\\Debug\\/**;bin\\/**;obj\\/**;bin\\Debug\\net10.0\\publish\\/**;**/*.user;**/*.*proj;**/*.sln;**/*.slnx;**/*.vssscc;**/.DS_Store"
+    },
+    {
+      "project": "src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj",
+      "configuration": "Release",
+      "relative": "Validation/ValidationReleasePreparation.cs",
+      "included": true,
+      "default_sibling_items": {
+        "Validation/CanonicalJson.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/DetachedEvidenceContracts.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/DetachedEvidenceVerifier.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/FrozenContracts.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/FrozenContractVerifier.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/FrozenSchemaRules.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/ValidationReleasePreparation.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props"
+      },
+      "default_item_excludes": ";bin\\Release\\/**;obj\\Release\\/**;bin\\/**;obj\\/**;bin\\Release\\net10.0\\publish\\/**;**/*.user;**/*.*proj;**/*.sln;**/*.slnx;**/*.vssscc;**/.DS_Store"
+    },
+    {
+      "project": "tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj",
+      "configuration": "Debug",
+      "relative": "Validation/ValidationReleasePreparationTests.cs",
+      "included": true,
+      "default_sibling_items": {
+        "Validation/CanonicalJsonTests.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/Cjson1F02ParityTests.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/DetachedEvidenceFixtures.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/DetachedEvidenceNegativeTests.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/DetachedEvidenceReachabilityTests.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/DetachedEvidenceTests.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/FrozenContractNegativeTests.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/FrozenContractTests.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/ValidationFixtures.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/ValidationReachabilityTests.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/ValidationReleasePreparationTests.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props"
+      },
+      "default_item_excludes": ";bin\\Debug\\/**;obj\\Debug\\/**;bin\\/**;obj\\/**;bin\\Debug\\net10.0\\publish\\/**;**/*.user;**/*.*proj;**/*.sln;**/*.slnx;**/*.vssscc;**/.DS_Store"
+    },
+    {
+      "project": "tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj",
+      "configuration": "Release",
+      "relative": "Validation/ValidationReleasePreparationTests.cs",
+      "included": true,
+      "default_sibling_items": {
+        "Validation/CanonicalJsonTests.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/Cjson1F02ParityTests.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/DetachedEvidenceFixtures.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/DetachedEvidenceNegativeTests.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/DetachedEvidenceReachabilityTests.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/DetachedEvidenceTests.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/FrozenContractNegativeTests.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/FrozenContractTests.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/ValidationFixtures.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/ValidationReachabilityTests.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props",
+        "Validation/ValidationReleasePreparationTests.cs": "C:\\Program Files\\dotnet\\sdk\\10.0.401\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.Sdk.DefaultItems.props"
+      },
+      "default_item_excludes": ";bin\\Release\\/**;obj\\Release\\/**;bin\\/**;obj\\/**;bin\\Release\\net10.0\\publish\\/**;**/*.user;**/*.*proj;**/*.sln;**/*.slnx;**/*.vssscc;**/.DS_Store"
+    }
+  ],
+  "source_identities": [
+    {
+      "path": "AGENTS.md",
+      "blob": "fef491d881c71aa81fbb6f0bb975edf993f3b11f",
+      "git_sha256": "1967f67870496a4ab55803ba28c021a8d1efdf916ac0ac07ef46678321e342b7",
+      "checkout_sha256": "1967f67870496a4ab55803ba28c021a8d1efdf916ac0ac07ef46678321e342b7",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "Directory.Build.props",
+      "blob": "78c01a4335143c58abbafaec15308ab86e25832a",
+      "git_sha256": "c1d24752ea45b694febc3c898c6fc3735aeaea1e8e3405ba0b94fa5492b477e8",
+      "checkout_sha256": "b46e253889796bf09051af46faa41e48f499f262e43916d776c33af44a334c3e",
+      "checkout_equals_blob": false
+    },
+    {
+      "path": "Directory.Build.targets",
+      "blob": "eb1755b3530ce30d64a28ab24d6b1c12e47e7f9c",
+      "git_sha256": "6c1b763f561bde4f37e2fced95770bab28c3cfea0fc1b0267b31717031686fad",
+      "checkout_sha256": "16fb2860b00a35d55c7b54f44571192b1f6e6cfcb4572c2f651ddee59cb414f6",
+      "checkout_equals_blob": false
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-p4-coverage-owner-acceptance-01.md",
+      "blob": "31ae1b08cb4663a6a9d9de657fd972fccb731cf2",
+      "git_sha256": "3bdccfdf3e24d4a00fd9f2e600cee13e3eab94014def03a349023eb2bf3e4b6e",
+      "checkout_sha256": "3bdccfdf3e24d4a00fd9f2e600cee13e3eab94014def03a349023eb2bf3e4b6e",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-entry-owner-decision-01.md",
+      "blob": "7002dcb3f04e4d69ca5d9c6cb8e9ef57f0f7c578",
+      "git_sha256": "573f248a41b6d0215d294b74152ab17c64478fc6ac484884dff0f001b46b84fb",
+      "checkout_sha256": "573f248a41b6d0215d294b74152ab17c64478fc6ac484884dff0f001b46b84fb",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-f01-owner-acceptance-01.md",
+      "blob": "c40d57a5d080309aaea6fa881474668c20cd7fbb",
+      "git_sha256": "30205d32409c097624da25cfd9ed6608f1588d79f3af96231125da06e6ad194b",
+      "checkout_sha256": "30205d32409c097624da25cfd9ed6608f1588d79f3af96231125da06e6ad194b",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-f02-arch-decision-01.md",
+      "blob": "dbe6a1ee10a0665fc94501ece39e36b7ec4951de",
+      "git_sha256": "18991396ca7f5cb4b33a31d512631e05e7f661d1e29f80292275abe1f1ed6859",
+      "checkout_sha256": "18991396ca7f5cb4b33a31d512631e05e7f661d1e29f80292275abe1f1ed6859",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-f02-parity-owner-acceptance-01.md",
+      "blob": "c274409330287c10a2b4e9fe92ad12349feeb3f2",
+      "git_sha256": "00f39ae2a1fc1675fa195c3af0ba040fdd05eed956e497f5e0c6fa5285a56107",
+      "checkout_sha256": "00f39ae2a1fc1675fa195c3af0ba040fdd05eed956e497f5e0c6fa5285a56107",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-f03-owner-acceptance-01.md",
+      "blob": "3637f22dc395e95137495c6e89db7d00b96b4f9f",
+      "git_sha256": "44c85e0062c42ddec6e98a74268d71f358a9435f506089aa416e6045d47fb944",
+      "checkout_sha256": "44c85e0062c42ddec6e98a74268d71f358a9435f506089aa416e6045d47fb944",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-owner-acceptance-01.md",
+      "blob": "6851869180a01056b8a0f59c5be4eb4056da624f",
+      "git_sha256": "27de68690cca7027d46b0692e52e5da71641e38e13c4037fd31937d08f823b93",
+      "checkout_sha256": "27de68690cca7027d46b0692e52e5da71641e38e13c4037fd31937d08f823b93",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-02-closure-owner-01.md",
+      "blob": "3388894f821a4a92aca7c2b2d79c832a0f70a450",
+      "git_sha256": "7e4228463b83708ffa0ce6f0ab3f98ce11b15aaee586353a3e4d8884a3ece244",
+      "checkout_sha256": "7e4228463b83708ffa0ce6f0ab3f98ce11b15aaee586353a3e4d8884a3ece244",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-02-d1.md",
+      "blob": "83fe8d2649675e00b76457885fd0169b4ae77498",
+      "git_sha256": "438194de12d063f2212038879b71f6f4f5c2f68526f32a19649ea49f8f47916b",
+      "checkout_sha256": "438194de12d063f2212038879b71f6f4f5c2f68526f32a19649ea49f8f47916b",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-02-p0-owner-acceptance-01.md",
+      "blob": "8dd20d11202bb4ed7fb0dd3cdf447eaa3c5e54b7",
+      "git_sha256": "049d9195bd2cc9b2b02515b771c4d15263a49042dc56d467d4d33a81c5ba50f5",
+      "checkout_sha256": "049d9195bd2cc9b2b02515b771c4d15263a49042dc56d467d4d33a81c5ba50f5",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-02-p1-owner-acceptance-01.md",
+      "blob": "f360932adc4909b4f26e32b6005a592618dd0912",
+      "git_sha256": "20a0e258dcb5b2b9f11e2710c63d81115a51e7bd437f762fa18c16a26d758994",
+      "checkout_sha256": "20a0e258dcb5b2b9f11e2710c63d81115a51e7bd437f762fa18c16a26d758994",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-02-p2-owner-acceptance-01.md",
+      "blob": "fb00cc37f1b8294d18e459154a24c3cc1d1f8dd8",
+      "git_sha256": "afac8adf280629ddb543bf9bc66d5418d4acdb46a259b2aba13bb49c1d9c815c",
+      "checkout_sha256": "afac8adf280629ddb543bf9bc66d5418d4acdb46a259b2aba13bb49c1d9c815c",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-owner-01-evidence/downstream-obligations.md",
+      "blob": "ec82b7c82bda628ec93efa4406e9044cf8b25127",
+      "git_sha256": "bba2b456e65f88a302c61c0957197a3dd4189741f49802f4830474d2e6b6cad8",
+      "checkout_sha256": "bba2b456e65f88a302c61c0957197a3dd4189741f49802f4830474d2e6b6cad8",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-owner-01-evidence/inherited-qualifications.md",
+      "blob": "5aee003b02a48e3ce095b972f8825fe2100b7da9",
+      "git_sha256": "74ba3ce57c4b2aae8d4b8ed0a12c75c14e645309b2cf4782153fce042fb36c50",
+      "checkout_sha256": "74ba3ce57c4b2aae8d4b8ed0a12c75c14e645309b2cf4782153fce042fb36c50",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-owner-02.md",
+      "blob": "fb95a42fb08a901cd07f07ca3d7cf4732cf6ccc0",
+      "git_sha256": "987d4b16bc88200bdf27fb15d3e8f720745c456c92442c99d5dcfd60bef893c0",
+      "checkout_sha256": "987d4b16bc88200bdf27fb15d3e8f720745c456c92442c99d5dcfd60bef893c0",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-frozen-record-owner-01.md",
+      "blob": "d2fea61b7db323319ee59033c8b1b12ded1ffe7d",
+      "git_sha256": "c7351553eb8c82837c618d6b36a3563cafa99899841fc20b07142898b641c7d8",
+      "checkout_sha256": "c7351553eb8c82837c618d6b36a3563cafa99899841fc20b07142898b641c7d8",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-entry-auth-01-evidence/implementation-specification.md",
+      "blob": "6c501fcf358da40fd297e44e6790c5e74079220d",
+      "git_sha256": "373ba45bcf75725e87e107194c864ef6e704bd6ecffb3d0e1a5d34a72582708a",
+      "checkout_sha256": "373ba45bcf75725e87e107194c864ef6e704bd6ecffb3d0e1a5d34a72582708a",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-entry-auth-01.md",
+      "blob": "5d93bd18eb25f67bf81a467ec3f0ddff43710c76",
+      "git_sha256": "e9199e28ceac94f27413a86fa5933101abed7996d6ace1f8a514b31f7e7a2d46",
+      "checkout_sha256": "e9199e28ceac94f27413a86fa5933101abed7996d6ace1f8a514b31f7e7a2d46",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-entry-owner-01-evidence/gava1-contract.md",
+      "blob": "c82f035b844738c27df55eb9fc9ef5325c9c08c6",
+      "git_sha256": "73c932418c4340a4f74c2b933f415258aaf22f00cf9cb99dee3cb674df290e6c",
+      "checkout_sha256": "73c932418c4340a4f74c2b933f415258aaf22f00cf9cb99dee3cb674df290e6c",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-entry-owner-01-evidence/gava1-frozen-excerpt.txt",
+      "blob": "23d6ed7d95e4dd532de7e7f3a0f3a6de665b50a1",
+      "git_sha256": "e6e0730c735c5984c97a46ed1c205131c5ffff6427de87bcb731f00110d568c4",
+      "checkout_sha256": "e6e0730c735c5984c97a46ed1c205131c5ffff6427de87bcb731f00110d568c4",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-owner-01.md",
+      "blob": "d9c148b466db1e84a7a15526f161b2927cdd4751",
+      "git_sha256": "4bee068a79dbf871a9d87df288cc887b2ec781d2c294bd0057c5f208376fe242",
+      "checkout_sha256": "4bee068a79dbf871a9d87df288cc887b2ec781d2c294bd0057c5f208376fe242",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-design-owner-01-evidence/carry-forward.md",
+      "blob": "f9c0cb3c2ac4bee1cab357cdd0afbbd7ac646fa3",
+      "git_sha256": "0e92cdd17848201ea2894731881a8486f506ba33c87f370d242a03375b8850a2",
+      "checkout_sha256": "0e92cdd17848201ea2894731881a8486f506ba33c87f370d242a03375b8850a2",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-design-owner-01-evidence/contract.md",
+      "blob": "121443efb9e145e2413c5a2c40f59e45a55eaa55",
+      "git_sha256": "8d782d55544a1fcc65a7adbe035e21ce7d7cd10d31658274b1620527b8b02a54",
+      "checkout_sha256": "8d782d55544a1fcc65a7adbe035e21ce7d7cd10d31658274b1620527b8b02a54",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-design-owner-01-evidence/launcher.md",
+      "blob": "98df570d8e3760deb4ccaf609049ec4db47a9863",
+      "git_sha256": "d117966a3f0c7dcf8614817ff6977a5f737dea9471448574988a02ef1c80091f",
+      "checkout_sha256": "d117966a3f0c7dcf8614817ff6977a5f737dea9471448574988a02ef1c80091f",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-design-owner-01-evidence/qualification.md",
+      "blob": "5718f975d1ba42082834acff59e7aaeb6a527d5c",
+      "git_sha256": "4b2aea1e56792961e5e342372ea761d937dae94615259ff50bfc9a9a154d1ad5",
+      "checkout_sha256": "4b2aea1e56792961e5e342372ea761d937dae94615259ff50bfc9a9a154d1ad5",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-design-owner-01-evidence/responsibilities.md",
+      "blob": "dc7c0d5930371a386eaeb71aff442e5a21fbdc6b",
+      "git_sha256": "75a7db51380168b5c724eeae15d2c003e603616d41690f5bb87c8a1eee06337a",
+      "checkout_sha256": "75a7db51380168b5c724eeae15d2c003e603616d41690f5bb87c8a1eee06337a",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01-evidence/carry-forward.md",
+      "blob": "d5aa75c866e483ad4b35b08cd604e588786c7820",
+      "git_sha256": "606c9927a1f9b8d5af92adac101badb9afe2e046f032acaed099054724b59a01",
+      "checkout_sha256": "606c9927a1f9b8d5af92adac101badb9afe2e046f032acaed099054724b59a01",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01-evidence/roadmap.md",
+      "blob": "8558b6d03fc0993bbc39a0e35892b95db608905b",
+      "git_sha256": "3a0f179e33fc48ae47880346893ab50fd9160d62dd55001b152985fde4b46369",
+      "checkout_sha256": "3a0f179e33fc48ae47880346893ab50fd9160d62dd55001b152985fde4b46369",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01-evidence/verification-and-p4.md",
+      "blob": "d1799338df840751538500137644020790a0ef2e",
+      "git_sha256": "8c91d7281ef24f3f05922f8469895b454d6fa6e631f21840bc1af71757191b55",
+      "checkout_sha256": "8c91d7281ef24f3f05922f8469895b454d6fa6e631f21840bc1af71757191b55",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01-evidence/verify-acceptance.py",
+      "blob": "c62a617d4b775efe3182612e79c8243d98dd447d",
+      "git_sha256": "fc0deef3688d7e0cb835c1fef6577b5b8b78d7fb66f63ec4f452860a056fab89",
+      "checkout_sha256": "fc0deef3688d7e0cb835c1fef6577b5b8b78d7fb66f63ec4f452860a056fab89",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01.md",
+      "blob": "4d258289604b1e14b1fa7bcc9a04efa36efb6e22",
+      "git_sha256": "e76060e70d95e8c90161d87124afe5edbe9911c8cef372ecd997ebea4629d77c",
+      "checkout_sha256": "e76060e70d95e8c90161d87124afe5edbe9911c8cef372ecd997ebea4629d77c",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/SHA256SUMS.txt",
+      "blob": "8b2f9fd62ea8bd8e6d479d4c531f1ed29bdb04ba",
+      "git_sha256": "0a5c7ccdc473649f6ba51131db2d5ed0b45084c587bbdaf964567c7afbab998f",
+      "checkout_sha256": "0a5c7ccdc473649f6ba51131db2d5ed0b45084c587bbdaf964567c7afbab998f",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/atomic-set.md",
+      "blob": "2c0e79f034f02693fb770dcad0664624a5d035ef",
+      "git_sha256": "45d9d4c8f7aa20371cac9e42f01e726819a6b1d49f7bedd6e1011a2cae6bc717",
+      "checkout_sha256": "45d9d4c8f7aa20371cac9e42f01e726819a6b1d49f7bedd6e1011a2cae6bc717",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/carry-forward.md",
+      "blob": "1e0d1b549b306b6a2734d9562cb42667731defd4",
+      "git_sha256": "3841afe76baec05a488c8a3b9005a1113e57e5ef9db7686e99b187e790459180",
+      "checkout_sha256": "3841afe76baec05a488c8a3b9005a1113e57e5ef9db7686e99b187e790459180",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/ci-commit-binding.json",
+      "blob": "12115d5e0457fed646fd9ecff3543b4eeee64ef8",
+      "git_sha256": "06df91b0e91089596bf6629194b43e78eed5651316c754cba44b01f6c585a365",
+      "checkout_sha256": "06df91b0e91089596bf6629194b43e78eed5651316c754cba44b01f6c585a365",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/document-verification.md",
+      "blob": "c874d7a3f257ac28e0e918295942a1948067c619",
+      "git_sha256": "1a20a0a45958220875faf1f471bd6e00bedc4794389e67e3fdaba7ad98e2d0b3",
+      "checkout_sha256": "1a20a0a45958220875faf1f471bd6e00bedc4794389e67e3fdaba7ad98e2d0b3",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/first-consumer.md",
+      "blob": "642461f3c424064635a39ad3dc4e7b16a2dde46d",
+      "git_sha256": "2897500675cc4adb9836feb8d2bcbd7aded9dfab5874c99edab5656b9676f36f",
+      "checkout_sha256": "2897500675cc4adb9836feb8d2bcbd7aded9dfab5874c99edab5656b9676f36f",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/historical-e5-audit.json",
+      "blob": "4ce55dc79573dc87158c28fe49bbd5e3de1bc656",
+      "git_sha256": "9d89eed9bf551e010d2a81e741fce10dc0b8ccd636c5826d56ad8cf8a8e20ba3",
+      "checkout_sha256": "9d89eed9bf551e010d2a81e741fce10dc0b8ccd636c5826d56ad8cf8a8e20ba3",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/invariants.md",
+      "blob": "03d77b5098a35eee77cf64c9f377e92867d4701c",
+      "git_sha256": "66ad071b64b72c3ea08348dd2bc55b3ca3cfef3d2b77c192dac72f6b27beea91",
+      "checkout_sha256": "66ad071b64b72c3ea08348dd2bc55b3ca3cfef3d2b77c192dac72f6b27beea91",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/live-custody.md",
+      "blob": "29a316dc8190e07a86fea5bda9a36d31b4dee93b",
+      "git_sha256": "9568117475a603172d1b1a8e54f2c4846af11d6ab660fe6ec1597f7c140378d4",
+      "checkout_sha256": "9568117475a603172d1b1a8e54f2c4846af11d6ab660fe6ec1597f7c140378d4",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/ordering.md",
+      "blob": "b7044b649ea6addd76282cc94476499c0e06a693",
+      "git_sha256": "af3ea17bc3f1d22440319fe3409ee755672f6369ef4221ba2718de85ff32fde7",
+      "checkout_sha256": "af3ea17bc3f1d22440319fe3409ee755672f6369ef4221ba2718de85ff32fde7",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/p4.md",
+      "blob": "6f2b6001dbd8b607cee719869a99f9df3ed68965",
+      "git_sha256": "f24ea7e10929f086e6498f029d2dd3537f1139f1f7ec1149b2f6147b360f93d6",
+      "checkout_sha256": "f24ea7e10929f086e6498f029d2dd3537f1139f1f7ec1149b2f6147b360f93d6",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/preflight.json",
+      "blob": "c7e419a8d333f049149037ad3c992b6f3a82f6f1",
+      "git_sha256": "625cc6f49d66a1f709132ae29f57cb8cea382e1b3d84fa4a2b374e7a525cca48",
+      "checkout_sha256": "625cc6f49d66a1f709132ae29f57cb8cea382e1b3d84fa4a2b374e7a525cca48",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/provenance.md",
+      "blob": "8071b4f16c08b2c05e7671f54eae9a33a7c0d906",
+      "git_sha256": "be093a5d84c58a29c76cc9cbbe10f41f35cb6b0055f04dc0d297b2ccaeafa305",
+      "checkout_sha256": "be093a5d84c58a29c76cc9cbbe10f41f35cb6b0055f04dc0d297b2ccaeafa305",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/published-ci.json",
+      "blob": "68ce2e9d1822af5406e19618eee8a14936237806",
+      "git_sha256": "7ab447401796fb30be31b820b621dae1c5d4717194d3d67de3a413129fe48fdc",
+      "checkout_sha256": "7ab447401796fb30be31b820b621dae1c5d4717194d3d67de3a413129fe48fdc",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/release-enforcement.md",
+      "blob": "499f0c46323f8232076c95fd94752a129b17fff9",
+      "git_sha256": "8876d4b8703938a2527e1be1f08f36555f9fa2b95ce5e8e843b857f2ebbb61a4",
+      "checkout_sha256": "8876d4b8703938a2527e1be1f08f36555f9fa2b95ce5e8e843b857f2ebbb61a4",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/roadmap.md",
+      "blob": "3338cc7d7ec6b7b261d75046e85f1a4774ccef55",
+      "git_sha256": "fba76b16fa9d95e59c3ad3e8df659baade8a47f648f6a31d004d5d2f490df18e",
+      "checkout_sha256": "fba76b16fa9d95e59c3ad3e8df659baade8a47f648f6a31d004d5d2f490df18e",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/source-identities.json",
+      "blob": "019894f1bae99d251235154a8916c77d36c62981",
+      "git_sha256": "1b2ea2ffdcec8e435679780d4e09323c13616dff2ebc1e5bd7af4cf6e7d93800",
+      "checkout_sha256": "1b2ea2ffdcec8e435679780d4e09323c13616dff2ebc1e5bd7af4cf6e7d93800",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/verification.md",
+      "blob": "72d725ef5dc0c21fbb0d5a03963cffefa428651d",
+      "git_sha256": "3f4d3af1739f65d6c34487b121eb43f3230f4598d7175de02b9f8aef9a10f4df",
+      "checkout_sha256": "3f4d3af1739f65d6c34487b121eb43f3230f4598d7175de02b9f8aef9a10f4df",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/verify-assessment.py",
+      "blob": "6822143b73f01d797d1e395de4482a97436db1e0",
+      "git_sha256": "a4883cad644902fdc84c667131288b5f9c8e838f31ebaad331b2d050dc70de99",
+      "checkout_sha256": "a4883cad644902fdc84c667131288b5f9c8e838f31ebaad331b2d050dc70de99",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01.md",
+      "blob": "3e6961136efa0168ece18f5a6d0dbea8f5cc2f44",
+      "git_sha256": "b8782a20f2241ad0939ce8d0c45a74559f7f505b565961794a97a2bec0bcfa08",
+      "checkout_sha256": "b8782a20f2241ad0939ce8d0c45a74559f7f505b565961794a97a2bec0bcfa08",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-integrated-start-authority-owner-decision-01.md",
+      "blob": "844cb149ffee442e0111210f7befae1cfe2caef0",
+      "git_sha256": "3465b3503ad75daa40fead701fad36d165d642568bc60c98f67c3870462b6361",
+      "checkout_sha256": "3465b3503ad75daa40fead701fad36d165d642568bc60c98f67c3870462b6361",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/evidence/rc2b-06-b6-alt-b-p4-coverage-recon-01.md",
+      "blob": "6cc68e0eb64388fb7886444360e76d00cb9d0c2f",
+      "git_sha256": "b3f851aa878d64315af70902d5148819066b684f7d3d3e35e1c4bc49c2ec4d0e",
+      "checkout_sha256": "b3f851aa878d64315af70902d5148819066b684f7d3d3e35e1c4bc49c2ec4d0e",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2.md",
+      "blob": "900e12cb53cdf843516cc0886e6070f141f8bea2",
+      "git_sha256": "3d20597f8e99530f999204022b3a4fdbfdeda6e9e9ba5d65b2859e12cf992fe1",
+      "checkout_sha256": "3d20597f8e99530f999204022b3a4fdbfdeda6e9e9ba5d65b2859e12cf992fe1",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-v3-pre-frozen-record-candidate-01.md",
+      "blob": "f6a71562845d2cfe0aee5495864a509c5caabe7a",
+      "git_sha256": "1948bab694ed37bf5c7c50524328716f3eef18d98dd1ae9971ca12100c40160e",
+      "checkout_sha256": "1948bab694ed37bf5c7c50524328716f3eef18d98dd1ae9971ca12100c40160e",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/evidence/rc2b-06-b6-alt-b-slice-e-05-custody-implementation-01-evidence/reproduction.md",
+      "blob": "c3016063c1b3b55be6cb860cc6e076b5e0767836",
+      "git_sha256": "cda42f0265a4c2d7a0e0f4aaa1fab581d7187969daa3f92a8a00091b6368fa97",
+      "checkout_sha256": "cda42f0265a4c2d7a0e0f4aaa1fab581d7187969daa3f92a8a00091b6368fa97",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/fixture-protocol.md",
+      "blob": "b71da527225e8c3aea1663c20b55246142b6b635",
+      "git_sha256": "cf6c112f6e19a886dbb0085aec0ac25d8afa9acd93b5c14f2dbd80039770264e",
+      "checkout_sha256": "cf6c112f6e19a886dbb0085aec0ac25d8afa9acd93b5c14f2dbd80039770264e",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/handoff.md",
+      "blob": "10b0b740855956e6825f3f82b59ba4a446b7d34f",
+      "git_sha256": "f71acd8a66e5eba20cc54696bf11ef6457ab235dcc97afb08dc1c36c9eeda3ef",
+      "checkout_sha256": "f71acd8a66e5eba20cc54696bf11ef6457ab235dcc97afb08dc1c36c9eeda3ef",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/implementation-plan.md",
+      "blob": "d85d0722e4f1c9fd0417e0b9524527b30e60abf8",
+      "git_sha256": "c30a4b8ed35935c6796ada47894ab4d5883eae307021f22a79e111adc6f19b80",
+      "checkout_sha256": "c30a4b8ed35935c6796ada47894ab4d5883eae307021f22a79e111adc6f19b80",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/plans/rc2b-06-b6-integrated-start-authority-impl-01.md",
+      "blob": "485ad1ac76e836d2bd6eb826131a01294c9bda8c",
+      "git_sha256": "9b3d9774e6a1c244ccfa89e8f16a54c8678d22bdef0e0272ce1c528b8dd4f42c",
+      "checkout_sha256": "9b3d9774e6a1c244ccfa89e8f16a54c8678d22bdef0e0272ce1c528b8dd4f42c",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/remediation-evidence-standard.md",
+      "blob": "ab98eec3498089292ddd868c00506f0bb83a028f",
+      "git_sha256": "7947b91e3e9bd92c74e50fe02751ba23161e1ab83fb1c661067238c2689d2e03",
+      "checkout_sha256": "0478e4878b7c95d6441dcc24f6fde17f2f86baf74aab41a3298df892913b9854",
+      "checkout_equals_blob": false
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-qe1-frozen-record-prep-01-evidence/binary-vectors.md",
+      "blob": "c0935d0be9c7619b386f7c5be0edd0f49e778cc9",
+      "git_sha256": "95b869d125c972cf1366237cb1732706665c28b29e763e4fbaa4bcc5793fb473",
+      "checkout_sha256": "95b869d125c972cf1366237cb1732706665c28b29e763e4fbaa4bcc5793fb473",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-05-custody-q1-evidence/raw/independent-p4-source.json",
+      "blob": "283d31d8df2cc7b848a99c030ef0831d4aea650c",
+      "git_sha256": "14f65c80cf96ba72e2c58ed1835af1a1ad3776718ffb33023dbe78048d0860c0",
+      "checkout_sha256": "14f65c80cf96ba72e2c58ed1835af1a1ad3776718ffb33023dbe78048d0860c0",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-05-custody-q1-evidence/reproduction.md",
+      "blob": "c52db3d7976b01305479de9ffb6280dcc8c4c5f8",
+      "git_sha256": "5cc5c56ed2f38b54bb5ff9fd308fc13c9db561308d536805f1de83cedcbd451e",
+      "checkout_sha256": "5cc5c56ed2f38b54bb5ff9fd308fc13c9db561308d536805f1de83cedcbd451e",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-entry-01.md",
+      "blob": "0c311fc84bde05d3c9e897ff51c8e44832aea987",
+      "git_sha256": "497dcb6924d692d4f3601c33baa3320de7036e057293d4bc4836c29e52fe99de",
+      "checkout_sha256": "497dcb6924d692d4f3601c33baa3320de7036e057293d4bc4836c29e52fe99de",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/security-model.md",
+      "blob": "79f9da7bfc2b945868ec8176d9602187d1340545",
+      "git_sha256": "869f173f6c489160d804e582bd9494f90542ac687cf2013beb5e2bc7d6638c38",
+      "checkout_sha256": "869f173f6c489160d804e582bd9494f90542ac687cf2013beb5e2bc7d6638c38",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/testing-and-ci.md",
+      "blob": "e485ba7264c49242495dbb28c28dc32ec2e9de65",
+      "git_sha256": "63e2f82f05cc7989b80efca9012f134cbcfe40a943694a41313d3996f530a8b6",
+      "checkout_sha256": "63e2f82f05cc7989b80efca9012f134cbcfe40a943694a41313d3996f530a8b6",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "docs/work-queue.md",
+      "blob": "5a1fff8f2211d038df11bf591b56018ec244c667",
+      "git_sha256": "015c28d73a3c6bdca0d665c4426ee5662f44ab92f9ad9cf0afeac79042f741bd",
+      "checkout_sha256": "015c28d73a3c6bdca0d665c4426ee5662f44ab92f9ad9cf0afeac79042f741bd",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "eng/linux-m1/build-install-candidate.sh",
+      "blob": "31a642af3d065f57a9047101183ff62736a07495",
+      "git_sha256": "867ee36c2559c8cf3a6b4a2d9273c5e5d8876a2dd835d6c7a1055d73fb3f68ed",
+      "checkout_sha256": "867ee36c2559c8cf3a6b4a2d9273c5e5d8876a2dd835d6c7a1055d73fb3f68ed",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "eng/linux-m1/install_common.py",
+      "blob": "e5c500b97faf238162d4d6141ada5c007741abad",
+      "git_sha256": "f28f30bbca7f74b4fdb188cee5a5fac7c87e245785c47432ee2c86e5827dc649",
+      "checkout_sha256": "f28f30bbca7f74b4fdb188cee5a5fac7c87e245785c47432ee2c86e5827dc649",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "eng/verify-preparation.ps1",
+      "blob": "95bcba26fa59b02c579f01435a2aaa1d83d6d760",
+      "git_sha256": "643ce6755caa3f510222a57e1e3180ce0c37355bfb9c2c1a126aa20ec2cbf04a",
+      "checkout_sha256": "643ce6755caa3f510222a57e1e3180ce0c37355bfb9c2c1a126aa20ec2cbf04a",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1.Owner/Program.cs",
+      "blob": "c5a60e91479e191e9a29e6197f873594d91c1013",
+      "git_sha256": "2622e7f21c31f8ef0e6058c4ba8ddf8895f252cd4b6cec135d8b7ab2a125749b",
+      "checkout_sha256": "2622e7f21c31f8ef0e6058c4ba8ddf8895f252cd4b6cec135d8b7ab2a125749b",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1.Recovery/Program.cs",
+      "blob": "113d161d77f804fdba4591f9c4d47f87223e972a",
+      "git_sha256": "53f7566836bb1db17e5120413c1150d5f218ad91ef1f10d33f8251014d24a8ef",
+      "checkout_sha256": "53f7566836bb1db17e5120413c1150d5f218ad91ef1f10d33f8251014d24a8ef",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/DirectPeerIdentity.cs",
+      "blob": "f094b9ed7a814717b4df2ad1da84e1a68a489fc4",
+      "git_sha256": "9efc990d81d01641f2b89bcc913a667e8df5bdb2a2c7108e178467b3488a3e5c",
+      "checkout_sha256": "9efc990d81d01641f2b89bcc913a667e8df5bdb2a2c7108e178467b3488a3e5c",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/DirectSession.cs",
+      "blob": "350f686b2c726bf3d2ebbfc4cb59d9562f54f80c",
+      "git_sha256": "4d55cdd389bfe1b9905e60672bcee0f1552b6a43207cce48567d195e83bb3df0",
+      "checkout_sha256": "4d55cdd389bfe1b9905e60672bcee0f1552b6a43207cce48567d195e83bb3df0",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/Gava1ContextCodec.cs",
+      "blob": "2ea80a0828e51ba86b8ee216ffe4d20f4c42914b",
+      "git_sha256": "353280f0ad020591ed39b2475ed26bb3046acb159ef80e21398af46652e5bf69",
+      "checkout_sha256": "353280f0ad020591ed39b2475ed26bb3046acb159ef80e21398af46652e5bf69",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/Gava1ContextData.cs",
+      "blob": "95f4bb23eaffd4a36fd83cc4995f7cd8ba22a3d7",
+      "git_sha256": "cdb1b5613f1f731e4f93d6c62640c67f94718dd7caeaeb41024e7f0f1bb4abe9",
+      "checkout_sha256": "cdb1b5613f1f731e4f93d6c62640c67f94718dd7caeaeb41024e7f0f1bb4abe9",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/IntegratedB3Client.cs",
+      "blob": "94d3427cd5956bfbb00fd9d2c05a8ffdf3908cfb",
+      "git_sha256": "e5e4c4a2f1952e581e900391e62ffa86888b344071763c9724a4d7632acef92a",
+      "checkout_sha256": "e5e4c4a2f1952e581e900391e62ffa86888b344071763c9724a4d7632acef92a",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/IntegratedRecoveryHost.cs",
+      "blob": "9a8ec67d3424bf1971bea04b056d78cee7c3501b",
+      "git_sha256": "fd9d37ff4c3dd128bb709979f7041e4c5182af6d08d38e7ecce4935e43815a93",
+      "checkout_sha256": "bb6bfdeb080e587caa576ae406d343d47494291a908ce63a1e0afbf40c55a7fb",
+      "checkout_equals_blob": false
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/OwnerDirectConnection.cs",
+      "blob": "243608c1e3b4374a78d31d65c850ae7996d82754",
+      "git_sha256": "b61c85be33062726fa5defeba4fb67ac8ee2e0623c95553e6eb5daa5446ec8d2",
+      "checkout_sha256": "b61c85be33062726fa5defeba4fb67ac8ee2e0623c95553e6eb5daa5446ec8d2",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/OwnerSafetyMonitor.cs",
+      "blob": "e621fe44885bfe9807ca8913cfc6605e5ded4caf",
+      "git_sha256": "6b1897befd9e9137d7233a685820160acb7976ac3fe259d1c821d07de7410bc0",
+      "checkout_sha256": "6b1897befd9e9137d7233a685820160acb7976ac3fe259d1c821d07de7410bc0",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedB2Owner.cs",
+      "blob": "20c0a415abf99ca5cbc1a5f46f0e74957756bd61",
+      "git_sha256": "748e8400d44fb43e3e5f16eed55ac1dc5c52c9dbddc94e160db502b9c18d55f7",
+      "checkout_sha256": "748e8400d44fb43e3e5f16eed55ac1dc5c52c9dbddc94e160db502b9c18d55f7",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedB2Recovery.cs",
+      "blob": "7ec31a9baa87806f011bc279ff37cc208b89b772",
+      "git_sha256": "cd190427003f33c89de722a9cc69d8aa9666e46c2aaa9c9a726e7876f7eb9f01",
+      "checkout_sha256": "cd190427003f33c89de722a9cc69d8aa9666e46c2aaa9c9a726e7876f7eb9f01",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedLauncher.cs",
+      "blob": "b1b8a291da75bc913c77c2377fb41f0b53d19eae",
+      "git_sha256": "8cfe4a60c66ede8c6e30eaa0da7646513bf1b489d6fd461fdd1a46c6e21f9f83",
+      "checkout_sha256": "8cfe4a60c66ede8c6e30eaa0da7646513bf1b489d6fd461fdd1a46c6e21f9f83",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedOwnerPreflight.cs",
+      "blob": "559ee694ce3e223f6dc86b951698ecc583286b1c",
+      "git_sha256": "96a179afe9a6e0e14a134c1c57ea3ec1014b41219a9c1b7d5bcd0bd7e241bda5",
+      "checkout_sha256": "96a179afe9a6e0e14a134c1c57ea3ec1014b41219a9c1b7d5bcd0bd7e241bda5",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedRecoveryConnection.cs",
+      "blob": "2f6f779d6b5414c22790a7fb8a892b253e044963",
+      "git_sha256": "3094233b4fe9a5b53d86079bd4ae283672eafa2ce3fbc5b810ce2605f5f42ac0",
+      "checkout_sha256": "3094233b4fe9a5b53d86079bd4ae283672eafa2ce3fbc5b810ce2605f5f42ac0",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedRecoveryEcho.cs",
+      "blob": "5147d54e9ccdcbd9e488ac25ee1c5d254ce33650",
+      "git_sha256": "be564aa4da2177a80af2f03068e245b18f73949cdb58438efa07b14ad7608163",
+      "checkout_sha256": "eb1322c3d28efb23961a0a683aec8a16a6f3b3afad09eb4968ca8f2c68136352",
+      "checkout_equals_blob": false
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryConnection.cs",
+      "blob": "c9209966a172242c4a7a74aab56137f1c015d1dd",
+      "git_sha256": "67b34defb22abc9c29d1e270c0f267087610d34996e538877f9d6aceaa7dc0d6",
+      "checkout_sha256": "67b34defb22abc9c29d1e270c0f267087610d34996e538877f9d6aceaa7dc0d6",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryHost.cs",
+      "blob": "b05fc43a378457b47828a3a799aadc42acf4cd53",
+      "git_sha256": "d3844a8e5917dda39a28bb03a411967c9fde7bee8d17b7cd70e7defb0bfce36e",
+      "checkout_sha256": "8dd358c6d52a70c6ffa7cc0e1f21fa0b4828639f80a022fb965ee31b2a57202b",
+      "checkout_equals_blob": false
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryInitializationAdmission.cs",
+      "blob": "fbd0020e54ce98ad863d2dc51cd2df96b4084ce9",
+      "git_sha256": "01ebfc491a53a199848059cf8fb364ad65e421b1aad7ac71f44eae72c3d40fc1",
+      "checkout_sha256": "f0ac89e58bcccb0593842dda97d6447cf517d1de5860a586ccb05289737dd525",
+      "checkout_equals_blob": false
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryProtocol.cs",
+      "blob": "f19017dccce5b83d42bb9276c6e8839d13564061",
+      "git_sha256": "78ba4ccd7f190e846ecfb52512d249795edf01d009f1f4034442207ea38b2c2a",
+      "checkout_sha256": "78ba4ccd7f190e846ecfb52512d249795edf01d009f1f4034442207ea38b2c2a",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs",
+      "blob": "60a4f546b77ff5a11a43a51117722c129b753646",
+      "git_sha256": "82fec8f17b91c206e339f65d18b462539951f4c33c39074ba9deec5f82354cec",
+      "checkout_sha256": "82fec8f17b91c206e339f65d18b462539951f4c33c39074ba9deec5f82354cec",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs",
+      "blob": "0884372a339d84e70d0a6c7ebfd72726996f17fa",
+      "git_sha256": "0fa622cd8de73bfc66b8b9dba6c7ea253c21677f942f24a9c34e6574cad12367",
+      "checkout_sha256": "0fa622cd8de73bfc66b8b9dba6c7ea253c21677f942f24a9c34e6574cad12367",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodec.cs",
+      "blob": "d861210aeb3734b04e6bf9f472c12bd226253b32",
+      "git_sha256": "ce4c7b26ed0bfcde9f5d3dd07aaf0ca4cf78e6845737afbc3c8f2c28d5ffd359",
+      "checkout_sha256": "ce4c7b26ed0bfcde9f5d3dd07aaf0ca4cf78e6845737afbc3c8f2c28d5ffd359",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodecBinary.cs",
+      "blob": "814c233d6290c111d751c73dbe65e1ec7dc0cc23",
+      "git_sha256": "b259857ed0fb0092744d5b52f7e0982c112f0dc848ad13cea8dbebbb6e5e9d47",
+      "checkout_sha256": "b259857ed0fb0092744d5b52f7e0982c112f0dc848ad13cea8dbebbb6e5e9d47",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodecData.cs",
+      "blob": "ee8a7f00b160043dbd6bdad9b2bec945a21377a5",
+      "git_sha256": "4cbea3e2c7773ea0113e6578b024b7cb37825bca9b127fe37068ecf6c646b7b9",
+      "checkout_sha256": "4cbea3e2c7773ea0113e6578b024b7cb37825bca9b127fe37068ecf6c646b7b9",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/Visibility.cs",
+      "blob": "bfd8308daa0674faeac3f06cfeb3282ea423132e",
+      "git_sha256": "cbfbc39bfd69c81027396b5c21d1e329ae8021af5feea8fda26036a0a87e7353",
+      "checkout_sha256": "cbfbc39bfd69c81027396b5c21d1e329ae8021af5feea8fda26036a0a87e7353",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Execution/ReleaseArbiter.cs",
+      "blob": "2eaf47daad1cb38f888e450674ad2f20675a6e1f",
+      "git_sha256": "9272ca451b10c1a56ed488745cd7717b9379b3f07ee859ad6ecdba6c015f417a",
+      "checkout_sha256": "9272ca451b10c1a56ed488745cd7717b9379b3f07ee859ad6ecdba6c015f417a",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Execution/TransactionStateModel.cs",
+      "blob": "8d4fb89b9a41f87b24432df74bcb0cff1513ad84",
+      "git_sha256": "3d2b19ff4f474f9d48466f548003f553af30dc68457d3792cb6889979af4d67a",
+      "checkout_sha256": "3d2b19ff4f474f9d48466f548003f553af30dc68457d3792cb6889979af4d67a",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj",
+      "blob": "519e905cb949008064cd767987ad078f59015d61",
+      "git_sha256": "20b14813a57b462b77aa0ba45c68b78de279fbad10aae14cd27ff18f7b875c80",
+      "checkout_sha256": "3ec9a153ef96a666d0ad615403a0a233788525c27bf4051266adadac4ed5b8b2",
+      "checkout_equals_blob": false
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Installed/FinalAdmissionVerifier.cs",
+      "blob": "fbc79e15cd75e8aefe4e0c6ee5513a857224b865",
+      "git_sha256": "e07455f3363318247c09cbd1b34b4e7f680f8d9ebf53dc5f2293d2ebd7f5a98b",
+      "checkout_sha256": "e07455f3363318247c09cbd1b34b4e7f680f8d9ebf53dc5f2293d2ebd7f5a98b",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Installed/InstallationIdentity.cs",
+      "blob": "cb961388efe0d4ec1842f067caa3b9d01ce4a562",
+      "git_sha256": "460ee651b1e8b8d24943c7630c5f651f35d305db9830bbaa8b618fe2a07ad190",
+      "checkout_sha256": "460ee651b1e8b8d24943c7630c5f651f35d305db9830bbaa8b618fe2a07ad190",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Installed/InstalledFileSystem.Prepublication.cs",
+      "blob": "ec30fccc90d4b87eb155b8720067388d1703e251",
+      "git_sha256": "c9c53f44d6ac87be2635bba88b73eefbce269bd06015962a2ef3cc214d4a5136",
+      "checkout_sha256": "c9c53f44d6ac87be2635bba88b73eefbce269bd06015962a2ef3cc214d4a5136",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Installed/InstalledFileSystem.cs",
+      "blob": "7f1eed85a0861bd8da5253f550fdb265a70b96de",
+      "git_sha256": "65cd3648448872cadbf8832cfaef06a1c74e6c5b3f96c8a9e6a1681d0aca40b3",
+      "checkout_sha256": "65cd3648448872cadbf8832cfaef06a1c74e6c5b3f96c8a9e6a1681d0aca40b3",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Installed/InstalledPayload.cs",
+      "blob": "ca3f4ef77803f5a7e2ac9888b92eb63af84568db",
+      "git_sha256": "8ee4f7169967e00ce19f056c422becb456d8a5d12f75d35c9743eb154e5d829b",
+      "checkout_sha256": "8ee4f7169967e00ce19f056c422becb456d8a5d12f75d35c9743eb154e5d829b",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Installed/LoadedInstallation.cs",
+      "blob": "739af8d908618883db478b8c359204d60db863db",
+      "git_sha256": "15532bee3fb384df1b3cce8bb01a2d49144aa7fbd7e53db072c2fc29c4c65cde",
+      "checkout_sha256": "15532bee3fb384df1b3cce8bb01a2d49144aa7fbd7e53db072c2fc29c4c65cde",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Installed/PrepublicationIntegrityProjection.cs",
+      "blob": "74629703f902f269c7c9c33af97594d0dca11207",
+      "git_sha256": "201fceb048bc5813dedc4141c91b563a8a2bb8039d26c0ebdbd31c141bd40976",
+      "checkout_sha256": "201fceb048bc5813dedc4141c91b563a8a2bb8039d26c0ebdbd31c141bd40976",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Installed/ReleaseGenerationGate.cs",
+      "blob": "3bdd0bad23c5bdb4a1c052fe5355d53d1966a6cf",
+      "git_sha256": "1505fee70732ad0022c144248c9fcb5c6f82f76e3d98929004949c053baf95cd",
+      "checkout_sha256": "1505fee70732ad0022c144248c9fcb5c6f82f76e3d98929004949c053baf95cd",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Lifecycle/HeldReleasePhase.cs",
+      "blob": "57a22c29198884a4a5b17f0dda5f340426439412",
+      "git_sha256": "78bbe4f758f89a8f7d5d6c50098acceeedcafa6b770e5c5c5fcb3283dd5a6cde",
+      "checkout_sha256": "78bbe4f758f89a8f7d5d6c50098acceeedcafa6b770e5c5c5fcb3283dd5a6cde",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Lifecycle/M1RecoveryScope.cs",
+      "blob": "a46e9efe2ad4ccde1a1a93ac10c1569415c62d2c",
+      "git_sha256": "8f8ebc116217c5b57098a5bfd48a8de0b0529fbb6d0bd47e5eb3f0259bff1370",
+      "checkout_sha256": "8f8ebc116217c5b57098a5bfd48a8de0b0529fbb6d0bd47e5eb3f0259bff1370",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerAuthorityContext.cs",
+      "blob": "52aac8ee5909bbebc3f5db91633ca752a858fba4",
+      "git_sha256": "669eb111be68e22d93246b758e3d50f0c4ab3dfeac0f8f4154745d2caf03266a",
+      "checkout_sha256": "669eb111be68e22d93246b758e3d50f0c4ab3dfeac0f8f4154745d2caf03266a",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerHeldWire.cs",
+      "blob": "3b2a4653e5b616e030c8bb237030fb6b30317387",
+      "git_sha256": "fd01401aee03ca4e0a197212ab74736058602cf740982ec2ad36d50d94647a57",
+      "checkout_sha256": "fd01401aee03ca4e0a197212ab74736058602cf740982ec2ad36d50d94647a57",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerManifestAdmissionGate.cs",
+      "blob": "77ea2c9198226a9b64f17bb4fc2ffa5271c1a27a",
+      "git_sha256": "4199c535c863ded323f0527698ff142578c925cfda0097b90d1158841a29464d",
+      "checkout_sha256": "4199c535c863ded323f0527698ff142578c925cfda0097b90d1158841a29464d",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerPreparationTransaction.cs",
+      "blob": "b76123fc5e9626233536625a2c52580848628ec3",
+      "git_sha256": "779975cea145f2fd31eb11a66e7e3abdb0811de401e69751ac35d4675b63d27d",
+      "checkout_sha256": "779975cea145f2fd31eb11a66e7e3abdb0811de401e69751ac35d4675b63d27d",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerReleaseGenerationGate.cs",
+      "blob": "6664afa2a1dd34a32e6a71dcc992ec6e29db0197",
+      "git_sha256": "b17ce18156f4233a99e2351e9fb5166fdafe06232bac0d66f4ab1ac71a73c827",
+      "checkout_sha256": "b17ce18156f4233a99e2351e9fb5166fdafe06232bac0d66f4ab1ac71a73c827",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Lifecycle/PreparationOwnershipCoordinator.cs",
+      "blob": "a1ee79b6f5505eb8105e64068f4f9ff2c199099e",
+      "git_sha256": "386f246d651f9cdde675da4c4320f828765a54175ea67b96cf5c3e982df7f9c3",
+      "checkout_sha256": "386f246d651f9cdde675da4c4320f828765a54175ea67b96cf5c3e982df7f9c3",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Recovery/Reconciler.cs",
+      "blob": "fb2e6d9180bd0eff57b33f9cf7e2c6f0cc1d88bf",
+      "git_sha256": "3521a4433447a3616a1f6c4b36d84863c8adfb94eed9b1dd1be5486b62d38e31",
+      "checkout_sha256": "3521a4433447a3616a1f6c4b36d84863c8adfb94eed9b1dd1be5486b62d38e31",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Restricted/B3ProviderAdmission.cs",
+      "blob": "70fd05740fc971c044f4f593111cf9230719703e",
+      "git_sha256": "072b4d191517d2ab6a167d58834a01b7ddf9cb92cb2a69a1028e62dd8b6ef4d9",
+      "checkout_sha256": "072b4d191517d2ab6a167d58834a01b7ddf9cb92cb2a69a1028e62dd8b6ef4d9",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Restricted/B3Qualification.cs",
+      "blob": "96e7baf6c9afaf0727b595bee7892888c2ea5309",
+      "git_sha256": "545d939eb376a28acfe276b54ff9cef7e895c50c0cfa8a8d828010588ac9ab43",
+      "checkout_sha256": "545d939eb376a28acfe276b54ff9cef7e895c50c0cfa8a8d828010588ac9ab43",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Validation/CanonicalJson.cs",
+      "blob": "276581c492e155d7b24090db8967eb4179730df0",
+      "git_sha256": "fa1ec8452ed42edcda0a47398a56b67debb8ea44cfe61d58a910c3e8f4108147",
+      "checkout_sha256": "fa1ec8452ed42edcda0a47398a56b67debb8ea44cfe61d58a910c3e8f4108147",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Validation/DetachedEvidenceVerifier.cs",
+      "blob": "2b482a7068b3eae4603a93d79454e9c69ce7b6d3",
+      "git_sha256": "93d16414ed4e9cc75c0e7598877bcc66536ae442106f4af3adb56553f903e930",
+      "checkout_sha256": "93d16414ed4e9cc75c0e7598877bcc66536ae442106f4af3adb56553f903e930",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Validation/FrozenContractVerifier.cs",
+      "blob": "fdff96b93176058f025bb814603c0678d78b6fe6",
+      "git_sha256": "3f357b8df37f7d1f8009e9642aa82675f02e8797a87f94e921c7ab4b48430344",
+      "checkout_sha256": "3f357b8df37f7d1f8009e9642aa82675f02e8797a87f94e921c7ab4b48430344",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Validation/FrozenSchemaRules.cs",
+      "blob": "868ddbeeaafdcb070a53c2c6f6c083a1fd4e50f6",
+      "git_sha256": "435fff7e8bfe1f9492f3caa72c77c986e92547707ad07b157acd1d06c0d886ba",
+      "checkout_sha256": "435fff7e8bfe1f9492f3caa72c77c986e92547707ad07b157acd1d06c0d886ba",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "src/Gagamba.Runtime/RestrictedExecutionRuntime.cs",
+      "blob": "4183cb8c5e6f7b6c778d7c9ca485a10cbb42a7c4",
+      "git_sha256": "1ca9139217180735aca0021350fa181af6bded3002697c0de573647010ea4cd4",
+      "checkout_sha256": "1ca9139217180735aca0021350fa181af6bded3002697c0de573647010ea4cd4",
+      "checkout_equals_blob": true
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj",
+      "blob": "64f835f5b45663455f8c51fac18ce480a36fda59",
+      "git_sha256": "4ebe192fcabbd1fd9152e2cfcc6674800936fcdad63028d735b13418d29f2137",
+      "checkout_sha256": "c71886ee8a8442bd6896aeaa23711f6a064a89c39ed5226154994fe7beed3b37",
+      "checkout_equals_blob": false
+    }
+  ],
+  "membership": {
+    "predecessor": [
+      "AGENTS.md",
+      "Directory.Build.props",
+      "Directory.Build.targets",
+      "docs/decisions/rc2b-06-b6-alt-b-p4-coverage-owner-acceptance-01.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-entry-owner-decision-01.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-f01-owner-acceptance-01.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-f02-parity-owner-acceptance-01.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-owner-acceptance-01.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-02-closure-owner-01.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-02-d1.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-02-p0-owner-acceptance-01.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-02-p1-owner-acceptance-01.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-02-p2-owner-acceptance-01.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-owner-01-evidence/downstream-obligations.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-owner-01-evidence/inherited-qualifications.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-owner-02.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-frozen-record-owner-01.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-owner-01.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-design-owner-01-evidence/carry-forward.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-design-owner-01-evidence/contract.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-design-owner-01-evidence/launcher.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-design-owner-01-evidence/qualification.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-design-owner-01-evidence/responsibilities.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01-evidence/carry-forward.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01-evidence/roadmap.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01-evidence/verification-and-p4.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01-evidence/verify-acceptance.py",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01.md",
+      "docs/decisions/rc2b-06-b6-integrated-start-authority-owner-decision-01.md",
+      "docs/evidence/rc2b-06-b6-alt-b-p4-coverage-recon-01.md",
+      "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-v3-pre-frozen-record-candidate-01.md",
+      "docs/fixture-protocol.md",
+      "docs/handoff.md",
+      "docs/implementation-plan.md",
+      "docs/plans/rc2b-06-b6-integrated-start-authority-impl-01.md",
+      "docs/remediation-evidence-standard.md",
+      "docs/reviews/rc2b-06-b6-alt-b-slice-e-05-custody-q1-evidence/raw/independent-p4-source.json",
+      "docs/security-model.md",
+      "docs/testing-and-ci.md",
+      "docs/work-queue.md",
+      "eng/linux-m1/build-install-candidate.sh",
+      "eng/linux-m1/install_common.py",
+      "eng/verify-preparation.ps1",
+      "src/Gagamba.Execution.Linux.M1.Owner/Program.cs",
+      "src/Gagamba.Execution.Linux.M1.Recovery/Program.cs",
+      "src/Gagamba.Execution.Linux.M1/Bootstrap/DirectPeerIdentity.cs",
+      "src/Gagamba.Execution.Linux.M1/Bootstrap/DirectSession.cs",
+      "src/Gagamba.Execution.Linux.M1/Bootstrap/Gava1ContextCodec.cs",
+      "src/Gagamba.Execution.Linux.M1/Bootstrap/Gava1ContextData.cs",
+      "src/Gagamba.Execution.Linux.M1/Bootstrap/IntegratedB3Client.cs",
+      "src/Gagamba.Execution.Linux.M1/Bootstrap/IntegratedRecoveryHost.cs",
+      "src/Gagamba.Execution.Linux.M1/Bootstrap/OwnerDirectConnection.cs",
+      "src/Gagamba.Execution.Linux.M1/Bootstrap/OwnerSafetyMonitor.cs",
+      "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedB2Owner.cs",
+      "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedB2Recovery.cs",
+      "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedLauncher.cs",
+      "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedOwnerPreflight.cs",
+      "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedRecoveryConnection.cs",
+      "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedRecoveryEcho.cs",
+      "src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryConnection.cs",
+      "src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryHost.cs",
+      "src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryInitializationAdmission.cs",
+      "src/Gagamba.Execution.Linux.M1/Bootstrap/RecoveryProtocol.cs",
+      "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs",
+      "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs",
+      "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodec.cs",
+      "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodecBinary.cs",
+      "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodecData.cs",
+      "src/Gagamba.Execution.Linux.M1/Execution/ReleaseArbiter.cs",
+      "src/Gagamba.Execution.Linux.M1/Installed/FinalAdmissionVerifier.cs",
+      "src/Gagamba.Execution.Linux.M1/Installed/InstallationIdentity.cs",
+      "src/Gagamba.Execution.Linux.M1/Installed/InstalledFileSystem.Prepublication.cs",
+      "src/Gagamba.Execution.Linux.M1/Installed/InstalledFileSystem.cs",
+      "src/Gagamba.Execution.Linux.M1/Installed/InstalledPayload.cs",
+      "src/Gagamba.Execution.Linux.M1/Installed/LoadedInstallation.cs",
+      "src/Gagamba.Execution.Linux.M1/Installed/PrepublicationIntegrityProjection.cs",
+      "src/Gagamba.Execution.Linux.M1/Installed/ReleaseGenerationGate.cs",
+      "src/Gagamba.Execution.Linux.M1/Lifecycle/HeldReleasePhase.cs",
+      "src/Gagamba.Execution.Linux.M1/Lifecycle/M1RecoveryScope.cs",
+      "src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerAuthorityContext.cs",
+      "src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerHeldWire.cs",
+      "src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerManifestAdmissionGate.cs",
+      "src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerPreparationTransaction.cs",
+      "src/Gagamba.Execution.Linux.M1/Lifecycle/OwnerReleaseGenerationGate.cs",
+      "src/Gagamba.Execution.Linux.M1/Lifecycle/PreparationOwnershipCoordinator.cs",
+      "src/Gagamba.Execution.Linux.M1/Recovery/Reconciler.cs",
+      "src/Gagamba.Execution.Linux.M1/Restricted/B3ProviderAdmission.cs",
+      "src/Gagamba.Execution.Linux.M1/Restricted/B3Qualification.cs",
+      "src/Gagamba.Execution.Linux.M1/Validation/CanonicalJson.cs",
+      "src/Gagamba.Execution.Linux.M1/Validation/DetachedEvidenceVerifier.cs",
+      "src/Gagamba.Execution.Linux.M1/Validation/FrozenContractVerifier.cs",
+      "src/Gagamba.Execution.Linux.M1/Validation/FrozenSchemaRules.cs",
+      "src/Gagamba.Runtime/RestrictedExecutionRuntime.cs"
+    ],
+    "assessment_package": [
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/SHA256SUMS.txt",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/atomic-set.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/carry-forward.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/ci-commit-binding.json",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/document-verification.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/first-consumer.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/historical-e5-audit.json",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/invariants.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/live-custody.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/ordering.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/p4.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/preflight.json",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/provenance.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/published-ci.json",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/release-enforcement.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/roadmap.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/source-identities.json",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/verification.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/verify-assessment.py",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01.md"
+    ],
+    "explicit_sources": [
+      "AGENTS.md",
+      "docs/decisions/rc2b-06-b6-alt-b-p4-coverage-owner-acceptance-01.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-f02-arch-decision-01.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-f03-owner-acceptance-01.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-owner-02.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-frozen-record-owner-01.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-entry-auth-01-evidence/implementation-specification.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-entry-auth-01.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-entry-owner-01-evidence/gava1-contract.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-entry-owner-01-evidence/gava1-frozen-excerpt.txt",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-owner-01.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-design-owner-01-evidence/contract.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01.md",
+      "docs/decisions/rc2b-06-b6-integrated-start-authority-owner-decision-01.md",
+      "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2.md",
+      "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-v3-pre-frozen-record-candidate-01.md",
+      "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-qe1-frozen-record-prep-01-evidence/binary-vectors.md",
+      "docs/reviews/rc2b-06-b6-alt-b-slice-e-entry-01.md",
+      "src/Gagamba.Execution.Linux.M1/Bootstrap/Visibility.cs",
+      "src/Gagamba.Execution.Linux.M1/Execution/TransactionStateModel.cs",
+      "src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj",
+      "tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj"
+    ],
+    "local_document_links": [
+      "docs/decisions/rc2b-06-b6-alt-b-p4-coverage-owner-acceptance-01.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-02-p0-owner-acceptance-01.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-frozen-record-owner-01.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-owner-01.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01-evidence/verification-and-p4.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/atomic-set.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/carry-forward.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/ordering.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/p4.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/release-enforcement.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/roadmap.md",
+      "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01.md",
+      "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-v3-pre-frozen-record-candidate-01.md",
+      "docs/evidence/rc2b-06-b6-alt-b-slice-e-05-custody-implementation-01-evidence/reproduction.md",
+      "docs/plans/rc2b-06-b6-integrated-start-authority-impl-01.md",
+      "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-qe1-frozen-record-prep-01-evidence/binary-vectors.md",
+      "docs/reviews/rc2b-06-b6-alt-b-slice-e-05-custody-q1-evidence/reproduction.md"
+    ]
+  },
+  "external_formula_sources": [
+    {
+      "path": "C:/Users/Laszlos/source/repos/Solo/gagamba-f02-authority-mechanism-decision-01/case-policy-and-action-contract.md",
+      "sha256": "667e6118e02b081475ce1a2c851d3bfe9b0a96fdb474a2fb0598f308e9c694f7"
+    },
+    {
+      "path": "C:/Users/Laszlos/source/repos/Solo/gagamba-f02-authority-mechanism-decision-01/recheck-input/case-policy-and-action-contract.md",
+      "sha256": "667e6118e02b081475ce1a2c851d3bfe9b0a96fdb474a2fb0598f308e9c694f7"
+    },
+    {
+      "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-integrated-start-authority-owner-decision-01\\validation-bootstrap-compatibility.md",
+      "sha256": "896532d72b39e95a5e6201f74a9c37478baebdab7c7061d0c79522eaf87732bb"
+    }
+  ],
+  "vectors": [
+    {
+      "preimage": "676167616d62612d76616c69646174696f6e2d72656c656173652d763100111111111111111111111111111111111111111111111111111111111111111122222222222222222222222222222222222222222222222222222222222222223333333333333333333333333333333333333333333333333333333333333333444444444444444444444444444444444444444444444444444444444444444402000000555555555555555555555555555555556666666666666666666666666666666677777777777777777777777777777777888888888888888888888888888888889999999999999999999999999999999999999999999999999999999999999999",
+      "digest": "3737572b7b3d2ad8313d109d6d8a9d0df4b5bc7b20e43c71a0a6061e1988ce3e"
+    },
+    {
+      "preimage": "676167616d62612d76616c69646174696f6e2d72656c656173652d763100000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f0200000033221100554477668899aabbccddeeff78563412ab90efcd0123456789abcdefefcdab892301674589abcdef0123456798badcfe54761032fedcba9876543210808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9f",
+      "digest": "d4573bb166ab7a4f73743297a4b3b2b9f2e19c73ef4fb6c36c94cf2a20fd7d90"
+    }
+  ],
+  "candidate": "53ffe7a21408a7e9674cf50b7098a26887c070b5",
+  "candidate_tree": "c5e58a742408783545ae667c0a3506c1dfd3af34",
+  "producer": "ce6a6fae1cdf7ec36b977e59050c8ac89db0aea6",
+  "producer_tree": "3d5c7f073a20f6f3fbcbcef06d5b739b4269c759",
+  "expected_trees": {
+    "4dc0ee0998f0def6cb1cba304a76b3a9f59ac904": "3136117ecdcbd7df91693db2fbc14a148d47607a",
+    "53ffe7a21408a7e9674cf50b7098a26887c070b5": "c5e58a742408783545ae667c0a3506c1dfd3af34",
+    "ce6a6fae1cdf7ec36b977e59050c8ac89db0aea6": "3d5c7f073a20f6f3fbcbcef06d5b739b4269c759",
+    "28895d55de98eea4bc402373b653f7216e092843": "e314f2e8a1259e2263c8494bb0c8ca9f7eb27016",
+    "22a0b7b00364cc7be333ba7dfd9c0359a7fe9f99": "ee0aa6242cdcc4928518c26486b634a5df8850d4",
+    "405f2d2d45b802f48e08dab64e53e305e29efb6b": "3a7d80c71a5453fe31e3bd4f4256b1cdbe90c314",
+    "7d298ddd9d83e555a5c16b6c0cab8f36e46b8822": "27bcf4764d4b0f71b76c4f4741b1f5c54c876d41"
+  },
+  "protected_files": [
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Validation/ValidationReleasePreparation.cs",
+      "blob": "d9ba07beab31d6b1581bbd0c0222531c0226f2cf",
+      "git_sha256": "bb69acb2c00cbae7467e9ac9893bb240584fdfef1c9df6f5d87b7a79f5a3ad54",
+      "checkout_sha256": "bb69acb2c00cbae7467e9ac9893bb240584fdfef1c9df6f5d87b7a79f5a3ad54"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/Validation/ValidationReachabilityTests.cs",
+      "blob": "cf31e4953b92414e05b82a13bfafc313fbc0db86",
+      "git_sha256": "07a718d7195f1c3eaf1f4a5d56a22cd3bd4add9d6d9e796f154cce1195c87f3b",
+      "checkout_sha256": "07a718d7195f1c3eaf1f4a5d56a22cd3bd4add9d6d9e796f154cce1195c87f3b"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/Validation/ValidationReleasePreparationTests.cs",
+      "blob": "36d01a8a8711b9e8483e2b21d3c1643af5c63fc2",
+      "git_sha256": "63c69606409cf12fc338b3414fd768dbbba17ac68e16032d660a319f57bce6e5",
+      "checkout_sha256": "63c69606409cf12fc338b3414fd768dbbba17ac68e16032d660a319f57bce6e5"
+    }
+  ],
+  "implementation_delta": [
+    "A\tsrc/Gagamba.Execution.Linux.M1/Validation/ValidationReleasePreparation.cs",
+    "A\ttests/Gagamba.Execution.Linux.M1.Tests/Validation/ValidationReleasePreparationTests.cs"
+  ],
+  "producer_changes": [
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/SHA256SUMS.txt",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/carry-forward.md",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/execution-summary.json",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/procedure/collect-evidence.py.txt",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/procedure/generate-scanner.py.txt",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/procedure/preflight.py.txt",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/procedure/run-e6-mutations.py.txt",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/procedure/run-isolation.py.txt",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/procedure/run-managed.py.txt",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/baseline-naming-debug.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/baseline-naming-debug.xml.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/baseline-naming-release.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/baseline-naming-release.xml.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/build-exact/build-Debug-B2Controller.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/build-exact/build-Debug-Gagamba.Execution.Linux.M1.Owner.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/build-exact/build-Debug-Gagamba.Execution.Linux.M1.Recovery.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/build-exact/build-Debug-Gagamba.Execution.Linux.M1.Tests.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/build-exact/build-Debug-Gagamba.Execution.Linux.M1.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/build-exact/build-Debug-Gagamba.Runtime.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/build-exact/build-Debug-InstallTool.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/build-exact/build-Release-B2Controller.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/build-exact/build-Release-Gagamba.Execution.Linux.M1.Owner.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/build-exact/build-Release-Gagamba.Execution.Linux.M1.Recovery.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/build-exact/build-Release-Gagamba.Execution.Linux.M1.Tests.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/build-exact/build-Release-Gagamba.Execution.Linux.M1.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/build-exact/build-Release-Gagamba.Runtime.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/build-exact/build-Release-InstallTool.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/build-exact/build-exits.txt.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/candidate-naming-debug.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/candidate-naming-debug.xml.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/candidate-naming-release.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/candidate-naming-release.xml.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/cleanup.json",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/d64-Debug.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/d64-Release.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/e6-mutation-build-Debug.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/e6-mutation-build-Release.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/e6-mutation-results-Debug.jsonl.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/e6-mutation-results-Release.jsonl.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/e6-mutation-source.json",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/f01-naming-build-debug.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/f01-naming-build-release.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/inbound-build-debug.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/inbound-build-release.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/independent-build-debug.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/independent-build-release.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/independent-debug.tsv.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/independent-derivative-build-debug.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/independent-derivative-build-release.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/independent-derivative-debug.tsv.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/independent-derivative-release.tsv.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/independent-derivative-source.json",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/independent-release.tsv.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/initial-inbound-build-debug.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/initial-inbound-target-scope.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/initial-independent-build-debug.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/isolation-scanner-build.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/isolation/candidate.json",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/isolation/control-debug-command.json.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/isolation/control-debug.jsonl.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/isolation/control-release-command.json.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/isolation/control-release.jsonl.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/isolation/debug-command.json.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/isolation/debug-inventory.json.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/isolation/debug-runner-dependencies.json.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/isolation/debug.jsonl.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/isolation/p4-dispositions.json",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/isolation/release-command.json.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/isolation/release-inventory.json.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/isolation/release-runner-dependencies.json.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/isolation/release.jsonl.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/isolation/source-edges.json.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/isolation/summary.json",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/logs/probe-debug.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/logs/probe-release.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/logs/release-witness-debug.json.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/logs/release-witness-release.json.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/logs/supplement-debug.tsv.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/logs/supplement-release.tsv.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/managed-membership.tsv.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-and-prep-exits.txt.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-console.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/debug-fixture-symbol-alone.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/debug-forced-production.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/empty-symbols.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/fixture-only.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/fixture-without-isolated-paths.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/fresh-debug.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/inspect-fresh-debug.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/inspect-order-1-Release.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/inspect-order-2-Debug.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/inspect-order-3-Release.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/inspect-order-4-Release.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/inspect-order-5-Debug.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/inspect-order-6-Debug.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/inspect-order-7-Test.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/inspect-restored-release.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/missing-symbol.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/order-1-Release.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/order-2-Debug.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/order-3-Release.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/order-4-Release.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/order-5-Debug.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/order-6-Debug.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/order-7-Test.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/owner-debug-inspection.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/owner-debug-stale-production-ref-disabled.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/owner-debug.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/owner-empty-symbols.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/owner-release.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/owner-stale-ref-disabled.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/production-and-fixture.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/project-reference-empty-symbols.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/publish-m1-empty-symbols.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/publish-m1.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/publish-owner-empty-symbols.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/publish-owner.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/publish-recovery-empty-symbols.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/publish-recovery.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/recovery-debug-inspection.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/recovery-debug.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/recovery-empty-symbols.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/recovery-release.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/release-fixture-carrier.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/restore-valid-release.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/solution-debug-owner-inspection.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/solution-empty-symbols.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/solution-release.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/spoof-helper-properties.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/stale-instrumented-binary-inspection.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/stale-instrumented-no-build-publish.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/stale-valid-output-empty-symbols.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/policy-exact/unknown-configuration.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/preflight.json",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/preparation-tests.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/preparation.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/production-policy-results.json",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/debug/bindings.json",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/debug/broad.trx.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/debug/broad.xml.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/debug/e3.trx.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/debug/e3.xml.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/debug/e4.trx.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/debug/e4.xml.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/debug/e5.trx.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/debug/e5.xml.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/debug/e6.trx.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/debug/e6.xml.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/debug/vstest-broad.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/debug/vstest-e3.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/debug/vstest-e4.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/debug/vstest-e5.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/debug/vstest-e6.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/debug/xunit-broad.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/debug/xunit-e3.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/debug/xunit-e4.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/debug/xunit-e5.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/debug/xunit-e6.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/release/bindings.json",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/release/broad.trx.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/release/broad.xml.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/release/e3.trx.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/release/e3.xml.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/release/e4.trx.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/release/e4.xml.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/release/e5.trx.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/release/e5.xml.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/release/e6.trx.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/release/e6.xml.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/release/vstest-broad.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/release/vstest-e3.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/release/vstest-e4.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/release/vstest-e5.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/release/vstest-e6.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/release/xunit-broad.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/release/xunit-e3.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/release/xunit-e4.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/release/xunit-e5.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/results/release/xunit-e6.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/sensitivity-Debug.tsv.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/sensitivity-Release.tsv.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/sensitivity-build-Debug.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/sensitivity-build-Release.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/sensitivity-variants.json",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/verifier-debug.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/verifier-release.log.gz",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/reproduction.md",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/traceability.md",
+    "A\tdocs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01.md"
+  ],
+  "decision_changes": []
+}

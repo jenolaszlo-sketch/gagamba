@@ -1,0 +1,113 @@
+{
+  "configuration": "release",
+  "producer_artifact": "C:\\Users\\Laszlos\\.codex\\visualizations\\2026\\11\\17\\01a1eb60-60ea-7a32-98ab-2e9e0b4708db\\layouts\\release\\focused\\Gagamba.Execution.Linux.M1.dll",
+  "sha256": "de361cec811e78ba6287267ceced89ccb77b3a2ee8c125e81e99ba8ae3bcae77",
+  "mvid": "33d4a2fd-b56a-491c-82fc-6157018d292e",
+  "exact_namespace": "Gagamba.Execution.Linux.M1.Validation",
+  "namespace_type_count": 28,
+  "forbidden_tokens": [
+    "Approved",
+    "Authorized",
+    "Permit",
+    "Authority",
+    "Trusted",
+    "Capability"
+  ],
+  "flags": "DeclaredOnly, Instance, Static, Public, NonPublic",
+  "scanned_declared_members": 859.0,
+  "observed_forbidden_names": [
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "kind": "Method",
+      "name": "get_CapabilityHash",
+      "token": "Capability",
+      "projected_name": "get_SealedLaunchRecordHash"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "kind": "Method",
+      "name": "set_CapabilityHash",
+      "token": "Capability",
+      "projected_name": "set_SealedLaunchRecordHash"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "kind": "Property",
+      "name": "CapabilityHash",
+      "token": "Capability",
+      "projected_name": "SealedLaunchRecordHash"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "kind": "Field",
+      "name": "<CapabilityHash>k__BackingField",
+      "token": "Capability",
+      "projected_name": "<SealedLaunchRecordHash>k__BackingField"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleaseProjection",
+      "kind": "Method",
+      "name": "get_CapabilityHash",
+      "token": "Capability",
+      "projected_name": "get_SealedLaunchRecordHash"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleaseProjection",
+      "kind": "Property",
+      "name": "CapabilityHash",
+      "token": "Capability",
+      "projected_name": "SealedLaunchRecordHash"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleaseProjection",
+      "kind": "Field",
+      "name": "<CapabilityHash>k__BackingField",
+      "token": "Capability",
+      "projected_name": "<SealedLaunchRecordHash>k__BackingField"
+    }
+  ],
+  "projected_forbidden_names": [],
+  "property_types": [
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleaseProjection",
+      "property_type": "System.Byte[]",
+      "read_nullability": "Nullable",
+      "getter": "Assembly, HideBySig, SpecialName",
+      "has_setter": false
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "property_type": "System.Byte[]",
+      "read_nullability": "NotNull",
+      "getter": "Public, HideBySig, SpecialName",
+      "has_setter": true
+    }
+  ],
+  "reflected_parameters": [
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleaseProjection",
+      "method": ".ctor",
+      "position_zero_based": 8,
+      "name": "capabilityHash",
+      "parameter_type": "System.Byte[]",
+      "projected_name": "sealedLaunchRecordHash"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "method": ".ctor",
+      "position_zero_based": 6,
+      "name": "CapabilityHash",
+      "parameter_type": "System.Byte[]",
+      "projected_name": "SealedLaunchRecordHash"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "method": "Deconstruct",
+      "position_zero_based": 6,
+      "name": "CapabilityHash",
+      "parameter_type": "System.Byte[]&",
+      "projected_name": "SealedLaunchRecordHash"
+    }
+  ],
+  "scope": "Read-only metadata inspection of the blocked DLL. The proposed names were projected as strings only."
+}
