@@ -1,0 +1,75 @@
+{
+  "observed_date": "2026-11-18 Asia/Manila",
+  "source": "GitHub connector fetch_workflow_run_jobs",
+  "run_url": "https://github.com/jenolaszlo-sketch/gagamba/actions/runs/44137994546",
+  "run_id": 44137994546,
+  "scope": "Published E-5 jobs only; not E-6 qualification",
+  "jobs": [
+    {
+      "id": 134232709854,
+      "name": "preparation",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 134232710306,
+      "name": "build (ubuntu-latest)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 134232710521,
+      "name": "pack (packaging metadata)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 134232710638,
+      "name": "macOS lifecycle probe (GM-1A)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 134232710647,
+      "name": "GM-2 macOS provider tests",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 134232710930,
+      "name": "build (windows-latest)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 134233496159,
+      "name": "unit tests (ubuntu-latest)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 134233496195,
+      "name": "unit tests (windows-latest)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 134235563991,
+      "name": "fixture self-test (windows)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 134236693674,
+      "name": "availability probe (windows)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 134237279076,
+      "name": "launch spike (windows)",
+      "status": "completed",
+      "conclusion": "skipped"
+    }
+  ]
+}

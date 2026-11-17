@@ -1,0 +1,19 @@
+# Document verification and preservation procedure
+
+18 November 2026 (Asia/Manila). Documentation assessment only; no build, managed suite rerun, protected acquisition, native case or prospective E-6 implementation qualification.
+
+| Check actually performed | Result |
+|---|---|
+| Accepted owner evidence verifier, pinned published E-5 milestone | PASS: 1,044 prior manifest entries, unchanged six implementation/test files, 44 preserved untracked files, historical stored execution/isolation evidence re-read. See historical-e5-audit.json; this was not a suite rerun. |
+| Extended preflight | PASS: ten E-5 owner entries added, 1,054 historical entries total, exact branch/HEAD/tree/remote/ancestry, one worktree, no stashes, clean tracked/index, 44 path/length/hash matches, both 15-member external copies and AB source hash. See preflight.json. |
+| Published CI observation | Ten applicable completed/success jobs; one skipped Windows launch. Preparation job checkout log binds exact 4dc0ee0998f0def6cb1cba304a76b3a9f59ac904. See published-ci.json and ci-commit-binding.json. No dispatch/rerun. |
+| Source inventory | 93 repository paths bound to baseline blob and raw checkout hashes; normalization distinguished. No native runtime claim. |
+| Requirement/register completeness | 24 atomic rows account for all 12 plan bullets; 39 qualification and 23 obligation rows preserve original table text plus current allocations; all 29 P4 rows retained with 21/5/3 classes. |
+| Local Markdown references | All local links in the new decision/annex resolve within repository; manifest and this verification document included at final validation. |
+| Formal disposition | Exactly one primary disposition, B, restricted to proposed P1 preparation; no implementation/activation authorized. |
+| Staged-byte representation | Initial stage comparison detected CRLF-to-LF Git normalization in new generated receipts/manifest. Only this assessment's new files were normalized to LF and rehashed; staged Git blobs must match every manifest digest before commit. Accepted historical bytes were untouched. |
+| Preparation validator | PASS: 12 required files, 652 Markdown documents, 3,535 local links, eight compatibility documents / 71 references, zero normalized line references. Windows PowerShell process-local `-ExecutionPolicy Bypass`; machine policy unchanged. Initial ordinary `-File` invocation refused before script execution because host policy disables scripts. An intermediate run correctly rejected the not-yet-created assessment manifest; the completed package then passed. Neither failed invocation is counted as a passing run. |
+
+Commands performed: `python -B .../verify-acceptance.py <external-output> 4dc0ee0998f0def6cb1cba304a76b3a9f59ac904 4dc0ee0998f0def6cb1cba304a76b3a9f59ac904`; `python -B .../verify-assessment.py preflight <external-output>`; `powershell.exe -NoProfile -ExecutionPolicy Bypass -File eng/verify-preparation.ps1 -RepositoryRoot C:/Users/Laszlos/source/repos/Gagamba`. No existing verifier, project or build-policy file was edited.
+
+SHA256SUMS.txt uses exact UTF-8/LF new-file bytes and contains the primary decision and every annex file except itself. Verify against committed Git blobs as well as checkout. The one commit must contain additions only under this commission's exact decision/annex paths. The final audit command is `python -B docs/decisions/rc2b-06-b6-alt-b-slice-e-06-entry-owner-01-evidence/verify-assessment.py final <external-receipt> <manifest-entry-count>`; it rechecks all 1,054 historical entries, the new manifest, exact changed path set, 44 historical untracked files, clean tracked/index, unchanged E-5 source and still-published E-5 main. Final exact local commit/tree and observed post-commit results are reported in the external receipt/final handoff, avoiding self-reference. Do not push.

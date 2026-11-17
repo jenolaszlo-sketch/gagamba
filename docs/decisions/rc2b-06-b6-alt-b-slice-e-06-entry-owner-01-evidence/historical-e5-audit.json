@@ -1,0 +1,327 @@
+{
+  "repository": {
+    "head": "4dc0ee0998f0def6cb1cba304a76b3a9f59ac904",
+    "tree": "3136117ecdcbd7df91693db2fbc14a148d47607a",
+    "branch": "main",
+    "remote": "4dc0ee0998f0def6cb1cba304a76b3a9f59ac904",
+    "origin": "https://github.com/jenolaszlo-sketch/gagamba.git",
+    "tracked_checkout_and_index": "clean",
+    "worktrees": 1,
+    "stashes": 0,
+    "manifest_entries": 1044,
+    "manifest_sets": [
+      {
+        "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-q1-evidence/SHA256SUMS.txt",
+        "revision": "7713ec58cc7c292862c8c80d6b57dcacd3420b44",
+        "count": 156,
+        "sha256": "9739a964e1300444e9377bdd08c1f1e952b8aaf9f2feae9129b0c510c623ece1"
+      },
+      {
+        "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-r1-q2-evidence/SHA256SUMS.txt",
+        "revision": "4cb46a6cdbcc52b7129dbd88c4eba2e62ae73469",
+        "count": 100,
+        "sha256": "17bf65a8ac79e41b85f34723616af4950b7df2e592da55ec59523f9f3129445b"
+      },
+      {
+        "path": "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2-evidence/SHA256SUMS.txt",
+        "revision": "8be61181e804b2dfafb0797eb54c92d2f234ff86",
+        "count": 64,
+        "sha256": "22c232f8585d99dbf9d9fde298fbe3f6924ad69fd5b4139366f0f50f845620be"
+      },
+      {
+        "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-r2-q3-evidence/SHA256SUMS.txt",
+        "revision": "29da0ed60c18ed6364bf9366a64ab5aa3393db62",
+        "count": 77,
+        "sha256": "2ca94c21c993e2923bdafb017775fc20143bd8d0c5174502b61d4bbf6b7af16b"
+      },
+      {
+        "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-owner-01-evidence/SHA256SUMS.txt",
+        "revision": "ffdad5d05fefb6d260c884d61c791c6d9be91df5",
+        "count": 9,
+        "sha256": "e965570e5fe97cd617b5b3f245e2b9403c96638c95d7c43b9cd847a85b09a301"
+      },
+      {
+        "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-r2-q4-evidence/SHA256SUMS.txt",
+        "revision": "0d64fcd199997bf3bede3b328f44aaf211048daa",
+        "count": 132,
+        "sha256": "38d7d5eb33160e3f756639a10d3d1e1da5fe0706f673b457e28777d826bc8cc8"
+      },
+      {
+        "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-owner-02-evidence/SHA256SUMS.txt",
+        "revision": "6892ab0e235b2eaab943f218545cbe35ca95fd1b",
+        "count": 6,
+        "sha256": "bde46f07a184c6e50b203e898e90905c82809c6f67fc57ed81449d30b40d5b76"
+      },
+      {
+        "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-entry-owner-01-evidence/SHA256SUMS.txt",
+        "revision": "dc43b4360dbe17c644118239d0fd691c639aa0cc",
+        "count": 9,
+        "sha256": "61a50084358b13be0ac36a8c2d93e12d111a159812a416683a0acec86a653aef"
+      },
+      {
+        "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-entry-auth-01-evidence/SHA256SUMS.txt",
+        "revision": "db44b7e50c6ce449fdb6b596ad52744cf10443c0",
+        "count": 6,
+        "sha256": "d03d78f64ec04f4fbc98c5055a3b60529b30ac9671fdeab8701d93b339e3d271"
+      },
+      {
+        "path": "docs/evidence/rc2b-06-b6-alt-b-slice-e-04-codec-implementation-01-evidence/SHA256SUMS.txt",
+        "revision": "3c16b53b288b39de3fb36964eecc8d5cccbc62b6",
+        "count": 129,
+        "sha256": "5c25fa0cdadbc7f28481cb0bee2359ed8126aec1ca7417f68f6c4fd641485ac4"
+      },
+      {
+        "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-04-codec-q1-evidence/SHA256SUMS.txt",
+        "revision": "34eae383d6f19b0a2f5f6ac957218c7f27eb6fa3",
+        "count": 87,
+        "sha256": "037564575980b1bf7247e8bd858c7fe6264afa7b843d53f696063655a3c2da8a"
+      },
+      {
+        "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-owner-01-evidence/SHA256SUMS.txt",
+        "revision": "1116c66d7858e6000f0001a0abe39319e4e694be",
+        "count": 10,
+        "sha256": "a913052189e00cb697592530bb1b87a2b222badb9d8f2f91425396ba25da238c"
+      },
+      {
+        "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-entry-owner-01-evidence/SHA256SUMS.txt",
+        "revision": "b309a9ec1a9a0f160ea0c2dd513001c3561a36d9",
+        "count": 7,
+        "sha256": "8a37b4c4623ca2820c5731760da013c66c170c9d92fba0f7e08e6a16b694ed30"
+      },
+      {
+        "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-design-owner-01-evidence/SHA256SUMS.txt",
+        "revision": "1ff4d6e6d1f756646072790478921d9a64f15654",
+        "count": 12,
+        "sha256": "e48f0097802d130d6b96038795aa5cc2f91e1e88c6f19e4061f2fc279275f8a1"
+      },
+      {
+        "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-entry-owner-02-evidence/SHA256SUMS.txt",
+        "revision": "02ba7ad3c81e72de885349c2bd54b0b7ab16bc12",
+        "count": 5,
+        "sha256": "a0109ec7c34f7df8a6a528fe75314f94a49226d7a3011c5a009830180dfc6bdc"
+      },
+      {
+        "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-entry-auth-01-evidence/SHA256SUMS.txt",
+        "revision": "7a30d0a05a7c898c4e90cc2ca01280db166ed6f2",
+        "count": 5,
+        "sha256": "1553b3ab98e32b3b73096b3ca318a88b82b9d57085759ebfc653092586a8ccdf"
+      },
+      {
+        "path": "docs/evidence/rc2b-06-b6-alt-b-slice-e-05-custody-implementation-01-evidence/SHA256SUMS.txt",
+        "revision": "0a77422c1349b99e518292d46314606b383527e4",
+        "count": 41,
+        "sha256": "bd371b96f6cc6d0b39f36279700361a8f6e265f208f7318d4368c5ec540207fc"
+      },
+      {
+        "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-05-custody-q1-evidence/SHA256SUMS.txt",
+        "revision": "b6631367d39531b2c5af8a1917760d7c807f8e73",
+        "count": 189,
+        "sha256": "3e57695efbf302bf15bf50dd32f502f3b3832a7d37d93fde28e06e91a756731b"
+      }
+    ],
+    "historical_untracked_count": 44,
+    "historical_untracked_match": true,
+    "candidate_files": [
+      {
+        "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModel.cs",
+        "blob": "60a4f546b77ff5a11a43a51117722c129b753646",
+        "sha256": "82fec8f17b91c206e339f65d18b462539951f4c33c39074ba9deec5f82354cec",
+        "bytes": 4984
+      },
+      {
+        "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationCustodyModelData.cs",
+        "blob": "0884372a339d84e70d0a6c7ebfd72726996f17fa",
+        "sha256": "0fa622cd8de73bfc66b8b9dba6c7ea253c21677f942f24a9c34e6574cad12367",
+        "bytes": 13139
+      },
+      {
+        "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelCompositionTests.cs",
+        "blob": "2fb103e39ab4dc562026d8a9dffba196e2574fc0",
+        "sha256": "004df41c3518b43440d5ff62d222dc6e6d886594390fcdbe73a9121c35821c8d",
+        "bytes": 15242
+      },
+      {
+        "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelLifecycleTests.cs",
+        "blob": "47b5f7f8eead276ec731a0e644abd766588f2ce3",
+        "sha256": "e5f10d8636557b3295b6b106f64e20ef37d5bbf3e6c4debd70454f2792f4bc04",
+        "bytes": 11653
+      },
+      {
+        "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelTests.cs",
+        "blob": "6efa17c8d8bc8d71c935e2e8247dcfa18424b3b4",
+        "sha256": "40025fef5f0655edae9a525811d2de30c9b64d7506fedc2524dbf690ddbbdfd8",
+        "bytes": 9533
+      },
+      {
+        "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/ValidationCustodyModelVectors.cs",
+        "blob": "ea55eef683d2428bb9a2193e8817ed52fe9f5a00",
+        "sha256": "01f0804572b6961070b0992a0ba2a75438c8984e6e9e274d2aa7d2bbd7394d82",
+        "bytes": 6109
+      }
+    ],
+    "frozen_artifacts": [
+      {
+        "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-design-owner-01-evidence/contract.md",
+        "blob": "121443efb9e145e2413c5a2c40f59e45a55eaa55",
+        "sha256": "8d782d55544a1fcc65a7adbe035e21ce7d7cd10d31658274b1620527b8b02a54"
+      },
+      {
+        "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-design-owner-01-evidence/requirements.md",
+        "blob": "63ebfb7afed2dfb2883fae237ed64472c2adad66",
+        "sha256": "ca9c64bbf85238859fbce8d07e260ab0cbd7940738d7a928d0f2da32ab3587f0"
+      }
+    ],
+    "owner_delta": [
+      "A\tdocs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01-evidence/SHA256SUMS.txt",
+      "A\tdocs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01-evidence/acceptance-audit.json",
+      "A\tdocs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01-evidence/acceptance-matrix.md",
+      "A\tdocs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01-evidence/audit-publication.py",
+      "A\tdocs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01-evidence/carry-forward.md",
+      "A\tdocs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01-evidence/independence.md",
+      "A\tdocs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01-evidence/provenance.md",
+      "A\tdocs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01-evidence/roadmap.md",
+      "A\tdocs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01-evidence/verification-and-p4.md",
+      "A\tdocs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01-evidence/verify-acceptance.py",
+      "A\tdocs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01.md"
+    ]
+  },
+  "execution": {
+    "debug": {
+      "e3": {
+        "total": 185,
+        "passed": 185,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0,
+        "xunit_exit": 0,
+        "vstest_exit": 1,
+        "vstest_executed": 0
+      },
+      "e4": {
+        "total": 11,
+        "passed": 11,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0,
+        "xunit_exit": 0,
+        "vstest_exit": 1,
+        "vstest_executed": 0
+      },
+      "e5": {
+        "total": 42,
+        "passed": 42,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0,
+        "xunit_exit": 0,
+        "vstest_exit": 1,
+        "vstest_executed": 0
+      },
+      "broad": {
+        "total": 2062,
+        "passed": 1731,
+        "failed": 0,
+        "skipped": 331,
+        "errors": 0,
+        "not-run": 0,
+        "xunit_exit": 0,
+        "vstest_exit": 1,
+        "vstest_executed": 0
+      },
+      "E4_supplement_exact_passes": 1944,
+      "E4_disposable_omission_detected": 1,
+      "frozen_sensitivity_passes": 17,
+      "independent_passes": 696,
+      "independent_omissions_detected": 20,
+      "nominal_omission_controls_passed": 20,
+      "production_verifier_exit": 1
+    },
+    "release": {
+      "e3": {
+        "total": 185,
+        "passed": 185,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0,
+        "xunit_exit": 0,
+        "vstest_exit": 1,
+        "vstest_executed": 0
+      },
+      "e4": {
+        "total": 11,
+        "passed": 11,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0,
+        "xunit_exit": 0,
+        "vstest_exit": 1,
+        "vstest_executed": 0
+      },
+      "e5": {
+        "total": 42,
+        "passed": 42,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "not-run": 0,
+        "xunit_exit": 0,
+        "vstest_exit": 1,
+        "vstest_executed": 0
+      },
+      "broad": {
+        "total": 2062,
+        "passed": 1731,
+        "failed": 0,
+        "skipped": 331,
+        "errors": 0,
+        "not-run": 0,
+        "xunit_exit": 0,
+        "vstest_exit": 1,
+        "vstest_executed": 0
+      },
+      "E4_supplement_exact_passes": 1944,
+      "E4_disposable_omission_detected": 1,
+      "frozen_sensitivity_passes": 17,
+      "independent_passes": 696,
+      "independent_omissions_detected": 20,
+      "nominal_omission_controls_passed": 20,
+      "production_verifier_exit": 0
+    },
+    "policy": {
+      "controls_passed": 51,
+      "preparation_regressions_passed": 9,
+      "preparation_passed": true
+    }
+  },
+  "isolation": {
+    "debug": {
+      "assembly_paths": 31,
+      "production_paths": 28,
+      "test_paths": 3,
+      "unauthorized_model_edges": 0,
+      "new_production_codec_consumers": 0,
+      "independent_incoming_control_exit": 1,
+      "P4_witnesses_passed": 47
+    },
+    "release": {
+      "assembly_paths": 39,
+      "production_paths": 36,
+      "test_paths": 3,
+      "unauthorized_model_edges": 0,
+      "new_production_codec_consumers": 0,
+      "independent_incoming_control_exit": 1,
+      "P4_witnesses_passed": 47
+    },
+    "P4": {
+      "covered": 21,
+      "authorized_continuation": 5,
+      "legacy_test_only": 3,
+      "disposition": "Neutral within the existing refusal-only scope"
+    }
+  }
+}
