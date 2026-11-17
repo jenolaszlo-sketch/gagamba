@@ -1,0 +1,553 @@
+{
+  "baseline": "b309a9ec1a9a0f160ea0c2dd513001c3561a36d9",
+  "repositorySources": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "blob": "588b4ba60cde79430b61f07549bc2f83858153dc",
+      "sha256": "ab89e26b0bb771b4fb2cf16c297229b1af588bb295e325e1ead4939f114fa182"
+    },
+    {
+      "path": "AGENTS.md",
+      "blob": "fef491d881c71aa81fbb6f0bb975edf993f3b11f",
+      "sha256": "1967f67870496a4ab55803ba28c021a8d1efdf916ac0ac07ef46678321e342b7"
+    },
+    {
+      "path": "Directory.Build.props",
+      "blob": "78c01a4335143c58abbafaec15308ab86e25832a",
+      "sha256": "c1d24752ea45b694febc3c898c6fc3735aeaea1e8e3405ba0b94fa5492b477e8"
+    },
+    {
+      "path": "Directory.Build.targets",
+      "blob": "eb1755b3530ce30d64a28ab24d6b1c12e47e7f9c",
+      "sha256": "6c1b763f561bde4f37e2fced95770bab28c3cfea0fc1b0267b31717031686fad"
+    },
+    {
+      "path": "docs/PROJECT-STATUS.md",
+      "blob": "8081a1fb1f939ef5c6e7285e398a4efb7ddf9b03",
+      "sha256": "185d63e1d73835b24ce58094960dd53799a2934a36102a6080dd6a2657fd9383"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-p4-coverage-owner-acceptance-01.md",
+      "blob": "31ae1b08cb4663a6a9d9de657fd972fccb731cf2",
+      "sha256": "3bdccfdf3e24d4a00fd9f2e600cee13e3eab94014def03a349023eb2bf3e4b6e"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-entry-owner-decision-01.md",
+      "blob": "7002dcb3f04e4d69ca5d9c6cb8e9ef57f0f7c578",
+      "sha256": "573f248a41b6d0215d294b74152ab17c64478fc6ac484884dff0f001b46b84fb"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-f01-owner-acceptance-01.md",
+      "blob": "c40d57a5d080309aaea6fa881474668c20cd7fbb",
+      "sha256": "30205d32409c097624da25cfd9ed6608f1588d79f3af96231125da06e6ad194b"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-f02-parity-owner-acceptance-01.md",
+      "blob": "c274409330287c10a2b4e9fe92ad12349feeb3f2",
+      "sha256": "00f39ae2a1fc1675fa195c3af0ba040fdd05eed956e497f5e0c6fa5285a56107"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-f03-owner-acceptance-01.md",
+      "blob": "3637f22dc395e95137495c6e89db7d00b96b4f9f",
+      "sha256": "44c85e0062c42ddec6e98a74268d71f358a9435f506089aa416e6045d47fb944"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-01-owner-acceptance-01.md",
+      "blob": "6851869180a01056b8a0f59c5be4eb4056da624f",
+      "sha256": "27de68690cca7027d46b0692e52e5da71641e38e13c4037fd31937d08f823b93"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-02-closure-owner-01.md",
+      "blob": "3388894f821a4a92aca7c2b2d79c832a0f70a450",
+      "sha256": "7e4228463b83708ffa0ce6f0ab3f98ce11b15aaee586353a3e4d8884a3ece244"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-02-d1.md",
+      "blob": "83fe8d2649675e00b76457885fd0169b4ae77498",
+      "sha256": "438194de12d063f2212038879b71f6f4f5c2f68526f32a19649ea49f8f47916b"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-02-p0-owner-acceptance-01.md",
+      "blob": "8dd20d11202bb4ed7fb0dd3cdf447eaa3c5e54b7",
+      "sha256": "049d9195bd2cc9b2b02515b771c4d15263a49042dc56d467d4d33a81c5ba50f5"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-02-p1-owner-acceptance-01.md",
+      "blob": "f360932adc4909b4f26e32b6005a592618dd0912",
+      "sha256": "20a0e258dcb5b2b9f11e2710c63d81115a51e7bd437f762fa18c16a26d758994"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-02-p2-owner-acceptance-01.md",
+      "blob": "fb00cc37f1b8294d18e459154a24c3cc1d1f8dd8",
+      "sha256": "afac8adf280629ddb543bf9bc66d5418d4acdb46a259b2aba13bb49c1d9c815c"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-entry-owner-01.md",
+      "blob": "028a7c1858b5e7b506deff9d2d8d263afe3344ac",
+      "sha256": "fbb0534447430df8f608c82ae978d10294a19a8b8a5fc0dbca7983811f78311e"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-owner-01-evidence/downstream-obligations.md",
+      "blob": "ec82b7c82bda628ec93efa4406e9044cf8b25127",
+      "sha256": "bba2b456e65f88a302c61c0957197a3dd4189741f49802f4830474d2e6b6cad8"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-owner-01-evidence/inherited-qualifications.md",
+      "blob": "5aee003b02a48e3ce095b972f8825fe2100b7da9",
+      "sha256": "74ba3ce57c4b2aae8d4b8ed0a12c75c14e645309b2cf4782153fce042fb36c50"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-owner-02.md",
+      "blob": "fb95a42fb08a901cd07f07ca3d7cf4732cf6ccc0",
+      "sha256": "987d4b16bc88200bdf27fb15d3e8f720745c456c92442c99d5dcfd60bef893c0"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-03-qe1-frozen-record-owner-01.md",
+      "blob": "d2fea61b7db323319ee59033c8b1b12ded1ffe7d",
+      "sha256": "c7351553eb8c82837c618d6b36a3563cafa99899841fc20b07142898b641c7d8"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-entry-owner-01-evidence/gava1-frozen-excerpt.txt",
+      "blob": "23d6ed7d95e4dd532de7e7f3a0f3a6de665b50a1",
+      "sha256": "e6e0730c735c5984c97a46ed1c205131c5ffff6427de87bcb731f00110d568c4"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-owner-01-evidence/SHA256SUMS.txt",
+      "blob": "f8abd5b4f604c39092d6960c729aaf277ce12535",
+      "sha256": "a913052189e00cb697592530bb1b87a2b222badb9d8f2f91425396ba25da238c"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-owner-01-evidence/acceptance-matrix.md",
+      "blob": "00c68ff431e020954f87afb58aa746f0386e230b",
+      "sha256": "927955d4b75caa86e761a68d0a6bcc0729b1b751e351b3baf759e229352c2859"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-owner-01-evidence/carry-forward.md",
+      "blob": "89db7e4f35f9eced0185f2ad786e57898eab492e",
+      "sha256": "d6ec141c8e903070ca06a2ce37679a4468ee317b00f6abc64c69cba6ea85e900"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-owner-01-evidence/independence.md",
+      "blob": "ba3192b2125da61474a790389ce18ae4757ae0ab",
+      "sha256": "42769cdcca3c557ad40efd5ff9f0c5eeb9894f171675f0dd4d6af1cf7898d7f6"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-owner-01-evidence/integrity.json",
+      "blob": "fee794fed25b8bb331d394218988c06b2bf8d481",
+      "sha256": "fd983675cb9eb95a878713053f05effc370fa27c1850c038493c3d621ad16b3c"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-owner-01-evidence/qualification-audit.json",
+      "blob": "0537d8adeb3ffe6c82f5a789c74f352eb59ce6ed",
+      "sha256": "225d64058980fffa9a380cb8e57f77382387e70ca3785de90c4680b1031d73e9"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-owner-01-evidence/roadmap.md",
+      "blob": "080e719196d3a558800774c4ecbd9e6cbf724627",
+      "sha256": "723cf3d1cae177f210083934cdeb8dd53c3861e57f87a84b104a50aef6d38af9"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-04-owner-01.md",
+      "blob": "d9c148b466db1e84a7a15526f161b2927cdd4751",
+      "sha256": "4bee068a79dbf871a9d87df288cc887b2ec781d2c294bd0057c5f208376fe242"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-entry-owner-01-evidence/SHA256SUMS.txt",
+      "blob": "9e8201bf3c61ff219f6b9d667fea16be0192b458",
+      "sha256": "8a37b4c4623ca2820c5731760da013c66c170c9d92fba0f7e08e6a16b694ed30"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-entry-owner-01-evidence/carry-forward.md",
+      "blob": "9245135264b0571fbbb5278dc90e61783ededafa",
+      "sha256": "ad56f9c7a5fef45fb8b9662a17c68348a869bd92232b5c857ebd0b289576ead7"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-entry-owner-01-evidence/contract-and-interfaces.md",
+      "blob": "6186b664ed675f97ac2d9a39196c16c1afb6bd16",
+      "sha256": "10d384b977cb08adc27bb1c315fde9ef4b0229d03f4fb9a14a11846c2e6fb1c7"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-entry-owner-01-evidence/custody-and-lifecycle.md",
+      "blob": "50541bf3b70ff3a9e7dee36638c50783e1707981",
+      "sha256": "d9fbf56d4a345f609d4864f5f0c2109140b7d4f4712463d673df6aa8712c8848"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-entry-owner-01-evidence/prerequisites-and-gates.md",
+      "blob": "955967d5c442256bc764476ebb51a9349a68dcea",
+      "sha256": "454758a036597199dcd7e881c75fece6f027806755275bd6b532f118434ee307"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-entry-owner-01-evidence/publication-and-ci.md",
+      "blob": "5765841a642c06d68f2418a8150cf76e1e985759",
+      "sha256": "96cf547b58a4ee7deb7437a02cebbf8ed2360c56b25b6ca65be224a959e919d9"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-entry-owner-01-evidence/verification-and-p4.md",
+      "blob": "310d5c4bcca0e6520d3957e70179327a0b3ad862",
+      "sha256": "572b3dc1aedccfd9698c02aa753069233d3229f1ef45e8c6cc28b97f165cc552"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-entry-owner-01.md",
+      "blob": "df2c4b7f9f6ffb8a8564dcaff8523ad3f343771b",
+      "sha256": "8ba46685f5047302b0f98b834cdb3c13100acf9a0731c75448de5b4d01ed969f"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-f02-mechanism-b-owner-acceptance.md",
+      "blob": "5a707d37abba7b10f8dee9bc61ff7507fb3a3613",
+      "sha256": "5f72da6f7ef7ede6379f587521226038137e7de602e53b2b94669f366cd75b3e"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-integrated-start-authority-owner-decision-01.md",
+      "blob": "844cb149ffee442e0111210f7befae1cfe2caef0",
+      "sha256": "3465b3503ad75daa40fead701fad36d165d642568bc60c98f67c3870462b6361"
+    },
+    {
+      "path": "docs/decisions/rc2b-06-b6-s3-b2-wire-owner-acceptance.md",
+      "blob": "76b70f6832733c7cf58ffaa56afbd3df1a9f014a",
+      "sha256": "7d74d2043b813ab7f17a75b99af2af2512812b76083e3f5b6df81c8fd0e976ea"
+    },
+    {
+      "path": "docs/design/rc2b-06-b6-s3-b2-wire-delta-01.md",
+      "blob": "95dc3221ae2a5579f966526516073cdd0f392aa9",
+      "sha256": "88beb1a2e40658c19f14acc96b3fd9215c7bc5b94e59f3a961c3ee27f63e3ad6"
+    },
+    {
+      "path": "docs/evidence/rc2b-06-b6-alt-b-slice-e-02-frozen-schema-provenance-p0.md",
+      "blob": "db25949d25babd474d00ae5b2f436e15507f22b3",
+      "sha256": "11bca1f6add93abd759c5ec4afeca506e4e894e2ab79cc6ccf25da59e3c167d6"
+    },
+    {
+      "path": "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-codec-r2.md",
+      "blob": "900e12cb53cdf843516cc0886e6070f141f8bea2",
+      "sha256": "3d20597f8e99530f999204022b3a4fdbfdeda6e9e9ba5d65b2859e12cf992fe1"
+    },
+    {
+      "path": "docs/evidence/rc2b-06-b6-alt-b-slice-e-03-v3-pre-frozen-record-candidate-01.md",
+      "blob": "f6a71562845d2cfe0aee5495864a509c5caabe7a",
+      "sha256": "1948bab694ed37bf5c7c50524328716f3eef18d98dd1ae9971ca12100c40160e"
+    },
+    {
+      "path": "docs/fixture-protocol.md",
+      "blob": "b71da527225e8c3aea1663c20b55246142b6b635",
+      "sha256": "cf6c112f6e19a886dbb0085aec0ac25d8afa9acd93b5c14f2dbd80039770264e"
+    },
+    {
+      "path": "docs/handoff.md",
+      "blob": "10b0b740855956e6825f3f82b59ba4a446b7d34f",
+      "sha256": "f71acd8a66e5eba20cc54696bf11ef6457ab235dcc97afb08dc1c36c9eeda3ef"
+    },
+    {
+      "path": "docs/implementation-plan.md",
+      "blob": "d85d0722e4f1c9fd0417e0b9524527b30e60abf8",
+      "sha256": "c30a4b8ed35935c6796ada47894ab4d5883eae307021f22a79e111adc6f19b80"
+    },
+    {
+      "path": "docs/plans/rc2b-06-b6-integrated-start-authority-impl-01.md",
+      "blob": "485ad1ac76e836d2bd6eb826131a01294c9bda8c",
+      "sha256": "9b3d9774e6a1c244ccfa89e8f16a54c8678d22bdef0e0272ce1c528b8dd4f42c"
+    },
+    {
+      "path": "docs/plans/rc2b-06-b6-native-installed-driver-handoff.md",
+      "blob": "5de8fc7b0c7c3d59da53df99901a01b12753e03f",
+      "sha256": "cbbd2a57374510f02afe8daf10d93ef8e70baab420bc5859e4ecaa13dd565674"
+    },
+    {
+      "path": "docs/remediation-evidence-standard.md",
+      "blob": "ab98eec3498089292ddd868c00506f0bb83a028f",
+      "sha256": "7947b91e3e9bd92c74e50fe02751ba23161e1ab83fb1c661067238c2689d2e03"
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-02-closure-assessment-01.md",
+      "blob": "b75e1a5e2a7b52c393b919ff54ef1dd68ca49779",
+      "sha256": "f82211d1ee2c53f76279ed3e57bb56ec3ea11a79204d683a068559ea171124de"
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-codec-r2-q4.md",
+      "blob": "6f608d928a18a18bc48c1d1d3afff864973607d0",
+      "sha256": "75f9269dd680e40a71dc3ac0fa0c72380e8afd0b7adeb1b0e66e2f2a54bb3dea"
+    },
+    {
+      "path": "docs/reviews/rc2b-06-b6-alt-b-slice-e-entry-01.md",
+      "blob": "0c311fc84bde05d3c9e897ff51c8e44832aea987",
+      "sha256": "497dcb6924d692d4f3601c33baa3320de7036e057293d4bc4836c29e52fe99de"
+    },
+    {
+      "path": "docs/security-model.md",
+      "blob": "79f9da7bfc2b945868ec8176d9602187d1340545",
+      "sha256": "869f173f6c489160d804e582bd9494f90542ac687cf2013beb5e2bc7d6638c38"
+    },
+    {
+      "path": "docs/testing-and-ci.md",
+      "blob": "e485ba7264c49242495dbb28c28dc32ec2e9de65",
+      "sha256": "63e2f82f05cc7989b80efca9012f134cbcfe40a943694a41313d3996f530a8b6"
+    },
+    {
+      "path": "docs/work-queue.md",
+      "blob": "5a1fff8f2211d038df11bf591b56018ec244c667",
+      "sha256": "015c28d73a3c6bdca0d665c4426ee5662f44ab92f9ad9cf0afeac79042f741bd"
+    },
+    {
+      "path": "eng/linux-m1/build-install-candidate.sh",
+      "blob": "31a642af3d065f57a9047101183ff62736a07495",
+      "sha256": "867ee36c2559c8cf3a6b4a2d9273c5e5d8876a2dd835d6c7a1055d73fb3f68ed"
+    },
+    {
+      "path": "eng/test-production-build.ps1",
+      "blob": "3ef99efc737eade952e92697253f5f20f1657ea3",
+      "sha256": "adcb3d9d57376edb515c4a6ed0c79db273851c7128eb372c075d102b9ffd51aa"
+    },
+    {
+      "path": "eng/verify-preparation.ps1",
+      "blob": "95bcba26fa59b02c579f01435a2aaa1d83d6d760",
+      "sha256": "643ce6755caa3f510222a57e1e3180ce0c37355bfb9c2c1a126aa20ec2cbf04a"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1.Owner/Gagamba.Execution.Linux.M1.Owner.csproj",
+      "blob": "5966c7c6d0b452f6839674bc498e911f2c2d72e2",
+      "sha256": "7446443cc4a8caf4dc8746c166c99f73ab5e78cba91a599475dccf08199c0113"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1.Owner/Program.cs",
+      "blob": "c5a60e91479e191e9a29e6197f873594d91c1013",
+      "sha256": "2622e7f21c31f8ef0e6058c4ba8ddf8895f252cd4b6cec135d8b7ab2a125749b"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1.Recovery/Gagamba.Execution.Linux.M1.Recovery.csproj",
+      "blob": "e5697c9ee5d1e2461fa2bf64fde37cf82c09d96a",
+      "sha256": "9ed2af22ee553593ee3ad3dd6660a74f4167d0f3c483b86c45d09f00545e91e3"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1.Recovery/Program.cs",
+      "blob": "113d161d77f804fdba4591f9c4d47f87223e972a",
+      "sha256": "53f7566836bb1db17e5120413c1150d5f218ad91ef1f10d33f8251014d24a8ef"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/Gava1ContextCodec.cs",
+      "blob": "2ea80a0828e51ba86b8ee216ffe4d20f4c42914b",
+      "sha256": "353280f0ad020591ed39b2475ed26bb3046acb159ef80e21398af46652e5bf69"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/Gava1ContextData.cs",
+      "blob": "95f4bb23eaffd4a36fd83cc4995f7cd8ba22a3d7",
+      "sha256": "cdb1b5613f1f731e4f93d6c62640c67f94718dd7caeaeb41024e7f0f1bb4abe9"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/QualifiedLauncher.cs",
+      "blob": "b1b8a291da75bc913c77c2377fb41f0b53d19eae",
+      "sha256": "8cfe4a60c66ede8c6e30eaa0da7646513bf1b489d6fd461fdd1a46c6e21f9f83"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodec.cs",
+      "blob": "d861210aeb3734b04e6bf9f472c12bd226253b32",
+      "sha256": "ce4c7b26ed0bfcde9f5d3dd07aaf0ca4cf78e6845737afbc3c8f2c28d5ffd359"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodecBinary.cs",
+      "blob": "814c233d6290c111d751c73dbe65e1ec7dc0cc23",
+      "sha256": "b259857ed0fb0092744d5b52f7e0982c112f0dc848ad13cea8dbebbb6e5e9d47"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/ValidationPreCodecData.cs",
+      "blob": "ee8a7f00b160043dbd6bdad9b2bec945a21377a5",
+      "sha256": "4cbea3e2c7773ea0113e6578b024b7cb37825bca9b127fe37068ecf6c646b7b9"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Bootstrap/Visibility.cs",
+      "blob": "bfd8308daa0674faeac3f06cfeb3282ea423132e",
+      "sha256": "cbfbc39bfd69c81027396b5c21d1e329ae8021af5feea8fda26036a0a87e7353"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Execution/TransactionStateModel.cs",
+      "blob": "8d4fb89b9a41f87b24432df74bcb0cff1513ad84",
+      "sha256": "3d2b19ff4f474f9d48466f548003f553af30dc68457d3792cb6889979af4d67a"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Gagamba.Execution.Linux.M1.csproj",
+      "blob": "519e905cb949008064cd767987ad078f59015d61",
+      "sha256": "20b14813a57b462b77aa0ba45c68b78de279fbad10aae14cd27ff18f7b875c80"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Validation/DetachedEvidenceContracts.cs",
+      "blob": "652486d4ab26fec6a975e876e59a473b66bc331c",
+      "sha256": "5e18bd97fd486aff8e8257dc0479efcf75d20af71ddd91da24ebdf2a8297df3f"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Validation/DetachedEvidenceVerifier.cs",
+      "blob": "2b482a7068b3eae4603a93d79454e9c69ce7b6d3",
+      "sha256": "93d16414ed4e9cc75c0e7598877bcc66536ae442106f4af3adb56553f903e930"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Validation/FrozenContractVerifier.cs",
+      "blob": "fdff96b93176058f025bb814603c0678d78b6fe6",
+      "sha256": "3f357b8df37f7d1f8009e9642aa82675f02e8797a87f94e921c7ab4b48430344"
+    },
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Validation/FrozenSchemaRules.cs",
+      "blob": "868ddbeeaafdcb070a53c2c6f6c083a1fd4e50f6",
+      "sha256": "435fff7e8bfe1f9492f3caa72c77c986e92547707ad07b157acd1d06c0d886ba"
+    },
+    {
+      "path": "tests/Fixtures/B2Controller/B2Controller.csproj",
+      "blob": "0fab709c57140800348311cd7b06c45855dadd89",
+      "sha256": "ac4da85a82f300fa91c197e68aaee2c15a70c5c2906d2141c1a348a93ca1d881"
+    },
+    {
+      "path": "tests/Fixtures/B2Controller/Program.cs",
+      "blob": "2f655c771116ad378b3285369b765084ba1f8190",
+      "sha256": "52bab9812ab4eb30ec0e57175a983b67cdbd16fb7a46562d30d7c69020e655c0"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/Gava1ContextCodecTests.cs",
+      "blob": "c58def60a40abeb7a767c9f5408b08becf94cc2e",
+      "sha256": "0a32a6e3b05ad8dd5a37d20d74d8b17870c15d3b9d6f031db0bdb59696c9ed82"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/Bootstrap/Gava1ContextVectors.cs",
+      "blob": "19244bcb4cf2a7ff629083abea79a01444a14bce",
+      "sha256": "a16f818981f72c075e8d1aa74a73845cb9792e81a6dc80cc42d0329ee53db345"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/Gagamba.Execution.Linux.M1.Tests.csproj",
+      "blob": "64f835f5b45663455f8c51fac18ce480a36fda59",
+      "sha256": "4ebe192fcabbd1fd9152e2cfcc6674800936fcdad63028d735b13418d29f2137"
+    }
+  ],
+  "externalCopies": [
+    {
+      "directory": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-f02-authority-mechanism-decision-01",
+      "manifestSha256": "5940b98bc4158eb3887b096a047ff6451f6059a3ec45e7bc254f4ed5cc583f82",
+      "entries": [
+        {
+          "path": "actor-and-descriptor-binding.md",
+          "sha256": "ea8c50d92a7bf7fe4bd2dca0f91155fc4533bef314fc4980036535c891822b93"
+        },
+        {
+          "path": "acyclic-authority-sequence.md",
+          "sha256": "ed8dca1edb26b0ccde009b60f3f16148a67fed323fd47e9989b605397364d200"
+        },
+        {
+          "path": "authority-mechanism-comparison.md",
+          "sha256": "14dc6bd42432dc6c434c5ac10473dd1e568114ba85e11c6e95356b4534526179"
+        },
+        {
+          "path": "case-policy-and-action-contract.md",
+          "sha256": "667e6118e02b081475ce1a2c851d3bfe9b0a96fdb474a2fb0598f308e9c694f7"
+        },
+        {
+          "path": "final-acceptance-hash-contract.md",
+          "sha256": "49d566e1bcae585d4d9566319cdbe5d6f06696dfbbd9bff6c3fda9ce7514b652"
+        },
+        {
+          "path": "mechanism-a-consume-before-launch.md",
+          "sha256": "8cbcdd5493fe4b86b680912d1fdf7ece5fb9bd662117798402d4c90f667d73d6"
+        },
+        {
+          "path": "mechanism-b-session-capability.md",
+          "sha256": "f5d28dbe2473dd8a47337e4ae80a40c815bce051818e326ace1b647bf0d0b010"
+        },
+        {
+          "path": "minimum-implementation-contract.md",
+          "sha256": "c4e73095cd1f05ee7410cc97bd26d8a8c94c09a0e9e14a47eb1c1840426234b5"
+        },
+        {
+          "path": "negative-test-specifications.md",
+          "sha256": "0900b7fe4049c941695b9dd9c421105b25f3b879bcdf2cad30239ea3aea76791"
+        },
+        {
+          "path": "owner-decision-proposal.md",
+          "sha256": "f3b175f755e4319a428a452103f2d20e30f2f37c764685cc971b1c5f30545bc3"
+        },
+        {
+          "path": "prior-input-provenance.json",
+          "sha256": "f22a9b3025a24b529b97adc47465c16b6b3c27b9852dd45497322d17f10c42e7"
+        },
+        {
+          "path": "publication-withdrawal-race-matrix.md",
+          "sha256": "1f5d9d651ccd2e88d5b406e0d1fe3a1e26d64c666ee8dded27099c4da98bc963"
+        },
+        {
+          "path": "remediation-notes.md",
+          "sha256": "8618e4980ab641ae815a3f05ffc781208607ea70470784901641703ab6788ff4"
+        },
+        {
+          "path": "source-provenance.json",
+          "sha256": "6b9312dc3baab780fad51a3bb4baaf22bfaec52156ef2b8d1b47356d6414b99c"
+        },
+        {
+          "path": "trusted-actors-and-boundaries.md",
+          "sha256": "dfc2188b811de50d96f8e1db117c10c15c9efc1603f486607bb2fd38538b201c"
+        }
+      ]
+    },
+    {
+      "directory": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-f02-authority-mechanism-decision-01\\recheck-input",
+      "manifestSha256": "5940b98bc4158eb3887b096a047ff6451f6059a3ec45e7bc254f4ed5cc583f82",
+      "entries": [
+        {
+          "path": "actor-and-descriptor-binding.md",
+          "sha256": "ea8c50d92a7bf7fe4bd2dca0f91155fc4533bef314fc4980036535c891822b93"
+        },
+        {
+          "path": "acyclic-authority-sequence.md",
+          "sha256": "ed8dca1edb26b0ccde009b60f3f16148a67fed323fd47e9989b605397364d200"
+        },
+        {
+          "path": "authority-mechanism-comparison.md",
+          "sha256": "14dc6bd42432dc6c434c5ac10473dd1e568114ba85e11c6e95356b4534526179"
+        },
+        {
+          "path": "case-policy-and-action-contract.md",
+          "sha256": "667e6118e02b081475ce1a2c851d3bfe9b0a96fdb474a2fb0598f308e9c694f7"
+        },
+        {
+          "path": "final-acceptance-hash-contract.md",
+          "sha256": "49d566e1bcae585d4d9566319cdbe5d6f06696dfbbd9bff6c3fda9ce7514b652"
+        },
+        {
+          "path": "mechanism-a-consume-before-launch.md",
+          "sha256": "8cbcdd5493fe4b86b680912d1fdf7ece5fb9bd662117798402d4c90f667d73d6"
+        },
+        {
+          "path": "mechanism-b-session-capability.md",
+          "sha256": "f5d28dbe2473dd8a47337e4ae80a40c815bce051818e326ace1b647bf0d0b010"
+        },
+        {
+          "path": "minimum-implementation-contract.md",
+          "sha256": "c4e73095cd1f05ee7410cc97bd26d8a8c94c09a0e9e14a47eb1c1840426234b5"
+        },
+        {
+          "path": "negative-test-specifications.md",
+          "sha256": "0900b7fe4049c941695b9dd9c421105b25f3b879bcdf2cad30239ea3aea76791"
+        },
+        {
+          "path": "owner-decision-proposal.md",
+          "sha256": "f3b175f755e4319a428a452103f2d20e30f2f37c764685cc971b1c5f30545bc3"
+        },
+        {
+          "path": "prior-input-provenance.json",
+          "sha256": "f22a9b3025a24b529b97adc47465c16b6b3c27b9852dd45497322d17f10c42e7"
+        },
+        {
+          "path": "publication-withdrawal-race-matrix.md",
+          "sha256": "1f5d9d651ccd2e88d5b406e0d1fe3a1e26d64c666ee8dded27099c4da98bc963"
+        },
+        {
+          "path": "remediation-notes.md",
+          "sha256": "8618e4980ab641ae815a3f05ffc781208607ea70470784901641703ab6788ff4"
+        },
+        {
+          "path": "source-provenance.json",
+          "sha256": "6b9312dc3baab780fad51a3bb4baaf22bfaec52156ef2b8d1b47356d6414b99c"
+        },
+        {
+          "path": "trusted-actors-and-boundaries.md",
+          "sha256": "dfc2188b811de50d96f8e1db117c10c15c9efc1603f486607bb2fd38538b201c"
+        }
+      ]
+    }
+  ],
+  "alternativeBCompatibility": {
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\gagamba-integrated-start-authority-owner-decision-01\\validation-bootstrap-compatibility.md",
+    "sha256": "896532d72b39e95a5e6201f74a9c37478baebdab7c7061d0c79522eaf87732bb"
+  }
+}
