@@ -1,0 +1,25 @@
+# Alternative B Slice E-5 entry reassessment
+
+Commission `GAGAMBA-RC2B-06-B6-ALT-B-SLICE-E-05-ENTRY-OWNER-02`, 17 November 2026 (Asia/Manila).
+
+**B. READY FOR ENTRY AUTHORIZATION WITH QUALIFICATIONS**
+
+A separate authorization may permit the six-file, production-unreachable managed `ValidationCustodyModel`. It compares independently supplied expectations with evidence and models pre-only B2 and integrated custody sequences. Any successful output is diagnostic. Implementation remains subject to separate authorization, exact-candidate producer verification, fresh independent qualification and owner acceptance. [Frozen design](rc2b-06-b6-alt-b-slice-e-05-design-owner-01.md) · [Entry authorization inputs](rc2b-06-b6-alt-b-slice-e-05-entry-owner-02-evidence/bindings-and-boundary.md)
+
+## Three-blocker resolution matrix
+
+| Original blocker | Entry disposition | Evidence and remaining gate |
+|---|---|---|
+| E5-01 · Fixed launcher identity and closure | **Resolved for bounded entry.** | D1 fixes L to the dedicated native Linux x64 `/usr/local/libexec/gagamba-authority/validation-launch`, with a reviewed transitive loading closure. The protected installation/review record supplies independent L identity. K supplies C/D closure expectations and approved packages supply executable expectations. The managed model only compares supplied opaque digests. Actual artifact bytes, inventory encoding and values, independent provenance, installed/loaded readback and native qualification remain live prerequisites. [D1](rc2b-06-b6-alt-b-slice-e-05-design-owner-01-evidence/launcher.md) |
+| E5-02 · Responsibility allocation | **Resolved for bounded entry.** | Later E-5 owns L/C acquisition, original pins, drop and custody. V/W/A own actual review, acceptance and approval, with A supplying fresh live consent. E-6 owns administration integration, issuance/consumption, independent actor barriers, the atomic set and O's release enforcement. E-7 owns D closure and C's dispatch adapter. Original C alone starts D and retains control of requests. Slice N independently qualifies protected-native behavior. D2 names each producer and consumer, including the separate native E-5-to-E-6 handoff. [D2](rc2b-06-b6-alt-b-slice-e-05-design-owner-01-evidence/responsibilities.md) |
+| E5-03 · Frozen model contract | **Resolved for bounded entry.** | The internal surface, separately held inputs, immutable copies, ordered refusals, terminal lifecycle and managed cleanup fit the exact two source and four test additions. No mandatory managed requirement needs a seventh path or a live dependency. Production isolation and P4 compatibility must be demonstrated on the compiled candidate. [Contract](rc2b-06-b6-alt-b-slice-e-05-design-owner-01-evidence/contract.md) · [Lifecycle](rc2b-06-b6-alt-b-slice-e-05-design-owner-01-evidence/lifecycle.md) · [File boundary](rc2b-06-b6-alt-b-slice-e-05-entry-owner-02-evidence/bindings-and-boundary.md) |
+
+The readiness review covers all 24 requirements. Five are ready and 19 ready with explicit qualifications, including two downstream-only requirements with named later gates. The accepted E-4 baseline, all 39 E-2 qualifications and 23 obligations, BB-02, composite Q-E1, the first E-1 consumer, external evidence durability and ancestry, P4 refusal-only, and `NATIVE-PENDING` remain in force. [Readiness matrix](rc2b-06-b6-alt-b-slice-e-05-entry-owner-02-evidence/requirements-readiness.md) · [Carry-forward ledger](rc2b-06-b6-alt-b-slice-e-05-entry-owner-02-evidence/carry-forward.md)
+
+## Repository and verification
+
+Canonical local `main` started at `1ff4d6e6d1f756646072790478921d9a64f15654` (tree `0dd0da1ba6e395ac3e7339b07ad4809e9a20b62d`), directly above the prior blocked assessment and the published E-4 acceptance. The index and tracked checkout were clean, with one worktree and no stashes. All 44 historical untracked paths, lengths and raw hashes matched the pinned inventory. All 792 prior and 12 design manifest entries verified. The design commit added exactly 13 documentation paths. The locally observed GitHub ref and tree match the published milestone, and its push CI completed successfully. [Preflight and artifact bindings](rc2b-06-b6-alt-b-slice-e-05-entry-owner-02-evidence/bindings-and-boundary.md) · [E-4 CI](https://github.com/jenolaszlo-sketch/gagamba/actions/runs/43879340208)
+
+P4 compatibility follows from the proposed dependency direction and authority boundary. Exact-revision source, compiled isolation and refusal evidence remain due after implementation. This assessment used static inspection and accepted execution evidence. The unchanged preparation validator passed on the document package. [Qualification and P4](rc2b-06-b6-alt-b-slice-e-05-entry-owner-02-evidence/verification-and-p4.md)
+
+This decision serves as the current queue and handoff for E-5 entry. Recommend `GAGAMBA-RC2B-06-B6-ALT-B-SLICE-E-05-ENTRY-AUTH-01`. [Prior blocked assessment](rc2b-06-b6-alt-b-slice-e-05-entry-owner-01.md) · [SHA-256 manifest](rc2b-06-b6-alt-b-slice-e-05-entry-owner-02-evidence/SHA256SUMS.txt)
