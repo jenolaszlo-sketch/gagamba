@@ -66,7 +66,7 @@ internal sealed class ValidationReleaseProjection
         bool? fixturePolicyAllowsRelease,
         ValidationReleaseStep[]? steps,
         uint? requestedActionIndex,
-        byte[]? capabilityHash,
+        byte[]? sealedLaunchRecordHash,
         byte[]? catalogHash,
         byte[]? scriptHash,
         byte[]? releaseActionHash,
@@ -84,7 +84,7 @@ internal sealed class ValidationReleaseProjection
         FixturePolicyAllowsRelease = fixturePolicyAllowsRelease;
         Steps = steps;
         RequestedActionIndex = requestedActionIndex;
-        CapabilityHash = capabilityHash;
+        SealedLaunchRecordHash = sealedLaunchRecordHash;
         CatalogHash = catalogHash;
         ScriptHash = scriptHash;
         ReleaseActionHash = releaseActionHash;
@@ -103,7 +103,7 @@ internal sealed class ValidationReleaseProjection
     internal bool? FixturePolicyAllowsRelease { get; }
     internal ValidationReleaseStep[]? Steps { get; }
     internal uint? RequestedActionIndex { get; }
-    internal byte[]? CapabilityHash { get; }
+    internal byte[]? SealedLaunchRecordHash { get; }
     internal byte[]? CatalogHash { get; }
     internal byte[]? ScriptHash { get; }
     internal byte[]? ReleaseActionHash { get; }
@@ -213,7 +213,7 @@ internal static class ValidationReleasePreparation
             actual.ExecutionId != original.ExecutionId ||
             actual.ProtocolLeaseId != original.ProtocolLeaseId ||
             actual.PreparationId != original.PreparationId ||
-            !actual.CapabilityHash.AsSpan().SequenceEqual(original.CapabilityHash) ||
+            !actual.SealedLaunchRecordHash.AsSpan().SequenceEqual(original.SealedLaunchRecordHash) ||
             !actual.CatalogHash.AsSpan().SequenceEqual(original.CatalogHash) ||
             !actual.ScriptHash.AsSpan().SequenceEqual(original.ScriptHash) ||
             !actual.ReleaseActionHash.AsSpan().SequenceEqual(original.ReleaseActionHash) ||
@@ -236,7 +236,7 @@ internal static class ValidationReleasePreparation
             input.FixturePolicyAllowsRelease is not bool fixturePolicyAllowsRelease ||
             input.Steps is not { } steps ||
             input.RequestedActionIndex is not uint index ||
-            input.CapabilityHash is not { } capabilityHash ||
+            input.SealedLaunchRecordHash is not { } sealedLaunchRecordHash ||
             input.CatalogHash is not { } catalogHash ||
             input.ScriptHash is not { } scriptHash ||
             input.ReleaseActionHash is not { } releaseActionHash ||
@@ -260,7 +260,7 @@ internal static class ValidationReleasePreparation
             return InvalidCaseId;
 
         if (steps.Length is not (4 or 6) ||
-            capabilityHash.Length != DigestLength ||
+            sealedLaunchRecordHash.Length != DigestLength ||
             catalogHash.Length != DigestLength ||
             scriptHash.Length != DigestLength ||
             releaseActionHash.Length != DigestLength ||
@@ -269,7 +269,7 @@ internal static class ValidationReleasePreparation
 
         var localSteps = (ValidationReleaseStep[])steps.Clone();
         var localBinding = new Binding(phase, caseId, session, execution, protocolLease, preparation,
-            (byte[])capabilityHash.Clone(), (byte[])catalogHash.Clone(), (byte[])scriptHash.Clone(),
+            (byte[])sealedLaunchRecordHash.Clone(), (byte[])catalogHash.Clone(), (byte[])scriptHash.Clone(),
             (byte[])releaseActionHash.Clone(), (byte[])manifestDigest.Clone());
 
         bool release = topology == ValidationReleaseTopology.B3Integrated && localSteps.Length == 6;
@@ -318,7 +318,7 @@ internal static class ValidationReleasePreparation
         byte[] preimage = new byte[PreimageLength];
         Span<byte> bytes = preimage;
         "gagamba-validation-release-v1\0"u8.CopyTo(bytes[..30]);
-        binding.CapabilityHash.CopyTo(bytes[30..62]);
+        binding.SealedLaunchRecordHash.CopyTo(bytes[30..62]);
         binding.CatalogHash.CopyTo(bytes[62..94]);
         binding.ScriptHash.CopyTo(bytes[94..126]);
         binding.ReleaseActionHash.CopyTo(bytes[126..158]);
@@ -341,7 +341,7 @@ internal static class ValidationReleasePreparation
         Guid ExecutionId,
         Guid ProtocolLeaseId,
         Guid PreparationId,
-        byte[] CapabilityHash,
+        byte[] SealedLaunchRecordHash,
         byte[] CatalogHash,
         byte[] ScriptHash,
         byte[] ReleaseActionHash,

@@ -652,12 +652,12 @@ public sealed class ValidationReleasePreparationTests
         [new(0, integrated ? PrepareB3 : ConnectB2), new(1, Inspect), new(2, Stop), new(3, Cleanup)];
 
     private static byte[]?[] Hashes(ValidationReleaseProjection input) =>
-        [input.CapabilityHash, input.CatalogHash, input.ScriptHash, input.ReleaseActionHash, input.PreparationManifestDigest];
+        [input.SealedLaunchRecordHash, input.CatalogHash, input.ScriptHash, input.ReleaseActionHash, input.PreparationManifestDigest];
 
     private static string[] ProjectionMembers() =>
     [
         "SchemaVersion", "Phase", "Topology", "CaseId", "CatalogAllowsRelease", "FixturePolicyAllowsRelease",
-        "Steps", "RequestedActionIndex", "CapabilityHash", "CatalogHash", "ScriptHash", "ReleaseActionHash",
+        "Steps", "RequestedActionIndex", "SealedLaunchRecordHash", "CatalogHash", "ScriptHash", "ReleaseActionHash",
         "SessionId", "ExecutionId", "ProtocolLeaseId", "PreparationId", "PreparationManifestDigest",
     ];
 
@@ -698,7 +698,7 @@ public sealed class ValidationReleasePreparationTests
             missing == "FixturePolicyAllowsRelease" ? null : FixtureAllows,
             missing == "Steps" ? null : Steps,
             missing == "RequestedActionIndex" ? null : RequestedIndex,
-            missing == "CapabilityHash" ? null : Digests[0],
+            missing == "SealedLaunchRecordHash" ? null : Digests[0],
             missing == "CatalogHash" ? null : Digests[1],
             missing == "ScriptHash" ? null : Digests[2],
             missing == "ReleaseActionHash" ? null : Digests[3],
