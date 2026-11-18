@@ -1,0 +1,196 @@
+import hashlib
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+
+repo, run = map(Path, sys.argv[1:3])
+work = run / "release-prep-derivatives"
+work.mkdir()
+production_ns = "Gagamba.Execution.Linux.M1.Validation"
+test_ns = "Gagamba.Execution.Linux.M1.Tests.Validation"
+source_path = "src/Gagamba.Execution.Linux.M1/Validation/ValidationReleasePreparation.cs"
+tests_path = "tests/Gagamba.Execution.Linux.M1.Tests/Validation/ValidationReleasePreparationTests.cs"
+source = (repo / source_path).read_text(encoding="utf-8")
+tests = (repo / tests_path).read_text(encoding="utf-8")
+cases = []
+
+def add(variant, old, new, witness, expected, actual, count=1):
+    assert source.count(old) == count, (variant, old, source.count(old))
+    cases.append((variant, old, new, witness, expected, actual))
+
+guid_fields = ["SessionId", "ExecutionId", "ProtocolLeaseId", "PreparationId"]
+for i, field in enumerate(guid_fields):
+    add(field, f"actual.{field} != original.{field}", "false",
+        f"ExactGuidAssociation({i}, true)", "ProjectionMismatch", "StructuralMatch")
+
+for i, field in enumerate(["SealedLaunchRecordHash", "CatalogHash", "ScriptHash", "ReleaseActionHash", "PreparationManifestDigest"]):
+    add(field, f"!actual.{field}.AsSpan().SequenceEqual(original.{field})", "false",
+        f"ExactHashAssociation({i}, false)", "ProjectionMismatch", "StructuralMatch")
+
+add("CaseOrdinal", "StringComparison.Ordinal)", "StringComparison.OrdinalIgnoreCase)",
+    'OrdinalCaseAssociation("r01")', "CaseMismatch", "StructuralMatch")
+add("Phase", "actual.Phase != original.Phase", "false",
+    "PhaseAssociation(false)", "ProjectionMismatch", "StructuralMatch")
+add("OriginalOperand", "if (candidate is null || expected is null)\n            return MissingInput;",
+    "if (candidate is null)\n            return MissingInput;\n        expected ??= candidate;",
+    "NullProjection(false)", "MissingInput", "StructuralMatch")
+add("TopologyAssociation", "topology == ValidationReleaseTopology.B3Integrated && localSteps.Length == 6",
+    "localSteps.Length == 6", "NonReleaseProjectionConflicts()", "InvalidTemplate", "StructuralMatch")
+add("Template", "!MatchesTemplate(localSteps, template)", "false",
+    "EveryIndexedSlotIsValidated(2)", "InvalidTemplate", "StructuralMatch")
+add("StepIndex", "steps[i].Index != (uint)i || ", "",
+    "EveryIndexedSlotIsValidated(2)", "InvalidTemplate", "StructuralMatch")
+add("StepOpcode", " || (byte)steps[i].Opcode != template[i]", "",
+    "EveryIndexedSlotIsValidated(2)", "InvalidTemplate", "StructuralMatch")
+add("ReleaseIndex", "if (index != ReleaseIndex)\n            return InvalidScalar;\n", "",
+    "ReleaseIndexAssociation(3)", "InvalidScalar", "StructuralMatch")
+add("CatalogFlag", "catalogAllowsRelease != release ||", "false ||",
+    "ReleaseFlagsAreRequired(false, true)", "InvalidTemplate", "StructuralMatch")
+add("FixtureFlag", "fixturePolicyAllowsRelease != release", "false",
+    "ReleaseFlagsAreRequired(true, false)", "InvalidTemplate", "StructuralMatch")
+add("NoReleaseRefusal", "if (!release)\n            return NoReleaseTemplate;\n", "",
+    "CompleteNoReleaseTemplates(true, 2)", "NoReleaseTemplate", "StructuralMatch")
+add("DigestPresence", "if (expectedCorrelationSha256 is null)\n            return MissingExpectedDigest;",
+    "if (expectedCorrelationSha256 is null)\n            return Prepare(candidate, expected, out material);",
+    "IndependentDigestRefusals()", "MissingExpectedDigest", "StructuralMatch")
+add("DigestWidth", "if (expectedCorrelationSha256.Length != DigestLength)\n            return InvalidLength;\n", "",
+    "ExpectedDigestWidth(33)", "InvalidLength", "DigestMismatch")
+add("DigestEquality", "if (!CryptographicOperations.FixedTimeEquals(digest, expectedDigest))\n            return DigestMismatch;\n",
+    "", "IndependentDigestRefusals()", "DigestMismatch", "StructuralMatch")
+add("NonNullRefusal", "if (!CryptographicOperations.FixedTimeEquals(digest, expectedDigest))\n            return DigestMismatch;",
+    "if (!CryptographicOperations.FixedTimeEquals(digest, expectedDigest))\n"
+    "        {\n            material = Publish(preimage, digest);\n            return DigestMismatch;\n        }",
+    "IndependentDigestRefusals()", "Assert.Null()", "not null")
+add("Domain", r'"gagamba-validation-release-v1\0"u8', r'"gagamba-validation-release-v2\0"u8',
+    "NormativeVectors(false, false)", "Collections differ", "release-v2")
+add("Separator", r'"gagamba-validation-release-v1\0"u8', r'"gagamba-validation-release-v1!"u8',
+    "NormativeVectors(false, false)", "Collections differ", "separator byte changed")
+add("FieldOrder", "binding.SealedLaunchRecordHash.CopyTo(bytes[30..62]);\n        binding.CatalogHash.CopyTo(bytes[62..94]);",
+    "binding.CatalogHash.CopyTo(bytes[30..62]);\n        binding.SealedLaunchRecordHash.CopyTo(bytes[62..94]);",
+    "NormativeVectors(true, false)", "Collections differ", "capability and catalog swapped")
+add("IndexEndian", "BinaryPrimitives.WriteUInt32LittleEndian", "BinaryPrimitives.WriteUInt32BigEndian",
+    "NormativeVectors(true, false)", "Collections differ", "index is BE")
+add("GuidEndian", "TryWriteBytes(bytes[162..178])", "TryWriteBytes(bytes[162..178], bigEndian: true, out _)",
+    "NormativeVectors(true, true)", "Collections differ", "session GUID is BE")
+add("GuidWidth", "TryWriteBytes(bytes[162..178])", "TryWriteBytes(bytes[162..177])",
+    "NormativeVectors(true, true)", "Collections differ", "session GUID is missing")
+add("PreimageWidth", "const int PreimageLength = 258;", "const int PreimageLength = 259;",
+    "NormativeVectors(false, false)", "Expected: 258", "Actual:   259")
+add("HashExtent", "SHA256.HashData(preimage)", "SHA256.HashData(preimage.AsSpan(0, preimage.Length - 1))",
+    "NormativeVectors(true, true)", "Collections differ", "last byte omitted from SHA-256", count=2)
+add("BorrowExpectation", "material = Publish(preimage, digest);",
+    "material = new(ImmutableArray.CreateRange(preimage), "
+    "System.Runtime.InteropServices.ImmutableCollectionsMarshal.AsImmutableArray(expectedCorrelationSha256));",
+    "BetweenCallMutationsKeepBothPriorResults()", "Collections differ", "caller-owned digest leaked")
+add("OverwritePrior", "new(ImmutableArray.CreateRange(preimage), ImmutableArray.CreateRange(digest));",
+    "new(System.Runtime.InteropServices.ImmutableCollectionsMarshal.AsImmutableArray(ReusePreimage(preimage)), "
+    "ImmutableArray.CreateRange(digest));\n\n"
+    "    private static readonly byte[] Recycled = new byte[PreimageLength];\n"
+    "    private static byte[] ReusePreimage(byte[] preimage)\n    {\n"
+    "        preimage.CopyTo(Recycled, 0);\n        return Recycled;\n    }",
+    "BetweenCallMutationsKeepBothPriorResults()", "Assert.False()", "shared backing detected")
+
+def sha(file):
+    return hashlib.sha256(file.read_bytes()).hexdigest()
+
+def write(path, text):
+    path.write_text(text, newline="\n", encoding="utf-8")
+
+project = work / "Derivative.csproj"
+write(project, """<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <UseMicrosoftTestingPlatformRunner>false</UseMicrosoftTestingPlatformRunner>
+    <XunitAutoGeneratedEntryPoint>false</XunitAutoGeneratedEntryPoint>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="xunit.v3" Version="3.2.0" />
+  </ItemGroup>
+</Project>
+""")
+# Compile one namespace per deviation. Reuse the exact focused witness body in that namespace.
+# For representation deviations the passing control is a structural Prepare with complete operands.
+receipts, invocations = [], []
+for variant, old, new, witness, expected, actual in cases:
+    ns = f"Derivative.{variant}.Validation"
+    test = f"Derivative.{variant}.Tests"
+    variant_cs = work / (variant + ".cs")
+    variant_tests = work / (variant + ".Tests.cs")
+    write(variant_cs, source.replace(old, new).replace(production_ns, ns))
+    marker = "    private sealed class ProjectionData"
+    assert tests.count(marker) == 1
+    positive = """    public void Nominal()
+    {
+        Assert.Equal(StructuralMatch, ValidationReleasePreparation.Prepare(new ProjectionData().Create(),
+            new ProjectionData().Create(), out var result));
+        Assert.NotNull(result);
+    }
+
+"""
+    write(variant_tests, tests.replace(production_ns, ns).replace(test_ns, test).replace(marker, positive + marker))
+    receipts.append(dict(variant=variant, original=old, altered=new, witness=witness,
+                         expected_failure=expected, deviation_outcome=actual, source_sha256=sha(variant_cs),
+                         witness_sha256=sha(variant_tests)))
+    checks = [expected]
+    if actual in ["StructuralMatch", "DigestMismatch", "not null", "Actual:   259"]:
+        checks.append(actual)
+    args = ", ".join(json.dumps(marker) for marker in checks)
+    type_name = f"{test}.ValidationReleasePreparationTests"
+    invocations.append(f'Run("{variant}", new {type_name}().Nominal, () => new {type_name}().{witness}, {args});')
+
+program = """using System.Text.Json;
+
+__INVOCATIONS__
+
+static void Run(string id, Action nominal, Action witness, params string[] markers)
+{
+    nominal();
+    try
+    {
+        witness();
+        throw new InvalidOperationException($"{id} omission escaped detection");
+    }
+    catch (Xunit.Sdk.XunitException failure)
+    {
+        foreach (string marker in markers)
+            if (!failure.Message.Contains(marker, StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException($"{id} unexpected assertion: {failure.Message}", failure);
+        Console.WriteLine(JsonSerializer.Serialize(new { id, nominal = "PASS", witness = "EXPECTED FAIL",
+            failure = failure.Message }));
+    }
+}
+"""
+write(work / "Program.cs", program.replace("__INVOCATIONS__", "\n".join(invocations)))
+write(run / "e6-mutation-source.json", json.dumps(dict(source_sha256=sha(repo / source_path),
+    test_sha256=sha(repo / tests_path), program_sha256=sha(work / "Program.cs"), variants=receipts), indent=2)+"\n")
+env = dict(os.environ, NuGetAudit="false", RestoreIgnoreFailedSources="true",
+           DOTNET_CLI_TELEMETRY_OPTOUT="1", MSBUILDDISABLENODEREUSE="1")
+for cfg in ("Debug", "Release"):
+    out = work / "artifacts"
+    command = ["dotnet", "build", str(project), "-c", cfg, "--artifacts-path", str(out), "--nologo", "-m:1"]
+    log = run / f"e6-mutation-build-{cfg}.log"
+    with log.open("wb") as f:
+        f.write((json.dumps(command)+"\n").encode())
+        f.flush()
+        code = subprocess.run(command, cwd=work, env=env, stdout=f, stderr=subprocess.STDOUT).returncode
+        f.write(f"\nBUILD EXIT {code}\n".encode())
+    if code:
+        print(log.read_text(encoding="utf-8", errors="replace")[-5000:])
+        sys.exit(code)
+    assembly = out / "bin" / "Derivative" / cfg.lower() / "Derivative.dll"
+    command = ["dotnet", str(assembly)]
+    result = subprocess.run(command, cwd=work, env=env, capture_output=True, text=True, encoding="utf-8")
+    write(run / f"e6-mutation-results-{cfg}.jsonl", result.stdout)
+    with log.open("a", encoding="utf-8") as f:
+        print(json.dumps(dict(command=command, exit=result.returncode, assembly_sha256=sha(assembly))), file=f)
+        print(result.stderr, file=f)
+    if result.returncode:
+        print(result.stderr)
+        sys.exit(1)
+    assert len(result.stdout.splitlines()) == len(cases)
+    print(cfg, len(cases), "passing nominal controls and expected witness failures", flush=True)

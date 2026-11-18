@@ -1,0 +1,133 @@
+{
+  "configuration": "debug",
+  "core_sha256": "b0557124c20b4f862b55f3fc21db1f6cc8a0a57b3864ed0d3c0e37dff6772095",
+  "blocked_core_sha256": "39c95f9ec1ae71e5bf8b1041bfe462d6dd26391221544ac3e9dc4e2a173ad165",
+  "mvid": "e5c871a7-737c-48d6-a9ad-9648a7577a63",
+  "blocked_mvid": "9e986f13-e4f9-4ea2-9888-cb1a2502997a",
+  "type_count": 28,
+  "old_prohibited_matches": [
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "kind": "Method",
+      "name": "get_CapabilityHash",
+      "token": "Capability",
+      "projected_name": "get_SealedLaunchRecordHash"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "kind": "Method",
+      "name": "set_CapabilityHash",
+      "token": "Capability",
+      "projected_name": "set_SealedLaunchRecordHash"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "kind": "Property",
+      "name": "CapabilityHash",
+      "token": "Capability",
+      "projected_name": "SealedLaunchRecordHash"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "kind": "Field",
+      "name": "<CapabilityHash>k__BackingField",
+      "token": "Capability",
+      "projected_name": "<SealedLaunchRecordHash>k__BackingField"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleaseProjection",
+      "kind": "Method",
+      "name": "get_CapabilityHash",
+      "token": "Capability",
+      "projected_name": "get_SealedLaunchRecordHash"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleaseProjection",
+      "kind": "Property",
+      "name": "CapabilityHash",
+      "token": "Capability",
+      "projected_name": "SealedLaunchRecordHash"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleaseProjection",
+      "kind": "Field",
+      "name": "<CapabilityHash>k__BackingField",
+      "token": "Capability",
+      "projected_name": "<SealedLaunchRecordHash>k__BackingField"
+    }
+  ],
+  "current_prohibited_matches": [],
+  "mapped_members": [
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "kind": "Method",
+      "name": "get_CapabilityHash",
+      "token": "Capability",
+      "projected_name": "get_SealedLaunchRecordHash"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "kind": "Method",
+      "name": "set_CapabilityHash",
+      "token": "Capability",
+      "projected_name": "set_SealedLaunchRecordHash"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "kind": "Property",
+      "name": "CapabilityHash",
+      "token": "Capability",
+      "projected_name": "SealedLaunchRecordHash"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "kind": "Field",
+      "name": "<CapabilityHash>k__BackingField",
+      "token": "Capability",
+      "projected_name": "<SealedLaunchRecordHash>k__BackingField"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleaseProjection",
+      "kind": "Method",
+      "name": "get_CapabilityHash",
+      "token": "Capability",
+      "projected_name": "get_SealedLaunchRecordHash"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleaseProjection",
+      "kind": "Property",
+      "name": "CapabilityHash",
+      "token": "Capability",
+      "projected_name": "SealedLaunchRecordHash"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleaseProjection",
+      "kind": "Field",
+      "name": "<CapabilityHash>k__BackingField",
+      "token": "Capability",
+      "projected_name": "<SealedLaunchRecordHash>k__BackingField"
+    }
+  ],
+  "collisions": 0,
+  "vectors": [
+    {
+      "name": "R01",
+      "preimage": "676167616d62612d76616c69646174696f6e2d72656c656173652d763100111111111111111111111111111111111111111111111111111111111111111122222222222222222222222222222222222222222222222222222222222222223333333333333333333333333333333333333333333333333333333333333333444444444444444444444444444444444444444444444444444444444444444402000000555555555555555555555555555555556666666666666666666666666666666677777777777777777777777777777777888888888888888888888888888888889999999999999999999999999999999999999999999999999999999999999999",
+      "digest": "3737572b7b3d2ad8313d109d6d8a9d0df4b5bc7b20e43c71a0a6061e1988ce3e",
+      "bytes_30_through_61": "1111111111111111111111111111111111111111111111111111111111111111",
+      "raw_equality": true,
+      "prepare": "StructuralMatch",
+      "compare": "StructuralMatch"
+    },
+    {
+      "name": "mixed GUID",
+      "preimage": "676167616d62612d76616c69646174696f6e2d72656c656173652d763100000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f0200000033221100554477668899aabbccddeeff78563412ab90efcd0123456789abcdefefcdab892301674589abcdef0123456798badcfe54761032fedcba9876543210808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9f",
+      "digest": "d4573bb166ab7a4f73743297a4b3b2b9f2e19c73ef4fb6c36c94cf2a20fd7d90",
+      "bytes_30_through_61": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+      "raw_equality": true,
+      "prepare": "StructuralMatch",
+      "compare": "StructuralMatch"
+    }
+  ],
+  "R02": "DigestMismatch/null"
+}

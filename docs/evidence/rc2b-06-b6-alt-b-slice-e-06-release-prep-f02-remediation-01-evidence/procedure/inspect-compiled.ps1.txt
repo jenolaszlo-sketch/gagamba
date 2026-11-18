@@ -1,0 +1,84 @@
+param([string]$Repo,[string]$Run,[string]$Configuration)
+$ErrorActionPreference='Stop'
+$core='Gagamba.Execution.Linux.M1'
+$tests="$core.Tests"
+$base="$Run/layouts/$Configuration/focused"
+$namespace="$core.Validation"
+$old=Get-Content -Raw "$Repo/docs/decisions/rc2b-06-b6-alt-b-slice-e-06-release-prep-contract-f02-owner-01-evidence/member-names-$Configuration.json" | ConvertFrom-Json
+$preflight=Get-Content -Raw "$Run/preflight.json" | ConvertFrom-Json
+$producer=Get-Content -Raw "$Repo/docs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence/raw/preflight.json" | ConvertFrom-Json
+$assembly=[Reflection.Assembly]::LoadFrom("$base/$core.dll")
+$sha=(Get-FileHash "$base/$core.dll").Hash.ToLowerInvariant()
+$reference=(Get-FileHash "$Run/candidate-exact/bin/$core/$Configuration/$core.dll").Hash.ToLowerInvariant()
+if ($sha -ne $reference -or $sha -eq $old.sha256) { throw 'Wrong core' }
+$flags=[Reflection.BindingFlags]'Public, NonPublic, Static, Instance, DeclaredOnly'
+$types=@($assembly.GetTypes() | Where-Object Namespace -CEQ $namespace)
+$hits=@(foreach ($type in $types) {
+    foreach ($name in (@($type.Name)+@($type.GetMembers($flags).Name))) {
+        foreach ($token in $old.forbidden_tokens) {
+            if ($name.Contains($token,[StringComparison]::Ordinal)) { "$($type.FullName)::$name" }
+        }
+    }
+})
+if ($hits.Count) { throw "Forbidden names: $hits" }
+$mapped=@(foreach ($before in $old.observed_forbidden_names) {
+    $kind=$before.kind
+    $type=$assembly.GetType($before.type,$true)
+    $match=@($type.GetMembers($flags) | Where-Object Name -CEQ $before.projected_name)
+    if ($match.Count -ne 1 -or $match[0].MemberType.ToString() -ne $kind) { throw "Missing or colliding replacement $before" }
+    $before
+})
+if ($mapped.Count -ne 7 -or $types.Count -ne $old.namespace_type_count) { throw 'Unexpected type or member inventory' }
+$helper=$assembly.GetType("$namespace.ValidationReleasePreparation",$true)
+$proj=$assembly.GetType("$namespace.ValidationReleaseProjection",$true)
+$property=$proj.GetProperty('SealedLaunchRecordHash',$flags)
+if ($property.PropertyType -ne [byte[]] -or $property.SetMethod -or !$property.GetMethod.IsAssembly -or
+    [Reflection.NullabilityInfoContext]::new().Create($property).ReadState.ToString() -ne 'Nullable') { throw 'Wrong property surface' }
+foreach ($entry in $old.reflected_parameters) {
+    $type=$assembly.GetType($entry.type,$true)
+    $method=if($entry.method -eq '.ctor') { $type.GetConstructors($flags)[0] } else { $type.GetMethod($entry.method,$flags) }
+    $parameter=$method.GetParameters()[$entry.position_zero_based]
+    if ($parameter.Name -cne $entry.projected_name -or $parameter.ParameterType.FullName -cne $entry.parameter_type) {
+        throw 'Unexpected parameter identity'
+    }
+}
+$ta=[Reflection.Assembly]::LoadFrom("$base/$tests.dll")
+$fixture=$ta.GetType("$tests.Validation.ValidationReleasePreparationTests+ProjectionData",$true)
+$ctor=$fixture.GetConstructors($flags)[0]
+$create=$fixture.GetMethod('Create',$flags)
+$prepare=$helper.GetMethod('Prepare',$flags)
+$compare=$helper.GetMethod('Compare',$flags)
+$vectors=@(foreach ($i in 0,1) {
+    $a=$create.Invoke($ctor.Invoke([object[]]@([bool]$i)),[object[]]::new(1))
+    $b=$create.Invoke($ctor.Invoke([object[]]@([bool]$i)),[object[]]::new(1))
+    [object[]]$args=$a,$b,$null
+    if ($prepare.Invoke($null,$args).ToString() -cne 'StructuralMatch') { throw 'Prepare refused' }
+    $out=$args[2]
+    $fs=[Reflection.BindingFlags]'Public,NonPublic,Instance'
+    [byte[]]$bytes=$out.GetType().GetProperty('Preimage',$fs).GetValue($out)
+    [byte[]]$digest=$out.GetType().GetProperty('CorrelationSha256',$fs).GetValue($out)
+    $expected=$preflight.vectors[$i]
+    $historical=$producer.vectors[$i]
+    [byte[]]$expectedBytes=[Convert]::FromHexString($expected.preimage)
+    [byte[]]$expectedDigest=[Convert]::FromHexString($expected.digest)
+    if ($bytes.Length -ne 258 -or $digest.Length -ne 32 -or
+        ![Linq.Enumerable]::SequenceEqual[byte]($bytes,$expectedBytes) -or
+        ![Linq.Enumerable]::SequenceEqual[byte]($digest,$expectedDigest) -or
+        ![Linq.Enumerable]::SequenceEqual[byte]($bytes,[Convert]::FromHexString($historical.preimage)) -or
+        ![Linq.Enumerable]::SequenceEqual[byte]($digest,[Convert]::FromHexString($historical.digest))) { throw 'Vector bytes differ' }
+    [object[]]$args=$a,$b,$expectedDigest.Clone(),$null
+    if ($compare.Invoke($null,$args).ToString() -cne 'StructuralMatch') { throw 'Compare refused' }
+    if ($i -eq 0) {
+        $args[2]=[Convert]::FromHexString('3637572b7b3d2ad8313d109d6d8a9d0df4b5bc7b20e43c71a0a6061e1988ce3e')
+        if ($compare.Invoke($null,$args).ToString() -cne 'DigestMismatch' -or $null -ne $args[3]) { throw 'R02 diverged' }
+    }
+    [ordered]@{name=if($i){'mixed GUID'}else{'R01'}; preimage=[Convert]::ToHexStringLower($bytes);
+        digest=[Convert]::ToHexStringLower($digest); bytes_30_through_61=[Convert]::ToHexStringLower($bytes[30..61]);
+        raw_equality=$true; prepare='StructuralMatch'; compare='StructuralMatch'}
+})
+[ordered]@{configuration=$Configuration; core_sha256=$sha; blocked_core_sha256=$old.sha256;
+    mvid=$assembly.ManifestModule.ModuleVersionId.ToString(); blocked_mvid=$old.mvid; type_count=$types.Count;
+    old_prohibited_matches=$old.observed_forbidden_names; current_prohibited_matches=$hits; mapped_members=$mapped;
+    collisions=0; vectors=$vectors; R02='DigestMismatch/null'} |
+    ConvertTo-Json -Depth 8 | Set-Content -LiteralPath "$Run/compiled-witness-$Configuration.json" -Encoding utf8NoBOM
+"PASS $Configuration seven old names absent, no collisions, exact compiled vector bytes and R02 refusal"

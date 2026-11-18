@@ -1,0 +1,183 @@
+from collections import Counter
+import csv
+import gzip
+import hashlib
+import json
+from pathlib import Path
+import re
+import subprocess
+import sys
+import xml.etree.ElementTree as ET
+
+repo, run, package = map(Path, sys.argv[1:])
+annex = package / "rc2b-06-b6-alt-b-slice-e-06-release-prep-f02-remediation-01-evidence"
+annex.mkdir(parents=True, exist_ok=True)
+raw = annex / "raw"
+raw.mkdir(exist_ok=True)
+procedure = annex / "procedure"
+procedure.mkdir(exist_ok=True)
+prior = repo / "docs/evidence/rc2b-06-b6-alt-b-slice-e-05-custody-implementation-01-evidence/raw"
+q1 = repo / "docs/reviews/rc2b-06-b6-alt-b-slice-e-05-custody-q1-evidence/raw"
+old = list(csv.DictReader((prior / "managed-membership.tsv").open(encoding="utf-8"), delimiter="\t"))
+expected_failure = "Gagamba.Execution.Linux.M1.Tests.Validation.ValidationReachabilityTests.ValidationMemberNamesDoNotImplyAuthority"
+e6_class = ".ValidationReleasePreparationTests."
+suite_sizes = {"e3": 185, "e4": 11, "e5": 42, "e6": 192, "broad": 1923}
+summary, records, hashes = {}, [], {}
+
+def save(name, data):
+    dest = annex / name
+    dest.parent.mkdir(exist_ok=True, parents=True)
+    dest.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8", newline="\n")
+
+def keep(rel, compress=True):
+    original = (run / rel).read_bytes()
+    assert original, rel
+    dest = raw / rel
+    if compress:
+        dest = dest.with_name(dest.name + ".gz")
+    dest.parent.mkdir(exist_ok=True, parents=True)
+    dest.write_bytes(gzip.compress(original, mtime=0) if compress else original)
+    hashes[rel] = hashlib.sha256(original).hexdigest()
+
+def assembly(path):
+    return ET.parse(path).getroot().find("assembly")
+
+def details(path):
+    asm = assembly(path)
+    rows = Counter((item.get("name"), item.get("result"), item.findtext("reason", default="")) for item in asm.iter("test"))
+    return asm.attrib, rows
+
+for cfg in ("debug", "release"):
+    report = {}
+    suite_rows = {}
+    for suite, wanted in suite_sizes.items():
+        prefix = f"results/{cfg}/"
+        xml = prefix + suite + ".xml"
+        trx = prefix + suite + ".trx"
+        vstest_log = prefix + f"vstest-{suite}.log"
+        xunit_log = prefix + f"xunit-{suite}.log"
+        attrs, rows = details(run / xml)
+        suite_rows[suite] = rows
+        fails = 0
+        skips = 331 if suite == "broad" else 0
+        assert int(attrs["passed"]) == wanted and int(attrs["failed"]) == fails and int(attrs["skipped"]) == skips, (cfg,suite,attrs)
+        assert attrs["errors"] == attrs["not-run"] == "0" and int(attrs["total"]) == wanted+fails+skips
+        data = ET.parse(run / trx).find(".//{*}Counters")
+        assert data.get("executed") == "0", (cfg,suite,data.attrib)
+        txt = (run / vstest_log).read_text(encoding="utf-8")
+        assert "failed to connect to testhost process after 15 seconds" in txt and txt.rstrip().endswith("EXIT 1")
+        pid, = re.findall(r"process with id (\d+)", txt)
+        assert (run / xunit_log).read_text(encoding="utf-8").rstrip().endswith("EXIT " + str(fails))
+        for path in (xml, trx, vstest_log, xunit_log):
+            keep(path)
+        report[suite] = dict(passes=wanted, failures=fails, unqualified_native_skips=skips,
+                            vstest_executed=0, vstest_exit=1, vstest_timeout_seconds=15,
+                            testhost_pid=int(pid), xunit_exit=fails, runner=attrs["test-framework"])
+    broad = suite_rows["broad"]
+    assert broad[expected_failure,"Pass",""] == 1
+    assert not [cell for cell in broad if cell[1] == "Fail" and cell[0] != expected_failure]
+    prior_rows = Counter()
+    prior_membership = {}
+    for row in old:
+        if row["configuration"] == cfg:
+            key = (row["case"],row["result"],row["skip_reason"])
+            prior_rows[key] += int(row["multiplicity"])
+            prior_membership[key] = row["focus_membership"]
+    assert len([t for t in broad if e6_class in t[0]]) == 192
+    assert Counter({key: n for key,n in broad.items() if e6_class in key[0]}) == suite_rows["e6"]
+    inherited = broad - suite_rows["e6"]
+    assert inherited == prior_rows
+    blocked = repo / "docs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-implementation-01-evidence"
+    prev = ET.fromstring(gzip.decompress((blocked / f"raw/results/{cfg}/e6.xml.gz").read_bytes()))
+    prev_names = Counter((test.get("name"),test.get("result"),test.findtext("reason",default="")) for test in prev.iter("test"))
+    old_names = [t for t in prev_names if "CapabilityHash" in t[0]]
+    assert len(old_names) == 2
+    assert suite_rows["e6"] == Counter({(name.replace("CapabilityHash", "SealedLaunchRecordHash"), status, reason): n
+                                     for (name,status,reason),n in prev_names.items()})
+    for suite in ("e3", "e4", "e5"):
+        exact = Counter({key:v for key,v in prior_rows.items() if suite in prior_membership[key].split(",")})
+        assert exact == suite_rows[suite]
+    for (name, result, reason), n in sorted(broad.items()):
+        suites = [suite for suite in ("e3", "e4", "e5", "e6") if suite_rows[suite][name,result,reason]]
+        records.append([cfg, name, result, reason, n, ",".join(suites)])
+    keep(f"results/{cfg}/bindings.json", compress=False)
+    report["inherited_passes_in_broad"] = 1731
+    report["new_passes_in_broad"] = 192
+    report["restored_inherited_case"] = expected_failure
+
+    name = "remediated-naming-" + cfg
+    _, case = details(run / (name + ".xml"))
+    assert case == Counter({(expected_failure,"Pass",""):1})
+    keep(name+".xml")
+    keep(name+".log")
+    keep("compiled-witness-"+cfg+".json", compress=False)
+
+    e4 = list(csv.DictReader((run / f"logs/supplement-{cfg}.tsv").open(encoding="utf-8"), delimiter="\t"))
+    accepted = list(csv.DictReader(gzip.decompress((q1 / f"logs/supplement-{cfg}.tsv.gz").read_bytes()).decode().splitlines(), delimiter="\t"))
+    assert len(e4) == 1945 and all(row["status"] == "PASS" for row in e4)
+    assert [row["case"] for row in accepted] == [row["case"] for row in e4]
+    assert sum(row["case"] == "sensitivity/disposable-omitted-catalog-check" for row in e4) == 1
+    report["E4_supplement"] = dict(passed=1944, historical_omission_witness=1)
+    controls = list(csv.DictReader((run / f"sensitivity-{cfg.title()}.tsv").open(encoding="utf-8"), delimiter="\t"))
+    assert len(controls) == 17 and all(row["decision"] == "PASS" for row in controls)
+    report["E5_frozen_controls"] = 17
+    independent = (run / f"independent-{cfg}.tsv").read_text(encoding="utf-8").splitlines()
+    old_independent = (q1 / f"independent-{cfg}.tsv").read_text(encoding="utf-8").splitlines()
+    assert independent[2:] == old_independent[2:] and len(independent[2:-1]) == 696 and independent[-1] == "TOTAL\t696\t0"
+    core = run / "candidate-exact/bin/Gagamba.Execution.Linux.M1" / cfg / "Gagamba.Execution.Linux.M1.dll"
+    independent_core = independent[1].split("\t")[1]
+    assert independent_core == hashlib.sha256(core.read_bytes()).hexdigest()
+    mut = (run / f"independent-derivative-{cfg}.tsv").read_text(encoding="utf-8").splitlines()
+    assert len(mut) == 160 and sum(line.startswith("TOTAL\t1\t0") for line in mut) == 20
+    assert sum(line.startswith("TOTAL\t0\t1") for line in mut) == 20
+    report["E5_Q1_regression_corpus"] = dict(passed=696, nominal=20, omissions_detected=20)
+    mutations = [json.loads(line) for line in (run / f"e6-mutation-results-{cfg.title()}.jsonl").read_bytes().splitlines()]
+    assert len(mutations) == 34 and all(row["nominal"] == "PASS" and row["witness"] == "EXPECTED FAIL" for row in mutations)
+    report["E6_mutations"] = dict(nominal=34, omissions_detected=34)
+    summary[cfg] = report
+
+policy = json.loads((run / "policy-exact/results.json").read_bytes())
+assert len(policy) == 51 and all(row["Passed"] for row in policy)
+assert "Ran 9 tests" in (run / "preparation-tests.log").read_text()
+assert "Result                            : Passed" in (run / "preparation.log").read_text()
+assert (run / "policy-and-prep-exits.txt").read_text().strip() == "policy=0 preparation_tests=0 preparation=0"
+save("raw/production-policy-results.json", policy)
+
+with (raw / "managed-membership.tsv.gz").open("wb") as binary:
+    import io
+    lines = io.StringIO(newline="")
+    w = csv.writer(lines, delimiter="\t", lineterminator="\n")
+    w.writerow(["configuration","case","result","skip_reason","multiplicity","focus_membership"])
+    w.writerows(records)
+    binary.write(gzip.compress(lines.getvalue().encode(), mtime=0))
+
+for path in sorted((run / "build-exact").glob("*")):
+    if path.is_file():
+        keep(path.relative_to(run).as_posix())
+for path in sorted((run / "logs").glob("*")):
+    if path.is_file():
+        keep(path.relative_to(run).as_posix())
+for path in sorted((run / "policy-exact").glob("*.log")):
+    keep(path.relative_to(run).as_posix())
+for path in sorted((run / "isolation").glob("*")):
+    if path.is_file():
+        keep(path.relative_to(run).as_posix(), compress=path.name not in {
+            "summary.json","candidate.json","p4-dispositions.json"})
+for path in ("preflight.json", "policy-console.log", "policy-and-prep-exits.txt", "preparation-tests.log", "preparation.log",
+             "e6-mutation-source.json", "independent-derivative-source.json", "sensitivity-variants.json",
+             "minimal-diff.txt", "isolation-scanner-build.log"):
+    keep(path, compress=not path.endswith(".json"))
+for cfg in ("Debug","Release"):
+    for path in (f"e6-mutation-results-{cfg}.jsonl", f"e6-mutation-build-{cfg}.log", f"d64-{cfg}.log",
+                 f"independent-{cfg.lower()}.tsv", f"independent-build-{cfg.lower()}.log",
+                 f"independent-derivative-{cfg.lower()}.tsv", f"independent-derivative-build-{cfg.lower()}.log",
+                 f"sensitivity-{cfg}.tsv", f"sensitivity-build-{cfg}.log",
+                 f"inbound-build-{cfg.lower()}.log", f"verifier-{cfg.lower()}.log"):
+        keep(path)
+for name in ("verify-f02-owner.py", "run-e6-mutations.py", "generate-scanner.py", "run-isolation.py",
+             "run-managed.py", "collect-evidence.py", "exact-rename.py", "inspect-compiled.ps1", "verify-remediation.py"):
+    (procedure / (name + ".txt")).write_text((run / name).read_text(encoding="utf-8").strip() + "\n",
+                                            encoding="utf-8", newline="\n")
+save("execution-summary.json", dict(configurations=summary, build_policy=51, preparation_regressions=9,
+    preparation_validation="PASS", raw_original_sha256=hashes))
+print("PASS exact inherited membership, expected theory-name changes and all remediation results.")

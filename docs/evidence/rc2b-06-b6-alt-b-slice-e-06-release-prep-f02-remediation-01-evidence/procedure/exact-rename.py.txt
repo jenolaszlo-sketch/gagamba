@@ -1,0 +1,41 @@
+import hashlib,json,sys,subprocess
+from pathlib import Path
+repo,run=map(Path,sys.argv[1:3])
+owner="48592c7f18150767caed66ffa7f5c3fa3a9175be"
+blocked="53ffe7a21408a7e9674cf50b7098a26887c070b5"
+def git(*args):
+    return subprocess.check_output(["git","--no-optional-locks",*args],cwd=repo)
+def text(*args):
+    return git(*args).decode().strip()
+files={
+"src/Gagamba.Execution.Linux.M1/Validation/ValidationReleasePreparation.cs":(7,5),
+"tests/Gagamba.Execution.Linux.M1.Tests/Validation/ValidationReleasePreparationTests.cs":(3,0)}
+def exact(path):
+    raw=git("show",blocked+":"+path)
+    assert (raw.count(b"CapabilityHash"),raw.count(b"capabilityHash"))==files[path]
+    return raw,raw.replace(b"CapabilityHash",b"SealedLaunchRecordHash").replace(b"capabilityHash",b"sealedLaunchRecordHash")
+def sha(b):return hashlib.sha256(b).hexdigest()
+if "--apply" in sys.argv:
+    assert text("rev-parse","HEAD")==owner
+    assert not text("diff","--name-only") and not text("diff","--cached","--name-only")
+    for p in files:
+        old,new=exact(p)
+        assert (repo/p).read_bytes()==old
+    for p in files:
+        (repo/p).write_bytes(exact(p)[1])
+else:
+    candidate=text("rev-parse","HEAD") if "--final" not in sys.argv else text("rev-parse","HEAD^")
+    assert text("show","-s","--format=%P",candidate)==owner
+    assert set(text("diff","--name-status",blocked,candidate,"--","src","tests","eng",".github","native","Gagamba.sln","Directory.Build.props","Directory.Build.targets").splitlines())=={"M\t"+p for p in files}
+    assert set(text("diff","--name-status",owner,candidate).splitlines())=={"M\t"+p for p in files}
+    names=[]
+    for p in files:
+        old,new=exact(p)
+        assert new==git("show",candidate+":"+p)==(repo/p).read_bytes()
+        names.append(dict(path=p,blob=text("rev-parse",candidate+":"+p),checkout_sha256=sha(new),before_sha256=sha(old),substitutions=files[p]))
+    e2="tests/Gagamba.Execution.Linux.M1.Tests/Validation/ValidationReachabilityTests.cs"
+    assert (repo/e2).read_bytes()==git("show",blocked+":"+e2)==git("show",candidate+":"+e2)
+    data=dict(commit=candidate,tree=text("rev-parse",candidate+"^{tree}"),parent=owner,blocked=blocked,files=names,e2_sha256=sha((repo/e2).read_bytes()))
+    (run/"verified-source-receipt.json").write_bytes((json.dumps(data,indent=2)+"\n").encode())
+    (run/"minimal-diff.txt").write_bytes(git("diff",blocked,candidate,"--",*files))
+    print(data["commit"], data["tree"])

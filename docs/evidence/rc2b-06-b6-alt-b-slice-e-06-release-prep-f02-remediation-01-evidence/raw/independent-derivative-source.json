@@ -1,0 +1,442 @@
+[
+  {
+    "id": "launcherExecutable",
+    "requirement": "R03",
+    "witness": "R03-R04/1/launcher-image",
+    "nominal": "R02/R07/1/nominal",
+    "removed": "        launcherExecutable.AsSpan().SequenceEqual(observed.launcherExecutable) &&\n",
+    "inserted": "",
+    "files": [
+      {
+        "name": "launcherExecutable.Model.cs",
+        "sha256": "f9e0a44791fe2000679a38d1bd39fc3e2c92cccf9d61feae37a6ca63b63cead1"
+      },
+      {
+        "name": "launcherExecutable.Data.cs",
+        "sha256": "9f51047e3fb71ea477caa388daaafb90a4ab80988e5344f8d6ff69abf3d727cd"
+      },
+      {
+        "name": "launcherExecutable.Probe.cs",
+        "sha256": "d9ab4c1d670b2bc74a81d3e9e6351235339f7fa7b42685b6521351df976dcde0"
+      }
+    ]
+  },
+  {
+    "id": "launcherClosure",
+    "requirement": "R03",
+    "witness": "R03-R04/1/launcher-closure",
+    "nominal": "R02/R07/1/nominal",
+    "removed": "        launcherClosure.AsSpan().SequenceEqual(observed.launcherClosure) &&\n",
+    "inserted": "",
+    "files": [
+      {
+        "name": "launcherClosure.Model.cs",
+        "sha256": "e6ff3e1821970b8a08f8752d73fe8e931a758b3beef37fdad197c96b1255000d"
+      },
+      {
+        "name": "launcherClosure.Data.cs",
+        "sha256": "17c1b29c938b3e9aa4a38148ba5136333da6b3b13099abd334964b20b2fed01f"
+      },
+      {
+        "name": "launcherClosure.Probe.cs",
+        "sha256": "3b6d4927827e07ee6f283c82fba3c15ecf29b4064180c5cb1f5aa7e21e0a0fa8"
+      }
+    ]
+  },
+  {
+    "id": "controllerExecutable",
+    "requirement": "R03",
+    "witness": "R03-R04/1/controller-image",
+    "nominal": "R02/R07/1/nominal",
+    "removed": "        controllerExecutable.AsSpan().SequenceEqual(observed.controllerExecutable) &&\n",
+    "inserted": "",
+    "files": [
+      {
+        "name": "controllerExecutable.Model.cs",
+        "sha256": "bd71d61fbbfa9882c545e63e2cd8be1b8c28b0077c100cb9942523a1d303cbc4"
+      },
+      {
+        "name": "controllerExecutable.Data.cs",
+        "sha256": "5fb302b887bfe78dd33a36e6ec1bddfec9064d5c9e0978dde222cfd5f2037f42"
+      },
+      {
+        "name": "controllerExecutable.Probe.cs",
+        "sha256": "74d52716adff2a035e8c00e461d69e7dff19dcfeb7a6c6cb6d5b2fda10d9c4eb"
+      }
+    ]
+  },
+  {
+    "id": "controllerClosure",
+    "requirement": "R03",
+    "witness": "R03-R04/1/controller-closure",
+    "nominal": "R02/R07/1/nominal",
+    "removed": "        controllerClosure.AsSpan().SequenceEqual(observed.controllerClosure) &&\n",
+    "inserted": "",
+    "files": [
+      {
+        "name": "controllerClosure.Model.cs",
+        "sha256": "f77ca2a6552d5ab1c7c5ab7d1a86aab36f7a74f492873de98215a85e8cd4b214"
+      },
+      {
+        "name": "controllerClosure.Data.cs",
+        "sha256": "b9facd43e133f45b405d14dd6218950a7d598967a0112fc1f2c20bffea92d645"
+      },
+      {
+        "name": "controllerClosure.Probe.cs",
+        "sha256": "e6a86b97108aaccb23e10a0955fa532cc4b513f97753d67b7330bc755e8b4e0d"
+      }
+    ]
+  },
+  {
+    "id": "driverExecutable",
+    "requirement": "R03",
+    "witness": "R03-R04/1/driver-image",
+    "nominal": "R02/R07/1/nominal",
+    "removed": "        driverExecutable.AsSpan().SequenceEqual(observed.driverExecutable) &&\n",
+    "inserted": "",
+    "files": [
+      {
+        "name": "driverExecutable.Model.cs",
+        "sha256": "dccd77cd13f6fbe6391ef443ec4a6b2afee77dcd1c34e93f2a5967a2251f62f6"
+      },
+      {
+        "name": "driverExecutable.Data.cs",
+        "sha256": "94fd27f1f7f0a99e7880c726d76625ec29a5ca39087941b54d202fb1e24da72a"
+      },
+      {
+        "name": "driverExecutable.Probe.cs",
+        "sha256": "6f30f1fd6d2537cfab4663d02f1b66062aa6c3de95bbaa2e2d0c324f5ae0d7a0"
+      }
+    ]
+  },
+  {
+    "id": "driverClosure",
+    "requirement": "R03",
+    "witness": "R03-R04/1/driver-closure",
+    "nominal": "R02/R07/1/nominal",
+    "removed": "        driverClosure.AsSpan().SequenceEqual(observed.driverClosure) &&\n",
+    "inserted": "",
+    "files": [
+      {
+        "name": "driverClosure.Model.cs",
+        "sha256": "c3e3bbf24d85d2c6c98c5e866f6ce7f1ac270bdc5700c9022015cf50e285560f"
+      },
+      {
+        "name": "driverClosure.Data.cs",
+        "sha256": "5f91eaa4e3a2498b95ed681f3008d48dd936b6dcadffa313b1e895885c615757"
+      },
+      {
+        "name": "driverClosure.Probe.cs",
+        "sha256": "c974845bdac5fd235234a145b8fcf1e6e124ebbc622bd57f7a4ffcd142ff904e"
+      }
+    ]
+  },
+  {
+    "id": "catalog",
+    "requirement": "R04",
+    "witness": "R03-R04/1/catalog",
+    "nominal": "R02/R07/1/nominal",
+    "removed": "        catalog.AsSpan().SequenceEqual(observed.catalog) &&\n",
+    "inserted": "",
+    "files": [
+      {
+        "name": "catalog.Model.cs",
+        "sha256": "7848c3128cec5f91bdedc251ad78b8f04f148d304434fd728434dbe2aa7d77a4"
+      },
+      {
+        "name": "catalog.Data.cs",
+        "sha256": "7c1b0176b4596f8738b31b8fef01d77d524c3b24a448cebdc48cdf5cdcc5d956"
+      },
+      {
+        "name": "catalog.Probe.cs",
+        "sha256": "5b7c215f10ed795e00a3041df8fb80988f7ecc3ad3c4fd5d36f88b3e3bcea419"
+      }
+    ]
+  },
+  {
+    "id": "approval",
+    "requirement": "R04",
+    "witness": "R03-R04/1/approval",
+    "nominal": "R02/R07/1/nominal",
+    "removed": "        approval.AsSpan().SequenceEqual(observed.approval) &&\n",
+    "inserted": "",
+    "files": [
+      {
+        "name": "approval.Model.cs",
+        "sha256": "1a3439e9512446fafd4cc6e41fdfdf2dd9b81a05f07e5fea784ba895337a6d09"
+      },
+      {
+        "name": "approval.Data.cs",
+        "sha256": "61a596270a9c46d999d62b24317586a040d1251fcf8a8f928b636fa842cfea0e"
+      },
+      {
+        "name": "approval.Probe.cs",
+        "sha256": "a0095c7fd82671eb5dbe691d599569e7c53ca2323a9fff3473650a7c53124f51"
+      }
+    ]
+  },
+  {
+    "id": "originalController",
+    "requirement": "R05",
+    "witness": "R05/1/controller",
+    "nominal": "R02/R07/1/nominal",
+    "removed": "        ControllerOriginal == observed.ControllerOriginal &&\n",
+    "inserted": "",
+    "files": [
+      {
+        "name": "originalController.Model.cs",
+        "sha256": "bc6b9632398b57a2cd7a850bf5b1ccad7883416a5796b9596f163653b2c633db"
+      },
+      {
+        "name": "originalController.Data.cs",
+        "sha256": "5ee91e22649c7d89b6e2081fde4a08be783e8aa0a88eb182620584897a801f12"
+      },
+      {
+        "name": "originalController.Probe.cs",
+        "sha256": "b5624868ffd652ac4dc0186f50588afbecd976faf715ff1312a56b3038f6912f"
+      }
+    ]
+  },
+  {
+    "id": "provenance",
+    "requirement": "R06",
+    "witness": "R06/0/provenance/0",
+    "nominal": "R02/R07/1/nominal",
+    "removed": "        Provenance == ValidationCustodyFact.Consistent &&\n",
+    "inserted": "",
+    "files": [
+      {
+        "name": "provenance.Model.cs",
+        "sha256": "ee926d2593b60014b445b66e0e9da634a66da59462ab5f7ee43b658db7b9d66e"
+      },
+      {
+        "name": "provenance.Data.cs",
+        "sha256": "8b8faa37d8fd2ff866ffa034baf2c8e281d817ff42981b17a78f0279ddd33c93"
+      },
+      {
+        "name": "provenance.Probe.cs",
+        "sha256": "d0e72ac59ff2d3ae64218a828df5928fc3bb530b267952cc6e3f48c90c1b27aa"
+      }
+    ]
+  },
+  {
+    "id": "dropPremise",
+    "requirement": "R06/R08",
+    "witness": "R06/3/drop/0",
+    "nominal": "R02/R07/1/nominal",
+    "removed": "        PermanentDrop == FactDue(stage, ValidationCustodyState.DroppedModel) &&\n",
+    "inserted": "",
+    "files": [
+      {
+        "name": "dropPremise.Model.cs",
+        "sha256": "7c88272fcdb5aa513d292aedd3993dc22fe2b8ba623e117acd2c9246b541c149"
+      },
+      {
+        "name": "dropPremise.Data.cs",
+        "sha256": "f1d018d418ac190601eb149862c4e269bcac9ef0ec75319ac878c588b2d1dc1d"
+      },
+      {
+        "name": "dropPremise.Probe.cs",
+        "sha256": "42347afe5d766ce2da0c67ac09a3e3523c9f707d246068c98015b72521572850"
+      }
+    ]
+  },
+  {
+    "id": "oneUse",
+    "requirement": "R07",
+    "witness": "R07/repeated-issue-with-issue-facts",
+    "nominal": "R02/R07/1/nominal",
+    "removed": "            _ => null",
+    "inserted": "            (ValidationCustodyState.IssuedModel, ValidationCustodyEvent.ObserveIssue) =>\n                ValidationCustodyState.IssuedModel,\n            _ => null",
+    "files": [
+      {
+        "name": "oneUse.Model.cs",
+        "sha256": "ef152bd932e6824ce12b425b4f46383c65e5e0b658d1670f122ce87bed77de1e"
+      },
+      {
+        "name": "oneUse.Data.cs",
+        "sha256": "25b9f2a6763fb23bca12a527382d78429dde17330e6a5bbf00cd4ad0b81a06b4"
+      },
+      {
+        "name": "oneUse.Probe.cs",
+        "sha256": "31a3e8b67f99bd8f556e69bfb07be9564d6d80aaf965a64bc8685b609aa8570d"
+      }
+    ]
+  },
+  {
+    "id": "skipDrop",
+    "requirement": "R08",
+    "witness": "R08/consume-before-drop-with-all-premises",
+    "nominal": "R02/R07/1/nominal",
+    "removed": "            _ => null",
+    "inserted": "            (ValidationCustodyState.OfferedModel, ValidationCustodyEvent.ObserveConsume) =>\n                ValidationCustodyState.ConsumedModel,\n            _ => null",
+    "files": [
+      {
+        "name": "skipDrop.Model.cs",
+        "sha256": "74a936c321f2a2976daa9fd7e19dbf09fea73675cdde8dcb25f4aaa38a7817b4"
+      },
+      {
+        "name": "skipDrop.Data.cs",
+        "sha256": "a30ebbbb6444a9288a6edd69b0be8b43daf4cdeee215db7f24ba1fad646dc68e"
+      },
+      {
+        "name": "skipDrop.Probe.cs",
+        "sha256": "e544c570849dd55e000626fc5f9796d5cbd201490325be195fdfd70a1a8d04b0"
+      }
+    ]
+  },
+  {
+    "id": "deadline",
+    "requirement": "R09",
+    "witness": "R09/advance/0/exact-bound",
+    "nominal": "R02/R07/1/nominal",
+    "removed": "nowNs >= deadline",
+    "inserted": "nowNs > deadline",
+    "files": [
+      {
+        "name": "deadline.Model.cs",
+        "sha256": "97cb9f9fef34cafe175544885f934742f15557cccf0cf9f336d78198feb8ce23"
+      },
+      {
+        "name": "deadline.Data.cs",
+        "sha256": "47528476122c2332978ca43afd666252b9f523074d6f37d07e8a6897c5094692"
+      },
+      {
+        "name": "deadline.Probe.cs",
+        "sha256": "9667b158752893fd0b8e4ca51e61bd52852840cea36e11f1c79525c5c05219e8"
+      }
+    ]
+  },
+  {
+    "id": "stop",
+    "requirement": "R10",
+    "witness": "R09-R11/advance/stop-beats-expiry",
+    "nominal": "R02/R07/1/nominal",
+    "removed": "        if (stopObserved)",
+    "inserted": "        if (false && stopObserved)",
+    "files": [
+      {
+        "name": "stop.Model.cs",
+        "sha256": "e507c938c07dd6c8928e6f7476559c72eac5a6470a4309973cd698c1b834642c"
+      },
+      {
+        "name": "stop.Data.cs",
+        "sha256": "96a0fb5816070873b12c68737a64ecb0ff2aa36465cfd22e3b1dd544affb0919"
+      },
+      {
+        "name": "stop.Probe.cs",
+        "sha256": "510f5c27603812222e0e48918434b59f9ef93dbcdab843ecdeb31736942097ea"
+      }
+    ]
+  },
+  {
+    "id": "order",
+    "requirement": "R11",
+    "witness": "R09-R11/advance/comparison-beats-evidence",
+    "nominal": "R02/R07/1/nominal",
+    "removed": "        if (!expected.Matches(observed))",
+    "inserted": "        if (!evidence.MatchesStage(destination))\n            return ValidationCustodyRefusal.Evidence;\n        if (!expected.Matches(observed))",
+    "files": [
+      {
+        "name": "order.Model.cs",
+        "sha256": "3a0153cf4d26e6d00da5c5b4d9e04cade2dd16fffbe20c09f7232c9a6dcc7d36"
+      },
+      {
+        "name": "order.Data.cs",
+        "sha256": "f9ceed91ac3b8f4fb450f0f9ae5c6d8fd001e5a27fb66f5ecb2886546962dbab"
+      },
+      {
+        "name": "order.Probe.cs",
+        "sha256": "b371f9130b8a5f6113d99fbe37d11ad3947dd1f09e3295f2f80c257ad8cbacd6"
+      }
+    ]
+  },
+  {
+    "id": "retainAfterFailure",
+    "requirement": "R12",
+    "witness": "R12/R24/null-observation-clears",
+    "nominal": "R02/R07/1/nominal",
+    "removed": "                if (snapshot is null)\n                {\n                    Close();\n                }",
+    "inserted": "                // Terminal cleanup deliberately omitted in this disposable derivative.",
+    "files": [
+      {
+        "name": "retainAfterFailure.Model.cs",
+        "sha256": "2dd7f32c19aeb35b092e084e0a26821564c581e41daa4fc0e390fbfd3525c182"
+      },
+      {
+        "name": "retainAfterFailure.Data.cs",
+        "sha256": "d53df360b71c0104bd95054878f24a90ab3e8f8dab07e08c658ba33aa7918a6d"
+      },
+      {
+        "name": "retainAfterFailure.Probe.cs",
+        "sha256": "c4de2aaf6db40e47dd5697602f77d5250bb16fd34fb155fd70615b500667a1b9"
+      }
+    ]
+  },
+  {
+    "id": "inputAlias",
+    "requirement": "R13",
+    "witness": "R13/all-owned-buffers",
+    "nominal": "R02/R07/1/nominal",
+    "removed": "this.controllerExecutable = CopyDigest(controllerExecutable);",
+    "inserted": "this.controllerExecutable = controllerExecutable is { Length: 32 } ? controllerExecutable : [];",
+    "files": [
+      {
+        "name": "inputAlias.Model.cs",
+        "sha256": "e27e92b0dfd2fc249c4e155bc9c3072d8379f9a77e1e3d67417c44b1212c4e21"
+      },
+      {
+        "name": "inputAlias.Data.cs",
+        "sha256": "fafe2850a3e1056dd9748811a2ef5f77a99067c2417ff6f113315e1b4a1d383f"
+      },
+      {
+        "name": "inputAlias.Probe.cs",
+        "sha256": "1b84185fdde3f3e83ca847e13faa1892c5ba7522d5a3d6c8a39de50c7523152a"
+      }
+    ]
+  },
+  {
+    "id": "outputAlias",
+    "requirement": "R13",
+    "witness": "R13/all-owned-buffers",
+    "nominal": "R02/R07/1/nominal",
+    "removed": "ControllerExecutable => controllerExecutable.ToArray();",
+    "inserted": "ControllerExecutable => controllerExecutable;",
+    "files": [
+      {
+        "name": "outputAlias.Model.cs",
+        "sha256": "5a36539c5307b8d58e19c1317b569d44b9e4d93108138d1e54f1c13ed30a69f8"
+      },
+      {
+        "name": "outputAlias.Data.cs",
+        "sha256": "edbb2e24caa199ee9e4b087c53e065427d3611f79b66502fcf378f55b12db975"
+      },
+      {
+        "name": "outputAlias.Probe.cs",
+        "sha256": "5342d1960326a370806d46e847e85d0a3db663af142b6a6bfd73fab5de1f6d47"
+      }
+    ]
+  },
+  {
+    "id": "noGate",
+    "requirement": "R14",
+    "witness": "R14/duplicate-issue-race",
+    "nominal": "R02/R07/1/nominal",
+    "removed": "        lock (gate)\n        {\n            try",
+    "inserted": "        {\n            try",
+    "files": [
+      {
+        "name": "noGate.Model.cs",
+        "sha256": "4ebd56fb49b511bb6c853ee02a4c7d05bc52391252119e3e4af721049de71cf3"
+      },
+      {
+        "name": "noGate.Data.cs",
+        "sha256": "6555d89f725d99ebd7450a901ac04545ead416b148db9c26bba3a9eb62302594"
+      },
+      {
+        "name": "noGate.Probe.cs",
+        "sha256": "41856e82c7d30a90b946692b54de4bac8602b70835e67bf185ab0f34827b9686"
+      }
+    ]
+  }
+]
