@@ -1,0 +1,2 @@
+Debug harness exit=0
+Release harness exit=0

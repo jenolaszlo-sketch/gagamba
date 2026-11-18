@@ -1,0 +1,41 @@
+param([Parameter(Mandatory)][string]$Root, [Parameter(Mandatory)][string]$Repo, [Parameter(Mandatory)][string]$Label, [Parameter(Mandatory)][string]$Revision)
+$ErrorActionPreference='Stop'
+$env:NuGetAudit='false'; $env:RestoreIgnoreFailedSources='true'; $env:DOTNET_CLI_TELEMETRY_OPTOUT='1'
+$base="$Root/run/naming-$Label"
+$src="$base/source"
+New-Item -ItemType Directory -Path $src | Out-Null
+git "--git-dir=$Repo/.git" archive --format=tar "--output=$base/source.tar" $Revision src tests eng Directory.Build.props Directory.Build.targets Gagamba.sln .gitattributes README.md
+if($LASTEXITCODE){exit $LASTEXITCODE}
+tar -xf "$base/source.tar" -C $src
+if($LASTEXITCODE){exit $LASTEXITCODE}
+$test='Gagamba.Execution.Linux.M1.Tests'
+$core='Gagamba.Execution.Linux.M1'
+Push-Location $src
+try {
+    foreach($cfg in 'Debug','Release') {
+        $lower=$cfg.ToLowerInvariant()
+        $testLog="$base/$lower-build-test.log"
+        $coreLog="$base/$lower-build-core.log"
+        dotnet build "tests/$test/$test.csproj" -c $cfg --artifacts-path "$base/build" -p:EnableSourceLink=false --nologo -m:1 *> $testLog
+        $code=$LASTEXITCODE
+        Add-Content -LiteralPath $testLog -Value "EXIT $code"
+        if($code){exit $code}
+        dotnet build "src/$core/$core.csproj" -c $cfg --artifacts-path "$base/build" -p:EnableSourceLink=false --nologo -m:1 *> $coreLog
+        $code=$LASTEXITCODE
+        Add-Content -LiteralPath $coreLog -Value "EXIT $code"
+        if($code){exit $code}
+        $coreDir="$base/build/bin/$core/$lower"
+        $testDir="$base/build/bin/$test/$lower"
+        Copy-Item -LiteralPath "$coreDir/$core.dll","$coreDir/Gagamba.Execution.dll" -Destination $testDir
+        $runLog="$base/$lower-test.log"
+        $command=@("$testDir/$test.dll",'-noColor','-method','*ValidationReachabilityTests.ValidationMemberNamesDoNotImplyAuthority','-xml',"$base/$lower.xml")
+        ("dotnet "+($command -join ' ')) | Set-Content -LiteralPath $runLog
+        Get-FileHash -LiteralPath "$testDir/$core.dll","$testDir/$test.dll","$testDir/Gagamba.Execution.dll" | ConvertTo-Json -Compress | Add-Content -LiteralPath $runLog
+        dotnet @command *>> $runLog
+        $code=$LASTEXITCODE
+        Add-Content -LiteralPath $runLog -Value "EXIT $code"
+        Write-Output "$Label $cfg $code"
+        if(($Label -eq 'f01' -and $code -ne 0) -or ($Label -eq 'blocked' -and $code -ne 1)){exit 42}
+    }
+} finally { Pop-Location }
+exit 0

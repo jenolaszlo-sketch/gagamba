@@ -1,0 +1,108 @@
+{
+  "stage": "blocked",
+  "configuration": "debug",
+  "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\naming-blocked\\build\\bin\\Gagamba.Execution.Linux.M1.Tests\\debug\\Gagamba.Execution.Linux.M1.dll",
+  "identity": "Gagamba.Execution.Linux.M1, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null",
+  "mvid": "59934031-d51b-4d8e-be2e-63f29e69aaf3",
+  "sha256": "3f722983193b731915b34d7bca4d25e070e7f8139b57caa8a4dfd019575370f0",
+  "validation_types": 28,
+  "declared_members": 859,
+  "forbidden_members": [
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleaseProjection",
+      "name": "get_CapabilityHash",
+      "kind": "Method"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleaseProjection",
+      "name": "CapabilityHash",
+      "kind": "Property"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleaseProjection",
+      "name": "<CapabilityHash>k__BackingField",
+      "kind": "Field"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "name": "get_CapabilityHash",
+      "kind": "Method"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "name": "set_CapabilityHash",
+      "kind": "Method"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "name": "CapabilityHash",
+      "kind": "Property"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "name": "<CapabilityHash>k__BackingField",
+      "kind": "Field"
+    }
+  ],
+  "matches": [
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleaseProjection",
+      "name": "get_CapabilityHash",
+      "kind": "Method"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleaseProjection",
+      "name": "CapabilityHash",
+      "kind": "Property"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleaseProjection",
+      "name": "<CapabilityHash>k__BackingField",
+      "kind": "Field"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "name": "get_CapabilityHash",
+      "kind": "Method"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "name": "set_CapabilityHash",
+      "kind": "Method"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "name": "CapabilityHash",
+      "kind": "Property"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "name": "<CapabilityHash>k__BackingField",
+      "kind": "Field"
+    }
+  ],
+  "affected_parameters": [
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleaseProjection",
+      "method": ".ctor",
+      "position": 8,
+      "name": "capabilityHash",
+      "parameter_type": "System.Byte[]"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "method": ".ctor",
+      "position": 6,
+      "name": "CapabilityHash",
+      "parameter_type": "System.Byte[]"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "method": "Deconstruct",
+      "position": 6,
+      "name": "CapabilityHash",
+      "parameter_type": "System.Byte[]&"
+    }
+  ],
+  "replacement_signature_collisions": 0
+}

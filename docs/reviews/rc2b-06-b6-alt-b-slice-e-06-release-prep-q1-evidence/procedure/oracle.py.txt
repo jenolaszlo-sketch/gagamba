@@ -1,0 +1,232 @@
+"""Generate Q1 witnesses from the frozen byte table and refusal matrix."""
+import copy
+import hashlib
+import json
+import random
+import sys
+import uuid
+from pathlib import Path
+
+ROOT, OUTPUT = map(Path, sys.argv[1:3])
+RELEASE = [(0, 2), (1, 3), (2, 4), (3, 3), (4, 5), (5, 6)]
+HASHES = ("SealedLaunch", "Catalog", "Script", "ReleaseAction", "Manifest")
+IDS = ("Session", "Execution", "Lease", "Preparation")
+R01 = "3737572b7b3d2ad8313d109d6d8a9d0df4b5bc7b20e43c71a0a6061e1988ce3e"
+R02 = "3637572b7b3d2ad8313d109d6d8a9d0df4b5bc7b20e43c71a0a6061e1988ce3e"
+MIXED = "d4573bb166ab7a4f73743297a4b3b2b9f2e19c73ef4fb6c36c94cf2a20fd7d90"
+
+def encode(p):
+    """Allocate the specified width and write each slot by its normative offset."""
+    body = bytearray(258)
+    body[0:29] = "gagamba-validation-release-v1".encode("ascii")
+    body[29] = 0
+    for name, start in zip(HASHES, (30, 62, 94, 126, 226)):
+        value = bytes.fromhex(p[name])
+        assert len(value) == 32
+        body[start:start+32] = value
+    body[158:162] = int(p["Index"]).to_bytes(4, "little")
+    for name, start in zip(IDS, (162, 178, 194, 210)):
+        network = uuid.UUID(p[name]).bytes
+        raw = network[0:4][::-1] + network[4:6][::-1] + network[6:8][::-1] + network[8:]
+        body[start:start+16] = raw
+    return bytes(body)
+
+def derived(p):
+    preimage = encode(p)
+    return preimage.hex(), hashlib.sha256(preimage).hexdigest()
+
+def project(case, phase, hashes, ids):
+    return dict(Version=1, Phase=phase, Topology=2, Case=case, CatalogFlag=True, FixtureFlag=True,
+                Steps=copy.deepcopy(RELEASE), Index=2, **dict(zip(HASHES, hashes)), **dict(zip(IDS, ids)))
+
+def change(p, key, value):
+    return {**copy.deepcopy(p), key: value}
+
+def flip(value, index, mask):
+    bits = bytearray.fromhex(value)
+    bits[index] ^= mask
+    return bits.hex()
+
+r01 = project("R01", 1, [f"{i:x}"*64 for i in (1, 2, 3, 4, 9)],
+              [str(uuid.UUID(hex=f"{i:x}"*32)) for i in (5, 6, 7, 8)])
+mixed = project("mixed.guid-01", 2, [bytes(range(k, k+32)).hex() for k in range(0, 160, 32)],
+                ("00112233-4455-6677-8899-aabbccddeeff", "12345678-90ab-cdef-0123-456789abcdef",
+                 "89abcdef-0123-4567-89ab-cdef01234567", "fedcba98-7654-3210-fedc-ba9876543210"))
+witness = (ROOT / "docs/reviews/rc2b-06-b6-alt-b-slice-e-03-qe1-frozen-record-prep-01-evidence/binary-vectors.md").read_text(encoding="utf-8")
+vectors = (ROOT / "docs/decisions/rc2b-06-b6-alt-b-slice-e-06-release-prep-entry-auth-01-evidence/vectors.md").read_text(encoding="utf-8")
+assert f"Preimage {derived(r01)[0]}\nR01 {R01}\n" in witness and derived(r01)[1] == R01
+assert f"\n{derived(mixed)[0]}\n{MIXED}\n" in vectors and derived(mixed)[1] == MIXED
+assert encode(mixed)[30:62] == bytes(range(32))
+assert encode(mixed)[162:178].hex() == "33221100554477668899aabbccddeeff"
+
+def synthetic(seed, name, phase):
+    rng = random.Random(seed)
+    return project(name, phase, [rng.randbytes(32).hex() for _ in HASHES],
+                   [str(uuid.UUID(bytes=rng.randbytes(16))) for _ in IDS])
+
+base = synthetic(713523, "Q1.z-Tag_09", 2)
+other = synthetic(104458, "Q1.alt", 1)
+original = derived(base)[1]
+witnesses = {n: dict(projection=p, preimage=derived(p)[0], digest=derived(p)[1])
+             for n, p in (("R01", r01), ("Mixed", mixed), ("Q1FreshMixed", base), ("Q1Alternate", other))}
+CASES = []
+match = "StructuralMatch"
+
+def row(label, op, lhs, rhs, expect, status):
+    good = derived(lhs) if status == match else (None, None)
+    CASES.append(dict(Id=label + "." + op, Operation=op, Left=lhs, Right=rhs,
+                      Expectation=expect, Status=status, Preimage=good[0], Digest=good[1]))
+
+def pair(label, lhs, rhs, status, digest=original):
+    row(label, "Prepare", lhs, rhs, None, status)
+    row(label, "Compare", lhs, rhs, digest, status)
+
+def side(label, proposal, status):
+    pair(label + ".candidate", proposal, base, status)
+    pair(label + ".retained", base, proposal, status)
+
+for name, frame in (("R01", r01), ("Mixed", mixed), ("Mixed.Pre", change(mixed, "Phase", 1)),
+                    ("FreshMixed", base), ("FreshAlt", other)):
+    pair(name, frame, copy.deepcopy(frame), match, derived(frame)[1])
+row("R02", "Compare", r01, copy.deepcopy(r01), R02, "DigestMismatch")
+row("R01.AbsentDigest", "Compare", r01, r01, None, "MissingExpectedDigest")
+
+zeroes = {**base, **dict.fromkeys(HASHES, "00"*32)}
+shared_id = {**base, **dict.fromkeys(IDS, base["Session"])}
+for name, good in [("ZeroOctets", zeroes), ("SameGuidAcrossRoles", shared_id)] + [
+    (f"CaseLength{n}", change(base, "Case", "x" * n)) for n in (1, 128)
+] + [("EveryClass", change(base, "Case", "-Aa.z09_"))] + [
+    (f"Synthetic{i:02}", synthetic(i, f"valid-{i:02}", i % 2 + 1)) for i in range(24)
+]:
+    pair(name, good, copy.deepcopy(good), match, derived(good)[1])
+
+side("MissingProjection", None, "MissingInput")
+pair("BothProjectionObjectsMissing", None, None, "MissingInput")
+for key in base:
+    side("Absent." + key, change(base, key, None), "MissingInput")
+for size in (0, 1, 31, 33, 97, 256):
+    for key in HASHES:
+        side(f"WrongLength.{key}.{size}", change(base, key, "c2"*size), "InvalidLength")
+    row(f"ExpectedLength.{size}", "Compare", base, base, "a4"*size, "InvalidLength")
+row("ExpectedMissing", "Compare", base, base, None, "MissingExpectedDigest")
+for size in (0, 1, 2, 3, 5, 7, 257):
+    side(f"StepLength.{size}", change(base, "Steps", [(i, 3) for i in range(size)]), "InvalidLength")
+for key, values, status in (
+    ("Version", (0, 2, 99, 4294967295), "UnsupportedVersion"),
+    ("Phase", (0, 3, 129, 255), "InvalidScalar"),
+    ("Topology", (0, 3, 129, 255), "InvalidScalar"),
+    ("Index", (0, 1, 3, 4, 9, 4294967295), "InvalidScalar"),
+    ("Case", ("", ".", "..", ".ok", "ok.", "x"*129, " A", "A ", "A\tB", "A\nB",
+              "A\x00B", "é", "−", "\u200bX", "A/B", "A:B"), "InvalidCaseId"),
+):
+    for i, value in enumerate(values):
+        side(f"Invalid.{key}.{i}", change(base, key, value), status)
+
+for key in IDS:
+    side("Empty." + key, change(base, key, str(uuid.UUID(int=0))), "InvalidScalar")
+    side("Substitution." + key, change(base, key, other[key]), "ProjectionMismatch")
+    common = change(base, key, other[key])
+    row("Common." + key, "Compare", common, copy.deepcopy(common), original, "DigestMismatch")
+
+for i in range(len(IDS)):
+    for j in range(i+1, len(IDS)):
+        a, b = IDS[i], IDS[j]
+        side(f"RoleSwap.{a}.{b}", {**base, a: base[b], b: base[a]}, "ProjectionMismatch")
+side("CaseOrdinal", change(base, "Case", base["Case"].lower()), "CaseMismatch")
+side("PhaseMismatch", change(base, "Phase", 1), "ProjectionMismatch")
+side("TopologyAgainstRelease", change(base, "Topology", 1), "InvalidTemplate")
+
+for key in HASHES:
+    for i in range(32):
+        changed = change(base, key, flip(base[key], i, 1 << (i % 8)))
+        side(f"Byte.{key}.{i}", changed, "ProjectionMismatch")
+        row(f"Common.{key}.{i}", "Compare", changed, copy.deepcopy(changed), original, "DigestMismatch")
+    changed = change(base, key, other[key])
+    row(f"DigestForOther.{key}", "Compare", base, changed, derived(changed)[1], "ProjectionMismatch")
+    row(f"Common.RightDigest.{key}", "Compare", changed, copy.deepcopy(changed), derived(changed)[1], match)
+
+for i in range(32):
+    row(f"ExpectedByte.{i}", "Compare", base, base, flip(original, i, 1 << (i % 8)), "DigestMismatch")
+row("ExpectedSeveralBytes", "Compare", base, base, flip(flip(flip(original, 0, 81), 16, 58), 31, 3), "DigestMismatch")
+row("ValidDigestFromOthersResult", "Compare", base, copy.deepcopy(base), derived(other)[1], "DigestMismatch")
+row("SameDigestCaseAndPhaseChanged", "Compare", {**base, "Case":"Q1-other-case", "Phase":1},
+    {**base, "Case":"Q1-other-case", "Phase":1}, original, match)
+
+for c, f in ((False, True), (True, False), (False, False)):
+    side(f"ReleaseFlags.{int(c)}{int(f)}", {**base, "CatalogFlag":c, "FixtureFlag":f}, "InvalidTemplate")
+no_release = {}
+for topology in (1, 2):
+    for index in (0, 2, 3, 4294967295):
+        frame = {**base, "Topology":topology, "Index":index, "CatalogFlag":False, "FixtureFlag":False,
+                 "Steps":[(0,topology),(1,3),(2,5),(3,6)]}
+        no_release[topology] = frame
+        side(f"NoRelease.T{topology}.I{index}", frame, "NoReleaseTemplate")
+        pair(f"NoRelease.Both.T{topology}.I{index}", frame, copy.deepcopy(frame), "NoReleaseTemplate", None)
+    for key in ("CatalogFlag", "FixtureFlag"):
+        side(f"UnexpectedFlag.T{topology}.{key}", change(no_release[topology], key, True), "InvalidTemplate")
+
+for name, frame in [("Release", base), ("LifelineStop", no_release[1]), ("IntegratedStop", no_release[2])]:
+    exact_steps = frame["Steps"]
+    for i, (_, op) in enumerate(exact_steps):
+        for invalid_op in set(range(8)) | {255}:
+            if invalid_op == op:
+                continue
+            slots = copy.deepcopy(exact_steps)
+            slots[i] = (i, invalid_op)
+            side(f"Opcode.{name}.{i}.{invalid_op}", change(frame, "Steps", slots), "InvalidTemplate")
+        for invalid_index in {len(exact_steps), 4294967295, (i+1) % len(exact_steps)}:
+            slots = copy.deepcopy(exact_steps)
+            slots[i] = (invalid_index, op)
+            side(f"Ordinal.{name}.{i}.{invalid_index}", change(frame, "Steps", slots), "InvalidTemplate")
+    for i in range(len(exact_steps)-1):
+        slots = copy.deepcopy(exact_steps)
+        slots[i], slots[i+1] = slots[i+1], slots[i]
+        side(f"TransposedStep.{name}.{i}", change(frame, "Steps", slots), "InvalidTemplate")
+        slots[i+1] = slots[i]
+        side(f"DuplicatedStep.{name}.{i}", change(frame, "Steps", slots), "InvalidTemplate")
+
+# Competing defects grouped directly by the normative precedence table.
+defects = (
+    ("MissingInput", "Manifest", None),
+    ("UnsupportedVersion", "Version", 0),
+    ("InvalidScalar", "Phase", 255),
+    ("InvalidCaseId", "Case", ".forbidden"),
+    ("InvalidLength", "Catalog", "8a"*31),
+    ("InvalidTemplate", "FixtureFlag", False),
+    ("InvalidScalar", "Index", 9),
+)
+for first, (want, key, value) in enumerate(defects):
+    left = change(base, key, value)
+    pair(f"NullObjectBeats.{first}", left, None, "MissingInput", None)
+    for second in range(first+1, len(defects)):
+        later, key2, value2 = defects[second]
+        side(f"SameProjectionPrecedence.{first}.{second}", change(left, key2, value2), want)
+        right = change(base, key2, value2)
+        pair(f"CandidateFirst.{first}.{second}", left, right, want, None)
+        pair(f"CandidateFirst.Reversed.{first}.{second}", right, left, later, None)
+        pair(f"NoReleaseFirst.{first}.{second}", no_release[1], left, "NoReleaseTemplate", None)
+case_and_hash = {**base, "Case":"Q1.alt-Case", "Catalog":other["Catalog"]}
+for label, expectation in (("Absent", None), ("Short", original[:62]), ("Mismatch", R02), ("Matches", original)):
+    row("CasePrecedesProjectionAndDigest." + label, "Compare", base, case_and_hash, expectation, "CaseMismatch")
+    row("ProjectionPrecedesDigest." + label, "Compare", base, change(base,"Catalog",other["Catalog"]), expectation, "ProjectionMismatch")
+
+pre = encode(base)
+variants = {
+    "NoDomain": pre[29:], "NoNul": pre[:29]+pre[30:], "ExtraNul": pre[:30]+b"\0"+pre[30:],
+    "SwapDigests": pre[:30]+pre[62:94]+pre[30:62]+pre[94:],
+    "OmitManifest": pre[:226], "DuplicateSlot": pre[:62]+pre[30:62]+pre[94:],
+    "IndexNetwork": pre[:158]+(2).to_bytes(4,"big")+pre[162:],
+    "IndexAscii": pre[:158]+b"0002"+pre[162:],
+    "GuidNetwork": pre[:162]+b"".join(uuid.UUID(base[n]).bytes for n in IDS)+pre[226:],
+    "GuidText": pre[:162]+b"".join(base[n].encode("ascii") for n in IDS)+pre[226:],
+    "IncludeCase": pre+base["Case"].encode("ascii"), "UpperHex": pre.hex().upper().encode("ascii"),
+    "TrailingOctetMissing": pre[:-1], "TrailingZero": pre+b"\0",
+}
+for label, changed in variants.items():
+    row("WrongEncoding." + label, "Compare", base, base, hashlib.sha256(changed).hexdigest(), "DigestMismatch")
+
+assert len({c["Id"] for c in CASES}) == len(CASES)
+with OUTPUT.open("w", encoding="utf-8", newline="\n") as file:
+    json.dump(dict(Witnesses=witnesses, Cases=CASES), file, separators=(",", ":"), ensure_ascii=True)
+    file.write("\n")
+print("Generated", len(CASES), "unique cases and", len(witnesses), "raw vector records")

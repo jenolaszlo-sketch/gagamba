@@ -1,0 +1,31 @@
+{
+  "commit": "4202a2f7a99b85cfe1caf70d6a583f58e6551283",
+  "tree": "f987f32ced441263167649307003536dd493dd66",
+  "parent": "48592c7f18150767caed66ffa7f5c3fa3a9175be",
+  "blocked": "53ffe7a21408a7e9674cf50b7098a26887c070b5",
+  "files": [
+    {
+      "path": "src/Gagamba.Execution.Linux.M1/Validation/ValidationReleasePreparation.cs",
+      "blob": "9e04e86192f862e409272fd3db17af3248b4a79b",
+      "checkout_sha256": "2b57cdf5f22e73d3dc747de3f024c6806945fbae34a8cbe7d5aae04d223c175a",
+      "before_sha256": "bb69acb2c00cbae7467e9ac9893bb240584fdfef1c9df6f5d87b7a79f5a3ad54",
+      "substitutions": [
+        7,
+        5
+      ],
+      "git_sha256": "2b57cdf5f22e73d3dc747de3f024c6806945fbae34a8cbe7d5aae04d223c175a"
+    },
+    {
+      "path": "tests/Gagamba.Execution.Linux.M1.Tests/Validation/ValidationReleasePreparationTests.cs",
+      "blob": "4749d51b2e7bda8e4c6ef5dca53e7a5e0fcc6632",
+      "checkout_sha256": "e68e706820ae99b51813da11480aa1935fbb2e7e2471033e3cccdd0fb04887b6",
+      "before_sha256": "63c69606409cf12fc338b3414fd768dbbba17ac68e16032d660a319f57bce6e5",
+      "substitutions": [
+        3,
+        0
+      ],
+      "git_sha256": "e68e706820ae99b51813da11480aa1935fbb2e7e2471033e3cccdd0fb04887b6"
+    }
+  ],
+  "e2_sha256": "07a718d7195f1c3eaf1f4a5d56a22cd3bd4add9d6d9e796f154cce1195c87f3b"
+}

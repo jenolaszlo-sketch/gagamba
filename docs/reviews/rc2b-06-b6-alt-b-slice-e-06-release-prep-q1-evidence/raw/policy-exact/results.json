@@ -1,0 +1,273 @@
+[
+    {
+        "Name":  "order-1-Release",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "build",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\src\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+                          "-c",
+                          "Release",
+                          "--artifacts-path",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\policy-exact\\order",
+                          "--nologo"
+                      ]
+    },
+    {
+        "Name":  "inspect-order-1-Release",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "run",
+                          "--project",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\src\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+                          "-c",
+                          "Release",
+                          "--no-launch-profile",
+                          "--",
+                          "--production",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\policy-exact\\order\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll"
+                      ]
+    },
+    {
+        "Name":  "order-2-Debug",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "build",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\src\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+                          "-c",
+                          "Debug",
+                          "--artifacts-path",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\policy-exact\\order",
+                          "--nologo"
+                      ]
+    },
+    {
+        "Name":  "inspect-order-2-Debug",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "run",
+                          "--project",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\src\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+                          "-c",
+                          "Release",
+                          "--no-launch-profile",
+                          "--",
+                          "--instrumented",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\policy-exact\\order\\bin\\Gagamba.Execution.Linux.M1\\debug\\Gagamba.Execution.Linux.M1.dll"
+                      ]
+    },
+    {
+        "Name":  "order-3-Release",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "build",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\src\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+                          "-c",
+                          "Release",
+                          "--artifacts-path",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\policy-exact\\order",
+                          "--nologo"
+                      ]
+    },
+    {
+        "Name":  "inspect-order-3-Release",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "run",
+                          "--project",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\src\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+                          "-c",
+                          "Release",
+                          "--no-launch-profile",
+                          "--",
+                          "--production",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\policy-exact\\order\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll"
+                      ]
+    },
+    {
+        "Name":  "order-4-Release",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "build",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\src\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+                          "-c",
+                          "Release",
+                          "--artifacts-path",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\policy-exact\\order",
+                          "--nologo"
+                      ]
+    },
+    {
+        "Name":  "inspect-order-4-Release",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "run",
+                          "--project",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\src\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+                          "-c",
+                          "Release",
+                          "--no-launch-profile",
+                          "--",
+                          "--production",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\policy-exact\\order\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll"
+                      ]
+    },
+    {
+        "Name":  "order-5-Debug",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "build",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\src\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+                          "-c",
+                          "Debug",
+                          "--artifacts-path",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\policy-exact\\order",
+                          "--nologo"
+                      ]
+    },
+    {
+        "Name":  "inspect-order-5-Debug",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "run",
+                          "--project",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\src\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+                          "-c",
+                          "Release",
+                          "--no-launch-profile",
+                          "--",
+                          "--instrumented",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\policy-exact\\order\\bin\\Gagamba.Execution.Linux.M1\\debug\\Gagamba.Execution.Linux.M1.dll"
+                      ]
+    },
+    {
+        "Name":  "order-6-Debug",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "build",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\src\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+                          "-c",
+                          "Debug",
+                          "--artifacts-path",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\policy-exact\\order",
+                          "--nologo"
+                      ]
+    },
+    {
+        "Name":  "inspect-order-6-Debug",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "run",
+                          "--project",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\src\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+                          "-c",
+                          "Release",
+                          "--no-launch-profile",
+                          "--",
+                          "--instrumented",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\policy-exact\\order\\bin\\Gagamba.Execution.Linux.M1\\debug\\Gagamba.Execution.Linux.M1.dll"
+                      ]
+    },
+    {
+        "Name":  "order-7-Test",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "build",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\src\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+                          "-c",
+                          "Test",
+                          "--artifacts-path",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\policy-exact\\order",
+                          "--nologo"
+                      ]
+    },
+    {
+        "Name":  "inspect-order-7-Test",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "run",
+                          "--project",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\src\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+                          "-c",
+                          "Release",
+                          "--no-launch-profile",
+                          "--",
+                          "--instrumented",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\policy-exact\\order\\bin\\Gagamba.Execution.Linux.M1\\test\\Gagamba.Execution.Linux.M1.dll"
+                      ]
+    },
+    {
+        "Name":  "fresh-debug",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "build",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\src\\src\\Gagamba.Execution.Linux.M1\\Gagamba.Execution.Linux.M1.csproj",
+                          "-c",
+                          "Debug",
+                          "--artifacts-path",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\policy-exact\\fresh-debug",
+                          "--nologo"
+                      ]
+    },
+    {
+        "Name":  "inspect-fresh-debug",
+        "Exit":  0,
+        "Expected":  "",
+        "Passed":  true,
+        "Arguments":  [
+                          "run",
+                          "--project",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\src\\eng\\VerifyProductionAssembly\\VerifyProductionAssembly.csproj",
+                          "-c",
+                          "Release",
+                          "--no-launch-profile",
+                          "--",
+                          "--instrumented",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\policy-exact\\fresh-debug\\bin\\Gagamba.Execution.Linux.M1\\debug\\Gagamba.Execution.Linux.M1.dll"
+                      ]
+    },
+    {
+        "Name":  "owner-release",
+        "Exit":  1,
+        "Expected":  "",
+        "Passed":  false,
+        "Arguments":  [
+                          "build",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\src\\src\\Gagamba.Execution.Linux.M1.Owner\\Gagamba.Execution.Linux.M1.Owner.csproj",
+                          "-c",
+                          "Release",
+                          "--artifacts-path",
+                          "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\policy-exact\\owner",
+                          "--nologo"
+                      ]
+    }
+]

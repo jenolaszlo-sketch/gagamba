@@ -1,0 +1,24 @@
+"""Make only the archive, new evidence path and reviewer-control substitutions to a pinned replay driver."""
+import sys
+from pathlib import Path
+
+source, destination = (Path(p) for p in sys.argv[1:])
+text = source.read_text(encoding="utf-8")
+edits = (
+    ('["git", "--no-optional-locks", *args], cwd=repo, capture_output=True',
+     '["git", "--git-dir=" + str(repo / ".git"), "--no-optional-locks", *args], cwd=run, capture_output=True'),
+    ('assert git("rev-parse", "HEAD").decode().strip() == commit',
+     'assert git("merge-base", "--is-ancestor", commit, "HEAD") == b""'),
+    ('assert git("rev-parse", "HEAD^{tree}").decode().strip() == tree',
+     'assert git("rev-parse", commit + "^{tree}").decode().strip() == tree'),
+    ('through_policy = run / "policy-exact"', 'through_policy = run / "policy-confirmed"'),
+    ('assert any("ProducerIsolationControl.ForbiddenCaller::Probe" in hit\n               and "ValidationReleasePreparation::Prepare" in hit for hit in control["hits"]), control',
+     '''assert any("IndependentQ1Isolation.SyntheticEdge::Probe" in hit and
+               " call -> " in hit and "ValidationReleasePreparation::Prepare" in hit for hit in control["hits"]), control
+    assert any("IndependentQ1Isolation.SyntheticEdge::.cctor" in hit and
+               " ldftn -> " in hit and "ValidationReleasePreparation::Compare" in hit for hit in control["hits"]), control'''),
+)
+for before, after in edits:
+    assert text.count(before) == 1, before
+    text = text.replace(before, after)
+destination.write_text(text, encoding="utf-8", newline="\n")

@@ -1,0 +1,67 @@
+param([Parameter(Mandatory)][string]$Dll, [Parameter(Mandatory)][string]$Stage, [Parameter(Mandatory)][string]$Configuration, [Parameter(Mandatory)][string]$Output)
+$ErrorActionPreference='Stop'
+$file=(Resolve-Path -LiteralPath $Dll).Path
+$envDir=Split-Path -Parent $file
+foreach($dependency in 'Gagamba.Execution.dll','Gagamba.Abstractions.dll') {
+    $path=Join-Path $envDir $dependency
+    if(Test-Path -LiteralPath $path){[Reflection.Assembly]::LoadFrom($path) | Out-Null}
+}
+$assembly=[Reflection.Assembly]::LoadFrom($file)
+$ns='Gagamba.Execution.Linux.M1.Validation'
+$tokens=@('Approved','Authorized','Permit','Authority','Trusted','Capability')
+$flags=[Reflection.BindingFlags]'Public,NonPublic,Instance,Static,DeclaredOnly'
+$types=@($assembly.GetTypes() | Where-Object Namespace -CEQ $ns)
+if (!$types.Count) {throw 'Missing validation namespace'}
+$members=@(foreach($t in $types){foreach($m in $t.GetMembers($flags)){
+    [pscustomobject]@{type=$t.FullName;name=$m.Name;kind=$m.MemberType.ToString()}
+}})
+$hits=@(foreach($m in $members){foreach($token in $tokens){
+    if($m.name.Contains($token,[StringComparison]::Ordinal)){$m}
+}})
+$badTypes=@(foreach($t in $types){foreach($token in $tokens){
+    if($t.Name.Contains($token,[StringComparison]::Ordinal)){$t.FullName}
+}})
+$selected=@($members | Where-Object {$_.name.Contains('SealedLaunchRecordHash',[StringComparison]::Ordinal)})
+$actual=@($selected | ForEach-Object {"$($_.type)|$($_.kind)|$($_.name)"})
+if($badTypes.Count){throw "Forbidden type names $badTypes"}
+$params=@()
+if($Stage -eq 'blocked') {
+    if($hits.Count -ne 7 -or @($hits | Where-Object {$_.name -cnotlike '*CapabilityHash*'}).Count -ne 0){throw 'Wrong blocked naming signature'}
+    $names=$hits
+} elseif($Stage -eq 'remediated'){
+    if($selected.Count -ne 7 -or $hits.Count){throw 'Wrong remediated naming signature'}
+    $shape=[ordered]@{
+        "$ns.ValidationReleaseProjection"=@('Property|SealedLaunchRecordHash','Method|get_SealedLaunchRecordHash','Field|<SealedLaunchRecordHash>k__BackingField')
+        "$ns.ValidationReleasePreparation+Binding"=@('Property|SealedLaunchRecordHash','Method|get_SealedLaunchRecordHash','Method|set_SealedLaunchRecordHash','Field|<SealedLaunchRecordHash>k__BackingField')
+    }
+    $expected=@(foreach($type in $shape.Keys){foreach($field in $shape[$type]){"$type|$field"}})
+    if(Compare-Object -ReferenceObject ($expected | Sort-Object) -DifferenceObject ($actual | Sort-Object) -CaseSensitive){throw 'Missing or colliding replacement'}
+    $names=$selected
+} else {
+    if($hits.Count -or $selected.Count){throw 'Unexpected baseline E-6 members'}
+    $names=@()
+}
+if($Stage -ne 'f01'){
+    $projection=$assembly.GetType("$ns.ValidationReleaseProjection", $true)
+    $binding=$assembly.GetType("$ns.ValidationReleasePreparation+Binding", $true)
+    $shape=@(
+        @{ method=$projection.GetConstructors($flags)[0]; position=8; new='sealedLaunchRecordHash'; old='capabilityHash'; type=[byte[]] },
+        @{ method=$binding.GetConstructors($flags)[0]; position=6; new='SealedLaunchRecordHash'; old='CapabilityHash'; type=[byte[]] },
+        @{ method=$binding.GetMethod('Deconstruct',$flags); position=6; new='SealedLaunchRecordHash'; old='CapabilityHash'; type=([byte[]].MakeByRefType()) }
+    )
+    $params=@(foreach($slot in $shape){
+        $parameter=$slot.method.GetParameters()[$slot.position]
+        $expected=if($Stage -eq 'remediated'){ $slot.new }else{ $slot.old }
+        if($parameter.ParameterType -ne $slot.type -or $parameter.Name -cne $expected){throw "Wrong slot $parameter"}
+        [pscustomobject]@{type=$slot.method.DeclaringType.FullName;method=$slot.method.Name;position=$slot.position;name=$parameter.Name;parameter_type=$parameter.ParameterType.FullName}
+    })
+    $field=if($Stage -eq 'remediated'){'SealedLaunchRecordHash'}else{'CapabilityHash'}
+    $prop=$projection.GetProperty($field,$flags)
+    if($prop.PropertyType -ne [byte[]] -or $prop.SetMethod -or !$prop.GetMethod.IsAssembly -or
+       [Reflection.NullabilityInfoContext]::new().Create($prop).ReadState -ne [Reflection.NullabilityState]::Nullable) {throw 'Wrong get-only nullable byte array'}
+}
+[ordered]@{stage=$Stage;configuration=$Configuration;path=$file;identity=$assembly.FullName;mvid=$assembly.ManifestModule.ModuleVersionId;
+    sha256=(Get-FileHash -LiteralPath $file).Hash.ToLowerInvariant();validation_types=$types.Count;declared_members=$members.Count;
+    forbidden_members=$hits;matches=$names;affected_parameters=$params;replacement_signature_collisions=0} |
+    ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $Output -Encoding utf8NoBOM
+"$Stage $Configuration actual forbidden members=$($hits.Count); exact replacement count=$($selected.Count)"

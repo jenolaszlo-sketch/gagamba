@@ -1,0 +1,2 @@
+checkout tests exit=0
+preparation exit=0

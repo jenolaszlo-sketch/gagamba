@@ -1,0 +1,155 @@
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Reflection.Metadata;
+using System.Reflection.Metadata.Ecma335;
+using System.Reflection.PortableExecutable;
+using System.Security.Cryptography;
+using System.Text.Json;
+
+var map = typeof(OpCodes).GetFields(BindingFlags.Public | BindingFlags.Static)
+    .Where(f => f.FieldType == typeof(OpCode)).Select(f => (OpCode)f.GetValue(null)!)
+    .ToDictionary(o => unchecked((ushort)o.Value));
+var helperNames = new[] { "ValidationReleasePreparation", "ValidationReleaseProjection",
+    "ValidationReleaseMaterial", "ValidationReleasePreparationStatus", "ValidationReleaseStep",
+    "ValidationReleasePhase", "ValidationReleaseTopology", "ValidationReleaseOpcode" };
+var inheritedNames = new[] { "ValidationPreCodec", "Gava1ContextCodec", "ValidationCustodyModel" };
+var criticalNames = new[] { "RequireIntegrated", "StartOwnerPreparation", "TrySpawnOwner",
+    "RequireBoundGenerationActive", "WriterReady", "ApprovalCorrelationSha256", "StopAndReap",
+    "UnavailableRestrictedExecutionProvider", "TryWriteOnce", "PreparationOwnershipCoordinator", "ReleaseArbiter" };
+const string releaseNamespace = "Gagamba.Execution.Linux.M1.Validation.";
+int failures = 0;
+foreach (string record in File.ReadLines(args[0]))
+{
+    var input = record.Split('\t');
+    string role = input[0], path = input[1];
+    var bytes = File.ReadAllBytes(path);
+    using var pe = new PEReader(new MemoryStream(bytes));
+    var sha = Convert.ToHexStringLower(SHA256.HashData(bytes));
+    if (!pe.HasMetadata)
+    {
+        Console.WriteLine(JsonSerializer.Serialize(new { role, path, sha, managed = false }));
+        continue;
+    }
+
+    var md = pe.GetMetadataReader();
+    var module = md.GetModuleDefinition();
+    var mvid = md.GetGuid(module.Mvid);
+    string Name(EntityHandle handle) => handle.Kind switch {
+        HandleKind.TypeDefinition => TypeDef((TypeDefinitionHandle)handle),
+        HandleKind.TypeReference => TypeRef((TypeReferenceHandle)handle),
+        HandleKind.MethodDefinition => MethodDef((MethodDefinitionHandle)handle),
+        HandleKind.MemberReference => MemberRef((MemberReferenceHandle)handle),
+        HandleKind.MethodSpecification => Name(md.GetMethodSpecification((MethodSpecificationHandle)handle).Method),
+        _ => handle.Kind.ToString()
+    };
+    string TypeDef(TypeDefinitionHandle handle)
+    {
+        var element = md.GetTypeDefinition(handle);
+        var parent = element.GetDeclaringType();
+        string name = md.GetString(element.Name);
+        string space = md.GetString(element.Namespace);
+        return parent.IsNil ? (space.Length == 0 ? name : space + "." + name) : TypeDef(parent) + "+" + name;
+    }
+    string TypeRef(TypeReferenceHandle handle)
+    {
+        var element = md.GetTypeReference(handle);
+        string name = md.GetString(element.Name);
+        string space = md.GetString(element.Namespace);
+        return element.ResolutionScope.Kind == HandleKind.TypeReference ? Name(element.ResolutionScope) + "+" + name :
+            space.Length != 0 ? space + "." + name : name;
+    }
+    string MethodDef(MethodDefinitionHandle handle)
+    {
+        var element = md.GetMethodDefinition(handle);
+        return TypeDef(element.GetDeclaringType()) + "::" + md.GetString(element.Name);
+    }
+    string MemberRef(MemberReferenceHandle handle)
+    {
+        var element = md.GetMemberReference(handle);
+        return Name(element.Parent) + "::" + md.GetString(element.Name);
+    }
+    bool IsHelper(string item) => helperNames.Any(n => item == releaseNamespace + n ||
+        item.StartsWith(releaseNamespace + n + "::", StringComparison.Ordinal) ||
+        item.StartsWith(releaseNamespace + n + "+", StringComparison.Ordinal));
+    bool IsInherited(string item)
+    {
+        var typeName = item.Split("::")[0];
+        var nested = typeName.Split('+')[0];
+        return inheritedNames.Any(n => nested == "Gagamba.Execution.Linux.M1.Bootstrap." + n);
+    }
+
+    var refs = md.AssemblyReferences.Select(h =>
+    {
+        var a = md.GetAssemblyReference(h);
+        return new { name = md.GetString(a.Name), version = a.Version.ToString(), culture = md.GetString(a.Culture),
+            publicKeyOrToken = Convert.ToHexStringLower(md.GetBlobBytes(a.PublicKeyOrToken)) };
+    }).ToArray();
+    var imports = md.TypeReferences.Select(TypeRef).Concat(md.MemberReferences.Select(MemberRef)).Where(IsHelper).ToArray();
+    var definitions = md.TypeDefinitions.Select(TypeDef).Where(IsHelper).ToArray();
+    var incoming = new List<object>();
+    var outgoing = new List<string>();
+    var inherited = new List<object>();
+    var p4 = new List<object>();
+    var literals = new List<object>();
+    int callers = 0;
+    foreach (var handle in md.MethodDefinitions)
+    {
+        var def = md.GetMethodDefinition(handle);
+        if (def.RelativeVirtualAddress == 0)
+            continue;
+        callers++;
+        string caller = MethodDef(handle);
+        bool within = IsHelper(caller);
+        var reader = pe.GetMethodBody(def.RelativeVirtualAddress).GetILReader();
+        while (reader.RemainingBytes > 0)
+        {
+            var offset = reader.Offset;
+            ushort numeric = reader.ReadByte();
+            if (numeric == 0xFE)
+                numeric = (ushort)(0xFE00 | reader.ReadByte());
+            var op = map[numeric];
+            if (op.OperandType == OperandType.InlineString)
+            {
+                string literal = md.GetUserString(MetadataTokens.UserStringHandle(reader.ReadInt32()));
+                if (!within && helperNames.Any(n => literal.Contains(n, StringComparison.Ordinal)))
+                    literals.Add(new { caller, offset, literal });
+                continue;
+            }
+            if (op.OperandType is OperandType.InlineMethod or OperandType.InlineType or OperandType.InlineTok)
+            {
+                string target = Name(MetadataTokens.EntityHandle(reader.ReadInt32()));
+                if (!within && IsHelper(target))
+                    incoming.Add(new { caller, offset, opcode = op.Name, target });
+                if (within && !IsHelper(target))
+                    outgoing.Add(target);
+                if (IsInherited(target) && !IsInherited(caller))
+                    inherited.Add(new { caller, offset, opcode = op.Name, target });
+                if (role.Contains("production", StringComparison.Ordinal) &&
+                    criticalNames.Any(n => target.Contains(n, StringComparison.Ordinal)))
+                    p4.Add(new { caller, offset, opcode = op.Name, target });
+                continue;
+            }
+            int operandWidth = op.OperandType switch
+            {
+                OperandType.InlineNone => 0,
+                OperandType.ShortInlineBrTarget or OperandType.ShortInlineI or OperandType.ShortInlineVar => 1,
+                OperandType.InlineVar => 2,
+                OperandType.InlineBrTarget or OperandType.InlineField or OperandType.InlineI
+                    or OperandType.InlineSig or OperandType.ShortInlineR => 4,
+                OperandType.InlineI8 or OperandType.InlineR => 8,
+                OperandType.InlineSwitch => checked(4 * reader.ReadInt32()),
+                _ => throw new InvalidDataException(op.OperandType.ToString())
+            };
+            reader.Offset += operandWidth;
+        }
+    }
+
+    var exported = md.ExportedTypes.Select(md.GetExportedType).Select(t => md.GetString(t.Name)).ToArray();
+    var assembly = md.IsAssembly ? AssemblyName.GetAssemblyName(path).FullName : null;
+    if ((role.Contains("production", StringComparison.Ordinal) || role == "runtime-dependency") &&
+        (incoming.Count != 0 || imports.Length != 0 || literals.Count != 0))
+        failures++;
+    Console.WriteLine(JsonSerializer.Serialize(new { role, path, sha, managed = true, assembly, mvid, refs, callers,
+        definitions, imports, incoming, outgoing = outgoing.Distinct().Order().ToArray(), inherited, p4, literals, exported }));
+}
+return failures == 0 ? 0 : 1;

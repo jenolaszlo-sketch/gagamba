@@ -1,0 +1,14 @@
+using Gagamba.Execution.Linux.M1.Validation;
+
+namespace IndependentQ1Isolation;
+
+internal static class SyntheticEdge
+{
+    private delegate ValidationReleasePreparationStatus Comparison(
+        ValidationReleaseProjection? candidate, ValidationReleaseProjection? expected, byte[]? digest,
+        out ValidationReleaseMaterial? material);
+
+    private static readonly Comparison CompareEntry = ValidationReleasePreparation.Compare;
+
+    internal static int Probe() => (int)ValidationReleasePreparation.Prepare(null, null, out _);
+}

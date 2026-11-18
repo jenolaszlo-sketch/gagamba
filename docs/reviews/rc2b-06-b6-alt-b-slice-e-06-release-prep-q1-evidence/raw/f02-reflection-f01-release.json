@@ -1,0 +1,14 @@
+{
+  "stage": "f01",
+  "configuration": "release",
+  "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\naming-f01\\build\\bin\\Gagamba.Execution.Linux.M1.Tests\\release\\Gagamba.Execution.Linux.M1.dll",
+  "identity": "Gagamba.Execution.Linux.M1, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null",
+  "mvid": "23e5ff42-b675-41ef-8cfc-c9d3d793d6aa",
+  "sha256": "c5f4a017c445b650475ea5fe073fc6c2af8b029b676734b842495b69f221d560",
+  "validation_types": 19,
+  "declared_members": 696,
+  "forbidden_members": [],
+  "matches": [],
+  "affected_parameters": [],
+  "replacement_signature_collisions": 0
+}

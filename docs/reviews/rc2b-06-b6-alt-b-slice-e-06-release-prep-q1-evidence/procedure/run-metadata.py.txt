@@ -1,0 +1,91 @@
+"""Inventory selected and build/publish closures and audit them without loading code."""
+import hashlib
+import json
+import subprocess
+import sys
+from collections import Counter
+from pathlib import Path
+
+run = Path(sys.argv[1]).resolve()
+folder = run / "q1-metadata"
+tool = folder / "bin/Release/net10.0/MetadataScan.dll"
+core = "Gagamba.Execution.Linux.M1"
+test = core + ".Tests"
+publish = run / "policy-confirmed"
+fixtures = run / "d64-candidate-source"
+output = {}
+for cfg in ("debug", "release"):
+    paths = {}
+    manifests = {}
+
+    def collect(base, role):
+        assert base.is_dir(), base
+        for path in sorted(base.rglob("*.dll")):
+            paths.setdefault(path, role)
+        for path in (*base.rglob("*.deps.json"), *base.rglob("*.runtimeconfig.json")):
+            manifests[str(path)] = hashlib.sha256(path.read_bytes()).hexdigest()
+
+    for project in sorted((run / "candidate-exact/bin").iterdir()):
+        if (project / cfg).is_dir():
+            role = "build/test" if project.name.endswith(".Tests") else (
+                "build/fixture" if project.name == "B2Controller" else
+                "build/tool" if project.name == "InstallTool" else "build/production")
+            collect(project / cfg, role)
+    for root, role in (("focused", "selected/focused-test"), ("tests/" + cfg, "selected/broad-test"),
+                       ("src/" + core + "/bin/Release/net10.0", "selected/release-discovery")):
+        collect(run / "layouts" / cfg / root, role)
+    for project in sorted((publish / "solution/bin").iterdir()):
+        if (project / cfg).is_dir():
+            role = "solution/test" if project.name.endswith(".Tests") else (
+                "solution/fixture" if project.name.startswith("Gagamba.Fixture") or project.name == "B2Controller" else
+                "solution/tool" if project.name == "InstallTool" else "solution/production")
+            collect(project / cfg, role)
+    if cfg == "release":
+        for leaf in ("publish-m1", "publish-owner", "publish-recovery"):
+            collect(publish / leaf / "publish", "publish/production")
+    collect(fixtures / "src" / core / "bin/d6-4-variant/Debug/net10.0", "d6.4/fixture")
+    collect(fixtures / "tests" / (core + ".D6_4.Tests") / "bin" / cfg.title() / "net10.0", "d6.4/test")
+    collect(run / "control-verifier-confirmed/bin/VerifyProductionAssembly/release", "policy/verifier")
+    harness = run / "q1-probe/bin" / cfg.title() / "net10.0"
+    collect(harness, "reviewer/qualification-probe")
+
+    def scan(label, pairs, expected_code):
+        listfile = folder / (label + ".tsv")
+        listfile.write_text("".join(f"{role}\t{file}\n" for file, role in pairs.items()), encoding="utf-8", newline="\n")
+        command = ["dotnet", str(tool), str(listfile)]
+        log = folder / (label + ".jsonl")
+        with log.open("wb") as out, (folder / (label + "-stderr.txt")).open("wb") as err:
+            status = subprocess.run(command, stdout=out, stderr=err).returncode
+        (folder / (label + "-command.json")).write_text(json.dumps(dict(command=command, exit=status,
+            scanner_sha256=hashlib.sha256(tool.read_bytes()).hexdigest()), indent=2), encoding="utf-8")
+        assert status == expected_code, (label, status)
+        rows = [json.loads(line) for line in log.read_bytes().splitlines()]
+        assert len(rows) == len(pairs)
+        assert {Path(row["path"]): row["role"] for row in rows} == pairs
+        for row in rows:
+            assert hashlib.sha256(Path(row["path"]).read_bytes()).hexdigest() == row["sha"]
+        return rows
+
+    rows = scan(cfg, paths, 0)
+    take = [row for row in rows if row["managed"]]
+    production = [row for row in take if "production" in row["role"] or row["role"] in ("build/tool", "solution/tool")]
+    assert all(not r["incoming"] and not r["imports"] and not r["literals"] for r in production)
+    assert all(not r["inherited"] for r in production)
+    assert any(r["p4"] for r in production)
+    tests = [r for r in take if r["role"] in ("selected/focused-test", "selected/broad-test") and Path(r["path"]).name == test + ".dll"]
+    assert len(tests) == 2 and all(r["incoming"] and r["inherited"] for r in tests)
+    assert all({"ValidationPreCodec", "Gava1ContextCodec", "ValidationCustodyModel"} <= {
+        x["target"].split("::")[0].split(".")[-1] for x in r["inherited"]} for r in tests)
+    assert any(r["incoming"] for r in take if r["role"] == "reviewer/qualification-probe")
+
+    control_path = run / "e6-inbound-exact" / cfg / "bin" / core / cfg / (core + ".dll")
+    control, = scan("control-" + cfg, {control_path: "control/production"}, 1)
+    target = {("IndependentQ1Isolation.SyntheticEdge::Probe", "call", "Prepare"),
+              ("IndependentQ1Isolation.SyntheticEdge::.cctor", "ldftn", "Compare")}
+    assert target <= {(x["caller"], x["opcode"], x["target"].split("::")[-1]) for x in control["incoming"]}
+    output[cfg] = dict(paths=len(rows), managed=len(take), unique_sha256=len({row["sha"] for row in rows}),
+                       production_paths=len(production), production_e6_incoming=0, production_e3_to_e5_incoming=0,
+                       control_direct_and_delegate="detected", p4_edges_retained=sum(len(row["p4"]) for row in production),
+                       role_counts=Counter(paths.values()), manifest_sha256=manifests)
+    print(cfg, len(rows), "paths,", len(production), "production/tool, zero helper or predecessor ingress; dual control detected", flush=True)
+(folder / "summary.json").write_text(json.dumps(output, indent=2) + "\n", encoding="utf-8", newline="\n")

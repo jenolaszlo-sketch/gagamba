@@ -1,0 +1,267 @@
+{
+  "candidate": "4202a2f7a99b85cfe1caf70d6a583f58e6551283",
+  "tree": "f987f32ced441263167649307003536dd493dd66",
+  "configurations": {
+    "debug": {
+      "suites": {
+        "e6": {
+          "passed": 192,
+          "failed": 0,
+          "skipped": 0,
+          "xunit": "xUnit.net v3 3.2.0+9e422989c1",
+          "xunit_exit": 0,
+          "vstest_exit": 1,
+          "vstest_executed": 0,
+          "timeout_seconds": 15,
+          "vstest_process_id": 25704,
+          "xml_sha256": "d98cc79c5931f516cad2ef606130a4c6c81cf73454a05e5692834c52c5b1a501",
+          "trx_sha256": "cc8196cbee6b299c664cf761be446280f0b675c21d5f384f46c13da862b7db54",
+          "exact_producer_membership": true
+        },
+        "e5": {
+          "passed": 42,
+          "failed": 0,
+          "skipped": 0,
+          "xunit": "xUnit.net v3 3.2.0+9e422989c1",
+          "xunit_exit": 0,
+          "vstest_exit": 1,
+          "vstest_executed": 0,
+          "timeout_seconds": 15,
+          "vstest_process_id": 19972,
+          "xml_sha256": "7267d798c6b1b3522fda3e252c0a2ecc7aa1f11832d37c8377cc16060fd00acb",
+          "trx_sha256": "aca89a188fbef126c118e43af8130e5e83ceaeca6c9e0ceb6743774ad614722f",
+          "exact_producer_membership": true
+        },
+        "e4": {
+          "passed": 11,
+          "failed": 0,
+          "skipped": 0,
+          "xunit": "xUnit.net v3 3.2.0+9e422989c1",
+          "xunit_exit": 0,
+          "vstest_exit": 1,
+          "vstest_executed": 0,
+          "timeout_seconds": 15,
+          "vstest_process_id": 36068,
+          "xml_sha256": "586a48a10c19dd9a7ef6330a02591e473a118fa4fb2915215a6a56775e4b211e",
+          "trx_sha256": "701c3792e3b511bbe0399bda5e0645dfd596f06f6249dd8777a52c8e8d230307",
+          "exact_producer_membership": true
+        },
+        "e3": {
+          "passed": 185,
+          "failed": 0,
+          "skipped": 0,
+          "xunit": "xUnit.net v3 3.2.0+9e422989c1",
+          "xunit_exit": 0,
+          "vstest_exit": 1,
+          "vstest_executed": 0,
+          "timeout_seconds": 15,
+          "vstest_process_id": 29184,
+          "xml_sha256": "d1044e83cdfd634389ebfca01e4915915df75a3982aef5a622e3f055d7e79dc0",
+          "trx_sha256": "0aa70b1cd342be1352e732634f0d7995ac0ddc906ca316dc842402e121a74880",
+          "exact_producer_membership": true
+        },
+        "broad": {
+          "passed": 1923,
+          "failed": 0,
+          "skipped": 331,
+          "xunit": "xUnit.net v3 3.2.0+9e422989c1",
+          "xunit_exit": 0,
+          "vstest_exit": 1,
+          "vstest_executed": 0,
+          "timeout_seconds": 15,
+          "vstest_process_id": 16992,
+          "xml_sha256": "d52d0759683e01208461a9baebd8382550e076102e848b685846c30425223f3d",
+          "trx_sha256": "c768880e2243745a36cd52d42bcb559425f1ef71246f2746859036dc72de5239",
+          "exact_producer_membership": true
+        }
+      },
+      "adversarial": 2398,
+      "frozen_e6": 34,
+      "reviewer_e6": 29
+    },
+    "release": {
+      "suites": {
+        "e6": {
+          "passed": 192,
+          "failed": 0,
+          "skipped": 0,
+          "xunit": "xUnit.net v3 3.2.0+9e422989c1",
+          "xunit_exit": 0,
+          "vstest_exit": 1,
+          "vstest_executed": 0,
+          "timeout_seconds": 15,
+          "vstest_process_id": 24880,
+          "xml_sha256": "cb6596cdfc8e734609cb24683c118e27d886368ee146003618cb94c48ee5e07e",
+          "trx_sha256": "eae9d9d67cb9d25cd95885390f11858c6e5f4c39fc76d3ba4e14807ccc9e6b75",
+          "exact_producer_membership": true
+        },
+        "e5": {
+          "passed": 42,
+          "failed": 0,
+          "skipped": 0,
+          "xunit": "xUnit.net v3 3.2.0+9e422989c1",
+          "xunit_exit": 0,
+          "vstest_exit": 1,
+          "vstest_executed": 0,
+          "timeout_seconds": 15,
+          "vstest_process_id": 23996,
+          "xml_sha256": "9738af7066b444bf24ba99ec74a8b0554364f2bda1c7ebbef7342b5d33f67557",
+          "trx_sha256": "bb0bed4e407389c48868ff3ecb619f210f605f5e49f960810af9ccb6cd798f2b",
+          "exact_producer_membership": true
+        },
+        "e4": {
+          "passed": 11,
+          "failed": 0,
+          "skipped": 0,
+          "xunit": "xUnit.net v3 3.2.0+9e422989c1",
+          "xunit_exit": 0,
+          "vstest_exit": 1,
+          "vstest_executed": 0,
+          "timeout_seconds": 15,
+          "vstest_process_id": 27112,
+          "xml_sha256": "23458a6f8625d24163f5692a84f8382a6cd7ad569722e1f80c31f1ce547c590e",
+          "trx_sha256": "cc6d9743a74daaa2e93b8e0cf4e888429004a56daf2f4f645d01c1c1c195ff01",
+          "exact_producer_membership": true
+        },
+        "e3": {
+          "passed": 185,
+          "failed": 0,
+          "skipped": 0,
+          "xunit": "xUnit.net v3 3.2.0+9e422989c1",
+          "xunit_exit": 0,
+          "vstest_exit": 1,
+          "vstest_executed": 0,
+          "timeout_seconds": 15,
+          "vstest_process_id": 28952,
+          "xml_sha256": "7076c2be0eabf6eda122e90ca1883cb86c293b1697b41e0b991a2b4202a0d121",
+          "trx_sha256": "0a40e44d32f529f09add6b814f3a7f2d74894fdaba414188e69c3c34c5dcfef3",
+          "exact_producer_membership": true
+        },
+        "broad": {
+          "passed": 1923,
+          "failed": 0,
+          "skipped": 331,
+          "xunit": "xUnit.net v3 3.2.0+9e422989c1",
+          "xunit_exit": 0,
+          "vstest_exit": 1,
+          "vstest_executed": 0,
+          "timeout_seconds": 15,
+          "vstest_process_id": 32784,
+          "xml_sha256": "ab5201a1db676928514f8a181ccb10e83ff4b579c5bf63b59b45c827d27dcadb",
+          "trx_sha256": "416834f24136fddbcd8ea11c6d6be1656508051fa0b2546a96fd5860422c795f",
+          "exact_producer_membership": true
+        }
+      },
+      "adversarial": 2398,
+      "frozen_e6": 34,
+      "reviewer_e6": 29
+    }
+  },
+  "policy_controls": 51,
+  "preparation_regressions": 9,
+  "preparation_validation": "Passed",
+  "isolation": {
+    "debug": {
+      "first_party_assembly_paths": 48,
+      "production_assembly_paths": 29,
+      "unique_first_party_sha256": 19,
+      "production_incoming": 0,
+      "helper_effect_edges": 0,
+      "new_production_E3_E4_E5_edges": 0,
+      "scan_control": "detected",
+      "runner_dependency_paths": 260,
+      "verifier_exit": 1,
+      "roles": {
+        "build/fixture": 3,
+        "build/production": 23,
+        "build/test": 3,
+        "selected/focused": 3,
+        "selected/broad": 3,
+        "selected/release-discovery": 2,
+        "solution/production": 6,
+        "d6.4/fixture-debug": 2,
+        "d6.4/test": 3
+      },
+      "p4_executed_controls": 47
+    },
+    "release": {
+      "first_party_assembly_paths": 116,
+      "production_assembly_paths": 55,
+      "unique_first_party_sha256": 47,
+      "production_incoming": 0,
+      "helper_effect_edges": 0,
+      "new_production_E3_E4_E5_edges": 0,
+      "scan_control": "detected",
+      "runner_dependency_paths": 260,
+      "verifier_exit": 0,
+      "roles": {
+        "build/fixture": 3,
+        "build/production": 23,
+        "build/test": 3,
+        "selected/focused": 3,
+        "selected/broad": 3,
+        "selected/release-discovery": 2,
+        "solution/fixture": 9,
+        "solution/production": 24,
+        "solution/test": 33,
+        "publish/production": 8,
+        "d6.4/fixture-debug": 2,
+        "d6.4/test": 3
+      },
+      "p4_executed_controls": 47
+    }
+  },
+  "metadata": {
+    "debug": {
+      "paths": 577,
+      "managed": 577,
+      "unique_sha256": 151,
+      "production_paths": 33,
+      "production_e6_incoming": 0,
+      "production_e3_to_e5_incoming": 0,
+      "control_direct_and_delegate": "detected",
+      "p4_edges_retained": 532,
+      "role_counts": {
+        "build/fixture": 4,
+        "build/production": 22,
+        "build/test": 133,
+        "build/tool": 4,
+        "selected/focused-test": 133,
+        "selected/broad-test": 133,
+        "selected/release-discovery": 2,
+        "solution/production": 7,
+        "d6.4/fixture": 2,
+        "d6.4/test": 133,
+        "policy/verifier": 1,
+        "reviewer/qualification-probe": 3
+      }
+    },
+    "release": {
+      "paths": 1830,
+      "managed": 1830,
+      "unique_sha256": 185,
+      "production_paths": 69,
+      "production_e6_incoming": 0,
+      "production_e3_to_e5_incoming": 0,
+      "control_direct_and_delegate": "detected",
+      "p4_edges_retained": 958,
+      "role_counts": {
+        "build/fixture": 4,
+        "build/production": 23,
+        "build/test": 133,
+        "build/tool": 4,
+        "selected/focused-test": 133,
+        "selected/broad-test": 133,
+        "selected/release-discovery": 2,
+        "solution/fixture": 142,
+        "solution/production": 34,
+        "solution/test": 1075,
+        "publish/production": 8,
+        "d6.4/fixture": 2,
+        "d6.4/test": 133,
+        "policy/verifier": 1,
+        "reviewer/qualification-probe": 3
+      }
+    }
+  }
+}

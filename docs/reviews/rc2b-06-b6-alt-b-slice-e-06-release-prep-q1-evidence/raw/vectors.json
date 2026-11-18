@@ -1,0 +1,194 @@
+{
+  "R01": {
+    "projection": {
+      "Version": 1,
+      "Phase": 1,
+      "Topology": 2,
+      "Case": "R01",
+      "CatalogFlag": true,
+      "FixtureFlag": true,
+      "Steps": [
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          5,
+          6
+        ]
+      ],
+      "Index": 2,
+      "SealedLaunch": "1111111111111111111111111111111111111111111111111111111111111111",
+      "Catalog": "2222222222222222222222222222222222222222222222222222222222222222",
+      "Script": "3333333333333333333333333333333333333333333333333333333333333333",
+      "ReleaseAction": "4444444444444444444444444444444444444444444444444444444444444444",
+      "Manifest": "9999999999999999999999999999999999999999999999999999999999999999",
+      "Session": "55555555-5555-5555-5555-555555555555",
+      "Execution": "66666666-6666-6666-6666-666666666666",
+      "Lease": "77777777-7777-7777-7777-777777777777",
+      "Preparation": "88888888-8888-8888-8888-888888888888"
+    },
+    "preimage": "676167616d62612d76616c69646174696f6e2d72656c656173652d763100111111111111111111111111111111111111111111111111111111111111111122222222222222222222222222222222222222222222222222222222222222223333333333333333333333333333333333333333333333333333333333333333444444444444444444444444444444444444444444444444444444444444444402000000555555555555555555555555555555556666666666666666666666666666666677777777777777777777777777777777888888888888888888888888888888889999999999999999999999999999999999999999999999999999999999999999",
+    "digest": "3737572b7b3d2ad8313d109d6d8a9d0df4b5bc7b20e43c71a0a6061e1988ce3e"
+  },
+  "Mixed": {
+    "projection": {
+      "Version": 1,
+      "Phase": 2,
+      "Topology": 2,
+      "Case": "mixed.guid-01",
+      "CatalogFlag": true,
+      "FixtureFlag": true,
+      "Steps": [
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          5,
+          6
+        ]
+      ],
+      "Index": 2,
+      "SealedLaunch": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+      "Catalog": "202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f",
+      "Script": "404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f",
+      "ReleaseAction": "606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f",
+      "Manifest": "808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9f",
+      "Session": "00112233-4455-6677-8899-aabbccddeeff",
+      "Execution": "12345678-90ab-cdef-0123-456789abcdef",
+      "Lease": "89abcdef-0123-4567-89ab-cdef01234567",
+      "Preparation": "fedcba98-7654-3210-fedc-ba9876543210"
+    },
+    "preimage": "676167616d62612d76616c69646174696f6e2d72656c656173652d763100000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f0200000033221100554477668899aabbccddeeff78563412ab90efcd0123456789abcdefefcdab892301674589abcdef0123456798badcfe54761032fedcba9876543210808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9f",
+    "digest": "d4573bb166ab7a4f73743297a4b3b2b9f2e19c73ef4fb6c36c94cf2a20fd7d90"
+  },
+  "Q1FreshMixed": {
+    "projection": {
+      "Version": 1,
+      "Phase": 2,
+      "Topology": 2,
+      "Case": "Q1.z-Tag_09",
+      "CatalogFlag": true,
+      "FixtureFlag": true,
+      "Steps": [
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          5,
+          6
+        ]
+      ],
+      "Index": 2,
+      "SealedLaunch": "f561b4576d3e4593b77d72ad73fe96b9b38e82f978dc1875aed4c3833def23cd",
+      "Catalog": "97c959f7869c739eb836107ad4a65eb60f8a2d74c17592bc6b0c0ab2a1e80331",
+      "Script": "a607f0c7e5ee9cfa6178a77029de9c818a14385df0aca76303a9491db84b5cda",
+      "ReleaseAction": "9a48b2602a525dc7610a48aa96ddc7b41670dbaf3a43b841d14372b0e0f217ca",
+      "Manifest": "c132d3b402c9e4c3b0ab3e66ebc7f4d7f25cc595c40245fe2512d4902dcc87fd",
+      "Session": "4ee08cbe-9909-2e49-fd98-79d2d21d1991",
+      "Execution": "be68469c-f14c-c44a-5c60-1585af1735ef",
+      "Lease": "7f0df3a3-0880-f462-cecb-0fe975f77e1e",
+      "Preparation": "c213ed21-0c73-f84a-0508-8cf0abf64d7a"
+    },
+    "preimage": "676167616d62612d76616c69646174696f6e2d72656c656173652d763100f561b4576d3e4593b77d72ad73fe96b9b38e82f978dc1875aed4c3833def23cd97c959f7869c739eb836107ad4a65eb60f8a2d74c17592bc6b0c0ab2a1e80331a607f0c7e5ee9cfa6178a77029de9c818a14385df0aca76303a9491db84b5cda9a48b2602a525dc7610a48aa96ddc7b41670dbaf3a43b841d14372b0e0f217ca02000000be8ce04e0999492efd9879d2d21d19919c4668be4cf14ac45c601585af1735efa3f30d7f800862f4cecb0fe975f77e1e21ed13c2730c4af805088cf0abf64d7ac132d3b402c9e4c3b0ab3e66ebc7f4d7f25cc595c40245fe2512d4902dcc87fd",
+    "digest": "a8a64c3761328d5abc6b0374ac23333558c2f95eb8350d2abf8d3423df036e39"
+  },
+  "Q1Alternate": {
+    "projection": {
+      "Version": 1,
+      "Phase": 1,
+      "Topology": 2,
+      "Case": "Q1.alt",
+      "CatalogFlag": true,
+      "FixtureFlag": true,
+      "Steps": [
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          5,
+          6
+        ]
+      ],
+      "Index": 2,
+      "SealedLaunch": "e96f95354292d473ee800c5add32d17824495f2d0fc4ac726b54b573f1fe4a40",
+      "Catalog": "b5bcd3e05c417ac82c6d4f01bea35176966375b08406ce1a6f647d3999fb5020",
+      "Script": "fc6554caee47d8bf7a2b16ddea9baae7ae927d03498c48834e7ee6c82dd60862",
+      "ReleaseAction": "8209891084bdb27b6a1b2cb6ce1e0021c0db0d3364b0933e132079f7f5667250",
+      "Manifest": "0a46b4d1f65f7c783a81c21d944d6fe1a6ad0a347d753ea1af50e99072ee94ba",
+      "Session": "6b9b2efe-9d67-66a9-049c-f8b0309f4e1a",
+      "Execution": "a2c2a67b-b3c6-6904-e6a5-383daa592f7f",
+      "Lease": "f04e0089-f25f-638e-59d3-2a74fa8d97b0",
+      "Preparation": "ec4b1a91-f342-7f92-a7db-9396302ec314"
+    },
+    "preimage": "676167616d62612d76616c69646174696f6e2d72656c656173652d763100e96f95354292d473ee800c5add32d17824495f2d0fc4ac726b54b573f1fe4a40b5bcd3e05c417ac82c6d4f01bea35176966375b08406ce1a6f647d3999fb5020fc6554caee47d8bf7a2b16ddea9baae7ae927d03498c48834e7ee6c82dd608628209891084bdb27b6a1b2cb6ce1e0021c0db0d3364b0933e132079f7f566725002000000fe2e9b6b679da966049cf8b0309f4e1a7ba6c2a2c6b30469e6a5383daa592f7f89004ef05ff28e6359d32a74fa8d97b0911a4bec42f3927fa7db9396302ec3140a46b4d1f65f7c783a81c21d944d6fe1a6ad0a347d753ea1af50e99072ee94ba",
+    "digest": "5891bb2a25300d4588afb2dad391626d9d902962353261a61174f397edf2cb40"
+  }
+}

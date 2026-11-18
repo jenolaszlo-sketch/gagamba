@@ -1,0 +1,2319 @@
+[
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests",
+    "method": "FragmentedAndCoalescedStreamFramesAreReadExactly",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.FragmentedAndCoalescedStreamFramesAreReadExactly",
+    "reason": "Linux direct socket primitive qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests",
+    "method": "LengthIsRefusedBeforeAllocation",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.LengthIsRefusedBeforeAllocation(length: -1)",
+    "reason": "Linux direct socket primitive qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests",
+    "method": "LengthIsRefusedBeforeAllocation",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.LengthIsRefusedBeforeAllocation(length: 0)",
+    "reason": "Linux direct socket primitive qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests",
+    "method": "LengthIsRefusedBeforeAllocation",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.LengthIsRefusedBeforeAllocation(length: 2147483647)",
+    "reason": "Linux direct socket primitive qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests",
+    "method": "LengthIsRefusedBeforeAllocation",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.LengthIsRefusedBeforeAllocation(length: 65537)",
+    "reason": "Linux direct socket primitive qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests",
+    "method": "ListenerModesAndSymlinkSubstitutionRefuse",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.ListenerModesAndSymlinkSubstitutionRefuse",
+    "reason": "Linux listener required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests",
+    "method": "LostAuthenticationAckOrReflectedConfirmationCannotRestoreSession",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.LostAuthenticationAckOrReflectedConfirmationCannotRestoreSession(reflection: False)",
+    "reason": "Linux direct socket primitive qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests",
+    "method": "LostAuthenticationAckOrReflectedConfirmationCannotRestoreSession",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.LostAuthenticationAckOrReflectedConfirmationCannotRestoreSession(reflection: True)",
+    "reason": "Linux direct socket primitive qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests",
+    "method": "PeerExitDuringHandshakeRefuses",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.PeerExitDuringHandshakeRefuses",
+    "reason": "Linux direct socket primitive qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests",
+    "method": "PeerPidfdFeatureAndExactLiveReference",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.PeerPidfdFeatureAndExactLiveReference",
+    "reason": "Linux direct socket primitive qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests",
+    "method": "RealDistinctProcessesConfirmOneDirectSessionAndRemoveListener",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.RealDistinctProcessesConfirmOneDirectSessionAndRemoveListener",
+    "reason": "Linux direct socket primitive qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests",
+    "method": "SameUidDifferentProcessCannotImpersonateExpectedPeer",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.SameUidDifferentProcessCannotImpersonateExpectedPeer",
+    "reason": "Linux direct socket primitive qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests",
+    "method": "StaleRetainedPeerReferenceRefusesWithoutReopeningPid",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.StaleRetainedPeerReferenceRefusesWithoutReopeningPid",
+    "reason": "Linux direct socket primitive qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests",
+    "method": "TruncationAndPartialFrameTimeoutAreTerminal",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.TruncationAndPartialFrameTimeoutAreTerminal",
+    "reason": "Linux direct socket primitive qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests",
+    "method": "UnexpectedAncillaryRightsAreClosedAndRefused",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.UnexpectedAncillaryRightsAreClosedAndRefused",
+    "reason": "Linux direct socket primitive qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests",
+    "method": "WrongExactIdentityOrTranscriptNeverAssociates",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.WrongExactIdentityOrTranscriptNeverAssociates(change: \\\"controller\\\")",
+    "reason": "Linux direct socket primitive qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests",
+    "method": "WrongExactIdentityOrTranscriptNeverAssociates",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.WrongExactIdentityOrTranscriptNeverAssociates(change: \\\"execution\\\")",
+    "reason": "Linux direct socket primitive qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests",
+    "method": "WrongExactIdentityOrTranscriptNeverAssociates",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.WrongExactIdentityOrTranscriptNeverAssociates(change: \\\"generation\\\")",
+    "reason": "Linux direct socket primitive qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests",
+    "method": "WrongExactIdentityOrTranscriptNeverAssociates",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.WrongExactIdentityOrTranscriptNeverAssociates(change: \\\"owner\\\")",
+    "reason": "Linux direct socket primitive qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests",
+    "method": "WrongExactIdentityOrTranscriptNeverAssociates",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.DirectAuthenticationTests.WrongExactIdentityOrTranscriptNeverAssociates(change: \\\"session\\\")",
+    "reason": "Linux direct socket primitive qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.OwnerSafetyDisposalTests",
+    "method": "DisposalAcceptsDurableStopBeforeClosingMonitor",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.OwnerSafetyDisposalTests.DisposalAcceptsDurableStopBeforeClosingMonitor",
+    "reason": "Linux pidfds required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.OwnerSafetyMonitorTests",
+    "method": "IndependentLossLatchConsumesCapabilityPublishedAfterLoss",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.OwnerSafetyMonitorTests.IndependentLossLatchConsumesCapabilityPublishedAfterLoss(loss: \\\"controller\\\")",
+    "reason": "Linux independent lifetime monitor required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.OwnerSafetyMonitorTests",
+    "method": "IndependentLossLatchConsumesCapabilityPublishedAfterLoss",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.OwnerSafetyMonitorTests.IndependentLossLatchConsumesCapabilityPublishedAfterLoss(loss: \\\"lifeline\\\")",
+    "reason": "Linux independent lifetime monitor required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.OwnerSafetyMonitorTests",
+    "method": "IndependentLossLatchConsumesCapabilityPublishedAfterLoss",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.OwnerSafetyMonitorTests.IndependentLossLatchConsumesCapabilityPublishedAfterLoss(loss: \\\"recovery\\\")",
+    "reason": "Linux independent lifetime monitor required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.OwnerSafetyMonitorTests",
+    "method": "IndependentLossLatchConsumesCapabilityPublishedAfterLoss",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.OwnerSafetyMonitorTests.IndependentLossLatchConsumesCapabilityPublishedAfterLoss(loss: \\\"stop\\\")",
+    "reason": "Linux independent lifetime monitor required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.RecoveryB2NativeTests",
+    "method": "MissingPidfdOrExitBeforeRetentionNeverCreatesRecoveryAuthority",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.RecoveryB2NativeTests.MissingPidfdOrExitBeforeRetentionNeverCreatesRecoveryAuthority(dieBeforeRetention: False)",
+    "reason": "requires unprivileged Linux pidfd; Windows is not qualification",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.RecoveryB2NativeTests",
+    "method": "MissingPidfdOrExitBeforeRetentionNeverCreatesRecoveryAuthority",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.RecoveryB2NativeTests.MissingPidfdOrExitBeforeRetentionNeverCreatesRecoveryAuthority(dieBeforeRetention: True)",
+    "reason": "requires unprivileged Linux pidfd; Windows is not qualification",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.RecoveryConnectionDisposalTests",
+    "method": "DisposalDuringAnInFlightInspectIsSafeAndInspectReportsLoss",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.RecoveryConnectionDisposalTests.DisposalDuringAnInFlightInspectIsSafeAndInspectReportsLoss",
+    "reason": "M-01 real-connection tests require an unprivileged Linux socketpair",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.RecoveryConnectionDisposalTests",
+    "method": "DisposedConnectionRefusesSendInspectAndObserveWithoutTouchingTheDescriptor",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.RecoveryConnectionDisposalTests.DisposedConnectionRefusesSendInspectAndObserveWithoutTouchingTheDescriptor",
+    "reason": "M-01 real-connection tests require an unprivileged Linux socketpair",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.RecoveryConnectionDisposalTests",
+    "method": "RepeatedConcurrentInspectSendAndDisposeNeverThrowsOrDeadlocks",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Bootstrap.RecoveryConnectionDisposalTests.RepeatedConcurrentInspectSendAndDisposeNeverThrowsOrDeadlocks",
+    "reason": "M-01 real-connection tests require an unprivileged Linux socketpair",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests",
+    "method": "D4_10_PreIntentStorageGateLeavesNoIntentOrFd4",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_10_PreIntentStorageGateLeavesNoIntentOrFd4",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests",
+    "method": "D4_11_DuringIntentStorageGatePreservesActualJournalState",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_11_DuringIntentStorageGatePreservesActualJournalState",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests",
+    "method": "D4_12_ReplacementCannotAcquireWhileOwnerIsAlive",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_12_ReplacementCannotAcquireWhileOwnerIsAlive",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests",
+    "method": "D4_13_StopPersistenceGateDoesNotFabricateStopOrRelease",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_13_StopPersistenceGateDoesNotFabricateStopOrRelease",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests",
+    "method": "D4_14_TwoRecoveryContendersHaveOneEffectiveWriterAndNoRelease",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_14_TwoRecoveryContendersHaveOneEffectiveWriterAndNoRelease",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests",
+    "method": "D4_1_RealHeldReleaseHasOneFd4ObservationAndCleanup",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_1_RealHeldReleaseHasOneFd4ObservationAndCleanup",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests",
+    "method": "D4_2_CrashAfterDurableIntentRecoversAndDoesNotResend",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_2_CrashAfterDurableIntentRecoversAndDoesNotResend",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests",
+    "method": "D4_2b_ReplacementRetryOverDurableIntentIsRefusedWithoutTransport",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_2b_ReplacementRetryOverDurableIntentIsRefusedWithoutTransport",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests",
+    "method": "D4_3_CrashAfterFd4BeforeCommittedKeepsIntentAndObservedWriteOnly",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_3_CrashAfterFd4BeforeCommittedKeepsIntentAndObservedWriteOnly",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests",
+    "method": "D4_4_CrashAfterCommittedPreservesCommitWithoutSecondWrite",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_4_CrashAfterCommittedPreservesCommitWithoutSecondWrite",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests",
+    "method": "D4_5_CrashAfterConsumeBeforeWriteHasNoFd4Witness",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_5_CrashAfterConsumeBeforeWriteHasNoFd4Witness",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests",
+    "method": "D4_6_AmbiguousSealFailureRecoversIntentAndDoesNotResend",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_6_AmbiguousSealFailureRecoversIntentAndDoesNotResend",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests",
+    "method": "D4_7_DurableStopRecoversWithoutRelease",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_7_DurableStopRecoversWithoutRelease",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests",
+    "method": "D4_8_FailedDurableStopAllowsOnlyDiagnosticReplacementRelease",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_8_FailedDurableStopAllowsOnlyDiagnosticReplacementRelease",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests",
+    "method": "D4_9_OwnerConcurrentDuplicateHasOneFd4Attempt",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D4_9_OwnerConcurrentDuplicateHasOneFd4Attempt",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests",
+    "method": "D5_CR3_TwoIndependentOwnersHaveOneReleaseAndOneRefusal",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D5_CR3_TwoIndependentOwnersHaveOneReleaseAndOneRefusal",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests",
+    "method": "D5_CR3b_DurableStopRefusesReleaseAcrossFreshLease",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D4SupervisorTests.D5_CR3b_DurableStopRefusesReleaseAcrossFreshLease",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_DescriptorTopologyUsesRealFd5Pipe",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_DescriptorTopologyUsesRealFd5Pipe",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_EvidenceDumpNativeStatusFrames",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_EvidenceDumpNativeStatusFrames",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_N18_StatusDeadlineExpiresWithoutObservation",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_N18_StatusDeadlineExpiresWithoutObservation",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_N19_ExtraTrailingBytesDoNotBecomeASecondObservation",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_N19_ExtraTrailingBytesDoNotBecomeASecondObservation",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_NativeIdentityAndFrameNegativesAreRejected",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: \\\"d5_contradictory\\\")",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_NativeIdentityAndFrameNegativesAreRejected",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: \\\"d5_duplicate_exec\\\")",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_NativeIdentityAndFrameNegativesAreRejected",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: \\\"d5_invalid_kind\\\")",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_NativeIdentityAndFrameNegativesAreRejected",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: \\\"d5_invalid_payload_length\\\")",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_NativeIdentityAndFrameNegativesAreRejected",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: \\\"d5_length_above_max\\\")",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_NativeIdentityAndFrameNegativesAreRejected",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: \\\"d5_length_below_header\\\")",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_NativeIdentityAndFrameNegativesAreRejected",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: \\\"d5_premature_eof\\\")",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_NativeIdentityAndFrameNegativesAreRejected",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: \\\"d5_replayed_sequence\\\")",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_NativeIdentityAndFrameNegativesAreRejected",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: \\\"d5_root_after_terminal\\\")",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_NativeIdentityAndFrameNegativesAreRejected",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: \\\"d5_short_header\\\")",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_NativeIdentityAndFrameNegativesAreRejected",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: \\\"d5_truncated_payload\\\")",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_NativeIdentityAndFrameNegativesAreRejected",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: \\\"d5_wrong_digest\\\")",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_NativeIdentityAndFrameNegativesAreRejected",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: \\\"d5_wrong_exec\\\")",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_NativeIdentityAndFrameNegativesAreRejected",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: \\\"d5_wrong_magic\\\")",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_NativeIdentityAndFrameNegativesAreRejected",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: \\\"d5_wrong_prep\\\")",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_NativeIdentityAndFrameNegativesAreRejected",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: \\\"d5_wrong_sequence\\\")",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_NativeIdentityAndFrameNegativesAreRejected",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_NativeIdentityAndFrameNegativesAreRejected(mode: \\\"d5_wrong_version\\\")",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_O01_NativeStatusIsGatedByDurableCommitted",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_O01_NativeStatusIsGatedByDurableCommitted",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_O02_NoDurableCommittedMeansNoDurableObservation",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_O02_NoDurableCommittedMeansNoDurableObservation",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_O03_JournalFailureIsNotReportedAsDurableObservation",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_O03_JournalFailureIsNotReportedAsDurableObservation",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_O04_ContradictoryNativeStatusDoesNotOverwrite",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_O04_ContradictoryNativeStatusDoesNotOverwrite",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_ReleaseValidationExits20And21And22",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_ReleaseValidationExits20And21And22",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_S01_ExecConfirmedIsNativeFd5Observation",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_S01_ExecConfirmedIsNativeFd5Observation",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_S02_ExecFailedIsNativeFd5Observation",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_S02_ExecFailedIsNativeFd5Observation",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_S03_ExecConfirmedThenRootIsOrdered",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_S03_ExecConfirmedThenRootIsOrdered",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_S04_UnconfirmedRootRemainsUnknown",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_S04_UnconfirmedRootRemainsUnknown",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_S05_ExecFailedThenRootNotStarted",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_S05_ExecFailedThenRootNotStarted",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests",
+    "method": "D5_S06_ProtocolFailedIsTerminal",
+    "case": "Gagamba.Execution.Linux.M1.Tests.D4.Wp05D5NativeStatusTests.D5_S06_ProtocolFailedIsTerminal",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests",
+    "method": "ActualPeerAndActualRecordAreBothRequired",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: \\\"duplicate\\\", accepted: False)",
+    "reason": "non-root Linux socket/process component qualification",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests",
+    "method": "ActualPeerAndActualRecordAreBothRequired",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: \\\"empty-rights\\\", accepted: False)",
+    "reason": "non-root Linux socket/process component qualification",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests",
+    "method": "ActualPeerAndActualRecordAreBothRequired",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: \\\"empty\\\", accepted: False)",
+    "reason": "non-root Linux socket/process component qualification",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests",
+    "method": "ActualPeerAndActualRecordAreBothRequired",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: \\\"impostor-writer\\\", accepted: False)",
+    "reason": "non-root Linux socket/process component qualification",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests",
+    "method": "ActualPeerAndActualRecordAreBothRequired",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: \\\"missing\\\", accepted: False)",
+    "reason": "non-root Linux socket/process component qualification",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests",
+    "method": "ActualPeerAndActualRecordAreBothRequired",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: \\\"oversize\\\", accepted: False)",
+    "reason": "non-root Linux socket/process component qualification",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests",
+    "method": "ActualPeerAndActualRecordAreBothRequired",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: \\\"premature\\\", accepted: False)",
+    "reason": "non-root Linux socket/process component qualification",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests",
+    "method": "ActualPeerAndActualRecordAreBothRequired",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: \\\"release\\\", accepted: False)",
+    "reason": "non-root Linux socket/process component qualification",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests",
+    "method": "ActualPeerAndActualRecordAreBothRequired",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: \\\"rights\\\", accepted: False)",
+    "reason": "non-root Linux socket/process component qualification",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests",
+    "method": "ActualPeerAndActualRecordAreBothRequired",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: \\\"valid\\\", accepted: True)",
+    "reason": "non-root Linux socket/process component qualification",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests",
+    "method": "ActualPeerAndActualRecordAreBothRequired",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: \\\"wrong-closure\\\", accepted: False)",
+    "reason": "non-root Linux socket/process component qualification",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests",
+    "method": "ActualPeerAndActualRecordAreBothRequired",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: \\\"wrong-digest\\\", accepted: False)",
+    "reason": "non-root Linux socket/process component qualification",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests",
+    "method": "ActualPeerAndActualRecordAreBothRequired",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: \\\"wrong-execution\\\", accepted: False)",
+    "reason": "non-root Linux socket/process component qualification",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests",
+    "method": "ActualPeerAndActualRecordAreBothRequired",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: \\\"wrong-lease\\\", accepted: False)",
+    "reason": "non-root Linux socket/process component qualification",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests",
+    "method": "ActualPeerAndActualRecordAreBothRequired",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: \\\"wrong-original-pin\\\", accepted: False)",
+    "reason": "non-root Linux socket/process component qualification",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests",
+    "method": "ActualPeerAndActualRecordAreBothRequired",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.ActualPeerAndActualRecordAreBothRequired(mode: \\\"wrong-role\\\", accepted: False)",
+    "reason": "non-root Linux socket/process component qualification",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests",
+    "method": "TypedPinReceiverRejectsOrdinaryDescriptorAndClosesItsCopy",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.B2EvidenceNativeTests.TypedPinReceiverRejectsOrdinaryDescriptorAndClosesItsCopy",
+    "reason": "non-root Linux socket/process component qualification",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests",
+    "method": "NativeMutationRefusesAgainstItsOwnPositiveControl",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: \\\"27\\\")",
+    "reason": "non-root Linux native ancillary/frame tests required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests",
+    "method": "NativeMutationRefusesAgainstItsOwnPositiveControl",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: \\\"32\\\")",
+    "reason": "non-root Linux native ancillary/frame tests required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests",
+    "method": "NativeMutationRefusesAgainstItsOwnPositiveControl",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: \\\"38\\\")",
+    "reason": "non-root Linux native ancillary/frame tests required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests",
+    "method": "NativeMutationRefusesAgainstItsOwnPositiveControl",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: \\\"declared-length\\\")",
+    "reason": "non-root Linux native ancillary/frame tests required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests",
+    "method": "NativeMutationRefusesAgainstItsOwnPositiveControl",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: \\\"empty-sentinel\\\")",
+    "reason": "non-root Linux native ancillary/frame tests required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests",
+    "method": "NativeMutationRefusesAgainstItsOwnPositiveControl",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: \\\"magic\\\")",
+    "reason": "non-root Linux native ancillary/frame tests required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests",
+    "method": "NativeMutationRefusesAgainstItsOwnPositiveControl",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: \\\"missing-credentials\\\")",
+    "reason": "non-root Linux native ancillary/frame tests required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests",
+    "method": "NativeMutationRefusesAgainstItsOwnPositiveControl",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: \\\"overflow-rights\\\")",
+    "reason": "non-root Linux native ancillary/frame tests required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests",
+    "method": "NativeMutationRefusesAgainstItsOwnPositiveControl",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: \\\"qualified\\\")",
+    "reason": "non-root Linux native ancillary/frame tests required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests",
+    "method": "NativeMutationRefusesAgainstItsOwnPositiveControl",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: \\\"reserved\\\")",
+    "reason": "non-root Linux native ancillary/frame tests required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests",
+    "method": "NativeMutationRefusesAgainstItsOwnPositiveControl",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: \\\"sentinel\\\")",
+    "reason": "non-root Linux native ancillary/frame tests required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests",
+    "method": "NativeMutationRefusesAgainstItsOwnPositiveControl",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: \\\"surplus-empty\\\")",
+    "reason": "non-root Linux native ancillary/frame tests required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests",
+    "method": "NativeMutationRefusesAgainstItsOwnPositiveControl",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: \\\"tail-profile\\\")",
+    "reason": "non-root Linux native ancillary/frame tests required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests",
+    "method": "NativeMutationRefusesAgainstItsOwnPositiveControl",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: \\\"tail77\\\")",
+    "reason": "non-root Linux native ancillary/frame tests required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests",
+    "method": "NativeMutationRefusesAgainstItsOwnPositiveControl",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: \\\"truncated-echo\\\")",
+    "reason": "non-root Linux native ancillary/frame tests required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests",
+    "method": "NativeMutationRefusesAgainstItsOwnPositiveControl",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: \\\"truncated-header\\\")",
+    "reason": "non-root Linux native ancillary/frame tests required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests",
+    "method": "NativeMutationRefusesAgainstItsOwnPositiveControl",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: \\\"unknown-timestamp-cmsg\\\")",
+    "reason": "non-root Linux native ancillary/frame tests required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests",
+    "method": "NativeMutationRefusesAgainstItsOwnPositiveControl",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: \\\"unknown\\\")",
+    "reason": "non-root Linux native ancillary/frame tests required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests",
+    "method": "NativeMutationRefusesAgainstItsOwnPositiveControl",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationEvidenceEdgeTests.NativeMutationRefusesAgainstItsOwnPositiveControl(mutation: \\\"wrong37\\\")",
+    "reason": "non-root Linux native ancillary/frame tests required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests",
+    "method": "Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 11, mutation: \\\"dead\\\")",
+    "reason": "non-root Linux descriptor qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests",
+    "method": "Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 11, mutation: \\\"file\\\")",
+    "reason": "non-root Linux descriptor qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests",
+    "method": "Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 11, mutation: \\\"original\\\")",
+    "reason": "non-root Linux descriptor qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests",
+    "method": "Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 11, mutation: \\\"overflow\\\")",
+    "reason": "non-root Linux descriptor qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests",
+    "method": "Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 11, mutation: \\\"pipe\\\")",
+    "reason": "non-root Linux descriptor qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests",
+    "method": "Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 11, mutation: \\\"socket\\\")",
+    "reason": "non-root Linux descriptor qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests",
+    "method": "Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 11, mutation: \\\"two\\\")",
+    "reason": "non-root Linux descriptor qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests",
+    "method": "Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 11, mutation: \\\"unrelated\\\")",
+    "reason": "non-root Linux descriptor qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests",
+    "method": "Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 11, mutation: \\\"zero\\\")",
+    "reason": "non-root Linux descriptor qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests",
+    "method": "Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 38, mutation: \\\"dead\\\")",
+    "reason": "non-root Linux descriptor qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests",
+    "method": "Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 38, mutation: \\\"file\\\")",
+    "reason": "non-root Linux descriptor qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests",
+    "method": "Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 38, mutation: \\\"original\\\")",
+    "reason": "non-root Linux descriptor qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests",
+    "method": "Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 38, mutation: \\\"overflow\\\")",
+    "reason": "non-root Linux descriptor qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests",
+    "method": "Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 38, mutation: \\\"pipe\\\")",
+    "reason": "non-root Linux descriptor qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests",
+    "method": "Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 38, mutation: \\\"socket\\\")",
+    "reason": "non-root Linux descriptor qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests",
+    "method": "Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 38, mutation: \\\"two\\\")",
+    "reason": "non-root Linux descriptor qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests",
+    "method": "Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 38, mutation: \\\"unrelated\\\")",
+    "reason": "non-root Linux descriptor qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests",
+    "method": "Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.Actual11And38ReferencesAreTypedLiveExclusiveAndDisposed(kind: 38, mutation: \\\"zero\\\")",
+    "reason": "non-root Linux descriptor qualification required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests",
+    "method": "KernelPeerFactsCannotBeReplacedByClaimedCredentialsOrNamespaces",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.KernelPeerFactsCannotBeReplacedByClaimedCredentialsOrNamespaces(field: \\\"gid\\\")",
+    "reason": "Linux kernel peer facts required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests",
+    "method": "KernelPeerFactsCannotBeReplacedByClaimedCredentialsOrNamespaces",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.KernelPeerFactsCannotBeReplacedByClaimedCredentialsOrNamespaces(field: \\\"pidns\\\")",
+    "reason": "Linux kernel peer facts required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests",
+    "method": "KernelPeerFactsCannotBeReplacedByClaimedCredentialsOrNamespaces",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.KernelPeerFactsCannotBeReplacedByClaimedCredentialsOrNamespaces(field: \\\"uid\\\")",
+    "reason": "Linux kernel peer facts required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests",
+    "method": "KernelPeerFactsCannotBeReplacedByClaimedCredentialsOrNamespaces",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.InstallationTransferNativeTests.KernelPeerFactsCannotBeReplacedByClaimedCredentialsOrNamespaces(field: \\\"userns\\\")",
+    "reason": "Linux kernel peer facts required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.LoadedMappingTests",
+    "method": "NativeRuntimeHasMappedManagedFilesAndSeparateGeneratedMappings",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.LoadedMappingTests.NativeRuntimeHasMappedManagedFilesAndSeparateGeneratedMappings",
+    "reason": "actual Linux CLR mapping observations",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.QualifiedLauncherNativeTests",
+    "method": "ConcurrentSpawnsInheritOnlyTheirOwnMappedEndpoint",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.QualifiedLauncherNativeTests.ConcurrentSpawnsInheritOnlyTheirOwnMappedEndpoint",
+    "reason": "non-root Linux concurrent spawn qualification",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installation.QualifiedLauncherNativeTests",
+    "method": "SpawnMappingsOriginalPinOneShotExportAndReapingAreActualKernelOperations",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installation.QualifiedLauncherNativeTests.SpawnMappingsOriginalPinOneShotExportAndReapingAreActualKernelOperations",
+    "reason": "non-root Linux spawn/descriptor qualification",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Installed.InstalledFileSystemNativeTests",
+    "method": "VerifyPayload_accepts_candidate_and_refuses_unlisted_symlink_fifo_hardlink_and_sparse_files",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Installed.InstalledFileSystemNativeTests.VerifyPayload_accepts_candidate_and_refuses_unlisted_symlink_fifo_hardlink_and_sparse_files",
+    "reason": "Linux fd verification test.",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests",
+    "method": "AcceptsEquivalentByteFormOfTheExactCeilings",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.AcceptsEquivalentByteFormOfTheExactCeilings",
+    "reason": "requires Linux mount namespace semantics",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests",
+    "method": "AcceptsTheSection11CeilingsInKernelNormalizedKibibytes",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.AcceptsTheSection11CeilingsInKernelNormalizedKibibytes",
+    "reason": "requires Linux mount namespace semantics",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests",
+    "method": "RejectsAMissingScratchMount",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsAMissingScratchMount",
+    "reason": "requires Linux mount namespace semantics",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests",
+    "method": "RejectsAScratchMountWithTheWrongFilesystemType",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsAScratchMountWithTheWrongFilesystemType",
+    "reason": "requires Linux mount namespace semantics",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests",
+    "method": "RejectsAShmCeilingThatIsNotExactlySection11",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsAShmCeilingThatIsNotExactlySection11(size: \\\"size=1023k\\\")",
+    "reason": "requires Linux mount namespace semantics",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests",
+    "method": "RejectsAShmCeilingThatIsNotExactlySection11",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsAShmCeilingThatIsNotExactlySection11(size: \\\"size=1025k\\\")",
+    "reason": "requires Linux mount namespace semantics",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests",
+    "method": "RejectsATmpCeilingThatIsNotExactlySection11",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsATmpCeilingThatIsNotExactlySection11(size: \\\"size=7167k\\\")",
+    "reason": "requires Linux mount namespace semantics",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests",
+    "method": "RejectsATmpCeilingThatIsNotExactlySection11",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsATmpCeilingThatIsNotExactlySection11(size: \\\"size=7169k\\\")",
+    "reason": "requires Linux mount namespace semantics",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests",
+    "method": "RejectsATmpCeilingThatIsNotExactlySection11",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsATmpCeilingThatIsNotExactlySection11(size: \\\"size=\\\")",
+    "reason": "requires Linux mount namespace semantics",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests",
+    "method": "RejectsATmpCeilingThatIsNotExactlySection11",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsATmpCeilingThatIsNotExactlySection11(size: \\\"size=bad\\\")",
+    "reason": "requires Linux mount namespace semantics",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests",
+    "method": "RejectsBindSubstitutionWithANonRootBackingPath",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsBindSubstitutionWithANonRootBackingPath",
+    "reason": "requires Linux mount namespace semantics",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests",
+    "method": "RejectsDuplicateConflictingMountPoints",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsDuplicateConflictingMountPoints",
+    "reason": "requires Linux mount namespace semantics",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests",
+    "method": "RejectsDuplicateMountIds",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsDuplicateMountIds",
+    "reason": "requires Linux mount namespace semantics",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests",
+    "method": "RejectsMissingScratchSecurityMountOption",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsMissingScratchSecurityMountOption(requiredOption: \\\"nodev\\\")",
+    "reason": "requires Linux mount namespace semantics",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests",
+    "method": "RejectsMissingScratchSecurityMountOption",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsMissingScratchSecurityMountOption(requiredOption: \\\"nosuid\\\")",
+    "reason": "requires Linux mount namespace semantics",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests",
+    "method": "RejectsProhibitedPropagationMetadata",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsProhibitedPropagationMetadata(propagation: \\\"master:1\\\")",
+    "reason": "requires Linux mount namespace semantics",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests",
+    "method": "RejectsProhibitedPropagationMetadata",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsProhibitedPropagationMetadata(propagation: \\\"shared:1\\\")",
+    "reason": "requires Linux mount namespace semantics",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests",
+    "method": "RejectsScratchMountBackedByAHostFilesystemDevice",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsScratchMountBackedByAHostFilesystemDevice",
+    "reason": "requires Linux mount namespace semantics",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests",
+    "method": "RejectsScratchMountWithTheWrongParentOrAliasedDevice",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RejectsScratchMountWithTheWrongParentOrAliasedDevice",
+    "reason": "requires Linux mount namespace semantics",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests",
+    "method": "RequiresCoordinatorNamespaceIdentityToDifferFromTheHost",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.CoordinatorMountVerifierTests.RequiresCoordinatorNamespaceIdentityToDifferFromTheHost",
+    "reason": "requires Linux mount namespace semantics",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.ProtectedCaptureTests",
+    "method": "CaptureStoreFailureStopsWithoutWaitingForOtherPipe",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.ProtectedCaptureTests.CaptureStoreFailureStopsWithoutWaitingForOtherPipe",
+    "reason": "Linux capture pipes required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.ProtectedCaptureTests",
+    "method": "ExactBudgetsRetainBothStreamsBeforeAnyObserverAndReturnCopies",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.ProtectedCaptureTests.ExactBudgetsRetainBothStreamsBeforeAnyObserverAndReturnCopies",
+    "reason": "Linux capture pipes required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.ProtectedCaptureTests",
+    "method": "FirstExcessByteStopsWithWritersStillOpenAndNoReader",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.ProtectedCaptureTests.FirstExcessByteStopsWithWritersStillOpenAndNoReader(stdout: False)",
+    "reason": "Linux capture pipes required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.ProtectedCaptureTests",
+    "method": "FirstExcessByteStopsWithWritersStillOpenAndNoReader",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.ProtectedCaptureTests.FirstExcessByteStopsWithWritersStillOpenAndNoReader(stdout: True)",
+    "reason": "Linux capture pipes required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.ProtectedCaptureTests",
+    "method": "NativeReadFailureStopsWithoutAStatusObserver",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.ProtectedCaptureTests.NativeReadFailureStopsWithoutAStatusObserver",
+    "reason": "Linux capture pipes required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.ProtectedCaptureTests",
+    "method": "SharedAggregateReservationCannotOverallocate",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.ProtectedCaptureTests.SharedAggregateReservationCannotOverallocate",
+    "reason": "Linux capture pipes required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.ProtectedCaptureTests",
+    "method": "UnclosedDescendantWriterExpiresWithoutInventingEofOrExtendingDeadline",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.ProtectedCaptureTests.UnclosedDescendantWriterExpiresWithoutInventingEofOrExtendingDeadline",
+    "reason": "Linux capture pipes required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.SeccompFilterPinTests",
+    "method": "AcceptsTheGeneratedPinnedFilterArtifact",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.SeccompFilterPinTests.AcceptsTheGeneratedPinnedFilterArtifact",
+    "reason": "requires Linux pread for the pinned native filter verifier",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.SeccompFilterPinTests",
+    "method": "RejectsAStagedHashThatDoesNotMatchTheFilterBytes",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.SeccompFilterPinTests.RejectsAStagedHashThatDoesNotMatchTheFilterBytes",
+    "reason": "requires Linux pread for the pinned native filter verifier",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.SeccompFilterPinTests",
+    "method": "RejectsAnArtifactWithTheWrongPinnedLength",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.SeccompFilterPinTests.RejectsAnArtifactWithTheWrongPinnedLength",
+    "reason": "requires Linux pread for the pinned native filter verifier",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.SeccompFilterPinTests",
+    "method": "RejectsCorruptedFilterEvenWhenItsStagedDigestMatchesTheCorruptBytes",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.SeccompFilterPinTests.RejectsCorruptedFilterEvenWhenItsStagedDigestMatchesTheCorruptBytes",
+    "reason": "requires Linux pread for the pinned native filter verifier",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Launch.Wp05SigpipeDispositionTests",
+    "method": "WriteOnceMutatesSigpipeOnlyIfTheHostDidNotAlreadyIgnoreIt",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Launch.Wp05SigpipeDispositionTests.WriteOnceMutatesSigpipeOnlyIfTheHostDidNotAlreadyIgnoreIt",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Native.ReleaseProtocolTests",
+    "method": "ExpiredReleaseDeadlineIsRefused",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Native.ReleaseProtocolTests.ExpiredReleaseDeadlineIsRefused",
+    "reason": "requires Linux",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Native.ReleaseProtocolTests",
+    "method": "MalformedAndExtraReleaseFramesAreRefusedWithoutTarget",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Native.ReleaseProtocolTests.MalformedAndExtraReleaseFramesAreRefusedWithoutTarget",
+    "reason": "requires Linux",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Native.ReleaseProtocolTests",
+    "method": "NonblockingPipeTransportMapsDeliveredBrokenPipeAndWouldBlock",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Native.ReleaseProtocolTests.NonblockingPipeTransportMapsDeliveredBrokenPipeAndWouldBlock",
+    "reason": "requires Linux",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Native.ReleaseProtocolTests",
+    "method": "ValidReleaseIsConsumedOnceAndTrustedStatusIsReadable",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Native.ReleaseProtocolTests.ValidReleaseIsConsumedOnceAndTrustedStatusIsReadable",
+    "reason": "requires Linux",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests",
+    "method": "AtomicRenamePositiveControlReplacesMode0500Entry",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.AtomicRenamePositiveControlReplacesMode0500Entry",
+    "reason": "requires Linux with openat2 support",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests",
+    "method": "CancellationCleansPartialNatively",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.CancellationCleansPartialNatively",
+    "reason": "requires Linux with openat2 support",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests",
+    "method": "DenseRegularFileAccepted",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.DenseRegularFileAccepted",
+    "reason": "requires Linux with openat2 support",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests",
+    "method": "DirectorySourceRefused",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.DirectorySourceRefused",
+    "reason": "requires Linux with openat2 support",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests",
+    "method": "EscapeAboveRootRefused",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.EscapeAboveRootRefused",
+    "reason": "requires Linux with openat2 support",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests",
+    "method": "ExclusiveCreateEnforcedNatively",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.ExclusiveCreateEnforcedNatively",
+    "reason": "requires Linux with openat2 support",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests",
+    "method": "FixtureBuildArtifactBindsWithoutExecution",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.FixtureBuildArtifactBindsWithoutExecution",
+    "reason": "requires Linux with openat2 support",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests",
+    "method": "GrowthDuringCopyRefused",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.GrowthDuringCopyRefused",
+    "reason": "requires Linux with openat2 support",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests",
+    "method": "HardlinkedSourceProducesIndependentCopy",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.HardlinkedSourceProducesIndependentCopy",
+    "reason": "requires Linux with openat2 support",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests",
+    "method": "IntermediateSymlinkRejected",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.IntermediateSymlinkRejected",
+    "reason": "requires Linux with openat2 support",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests",
+    "method": "InvalidResolveBitsAreRefused",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.InvalidResolveBitsAreRefused",
+    "reason": "requires Linux with openat2 support",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests",
+    "method": "MagicLinkRejected",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.MagicLinkRejected",
+    "reason": "requires Linux with openat2 support",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests",
+    "method": "NativeDigestMismatchRefused",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.NativeDigestMismatchRefused",
+    "reason": "requires Linux with openat2 support",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests",
+    "method": "NoWritableFdRemainsAtPublication",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.NoWritableFdRemainsAtPublication",
+    "reason": "requires Linux with openat2 support",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests",
+    "method": "Openat2ProbeReportsSupportMethod",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.Openat2ProbeReportsSupportMethod",
+    "reason": "requires Linux with openat2 support",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests",
+    "method": "RawSyscallPathOpensSourceDirectly",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.RawSyscallPathOpensSourceDirectly",
+    "reason": "requires Linux with openat2 support",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests",
+    "method": "RegularFileCopyEndToEnd",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.RegularFileCopyEndToEnd",
+    "reason": "requires Linux with openat2 support",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests",
+    "method": "ReplacementRaceDeterministicallyRefused",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.ReplacementRaceDeterministicallyRefused",
+    "reason": "requires Linux with openat2 support",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests",
+    "method": "RetainedFdRefersToVerifiedObject",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.RetainedFdRefersToVerifiedObject",
+    "reason": "requires Linux with openat2 support",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests",
+    "method": "SourceSymlinkRejected",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.SourceSymlinkRejected",
+    "reason": "requires Linux with openat2 support",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests",
+    "method": "SparseBelowBudgetStillRejected",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.SparseBelowBudgetStillRejected",
+    "reason": "requires Linux with openat2 support",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests",
+    "method": "SparseFileRejected",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.SparseFileRejected",
+    "reason": "requires Linux with openat2 support",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests",
+    "method": "StagingDirectoryCollisionRefused",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeCopyInTests.StagingDirectoryCollisionRefused",
+    "reason": "requires Linux with openat2 support",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeStagingCleanupTests",
+    "method": "AlreadyAbsentIsIdempotent",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeStagingCleanupTests.AlreadyAbsentIsIdempotent",
+    "reason": "requires Linux openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeStagingCleanupTests",
+    "method": "InspectionFailureIsNotConfirmed",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeStagingCleanupTests.InspectionFailureIsNotConfirmed",
+    "reason": "requires Linux openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeStagingCleanupTests",
+    "method": "OriginalEntryRemoved",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeStagingCleanupTests.OriginalEntryRemoved",
+    "reason": "requires Linux openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeStagingCleanupTests",
+    "method": "RepeatedCleanupIdempotentAndNeverRemovesMismatch",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeStagingCleanupTests.RepeatedCleanupIdempotentAndNeverRemovesMismatch",
+    "reason": "requires Linux openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeStagingCleanupTests",
+    "method": "ReplacementRegularFileSurvives",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeStagingCleanupTests.ReplacementRegularFileSurvives",
+    "reason": "requires Linux openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeStagingCleanupTests",
+    "method": "ReplacementSymlinkSurvives",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeStagingCleanupTests.ReplacementSymlinkSurvives",
+    "reason": "requires Linux openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeStagingCleanupTests",
+    "method": "SameContentDifferentInodeSurvives",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeStagingCleanupTests.SameContentDifferentInodeSurvives",
+    "reason": "requires Linux openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeStagingCleanupTests",
+    "method": "UnlinkFailureIsNotConfirmedAndRetainsDebt",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Preparation.NativeStagingCleanupTests.UnlinkFailureIsNotConfirmedAndRetainsDebt",
+    "reason": "requires Linux openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests",
+    "method": "AncillaryDataTruncationRefusedWithoutLeak",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.AncillaryDataTruncationRefusedWithoutLeak",
+    "reason": "requires delegated Linux cgroup v2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests",
+    "method": "BootstrapSocketPairIsMessagePreserving",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.BootstrapSocketPairIsMessagePreserving",
+    "reason": "requires Linux",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests",
+    "method": "ExecProbeProvesReceivedDescriptorsDoNotSurvive",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ExecProbeProvesReceivedDescriptorsDoNotSurvive",
+    "reason": "requires delegated Linux cgroup v2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests",
+    "method": "MissingCloexecRefused",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.MissingCloexecRefused",
+    "reason": "requires delegated Linux cgroup v2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests",
+    "method": "NullDescriptorsRefused",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.NullDescriptorsRefused",
+    "reason": "requires delegated Linux cgroup v2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests",
+    "method": "OverlongPayloadRefused",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.OverlongPayloadRefused(extraBytes: 1)",
+    "reason": "requires delegated Linux cgroup v2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests",
+    "method": "OverlongPayloadRefused",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.OverlongPayloadRefused(extraBytes: 9)",
+    "reason": "requires delegated Linux cgroup v2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests",
+    "method": "ParentAsChildRefused",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ParentAsChildRefused",
+    "reason": "requires delegated Linux cgroup v2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests",
+    "method": "PeerCloseWithoutDescriptorsRefusedHarmlessly",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.PeerCloseWithoutDescriptorsRefusedHarmlessly",
+    "reason": "requires Linux",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests",
+    "method": "QueuedSecondTransferIsRejectedByProtocolStateWithoutFdLeak",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.QueuedSecondTransferIsRejectedByProtocolStateWithoutFdLeak",
+    "reason": "requires delegated Linux cgroup v2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests",
+    "method": "RejectionClosesReceivedDescriptors",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.RejectionClosesReceivedDescriptors",
+    "reason": "requires delegated Linux cgroup v2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests",
+    "method": "RepeatedScopeDisposalIsSafe",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.RepeatedScopeDisposalIsSafe",
+    "reason": "requires delegated Linux cgroup v2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests",
+    "method": "ReviewerTrailingByteReproductionRefused",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ReviewerTrailingByteReproductionRefused",
+    "reason": "requires delegated Linux cgroup v2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests",
+    "method": "SiblingControlRefused",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.SiblingControlRefused",
+    "reason": "requires delegated Linux cgroup v2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests",
+    "method": "SwappedControlsRefused",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.SwappedControlsRefused",
+    "reason": "requires delegated Linux cgroup v2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests",
+    "method": "TooFewDescriptorsRefused",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.TooFewDescriptorsRefused",
+    "reason": "requires delegated Linux cgroup v2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests",
+    "method": "TooManyDescriptorsRefused",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.TooManyDescriptorsRefused",
+    "reason": "requires delegated Linux cgroup v2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests",
+    "method": "TruncatedPayloadRefused",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.TruncatedPayloadRefused",
+    "reason": "requires delegated Linux cgroup v2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests",
+    "method": "ValidHandlesValidate",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ValidHandlesValidate",
+    "reason": "requires delegated Linux cgroup v2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests",
+    "method": "ValidTransferReceivesCloexecDescriptors",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ValidTransferReceivesCloexecDescriptors",
+    "reason": "requires delegated Linux cgroup v2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests",
+    "method": "ZeroLengthRecordWithDescriptorsRefusedWithoutLeak",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.DomainAuthorityTests.ZeroLengthRecordWithDescriptorsRefusedWithoutLeak",
+    "reason": "requires delegated Linux cgroup v2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests",
+    "method": "AfterIntentBarrierIsDispatchedAtTheOwnerIntentBoundary",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.AfterIntentBarrierIsDispatchedAtTheOwnerIntentBoundary",
+    "reason": "requires delegated Linux cgroup v2 with openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests",
+    "method": "AfterRegisteredBarrierIsDispatchedBeforeStagingAuthorityTransfer",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.AfterRegisteredBarrierIsDispatchedBeforeStagingAuthorityTransfer",
+    "reason": "requires delegated Linux cgroup v2 with openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests",
+    "method": "FullOwnerTransactionCompletesWithoutOwnerDeath",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.FullOwnerTransactionCompletesWithoutOwnerDeath",
+    "reason": "requires delegated Linux cgroup v2 with openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests",
+    "method": "OwnerDoesNotCopyUntilScopeAcknowledgesStagingRetention",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.OwnerDoesNotCopyUntilScopeAcknowledgesStagingRetention",
+    "reason": "requires delegated Linux cgroup v2 with openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests",
+    "method": "RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: \\\"after-copy\\\", expectedStage: \\\"AllocationRegistered\\\", expectedDomains: 1, expectedStagingDirectories: 1)",
+    "reason": "requires delegated Linux cgroup v2 with openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests",
+    "method": "RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: \\\"after-domain-retained\\\", expectedStage: \\\"AllocationIntent\\\", expectedDomains: 1, expectedStagingDirectories: 0)",
+    "reason": "requires delegated Linux cgroup v2 with openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests",
+    "method": "RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: \\\"after-intent\\\", expectedStage: \\\"AllocationIntent\\\", expectedDomains: 0, expectedStagingDirectories: 0)",
+    "reason": "requires delegated Linux cgroup v2 with openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests",
+    "method": "RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: \\\"after-prepared-before-mint\\\", expectedStage: \\\"Prepared\\\", expectedDomains: 1, expectedStagingDirectories: 1)",
+    "reason": "requires delegated Linux cgroup v2 with openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests",
+    "method": "RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: \\\"after-registered\\\", expectedStage: \\\"AllocationRegistered\\\", expectedDomains: 1, expectedStagingDirectories: 0)",
+    "reason": "requires delegated Linux cgroup v2 with openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests",
+    "method": "RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: \\\"after-staging-accounted\\\", expectedStage: \\\"AllocationRegistered\\\", expectedDomains: 1, expectedStagingDirectories: 1)",
+    "reason": "requires delegated Linux cgroup v2 with openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests",
+    "method": "RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RealOwnerDeathAtPreparationBarrierLeavesRecoverableBoundary(barrier: \\\"mid-staging\\\", expectedStage: \\\"AllocationRegistered\\\", expectedDomains: 1, expectedStagingDirectories: 1)",
+    "reason": "requires delegated Linux cgroup v2 with openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests",
+    "method": "RecoveryScopeWaitsForOwnerDomainRecoveryAuthorityBeforePreparationCompletes",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.RecoveryScopeWaitsForOwnerDomainRecoveryAuthorityBeforePreparationCompletes",
+    "reason": "requires delegated Linux cgroup v2 with openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests",
+    "method": "ScopeDisposalDoesNotCloseReusedOwnerPidfd",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.ScopeDisposalDoesNotCloseReusedOwnerPidfd",
+    "reason": "requires delegated Linux cgroup v2 with openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests",
+    "method": "UnconfirmedDirectoryRemainsUntouchedAndDebtIsIdempotent",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.IntegratedBarrierTests.UnconfirmedDirectoryRemainsUntouchedAndDebtIsIdempotent",
+    "reason": "requires delegated Linux cgroup v2 with openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.JournalFencingTests",
+    "method": "CrossObjectAcquireRefusedWhileLive",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.JournalFencingTests.CrossObjectAcquireRefusedWhileLive",
+    "reason": "requires Linux",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.JournalFencingTests",
+    "method": "DisposedStorageKillsLeaseAuthority",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.JournalFencingTests.DisposedStorageKillsLeaseAuthority",
+    "reason": "requires Linux",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.JournalFencingTests",
+    "method": "LockIdentityIncludesDirectory",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.JournalFencingTests.LockIdentityIncludesDirectory",
+    "reason": "requires Linux",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.JournalFencingTests",
+    "method": "OverlappingLeaseReproductionRefused",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.JournalFencingTests.OverlappingLeaseReproductionRefused",
+    "reason": "requires Linux",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.JournalFencingTests",
+    "method": "RealStorageRoundTrip",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.JournalFencingTests.RealStorageRoundTrip",
+    "reason": "requires Linux",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.JournalFencingTests",
+    "method": "SameStorageSecondJournalRefusedWhileLive",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.JournalFencingTests.SameStorageSecondJournalRefusedWhileLive",
+    "reason": "requires Linux",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "MissingDelegationRefusesWithoutProvisioning",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.MissingDelegationRefusesWithoutProvisioning",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootAfterIntentBarrierIsDispatchedAtTheOwnerIntentBoundary",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootAfterIntentBarrierIsDispatchedAtTheOwnerIntentBoundary",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootAfterRegisteredBarrierIsDispatchedBeforeStagingAuthority",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootAfterRegisteredBarrierIsDispatchedBeforeStagingAuthority",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootCompleteCleanupIsConfirmed",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootCompleteCleanupIsConfirmed",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootDelegatedPreflightSucceeds",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootDelegatedPreflightSucceeds",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootExpiredDurableStopDeadlineAppliesPolicyAWithoutRenewedWait",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootExpiredDurableStopDeadlineAppliesPolicyAWithoutRenewedWait",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootMidStagingDeathResolvesUnconfirmedAbsentInputAsGenuineAbsence",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootMidStagingDeathResolvesUnconfirmedAbsentInputAsGenuineAbsence",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootMissingPidfdRefusesBeforeOwnerTransaction",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootMissingPidfdRefusesBeforeOwnerTransaction",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootOwnerDeathBeforeRegistrationRecoversIntegrated",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootOwnerDeathBeforeRegistrationRecoversIntegrated",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootPreparedBeforeMintDoesNotResurrectCapability",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootPreparedBeforeMintDoesNotResurrectCapability",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootRecoveryScopeWaitsForOwnerDomainAuthorityBeforePreparationCompletes",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootRecoveryScopeWaitsForOwnerDomainAuthorityBeforePreparationCompletes",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootReplacementStagingObjectSurvives",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootReplacementStagingObjectSurvives",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootSameBootRecoveryKeepsTheOriginalDeadlineBeforeExpiry",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootSameBootRecoveryKeepsTheOriginalDeadlineBeforeExpiry",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootUnrelatedSiblingUntouched",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootUnrelatedSiblingUntouched",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootWp04CoordinatorExitBeforeHeldRefusesAndReconciles",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04CoordinatorExitBeforeHeldRefusesAndReconciles",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootWp04CoordinatorProtocolNegativesRefuseAndReconcile",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04CoordinatorProtocolNegativesRefuseAndReconcile(mode: 1, caseName: \\\"incomplete frame\\\")",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootWp04CoordinatorProtocolNegativesRefuseAndReconcile",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04CoordinatorProtocolNegativesRefuseAndReconcile(mode: 2, caseName: \\\"malformed frame\\\")",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootWp04CoordinatorProtocolNegativesRefuseAndReconcile",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04CoordinatorProtocolNegativesRefuseAndReconcile(mode: 3, caseName: \\\"wrong message type\\\")",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootWp04CoordinatorProtocolNegativesRefuseAndReconcile",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04CoordinatorProtocolNegativesRefuseAndReconcile(mode: 4, caseName: \\\"wrong execution identity\\\")",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootWp04CoordinatorProtocolNegativesRefuseAndReconcile",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04CoordinatorProtocolNegativesRefuseAndReconcile(mode: 5, caseName: \\\"wrong generation digest\\\")",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootWp04CoordinatorProtocolNegativesRefuseAndReconcile",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04CoordinatorProtocolNegativesRefuseAndReconcile(mode: 6, caseName: \\\"wrong sequence\\\")",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootWp04CoordinatorProtocolNegativesRefuseAndReconcile",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04CoordinatorProtocolNegativesRefuseAndReconcile(mode: 7, caseName: \\\"wrong preparation identity\\\")",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootWp04CorruptPinnedFilterRefusesAndReconciles",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04CorruptPinnedFilterRefusesAndReconciles",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootWp04HeldSetupReportsHeldWithoutTargetInitializationThenAbortsAndReconciles",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04HeldSetupReportsHeldWithoutTargetInitializationThenAbortsAndReconciles",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootWp04HostNamespaceClaimRefusesAndReconciles",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04HostNamespaceClaimRefusesAndReconciles",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootWp04InvalidMountReportRefusesAndReconciles",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04InvalidMountReportRefusesAndReconciles",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootWp04MissingFilterRefusesBeforeBubblewrapOrTargetInitialization",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04MissingFilterRefusesBeforeBubblewrapOrTargetInitialization",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootWp04OwnerDeathAfterDomainRegistrationBeforeCoordinatorStartReconciles",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04OwnerDeathAfterDomainRegistrationBeforeCoordinatorStartReconciles",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootWp04RealOwnerLossAfterCoordinatorHeldFrameBeforeManagedAcceptanceReconciles",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04RealOwnerLossAfterCoordinatorHeldFrameBeforeManagedAcceptanceReconciles",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootWp04RealOwnerLossAfterHeldAcceptanceReconciles",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04RealOwnerLossAfterHeldAcceptanceReconciles",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootWp04RealOwnerLossDuringAbortDrainReconciles",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04RealOwnerLossDuringAbortDrainReconciles",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootWp04RealOwnerLossDuringCoordinatorStartupBeforeHeldReconciles",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04RealOwnerLossDuringCoordinatorStartupBeforeHeldReconciles",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests",
+    "method": "NonRootWp04SyntheticHeldReportPositiveControlAbortsAndReconciles",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.NonRootQualificationTests.NonRootWp04SyntheticHeldReportPositiveControlAbortsAndReconciles",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerDeathQualificationTests",
+    "method": "D1OwnerDeathAfterDurableIntentLeavesNoHiddenAllocation",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerDeathQualificationTests.D1OwnerDeathAfterDurableIntentLeavesNoHiddenAllocation",
+    "reason": "requires delegated Linux cgroup v2 with openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerDeathQualificationTests",
+    "method": "D2OwnerDeathAfterDomainRetentionRefusesUncorroboratedIntentThenCleansByRetainedHandle",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerDeathQualificationTests.D2OwnerDeathAfterDomainRetentionRefusesUncorroboratedIntentThenCleansByRetainedHandle",
+    "reason": "requires delegated Linux cgroup v2 with openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerDeathQualificationTests",
+    "method": "D3OwnerDeathAfterRegistrationPreservesExactIdentity",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerDeathQualificationTests.D3OwnerDeathAfterRegistrationPreservesExactIdentity",
+    "reason": "requires delegated Linux cgroup v2 with openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerDeathQualificationTests",
+    "method": "D4OwnerDeathAfterStagingAccountedKeepsExactDirectoryDebt",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerDeathQualificationTests.D4OwnerDeathAfterStagingAccountedKeepsExactDirectoryDebt",
+    "reason": "requires delegated Linux cgroup v2 with openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerDeathQualificationTests",
+    "method": "D5MidStagingReplacementSurvivesAsUnknownDebt",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerDeathQualificationTests.D5MidStagingReplacementSurvivesAsUnknownDebt",
+    "reason": "requires delegated Linux cgroup v2 with openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerDeathQualificationTests",
+    "method": "D5OwnerDeathMidStagingCleansAccountedObjectThroughRetainedAuthority",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerDeathQualificationTests.D5OwnerDeathMidStagingCleansAccountedObjectThroughRetainedAuthority",
+    "reason": "requires delegated Linux cgroup v2 with openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerDeathQualificationTests",
+    "method": "D6OwnerDeathAfterPreparedBeforeMintCreatesNoCapability",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerDeathQualificationTests.D6OwnerDeathAfterPreparedBeforeMintCreatesNoCapability",
+    "reason": "requires delegated Linux cgroup v2 with openat2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests",
+    "method": "AfterIntentBarrierFollowsValidatedStartAuthorityAndCanBeReleased",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests.AfterIntentBarrierFollowsValidatedStartAuthorityAndCanBeReleased",
+    "reason": "requires Linux SOCK_SEQPACKET and SCM_RIGHTS",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests",
+    "method": "AfterRegisteredBarrierDispatchThenAcceptsTheFollowingStagingTransfer",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests.AfterRegisteredBarrierDispatchThenAcceptsTheFollowingStagingTransfer",
+    "reason": "requires Linux SOCK_SEQPACKET and SCM_RIGHTS",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests",
+    "method": "DescriptorBearingControlOrBarrierIsRefusedWithoutAdvancingSequence",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests.DescriptorBearingControlOrBarrierIsRefusedWithoutAdvancingSequence(typeName: \\\"BarrierReached\\\", transferState: True)",
+    "reason": "requires Linux SOCK_SEQPACKET and SCM_RIGHTS",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests",
+    "method": "DescriptorBearingControlOrBarrierIsRefusedWithoutAdvancingSequence",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests.DescriptorBearingControlOrBarrierIsRefusedWithoutAdvancingSequence(typeName: \\\"WriterReady\\\", transferState: False)",
+    "reason": "requires Linux SOCK_SEQPACKET and SCM_RIGHTS",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests",
+    "method": "EveryOwnerBarrierIsAcceptedOnlyInItsExplicitNextState",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests.EveryOwnerBarrierIsAcceptedOnlyInItsExplicitNextState(barrier: \\\"after-copy\\\", nextStateName: \\\"StagedObjects\\\", transferState: False, transferDescriptors: 0, transferPayloadBytes: 0)",
+    "reason": "requires Linux SOCK_SEQPACKET",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests",
+    "method": "EveryOwnerBarrierIsAcceptedOnlyInItsExplicitNextState",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests.EveryOwnerBarrierIsAcceptedOnlyInItsExplicitNextState(barrier: \\\"after-domain-retained\\\", nextStateName: \\\"DomainRegistered\\\", transferState: False, transferDescriptors: 0, transferPayloadBytes: 0)",
+    "reason": "requires Linux SOCK_SEQPACKET",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests",
+    "method": "EveryOwnerBarrierIsAcceptedOnlyInItsExplicitNextState",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests.EveryOwnerBarrierIsAcceptedOnlyInItsExplicitNextState(barrier: \\\"after-intent\\\", nextStateName: \\\"DomainRecoveryAuthority\\\", transferState: True, transferDescriptors: 7, transferPayloadBytes: 1)",
+    "reason": "requires Linux SOCK_SEQPACKET",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests",
+    "method": "EveryOwnerBarrierIsAcceptedOnlyInItsExplicitNextState",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests.EveryOwnerBarrierIsAcceptedOnlyInItsExplicitNextState(barrier: \\\"after-prepared-before-mint\\\", nextStateName: \\\"Completed\\\", transferState: False, transferDescriptors: 0, transferPayloadBytes: 0)",
+    "reason": "requires Linux SOCK_SEQPACKET",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests",
+    "method": "EveryOwnerBarrierIsAcceptedOnlyInItsExplicitNextState",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests.EveryOwnerBarrierIsAcceptedOnlyInItsExplicitNextState(barrier: \\\"after-registered\\\", nextStateName: \\\"StagingAuthority\\\", transferState: True, transferDescriptors: 1, transferPayloadBytes: 16)",
+    "reason": "requires Linux SOCK_SEQPACKET",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests",
+    "method": "EveryOwnerBarrierIsAcceptedOnlyInItsExplicitNextState",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests.EveryOwnerBarrierIsAcceptedOnlyInItsExplicitNextState(barrier: \\\"after-staging-accounted\\\", nextStateName: \\\"StagedObjects\\\", transferState: False, transferDescriptors: 0, transferPayloadBytes: 0)",
+    "reason": "requires Linux SOCK_SEQPACKET",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests",
+    "method": "EveryOwnerBarrierIsAcceptedOnlyInItsExplicitNextState",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests.EveryOwnerBarrierIsAcceptedOnlyInItsExplicitNextState(barrier: \\\"mid-staging\\\", nextStateName: \\\"StagedObjects\\\", transferState: False, transferDescriptors: 0, transferPayloadBytes: 0)",
+    "reason": "requires Linux SOCK_SEQPACKET",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests",
+    "method": "QueuedWriterReadyAndAfterIntentBarrierAreReceivedAsTwoSequencedRecords",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests.QueuedWriterReadyAndAfterIntentBarrierAreReceivedAsTwoSequencedRecords",
+    "reason": "requires Linux SOCK_SEQPACKET",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests",
+    "method": "StagingTransferWithoutDescriptorsDoesNotAdvanceSequence",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests.StagingTransferWithoutDescriptorsDoesNotAdvanceSequence",
+    "reason": "requires Linux SOCK_SEQPACKET and SCM_RIGHTS",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests",
+    "method": "WrongTypeAtStagingTransferStateClosesDescriptorsWithoutAdvancingSequence",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.OwnerProtocolTests.WrongTypeAtStagingTransferStateClosesDescriptorsWithoutAdvancingSequence",
+    "reason": "requires Linux SOCK_SEQPACKET and SCM_RIGHTS",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.PidFdChildReaperTests",
+    "method": "ReapsExitedDirectChildWithNonzeroStatus",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.PidFdChildReaperTests.ReapsExitedDirectChildWithNonzeroStatus",
+    "reason": "requires Linux pidfd and waitid(P_PIDFD)",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.PidFdChildReaperTests",
+    "method": "ReapsExitedDirectChildWithZeroStatus",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.PidFdChildReaperTests.ReapsExitedDirectChildWithZeroStatus",
+    "reason": "requires Linux pidfd and waitid(P_PIDFD)",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.PidFdChildReaperTests",
+    "method": "RepeatedCleanupConsumesChildStatusExactlyOnce",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.PidFdChildReaperTests.RepeatedCleanupConsumesChildStatusExactlyOnce",
+    "reason": "requires Linux pidfd and waitid(P_PIDFD)",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness",
+    "method": "CgroupMountAndBootIdentityAreReadable",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness.CgroupMountAndBootIdentityAreReadable",
+    "reason": "requires delegated Linux cgroup v2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness",
+    "method": "MissingDelegationRefused",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness.MissingDelegationRefused",
+    "reason": "requires delegated Linux cgroup v2",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness",
+    "method": "NativeJournalDurableThenTornDetected",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness.NativeJournalDurableThenTornDetected",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness",
+    "method": "NativeWriterLockIsExclusiveAcrossProcesses",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness.NativeWriterLockIsExclusiveAcrossProcesses",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness",
+    "method": "SubreaperEnabledAndVerified",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.RecoveryHarness.SubreaperEnabledAndVerified",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.RetainedDirectoryCleanupTests",
+    "method": "DirectoryRemovalRequiresTheNameToStillIdentifyTheRetainedObject",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.RetainedDirectoryCleanupTests.DirectoryRemovalRequiresTheNameToStillIdentifyTheRetainedObject(replacement: \\\"directory\\\")",
+    "reason": "Linux retained directory handles required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.RetainedDirectoryCleanupTests",
+    "method": "DirectoryRemovalRequiresTheNameToStillIdentifyTheRetainedObject",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.RetainedDirectoryCleanupTests.DirectoryRemovalRequiresTheNameToStillIdentifyTheRetainedObject(replacement: \\\"original\\\")",
+    "reason": "Linux retained directory handles required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.RetainedDirectoryCleanupTests",
+    "method": "DirectoryRemovalRequiresTheNameToStillIdentifyTheRetainedObject",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.RetainedDirectoryCleanupTests.DirectoryRemovalRequiresTheNameToStillIdentifyTheRetainedObject(replacement: \\\"symlink\\\")",
+    "reason": "Linux retained directory handles required",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05LeaseProcessProbes",
+    "method": "FreshProcessLeaseIsNotInheritedAndReplacementReacquires",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05LeaseProcessProbes.FreshProcessLeaseIsNotInheritedAndReplacementReacquires",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests",
+    "method": "ForgedIdentityGateRefusalTouchesNoJournalAndNotTheRealTransport",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests.ForgedIdentityGateRefusalTouchesNoJournalAndNotTheRealTransport",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests",
+    "method": "HeldProductionCoordinatorAcceptsSingleArbitratedReleaseAndReachesPreExecBoundary",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests.HeldProductionCoordinatorAcceptsSingleArbitratedReleaseAndReachesPreExecBoundary",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests",
+    "method": "RealCoordinatorOverallExpiryWritesProtocolFailed30AndTheGateRefusesExpiredIntent",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05ReleasePathIndependentQualificationTests.RealCoordinatorOverallExpiryWritesProtocolFailed30AndTheGateRefusesExpiredIntent",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05TerminationObserverTests",
+    "method": "ExpectedIdentityComesFromOwnedPidFdBeforeObservation",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05TerminationObserverTests.ExpectedIdentityComesFromOwnedPidFdBeforeObservation",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05TerminationObserverTests",
+    "method": "NormalExit137IsObservedAsExitedWithStatus137",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05TerminationObserverTests.NormalExit137IsObservedAsExitedWithStatus137",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05TerminationObserverTests",
+    "method": "SigkillIsObservedAsKilledBySignal9",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Recovery.Wp05TerminationObserverTests.SigkillIsObservedAsKilledBySignal9",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests",
+    "method": "B3B1OperationEstablishesHeldThroughTheRealOwnerAndCleansUp",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests.B3B1OperationEstablishesHeldThroughTheRealOwnerAndCleansUp",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests",
+    "method": "B3BarrierStopWinsTheReleaseArbitrationWithoutPhysicalWrite",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests.B3BarrierStopWinsTheReleaseArbitrationWithoutPhysicalWrite",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests",
+    "method": "B3ControllerChannelLossWhileHeldAbortsWithoutRelease",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests.B3ControllerChannelLossWhileHeldAbortsWithoutRelease",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests",
+    "method": "B3HeldOverallDeadlineStopsWithoutControllerRequest",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests.B3HeldOverallDeadlineStopsWithoutControllerRequest",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests",
+    "method": "B3OwnerDeathWhileHeldLeavesPreparedStateWithoutRelease",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests.B3OwnerDeathWhileHeldLeavesPreparedStateWithoutRelease",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests",
+    "method": "B3RecoveryTopologyRetainsItsDomainWithoutReleaseAuthority",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests.B3RecoveryTopologyRetainsItsDomainWithoutReleaseAuthority",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests",
+    "method": "B3ReleaseWinsThenStopPreservesTheOriginalReleaseDecision",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests.B3ReleaseWinsThenStopPreservesTheOriginalReleaseDecision",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests",
+    "method": "B3ScopeReleaseExecutesTheFixedFixtureExactlyOnceWithTrustedNativeOutcome",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests.B3ScopeReleaseExecutesTheFixedFixtureExactlyOnceWithTrustedNativeOutcome",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests",
+    "method": "B3StopBeforeReleaseConsumesCapabilityWithoutAnyReleaseWrite",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests.B3StopBeforeReleaseConsumesCapabilityWithoutAnyReleaseWrite",
+    "reason": "linux only",
+    "multiplicity": 1
+  },
+  {
+    "type": "Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests",
+    "method": "B3TopologySeparationDemonstrationUnrelatedRecoveryDeathDoesNotSuperviseThisOwner",
+    "case": "Gagamba.Execution.Linux.M1.Tests.Restricted.B3RestrictedLifecycleTests.B3TopologySeparationDemonstrationUnrelatedRecoveryDeathDoesNotSuperviseThisOwner",
+    "reason": "linux only",
+    "multiplicity": 1
+  }
+]

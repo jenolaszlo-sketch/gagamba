@@ -1,0 +1,5 @@
+<Project>
+  <ItemGroup Condition="'$(MSBuildProjectName)' == 'Gagamba.Execution.Linux.M1'">
+    <Compile Include="C:/Users/Laszlos/source/repos/Solo/_q1-01a1ed30/run/IndependentQ1Edge.cs" />
+  </ItemGroup>
+</Project>

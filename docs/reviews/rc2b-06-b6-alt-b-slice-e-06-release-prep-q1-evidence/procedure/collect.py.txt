@@ -1,0 +1,174 @@
+"""Collect the complete Q1 receipts and independently reconcile execution membership."""
+import gzip
+import hashlib
+import json
+import re
+import shutil
+import sys
+import xml.etree.ElementTree as ET
+from collections import Counter
+from pathlib import Path
+
+repo, run, work, package = (Path(x).resolve() for x in sys.argv[1:5])
+review = "rc2b-06-b6-alt-b-slice-e-06-release-prep-q1"
+evidence = package / (review + "-evidence")
+raw = evidence / "raw"
+proc = evidence / "procedure"
+raw.mkdir(parents=True)
+proc.mkdir()
+remediation = repo / "docs/evidence/rc2b-06-b6-alt-b-slice-e-06-release-prep-f02-remediation-01-evidence"
+e5 = repo / "docs/reviews/rc2b-06-b6-alt-b-slice-e-05-custody-q1-evidence"
+
+def load(path):
+    return json.loads(path.read_bytes())
+
+def save(path, value):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(value, indent=2, ensure_ascii=True) + "\n", encoding="utf-8", newline="\n")
+
+def keep(source, label=None, compressed=False):
+    target = raw / (label if label else source.relative_to(run))
+    if compressed:
+        target = target.with_name(target.name + ".gz")
+    target.parent.mkdir(parents=True, exist_ok=True)
+    assert not target.exists(), target
+    data = source.read_bytes()
+    target.write_bytes(gzip.compress(data, compresslevel=9, mtime=0) if compressed else data)
+
+def keep_text(source, name):
+    text = source.read_text(encoding="utf-8-sig")
+    (proc / name).write_text(text.rstrip("\n") + "\n", encoding="utf-8", newline="\n")
+
+def xml(path, compressed=False):
+    return ET.fromstring(gzip.decompress(path.read_bytes()) if compressed else path.read_bytes())
+
+def members(report):
+    return Counter((t.attrib["type"], t.attrib["method"], t.attrib["name"], t.attrib["result"], t.findtext("reason") or "")
+                   for t in report.iter("test"))
+
+def parsed_lines(path):
+    return [json.loads(x) for x in path.read_bytes().splitlines() if x]
+
+def sha(file):
+    return hashlib.sha256(file.read_bytes()).hexdigest()
+
+suite_expected = dict(e6=192, e5=42, e4=11, e3=185, broad=1923)
+results = {}
+for cfg in ("debug", "release"):
+    measured = {}
+    for suite, count in suite_expected.items():
+        path = run / "results" / cfg / (suite + ".xml")
+        report = xml(path)
+        assembly = report.find("assembly")
+        assert int(assembly.attrib["passed"]) == count and assembly.attrib["failed"] == assembly.attrib["errors"] == "0"
+        assert int(assembly.attrib["skipped"]) == (331 if suite == "broad" else 0)
+        current = members(report)
+        historic = members(xml(remediation / "raw/results" / cfg / (suite + ".xml.gz"), compressed=True))
+        assert current == historic, (cfg, suite, current - historic, historic - current)
+        if suite == "broad":
+            skip = {k: v for k, v in current.items() if k[3] == "Skip"}
+            prior_path = e5 / "raw/results" / cfg / "broad.xml.gz"
+            earlier = members(xml(prior_path, compressed=True))
+            assert {k: v for k, v in earlier.items() if k[3] == "Skip"} == skip
+            rows = [dict(type=k[0], method=k[1], case=k[2], reason=k[4], multiplicity=v)
+                    for k, v in sorted(skip.items())]
+            assert sum(r["multiplicity"] for r in rows) == 331
+            save(raw / ("native-skips-" + cfg + ".json"), rows)
+            assert len(list(report.iter("test"))) == 2254
+        trx = run / "results" / cfg / (suite + ".trx")
+        counters = xml(trx).find(".//{*}Counters")
+        assert counters is not None and counters.get("executed") == "0"
+        vs_log = (run / "results" / cfg / ("vstest-" + suite + ".log")).read_text(encoding="utf-8")
+        assert "failed to connect to testhost process after 15 seconds" in vs_log and "EXIT 1" in vs_log
+        xu_log = (run / "results" / cfg / ("xunit-" + suite + ".log")).read_text(encoding="utf-8")
+        assert "EXIT 0" in xu_log
+        measured[suite] = dict(passed=count, failed=0, skipped=int(assembly.attrib["skipped"]),
+                               xunit=assembly.attrib["test-framework"], xunit_exit=0, vstest_exit=1,
+                               vstest_executed=0, timeout_seconds=15,
+                               vstest_process_id=int(re.search(r"process with id (\d+)", vs_log)[1]),
+                               xml_sha256=sha(path), trx_sha256=sha(trx), exact_producer_membership=True)
+        for file in (path, trx, run / "results" / cfg / ("vstest-" + suite + ".log"),
+                      run / "results" / cfg / ("xunit-" + suite + ".log")):
+            keep(file, compressed=True)
+    keep(run / "results" / cfg / "bindings.json")
+    for stage in ("f01", "blocked", "remediated"):
+        base = run / ("naming-" + stage)
+        targeted = run / f"remediated-naming-{cfg}.xml" if stage == "remediated" else base / f"{cfg}.xml"
+        naming_xml = xml(targeted)
+        test, = list(naming_xml.iter("test"))
+        assert test.attrib["method"] == "ValidationMemberNamesDoNotImplyAuthority"
+        assert test.attrib["result"] == ("Fail" if stage == "blocked" else "Pass")
+        if stage == "blocked":
+            assert "Capability" in test.findtext("failure/message")
+        keep(targeted, compressed=True)
+        reflection = run / f"f02-reflection-{stage}-{cfg}.json"
+        receipt = load(reflection)
+        assert len(receipt["forbidden_members"]) == (7 if stage == "blocked" else 0)
+        assert len(receipt["matches"]) == (0 if stage == "f01" else 7)
+        keep(reflection)
+    controls = parsed_lines(run / "q1-controls" / ("outcomes-" + cfg.title() + ".jsonl"))
+    assert len(controls) == 29 and all(row["passed"] for row in controls)
+    final_harness = parsed_lines(run / f"q1-probe-{cfg}-final.jsonl")
+    assert final_harness[-1] == dict(summary=True, ran=2398, failed=0)
+    assert len({row["id"] for row in final_harness[1:-1] if row.get("result") == "pass"}) == 2398
+    assert final_harness[0]["sha256"] == load(run / (f"results/{cfg}/bindings.json"))[0]["sha256"]
+    blocked_vectors = ("R01.Prepare", "R01.Compare", "Mixed.Prepare", "Mixed.Compare", "R02.Compare")
+    for identifier in blocked_vectors:
+        file = run / f"blocked-vector-{cfg}-{identifier}.jsonl"
+        before = parsed_lines(file)
+        assert before[-1] == dict(summary=True, ran=1, failed=0)
+        assert before[1] == next(row for row in final_harness[1:-1] if row["id"] == identifier)
+        keep(file, compressed=True)
+    frozen = parsed_lines(run / ("e6-mutation-results-" + cfg.title() + ".jsonl"))
+    assert len(frozen) == 34
+    results[cfg] = dict(suites=measured, adversarial=2398, frozen_e6=34, reviewer_e6=29)
+
+policy = load(run / "policy-confirmed/results.json")
+historical_policy = load(remediation / "raw/production-policy-results.json")
+assert len(policy) == 51 and all(r["Passed"] for r in policy)
+assert [(r["Name"], r["Exit"], r["Expected"]) for r in policy] == [
+    (r["Name"], r["Exit"], r["Expected"]) for r in historical_policy]
+assert "Ran 9 tests" in (run / "preparation-tests.log").read_text(encoding="utf-8")
+assert "Passed" in (run / "preparation.log").read_text(encoding="utf-8")
+metadata = load(run / "q1-metadata/summary.json")
+isolation = load(run / "isolation/summary.json")
+assert sum(r["count"] for r in load(work / "preflight.json")["manifests"]) == 1469
+assert [isolation[c]["first_party_assembly_paths"] for c in ("debug", "release")] == [48, 116]
+assert all(row["p4_executed_controls"] == 47 for row in isolation.values())
+save(raw / "summary.json", dict(candidate="4202a2f7a99b85cfe1caf70d6a583f58e6551283",
+    tree="f987f32ced441263167649307003536dd493dd66",
+    configurations=results, policy_controls=51, preparation_regressions=9, preparation_validation="Passed",
+    isolation=isolation,
+    metadata={k: {n: v for n, v in row.items() if n != "manifest_sha256"} for k, row in metadata.items()}))
+for pattern in (
+    "build-exact/*", "managed-*.log", "q1-probe*final*.*", "q1-probe-*-final.jsonl", "q1-probe-final-exits.txt",
+    "q1-controls/*.log", "q1-controls/outcomes-*.jsonl", "q1-controls/receipts.json",
+    "e6-mutation-*", "frozen-mutations-console.log",
+    "e4-console.log", "e5-*-console.log", "logs/*", "sensitivity-*.tsv", "sensitivity-variants.json",
+    "sensitivity-build-*.log", "independent-*.log", "independent-*.tsv", "independent-derivative-source.json",
+    "policy-confirmed/*.*", "policy-*.log", "policy-*-exit.txt", "policy-exit.txt",
+    "policy-exact/owner-release.log", "policy-retry/owner-release.log",
+    "policy-exact/results.json", "policy-retry/results.json",
+    "preparation*.log", "preparation-exits.txt", "d64-*.log", "verifier-*.log",
+    "inbound-build-*.log", "isolation-scanner-build.log", "isolation-console.log",
+    "isolation/*", "q1-metadata/*.json", "q1-metadata/*.jsonl", "q1-metadata/*.txt", "q1-metadata/*.log",
+    "q1-metadata/*.tsv", "naming-*/debug-*.log", "naming-*/release-*.log", "remediated-naming-*.log",
+    "blocked-vector-*-build.log",
+):
+    for path in sorted(run.glob(pattern)):
+        if path.is_file():
+            to_zip = path.suffix not in (".json", ".txt") or path.stat().st_size >= 128_000
+            candidate = raw / path.relative_to(run)
+            if not (candidate.with_name(candidate.name + ".gz") if to_zip else candidate).exists():
+                keep(path, compressed=to_zip)
+keep(work / "preflight.json", "preflight.json", compressed=True)
+keep(work / "cases.json", "independent-cases.json", compressed=True)
+save(raw / "vectors.json", load(work / "cases.json")["Witnesses"])
+for name in ("oracle.py", "Program.cs", "Probe.csproj", "run-naming.ps1", "f02-reflection.ps1", "review-controls.py",
+             "adapt-isolation-replay.py", "SyntheticEdge.cs", "MetadataScan.cs", "MetadataScan.csproj", "run-metadata.py"):
+    keep_text(work / (name + ".txt"), name + ".txt")
+keep_text(work / "q1-preflight.py", "q1-preflight.py.txt")
+keep_text(work / "collect.py.txt", "collect.py.txt")
+keep_text(run / "IndependentQ1Probe.targets", "IndependentQ1Probe.targets.txt")
+keep_text(run / "release-prep-scanner/Program.cs", "replayed-metadata-scanner.cs.txt")
+print(f"{len(list(raw.rglob('*.*')))} raw receipts retained, managed membership matches exactly", flush=True)

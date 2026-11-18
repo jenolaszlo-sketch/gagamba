@@ -1,0 +1,347 @@
+{
+  "source_sha256": "a7d223512b75d6f75f1766cd878525b043b70cb8993f60857ce3ca8ad255837d",
+  "test_sha256": "b05279f1802fb5a6bdb61c1889c472fbf3a1dd4975cc3b804e41cc4d6e454371",
+  "program_sha256": "b732ee8c650b8a7285153299d16c81e7b66bc1c93599ebce796a2e1b61a3fb16",
+  "variants": [
+    {
+      "variant": "SessionId",
+      "original": "actual.SessionId != original.SessionId",
+      "altered": "false",
+      "witness": "ExactGuidAssociation(0, true)",
+      "expected_failure": "ProjectionMismatch",
+      "deviation_outcome": "StructuralMatch",
+      "source_sha256": "04de498a3a7390fa60b2ae2a3e7cba256bd03e7533d877c3dac7550e4ec50c45",
+      "witness_sha256": "c27cab4be8ab4a62903cf41116f662b877cd6097c16752e8a3fc4e22cf5bdcb1"
+    },
+    {
+      "variant": "ExecutionId",
+      "original": "actual.ExecutionId != original.ExecutionId",
+      "altered": "false",
+      "witness": "ExactGuidAssociation(1, true)",
+      "expected_failure": "ProjectionMismatch",
+      "deviation_outcome": "StructuralMatch",
+      "source_sha256": "e25d2f2fa1b2732a7d588aedcb2ac1e2198e94ac016331c90cc7971e1ea65f84",
+      "witness_sha256": "157cb65ef77f4c771eee2a856dcddfd4cbaa6745ba2f7ab9ddbcbcd9edf7c8b1"
+    },
+    {
+      "variant": "ProtocolLeaseId",
+      "original": "actual.ProtocolLeaseId != original.ProtocolLeaseId",
+      "altered": "false",
+      "witness": "ExactGuidAssociation(2, true)",
+      "expected_failure": "ProjectionMismatch",
+      "deviation_outcome": "StructuralMatch",
+      "source_sha256": "f976a2bfe54e278b83f115e212009953c989bf53db41bb32744c39bb6b84bf5d",
+      "witness_sha256": "e71ad36dec578ee3a9a83c6018c379bfd1e26362f2f6fad44f6c63fb5c8455ff"
+    },
+    {
+      "variant": "PreparationId",
+      "original": "actual.PreparationId != original.PreparationId",
+      "altered": "false",
+      "witness": "ExactGuidAssociation(3, true)",
+      "expected_failure": "ProjectionMismatch",
+      "deviation_outcome": "StructuralMatch",
+      "source_sha256": "2e8bed5390d02a5a0f12e1c25c5053ebccc1acf3b2b483743fd67d5b2218e5dd",
+      "witness_sha256": "2147ebc88d95ab06053e746b65f6280566b2cf6a02c69099f2f87e1c6d6f980b"
+    },
+    {
+      "variant": "SealedLaunchRecordHash",
+      "original": "!actual.SealedLaunchRecordHash.AsSpan().SequenceEqual(original.SealedLaunchRecordHash)",
+      "altered": "false",
+      "witness": "ExactHashAssociation(0, false)",
+      "expected_failure": "ProjectionMismatch",
+      "deviation_outcome": "StructuralMatch",
+      "source_sha256": "4b17df34461e58ce0d0945de36312e7eba6656288cda207d7fc025ec94fbd6ec",
+      "witness_sha256": "f4fc6e08eccf05dbc958364f5dc3d3b919b551c703464e91c8b7bf66322cacdb"
+    },
+    {
+      "variant": "CatalogHash",
+      "original": "!actual.CatalogHash.AsSpan().SequenceEqual(original.CatalogHash)",
+      "altered": "false",
+      "witness": "ExactHashAssociation(1, false)",
+      "expected_failure": "ProjectionMismatch",
+      "deviation_outcome": "StructuralMatch",
+      "source_sha256": "5dd100e6b7ab66807a6d56805aa10255ba7bdd3c2542244a55e0e9c32488ddec",
+      "witness_sha256": "3871373fdf6a54ff7754fa6186b2ccd39669cf36dc4ce5f33f6fe1d6c94c987b"
+    },
+    {
+      "variant": "ScriptHash",
+      "original": "!actual.ScriptHash.AsSpan().SequenceEqual(original.ScriptHash)",
+      "altered": "false",
+      "witness": "ExactHashAssociation(2, false)",
+      "expected_failure": "ProjectionMismatch",
+      "deviation_outcome": "StructuralMatch",
+      "source_sha256": "5b863a1df80d1763fd522fdea605a0ef11892b552856f9af835fb29c32e620c8",
+      "witness_sha256": "a5108d5d883d026b2f48589890b9dd5c10e157cadeb9393bee7a01d85b7e1d51"
+    },
+    {
+      "variant": "ReleaseActionHash",
+      "original": "!actual.ReleaseActionHash.AsSpan().SequenceEqual(original.ReleaseActionHash)",
+      "altered": "false",
+      "witness": "ExactHashAssociation(3, false)",
+      "expected_failure": "ProjectionMismatch",
+      "deviation_outcome": "StructuralMatch",
+      "source_sha256": "4813d400fe5b3e5bd992395eb0c6be55e4caefb69315822ccee0835b0dfd7967",
+      "witness_sha256": "1f1a672e422b1137f9d859fc0cef3638993c54b32ac2b008919b9bb9be5fa49e"
+    },
+    {
+      "variant": "PreparationManifestDigest",
+      "original": "!actual.PreparationManifestDigest.AsSpan().SequenceEqual(original.PreparationManifestDigest)",
+      "altered": "false",
+      "witness": "ExactHashAssociation(4, false)",
+      "expected_failure": "ProjectionMismatch",
+      "deviation_outcome": "StructuralMatch",
+      "source_sha256": "7cc283b6f520a914e8a1e1a9c3c37c5480f56b2c21aced20d14b4c8166885cea",
+      "witness_sha256": "809fadefe0e0d9334df4260d6292ef971bfca46c5bc4a46199bcb863ff63130d"
+    },
+    {
+      "variant": "CaseOrdinal",
+      "original": "StringComparison.Ordinal)",
+      "altered": "StringComparison.OrdinalIgnoreCase)",
+      "witness": "OrdinalCaseAssociation(\"r01\")",
+      "expected_failure": "CaseMismatch",
+      "deviation_outcome": "StructuralMatch",
+      "source_sha256": "9c6bf834afb3db90b770596df275e86d32588621b5e599911e4e781973ca4dc8",
+      "witness_sha256": "1507c956df1eac2e43156dfaf1e6e9b868e102ccc63bd5007a7928eaf0bf39d1"
+    },
+    {
+      "variant": "Phase",
+      "original": "actual.Phase != original.Phase",
+      "altered": "false",
+      "witness": "PhaseAssociation(false)",
+      "expected_failure": "ProjectionMismatch",
+      "deviation_outcome": "StructuralMatch",
+      "source_sha256": "d5b8ef80f8337688996c1d75d167bb0437a590f8c9d5478ed09b63e46b95763b",
+      "witness_sha256": "908127b07c871b30660076a54ab5e2993c301b3916137d56fb2e15c00e3d56e0"
+    },
+    {
+      "variant": "OriginalOperand",
+      "original": "if (candidate is null || expected is null)\n            return MissingInput;",
+      "altered": "if (candidate is null)\n            return MissingInput;\n        expected ??= candidate;",
+      "witness": "NullProjection(false)",
+      "expected_failure": "MissingInput",
+      "deviation_outcome": "StructuralMatch",
+      "source_sha256": "4b13e1661943540ac915c1332e0ce0b11c525b573f55b845c5941b7b36e3b60a",
+      "witness_sha256": "8d68704f2c9037fac1b440f0258e942c397c8ed3d9e08fc055ffc737141b1991"
+    },
+    {
+      "variant": "TopologyAssociation",
+      "original": "topology == ValidationReleaseTopology.B3Integrated && localSteps.Length == 6",
+      "altered": "localSteps.Length == 6",
+      "witness": "NonReleaseProjectionConflicts()",
+      "expected_failure": "InvalidTemplate",
+      "deviation_outcome": "StructuralMatch",
+      "source_sha256": "b0efad450f8896d789c299da7ab0476195bc51d756944ca7fbf2318010f084e1",
+      "witness_sha256": "e0176dbc9e4b287684d7564ef922afd346b6c5e9368eee39c6fb4cd9e3e7c0ef"
+    },
+    {
+      "variant": "Template",
+      "original": "!MatchesTemplate(localSteps, template)",
+      "altered": "false",
+      "witness": "EveryIndexedSlotIsValidated(2)",
+      "expected_failure": "InvalidTemplate",
+      "deviation_outcome": "StructuralMatch",
+      "source_sha256": "ea9f4f611bec1ccd81140d75f381c97880b62a5cdedec24c5ddf023f449f0908",
+      "witness_sha256": "96ae4061558c3024da88168a0821809be80ea74fdab8a4fa327b6d1d7e3f595b"
+    },
+    {
+      "variant": "StepIndex",
+      "original": "steps[i].Index != (uint)i || ",
+      "altered": "",
+      "witness": "EveryIndexedSlotIsValidated(2)",
+      "expected_failure": "InvalidTemplate",
+      "deviation_outcome": "StructuralMatch",
+      "source_sha256": "57ad90407954c324102588331f7519d6872443fb286252cdb140ca47260c18fe",
+      "witness_sha256": "86821ec925a61ea1cef98b7da95874aec11673461a08716a6267c1f1d5feb91e"
+    },
+    {
+      "variant": "StepOpcode",
+      "original": " || (byte)steps[i].Opcode != template[i]",
+      "altered": "",
+      "witness": "EveryIndexedSlotIsValidated(2)",
+      "expected_failure": "InvalidTemplate",
+      "deviation_outcome": "StructuralMatch",
+      "source_sha256": "ab2517fe00136fade95d3ce56f4bc1541df963fb9cffb6c5edddbab37a7c470f",
+      "witness_sha256": "1eabb16be4c805002d82e8c4d00cb9b73722e58762248c5188ef6193887d225b"
+    },
+    {
+      "variant": "ReleaseIndex",
+      "original": "if (index != ReleaseIndex)\n            return InvalidScalar;\n",
+      "altered": "",
+      "witness": "ReleaseIndexAssociation(3)",
+      "expected_failure": "InvalidScalar",
+      "deviation_outcome": "StructuralMatch",
+      "source_sha256": "8b73cc66eab7306ee637220c88f0f6d02c55616a20b9571715cd369946fd7859",
+      "witness_sha256": "70f4989f8dbb9011cdc48320b751b4a2f4e6ef93dfcfa105bc3ca3d38397da7c"
+    },
+    {
+      "variant": "CatalogFlag",
+      "original": "catalogAllowsRelease != release ||",
+      "altered": "false ||",
+      "witness": "ReleaseFlagsAreRequired(false, true)",
+      "expected_failure": "InvalidTemplate",
+      "deviation_outcome": "StructuralMatch",
+      "source_sha256": "4bd45b3482f362cb41e7d8f324e9668d9f2a7fb2ea0cade1099e8b4e87bafc3f",
+      "witness_sha256": "911509fbec71f5d0ba655ff8df8f063a8d3c6de5c33ecf5285d89fb732bac395"
+    },
+    {
+      "variant": "FixtureFlag",
+      "original": "fixturePolicyAllowsRelease != release",
+      "altered": "false",
+      "witness": "ReleaseFlagsAreRequired(true, false)",
+      "expected_failure": "InvalidTemplate",
+      "deviation_outcome": "StructuralMatch",
+      "source_sha256": "5338765051b718ca6dd1c8bd2dbb10c4c5574ee41d7b6326bf0575fa7b92b489",
+      "witness_sha256": "f84943d4834413a634e62b5c76a23fc609e0e646a7082559c0b9c319fa293027"
+    },
+    {
+      "variant": "NoReleaseRefusal",
+      "original": "if (!release)\n            return NoReleaseTemplate;\n",
+      "altered": "",
+      "witness": "CompleteNoReleaseTemplates(true, 2)",
+      "expected_failure": "NoReleaseTemplate",
+      "deviation_outcome": "StructuralMatch",
+      "source_sha256": "b19f837b6e63f7cdf91a7ede45d68eb1a6215a571dad69ecd2e88f2910f6dde6",
+      "witness_sha256": "45d62e9868649300b53bae3830046aed17ce16edeedaa3a870ac156cb7afc681"
+    },
+    {
+      "variant": "DigestPresence",
+      "original": "if (expectedCorrelationSha256 is null)\n            return MissingExpectedDigest;",
+      "altered": "if (expectedCorrelationSha256 is null)\n            return Prepare(candidate, expected, out material);",
+      "witness": "IndependentDigestRefusals()",
+      "expected_failure": "MissingExpectedDigest",
+      "deviation_outcome": "StructuralMatch",
+      "source_sha256": "a63c1a3f4050ec951b7e3596be4e35dfba0bfb11d7ecea28485b17f712df0a6e",
+      "witness_sha256": "ab871512cab6432a2f80e6856fae1b75e921f8b81cecadf42061851e9e1882eb"
+    },
+    {
+      "variant": "DigestWidth",
+      "original": "if (expectedCorrelationSha256.Length != DigestLength)\n            return InvalidLength;\n",
+      "altered": "",
+      "witness": "ExpectedDigestWidth(33)",
+      "expected_failure": "InvalidLength",
+      "deviation_outcome": "DigestMismatch",
+      "source_sha256": "b050948cb8f447bbc46d0d50a4a28eca3f724134947849e4ecab176da003ceb8",
+      "witness_sha256": "212377fa8b3ff01a912c40a9bb06c9793732f234ba1d9242c4f45d2a960b1845"
+    },
+    {
+      "variant": "DigestEquality",
+      "original": "if (!CryptographicOperations.FixedTimeEquals(digest, expectedDigest))\n            return DigestMismatch;\n",
+      "altered": "",
+      "witness": "IndependentDigestRefusals()",
+      "expected_failure": "DigestMismatch",
+      "deviation_outcome": "StructuralMatch",
+      "source_sha256": "bfe3b22cc914c64a50f7241a6ee043da169f3229ebdaa6af83636f729b0f3ea8",
+      "witness_sha256": "cb80ca4201a9701301986536250b5ff6decfb603a17851d1ca188f8b83affa51"
+    },
+    {
+      "variant": "NonNullRefusal",
+      "original": "if (!CryptographicOperations.FixedTimeEquals(digest, expectedDigest))\n            return DigestMismatch;",
+      "altered": "if (!CryptographicOperations.FixedTimeEquals(digest, expectedDigest))\n        {\n            material = Publish(preimage, digest);\n            return DigestMismatch;\n        }",
+      "witness": "IndependentDigestRefusals()",
+      "expected_failure": "Assert.Null()",
+      "deviation_outcome": "not null",
+      "source_sha256": "4c7c4e0c11ffd897dd09c6a6c3a4bf8c39d45eb1d9c0ce618f05925012ccbc40",
+      "witness_sha256": "3cdfa82186734a99d13a2b80154d7abb0e0938e3bbd9f83585b531c721ab9d63"
+    },
+    {
+      "variant": "Domain",
+      "original": "\"gagamba-validation-release-v1\\0\"u8",
+      "altered": "\"gagamba-validation-release-v2\\0\"u8",
+      "witness": "NormativeVectors(false, false)",
+      "expected_failure": "Collections differ",
+      "deviation_outcome": "release-v2",
+      "source_sha256": "6341f1dbab0a1779e985ae0752e6773f0de388abe4a78d47e12130ed0935d6ae",
+      "witness_sha256": "842c86f09a2e405cdecc7a1bffdd7cb97af2f45bb417a80c830fb3a87a43471e"
+    },
+    {
+      "variant": "Separator",
+      "original": "\"gagamba-validation-release-v1\\0\"u8",
+      "altered": "\"gagamba-validation-release-v1!\"u8",
+      "witness": "NormativeVectors(false, false)",
+      "expected_failure": "Collections differ",
+      "deviation_outcome": "separator byte changed",
+      "source_sha256": "a48590c8a592a2ddf102f3323bfc49ca8adb02dbdc0ed2205f510648964c797a",
+      "witness_sha256": "4e255378e4ce7a61833faa19260481fcf2be5d0d48a441d5102dcac791d8c0aa"
+    },
+    {
+      "variant": "FieldOrder",
+      "original": "binding.SealedLaunchRecordHash.CopyTo(bytes[30..62]);\n        binding.CatalogHash.CopyTo(bytes[62..94]);",
+      "altered": "binding.CatalogHash.CopyTo(bytes[30..62]);\n        binding.SealedLaunchRecordHash.CopyTo(bytes[62..94]);",
+      "witness": "NormativeVectors(true, false)",
+      "expected_failure": "Collections differ",
+      "deviation_outcome": "capability and catalog swapped",
+      "source_sha256": "56109b4de8a9f211df2fca40d6573a9418dbe8a2a83851ad96893a5daf515ea7",
+      "witness_sha256": "7f6fc89ed48d95391c51949930fda5e3ecd18e2ddec9f3ce28d0dc553dfda3a8"
+    },
+    {
+      "variant": "IndexEndian",
+      "original": "BinaryPrimitives.WriteUInt32LittleEndian",
+      "altered": "BinaryPrimitives.WriteUInt32BigEndian",
+      "witness": "NormativeVectors(true, false)",
+      "expected_failure": "Collections differ",
+      "deviation_outcome": "index is BE",
+      "source_sha256": "74981cb4d3dd5dff74caa53b81bfebe3bb49e7156bbfdb80e18526f8b4cd37ff",
+      "witness_sha256": "c770990316bc579ac86b75bd523915767faf9d145d2fcafa0f848c7845e148f6"
+    },
+    {
+      "variant": "GuidEndian",
+      "original": "TryWriteBytes(bytes[162..178])",
+      "altered": "TryWriteBytes(bytes[162..178], bigEndian: true, out _)",
+      "witness": "NormativeVectors(true, true)",
+      "expected_failure": "Collections differ",
+      "deviation_outcome": "session GUID is BE",
+      "source_sha256": "0e5911f094e60f22c0c8923640d5cc6584849aa47482b27ed6320a3009a1b726",
+      "witness_sha256": "35f2520575fb2dffae64281da54ed8147260647731b5ce9d70166384a078bffe"
+    },
+    {
+      "variant": "GuidWidth",
+      "original": "TryWriteBytes(bytes[162..178])",
+      "altered": "TryWriteBytes(bytes[162..177])",
+      "witness": "NormativeVectors(true, true)",
+      "expected_failure": "Collections differ",
+      "deviation_outcome": "session GUID is missing",
+      "source_sha256": "e14b01c1e22595229d63582ed97845267dfc97529424cf3cfbac1247bdc49e11",
+      "witness_sha256": "13e6c998bf35fc81aeee735f1f68e19484c83f37682174af4a89a6bf64b39cb6"
+    },
+    {
+      "variant": "PreimageWidth",
+      "original": "const int PreimageLength = 258;",
+      "altered": "const int PreimageLength = 259;",
+      "witness": "NormativeVectors(false, false)",
+      "expected_failure": "Expected: 258",
+      "deviation_outcome": "Actual:   259",
+      "source_sha256": "773937b27a91994fd98c03877de11df2d08a63a79670cfc6f08394c100785840",
+      "witness_sha256": "dcd8bc58760b188af38e068cb8669fb105a04daf10d17ffd652a1f92f55c0b14"
+    },
+    {
+      "variant": "HashExtent",
+      "original": "SHA256.HashData(preimage)",
+      "altered": "SHA256.HashData(preimage.AsSpan(0, preimage.Length - 1))",
+      "witness": "NormativeVectors(true, true)",
+      "expected_failure": "Collections differ",
+      "deviation_outcome": "last byte omitted from SHA-256",
+      "source_sha256": "6e2fbc9f32639aa1e3673856f6c54d27def20aca313f951edae434d02dabd112",
+      "witness_sha256": "de84594662f398af74387f3f134cc729951bd0c34c9967957648d12ed0d84682"
+    },
+    {
+      "variant": "BorrowExpectation",
+      "original": "material = Publish(preimage, digest);",
+      "altered": "material = new(ImmutableArray.CreateRange(preimage), System.Runtime.InteropServices.ImmutableCollectionsMarshal.AsImmutableArray(expectedCorrelationSha256));",
+      "witness": "BetweenCallMutationsKeepBothPriorResults()",
+      "expected_failure": "Collections differ",
+      "deviation_outcome": "caller-owned digest leaked",
+      "source_sha256": "051e024824137811ff12b161d7a46ed32e9ee2a861fc1027b3f59226f6fe2315",
+      "witness_sha256": "2537814a4d6142f245990ea75eaceee991e8822187bb93809b32112350c15299"
+    },
+    {
+      "variant": "OverwritePrior",
+      "original": "new(ImmutableArray.CreateRange(preimage), ImmutableArray.CreateRange(digest));",
+      "altered": "new(System.Runtime.InteropServices.ImmutableCollectionsMarshal.AsImmutableArray(ReusePreimage(preimage)), ImmutableArray.CreateRange(digest));\n\n    private static readonly byte[] Recycled = new byte[PreimageLength];\n    private static byte[] ReusePreimage(byte[] preimage)\n    {\n        preimage.CopyTo(Recycled, 0);\n        return Recycled;\n    }",
+      "witness": "BetweenCallMutationsKeepBothPriorResults()",
+      "expected_failure": "Assert.False()",
+      "deviation_outcome": "shared backing detected",
+      "source_sha256": "deca0ef241a0bc15f26d300860df5f8367ad888c1b99c8973d3bf3b509f5dac5",
+      "witness_sha256": "f3ea366a21c9cf519c47d8c58b7b895ecc151ae4ae1a385de458472a4c9cff4a"
+    }
+  ]
+}

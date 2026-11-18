@@ -1,0 +1,284 @@
+import ast
+import hashlib
+import json
+import os
+import posixpath
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+repo = Path(sys.argv[1]).absolute()
+out = Path(sys.argv[2]).absolute()
+post = "--post" in sys.argv[3:]
+os.environ["GIT_OPTIONAL_LOCKS"] = "0"
+os.environ["GIT_TERMINAL_PROMPT"] = "0"
+
+prefix = "rc2b-06-b6-alt-b-slice-e-06"
+assessment = "docs/decisions/" + prefix + "-entry-owner-01"
+authorization = "docs/decisions/" + prefix + "-release-prep-entry-auth-01"
+f01_report = authorization[:-2] + "f01"
+producer_report = "docs/evidence/" + prefix + "-release-prep-implementation-01"
+f02_report = "docs/decisions/" + prefix + "-release-prep-contract-f02-owner-01"
+remediation = "docs/evidence/" + prefix + "-release-prep-f02-remediation-01"
+e5 = "docs/decisions/rc2b-06-b6-alt-b-slice-e-05-owner-01-evidence"
+review = "docs/reviews/" + prefix + "-release-prep-q1"
+pins = {
+    "1e8d3cabb35586d47b0426e4cfeb5b245d9aa774": "f392d8ccfd959164357d7268eef27070bdad1fb6",
+    "4202a2f7a99b85cfe1caf70d6a583f58e6551283": "f987f32ced441263167649307003536dd493dd66",
+    "48592c7f18150767caed66ffa7f5c3fa3a9175be": "d38614e53df10a6aadca4dedf33c7dabfd1376ca",
+    "ce6a6fae1cdf7ec36b977e59050c8ac89db0aea6": "3d5c7f073a20f6f3fbcbcef06d5b739b4269c759",
+    "53ffe7a21408a7e9674cf50b7098a26887c070b5": "c5e58a742408783545ae667c0a3506c1dfd3af34",
+    "7d298ddd9d83e555a5c16b6c0cab8f36e46b8822": "27bcf4764d4b0f71b76c4f4741b1f5c54c876d41",
+    "405f2d2d45b802f48e08dab64e53e305e29efb6b": "3a7d80c71a5453fe31e3bd4f4256b1cdbe90c314",
+    "22a0b7b00364cc7be333ba7dfd9c0359a7fe9f99": "ee0aa6242cdcc4928518c26486b634a5df8850d4",
+    "4dc0ee0998f0def6cb1cba304a76b3a9f59ac904": "3136117ecdcbd7df91693db2fbc14a148d47607a",
+}
+start, cand, f02, producer, blocked, f01, auth, assess, remote = pins
+allow = {
+    "src/Gagamba.Execution.Linux.M1/Validation/ValidationReleasePreparation.cs": (7, 5),
+    "tests/Gagamba.Execution.Linux.M1.Tests/Validation/ValidationReleasePreparationTests.cs": (3, 0),
+}
+naming = "tests/Gagamba.Execution.Linux.M1.Tests/Validation/ValidationReachabilityTests.cs"
+pointers = {"docs/PROJECT-STATUS.md", "docs/handoff.md", "docs/work-queue.md"}
+
+def git(*args, data=None):
+    return subprocess.run(
+        ["git", "-c", "core.longpaths=true", *args], cwd=repo, input=data,
+        stdout=subprocess.PIPE, check=True,
+    ).stdout
+
+def line(*args):
+    return git(*args).decode().strip()
+
+def check(condition, detail):
+    if not condition:
+        raise AssertionError(detail)
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+def path_bytes(path):
+    return Path(path).read_bytes()
+
+def disk(path):
+    return (repo / path).read_bytes()
+
+def batch(rev, paths):
+    paths = list(dict.fromkeys(paths))
+    data = b"".join((rev + ":" + path).encode() + b"\n" for path in paths)
+    raw = git("cat-file", "--batch", data=data)
+    at = 0
+    result = {}
+    for path in paths:
+        end = raw.index(b"\n", at)
+        fields = raw[at:end].decode().split()
+        check(len(fields) == 3 and fields[1] == "blob", (rev, path, fields))
+        oid, _, size = fields
+        at = end + 1
+        end = at + int(size)
+        result[path] = (oid, raw[at:end])
+        check(raw[end:end+1] == b"\n", (rev, path))
+        at = end + 1
+    check(at == len(raw), rev)
+    return result
+
+def blob(rev, path):
+    return batch(rev, [path])[path][1]
+
+def json_at(rev, path):
+    return json.loads(blob(rev, path))
+
+def annex(report, file):
+    return report + "-evidence/" + file
+
+def diff(old, new):
+    return set(line("diff", "--name-status", old, new).splitlines())
+
+def manifest_rows(path, content):
+    entries = {}
+    for row in content.decode("utf-8-sig").splitlines():
+        match = re.fullmatch(r"([0-9A-Fa-f]{64}) [ *](.+)", row)
+        check(match, (path, row))
+        digest, rel = match.groups()
+        target = posixpath.normpath(posixpath.join(posixpath.dirname(path), rel))
+        check(not target.startswith(("../", "/")) and target not in (".", "..") and target not in entries, (path, target))
+        entries[target] = digest.lower()
+    return entries
+
+def check_note(path, old, new):
+    first, sep, tail = old.partition(b"\n\n")
+    check(sep and new.startswith(first + sep) and new.endswith(tail), path)
+    note = new[len(first + sep):-len(tail)]
+    check(note.startswith(b"> **ALT-B SLICE E-6") and note.endswith(b"\n\n") and
+          note.count((authorization.removeprefix("docs/") + ".md").encode()) == 1, path)
+    check(new == blob(auth, path), (path, "authorized byte identity"))
+    return {"original": sha(old), "current": sha(new), "insertion": sha(note)}
+
+head = line("rev-parse", "HEAD")
+check(line("rev-parse", "--show-toplevel").casefold() == repo.as_posix().casefold(), "toplevel")
+check(line("rev-parse", "--absolute-git-dir").casefold() == (repo / ".git").as_posix().casefold(), "git dir")
+check(line("symbolic-ref", "HEAD") == "refs/heads/main", "branch")
+check(line("rev-parse", "refs/heads/main") == head, "main")
+check(line("rev-parse", "refs/remotes/origin/main") == remote, "tracking")
+check(line("remote", "get-url", "origin") == line("remote", "get-url", "--push", "origin") ==
+      "https://github.com/jenolaszlo-sketch/gagamba.git", "origin")
+live = line("ls-remote", "--exit-code", "origin", "refs/heads/main")
+check(live == remote + "\trefs/heads/main", live)
+check(line("worktree", "list", "--porcelain").splitlines() ==
+      ["worktree " + repo.as_posix(), "HEAD " + head, "branch refs/heads/main"], "worktrees")
+check(not line("stash", "list"), "stashes")
+for commit, tree in pins.items():
+    check(line("rev-parse", commit + "^{tree}") == tree, commit)
+for child, parent in zip(pins, list(pins)[1:]):
+    check(line("show", "-s", "--format=%P", child) == parent, (child, parent))
+if post:
+    check(line("show", "-s", "--format=%P", head) == start, "Q1 parent")
+else:
+    check(head == start, head)
+git("diff", "--quiet")
+git("diff", "--cached", "--quiet")
+untracked_path = "docs/evidence/rc2b-06-b6-native-input-freeze-01/untracked-before.json"
+untracked_raw = blob(remote, untracked_path)
+check(untracked_raw == blob(head, untracked_path) == disk(untracked_path), untracked_path)
+untracked = json.loads(untracked_raw)
+status = git("status", "--porcelain=v1", "-z", "--untracked-files=all").decode().split("\0")[:-1]
+check(len(status) == len(untracked) == 44 and set(status) == {"?? " + x["path"] for x in untracked},
+      ("historical status", sorted(set(status) ^ {"?? " + x["path"] for x in untracked})))
+for item in untracked:
+    data = disk(item["path"])
+    check((len(data), sha(data)) == (item["length"], item["sha256"]), item["path"])
+print("PASS exact commit/tree chain, canonical checkout, live remote, and all 44 historical untracked files", flush=True)
+
+old = json_at(assess, annex(assessment, "preflight.json"))
+owner = json_at(remote, e5 + "/acceptance-audit.json")["repository"]
+historic = [(x["path"], x["revision"], x["count"]) for x in old["manifests"]]
+check(historic == [(x["path"], x["revision"], x["count"]) for x in owner["manifest_sets"]] +
+      [(e5 + "/SHA256SUMS.txt", remote, 10)], "historic spec disagreement")
+check(len(historic) == 19 and sum(x[2] for x in historic) == 1054, "historic counts")
+specs = historic + [
+    (annex(report, "SHA256SUMS.txt"), rev, count)
+    for report, rev, count in ((assessment, assess, 19), (authorization, auth, 8), (f01_report, f01, 4),
+                               (producer_report, producer, 188), (f02_report, f02, 12), (remediation, start, 184))
+]
+if post:
+    draft = annex(review, "SHA256SUMS.txt")
+    specs.append((draft, head, len(manifest_rows(draft, disk(draft)))))
+manifests = []
+notes = {}
+package = {}
+for manifest, rev, count in specs:
+    git("merge-base", "--is-ancestor", rev, head)
+    raw = blob(rev, manifest)
+    check(raw == blob(head, manifest) == disk(manifest), manifest)
+    members = manifest_rows(manifest, raw)
+    check(len(members) == count, (manifest, count, len(members)))
+    orig = batch(rev, members)
+    current = batch(head, members)
+    for path, h in members.items():
+        check(sha(orig[path][1]) == h and disk(path) == current[path][1], (manifest, path, "raw hash or checkout"))
+        if path in pointers:
+            notes[path] = check_note(path, orig[path][1], current[path][1])
+        else:
+            check(orig[path] == current[path], (manifest, path, "retained bytes"))
+    package[rev] = set(members) | {manifest}
+    manifests.append(dict(path=manifest, revision=rev, count=count, sha256=sha(raw)))
+check(sha(blob(producer, annex(producer_report, "SHA256SUMS.txt"))) ==
+      "6070ee9bda58b622d05aa657c3922626cc366b660a1410bb7ba8207b55bbfaf0", "blocked manifest identity")
+check(set(notes) == pointers, "pinned pointer set")
+
+for child, parent, report in ((assess, remote, assessment), (auth, assess, authorization),
+                              (f01, auth, f01_report), (producer, blocked, producer_report),
+                              (f02, producer, f02_report), (start, cand, remediation),
+                              *((head, start, review),) * post):
+    actual = diff(parent, child)
+    wanted = {"A\t" + p for p in package[child]}
+    check(all(p == report + ".md" or p.startswith(report + "-evidence/") for p in package[child]), (report, "package location"))
+    if child == auth:
+        wanted |= {"M\t" + p for p in pointers}
+    check(actual == wanted, (child, sorted(actual ^ wanted)))
+print("PASS pinned manifests including all 184 remediation entries, package scope and evidence separation", flush=True)
+
+pred = json_at(assess, annex(assessment, "source-identities.json"))
+inventory = json_at(auth, annex(authorization, "source-identities.json"))
+counts = json_at(f01, annex(f01_report, "counts.json"))
+check(pred["revision"] == remote and inventory["revision"] == assess and inventory["tree"] == pins[assess], "inventory pin")
+p, a, f = [{item["path"]: item for item in rows} for rows in (pred["files"], inventory["files"], counts["exact_membership"])]
+check(len(p) == len(pred["files"]) == 93 and
+      len(a) == len(inventory["files"]) == len(f) == len(counts["exact_membership"]) == 128 and
+      set(p) < set(a) == set(f) and len(set(a)-set(p)) == 35, "93 + 35")
+scratch = Path(r"C:\Users\Laszlos\.codex\visualizations\2026\11\17\01a1eb3e-8f2f-7e01-ad41-ce2e996f0a05")
+for name, digest in counts["origin_artifacts"].items():
+    check(sha(path_bytes(scratch / name)) == digest, name)
+definition = ast.parse((scratch / "release-prep-package.py").read_bytes())
+explicit = next(x.value for x in definition.body if isinstance(x, ast.Assign)
+                and any(isinstance(t, ast.Name) and t.id == "SOURCES" for t in x.targets))
+definitions = {x.targets[0].id: x.value for x in definition.body if isinstance(x, ast.Assign)
+               and isinstance(x.targets[0], ast.Name)}
+explicit = {ast.literal_eval(definitions[x.id] if isinstance(x, ast.Name) else x) for x in explicit.elts}
+check(len(explicit) == 22, "explicit paths")
+docs = [authorization + ".md"] + [annex(authorization, s + ".md") for s in
+                                    ("contract", "vectors", "verification", "carry-forward", "preservation")]
+links = set()
+for doc, (_, raw) in batch(auth, docs).items():
+    for link in re.findall(r"\]\(([^)]+)\)", raw.decode()):
+        target = link.split("#", 1)[0]
+        if target and "://" not in target:
+            resolved = posixpath.normpath(posixpath.join(posixpath.dirname(doc), target))
+            if resolved not in docs and not resolved.startswith(authorization + "-evidence/"):
+                links.add(resolved)
+groups = {"predecessor": set(p), "assessment_package": package[assess],
+          "explicit_sources": explicit, "local_document_links": links}
+seen = set()
+for key, group in groups.items():
+    check(counts["membership_counts"][key] == dict(members=len(group), new_paths=len(group-seen)), key)
+    seen.update(group)
+check(seen == set(a), "derived inventory union")
+bindings = {}
+for rev, items in ((remote, p), (assess, a)):
+    actual = batch(rev, items)
+    current = batch(head, items)
+    for path, listed in items.items():
+        oid, raw = actual[path]
+        work = blob(assess, path) if path in pointers else disk(path)
+        check((oid, sha(raw), sha(work), raw == work) ==
+              (listed["blob"], listed["git_sha256"], listed["checkout_sha256"], listed["checkout_equals_blob"]), (rev, path))
+        check(current[path][1] == (blob(auth, path) if path in pointers else raw), (head, path))
+        if rev == assess:
+            row = f[path]
+            check((row["pinned_blob"], row["pinned_sha256"], row["checkout_sha256"], set(row["membership"])) ==
+                  (oid, sha(raw), sha(disk(path)), {name for name, paths in groups.items() if path in paths}), path)
+    bindings[rev] = list(items.values())
+for record in counts["records"].values():
+    path = record["path"]
+    oid, data = batch(auth, [path])[path]
+    check((oid, sha(data)) == (record["blob"], record["sha256"]) and data == disk(path), path)
+for bundle in old["externalCopies"]:
+    for entry in bundle["entries"]:
+        check(sha(path_bytes(Path(bundle["directory"]) / entry["path"])) == entry["sha256"], entry["path"])
+for entry in inventory["external_formula_sources"]:
+    check(sha(path_bytes(entry["path"])) == entry["sha256"], entry["path"])
+print("PASS F01 union and per-revision 93 and 128 byte checks, external copies and source pins", flush=True)
+
+check(diff(f01, blocked) == {"A\t" + p for p in allow}, "blocked executable scope")
+check(diff(f02, cand) == {"M\t" + p for p in allow}, "remediation scope")
+original = batch(blocked, [*allow, naming])
+remediated = batch(cand, original)
+renames = {}
+for path, (upper, lower) in allow.items():
+    data = original[path][1]
+    check((data.count(b"CapabilityHash"), data.count(b"capabilityHash")) == (upper, lower), path)
+    rewritten = data.replace(b"CapabilityHash", b"SealedLaunchRecordHash").replace(b"capabilityHash", b"sealedLaunchRecordHash")
+    check(rewritten == remediated[path][1] == disk(path), path)
+    renames[path] = dict(upper=upper, lower=lower, old_blob=original[path][0], new_blob=remediated[path][0], sha256=sha(rewritten))
+check(original[naming] == remediated[naming] == batch(f01, [naming])[naming] ==
+      batch("06006a7035ca3a7615189b867584b1b3955eeb7a", [naming])[naming] and
+      disk(naming) == remediated[naming][1], naming)
+print("PASS both executable deltas, exactly 15 F02 substitutions, byte-identical inherited naming test", flush=True)
+
+out.write_text(json.dumps(dict(
+    head=head, tree=line("rev-parse", "HEAD^{tree}"), pins=pins, live=live, worktrees=1, stashes=0,
+    tracked_and_index="clean", manifests=manifests, historical_untracked=untracked, status_note_hashes=notes,
+    pinned_inventory=bindings, inventory_groups={key: sorted(group) for key, group in groups.items()},
+    renames=renames, naming_test=dict(path=naming, blob=remediated[naming][0], sha256=sha(remediated[naming][1])),
+), indent=2) + "\n", encoding="utf-8", newline="\n")

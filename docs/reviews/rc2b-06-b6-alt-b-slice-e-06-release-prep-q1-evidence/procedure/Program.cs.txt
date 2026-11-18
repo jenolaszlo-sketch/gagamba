@@ -1,0 +1,364 @@
+using System.Collections.Immutable;
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Security.Cryptography;
+using System.Text.Json;
+using Gagamba.Execution.Linux.M1.Validation;
+using static Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparationStatus;
+
+int failed = 0;
+int ran = 0;
+using var corpus = JsonDocument.Parse(File.ReadAllBytes(args[0]));
+var instrument = typeof(ValidationReleasePreparation).Assembly;
+Console.WriteLine(JsonSerializer.Serialize(new {
+    evidence = "loaded core", path = instrument.Location, identity = instrument.FullName,
+    mvid = instrument.ManifestModule.ModuleVersionId, sha256 = Digest(File.ReadAllBytes(instrument.Location)),
+    harnessSha256 = Digest(File.ReadAllBytes(Assembly.GetExecutingAssembly().Location)),
+    runtime = Environment.Version.ToString()
+}));
+
+foreach (var row in corpus.RootElement.GetProperty("Cases").EnumerateArray())
+{
+    string id = row.GetProperty("Id").GetString()!;
+    if (args.Length == 2 && id != args[1])
+        continue;
+    Run(id, () =>
+    {
+        var left = Input(row.GetProperty("Left"));
+        var right = Input(row.GetProperty("Right"));
+        var expectation = Hex(row, "Expectation");
+        string operation = row.GetProperty("Operation").GetString()!;
+        var expected = Enum.Parse<ValidationReleasePreparationStatus>(row.GetProperty("Status").GetString()!);
+        var actual = operation == "Compare"
+            ? ValidationReleasePreparation.Compare(left, right, expectation, out var material)
+            : ValidationReleasePreparation.Prepare(left, right, out material);
+        return Check(expected, actual, material, Hex(row, "Preimage"), Hex(row, "Digest"));
+    });
+}
+
+var mixed = corpus.RootElement.GetProperty("Witnesses").GetProperty("Q1FreshMixed");
+var alternate = corpus.RootElement.GetProperty("Witnesses").GetProperty("Q1Alternate");
+var initial = mixed.GetProperty("projection");
+var witness = Hex(mixed, "preimage")!;
+var expectedDigest = Hex(mixed, "digest")!;
+var alternateWitness = Hex(alternate, "preimage")!;
+var alternateDigest = Hex(alternate, "digest")!;
+
+void Local(string id, Func<string> body)
+{
+    if (args.Length == 1 || args[1] == id)
+        Run(id, body);
+}
+
+string Check(ValidationReleasePreparationStatus expected, ValidationReleasePreparationStatus actual,
+    ValidationReleaseMaterial? material, byte[]? preimage = null, byte[]? digest = null)
+{
+    string outcome = $"expected={expected} actual={actual} material={(material is null ? "null" : "present")}";
+    if (expected != actual)
+        throw new InvalidOperationException(outcome);
+    if (expected != StructuralMatch)
+    {
+        Require(material is null, outcome);
+        return outcome;
+    }
+    Require(material is not null, outcome);
+    var actualPreimage = material!.Preimage.AsSpan();
+    var actualDigest = material.CorrelationSha256.AsSpan();
+    Require(actualPreimage.Length == 258 && actualPreimage.SequenceEqual(preimage),
+        outcome + $" preimage={Convert.ToHexString(actualPreimage)}");
+    Require(actualDigest.Length == 32 && actualDigest.SequenceEqual(digest),
+        outcome + $" digest={Convert.ToHexString(actualDigest)}");
+    return outcome + $" preimage={Convert.ToHexString(actualPreimage)} digest={Convert.ToHexString(actualDigest)}";
+}
+
+void Run(string id, Func<string> body)
+{
+    ran++;
+    try
+    {
+        var observation = body();
+        Console.WriteLine(JsonSerializer.Serialize(new { id, result = "pass", observation }));
+    }
+    catch (Exception ex)
+    {
+        failed++;
+        Console.WriteLine(JsonSerializer.Serialize(new { id, result = "fail", observation = ex.ToString() }));
+    }
+}
+
+foreach (bool candidate in new[] { true, false })
+{
+    for (int field = 0; field < 6; field++)
+    {
+        int slot = field;
+        Local($"Ownership.MutateProjection.{candidate}.{slot}", () =>
+        {
+            var left = Input(initial)!;
+            var right = Input(initial)!;
+            var actual = ValidationReleasePreparation.Compare(left, right, expectedDigest, out var material);
+            Check(StructuralMatch, actual, material, witness, expectedDigest);
+            var owned = candidate ? left : right;
+            if (slot == 5)
+                owned.Steps![2] = new ValidationReleaseStep(2, ValidationReleaseOpcode.Stop);
+            else
+                Buffers(owned)[slot][31] ^= 0xA5;
+            var refused = ValidationReleasePreparation.Compare(left, right, expectedDigest, out var refusal);
+            Check(slot == 5 ? InvalidTemplate : ProjectionMismatch, refused, refusal);
+            return Check(StructuralMatch, actual, material, witness, expectedDigest);
+        });
+    }
+}
+Local("Ownership.ExactDigestMutation", () =>
+{
+    var expectation = (byte[])expectedDigest.Clone();
+    var initialStatus = ValidationReleasePreparation.Compare(Input(initial), Input(initial), expectation, out var material);
+    Check(StructuralMatch, initialStatus, material, witness, expectedDigest);
+    expectation[14] ^= 0x9D;
+    var refused = ValidationReleasePreparation.Compare(Input(initial), Input(initial), expectation, out var refusal);
+    Check(DigestMismatch, refused, refusal);
+    return Check(StructuralMatch, initialStatus, material, witness, expectedDigest);
+});
+Local("Ownership.SharedCallerStorage", () =>
+{
+    var left = Input(initial)!;
+    var right = Input(initial, left, left.Steps);
+    Require(!ReferenceEquals(left, right), "independent carriers");
+    var status = ValidationReleasePreparation.Compare(left, right, expectedDigest, out var material);
+    Check(StructuralMatch, status, material, witness, expectedDigest);
+    var substituted = ValidationReleasePreparation.Compare(left, right, left.PreparationManifestDigest, out var refusal);
+    Check(DigestMismatch, substituted, refusal);
+    left.SealedLaunchRecordHash![12] ^= 0x85;
+    var changed = ValidationReleasePreparation.Compare(left, right, expectedDigest, out refusal);
+    Check(DigestMismatch, changed, refusal);
+    return Check(StructuralMatch, status, material, witness, expectedDigest);
+});
+Local("Ownership.IndependentBackingAndStableReferences", () =>
+{
+    var left = Input(initial);
+    var right = Input(initial);
+    var first = ValidationReleasePreparation.Prepare(left, right, out var one);
+    var second = ValidationReleasePreparation.Compare(left, right, expectedDigest, out var two);
+    var alternative = alternate.GetProperty("projection");
+    var third = ValidationReleasePreparation.Prepare(Input(alternative), Input(alternative), out var three);
+    Check(StructuralMatch, first, one, witness, expectedDigest);
+    Check(StructuralMatch, second, two, witness, expectedDigest);
+    Check(StructuralMatch, third, three, alternateWitness, alternateDigest);
+    Require(!ReferenceEquals(one, two), "same result object");
+    Require(!one!.Preimage.Equals(two!.Preimage), "preimages share backing");
+    Require(!one.CorrelationSha256.Equals(two.CorrelationSha256), "digests share backing");
+    ImmutableArray<byte> alias = one.Preimage;
+    ImmutableArray<byte> aliasDigest = one.CorrelationSha256;
+    var preimageCopy = alias.ToArray();
+    var digestCopy = aliasDigest.ToArray();
+    Array.Fill(preimageCopy, (byte)0xD3);
+    Array.Fill(digestCopy, (byte)0x96);
+    Require(alias.AsSpan().SequenceEqual(witness) && aliasDigest.AsSpan().SequenceEqual(expectedDigest),
+        "ordinary copies changed the original");
+    Check(StructuralMatch, first, one, witness, expectedDigest);
+    return Check(StructuralMatch, second, two, witness, expectedDigest);
+});
+Local("Ownership.ParallelStableInputsAndNoLatch", () =>
+{
+    var left = Input(initial);
+    var right = Input(initial);
+    Parallel.For(0, 160, i =>
+    {
+        bool success = i % 3 != 0;
+        var status = ValidationReleasePreparation.Compare(left, right, success ? expectedDigest : alternateDigest, out var material);
+        Check(success ? StructuralMatch : DigestMismatch, status, material, witness, expectedDigest);
+    });
+    return "160 concurrent calls with stable caller arrays";
+});
+Local("Ownership.RefusalClearsPriorOutValue", () =>
+{
+    var left = Input(initial);
+    var right = Input(initial);
+    var status = ValidationReleasePreparation.Prepare(left, right, out var material);
+    Check(StructuralMatch, status, material, witness, expectedDigest);
+    for (int i = 0; i < 20; i++)
+    {
+        status = ValidationReleasePreparation.Compare(left, right, alternateDigest, out material);
+        Check(DigestMismatch, status, material);
+        status = ValidationReleasePreparation.Prepare(left, right, out material);
+        Check(StructuralMatch, status, material, witness, expectedDigest);
+        status = ValidationReleasePreparation.Prepare(null, right, out material);
+        Check(MissingInput, status, material);
+    }
+    return "20 successful calls interleaved with both early and late refusals";
+});
+Local("Surface.FrozenProjectionAndMaterial", () =>
+{
+    var projection = typeof(ValidationReleaseProjection);
+    var result = typeof(ValidationReleaseMaterial);
+    var helper = typeof(ValidationReleasePreparation);
+    var step = typeof(ValidationReleaseStep);
+    var types = new[] { projection, result, helper, step, typeof(ValidationReleasePhase),
+        typeof(ValidationReleaseTopology), typeof(ValidationReleasePreparationStatus), typeof(ValidationReleaseOpcode) };
+    Require(types.All(t => !t.IsPublic && t.Namespace == projection.Namespace &&
+        t.Namespace == "Gagamba.Execution.Linux.M1.Validation"), "type visibility or placement");
+    Require(projection.IsSealed && result.IsSealed && helper.IsSealed && helper.IsAbstract && step.IsValueType &&
+        step.CustomAttributes.Any(a => a.AttributeType.Name == "IsReadOnlyAttribute"), "type shape");
+    var expectedProps = new (string Name, Type Type)[] {
+        ("SchemaVersion", typeof(uint?)), ("Phase", typeof(ValidationReleasePhase?)),
+        ("Topology", typeof(ValidationReleaseTopology?)), ("CaseId", typeof(string)),
+        ("CatalogAllowsRelease", typeof(bool?)), ("FixturePolicyAllowsRelease", typeof(bool?)),
+        ("Steps", typeof(ValidationReleaseStep[])), ("RequestedActionIndex", typeof(uint?)),
+        ("SealedLaunchRecordHash", typeof(byte[])), ("CatalogHash", typeof(byte[])), ("ScriptHash", typeof(byte[])),
+        ("ReleaseActionHash", typeof(byte[])), ("SessionId", typeof(Guid?)), ("ExecutionId", typeof(Guid?)),
+        ("ProtocolLeaseId", typeof(Guid?)), ("PreparationId", typeof(Guid?)), ("PreparationManifestDigest", typeof(byte[]))
+    };
+    Properties(projection, expectedProps);
+    Properties(result, [("Preimage", typeof(ImmutableArray<byte>)), ("CorrelationSha256", typeof(ImmutableArray<byte>))]);
+    Properties(step, [("Index", typeof(uint)), ("Opcode", typeof(ValidationReleaseOpcode))]);
+    const BindingFlags instance = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly;
+    var ctor = projection.GetConstructors(instance).Single();
+    var parameters = ctor.GetParameters();
+    Require(ctor.IsAssembly && parameters.Select(p => p.ParameterType).SequenceEqual(expectedProps.Select(p => p.Type))
+        && parameters.All(p => !p.HasDefaultValue), "constructor types or defaults");
+    Require(parameters[8].Name == "sealedLaunchRecordHash" &&
+        new NullabilityInfoContext().Create(parameters[8]).ReadState == NullabilityState.Nullable, "F02 constructor name or nullability");
+    var hash = projection.GetProperty("SealedLaunchRecordHash", instance)!;
+    Require(new NullabilityInfoContext().Create(hash).ReadState == NullabilityState.Nullable, "F02 property nullability");
+    var resultCtor = result.GetConstructors(instance).Single();
+    Require(resultCtor.IsAssembly && resultCtor.GetParameters().Select(p => p.ParameterType)
+        .SequenceEqual(new[] { typeof(ImmutableArray<byte>), typeof(ImmutableArray<byte>) }), "result constructor shape");
+    Require(result.GetMethods(instance).All(m => m.IsSpecialName && m.IsAssembly), "extra result methods");
+    var stepCtor = step.GetConstructors(instance).Single();
+    Require(stepCtor.IsAssembly && stepCtor.GetParameters().Select(p => p.ParameterType)
+        .SequenceEqual(new[] { typeof(uint), typeof(ValidationReleaseOpcode) }), "step constructor shape");
+    EnumShape<ValidationReleasePhase>(1, "Pre Post");
+    EnumShape<ValidationReleaseTopology>(1, "B2Lifeline B3Integrated");
+    EnumShape<ValidationReleaseOpcode>(1, "ConnectB2 PrepareB3 Inspect Release Stop Cleanup");
+    EnumShape<ValidationReleasePreparationStatus>(0, "MissingInput UnsupportedVersion InvalidScalar InvalidCaseId InvalidLength InvalidTemplate NoReleaseTemplate CaseMismatch ProjectionMismatch MissingExpectedDigest DigestMismatch StructuralMatch");
+    var entry = helper.GetMethods(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly)
+        .Where(m => m.IsAssembly || m.IsPublic).OrderBy(m => m.Name).ToArray();
+    Require(entry.Length == 2 && entry[0].Name == "Compare" && entry[1].Name == "Prepare", "unexpected callable surface");
+    foreach (var method in entry)
+    {
+        var signature = method.GetParameters();
+        Type[] wanted = method.Name == "Compare"
+            ? [projection, projection, typeof(byte[]), result.MakeByRefType()]
+            : [projection, projection, result.MakeByRefType()];
+        Require(method.IsAssembly && method.IsStatic && signature.Select(p => p.ParameterType).SequenceEqual(wanted)
+            && signature[^1].IsOut && method.ReturnType == typeof(ValidationReleasePreparationStatus), method.Name);
+    }
+    return "internal types, exact projection/step/result properties and constructors, enum values and two entry points";
+});
+
+Local("Ownership.BoundedCopyInstructions", () =>
+{
+    var owner = typeof(ValidationReleasePreparation);
+    var validate = owner.GetMethod("Validate", BindingFlags.NonPublic | BindingFlags.Static)!;
+    var compare = owner.GetMethod("Compare", BindingFlags.NonPublic | BindingFlags.Static)!;
+    int count = CountClones(validate);
+    Require(count == 6, $"Validate clone count expected=6 actual={count}");
+    count = CountClones(compare);
+    Require(count == 1, $"Compare clone count expected=1 actual={count}");
+    return "six Array.Clone call sites per validating invocation and one in Compare";
+});
+Local("Surface.NoForbiddenManagedNames", () =>
+{
+    var owner = typeof(ValidationReleasePreparation);
+    var forbidden = new[] { "Approved", "Authorized", "Permit", "Authority", "Trusted", "Capability" };
+    const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static |
+        BindingFlags.Instance | BindingFlags.DeclaredOnly;
+    var offending = owner.Assembly.GetTypes()
+        .Where(t => t.Namespace == owner.Namespace)
+        .SelectMany(t => t.GetMembers(flags).Select(m => $"{t.FullName}::{m.Name}").Prepend(t.FullName!))
+        .Where(name => forbidden.Any(term => name.Contains(term, StringComparison.Ordinal))).ToArray();
+    Require(offending.Length == 0, "forbidden managed names: " + string.Join("; ", offending));
+    return "no forbidden type or member names in the validation namespace";
+});
+
+static int CountClones(MethodInfo method)
+{
+    var codeMap = typeof(OpCodes).GetFields(BindingFlags.Public | BindingFlags.Static)
+        .Where(f => f.FieldType == typeof(OpCode)).Select(f => (OpCode)f.GetValue(null)!)
+        .ToDictionary(op => unchecked((ushort)op.Value));
+    var il = method.GetMethodBody()!.GetILAsByteArray()!;
+    var count = 0;
+    for (int i = 0; i < il.Length;)
+    {
+        ushort key = il[i++];
+        if (key == 0xFE)
+            key = (ushort)(0xFE00 | il[i++]);
+        var op = codeMap[key];
+        if (op.OperandType == OperandType.InlineMethod)
+        {
+            var target = method.Module.ResolveMethod(BitConverter.ToInt32(il, i));
+            if (target?.DeclaringType == typeof(Array) && target.Name == "Clone")
+                count++;
+        }
+        i += op.OperandType switch
+        {
+            OperandType.InlineNone => 0,
+            OperandType.ShortInlineBrTarget or OperandType.ShortInlineI or OperandType.ShortInlineVar => 1,
+            OperandType.InlineVar => 2,
+            OperandType.InlineBrTarget or OperandType.InlineField or OperandType.InlineI or OperandType.InlineMethod
+                or OperandType.InlineSig or OperandType.InlineString or OperandType.InlineTok or OperandType.InlineType
+                or OperandType.ShortInlineR => 4,
+            OperandType.InlineI8 or OperandType.InlineR => 8,
+            OperandType.InlineSwitch => 4 * (1 + BitConverter.ToInt32(il, i)),
+            _ => throw new InvalidOperationException(op.OperandType.ToString())
+        };
+    }
+    return count;
+}
+
+Console.WriteLine(JsonSerializer.Serialize(new { summary = true, ran, failed }));
+return ran == 0 ? 2 : failed == 0 ? 0 : 1;
+
+static void Require(bool condition, string detail)
+{
+    if (!condition)
+        throw new InvalidOperationException(detail);
+}
+
+static void Properties(Type type, (string Name, Type Type)[] expected)
+{
+    const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static |
+        BindingFlags.Instance | BindingFlags.DeclaredOnly;
+    var all = type.GetProperties(flags);
+    Require(all.Length == expected.Length, $"{type}: property count");
+    foreach ((string name, Type fieldType) in expected)
+    {
+        var property = all.SingleOrDefault(p => p.Name == name);
+        Require(property is not null && property.PropertyType == fieldType &&
+            property.GetMethod?.IsAssembly == true && !property.GetMethod.IsStatic &&
+            property.SetMethod is null, $"{type}.{name}: property shape");
+    }
+}
+
+static void EnumShape<T>(int first, string names) where T : struct, Enum
+{
+    Require(Enum.GetUnderlyingType(typeof(T)) == typeof(byte) &&
+        string.Join(' ', Enum.GetNames<T>()) == names &&
+        Enum.GetValues<T>().Select(v => Convert.ToInt32(v)).SequenceEqual(Enumerable.Range(first, names.Count(ch => ch == ' ') + 1)),
+        typeof(T).ToString());
+}
+
+static string Digest(byte[] raw) => Convert.ToHexStringLower(SHA256.HashData(raw));
+static byte[]? Hex(JsonElement element, string key) =>
+    element.GetProperty(key).GetString() is string text ? Convert.FromHexString(text) : null;
+static byte[][] Buffers(ValidationReleaseProjection p) =>
+    [p.SealedLaunchRecordHash!, p.CatalogHash!, p.ScriptHash!, p.ReleaseActionHash!, p.PreparationManifestDigest!];
+
+static ValidationReleaseProjection? Input(JsonElement obj, ValidationReleaseProjection? sameBuffers = null,
+    ValidationReleaseStep[]? sameSteps = null)
+{
+    if (obj.ValueKind == JsonValueKind.Null)
+        return null;
+    uint? U(string name) => obj.GetProperty(name) is { ValueKind: JsonValueKind.Number } value ? value.GetUInt32() : null;
+    bool? B(string name) => obj.GetProperty(name) is { ValueKind: JsonValueKind.Null } ? null : obj.GetProperty(name).GetBoolean();
+    Guid? G(string name) => obj.GetProperty(name).GetString() is string text ? Guid.ParseExact(text, "D") : null;
+    var steps = obj.GetProperty("Steps");
+    var template = sameSteps ?? (steps.ValueKind == JsonValueKind.Null ? null : steps.EnumerateArray()
+        .Select(pair => new ValidationReleaseStep(pair[0].GetUInt32(), (ValidationReleaseOpcode)pair[1].GetByte())).ToArray());
+    var bytes = sameBuffers is null
+        ? new[] { Hex(obj,"SealedLaunch"), Hex(obj,"Catalog"), Hex(obj,"Script"), Hex(obj,"ReleaseAction"), Hex(obj,"Manifest") }
+        : Buffers(sameBuffers);
+    return new ValidationReleaseProjection(U("Version"), (ValidationReleasePhase?)U("Phase"),
+        (ValidationReleaseTopology?)U("Topology"), obj.GetProperty("Case").GetString(),
+        B("CatalogFlag"), B("FixtureFlag"), template, U("Index"), bytes[0], bytes[1], bytes[2], bytes[3],
+        G("Session"), G("Execution"), G("Lease"), G("Preparation"), bytes[4]);
+}

@@ -1,0 +1,140 @@
+"""Build review-selected disposable variants, then require their designated failures."""
+import hashlib
+import json
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+repo, work, probe, corpus = (Path(item).resolve() for item in sys.argv[1:5])
+work.mkdir()
+source_path = "src/Gagamba.Execution.Linux.M1/Validation/ValidationReleasePreparation.cs"
+source = (repo / source_path).read_text(encoding="utf-8")
+harness = probe.read_text(encoding="utf-8")
+namespace = "Gagamba.Execution.Linux.M1.Validation"
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+variants = []
+def bind(name, before, after, witness, detection, replacements=1):
+    assert source.count(before) == replacements, (name, source.count(before))
+    variants.append((name, before, after, witness, detection))
+
+status = "expected=ProjectionMismatch actual=StructuralMatch"
+for managed, operand in (("SessionId", "Session"), ("ExecutionId", "Execution"),
+                         ("ProtocolLeaseId", "Lease"), ("PreparationId", "Preparation")):
+    bind("Omit" + managed, f"actual.{managed} != original.{managed}", "false",
+         f"Substitution.{operand}.retained.Prepare", status)
+for managed, operand in (("SealedLaunchRecordHash", "SealedLaunch"), ("CatalogHash", "Catalog"),
+                         ("ScriptHash", "Script"), ("ReleaseActionHash", "ReleaseAction"),
+                         ("PreparationManifestDigest", "Manifest")):
+    bind("Omit" + managed, f"!actual.{managed}.AsSpan().SequenceEqual(original.{managed})", "false",
+         f"Byte.{operand}.31.retained.Prepare", status)
+bind("OmitPhase", "actual.Phase != original.Phase", "false", "PhaseMismatch.retained.Prepare", status)
+bind("InsensitiveCase", "StringComparison.Ordinal))", "StringComparison.OrdinalIgnoreCase))",
+     "CaseOrdinal.candidate.Prepare", "expected=CaseMismatch actual=StructuralMatch")
+bind("EchoProjection", "Validate(expected, out var original)", "Validate(candidate, out var original)",
+     "Byte.Catalog.10.retained.Compare", status)
+bind("WrongDigestCoverage", "SHA256.HashData(preimage)",
+     "SHA256.HashData(preimage.AsSpan(30))", "FreshMixed.Prepare", "digest=", 2)
+bind("WrongManifestPlacement", "binding.PreparationManifestDigest.CopyTo(bytes[226..258]);",
+     "binding.PreparationManifestDigest.CopyTo(bytes[225..257]);", "FreshMixed.Prepare", "preimage=")
+bind("WrongLeaseByteOrder", "TryWriteBytes(bytes[194..210])",
+     "TryWriteBytes(bytes[194..210], bigEndian: true, out _)", "FreshMixed.Prepare", "preimage=")
+bind("WrongIndexByteOrder", "WriteUInt32LittleEndian", "WriteUInt32BigEndian", "FreshMixed.Prepare", "preimage=")
+bind("IgnoringDigest", "if (!CryptographicOperations.FixedTimeEquals(digest, expectedDigest))\n            return DigestMismatch;",
+     "", "ExpectedSeveralBytes.Compare", "expected=DigestMismatch actual=StructuralMatch")
+bind("AllowNullDigest", "if (expectedCorrelationSha256 is null)\n            return MissingExpectedDigest;",
+     "if (expectedCorrelationSha256 is null)\n            return Prepare(candidate, expected, out material);",
+     "R01.AbsentDigest.Compare", "expected=MissingExpectedDigest actual=StructuralMatch")
+bind("ScopePrecedence", "var status = Validate(candidate, out actual);",
+     "if (expected.SchemaVersion != 1) return UnsupportedVersion;\n        var status = Validate(candidate, out actual);",
+     "CandidateFirst.0.1.Prepare", "expected=MissingInput actual=UnsupportedVersion")
+bind("LeakOnRefusal", "if (!CryptographicOperations.FixedTimeEquals(digest, expectedDigest))\n            return DigestMismatch;",
+     "if (!CryptographicOperations.FixedTimeEquals(digest, expectedDigest))\n        {\n"
+     "            material = Publish(preimage, digest);\n            return DigestMismatch;\n        }",
+     "R02.Compare", "expected=DigestMismatch actual=DigestMismatch material=present")
+bind("ForbiddenAlias", "internal byte[]? SealedLaunchRecordHash { get; }",
+     "internal byte[]? SealedLaunchRecordHash { get; }\n    internal byte[]? CapabilityHash => SealedLaunchRecordHash;",
+     "Surface.NoForbiddenManagedNames", "forbidden managed names:")
+bind("BorrowResultDigest", "material = Publish(preimage, digest);",
+     "material = new(ImmutableArray.CreateRange(preimage), "
+     "System.Runtime.InteropServices.ImmutableCollectionsMarshal.AsImmutableArray(expectedCorrelationSha256));",
+     "Ownership.ExactDigestMutation", "digest=")
+bind("BorrowSteps", "(ValidationReleaseStep[])steps.Clone()", "steps", "Ownership.BoundedCopyInstructions",
+     "Validate clone count expected=6 actual=5")
+for slot in ("sealedLaunchRecordHash", "catalogHash", "scriptHash", "releaseActionHash", "manifestDigest"):
+    bind("Borrow" + slot[0].upper() + slot[1:], f"(byte[]){slot}.Clone()", slot, "Ownership.BoundedCopyInstructions",
+         "Validate clone count expected=6 actual=5")
+bind("BorrowExpectedDigest", "(byte[])expectedCorrelationSha256.Clone()", "expectedCorrelationSha256",
+     "Ownership.BoundedCopyInstructions", "Compare clone count expected=1 actual=0")
+
+marker = 'Console.WriteLine(JsonSerializer.Serialize(new { summary = true, ran, failed }));'
+assert harness.count(marker) == 1
+plus = r'''Local("Control.ValidStructuralInput", () =>
+{
+    var status = ValidationReleasePreparation.Prepare(Input(initial), Input(initial), out var material);
+    Require(status == StructuralMatch && material?.Preimage.Length == 258 && material.CorrelationSha256.Length == 32,
+        "valid structural control must complete with exact widths");
+    return "valid finite release template produces material";
+});
+'''
+harness = harness.replace(marker, plus + marker)
+separator = "int failed = 0;"
+assert harness.count(separator) == 1
+usings, top = harness.split(separator, 1)
+commands = []
+receipts = []
+for name, old, new, witness, detection in variants:
+    space = "Q1Variant." + name
+    variant = work / (name + ".cs")
+    variant.write_text(source.replace(old, new).replace(namespace, space), encoding="utf-8", newline="\n")
+    verifier = work / (name + ".Probe.cs")
+    verifier.write_text(usings.replace(namespace, space) +
+                        f"namespace {space};\ninternal static class Probe\n{{\ninternal static int Execute(string[] args)\n{{\n"
+                        + separator + top + "\n}\n}\n", encoding="utf-8", newline="\n")
+    commands.append(f'"{name}" => {space}.Probe.Execute([args[1],args[2]]),')
+    receipts.append(dict(control=name, original=old, replacement=new, witness=witness, expected_detection=detection,
+                         source_sha256=sha(variant), harness_sha256=sha(verifier)))
+
+(work / "Main.cs").write_text("return args[0] switch {\n" + "\n".join(commands) + "\n_ => 2\n};\n", encoding="utf-8")
+(work / "Controls.csproj").write_text(
+    '<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net10.0</TargetFramework>'
+    '<OutputType>Exe</OutputType><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable>'
+    '</PropertyGroup></Project>\n', encoding="utf-8",
+)
+(work / "receipts.json").write_text(json.dumps(dict(original_sha256=sha(repo / source_path), variants=receipts), indent=2),
+                                    encoding="utf-8")
+env = {**os.environ, "NuGetAudit": "false", "RestoreIgnoreFailedSources": "true", "DOTNET_CLI_TELEMETRY_OPTOUT": "1"}
+for cfg in ("Debug", "Release"):
+    build = ["dotnet", "build", "Controls.csproj", "-c", cfg, "--nologo", "-m:1"]
+    with (work / f"build-{cfg}.log").open("wb") as log:
+        log.write((json.dumps(build) + "\n").encode())
+        rc = subprocess.run(build, cwd=work, env=env, stdout=log, stderr=subprocess.STDOUT).returncode
+        log.write(f"\nEXIT {rc}\n".encode())
+    if rc:
+        sys.exit(rc)
+    dll = work / "bin" / cfg / "net10.0/Controls.dll"
+    with (work / f"outcomes-{cfg}.jsonl").open("w", encoding="utf-8", newline="\n") as log:
+        for item in receipts:
+            control = item["control"]
+            checks = []
+            for label, required_exit, needle in (("Control.ValidStructuralInput", 0, None),
+                                                  (item["witness"], 1, item["expected_detection"])):
+                args = ["dotnet", str(dll), control, str(corpus), label]
+                run = subprocess.run(args, cwd=work, env=env, capture_output=True, text=True)
+                output = [json.loads(line) for line in run.stdout.splitlines()]
+                evidence = [row for row in output if row.get("id") == label]
+                # The two result classes must be emitted by the selected harness case, with no runtime startup error.
+                correct_exception = (required_exit == 0 or
+                                     (len(evidence) == 1 and evidence[0]["observation"].startswith("System.InvalidOperationException: ")))
+                ok = (run.returncode == required_exit and not run.stderr and len(evidence) == 1 and
+                      (needle is None or needle in evidence[0]["observation"]) and correct_exception and
+                      evidence[0]["result"] == ("pass" if required_exit == 0 else "fail"))
+                checks.append(dict(command=args, exit=run.returncode, output=output, stderr=run.stderr, passed=ok))
+            saved = dict(control=control, dll_sha256=sha(dll), passed=all(x["passed"] for x in checks), checks=checks)
+            log.write(json.dumps(saved) + "\n")
+            log.flush()
+            assert saved["passed"], saved
+    print(cfg, len(receipts), "nominal controls and designated detections", flush=True)

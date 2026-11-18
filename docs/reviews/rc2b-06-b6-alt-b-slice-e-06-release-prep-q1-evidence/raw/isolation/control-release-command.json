@@ -1,0 +1,10 @@
+{
+  "arguments": [
+    "dotnet",
+    "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\release-prep-scanner-artifacts\\bin\\Audit\\release\\Audit.dll",
+    "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\e6-inbound-exact\\release\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll"
+  ],
+  "exit": 1,
+  "scanner_sha256": "f35ce6ee667cd7a52d5f49c15c82826f6e274a71013a579f134921d239a09ee2",
+  "stderr": ""
+}

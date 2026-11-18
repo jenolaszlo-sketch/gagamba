@@ -1,0 +1,72 @@
+{
+  "stage": "remediated",
+  "configuration": "debug",
+  "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\layouts\\debug\\focused\\Gagamba.Execution.Linux.M1.dll",
+  "identity": "Gagamba.Execution.Linux.M1, Version=0.1.0.0, Culture=neutral, PublicKeyToken=null",
+  "mvid": "d1605395-21d1-4d77-9cf6-76c7aac7cd5f",
+  "sha256": "76103e9b7ee36b351dfc70c574511d8864d4ccd65d7a2e1fa2867f8977c9a706",
+  "validation_types": 28,
+  "declared_members": 859,
+  "forbidden_members": [],
+  "matches": [
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleaseProjection",
+      "name": "get_SealedLaunchRecordHash",
+      "kind": "Method"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleaseProjection",
+      "name": "SealedLaunchRecordHash",
+      "kind": "Property"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleaseProjection",
+      "name": "<SealedLaunchRecordHash>k__BackingField",
+      "kind": "Field"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "name": "get_SealedLaunchRecordHash",
+      "kind": "Method"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "name": "set_SealedLaunchRecordHash",
+      "kind": "Method"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "name": "SealedLaunchRecordHash",
+      "kind": "Property"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "name": "<SealedLaunchRecordHash>k__BackingField",
+      "kind": "Field"
+    }
+  ],
+  "affected_parameters": [
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleaseProjection",
+      "method": ".ctor",
+      "position": 8,
+      "name": "sealedLaunchRecordHash",
+      "parameter_type": "System.Byte[]"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "method": ".ctor",
+      "position": 6,
+      "name": "SealedLaunchRecordHash",
+      "parameter_type": "System.Byte[]"
+    },
+    {
+      "type": "Gagamba.Execution.Linux.M1.Validation.ValidationReleasePreparation+Binding",
+      "method": "Deconstruct",
+      "position": 6,
+      "name": "SealedLaunchRecordHash",
+      "parameter_type": "System.Byte[]&"
+    }
+  ],
+  "replacement_signature_collisions": 0
+}

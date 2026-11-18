@@ -1,0 +1,32 @@
+[
+  {
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\layouts\\release\\focused\\Gagamba.Execution.Linux.M1.dll",
+    "reference": "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll",
+    "sha256": "ea8a7572a7215c1be04c0c5c0010b218adb5c365f1f2692ee82fdf8c8601cb3e"
+  },
+  {
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\layouts\\release\\focused\\Gagamba.Execution.dll",
+    "reference": "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.dll",
+    "sha256": "729dd18fb723cd2ffa1f4d0cc0ae1cea49caf630735b73524dadec59c9cf6d8a"
+  },
+  {
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\layouts\\release\\focused\\Gagamba.Execution.Linux.M1.Tests.dll",
+    "reference": "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1.Tests\\release\\Gagamba.Execution.Linux.M1.Tests.dll",
+    "sha256": "b2bd5dc43d143d95cc675ab64a4d5e9beeca612134768c697d0962d17bcfc925"
+  },
+  {
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\layouts\\release\\tests\\release\\Gagamba.Execution.Linux.M1.Tests.dll",
+    "reference": "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1.Tests\\release\\Gagamba.Execution.Linux.M1.Tests.dll",
+    "sha256": "b2bd5dc43d143d95cc675ab64a4d5e9beeca612134768c697d0962d17bcfc925"
+  },
+  {
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\layouts\\release\\tests\\release\\Gagamba.Execution.Linux.M1.dll",
+    "reference": "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1\\debug\\Gagamba.Execution.Linux.M1.dll",
+    "sha256": "76103e9b7ee36b351dfc70c574511d8864d4ccd65d7a2e1fa2867f8977c9a706"
+  },
+  {
+    "path": "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\layouts\\release\\src\\Gagamba.Execution.Linux.M1\\bin\\Release\\net10.0\\Gagamba.Execution.Linux.M1.dll",
+    "reference": "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\candidate-exact\\bin\\Gagamba.Execution.Linux.M1\\release\\Gagamba.Execution.Linux.M1.dll",
+    "sha256": "ea8a7572a7215c1be04c0c5c0010b218adb5c365f1f2692ee82fdf8c8601cb3e"
+  }
+]

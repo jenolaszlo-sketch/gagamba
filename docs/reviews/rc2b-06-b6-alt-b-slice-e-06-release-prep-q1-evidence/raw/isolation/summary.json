@@ -1,0 +1,51 @@
+{
+  "debug": {
+    "first_party_assembly_paths": 48,
+    "production_assembly_paths": 29,
+    "unique_first_party_sha256": 19,
+    "production_incoming": 0,
+    "helper_effect_edges": 0,
+    "new_production_E3_E4_E5_edges": 0,
+    "scan_control": "detected",
+    "runner_dependency_paths": 260,
+    "verifier_exit": 1,
+    "roles": {
+      "build/fixture": 3,
+      "build/production": 23,
+      "build/test": 3,
+      "selected/focused": 3,
+      "selected/broad": 3,
+      "selected/release-discovery": 2,
+      "solution/production": 6,
+      "d6.4/fixture-debug": 2,
+      "d6.4/test": 3
+    },
+    "p4_executed_controls": 47
+  },
+  "release": {
+    "first_party_assembly_paths": 116,
+    "production_assembly_paths": 55,
+    "unique_first_party_sha256": 47,
+    "production_incoming": 0,
+    "helper_effect_edges": 0,
+    "new_production_E3_E4_E5_edges": 0,
+    "scan_control": "detected",
+    "runner_dependency_paths": 260,
+    "verifier_exit": 0,
+    "roles": {
+      "build/fixture": 3,
+      "build/production": 23,
+      "build/test": 3,
+      "selected/focused": 3,
+      "selected/broad": 3,
+      "selected/release-discovery": 2,
+      "solution/fixture": 9,
+      "solution/production": 24,
+      "solution/test": 33,
+      "publish/production": 8,
+      "d6.4/fixture-debug": 2,
+      "d6.4/test": 3
+    },
+    "p4_executed_controls": 47
+  }
+}

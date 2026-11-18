@@ -1,0 +1,9 @@
+{
+  "command": [
+    "dotnet",
+    "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\q1-metadata\\bin\\Release\\net10.0\\MetadataScan.dll",
+    "C:\\Users\\Laszlos\\source\\repos\\Solo\\_q1-01a1ed30\\run\\q1-metadata\\control-release.tsv"
+  ],
+  "exit": 1,
+  "scanner_sha256": "2a09013b123f5d0ac6a3b6afdf9a6a1a30d903a8e5bc9bfcbeb0f85a53ab97fa"
+}

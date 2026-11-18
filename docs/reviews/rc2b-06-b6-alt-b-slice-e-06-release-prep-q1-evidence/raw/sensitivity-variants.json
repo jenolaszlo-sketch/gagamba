@@ -1,0 +1,257 @@
+[
+  {
+    "variant": "LauncherClosure",
+    "case": "LauncherClosure",
+    "deviation": "omit launcherClosure.AsSpan().SequenceEqual(observed.launcherClosure)",
+    "files": [
+      {
+        "path": "LauncherClosure.Model.cs",
+        "sha256": "b71d00f8afa038da20ea813d557c111852ca9a45fda86c0e5215208f1fef87be"
+      },
+      {
+        "path": "LauncherClosure.Data.cs",
+        "sha256": "f132827e2b3c0c37d41da9a515eb7d83ce157078ce6ec726af7cb7f791d6ec91"
+      }
+    ]
+  },
+  {
+    "variant": "ControllerClosure",
+    "case": "ControllerClosure",
+    "deviation": "omit controllerClosure.AsSpan().SequenceEqual(observed.controllerClosure)",
+    "files": [
+      {
+        "path": "ControllerClosure.Model.cs",
+        "sha256": "76fe35affc0deb57a6ddf780f5398779f3910b893e6b3bde0680f1d258137aa9"
+      },
+      {
+        "path": "ControllerClosure.Data.cs",
+        "sha256": "d6e92b1710ef7fb913ef5fc8425aeddf940dbb42916092c4a4834d96a0f601f7"
+      }
+    ]
+  },
+  {
+    "variant": "DriverClosure",
+    "case": "DriverClosure",
+    "deviation": "omit driverClosure.AsSpan().SequenceEqual(observed.driverClosure)",
+    "files": [
+      {
+        "path": "DriverClosure.Model.cs",
+        "sha256": "7492d21dd7957273088244c175524e13ebf4a9e5201c577d6eafe004cf7d4f7b"
+      },
+      {
+        "path": "DriverClosure.Data.cs",
+        "sha256": "d1bdc93bacc86dd74c6ecf14444a2432c294d314234e5458987e81f4809a402d"
+      }
+    ]
+  },
+  {
+    "variant": "Catalog",
+    "case": "Catalog",
+    "deviation": "omit catalog.AsSpan().SequenceEqual(observed.catalog)",
+    "files": [
+      {
+        "path": "Catalog.Model.cs",
+        "sha256": "e76f2c30f34e4d1dbe307f8ed746ff99e2a407f3658b23bec0e9faab3684bc57"
+      },
+      {
+        "path": "Catalog.Data.cs",
+        "sha256": "09bda3b569826d07cd54989d9312ce64bd682b63ce6e16d09a0c2561f591098c"
+      }
+    ]
+  },
+  {
+    "variant": "Approval",
+    "case": "Approval",
+    "deviation": "omit approval.AsSpan().SequenceEqual(observed.approval)",
+    "files": [
+      {
+        "path": "Approval.Model.cs",
+        "sha256": "fa02f77c46749a224cded183533a122971f14b1d2fd5a57b24ae868b5eb96535"
+      },
+      {
+        "path": "Approval.Data.cs",
+        "sha256": "c0177afc1d236d11b27d0c99c872af5138de5971eb3b5fa3b65951eecca228d1"
+      }
+    ]
+  },
+  {
+    "variant": "OriginalC",
+    "case": "OriginalC",
+    "deviation": "omit original-controller comparison",
+    "files": [
+      {
+        "path": "OriginalC.Model.cs",
+        "sha256": "9fccb8c670db82ceb0e59da1586adeb9f2e5644e1ab461b19d123e8e8d1c5286"
+      },
+      {
+        "path": "OriginalC.Data.cs",
+        "sha256": "8ca9a403cb7570176a9df59127fee5d82d1f62130c7c2e15368284f07e181528"
+      }
+    ]
+  },
+  {
+    "variant": "Provenance",
+    "case": "Provenance",
+    "deviation": "omit required provenance classification",
+    "files": [
+      {
+        "path": "Provenance.Model.cs",
+        "sha256": "7ab423a60ab205b7b5f57d501e937576a6ceb83417f96deec945d578dc00819b"
+      },
+      {
+        "path": "Provenance.Data.cs",
+        "sha256": "b4edc802c6c3a1da4ef95cb0f25f65e0c22fd10d4169b95d95571f8cdcd97065"
+      }
+    ]
+  },
+  {
+    "variant": "Drop",
+    "case": "Drop",
+    "deviation": "omit drop fact",
+    "files": [
+      {
+        "path": "Drop.Model.cs",
+        "sha256": "d9da49ae0796ad3a678700667a88033a6a8173724a8e1c67ab5e004c96939c4b"
+      },
+      {
+        "path": "Drop.Data.cs",
+        "sha256": "de84843d77793c1b8425a73f247b522759a55cba4d77bbc693ca221bda407b49"
+      }
+    ]
+  },
+  {
+    "variant": "BypassDrop",
+    "case": "BypassDrop",
+    "deviation": "allow OFFER to skip DROP",
+    "files": [
+      {
+        "path": "BypassDrop.Model.cs",
+        "sha256": "e61ec064ebcd49eaa213c102400245afbc82c27538e2f60daaf2ac88a18d41b0"
+      },
+      {
+        "path": "BypassDrop.Data.cs",
+        "sha256": "51a9e02b06941127f1dc273c3a5cc7d5c618bab3efe04729c7d4543bfe22032d"
+      }
+    ]
+  },
+  {
+    "variant": "OneUse",
+    "case": "OneUse",
+    "deviation": "allow repeat issue",
+    "files": [
+      {
+        "path": "OneUse.Model.cs",
+        "sha256": "a7e1d7185ad2f95461a7d8781ab64c09b6aaae3444e09818876c13f664eb8a56"
+      },
+      {
+        "path": "OneUse.Data.cs",
+        "sha256": "70b265ce3db1b885d74d79ea1bc1a6b84a2fa816ee44c8345633e8876166e9b6"
+      }
+    ]
+  },
+  {
+    "variant": "Terminal",
+    "case": "Terminal",
+    "deviation": "omit failed Advance cleanup",
+    "files": [
+      {
+        "path": "Terminal.Model.cs",
+        "sha256": "c6185546ef271655f3e8613ce825652c52612cbe67f7e3de78a7bbc05a454caa"
+      },
+      {
+        "path": "Terminal.Data.cs",
+        "sha256": "1698f176f3207fd941699b1206dbfd6b6dd42766838a7b935fbd775fccfaafba"
+      }
+    ]
+  },
+  {
+    "variant": "Expiry",
+    "case": "Expiry",
+    "deviation": "allow equality at original deadline",
+    "files": [
+      {
+        "path": "Expiry.Model.cs",
+        "sha256": "787bd324c88cf556b485070ee48934b50d18573e1a98a45c838378b179e73370"
+      },
+      {
+        "path": "Expiry.Data.cs",
+        "sha256": "bbc78dd6502cde98c77bb6ee9ed298a4bbf949dc8f83f993a7e753651769bc8b"
+      }
+    ]
+  },
+  {
+    "variant": "Stop",
+    "case": "Stop",
+    "deviation": "omit supplied stop check",
+    "files": [
+      {
+        "path": "Stop.Model.cs",
+        "sha256": "e9775cf04a7f24a725f4bd5db153d50718a4516ca9c22634cca5fd47f10543b4"
+      },
+      {
+        "path": "Stop.Data.cs",
+        "sha256": "7ff2926388289ff09c29fcf2db5dd3684cbe13a0e72a97b8cf99055997f0a39e"
+      }
+    ]
+  },
+  {
+    "variant": "Intake",
+    "case": "Intake",
+    "deviation": "alias an intake digest",
+    "files": [
+      {
+        "path": "Intake.Model.cs",
+        "sha256": "1c94f868ac1e4573b0d06bcc8657c3bab38ad73f515963eb16173b05ecba0c87"
+      },
+      {
+        "path": "Intake.Data.cs",
+        "sha256": "9405bbb15ae9483a2a4c3ae9b28c909072a538183ae12cb107b5cc0ea4088eb5"
+      }
+    ]
+  },
+  {
+    "variant": "Output",
+    "case": "Output",
+    "deviation": "alias a returned digest",
+    "files": [
+      {
+        "path": "Output.Model.cs",
+        "sha256": "8326bd3bce92c908c453b28a1decb67f520adb954cfdfc3ee712e25198117eb0"
+      },
+      {
+        "path": "Output.Data.cs",
+        "sha256": "49b66a14c33fee1c96e792961dd16620044c60fe0956d73a75b15399e87c9bf6"
+      }
+    ]
+  },
+  {
+    "variant": "Precedence",
+    "case": "Precedence",
+    "deviation": "check evidence before comparison",
+    "files": [
+      {
+        "path": "Precedence.Model.cs",
+        "sha256": "5d471c2b123609949b46d99dde6d470d11a7b83d686bf5eee03acbd1d0a10727"
+      },
+      {
+        "path": "Precedence.Data.cs",
+        "sha256": "86c034f8c82b28a452608c679c420e425f69bdb21d2b211dd2783e4f1a93b64b"
+      }
+    ]
+  },
+  {
+    "variant": "Exception",
+    "case": "Exception",
+    "deviation": "inject managed exception before snapshot publication to exercise unchanged finally",
+    "files": [
+      {
+        "path": "Exception.Model.cs",
+        "sha256": "597c38fb2c4eea96bb7b898dc8abe292f2acf8b7739ea42ee9b230556de58b1c"
+      },
+      {
+        "path": "Exception.Data.cs",
+        "sha256": "7c512d2067b443e8116f591a7f10a90ab239ed2dc40ead6ff65a1a5c4bc1f333"
+      }
+    ]
+  }
+]
