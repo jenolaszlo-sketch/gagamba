@@ -1,0 +1,155 @@
+import csv
+import gzip
+import hashlib
+import json
+import re
+import sys
+import xml.etree.ElementTree as ET
+from collections import Counter
+from pathlib import Path
+
+prefix = "rc2b-06-b6-alt-b-slice-e-06-release-prep"
+q = Path("docs/reviews") / (prefix + "-q1-evidence/raw")
+p = Path("docs/evidence") / (prefix + "-f02-remediation-01-evidence/raw")
+candidate = "4202a2f7a99b85cfe1caf70d6a583f58e6551283"
+tree = "f987f32ced441263167649307003536dd493dd66"
+
+def unpack(path):
+    return gzip.decompress(path.read_bytes())
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+def read(path):
+    return json.loads(path.read_bytes())
+
+def records(path):
+    return [json.loads(line) for line in unpack(path).splitlines()]
+
+def tests(data):
+    return Counter((t.get("type"), t.get("method"), t.get("name"), t.get("result"), t.findtext("reason"))
+                   for t in ET.fromstring(data).iter("test"))
+
+def tsv(path):
+    return list(csv.DictReader(unpack(path).decode().splitlines(), delimiter="\t"))
+
+def check_vector(observation, vector):
+    observed = dict(re.findall(r"(preimage|digest)=([0-9a-fA-F]+)", observation))
+    assert {k: v.lower() for k, v in observed.items()} == {k: vector[k] for k in ("preimage", "digest")}
+
+summary = read(q/"summary.json")
+vectors = read(q/"vectors.json")
+assert [vectors[n]["digest"] for n in ("R01", "Mixed")] == [
+    "3737572b7b3d2ad8313d109d6d8a9d0df4b5bc7b20e43c71a0a6061e1988ce3e",
+    "d4573bb166ab7a4f73743297a4b3b2b9f2e19c73ef4fb6c36c94cf2a20fd7d90"]
+for n in ("R01", "Mixed"):
+    v = vectors[n]
+    preimage = bytes.fromhex(v["preimage"])
+    assert len(preimage) == 258 and sha(preimage) == v["digest"]
+    assert preimage[30:62].hex() == v["projection"]["SealedLaunch"]
+
+assert (summary["candidate"], summary["tree"]) == (candidate, tree)
+for base in (p, q):
+    pin = read(base/"isolation/candidate.json")
+    assert (pin["commit"], pin["tree"]) == (candidate, tree)
+    dispositions = read(base/"isolation/p4-dispositions.json")
+    assert {row["sink"] for row in dispositions} == {f"S{i:02}" for i in range(1,30)}
+    assert all(row["exact_candidate"] and row["disposition"] and row["gate"] for row in dispositions)
+assert read(p/"isolation/p4-dispositions.json") == read(q/"isolation/p4-dispositions.json")
+
+receipt = {}
+for config in ("debug", "release"):
+    cap = config.title()
+    bindings = {base: {r["path"]:r["sha256"] for r in read(base/f"results/{config}/bindings.json")}
+                for base in (p, q)}
+    cores = {base: next(s for f,s in pins.items() if f.endswith(r"\focused\Gagamba.Execution.Linux.M1.dll"))
+             for base,pins in bindings.items()}
+    totals = {}
+    for suite, count in dict(e6=192,e5=42,e4=11,e3=185,broad=1923).items():
+        loops = []
+        for base in (p, q):
+            folder = base/f"results/{config}"
+            raw = unpack(folder/f"{suite}.xml.gz")
+            trx = unpack(folder/f"{suite}.trx.gz")
+            root = ET.fromstring(raw)
+            assembly = root.find("assembly")
+            assert assembly.get("name") in bindings[base]
+            xml_cases = tests(raw)
+            outcomes = Counter()
+            for key, multiplicity in xml_cases.items():
+                outcomes[key[3]] += multiplicity
+            assert outcomes == {"Pass":count, **({"Skip":331} if suite == "broad" else {})}
+            counters = ET.fromstring(trx).find(".//{*}Counters")
+            assert counters.get("total") == counters.get("executed") == "0"
+            timeout = unpack(folder/f"vstest-{suite}.log.gz")
+            assert b"after 15 seconds" in timeout and b"Test Run Aborted." in timeout and b"EXIT 1" in timeout
+            if base == q:
+                row = summary["configurations"][config]["suites"][suite]
+                assert (sha(raw),sha(trx)) == (row["xml_sha256"],row["trx_sha256"])
+                if suite == "broad":
+                    skips = Counter({(r["type"],r["method"],r["case"],"Skip",r["reason"]):r["multiplicity"]
+                                     for r in read(q/f"native-skips-{config}.json")})
+                    assert skips == Counter({k:v for k,v in xml_cases.items() if k[3] == "Skip"})
+            loops.append(xml_cases)
+        assert loops[0] == loops[1], (config,suite)
+        totals[suite] = dict(passed=count,failed=0,skipped=331 if suite=="broad" else 0)
+    probe = records(q/f"q1-probe-{config}-final.jsonl.gz")
+    assert probe[0]["sha256"] == cores[q]
+    cases = {r["id"]:r["observation"] for r in probe[1:-1] if r["result"] == "pass"}
+    assert len(cases) == 2398 and probe[-1] == dict(summary=True,ran=2398,failed=0)
+    assert cases["R02.Compare"] == "expected=DigestMismatch actual=DigestMismatch material=null"
+    witness = read(p/f"compiled-witness-{config}.json")
+    assert witness["core_sha256"] == cores[p] and witness["R02"] == "DigestMismatch/null"
+    for name, recorded in zip(("R01","Mixed"),witness["vectors"],strict=True):
+        v = vectors[name]
+        assert recorded["raw_equality"] and (recorded["preimage"],recorded["digest"]) == (v["preimage"],v["digest"])
+        assert recorded["bytes_30_through_61"] == v["preimage"][60:124]
+        for method in ("Prepare","Compare"):
+            test = f"{name}.{method}"
+            check_vector(cases[test],v)
+            original = records(q/f"blocked-vector-{config}-{test}.jsonl.gz")
+            check_vector(original[1]["observation"],v)
+    assert records(q/f"blocked-vector-{config}-R02.Compare.jsonl.gz")[1]["observation"] == cases["R02.Compare"]
+    reflection = read(q/f"f02-reflection-remediated-{config}.json")
+    assert reflection["sha256"] == cores[q] and reflection["mvid"] == probe[0]["mvid"]
+    assert (len(reflection["forbidden_members"]),len(reflection["matches"]),reflection["replacement_signature_collisions"]) == (0,7,0)
+    assert len(read(q/f"f02-reflection-blocked-{config}.json")["forbidden_members"]) == 7
+    for base in (p,q):
+        frozen = records(base/f"e6-mutation-results-{cap}.jsonl.gz")
+        assert len({r["id"] for r in frozen}) == len(frozen) == 34
+        assert all(r["nominal"]=="PASS" and r["witness"]=="EXPECTED FAIL" for r in frozen)
+        sensitivity = tsv(base/f"sensitivity-{cap}.tsv.gz")
+        assert len(sensitivity) == 17 and all(r["decision"]=="PASS" for r in sensitivity)
+        assert unpack(base/f"independent-{config}.tsv.gz").splitlines()[-1] == b"TOTAL\t696\t0"
+        isolation = read(base/"isolation/summary.json")[config]
+        assert isolation["production_incoming"] == isolation["helper_effect_edges"] == isolation["new_production_E3_E4_E5_edges"] == 0
+        assert (isolation["verifier_exit"],isolation["p4_executed_controls"]) == (1 if config=="debug" else 0,47)
+        assert f"EXIT {isolation['verifier_exit']}".encode() in unpack(base/f"verifier-{config}.log.gz")
+    reviewer = records(q/f"q1-controls/outcomes-{cap}.jsonl.gz")
+    assert len({r["control"] for r in reviewer}) == len(reviewer) == 29
+    assert all(r["passed"] and all(c["passed"] for c in r["checks"]) for r in reviewer)
+    metadata = read(q/"q1-metadata/summary.json")[config]
+    assert metadata["control_direct_and_delegate"] == "detected"
+    assert metadata["production_e6_incoming"] == metadata["production_e3_to_e5_incoming"] == 0
+    receipt[config] = dict(suites=totals,producer_core_sha256=cores[p],q1_core_sha256=cores[q],
+                           q1_core_mvid=reflection["mvid"],independent_cases=len(cases),
+                           frozen_controls=len(frozen),reviewer_controls=len(reviewer),metadata=metadata)
+
+assert unpack(q/"e4-console.log.gz").count(b"supplemental rows passed=1945 failed=0") == 2
+assert unpack(q/"e5-sensitivity-console.log.gz").count(b"20 nominal and omission-detection pairs passed") == 2
+for log in ("policy-exact","policy-retry"):
+    failure = unpack(q/log/"owner-release.log.gz")
+    assert b"Determining projects to restore" in failure and b"Build FAILED." in failure
+for path in (p/"production-policy-results.json",q/"policy-confirmed/results.json"):
+    policy = read(path)
+    assert len({r["Name"] for r in policy}) == len(policy) == 51 and all(r["Passed"] for r in policy)
+for base in (p,q):
+    assert b"Ran 9 tests" in unpack(base/"preparation-tests.log.gz")
+    assert re.search(rb"Result\s+:\s+Passed",unpack(base/"preparation.log.gz"))
+Path(sys.argv[1]).write_text(json.dumps(dict(candidate=candidate,tree=tree,configurations=receipt,
+    vstest_zero_execution_timeouts=dict(producer=10,q1=10),approved_policy_controls=51,
+    incomplete_q1_sandboxed_policy_restores=2,preparation_regressions=9,preparation_validation="Passed",
+    historical_e4_supplement_and_omission=1945,inherited_e5_supplement=696,
+    inherited_e5_frozen_controls=17,inherited_e5_omission_pairs=20,inherited_p4_dispositions=29),
+    indent=2)+"\n",encoding="utf-8",newline="\n")
+print("Verified candidate, runner and assembly bindings, exact case membership, byte witnesses, controls, preparation and refusal-only P4.")
